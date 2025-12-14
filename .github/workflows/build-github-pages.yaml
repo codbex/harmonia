@@ -18,11 +18,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Harmonia
-        run: npm run build
-
       - name: Install doc dependencies
         run: npm run docs:install
+
+      - name: Build Harmonia
+        run: npm run build
 
       - name: Build documentation
         id: build
