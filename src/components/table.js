@@ -36,22 +36,63 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-table-head', (el) => {
-    el.classList.add('text-foreground', 'h-10', 'px-2', 'text-left', 'align-middle', 'font-medium', 'whitespace-nowrap', '[&:has([role=checkbox])]:pr-0', '[&>[role=checkbox]]:flex', '[&>[role=checkbox]]:items-center');
+    el.classList.add(
+      'text-foreground',
+      '[&[data-hoverable=true]:hover]:bg-table-hover',
+      '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
+      '[&[data-activable=true]:active]:!bg-table-active',
+      '[&[data-activable=true]:active]:!text-table-active-foreground',
+      'h-10',
+      'px-2',
+      'text-left',
+      'align-middle',
+      'font-medium',
+      'whitespace-nowrap',
+      '[&:has([role=checkbox])]:pr-0',
+      '[&>[role=checkbox]]:flex',
+      '[&>[role=checkbox]]:items-center'
+    );
     el.setAttribute('data-slot', 'table-head');
   });
 
   Alpine.directive('h-table-cell', (el) => {
-    el.classList.add('p-2', 'align-middle', 'whitespace-nowrap', '[&:has([role=checkbox])]:pr-0', '[&>[role=checkbox]]:flex', '[&>[role=checkbox]]:items-center');
+    el.classList.add(
+      'p-2',
+      'align-middle',
+      'whitespace-nowrap',
+      '[&:has([role=checkbox])]:pr-0',
+      '[&>[role=checkbox]]:flex',
+      '[&>[role=checkbox]]:items-center',
+      '[&[data-hoverable=true]:hover]:bg-table-hover',
+      '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
+      '[&[data-activable=true]:active]:!bg-table-active',
+      '[&[data-activable=true]:active]:!text-table-active-foreground'
+    );
     el.setAttribute('data-slot', 'table-cell');
   });
 
   Alpine.directive('h-table-body', (el) => {
-    el.classList.add('[&_tr:last-child_td]:border-b-0', '[&_tr:last-child_th]:border-b-0', '[&_tr_th]:bg-table-header', '[&_tr:hover_th]:bg-table-hover', '[&_tr:hover_th]:text-table-hover-foreground');
+    el.classList.add(
+      '[&_tr:last-child_td]:border-b-0',
+      '[&_tr:last-child_th]:border-b-0',
+      '[&_tr_th]:bg-table-header',
+      '[&_tr[data-hoverable=true]:hover_th]:bg-table-hover',
+      '[&_tr[data-hoverable=true]:hover_th]:text-table-hover-foreground',
+      '[&_tr[data-activable=true]:active_th]:!bg-table-active',
+      '[&_tr[data-activable=true]:active_th]:!text-table-active-foreground'
+    );
     el.setAttribute('data-slot', 'table-body');
   });
 
   Alpine.directive('h-table-row', (el) => {
-    el.classList.add('hover:bg-table-hover', 'hover:text-table-hover-foreground', 'data-[state=selected]:bg-muted');
+    el.classList.add(
+      '[&[data-hoverable=true]:hover]:bg-table-hover',
+      '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
+      '[&[data-activable=true]:active]:!bg-table-active',
+      '[&[data-activable=true]:active]:!text-table-active-foreground',
+      'data-[state=selected]:bg-table-active',
+      'data-[state=selected]:text-table-active-foreground'
+    );
     el.setAttribute('data-slot', 'table-row');
   });
 

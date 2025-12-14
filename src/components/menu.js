@@ -1,4 +1,4 @@
-import { computePosition, offset, flip, shift, size } from '@floating-ui/dom';
+import { computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 
 export default function (Alpine) {
   Alpine.directive('h-menu-trigger', (el, { modifiers }) => {
@@ -17,12 +17,21 @@ export default function (Alpine) {
       throw new Error('h-menu: must have an "aria-label" or "aria-labelledby" attribute');
     }
 
-    const menuTrigger = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_menu_trigger'));
-    if (!menuTrigger) {
-      throw new Error('h-menu: menu must be inside an h-menu-trigger');
+    const isSubmenu = modifiers.includes('sub');
+
+    const menuTrigger = (() => {
+      if (isSubmenu) return;
+      let sibling = el.previousElementSibling;
+      while (sibling && !sibling.hasOwnProperty('_menu_trigger')) {
+        sibling = sibling.previousElementSibling;
+      }
+      return sibling;
+    })();
+
+    if (!isSubmenu && !menuTrigger) {
+      throw new Error('h-menu: menu must be placed after an h-menu-trigger element');
     }
 
-    let isSubmenu = modifiers.includes('sub');
     let menuSubItem;
     if (isSubmenu) menuSubItem = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'menu-sub');
 
@@ -90,12 +99,17 @@ export default function (Alpine) {
         switch (event.key) {
           case 'Left':
           case 'ArrowLeft':
+            if (isSubmenu) {
+              Alpine.nextTick(() => menuSubItem.focus());
+              close();
+            }
+            break;
           case 'Esc':
           case 'Escape':
-            close();
             if (isSubmenu) {
-              setTimeout(() => menuSubItem.focus(), 0);
+              Alpine.nextTick(() => menuSubItem.focus());
             }
+            close();
             break;
           case 'Tab':
           case ' ':
@@ -188,16 +202,19 @@ export default function (Alpine) {
             }),
           ],
         }).then(({ x, y }) => {
+          if (!isSubmenu) {
+            Alpine.nextTick(() => el.focus());
+            listenForTrigger(false);
+          }
+          Alpine.nextTick(() => {
+            top.addEventListener('contextmenu', onClick);
+            top.addEventListener('click', onClick);
+            el.addEventListener('keydown', onKeydown);
+          });
           Object.assign(el.style, {
             left: `${x}px`,
             top: `${y}px`,
           });
-          if (!isSubmenu) Alpine.nextTick(() => el.focus());
-          setTimeout(() => {
-            top.addEventListener('contextmenu', onClick);
-            top.addEventListener('click', onClick);
-            el.addEventListener('keydown', onKeydown);
-          }, 0);
         });
       }
     }
@@ -475,22 +492,15 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'menu-checkbox-item');
 
     function setState(checked, dispatch = true) {
-      el.setAttribute('aria-checked', checked);
       if (dispatch)
-        setTimeout(() => {
+        Alpine.nextTick(() => {
           el.dispatchEvent(new Event('change', { bubbles: true }));
-        }, 0);
+        });
+      el.setAttribute('aria-checked', checked);
     }
 
     if (el.hasOwnProperty('_x_model')) {
-      function handler(event) {
-        if (event.type === 'keydown') {
-          if (event.key !== ' ' && event.key !== 'Enter') {
-            return;
-          } else if (event.key === ' ') {
-            event.preventDefault();
-          }
-        }
+      function handler() {
         el._x_model.set(!el._x_model.get());
         setState(el._x_model.get());
       }
@@ -498,7 +508,6 @@ export default function (Alpine) {
       setState(el._x_model.get(), false);
 
       el.addEventListener('click', handler);
-      el.addEventListener('keydown', handler);
     }
 
     const menu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');

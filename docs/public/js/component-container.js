@@ -1,5 +1,5 @@
-import Alpine from '/harmonia/node_modules/alpinejs/dist/module.esm.min.js';
-import Harmonia from '/harmonia/harmonia/harmonia.esm.js';
+import Harmonia from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
+import Alpine from '/harmonia/lib/node_modules/alpinejs/dist/module.esm.min.js';
 
 class ComponentContainer extends HTMLElement {
   constructor() {
@@ -7,10 +7,10 @@ class ComponentContainer extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     const style = document.createElement('link');
     style.rel = 'stylesheet';
-    style.href = '/harmonia/harmonia/harmonia.css';
+    style.href = '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css';
     this.shadowRoot.appendChild(style);
     this.container = document.createElement('div');
-    this.container.classList.add('bg-background', 'text-foreground', 'p-6', 'border', 'rounded-md', 'overflow-hidden');
+    this.container.classList.add('bg-background', 'text-foreground', 'border', 'rounded-md');
     this.container.setAttribute('v-pre', '');
     this.shadowRoot.appendChild(this.container);
     this.observer = new MutationObserver((mutations) => {
@@ -31,8 +31,16 @@ class ComponentContainer extends HTMLElement {
   }
 
   connectedCallback() {
+    if (this.getAttribute('data-padding') === 'false') {
+      this.container.classList.add('overflow-hidden');
+    } else {
+      this.container.classList.add('p-6');
+    }
     if (this.hasAttribute('data-class')) {
       this.container.classList.add(...this.getAttribute('data-class').split(' '));
+    }
+    if (this.hasAttribute('data-style')) {
+      this.container.setAttribute('style', this.getAttribute('data-style'));
     }
     if (this.hasAttribute('data-height')) {
       this.container.style.height = this.getAttribute('data-height');

@@ -1,3 +1,5 @@
+import { buttonVariants, setButtonClasses } from './button';
+
 export default function (Alpine) {
   Alpine.directive('h-tabs', (el) => {
     el.classList.add('group/tabs', 'flex', 'data-[orientation=horizontal]:flex-col', 'data-[orientation=vertical]:flex-row');
@@ -8,18 +10,23 @@ export default function (Alpine) {
     el.classList.add(
       'group/tab-bar',
       'flex',
-      'gap-1.5',
+      'gap-1',
       'bg-object-header',
       'text-object-header-foreground',
       'group-data-[orientation=horizontal]/tabs:flex-row',
       'group-data-[orientation=vertical]/tabs:flex-col',
-      'data-[style=inline]:group-data-[orientation=horizontal]/tabs:inset-shadow-[0_-.063rem_var(--border)]',
-      'data-[style=inline]:group-data-[orientation=vertical]/tabs:inset-shadow-[-.063rem_0_var(--border)]',
-      'data-[style=inline]:group-data-[orientation=horizontal]/tabs:h-11',
-      'data-[style=inline]:data-[size=sm]:group-data-[orientation=horizontal]/tabs:h-8',
-      'data-[style=float]:border',
-      'data-[style=float]:rounded-lg',
-      'data-[style=float]:p-[3px]'
+      '[&:not([data-floating=true])]:group-data-[orientation=horizontal]/tabs:inset-shadow-[0_-.063rem_var(--border)]',
+      '[&:not([data-floating=true])]:group-data-[orientation=vertical]/tabs:inset-shadow-[-.063rem_0_var(--border)]',
+      '[&:not([data-floating=true])]:group-data-[orientation=horizontal]/tabs:h-10',
+      '[&:not([data-floating=true])]:group-data-[orientation=horizontal]/tabs:min-h-10',
+      '[&:not([data-floating=true])]:data-[size=sm]:group-data-[orientation=horizontal]/tabs:h-8',
+      '[&:not([data-floating=true])]:data-[size=sm]:group-data-[orientation=horizontal]/tabs:min-h-8',
+      '[&:not([data-floating=true])]:data-[size=lg]:group-data-[orientation=horizontal]/tabs:h-12',
+      '[&:not([data-floating=true])]:data-[size=lg]:group-data-[orientation=horizontal]/tabs:min-h-12',
+      'data-[floating=true]:border',
+      'data-[floating=true]:shadow-xs',
+      'data-[floating=true]:rounded-lg',
+      'data-[floating=true]:p-[0.188rem]'
     );
     el.setAttribute('data-slot', 'tab-bar');
   });
@@ -33,8 +40,8 @@ export default function (Alpine) {
       'group-data-[orientation=horizontal]/tabs:flex-row',
       'group-data-[orientation=vertical]/tabs:flex-col',
       'group-data-[orientation=vertical]/tabs:h-fit',
-      'group-data-[style=inline]/tab-bar:gap-2',
-      'group-data-[style=float]/tab-bar:gap-1'
+      'gap-2',
+      'group-data-[floating=true]/tab-bar:gap-1'
     );
     el.setAttribute('role', 'tablist');
     el.setAttribute('data-slot', 'tab-list');
@@ -51,8 +58,7 @@ export default function (Alpine) {
       'aria-selected:text-foreground',
       'inline-flex',
       'group-data-[orientation=vertical]/tabs:w-full',
-      'group-data-[orientation=vertical]/tabs:h-9',
-      'group-data-[orientation=vertical]/tabs:group-data-[size=sm]/tab-bar:h-8',
+      'group-data-[orientation=vertical]/tabs:h-8',
       'group-data-[orientation=horizontal]/tabs:h-full',
       'items-center',
       'justify-start',
@@ -63,21 +69,21 @@ export default function (Alpine) {
       'font-medium',
       'whitespace-nowrap',
       'transition-[color,box-shadow]',
-      'group-data-[style=float]/tab-bar:rounded-md',
-      'group-data-[style=float]/tab-bar:border',
-      'group-data-[style=float]/tab-bar:border-transparent',
-      'group-data-[style=float]/tab-bar:aria-selected:bg-background',
-      'group-data-[style=float]/tab-bar:aria-selected:border-border',
-      'group-data-[style=float]/tab-bar:hover:bg-background',
-      'group-data-[style=float]/tab-bar:hover:border-border',
-      'group-data-[style=inline]/tab-bar:border-0',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=horizontal]/tabs:hover:inset-shadow-[0_-.188rem_var(--border)]',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=horizontal]/tabs:aria-selected:inset-shadow-[0_-.125rem_var(--primary)]',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=horizontal]/tabs:hover:aria-selected:inset-shadow-[0_-.188rem_var(--primary)]',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=vertical]/tabs:px-3.5',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=vertical]/tabs:hover:inset-shadow-[-.188rem_0_var(--border)]',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=vertical]/tabs:aria-selected:inset-shadow-[-.125rem_0_var(--primary)]',
-      'group-data-[style=inline]/tab-bar:group-data-[orientation=vertical]/tabs:hover:aria-selected:inset-shadow-[-.188rem_0_var(--primary)]',
+      'group-data-[floating=true]/tab-bar:rounded-md',
+      'group-data-[floating=true]/tab-bar:border',
+      'group-data-[floating=true]/tab-bar:border-transparent',
+      'group-data-[floating=true]/tab-bar:aria-selected:bg-background',
+      'group-data-[floating=true]/tab-bar:aria-selected:border-border',
+      'group-data-[floating=true]/tab-bar:hover:bg-background',
+      'group-data-[floating=true]/tab-bar:hover:border-border',
+      'group-[&:not([data-floating=true])]/tab-bar:border-0',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:hover:inset-shadow-[0_-.188rem_var(--border)]',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:aria-selected:inset-shadow-[0_-.125rem_var(--primary)]',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:hover:aria-selected:inset-shadow-[0_-.188rem_var(--primary)]',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:px-3',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:hover:inset-shadow-[-.188rem_0_var(--border)]',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:aria-selected:inset-shadow-[-.125rem_0_var(--primary)]',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:hover:aria-selected:inset-shadow-[-.188rem_0_var(--primary)]',
       'focus-visible:ring-[3px]',
       'focus-visible:outline-1',
       'disabled:pointer-events-none',
@@ -103,11 +109,28 @@ export default function (Alpine) {
     if (modifiers.includes('end'))
       el.classList.add(
         'group-data-[orientation=horizontal]/tabs:ml-auto',
-        'group-data-[style=inline]/tab-bar:group-data-[orientation=horizontal]/tabs:mr-1.5',
+        'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:mr-1.5',
         'group-data-[orientation=vertical]/tabs:mt-auto',
-        'group-data-[style=inline]/tab-bar:group-data-[orientation=vertical]/tabs:mb-1.5'
+        'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:mb-1.5'
       );
     el.setAttribute('data-slot', 'tab-list-actions');
+  });
+
+  Alpine.directive('h-tab-list-action', (el) => {
+    setButtonClasses(el);
+    el.classList.add(
+      'group-data-[floating=true]/tab-bar:rounded-md',
+      'group-data-[orientation=horizontal]/tabs:aspect-square',
+      'group-data-[orientation=horizontal]/tabs:w-auto',
+      'group-data-[floating=true]/tab-bar:group-data-[orientation=horizontal]/tabs:h-full',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:h-[75%]',
+      'group-data-[orientation=vertical]/tabs:h-9',
+      'group-data-[floating=true]/tab-bar:group-data-[orientation=vertical]/tabs:w-full',
+      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:w-[80%]'
+    );
+    el.classList.add(...buttonVariants[el.getAttribute('data-variant') ?? 'outline']);
+    el.setAttribute('role', 'button');
+    el.setAttribute('data-slot', 'tab-list-action');
   });
 
   Alpine.directive('h-tabs-content', (el) => {

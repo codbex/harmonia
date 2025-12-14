@@ -12,16 +12,33 @@ x-h-button
 
 ### Attributes
 
-| Attribute    | Type                                                                                                   | Required | Description                                                                                                                                                            |
-| ------------ | ------------------------------------------------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`outline`<br />`transparent`<br />`link` | false    | Changes the color/shape of the button. Can be used to indicate different states.                                                                                       |
-| data-size    | `xs`<br />`sm`<br />`lg`<br />`icon-xs`<br />`icon-sm`<br />`icon`<br />`icon-lg`<br />`icon-tab`      | false    | Changes the size of the button. When the button contains only an icon, the `icon-*` values should be used. Use `icon-tab` only when inside a tab bar action container. |
+| Attribute    | Type                                                                                                   | Required | Description                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------- |
+| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`outline`<br />`transparent`<br />`link` | false    | Changes the color/shape of the button. Can be used to indicate different states.                           |
+| data-size    | `xs`<br />`sm`<br />`lg`<br />`icon-xs`<br />`icon-sm`<br />`icon`<br />`icon-lg`                      | false    | Changes the size of the button. When the button contains only an icon, the `icon-*` values should be used. |
+| data-toggled | boolean                                                                                                | false    | Set the toggle state.                                                                                      |
 
 ### Modifiers
 
 | Modifier | Description                                   |
 | -------- | --------------------------------------------- |
 | group    | Used when the button is inside a button group |
+
+## Toggle Button
+
+<ClientOnly>
+<component-container>
+<div x-data="{ toggled: true }">
+  <button x-h-button x-bind:data-toggled="toggled" x-on:click="toggled = !toggled">Toggle</button>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-data="{ toggled: true }">
+  <button x-h-button :data-toggled="toggled" @:click="toggled = !toggled">Toggle</button>
+</div>
+```
 
 ## Button Variants
 
@@ -54,7 +71,7 @@ x-h-button
 You can include an icon directly inside the button.
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
 <button x-h-button>
   <i role="img" data-lucide="chevron-left"></i>
   Left-aligned
@@ -95,7 +112,7 @@ You can include an icon directly inside the button.
 ## Icon button
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="icon" aria-label="Icon button">
   <i role="img" data-lucide="save"></i>
 </button>
@@ -113,7 +130,7 @@ You can include an icon directly inside the button.
 ### Extra small
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="xs">
   <i role="img" data-lucide="save"></i>
   Save
@@ -137,7 +154,7 @@ You can include an icon directly inside the button.
 ### Small
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="sm">
   <i role="img" data-lucide="save"></i>
   Save
@@ -161,7 +178,7 @@ You can include an icon directly inside the button.
 ### Large
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="lg">
   <i role="img" data-lucide="save"></i>
   Save

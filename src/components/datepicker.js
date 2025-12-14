@@ -1,4 +1,4 @@
-import { createElement, Calendar } from 'lucide';
+import { Calendar, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
@@ -30,6 +30,7 @@ export default function (Alpine) {
       'border',
       'shadow-control',
       'transition-[color,box-shadow]',
+      'duration-200',
       'outline-none',
       'h-9',
       'pl-3',

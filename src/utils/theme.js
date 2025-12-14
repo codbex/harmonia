@@ -24,17 +24,33 @@ const initColorScheme = () => {
 
 const setColorScheme = (mode) => {
   if (mode === 'dark') {
+    document.documentElement.classList.add('dark');
     localStorage.setItem(colorSchemeKey, 'dark');
     window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', colorSchemeChange);
   } else if (mode === 'light') {
+    document.documentElement.classList.remove('dark');
     localStorage.setItem(colorSchemeKey, 'light');
     window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', colorSchemeChange);
   } else {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     localStorage.setItem(colorSchemeKey, 'auto');
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', colorSchemeChange);
   }
 };
 
+const getColorScheme = () => {
+  const theme = localStorage.getItem(colorSchemeKey);
+  if (theme) return theme;
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  return 'light';
+};
+
 initColorScheme();
 
-export { setColorScheme };
+export { getColorScheme, setColorScheme };

@@ -20,15 +20,17 @@
 @source inline("items-{start,center,end,baseline,stretch}");
 @source inline("place-items-{start,center,end,stretch}");
 
-@source inline("gap-{x,y,}-{1..6}");
+@source inline("gap-{x,y}-{1..12}");
+@source inline("gap-{1..12}");
 
 @source inline("grid");
 @source inline("{sm:,md:,lg:,xl:,}grid-cols-{1..12}");
 
-@source inline("w-{full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}");
-@source inline("h-{full,screen,1/2}");
+@source inline("{!,}w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}");
+@source inline("{!,}h-{auto,full,screen,1/2}");
 
-@source inline("size-{4..12}");
+@source inline("{!,}size-{4..12}");
+@source inline("{!,}size-full");
 .tile-xs {
   width: calc(var(--container-xs) / 2);
   height: calc(var(--container-xs) / 2);
@@ -66,7 +68,19 @@
 @source inline("block");
 @source inline("sr-only");
 @source inline("box-border");
+@source inline("border");
+@source inline("border-{l,r,t,b}");
+@source inline("shadow-{xs,sm,md,lg,xl,none}");
 @source inline("aspect-{square,video,3/2}");
+@source inline("absolute");
+@source inline("relative");
+.absolute-fit {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 
 @source inline("fill-{current,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
+/* prettier-ignore */
 @source inline("text-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");

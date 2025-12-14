@@ -113,7 +113,9 @@ x-h-field-error
       <p x-h-field-description>The billing address associated with your payment method</p>
       <div x-h-field-group>
         <div x-h-field data-orientation="horizontal">
-          <input x-h-checkbox type="checkbox" id="formShippingCheckbox" checked />
+          <span x-h-checkbox>
+            <input type="checkbox" id="formShippingCheckbox" checked />
+          </span>
           <label x-h-label.field for="formShippingCheckbox" class="font-normal">Same as shipping address</label>
         </div>
       </div>

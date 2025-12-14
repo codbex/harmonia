@@ -14,6 +14,7 @@ import icon from './components/icon';
 import infoPage from './components/info-page';
 import input from './components/input';
 import label from './components/label';
+import list from './components/list';
 import menu from './components/menu';
 import pagination from './components/pagination';
 import popover from './components/popover';
@@ -36,7 +37,8 @@ import timepicker from './components/timepicker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 
-import { setColorScheme } from './utils/theme';
+import { version } from '../package.json';
+import { getColorScheme, setColorScheme } from './utils/theme';
 
 export {
   accordion as Accordion,
@@ -55,6 +57,7 @@ export {
   infoPage as InfoPage,
   input as Input,
   label as Label,
+  list as List,
   menu as Menu,
   pagination as Pagination,
   popover as Popover,
@@ -96,6 +99,7 @@ const Harmonia = {
     registerPlugin(infoPage);
     registerPlugin(input);
     registerPlugin(label);
+    registerPlugin(list);
     registerPlugin(menu);
     registerPlugin(pagination);
     registerPlugin(popover);
@@ -119,6 +123,8 @@ const Harmonia = {
     registerPlugin(tooltip);
   },
   setColorScheme,
+  getColorScheme,
+  version,
 };
 
 export default Harmonia;

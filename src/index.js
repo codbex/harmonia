@@ -14,6 +14,7 @@ import icon from './components/icon';
 import infoPage from './components/info-page';
 import input from './components/input';
 import label from './components/label';
+import list from './components/list';
 import menu from './components/menu';
 import pagination from './components/pagination';
 import popover from './components/popover';
@@ -36,9 +37,11 @@ import timepicker from './components/timepicker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 
-import { setColorScheme } from './utils/theme';
+import { getColorScheme, setColorScheme } from './utils/theme';
 
-window.Harmonia = { setColorScheme };
+import { version } from '../package.json';
+
+window.Harmonia = { getColorScheme, setColorScheme, version };
 
 document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(accordion);
@@ -57,6 +60,7 @@ document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(infoPage);
   window.Alpine.plugin(input);
   window.Alpine.plugin(label);
+  window.Alpine.plugin(list);
   window.Alpine.plugin(menu);
   window.Alpine.plugin(pagination);
   window.Alpine.plugin(popover);

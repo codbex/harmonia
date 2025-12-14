@@ -10,7 +10,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-info-page-media', (el, { modifiers }) => {
-    el.classList.add('hbox', 'shrink-0', 'items-center', 'justify-center', 'mb-2', '[&_svg]:pointer-events-none', '[&_svg]:shrink-0');
+    el.classList.add('hbox', 'shrink-0', 'items-center', 'justify-center', '[&_svg]:pointer-events-none', '[&_svg]:shrink-0');
     if (modifiers.includes('icon')) el.classList.add('bg-muted', 'text-foreground', 'size-10', 'shrink-0', 'items-center', 'justify-center', 'rounded-lg', "[&_svg:not([class*='size-'])]:size-6");
     else el.classList.add('bg-transparent');
     el.setAttribute('data-slot', 'info-page-media');

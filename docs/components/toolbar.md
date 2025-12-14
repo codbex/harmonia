@@ -18,10 +18,11 @@ x-h-toolbar-separator
 
 #### x-h-toolbar
 
-| Attribute    | Type                         | Required | Description                                               |
-| ------------ | ---------------------------- | -------- | --------------------------------------------------------- |
-| data-variant | `default`<br />`transparent` | false    | Transparent background color. Does not remove the border. |
-| data-size    | `default`<br />`sm`          | false    | Make the toolbar smaller.                                 |
+| Attribute     | Type                         | Required | Description                                               |
+| ------------- | ---------------------------- | -------- | --------------------------------------------------------- |
+| data-variant  | `default`<br />`transparent` | false    | Transparent background color. Does not remove the border. |
+| data-size     | `default`<br />`sm`          | false    | Make the toolbar smaller.                                 |
+| data-floating | boolean                      | false    | Floating style toolbar.                                   |
 
 ### Modifiers
 
@@ -38,7 +39,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-toolbar>
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -59,12 +60,38 @@ x-h-toolbar-separator
 </div>
 ```
 
+### Floating
+
+<br />
+
+<ClientOnly>
+<component-container data-js="/js/init-icons.js">
+<div x-h-toolbar data-floating="true">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-toolbar data-floating="true">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+```
+
 ### Transparent
 
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-toolbar data-variant="transparent">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -90,7 +117,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -138,7 +165,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-toolbar x-data="{ showClear: false, search: '' }">
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
   <span x-h-toolbar-title class="pl-1">Harmonia</span>
@@ -155,28 +182,26 @@ x-h-toolbar-separator
     </div>
   </div>
   <div x-h-toolbar-spacer></div>
-  <button x-h-avatar x-h-menu-trigger.dropdown class="bg-secondary text-secondary-foreground">
-    U
-    <ul x-h-menu aria-label="user dropdown" data-align="bottom-end">
-      <div x-h-menu-label>Profile</div>
-      <li x-h-menu-item>Set yourself as away</li>
-      <li x-h-menu-sub id="pnsm">
-        Pause notifications
-        <ul x-h-menu.sub aria-labelledby="pnsm">
-          <li x-h-menu-item>15 minutes</li>
-          <li x-h-menu-item>30 minutes</li>
-          <li x-h-menu-item>1 hour</li>
-          <li x-h-menu-item>2 hours</li>
-          <li x-h-menu-item>4 hours</li>
-          <li x-h-menu-item>1 day</li>
-        </ul>
-      </li>
-      <div x-h-menu-label>Team</div>
-      <li x-h-menu-item>Invite users</li>
-      <div x-h-menu-separator></div>
-      <li x-h-menu-item data-variant="negative">Log out</li>
-    </ul>
-  </button>
+  <button x-h-avatar x-h-menu-trigger.dropdown class="bg-secondary text-secondary-foreground">U</button>
+  <ul x-h-menu aria-label="user dropdown" data-align="bottom-end">
+    <div x-h-menu-label>Profile</div>
+    <li x-h-menu-item>Set yourself as away</li>
+    <li x-h-menu-sub id="pnsm">
+      Pause notifications
+      <ul x-h-menu.sub aria-labelledby="pnsm">
+        <li x-h-menu-item>15 minutes</li>
+        <li x-h-menu-item>30 minutes</li>
+        <li x-h-menu-item>1 hour</li>
+        <li x-h-menu-item>2 hours</li>
+        <li x-h-menu-item>4 hours</li>
+        <li x-h-menu-item>1 day</li>
+      </ul>
+    </li>
+    <div x-h-menu-label>Team</div>
+    <li x-h-menu-item>Invite users</li>
+    <div x-h-menu-separator></div>
+    <li x-h-menu-item data-variant="negative">Log out</li>
+  </ul>
 </div>
 </component-container>
 </ClientOnly>
@@ -198,27 +223,25 @@ x-h-toolbar-separator
     </div>
   </div>
   <div x-h-toolbar-spacer></div>
-  <button x-h-avatar x-h-menu-trigger.dropdown class="bg-secondary text-secondary-foreground">
-    U
-    <ul x-h-menu aria-label="user dropdown" data-align="bottom-end">
-      <div x-h-menu-label>Profile</div>
-      <li x-h-menu-item>Set yourself as away</li>
-      <li x-h-menu-sub id="pnsm">
-        Pause notifications
-        <ul x-h-menu.sub aria-labelledby="pnsm">
-          <li x-h-menu-item>15 minutes</li>
-          <li x-h-menu-item>30 minutes</li>
-          <li x-h-menu-item>1 hour</li>
-          <li x-h-menu-item>2 hours</li>
-          <li x-h-menu-item>4 hours</li>
-          <li x-h-menu-item>1 day</li>
-        </ul>
-      </li>
-      <div x-h-menu-label>Team</div>
-      <li x-h-menu-item>Invite users</li>
-      <div x-h-menu-separator></div>
-      <li x-h-menu-item data-variant="negative">Log out</li>
-    </ul>
-  </button>
+  <button x-h-avatar x-h-menu-trigger.dropdown class="bg-secondary text-secondary-foreground">U</button>
+  <ul x-h-menu aria-label="user dropdown" data-align="bottom-end">
+    <div x-h-menu-label>Profile</div>
+    <li x-h-menu-item>Set yourself as away</li>
+    <li x-h-menu-sub id="pnsm">
+      Pause notifications
+      <ul x-h-menu.sub aria-labelledby="pnsm">
+        <li x-h-menu-item>15 minutes</li>
+        <li x-h-menu-item>30 minutes</li>
+        <li x-h-menu-item>1 hour</li>
+        <li x-h-menu-item>2 hours</li>
+        <li x-h-menu-item>4 hours</li>
+        <li x-h-menu-item>1 day</li>
+      </ul>
+    </li>
+    <div x-h-menu-label>Team</div>
+    <li x-h-menu-item>Invite users</li>
+    <div x-h-menu-separator></div>
+    <li x-h-menu-item data-variant="negative">Log out</li>
+  </ul>
 </div>
 ```

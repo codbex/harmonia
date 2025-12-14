@@ -20,7 +20,7 @@ hero:
       link: /utility-classes
 
 features:
-  - title: 38+ individual components
+  - title: 40+ individual components
     details: A rich set of ready-to-use components for creating complex UIs
   - title: No compilation
     details: It doesn't require a build step, you can start using it right away, directly in the browser

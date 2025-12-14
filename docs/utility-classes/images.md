@@ -23,7 +23,7 @@ CSS utility classes for adjusting images.
 </ClientOnly>
 
 ```html
-<img class="object-contain border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
+<img class="border border-dashed object-contain" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
 ```
 
 ### Cover
@@ -37,7 +37,7 @@ CSS utility classes for adjusting images.
 </ClientOnly>
 
 ```html
-<img class="object-cover border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
+<img class="border border-dashed object-cover" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
 ```
 
 ### Fill
@@ -51,5 +51,5 @@ CSS utility classes for adjusting images.
 </ClientOnly>
 
 ```html
-<img class="object-fill border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
+<img class="border border-dashed object-fill" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
 ```

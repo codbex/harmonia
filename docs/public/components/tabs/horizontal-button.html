@@ -1,21 +1,21 @@
-<div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hbt1' }">
-  <div x-h-tab-bar data-style="float">
+<div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hib1' }">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="hbt1" aria-controls="hbt1c" :aria-selected="activeTabId === 'hbt1'" @click="activeTabId = 'hbt1'">
+      <button x-h-tab id="hib1" aria-controls="hib1c" :aria-selected="activeTabId === 'hib1'" @click="activeTabId = 'hib1'">
         <i role="img" data-lucide="file"></i>
         Tab 1
         <span x-h-tab-action>
           <i role="img" data-lucide="x"></i>
         </span>
       </button>
-      <button x-h-tab id="hbt2" aria-controls="hbt2c" :aria-selected="activeTabId === 'hbt2'" @click="activeTabId = 'hbt2'">
+      <button x-h-tab id="hib2" aria-controls="hib2c" :aria-selected="activeTabId === 'hib2'" @click="activeTabId = 'hib2'">
         <i role="img" data-lucide="file"></i>
         Tab 2
         <span x-h-tab-action>
           <i role="img" data-lucide="x"></i>
         </span>
       </button>
-      <button x-h-tab id="hbt3" aria-controls="hbt3c" :aria-selected="activeTabId === 'hbt3'" @click="activeTabId = 'hbt3'">
+      <button x-h-tab id="hib3" aria-controls="hib3c" :aria-selected="activeTabId === 'hib3'" @click="activeTabId = 'hib3'">
         <i role="img" data-lucide="file"></i>
         Tab 3
         <span x-h-tab-action>
@@ -24,13 +24,13 @@
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hbt1c" aria-labelledby="hbt1" :hidden="activeTabId !== 'hbt1'">
+  <div x-h-tabs-content id="hib1c" aria-labelledby="hib1" :hidden="activeTabId !== 'hib1'">
     <div class="p-2">Tab 1 Content</div>
   </div>
-  <div x-h-tabs-content id="hbt2c" aria-labelledby="hbt2" :hidden="activeTabId !== 'hbt2'">
+  <div x-h-tabs-content id="hib2c" aria-labelledby="hib2" :hidden="activeTabId !== 'hib2'">
     <div class="p-2">Tab 2 Content</div>
   </div>
-  <div x-h-tabs-content id="hbt3c" aria-labelledby="hbt3" :hidden="activeTabId !== 'hbt3'">
+  <div x-h-tabs-content id="hib3c" aria-labelledby="hib3" :hidden="activeTabId !== 'hib3'">
     <div class="p-2">Tab 3 Content</div>
   </div>
 </div>

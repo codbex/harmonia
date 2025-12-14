@@ -17,7 +17,7 @@ export default function (Alpine) {
       'items-center',
       '[&>svg]:size-4',
       '[&>svg]:text-current',
-      modifiers.includes('floating') ? 'shadow-alert' : undefined
+      modifiers.includes('floating') ? 'shadow-lg' : undefined
     );
     el.setAttribute('data-slot', 'alert');
     el.setAttribute('role', 'alert');

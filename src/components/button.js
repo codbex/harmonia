@@ -1,49 +1,126 @@
+export const buttonVariants = {
+  default: [
+    'bg-secondary',
+    'text-secondary-foreground',
+    'shadow-control',
+    'hover:bg-secondary-hover',
+    'active:bg-secondary-active',
+    'aria-pressed:bg-secondary-active',
+    'active:data-[toggled=true]:bg-secondary-active',
+    'hover:data-[toggled=true]:bg-secondary-hover',
+    'data-[toggled=true]:bg-secondary-active',
+  ],
+  primary: [
+    'bg-primary',
+    'text-primary-foreground',
+    'shadow-control',
+    'hover:bg-primary-hover',
+    'active:bg-primary-active',
+    'aria-pressed:bg-primary-active',
+    'active:data-[toggled=true]:bg-primary-active',
+    'hover:data-[toggled=true]:bg-primary-hover',
+    'data-[toggled=true]:bg-primary-active',
+  ],
+  positive: [
+    'bg-positive',
+    'text-positive-foreground',
+    'shadow-control',
+    'hover:bg-positive-hover',
+    'active:bg-positive-active',
+    'aria-pressed:bg-positive-active',
+    'active:data-[toggled=true]:bg-positive-active',
+    'hover:data-[toggled=true]:bg-positive-hover',
+    'data-[toggled=true]:bg-positive-active',
+  ],
+  negative: [
+    'bg-negative',
+    'text-negative-foreground',
+    'shadow-control',
+    'hover:bg-negative-hover',
+    'active:bg-negative-active',
+    'aria-pressed:bg-negative-active',
+    'active:data-[toggled=true]:bg-negative-active',
+    'hover:data-[toggled=true]:bg-negative-hover',
+    'data-[toggled=true]:bg-negative-active',
+  ],
+  warning: [
+    'bg-warning',
+    'text-warning-foreground',
+    'shadow-control',
+    'hover:bg-warning-hover',
+    'active:bg-warning-active',
+    'aria-pressed:bg-warning-active',
+    'active:data-[toggled=true]:bg-warning-active',
+    'hover:data-[toggled=true]:bg-warning-hover',
+    'data-[toggled=true]:bg-warning-active',
+  ],
+  outline: [
+    'border',
+    'bg-background',
+    'text-foreground',
+    'shadow-none',
+    'hover:bg-secondary',
+    'hover:text-secondary-foreground',
+    'active:bg-secondary-active',
+    'aria-pressed:bg-secondary-active',
+    'active:data-[toggled=true]:bg-secondary-active',
+    'hover:data-[toggled=true]:bg-secondary-hover',
+    'data-[toggled=true]:bg-secondary-active',
+  ],
+  transparent: [
+    'bg-transparent',
+    'text-foreground',
+    'shadow-none',
+    'hover:bg-secondary',
+    'hover:text-secondary-foreground',
+    'active:bg-secondary-active',
+    'aria-pressed:bg-secondary-active',
+    'active:data-[toggled=true]:bg-secondary-active',
+    'hover:data-[toggled=true]:bg-secondary-hover',
+    'data-[toggled=true]:bg-secondary-active',
+  ],
+  link: ['text-primary', 'underline-offset-4', 'hover:underline'],
+};
+
+export const setButtonClasses = (el) => {
+  el.classList.add(
+    'cursor-pointer',
+    'inline-flex',
+    'items-center',
+    'justify-center',
+    'gap-2',
+    'whitespace-nowrap',
+    'rounded-control',
+    'text-sm',
+    'font-medium',
+    'transition-all',
+    'disabled:pointer-events-none',
+    'disabled:opacity-50',
+    '[&_svg]:pointer-events-none',
+    "[&_svg:not([class*='size-'])]:size-4",
+    'shrink-0',
+    '[&_svg]:shrink-0',
+    'outline-none',
+    'focus-visible:border-ring',
+    'focus-visible:ring-ring/50',
+    'focus-visible:ring-[3px]',
+    'aria-invalid:ring-negative/20',
+    'dark:aria-invalid:ring-negative/40',
+    'aria-invalid:border-negative',
+    'invalid:ring-negative/20',
+    'dark:invalid:ring-negative/40',
+    'invalid:border-negative'
+  );
+};
+
 export default function (Alpine) {
   Alpine.directive('h-button', (el, { modifiers }, { cleanup }) => {
-    el.classList.add(
-      'cursor-pointer',
-      'inline-flex',
-      'items-center',
-      'justify-center',
-      'gap-2',
-      'whitespace-nowrap',
-      'rounded-control',
-      'text-sm',
-      'font-medium',
-      'transition-all',
-      'disabled:pointer-events-none',
-      'disabled:opacity-50',
-      '[&_svg]:pointer-events-none',
-      "[&_svg:not([class*='size-'])]:size-4",
-      'shrink-0',
-      '[&_svg]:shrink-0',
-      'outline-none',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-[3px]',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'invalid:ring-negative/20',
-      'dark:invalid:ring-negative/40',
-      'invalid:border-negative'
-    );
+    setButtonClasses(el);
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'button');
     }
 
     const inGroup = modifiers.includes('group');
-
-    const variants = {
-      default: ['bg-secondary', 'text-secondary-foreground', 'shadow-control', 'hover:bg-secondary-hover', 'active:bg-secondary-active', 'aria-pressed:bg-secondary-active'],
-      primary: ['bg-primary', 'text-primary-foreground', 'shadow-control', 'hover:bg-primary-hover', 'active:bg-primary-active', 'aria-pressed:bg-primary-active'],
-      positive: ['bg-positive', 'text-positive-foreground', 'shadow-control', 'hover:bg-positive-hover', 'active:bg-positive-active', 'aria-pressed:bg-positive-active'],
-      negative: ['bg-negative', 'text-negative-foreground', 'shadow-control', 'hover:bg-negative-hover', 'active:bg-negative-active', 'aria-pressed:bg-negative-active'],
-      warning: ['bg-warning', 'text-warning-foreground', 'shadow-control', 'hover:bg-warning-hover', 'active:bg-warning-active', 'aria-pressed:bg-warning-active'],
-      outline: ['border', 'bg-background', 'text-foreground', 'shadow-none', 'hover:bg-secondary', 'hover:text-secondary-foreground', 'active:bg-secondary-active', 'aria-pressed:bg-secondary-active'],
-      transparent: ['bg-transparent', 'text-foreground', 'shadow-none', 'hover:bg-secondary', 'hover:text-secondary-foreground', 'active:bg-secondary-active', 'aria-pressed:bg-secondary-active'],
-      link: ['text-primary', 'underline-offset-4', 'hover:underline'],
-    };
 
     const sizes = {
       default: ['h-9', 'px-4', 'py-2', 'has-[>svg]:px-3'],
@@ -54,22 +131,13 @@ export default function (Alpine) {
       'icon-sm': inGroup ? ['size-8', 'p-0', 'has-[>svg]:p-0'] : ['size-8'],
       icon: ['size-9'],
       'icon-lg': ['size-10'],
-      'icon-tab': [
-        'group-data-[orientation=horizontal]/tabs:aspect-square',
-        'group-data-[orientation=horizontal]/tabs:w-auto',
-        'group-data-[style=float]/tab-bar:group-data-[orientation=horizontal]/tabs:h-full',
-        'group-data-[style=inline]/tab-bar:group-data-[orientation=horizontal]/tabs:h-[80%]',
-        'group-data-[orientation=vertical]/tabs:h-9',
-        'group-data-[style=float]/tab-bar:group-data-[orientation=vertical]/tabs:w-full',
-        'group-data-[style=inline]/tab-bar:group-data-[orientation=vertical]/tabs:w-[80%]',
-      ],
     };
 
     function setVariant(variant) {
-      for (const [_, value] of Object.entries(variants)) {
+      for (const [_, value] of Object.entries(buttonVariants)) {
         el.classList.remove(...value);
       }
-      if (variants.hasOwnProperty(variant)) el.classList.add(...variants[variant]);
+      if (buttonVariants.hasOwnProperty(variant)) el.classList.add(...buttonVariants[variant]);
     }
 
     function setSize(size) {
@@ -142,11 +210,6 @@ export default function (Alpine) {
     }
 
     setVariant(el.getAttribute('data-orientation') ?? 'horizontal');
-  });
-
-  Alpine.directive('h-button-group-text', (el) => {
-    el.classList.add('bg-muted', 'flex', 'items-center', 'gap-2', 'rounded-control', 'border', 'px-4', 'text-sm', 'font-medium', 'shadow-xs', '[&_svg]:pointer-events-none', "[&_svg:not([class*='size-'])]:size-4");
-    el.setAttribute('data-slot', 'button-group-text');
   });
 
   Alpine.directive('h-button-group-separator', (el) => {

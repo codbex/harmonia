@@ -1,56 +1,55 @@
 export default function (Alpine) {
-  Alpine.directive('h-checkbox', (el, {}, { cleanup }) => {
+  Alpine.directive('h-checkbox', (el) => {
     el.classList.add(
-      'appearance-none',
-      'border-input',
-      'bg-input-inner',
-      'data-[state=checked]:bg-primary',
-      'data-[state=checked]:text-primary-foreground',
-      'data-[state=checked]:border-primary',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'invalid:ring-negative/20',
-      'dark:invalid:ring-negative/40',
-      'invalid:border-negative',
-      'size-4',
-      'shrink-0',
-      'rounded-[4px]',
-      'border',
-      'shadow-control',
-      'transition-all',
-      'outline-none',
-      'focus-visible:ring-[3px]',
-      'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
-      'overflow-hidden',
-      'before:block',
+      '[&>input]:absolute',
+      '[&>input]:appearance-none',
+      '[&>input]:bg-transparent',
+      '[&>input]:border-0',
+      '[&>input]:cursor-pointer',
+      '[&>input]:focus-visible:border-ring',
+      '[&>input]:focus-visible:ring-[3px]',
+      '[&>input]:focus-visible:ring-ring/50',
+      '[&>input]:left-0',
+      '[&>input]:outline-none',
+      '[&>input]:rounded-[0.25rem]',
+      '[&>input]:size-full',
+      '[&>input]:top-0',
+      'aspect-square',
       'before:bg-transparent',
-      'before:border-l-2',
+      'before:block',
       'before:border-b-2',
+      'before:border-l-2',
       'before:border-primary-foreground',
+      'before:h-2',
+      'before:invisible',
       'before:pointer-events-none',
-      'before:w-2.5',
-      'before:h-1.5',
-      'before:rounded-[0.125rem]',
       'before:-rotate-45',
       'before:translate-x-0.5',
       'before:translate-y-0.75',
-      'data-[state=unchecked]:before:hidden'
+      'before:w-3.5',
+      'bg-input-inner',
+      'border',
+      'border-input',
+      'dark:has-[aria-invalid=true]:ring-negative/40',
+      'dark:has-[input:invalid]:ring-negative/40',
+      'duration-200',
+      'has-[aria-invalid=true]:border-negative',
+      'has-[aria-invalid=true]:ring-negative/20',
+      'has-[input:checked]:before:visible',
+      'has-[input:checked]:bg-primary',
+      'has-[input:checked]:border-primary',
+      'has-[input:disabled]:cursor-not-allowed',
+      'has-[input:disabled]:opacity-50',
+      'has-[input:invalid]:border-negative',
+      'has-[input:invalid]:ring-negative/20',
+      'relative',
+      'rounded-[0.25rem]',
+      'shadow-control',
+      'shrink-0',
+      'size-5',
+      'transition-color'
     );
+    el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'checkbox');
-
-    function setState() {
-      el.setAttribute('data-state', el.checked ? 'checked' : 'unchecked');
-    }
-
-    setState();
-    el.addEventListener('change', setState);
-
-    cleanup(() => {
-      el.removeEventListener('change', setState);
-    });
   });
 }

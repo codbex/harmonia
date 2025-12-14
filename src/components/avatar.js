@@ -5,8 +5,6 @@ export default function (Alpine) {
       'bg-secondary',
       'text-secondary-foreground',
       'fill-secondary-foreground',
-      'hover:bg-secondary-hover',
-      'active:bg-secondary-active',
       '[[data-slot=toolbar]:not([data-variant=transparent])_&]:border',
       'has-[img]:border-0',
       'flex',
@@ -23,6 +21,9 @@ export default function (Alpine) {
     el._avatar = Alpine.reactive({
       fallback: false,
     });
+    if (el.tagName === 'BUTTON') {
+      el.classList.add('cursor-pointer', 'hover:bg-secondary-hover', 'active:bg-secondary-active');
+    }
   });
 
   Alpine.directive('h-avatar-image', (el, {}, { cleanup }) => {

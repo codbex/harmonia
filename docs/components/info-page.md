@@ -30,7 +30,7 @@ x-h-info-page-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-info-page>
   <div x-h-info-page-header>
     <div x-h-info-page-media.icon>
@@ -110,7 +110,7 @@ x-h-info-page-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-info-page class="border">
   <div x-h-info-page-header>
     <div x-h-info-page-media>

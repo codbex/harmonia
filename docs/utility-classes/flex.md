@@ -132,7 +132,7 @@ The `flex-*` classes must be combined with the `flex` class.
 </ClientOnly>
 
 ```html
-<div class="flex flex-col h-full gap-1">
+<div class="flex h-full flex-col gap-1">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -154,7 +154,7 @@ The `flex-*` classes must be combined with the `flex` class.
 </ClientOnly>
 
 ```html
-<div class="flex flex-col-reverse h-full gap-1">
+<div class="flex h-full flex-col-reverse gap-1">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -241,7 +241,7 @@ The `flex-*` classes must be combined with the `flex` class.
 ```html
 <div class="flex flex-row gap-1">
   <span class="bg-primary text-primary-foreground p-2">Normal</span>
-  <span class="bg-primary text-primary-foreground p-2 flex-1">Flex 1</span>
+  <span class="bg-primary text-primary-foreground flex-1 p-2">Flex 1</span>
 </div>
 ```
 
@@ -260,8 +260,8 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row gap-1">
-  <span class="bg-primary text-primary-foreground p-2 flex-auto">Auto</span>
-  <span class="bg-primary text-primary-foreground p-2 flex-auto">Auto</span>
+  <span class="bg-primary text-primary-foreground flex-auto p-2">Auto</span>
+  <span class="bg-primary text-primary-foreground flex-auto p-2">Auto</span>
 </div>
 ```
 
@@ -280,7 +280,7 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row gap-1">
-  <span class="bg-primary text-primary-foreground p-2 flex-none">None</span>
-  <span class="bg-primary text-primary-foreground p-2 flex-none">None</span>
+  <span class="bg-primary text-primary-foreground flex-none p-2">None</span>
+  <span class="bg-primary text-primary-foreground flex-none p-2">None</span>
 </div>
 ```

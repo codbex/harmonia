@@ -27,6 +27,12 @@ x-h-tile-footer
 | data-variant | `outline`<br/>`shadow`<br/>`muted` | false    | Changes the style of the tile. |
 | data-size    | `default`<br/>`sm`                 | false    | Changes the size of the tile.  |
 
+#### x-h-tile-media
+
+| Attribute    | Type                             | Required | Description                          |
+| ------------ | -------------------------------- | -------- | ------------------------------------ |
+| data-variant | `default`<br/>`icon`<br/>`image` | false    | Changes the style of the tile media. |
+
 ## Examples
 
 ### Variants
@@ -34,7 +40,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col gap-4">
 <div x-h-tile>
   <div x-h-tile-content>
     <div x-h-tile-title>Default variant</div>
@@ -132,7 +138,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <a x-h-tile data-variant="outline" data-size="sm" href="#variants">
   <div x-h-tile-media>
     <i role="img" data-lucide="link" class="size-5"></i>
@@ -166,7 +172,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col gap-4">
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="icon">
     <i role="img" data-lucide="cog" class="size-5"></i>
@@ -254,7 +260,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-tile-group class="flex">
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
@@ -291,7 +297,7 @@ x-h-tile-footer
 <div x-h-tile-group class="flex">
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
-      <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
       <div x-h-tile-title>Harmonia UI</div>
@@ -300,7 +306,7 @@ x-h-tile-footer
   </div>
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
-      <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
       <div x-h-tile-title>Harmonia UI</div>
@@ -309,7 +315,7 @@ x-h-tile-footer
   </div>
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
-      <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
       <div x-h-tile-title>Harmonia UI</div>

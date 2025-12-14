@@ -4,7 +4,17 @@
   "endOfLine": "lf",
   "printWidth": 240,
   "singleQuote": true,
+  "overrides": [
+    {
+      "files": ["**/*.css", "**/*.scss", "**/*.html"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ],
   "trailingComma": "es5",
   "jsxSingleQuote": false,
-  "bracketSpacing": true
+  "bracketSpacing": true,
+  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./src/styles/globals.css"
 }

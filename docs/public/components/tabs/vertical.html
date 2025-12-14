@@ -1,18 +1,18 @@
-<div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vt1' }">
-  <div x-h-tab-bar data-style="float">
+<div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vit1' }">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="vt1" aria-controls="vt1c" :aria-selected="activeTabId === 'vt1'" @click="activeTabId = 'vt1'">Tab 1</button>
-      <button x-h-tab id="vt2" aria-controls="vt2c" :aria-selected="activeTabId === 'vt2'" @click="activeTabId = 'vt2'">Tab 2</button>
-      <button x-h-tab id="vt3" aria-controls="vt3c" :aria-selected="activeTabId === 'vt3'" @click="activeTabId = 'vt3'">Tab 3</button>
+      <button x-h-tab id="vit1" aria-controls="vit1c" :aria-selected="activeTabId === 'vit1'" @click="activeTabId = 'vit1'">Tab 1</button>
+      <button x-h-tab id="vit2" aria-controls="vit2c" :aria-selected="activeTabId === 'vit2'" @click="activeTabId = 'vit2'">Tab 2</button>
+      <button x-h-tab id="vit3" aria-controls="vit3c" :aria-selected="activeTabId === 'vit3'" @click="activeTabId = 'vit3'">Tab 3</button>
     </div>
   </div>
-  <div x-h-tabs-content id="vt1c" aria-labelledby="vt1" :hidden="activeTabId !== 'vt1'">
+  <div x-h-tabs-content id="vit1c" aria-labelledby="vit1" :hidden="activeTabId !== 'vit1'">
     <div class="p-2">Tab 1 Content</div>
   </div>
-  <div x-h-tabs-content id="vt2c" aria-labelledby="vt2" :hidden="activeTabId !== 'vt2'">
+  <div x-h-tabs-content id="vit2c" aria-labelledby="vit2" :hidden="activeTabId !== 'vit2'">
     <div class="p-2">Tab 2 Content</div>
   </div>
-  <div x-h-tabs-content id="vt3c" aria-labelledby="vt3" :hidden="activeTabId !== 'vt3'">
+  <div x-h-tabs-content id="vit3c" aria-labelledby="vit3" :hidden="activeTabId !== 'vit3'">
     <div class="p-2">Tab 3 Content</div>
   </div>
 </div>

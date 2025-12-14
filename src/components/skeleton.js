@@ -4,7 +4,7 @@ export default function (Alpine) {
     if (modifiers.includes('control')) {
       el.classList.add('rounded-control');
     } else if (modifiers.includes('card')) {
-      el.classList.add('rounded-xl');
+      el.classList.add('rounded-lg');
     } else if (modifiers.includes('avatar')) {
       el.classList.add('rounded-full', 'size-8');
     } else el.classList.add('rounded-md');

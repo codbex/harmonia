@@ -62,16 +62,16 @@ CSS utility classes to apply colors to elements, svgs and text.
 <component-container>
 <p class="bg-primary text-primary-foreground p-4">Primary</p>
 <p class="text-primary p-4">Primary</p>
-<svg x-h-icon class="size-8 bg-primary fill-primary-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-primary" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 bg-primary fill-primary-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-primary" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<p class="bg-primary text-primary-foreground p-4">Primary</p>
-<p class="text-primary p-4">Primary</p>
-<svg x-h-icon class="size-8 bg-primary fill-primary-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-primary" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<p class="bg-primary p-4 text-primary-foreground">Primary</p>
+<p class="p-4 text-primary">Primary</p>
+<svg x-h-icon class="size-8 bg-primary fill-primary-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-primary" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
 ### Negative
@@ -82,16 +82,16 @@ CSS utility classes to apply colors to elements, svgs and text.
 <component-container>
 <p class="bg-negative text-negative-foreground p-4">Negative</p>
 <p class="text-negative p-4">Negative</p>
-<svg x-h-icon class="size-8 bg-negative fill-negative-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-negative" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 bg-negative fill-negative-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-negative" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<p class="bg-negative text-negative-foreground p-4">Negative</p>
-<p class="text-negative p-4">Negative</p>
-<svg x-h-icon class="size-8 bg-negative fill-negative-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-negative" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<p class="bg-negative p-4 text-negative-foreground">Negative</p>
+<p class="p-4 text-negative">Negative</p>
+<svg x-h-icon class="size-8 bg-negative fill-negative-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-negative" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
 ### Positive
@@ -102,16 +102,16 @@ CSS utility classes to apply colors to elements, svgs and text.
 <component-container>
 <p class="bg-positive text-positive-foreground p-4">Positive</p>
 <p class="text-positive p-4">Positive</p>
-<svg x-h-icon class="size-8 bg-positive fill-positive-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-positive" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 bg-positive fill-positive-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-positive" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<p class="bg-positive text-positive-foreground p-4">Positive</p>
-<p class="text-positive p-4">Positive</p>
-<svg x-h-icon class="size-8 bg-positive fill-positive-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-positive" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<p class="bg-positive p-4 text-positive-foreground">Positive</p>
+<p class="p-4 text-positive">Positive</p>
+<svg x-h-icon class="size-8 bg-positive fill-positive-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-positive" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
 ### Warning
@@ -122,16 +122,16 @@ CSS utility classes to apply colors to elements, svgs and text.
 <component-container>
 <p class="bg-warning text-warning-foreground p-4">Warning</p>
 <p class="text-warning p-4">Warning</p>
-<svg x-h-icon class="size-8 bg-warning fill-warning-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-warning" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 bg-warning fill-warning-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-warning" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<p class="bg-warning text-warning-foreground p-4">Warning</p>
-<p class="text-warning p-4">Warning</p>
-<svg x-h-icon class="size-8 bg-warning fill-warning-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-warning" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<p class="bg-warning p-4 text-warning-foreground">Warning</p>
+<p class="p-4 text-warning">Warning</p>
+<svg x-h-icon class="size-8 bg-warning fill-warning-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-warning" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
 ### Information
@@ -142,16 +142,16 @@ CSS utility classes to apply colors to elements, svgs and text.
 <component-container>
 <p class="bg-information text-information-foreground p-4">Information</p>
 <p class="text-information p-4">Information</p>
-<svg x-h-icon class="size-8 bg-information fill-information-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-information" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 bg-information fill-information-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-information" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<p class="bg-information text-information-foreground p-4">Information</p>
-<p class="text-information p-4">Information</p>
-<svg x-h-icon class="size-8 bg-information fill-information-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-information" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<p class="bg-information p-4 text-information-foreground">Information</p>
+<p class="p-4 text-information">Information</p>
+<svg x-h-icon class="size-8 bg-information fill-information-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-information" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
 ### Muted
@@ -159,15 +159,15 @@ CSS utility classes to apply colors to elements, svgs and text.
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <p class="bg-muted text-muted-foreground p-4">Muted</p>
-<svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-muted" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<p class="bg-muted text-muted-foreground p-4">Muted</p>
-<svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-muted" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<p class="bg-muted p-4 text-muted-foreground">Muted</p>
+<svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```

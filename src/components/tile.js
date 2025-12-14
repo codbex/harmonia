@@ -11,7 +11,7 @@ export default function (Alpine) {
       'flex',
       'items-center',
       'text-sm',
-      'rounded-xl',
+      'rounded-lg',
       'transition-colors',
       '[a]:hover:bg-secondary-hover',
       '[a]:hover:text-secondary-foreground',
@@ -66,10 +66,10 @@ export default function (Alpine) {
 
     switch (el.getAttribute('data-variant')) {
       case 'icon':
-        el.classList.add('size-8', 'border', 'rounded-xl', 'bg-muted', "[&_svg:not([class*='size-'])]:size-4");
+        el.classList.add('size-8', 'border', 'rounded-lg', 'bg-muted', "[&_svg:not([class*='size-'])]:size-4");
         break;
       case 'image':
-        el.classList.add('size-10', 'rounded-xl', 'overflow-hidden', '[&_img]:size-full', '[&_img]:object-cover');
+        el.classList.add('size-10', 'rounded-lg', 'overflow-hidden', '[&_img]:size-full', '[&_img]:object-cover');
         break;
       default:
         el.classList.add('bg-transparent');

@@ -32,7 +32,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-start gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-start gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -56,7 +56,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-center gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-center gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -80,7 +80,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-end gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-end gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -104,7 +104,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-between gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-between gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -128,7 +128,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-around gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-around gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -152,7 +152,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-evenly gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-evenly gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -176,7 +176,7 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-2 place-content-stretch gap-4 h-full">
+<div class="grid h-full grid-cols-2 place-content-stretch gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>

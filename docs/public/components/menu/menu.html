@@ -1,45 +1,43 @@
-<div x-h-menu-trigger class="flex justify-center items-center p-12">
-  Right click for context menu
-  <ul x-h-menu aria-label="context menu" x-data="{ checkbox: { autosave: true }, radioItems: [{ label: 'Radio 1', value: 'r1' }, { label: 'Radio 2', value: 'r2' }], radioSelected: 'r1' }">
-    <li x-h-menu-item>
-      <i role="img" data-lucide="save"></i>
-      Save
-      <span x-h-menu-item-secondary>Ctrl+S</span>
-    </li>
-    <li x-h-menu-item data-variant="negative">
-      <i role="img" data-lucide="trash"></i>
-      Delete
-      <span x-h-menu-item-secondary>Del</span>
-    </li>
-    <li x-h-menu-separator></li>
-    <div x-h-menu-label data-inset="false">Other items</div>
-    <li x-h-menu-item data-inset="true">Menu Item 1</li>
-    <li x-h-menu-sub data-inset="true" id="submenu1">
-      Submenu
-      <ul x-h-menu.sub aria-labelledby="submenu1">
-        <li x-h-menu-item>Subitem 1</li>
-        <li x-h-menu-item>Subitem 2</li>
-        <li x-h-menu-item>Subitem 3</li>
-        <li x-h-menu-sub id="submenu2">
-          Sub-submenu
-          <ul x-h-menu.sub aria-labelledby="submenu2">
-            <li x-h-menu-item>Subitem 1</li>
-            <li x-h-menu-item>Subitem 2</li>
-            <li x-h-menu-item>Subitem 3</li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <div x-h-menu-separator></div>
-    <div x-h-menu-label data-inset="true">Checkbox Items</div>
-    <div x-h-menu-checkbox-item x-model="checkbox.autosave">Auto-Save</div>
-    <div x-h-menu-separator></div>
-    <div x-h-menu-label data-inset="true">Radio Items</div>
-    <template x-for="radio in radioItems">
-      <li x-h-menu-radio-item="radio.value" name="rg1" x-model="radioSelected" x-text="radio.label"></li>
-    </template>
-  </ul>
-</div>
+<div x-h-menu-trigger class="flex items-center justify-center p-12">Right click for context menu</div>
+<ul x-h-menu aria-label="context menu" x-data="{ checkbox: { autosave: true }, radioItems: [{ label: 'Radio 1', value: 'r1' }, { label: 'Radio 2', value: 'r2' }], radioSelected: 'r1' }">
+  <li x-h-menu-item>
+    <i role="img" data-lucide="save"></i>
+    Save
+    <span x-h-menu-item-secondary>Ctrl+S</span>
+  </li>
+  <li x-h-menu-item data-variant="negative">
+    <i role="img" data-lucide="trash"></i>
+    Delete
+    <span x-h-menu-item-secondary>Del</span>
+  </li>
+  <li x-h-menu-separator></li>
+  <div x-h-menu-label data-inset="false">Other items</div>
+  <li x-h-menu-item data-inset="true">Menu Item 1</li>
+  <li x-h-menu-sub data-inset="true" id="submenu1">
+    Submenu
+    <ul x-h-menu.sub aria-labelledby="submenu1">
+      <li x-h-menu-item>Subitem 1</li>
+      <li x-h-menu-item>Subitem 2</li>
+      <li x-h-menu-item>Subitem 3</li>
+      <li x-h-menu-sub id="submenu2">
+        Sub-submenu
+        <ul x-h-menu.sub aria-labelledby="submenu2">
+          <li x-h-menu-item>Subitem 1</li>
+          <li x-h-menu-item>Subitem 2</li>
+          <li x-h-menu-item>Subitem 3</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <div x-h-menu-separator></div>
+  <div x-h-menu-label data-inset="true">Checkbox Items</div>
+  <div x-h-menu-checkbox-item x-model="checkbox.autosave">Auto-Save</div>
+  <div x-h-menu-separator></div>
+  <div x-h-menu-label data-inset="true">Radio Items</div>
+  <template x-for="radio in radioItems">
+    <li x-h-menu-radio-item="radio.value" name="rg1" x-model="radioSelected" x-text="radio.label"></li>
+  </template>
+</ul>
 <script type="text/javascript">
   lucide.createIcons({
     root: container,

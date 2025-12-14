@@ -13,6 +13,7 @@ x-h-tab-list
 x-h-tab
 x-h-tab-action
 x-h-tab-list-actions
+x-h-tab-list-action
 x-h-tabs-content
 ```
 
@@ -22,19 +23,26 @@ x-h-tabs-content
 
 | Attribute        | Type                         | Required | Description                             |
 | ---------------- | ---------------------------- | -------- | --------------------------------------- |
-| data-orientation | `horizontal`<br />`vertical` | false    | Changes the orientation of the tab list |
+| data-orientation | `horizontal`<br />`vertical` | true     | Changes the orientation of the tab list |
 
 #### x-h-tab-bar
 
-| Attribute  | Type                  | Required | Description            |
-| ---------- | --------------------- | -------- | ---------------------- |
-| data-style | `float`<br />`inline` | false    | Style of the tab list. |
+| Attribute     | Type                          | Required | Description                                                                                 |
+| ------------- | ----------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| data-floating | boolean                       | false    | Floating style tab list.                                                                    |
+| data-size     | `default`<br />`sm`<br />`lg` | false    | Height of the tab bar. Ignored when the tab bar is floating or the orientation is vertical. |
 
 #### x-h-tabs-content
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
 | hidden    | boolean | false    | Show/hide the tab content |
+
+#### x-h-tab-list-action
+
+| Attribute    | Type                         | Required | Description                                            |
+| ------------ | ---------------------------- | -------- | ------------------------------------------------------ |
+| data-variant | `outline`<br />`transparent` | false    | Changes the style of the button. Default is `outline`. |
 
 ### Modifiers
 
@@ -46,18 +54,126 @@ x-h-tabs-content
 
 ## Examples
 
-### Horizontal inline tabs
+### Sizes
 
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal-inline.html" data-class="!p-0">
+<component-container data-padding="false">
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar data-size="sm">
+    <div x-h-tab-list>
+      <button id="smt1" x-h-tab aria-controls="smt1c" aria-selected="true">Tab 1</button>
+      <button id="smt2" x-h-tab aria-controls="smt2c">Tab 2</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="smt1c" aria-labelledby="smt1" hidden></div>
+  <div x-h-tabs-content id="smt2c" aria-labelledby="smt2" hidden></div>
+</div>
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <button id="dt1" x-h-tab aria-controls="dt1c" aria-selected="true">Tab 1</button>
+      <button id="dt2" x-h-tab aria-controls="dt2c">Tab 2</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="dt1c" aria-labelledby="dt1" hidden></div>
+  <div x-h-tabs-content id="dt2c" aria-labelledby="dt2" hidden></div>
+</div>
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar data-size="lg">
+    <div x-h-tab-list>
+      <button id="lgt1" x-h-tab aria-controls="lgt1c" aria-selected="true">Tab 1</button>
+      <button id="lgt2" x-h-tab aria-controls="lgt2c">Tab 2</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="lgt1c" aria-labelledby="lgt1" hidden></div>
+  <div x-h-tabs-content id="lgt2c" aria-labelledby="lgt2" hidden></div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar data-size="sm">
+    <div x-h-tab-list>
+      <button id="smt1" x-h-tab aria-controls="smt1c" aria-selected="true">Tab 1</button>
+      <button id="smt2" x-h-tab aria-controls="smt2c">Tab 2</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="smt1c" aria-labelledby="smt1" hidden></div>
+  <div x-h-tabs-content id="smt2c" aria-labelledby="smt2" hidden></div>
+</div>
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <button id="dt1" x-h-tab aria-controls="dt1c" aria-selected="true">Tab 1</button>
+      <button id="dt2" x-h-tab aria-controls="dt2c">Tab 2</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="dt1c" aria-labelledby="dt1" hidden></div>
+  <div x-h-tabs-content id="dt2c" aria-labelledby="dt2" hidden></div>
+</div>
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar data-size="lg">
+    <div x-h-tab-list>
+      <button id="lgt1" x-h-tab aria-controls="lgt1c" aria-selected="true">Tab 1</button>
+      <button id="lgt2" x-h-tab aria-controls="lgt2c">Tab 2</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="lgt1c" aria-labelledby="lgt1" hidden></div>
+  <div x-h-tabs-content id="lgt2c" aria-labelledby="lgt2" hidden></div>
+</div>
+```
+
+### Scrollable tab content
+
+<br />
+
+<ClientOnly>
+<component-container data-padding="false">
+<div x-h-tabs data-orientation="horizontal" style="height:10rem">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <button id="stce" x-h-tab aria-controls="stcec" aria-selected="true">Tab 1</button>
+    </div>
+  </div>
+  <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
+    <div class="absolute-fit absolute overflow-scroll">
+      <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
+    </div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tabs data-orientation="horizontal" style="height:22rem">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <button id="stce" x-h-tab aria-controls="stcec" aria-selected="true">Tab 1</button>
+    </div>
+  </div>
+  <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
+    <div class="absolute-fit absolute overflow-scroll">
+      <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
+    </div>
+  </div>
+</div>
+```
+
+### Horizontal tabs
+
+<br />
+
+<ClientOnly>
+<component-container data-html="/components/tabs/horizontal.html" data-padding="false">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hit1' }">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hit1" aria-controls="hit1c" :aria-selected="activeTabId === 'hit1'" @click="activeTabId = 'hit1'">Tab 1</button>
       <button x-h-tab id="hit2" aria-controls="hit2c" :aria-selected="activeTabId === 'hit2'" @click="activeTabId = 'hit2'">Tab 2</button>
@@ -76,18 +192,18 @@ x-h-tabs-content
 </div>
 ```
 
-### Horizontal inline tabs with icon and close button
+### Horizontal tabs with icon and close button
 
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal-inline-button.html" data-class="!p-0">
+<component-container data-html="/components/tabs/horizontal-button.html" data-padding="false">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hib1' }">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hib1" aria-controls="hib1c" :aria-selected="activeTabId === 'hib1'" @click="activeTabId = 'hib1'">
         <i role="img" data-lucide="file"></i>
@@ -124,14 +240,14 @@ x-h-tabs-content
 </div>
 ```
 
-### Horizontal inline tabs with actions
+### Horizontal tabs with actions
 
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js" data-padding="false">
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hitwa1" aria-controls="hitwa1c" aria-selected="true">
         Tab 1
@@ -141,12 +257,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hitwa1c" aria-labelledby="hitwa1" :hidden="activeTabId !== 'hitwa1'">
+  <div x-h-tabs-content id="hitwa1c" aria-labelledby="hitwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -155,7 +271,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hitwa1" aria-controls="hitwa1c" aria-selected="true">
         Tab 1
@@ -165,25 +281,25 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hitwa1c" aria-labelledby="hitwa1" :hidden="activeTabId !== 'hitwa1'">
+  <div x-h-tabs-content id="hitwa1c" aria-labelledby="hitwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
 ```
 
-### Horizontal inline tabs with actions (end)
+### Horizontal tabs with actions (end)
 
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js" data-padding="false">
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hitwae1" aria-controls="hitwae1c" aria-selected="true">
         Tab 1
@@ -193,12 +309,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hitwae1c" aria-labelledby="hitwae1" :hidden="activeTabId !== 'hitwae1'">
+  <div x-h-tabs-content id="hitwae1c" aria-labelledby="hitwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -207,7 +323,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hitwae1" aria-controls="hitwae1c" aria-selected="true">
         Tab 1
@@ -217,12 +333,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hitwae1c" aria-labelledby="hitwae1" :hidden="activeTabId !== 'hitwae1'">
+  <div x-h-tabs-content id="hitwae1c" aria-labelledby="hitwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -233,13 +349,13 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal.html">
+<component-container data-html="/components/tabs/horizontal-floating.html">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'ht1' }">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="ht1" aria-controls="ht1c" :aria-selected="activeTabId === 'ht1'" @click="activeTabId = 'ht1'">Tab 1</button>
       <button x-h-tab id="ht2" aria-controls="ht2c" :aria-selected="activeTabId === 'ht2'" @click="activeTabId = 'ht2'">Tab 2</button>
@@ -263,13 +379,13 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal-button.html">
+<component-container data-html="/components/tabs/horizontal-button-floating.html">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hbt1' }">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="hbt1" aria-controls="hbt1c" :aria-selected="activeTabId === 'hbt1'" @click="activeTabId = 'hbt1'">
         <i role="img" data-lucide="file"></i>
@@ -311,9 +427,9 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="hftwa1" aria-controls="hftwa1c" aria-selected="true">
         Tab 1
@@ -323,12 +439,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hftwa1c" aria-labelledby="hftwa1" :hidden="activeTabId !== 'hftwa1'">
+  <div x-h-tabs-content id="hftwa1c" aria-labelledby="hftwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -337,7 +453,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="hftwa1" aria-controls="hftwa1c" aria-selected="true">
         Tab 1
@@ -347,12 +463,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hftwa1c" aria-labelledby="hftwa1" :hidden="activeTabId !== 'hftwa1'">
+  <div x-h-tabs-content id="hftwa1c" aria-labelledby="hftwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -363,9 +479,9 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="hftwae1" aria-controls="hftwae1c" aria-selected="true">
         Tab 1
@@ -375,12 +491,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hftwae1c" aria-labelledby="hftwae1" :hidden="activeTabId !== 'hftwae1'">
+  <div x-h-tabs-content id="hftwae1c" aria-labelledby="hftwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -389,7 +505,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="horizontal">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="hftwae1" aria-controls="hftwae1c" aria-selected="true">
         Tab 1
@@ -399,29 +515,29 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="hftwae1c" aria-labelledby="hftwae1" :hidden="activeTabId !== 'hftwae1'">
+  <div x-h-tabs-content id="hftwae1c" aria-labelledby="hftwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
 ```
 
-### Vertical inline tabs
+### Vertical tabs
 
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical-inline.html" data-class="!p-0">
+<component-container data-html="/components/tabs/vertical.html" data-padding="false">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vit1' }">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vit1" aria-controls="vit1c" :aria-selected="activeTabId === 'vit1'" @click="activeTabId = 'vit1'">Tab 1</button>
       <button x-h-tab id="vit2" aria-controls="vit2c" :aria-selected="activeTabId === 'vit2'" @click="activeTabId = 'vit2'">Tab 2</button>
@@ -440,18 +556,18 @@ x-h-tabs-content
 </div>
 ```
 
-### Vertical inline tabs with icon and close button
+### Vertical tabs with icon and close button
 
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical-inline-button.html" data-class="!p-0">
+<component-container data-html="/components/tabs/vertical-button.html" data-padding="false">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vib1' }">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vib1" aria-controls="vib1c" :aria-selected="activeTabId === 'vib1'" @click="activeTabId = 'vib1'">
         <i role="img" data-lucide="file"></i>
@@ -488,14 +604,14 @@ x-h-tabs-content
 </div>
 ```
 
-### Vertical inline tabs with actions
+### Vertical tabs with actions
 
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js" data-padding="false">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vitwa1" aria-controls="vitwa1c" aria-selected="true">
         Tab 1
@@ -505,12 +621,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vitwa1c" aria-labelledby="vitwa1" :hidden="activeTabId !== 'vitwa1'">
+  <div x-h-tabs-content id="vitwa1c" aria-labelledby="vitwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -519,7 +635,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vitwa1" aria-controls="vitwa1c" aria-selected="true">
         Tab 1
@@ -529,25 +645,25 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vitwa1c" aria-labelledby="vitwa1" :hidden="activeTabId !== 'vitwa1'">
+  <div x-h-tabs-content id="vitwa1c" aria-labelledby="vitwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
 ```
 
-### Vertical inline tabs with actions (end)
+### Vertical tabs with actions (end)
 
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js" data-padding="false">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vitwae1" aria-controls="vitwae1c" aria-selected="true">
         Tab 1
@@ -557,12 +673,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vitwae1c" aria-labelledby="vitwae1" :hidden="activeTabId !== 'vitwae1'">
+  <div x-h-tabs-content id="vitwae1c" aria-labelledby="vitwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -571,7 +687,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="inline">
+  <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vitwae1" aria-controls="vitwae1c" aria-selected="true">
         Tab 1
@@ -581,12 +697,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vitwae1c" aria-labelledby="vitwae1" :hidden="activeTabId !== 'vitwae1'">
+  <div x-h-tabs-content id="vitwae1c" aria-labelledby="vitwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -597,13 +713,13 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical.html">
+<component-container data-html="/components/tabs/vertical-floating.html">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vt1' }">
-  <div x-h-tab-bar>
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vt1" aria-controls="vt1c" :aria-selected="activeTabId === 'vt1'" @click="activeTabId = 'vt1'">Tab 1</button>
       <button x-h-tab id="vt2" aria-controls="vt2c" :aria-selected="activeTabId === 'vt2'" @click="activeTabId = 'vt2'">Tab 2</button>
@@ -627,13 +743,13 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical-button.html">
+<component-container data-html="/components/tabs/vertical-button-floating.html">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vbt1' }">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vbt1" aria-controls="vbt1c" :aria-selected="activeTabId === 'vbt1'" @click="activeTabId = 'vbt1'">
         <i role="img" data-lucide="file"></i>
@@ -675,9 +791,9 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vftwa1" aria-controls="vftwa1c" aria-selected="true">
         Tab 1
@@ -687,12 +803,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vftwa1c" aria-labelledby="vftwa1" :hidden="activeTabId !== 'vftwa1'">
+  <div x-h-tabs-content id="vftwa1c" aria-labelledby="vftwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -701,7 +817,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vftwa1" aria-controls="vftwa1c" aria-selected="true">
         Tab 1
@@ -711,12 +827,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions>
-      <button x-h-button data-size="icon-tab" data-variant="transparent" aria-label="add tab button">
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
         <i role="img" data-lucide="plus"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vftwa1c" aria-labelledby="vftwa1" :hidden="activeTabId !== 'vftwa1'">
+  <div x-h-tabs-content id="vftwa1c" aria-labelledby="vftwa1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -727,9 +843,9 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vftwae1" aria-controls="vftwae1c" aria-selected="true">
         Tab 1
@@ -739,12 +855,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action data-variant="outline" aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vftwae1c" aria-labelledby="vftwae1" :hidden="activeTabId !== 'vftwae1'">
+  <div x-h-tabs-content id="vftwae1c" aria-labelledby="vftwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>
@@ -753,7 +869,7 @@ x-h-tabs-content
 
 ```html
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
-  <div x-h-tab-bar data-style="float">
+  <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vftwae1" aria-controls="vftwae1c" aria-selected="true">
         Tab 1
@@ -763,12 +879,12 @@ x-h-tabs-content
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-button data-size="icon-tab" data-variant="outline" aria-label="menu button">
+      <button x-h-tab-list-action data-variant="outline" aria-label="menu button">
         <i role="img" data-lucide="ellipsis"></i>
       </button>
     </div>
   </div>
-  <div x-h-tabs-content id="vftwae1c" aria-labelledby="vftwae1" :hidden="activeTabId !== 'vftwae1'">
+  <div x-h-tabs-content id="vftwae1c" aria-labelledby="vftwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
 </div>

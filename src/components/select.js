@@ -1,6 +1,6 @@
-import { createElement, ChevronDown, Check, Search } from 'lucide';
+import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { Check, ChevronDown, createElement, Search } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
-import { computePosition, offset, flip, shift, size, autoUpdate } from '@floating-ui/dom';
 
 const FilterType = Object.freeze({
   'starts-with': 0,

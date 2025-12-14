@@ -35,7 +35,7 @@ x-h-pagination-ellipsis
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center">
 <nav x-h-pagination>
   <ul x-h-pagination-content>
     <li x-h-pagination-item>

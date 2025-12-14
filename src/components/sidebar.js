@@ -1,22 +1,46 @@
 export default function (Alpine) {
-  Alpine.directive('h-sidebar', (el, { modifiers }) => {
-    el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)');
-    if (modifiers.includes('floating')) {
-      el.classList.add('border', 'rounded-lg', 'shadow-sm', 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]');
-    } else el.classList.add('group-data-[collapsible=icon]:w-(--sidebar-width-icon)');
+  Alpine.directive('h-sidebar', (el, { modifiers }, { cleanup }) => {
+    el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
     if (modifiers.includes('right')) el.classList.add('border-l');
     else el.classList.add('border-r');
 
     el.setAttribute('data-slot', 'sidebar');
+
+    const setFloating = () => {
+      if (el.getAttribute('data-floating') === 'true') {
+        el.classList.add('border', 'rounded-lg', 'shadow-sm');
+      } else {
+        el.classList.remove('border', 'rounded-lg', 'shadow-sm');
+      }
+    };
+
+    setFloating();
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes') {
+          if (mutation.attributeName === 'data-floating') {
+            setFloating();
+          }
+        }
+      });
+    });
+
+    observer.observe(el, { attributes: true });
+
+    cleanup(() => {
+      observer.disconnect();
+    });
   });
 
   Alpine.directive('h-sidebar-header', (el) => {
-    el.classList.add('vbox', 'gap-2', 'p-2');
+    el.classList.add('vbox', 'gap-2', 'px-2', 'h-12', 'justify-center', 'border-b');
+    if (el.dataset.borderless && el.dataset.borderless === 'true') el.classList.remove('border-b');
     el.setAttribute('data-slot', 'sidebar-header');
   });
 
   Alpine.directive('h-sidebar-content', (el) => {
-    el.classList.add('vbox', 'min-h-0', 'flex-1', 'gap-2', 'overflow-auto', 'group-data-[collapsible=icon]:overflow-hidden');
+    el.classList.add('vbox', 'min-h-0', 'flex-1', 'gap-2', 'overflow-auto', 'group-data-[collapsed=true]/sidebar:overflow-hidden');
     el.setAttribute('data-slot', 'sidebar-content');
   });
 
@@ -44,8 +68,7 @@ export default function (Alpine) {
       'focus-visible:ring-2',
       '[&>svg]:size-4',
       '[&>svg]:shrink-0',
-      'group-data-[collapsible=icon]:-mt-8',
-      'group-data-[collapsible=icon]:opacity-0'
+      'group-data-[collapsed=true]/sidebar:!hidden'
     );
     if (modifiers.includes('action')) el.classList.add('hover:bg-secondary-hover', 'active:bg-secondary-active');
     el.setAttribute('data-slot', 'sidebar-group-label');
@@ -75,7 +98,7 @@ export default function (Alpine) {
       'after:absolute',
       'after:-inset-2',
       'md:after:hidden',
-      'group-data-[collapsible=icon]:hidden'
+      'group-data-[collapsed=true]/sidebar:hidden'
     );
     el.setAttribute('data-slot', 'sidebar-group-action');
   });
@@ -126,8 +149,9 @@ export default function (Alpine) {
       'data-[active=true]:text-sidebar-primary-foreground',
       'data-[state=open]:hover:bg-sidebar-secondary',
       'data-[state=open]:hover:text-sidebar-secondary-foreground',
-      'group-data-[collapsible=icon]:size-8!',
-      'group-data-[collapsible=icon]:p-2!',
+      'group-data-[collapsed=true]/sidebar:!size-8',
+      'group-data-[collapsed=true]/sidebar:!p-2',
+      'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:!hidden',
       '[&>span]:truncate',
       '[&>span]:align-middle',
       '[&>svg]:size-4',
@@ -139,7 +163,7 @@ export default function (Alpine) {
     const sizes = {
       default: ['h-8', 'text-sm'],
       sm: ['h-7', 'text-xs'],
-      lg: ['h-12', 'text-sm', 'group-data-[collapsible=icon]:p-0!'],
+      lg: ['h-12', 'text-sm', 'group-data-[collapsed=true]/sidebar:p-0!'],
     };
     function setSize(size) {
       if (sizes.hasOwnProperty(size)) {
@@ -178,7 +202,7 @@ export default function (Alpine) {
       'peer-data-[size=sm]/menu-button:top-1',
       'peer-data-[size=default]/menu-button:top-1.5',
       'peer-data-[size=lg]/menu-button:top-2.5',
-      'group-data-[collapsible=icon]:hidden'
+      'group-data-[collapsed=true]/sidebar:hidden'
     );
     if (modifiers.includes('autohide')) {
       el.classList.add('peer-data-[active=true]/menu-button:text-sidebar-secondary-foreground', 'group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'data-[state=open]:opacity-100', 'md:opacity-0');
@@ -208,7 +232,7 @@ export default function (Alpine) {
       'peer-data-[size=sm]/menu-button:top-1',
       'peer-data-[size=default]/menu-button:top-1.5',
       'peer-data-[size=lg]/menu-button:top-2.5',
-      'group-data-[collapsible=icon]:hidden'
+      'group-data-[collapsed=true]/sidebar:hidden'
     );
     el.setAttribute('data-slot', 'sidebar-menu-badge');
   });
@@ -234,7 +258,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-menu-sub', (el, { modifiers }) => {
-    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'py-0.5', 'group-data-[collapsible=icon]:hidden');
+    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'py-0.5', 'group-data-[collapsed=true]/sidebar:hidden');
     if (!modifiers.includes('flat')) {
       el.classList.add('border-sidebar-border', 'mx-3.5', 'border-l', 'px-2.5');
     }
@@ -279,7 +303,7 @@ export default function (Alpine) {
       '[&>svg:not(:first-child):last-child]:ml-auto',
       'data-[active=true]:bg-sidebar-primary',
       'data-[active=true]:text-sidebar-primary-foreground',
-      'group-data-[collapsible=icon]:hidden'
+      'group-data-[collapsed=true]/sidebar:hidden'
     );
     el.setAttribute('data-slot', 'sidebar-menu-sub-button');
 
@@ -297,7 +321,8 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-footer', (el) => {
-    el.classList.add('vbox', 'gap-2', 'p-2');
+    el.classList.add('vbox', 'gap-2', 'px-2', 'h-12', 'justify-center', 'border-t');
+    if (el.dataset.borderless && el.dataset.borderless === 'true') el.classList.remove('border-t');
     el.setAttribute('data-slot', 'sidebar-footer');
   });
 }

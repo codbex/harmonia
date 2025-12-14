@@ -14,10 +14,10 @@
   @apply right-[-0.438rem] -bottom-2.5;
 }
 .harmonia-slider.noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
-  @apply -left-5 right-auto;
+  @apply right-auto -left-5;
 }
 .harmonia-slider.noUi-target {
-  @apply shadow-control border border-input rounded-full bg-input-inner;
+  @apply shadow-control border-input bg-input-inner rounded-full border;
 }
 .harmonia-slider .noUi-connects {
   @apply rounded-full;
@@ -26,15 +26,15 @@
   @apply bg-primary;
 }
 .harmonia-slider .noUi-handle {
-  @apply shadow-control cursor-pointer ring-ring/50 hover:ring-4 focus-visible:ring-4 active:ring-4 size-5 bg-background rounded-full border-2 border-primary;
+  @apply shadow-control ring-ring/50 bg-background border-primary size-5 cursor-pointer rounded-full border-2 hover:ring-4 focus-visible:ring-4 active:ring-4;
 }
 .harmonia-slider .noUi-active {
   @apply shadow-control;
 }
-.harmonia-slider[auto-hide-tips='true'] .noUi-tooltip {
+.harmonia-slider[auto-hide-tips="true"] .noUi-tooltip {
   display: none;
 }
-.harmonia-slider[auto-hide-tips='true'] .noUi-active .noUi-tooltip {
+.harmonia-slider[auto-hide-tips="true"] .noUi-active .noUi-tooltip {
   display: block;
 }
 .noUi-handle:before,
@@ -58,7 +58,7 @@
   padding: 0.625rem 0 0 0;
 }
 .harmonia-slider .noUi-tooltip {
-  @apply block absolute border-1 shadow-md rounded-md bg-background text-foreground py-0.5 px-2 text-center whitespace-nowrap;
+  @apply bg-background text-foreground absolute block rounded-md border-1 px-2 py-0.5 text-center whitespace-nowrap shadow-md;
 }
 .harmonia-slider.noUi-horizontal .noUi-tooltip {
   bottom: 140%;

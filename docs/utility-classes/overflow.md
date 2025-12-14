@@ -67,7 +67,7 @@ CSS utility classes set overflow behaviour.
 </ClientOnly>
 
 ```html
-<div class="tile-xs overflow-y-scroll overflow-x-hidden">
+<div class="tile-xs overflow-x-hidden overflow-y-scroll">
   <svg x-h-icon class="" data-link="/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```

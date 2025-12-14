@@ -32,7 +32,7 @@ x-h-alert-actions
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert.floating>
   <i role="img" data-lucide="files"></i>
   <div x-h-alert-title>Floating</div>
@@ -56,7 +56,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert>
   <i role="img" data-lucide="files"></i>
   <div x-h-alert-title>No description!</div>
@@ -78,7 +78,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert>
   <i role="img" data-lucide="mail"></i>
   <div x-h-alert-title>Mail Sent</div>
@@ -96,7 +96,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert data-variant="information">
   <i role="img" data-lucide="info"></i>
   <div x-h-alert-title>Information</div>
@@ -114,7 +114,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert data-variant="warning">
   <i role="img" data-lucide="circle-alert"></i>
   <div x-h-alert-title>Warning</div>
@@ -132,7 +132,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert data-variant="negative">
   <i role="img" data-lucide="circle-x"></i>
   <div x-h-alert-title>Negative</div>
@@ -150,7 +150,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-alert data-variant="positive">
   <i role="img" data-lucide="circle-check"></i>
   <div x-h-alert-title>Positive</div>

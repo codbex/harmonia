@@ -28,7 +28,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -50,12 +50,12 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
-  <div x-h-input-group-addon x-h-popover.auto data-align="inline-start">
+  <div x-h-input-group-addon data-align="inline-start">
     <button x-h-button.group x-h-popover-trigger data-size="icon-xs" aria-label="info"><i role="img" data-lucide="info"></i></button>
-    <div class="p-4" x-h-popover-content>This is a popover with some info.</div>
+    <div class="p-4" x-h-popover>This is a popover with some info.</div>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
     <button x-h-button.group>Go</button>
@@ -67,9 +67,9 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ```html
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
-  <div x-h-input-group-addon x-h-popover.auto data-align="inline-start">
+  <div x-h-input-group-addon data-align="inline-start">
     <button x-h-button.group x-h-popover-trigger data-size="icon-xs" aria-label="info"><i role="img" data-lucide="info"></i></button>
-    <div class="p-4" x-h-popover-content>This is a popover with some info.</div>
+    <div class="p-4" x-h-popover>This is a popover with some info.</div>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
     <button x-h-button.group>Go</button>
@@ -78,7 +78,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-input-group>
   <input x-h-input.group placeholder="Searching..." disabled />
   <div x-h-input-group-addon data-align="inline-end">
@@ -98,7 +98,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js">
+<component-container data-js="/js/init-icons.js">
 <div x-h-input-group>
   <textarea x-h-textarea.group placeholder="Message..."></textarea>
   <div x-h-input-group-addon data-align="block-start" class="border-b">
@@ -119,12 +119,12 @@ In order to achieve proper focus navigation, place the group addon after the inp
   <div x-h-input-group-addon data-align="block-end" class="border-t">
     <button id="attachFile" x-h-button.group x-h-menu-trigger.dropdown data-size="icon-xs" data-variant="outline" class="rounded-full" aria-label="Attach">
       <i role="img" data-lucide="plus"></i>
-      <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
-        <li x-h-menu-item>List</li>
-        <li x-h-menu-item>Text snipplet</li>
-        <li x-h-menu-item>Upload file</li>
-      </ul>
     </button>
+    <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
+      <li x-h-menu-item>List</li>
+      <li x-h-menu-item>Text snipplet</li>
+      <li x-h-menu-item>Upload file</li>
+    </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>
     <button x-h-button.group data-size="icon-xs" data-variant="primary" class="rounded-full" aria-label="Send">
       <i role="img" data-lucide="arrow-up"></i>
@@ -155,12 +155,12 @@ In order to achieve proper focus navigation, place the group addon after the inp
   <div x-h-input-group-addon data-align="block-end" class="border-t">
     <button id="attachFile" x-h-button.group x-h-menu-trigger.dropdown data-size="icon-xs" data-variant="outline" class="rounded-full" aria-label="Attach">
       <i role="img" data-lucide="plus"></i>
-      <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
-        <li x-h-menu-item>List</li>
-        <li x-h-menu-item>Text snipplet</li>
-        <li x-h-menu-item>Upload file</li>
-      </ul>
     </button>
+    <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
+      <li x-h-menu-item>List</li>
+      <li x-h-menu-item>Text snipplet</li>
+      <li x-h-menu-item>Upload file</li>
+    </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>
     <button x-h-button.group data-size="icon-xs" data-variant="primary" class="rounded-full" aria-label="Send">
       <i role="img" data-lucide="arrow-up"></i>

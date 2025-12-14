@@ -6,14 +6,19 @@ export default function (Alpine) {
       'hbox',
       'shrink-0',
       'items-center',
-      'px-2',
+      'px-1',
+      'has-[>[data-slot="avatar"]:last-child]:pr-2',
+      'has-[>[data-slot="toolbar-image"]:first-child]:pl-2',
       'gap-1',
       modifiers.includes('footer') ? 'border-t' : 'border-b',
       'w-full',
-      'h-11',
+      'h-12',
       'data-[size=sm]:h-8',
       'data-[variant=transparent]:bg-transparent',
-      'data-[variant=transparent]:text-foreground'
+      'data-[variant=transparent]:text-foreground',
+      'data-[floating=true]:shadow-xs',
+      'data-[floating=true]:rounded-lg',
+      'data-[floating=true]:border'
     );
     el.setAttribute('data-slot', 'toolbar');
   });
@@ -24,12 +29,13 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-toolbar-title', (el) => {
-    el.classList.add('text', '[[data-size=sm]_&]:text-sm', 'font-medium', 'whitespace-nowrap', 'text-ellipsis', 'overflow-hidden');
+    el.classList.add('text', '[[data-size=sm]_&]:text-sm', 'first:pl-2', 'font-medium', 'whitespace-nowrap', 'text-ellipsis', 'overflow-hidden');
     el.setAttribute('data-slot', 'toolbar-title');
   });
 
   Alpine.directive('h-toolbar-spacer', (el) => {
     el.classList.add('flex-[1_auto]', 'h-full');
+    el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'toolbar-spacer');
   });
 

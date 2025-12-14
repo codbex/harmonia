@@ -1,52 +1,50 @@
 export default function (Alpine) {
-  Alpine.directive('h-switch', (el, {}, { cleanup }) => {
+  Alpine.directive('h-switch', (el) => {
     el.classList.add(
-      'appearance-none',
-      'peer',
-      'data-[state=checked]:bg-primary',
-      'data-[state=unchecked]:bg-input',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'inline-flex',
-      'data-[size=sm]:h-5',
-      'data-[size=sm]:w-8',
-      'h-6',
-      'w-10',
-      'shrink-0',
-      'items-center',
-      'rounded-full',
-      'border',
-      'border-transparent',
-      'shadow-control',
-      'transition-all',
-      'duration-200',
-      'outline-none',
-      'focus-visible:ring-[3px]',
-      'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
-      'before:block',
+      '[&>input]:absolute',
+      '[&>input]:appearance-none',
+      '[&>input]:bg-transparent',
+      '[&>input]:border-0',
+      '[&>input]:cursor-pointer',
+      '[&>input]:focus-visible:border-ring',
+      '[&>input]:focus-visible:ring-[3px]',
+      '[&>input]:focus-visible:ring-ring/50',
+      '[&>input]:left-0',
+      '[&>input]:outline-none',
+      '[&>input]:rounded-full',
+      '[&>input]:size-full',
+      '[&>input]:top-0',
       'before:bg-background',
-      'before:pointer-events-none',
-      'data-[size=sm]:before:size-4',
-      'before:size-5',
-      'before:rounded-full',
-      'before:ring-0',
-      'before:transition-transform',
       'before:duration-200',
-      'data-[state=checked]:before:translate-x-[calc(100%-3px)]',
-      'data-[state=unchecked]:before:translate-x-[1px]'
+      'before:inline-block',
+      'before:m-[1px]',
+      'before:pointer-events-none',
+      'before:ring-0',
+      'before:rounded-full',
+      'before:shadow-control',
+      'before:size-5',
+      'before:transition-transform',
+      'bg-muted',
+      'border',
+      'data-[size=sm]:before:size-4',
+      'data-[size=sm]:h-5',
+      'data-[size=sm]:max-w-8',
+      'data-[size=sm]:min-w-8',
+      'duration-200',
+      'h-6',
+      'has-[input:checked]:before:translate-x-[calc(100%-var(--spacing)*1)]',
+      'has-[input:checked]:bg-primary',
+      'has-[input:checked]:border-primary-active',
+      'has-[input:disabled]:cursor-not-allowed',
+      'has-[input:disabled]:opacity-50',
+      'max-w-10',
+      'min-w-10',
+      'relative',
+      'rounded-full',
+      'shrink-0',
+      'transition-color'
     );
+    el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'switch');
-
-    function setState() {
-      el.setAttribute('data-state', el.checked ? 'checked' : 'unchecked');
-    }
-
-    setState();
-    el.addEventListener('change', setState);
-
-    cleanup(() => {
-      el.removeEventListener('change', setState);
-    });
   });
 }

@@ -36,9 +36,25 @@ x-h-table-footer
 
 #### x-h-table-row
 
-| Attribute  | Type       | Required | Description                       |
-| ---------- | ---------- | -------- | --------------------------------- |
-| data-state | `selected` | false    | Sets a selected state to the row. |
+| Attribute      | Type       | Required | Description                       |
+| -------------- | ---------- | -------- | --------------------------------- |
+| data-state     | `selected` | false    | Sets a selected state to the row. |
+| data-hoverable | boolean    | false    | Makes the row hoverable.          |
+| data-activable | boolean    | false    | Makes the row activable.          |
+
+#### x-h-table-head
+
+| Attribute      | Type    | Required | Description                      |
+| -------------- | ------- | -------- | -------------------------------- |
+| data-hoverable | boolean | false    | Makes the header cell hoverable. |
+| data-activable | boolean | false    | Makes the header cell activable. |
+
+#### x-h-table-cell
+
+| Attribute      | Type    | Required | Description               |
+| -------------- | ------- | -------- | ------------------------- |
+| data-hoverable | boolean | false    | Makes the cell hoverable. |
+| data-activable | boolean | false    | Makes the cell activable. |
 
 ### Modifiers
 
@@ -55,17 +71,22 @@ x-h-table-footer
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/table/full.html" data-class="!p-0 border-0">
+<component-container data-html="/components/table/full.html" data-class="border-0" data-padding="false">
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-table-container.scroll data-border="true" style="max-height: 688px">
   <table x-h-table data-borders="both" x-data="tableData">
+    <caption x-h-table-caption>
+      Fruits & Vegetables
+    </caption>
     <thead x-h-table-header>
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Invoice Number</th>
-        <th x-h-table-head scope="col">Invoice Date</th>
+        <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+          <div class="flex items-center justify-between">Invoice Date<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+        </th>
         <th x-h-table-head scope="col">Customer Name</th>
         <th x-h-table-head scope="col">Due Date</th>
         <th x-h-table-head scope="col">Amount Total</th>
@@ -80,7 +101,7 @@ x-h-table-footer
     </thead>
     <tbody x-h-table-body>
       <template x-for="invoice in invoices">
-        <tr x-h-table-row>
+        <tr x-h-table-row data-hoverable="true" data-activable="true">
           <th x-h-table-head x-text="invoice.invoiceNumber"></th>
           <td x-h-table-cell x-text="invoice.invoiceDate"></td>
           <td x-h-table-cell x-text="invoice.customerName"></td>
@@ -172,7 +193,7 @@ x-h-table-footer
     }
     return invoices;
   }
-
+  lucide.createIcons();
   Alpine.data('tableData', () => ({
     invoices: generateInvoices(),
   }));

@@ -95,7 +95,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1">
+<div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 xl:grid-cols-12">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -241,7 +241,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 justify-items-start gap-4 h-full">
+<div class="grid h-full grid-cols-3 justify-items-start gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -269,7 +269,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 justify-items-center gap-4 h-full">
+<div class="grid h-full grid-cols-3 justify-items-center gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -297,7 +297,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 justify-items-end gap-4 h-full">
+<div class="grid h-full grid-cols-3 justify-items-end gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -325,7 +325,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 justify-items-stretch gap-4 h-full">
+<div class="grid h-full grid-cols-3 justify-items-stretch gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>

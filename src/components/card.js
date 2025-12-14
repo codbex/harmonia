@@ -1,6 +1,6 @@
 export default function (Alpine) {
   Alpine.directive('h-card', (el) => {
-    el.classList.add('bg-card', 'text-card-foreground', 'vbox', 'gap-6', 'rounded-xl', 'border', 'py-6', 'shadow-sm');
+    el.classList.add('bg-card', 'text-card-foreground', 'vbox', 'gap-4', 'rounded-xl', 'border', 'py-6', 'shadow-sm');
     el.setAttribute('data-slot', 'card');
   });
 

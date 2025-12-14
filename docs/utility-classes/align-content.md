@@ -34,7 +34,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-start gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-start gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -62,7 +62,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-center gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-center gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -90,7 +90,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-end gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-end gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -118,7 +118,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-between gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-between gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -146,7 +146,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-around gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-around gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -174,7 +174,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-evenly gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-evenly gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>
@@ -202,7 +202,7 @@ Aligns rows inside grids or wrapping flex layouts.
 </ClientOnly>
 
 ```html
-<div class="grid grid-cols-3 content-stretch gap-4 h-full">
+<div class="grid h-full grid-cols-3 content-stretch gap-4">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
   <span class="bg-primary text-primary-foreground p-2">3</span>

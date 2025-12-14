@@ -1,6 +1,6 @@
-import { createElement, Clock } from 'lucide';
+import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { Clock, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
-import { computePosition, offset, flip, shift, autoUpdate } from '@floating-ui/dom';
 
 const dayPeriodLabels = { am: 'AM', pm: 'PM' };
 
@@ -70,14 +70,16 @@ export default function (Alpine) {
     el.classList.add(
       'cursor-pointer',
       'border-input',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'invalid:ring-negative/20',
-      'dark:invalid:ring-negative/40',
-      'invalid:border-negative',
+      '[&>input]:appearance-none',
+      'has-[input:focus-visible]:border-ring',
+      'has-[input:focus-visible]:ring-[3px]',
+      'has-[input:focus-visible]:ring-ring/50',
+      'dark:has-[aria-invalid=true]:ring-negative/40',
+      'dark:has-[input:invalid]:ring-negative/40',
+      'has-[aria-invalid=true]:border-negative',
+      'has-[aria-invalid=true]:ring-negative/20',
+      'has-[input:invalid]:border-negative',
+      'has-[input:invalid]:ring-negative/20',
       'hover:bg-secondary-hover',
       'active:bg-secondary-active',
       'flex',
@@ -95,8 +97,8 @@ export default function (Alpine) {
       'whitespace-nowrap',
       'shadow-control',
       'transition-[color,box-shadow]',
+      'duration-200',
       'outline-none',
-      'focus-visible:ring-[3px]',
       'has-[input:disabled]:pointer-events-none',
       'has-[input:disabled]:opacity-50',
       '[&_svg]:pointer-events-none',
@@ -105,6 +107,7 @@ export default function (Alpine) {
       '[&_svg]:opacity-50'
     );
     el.setAttribute('data-slot', 'time-picker');
+    el.setAttribute('tabindex', '-1');
     el.appendChild(
       createElement(Clock, {
         class: ['opacity-50 size-4 transition-transform duration-200'],
@@ -135,7 +138,8 @@ export default function (Alpine) {
       el._timepicker.is12Hour = new Intl.DateTimeFormat(el._timepicker.locale, { hour: 'numeric' }).resolvedOptions().hour12;
     }
 
-    const handler = () => {
+    const handler = (event) => {
+      if (event.type === 'keydown' && event.key !== 'Enter') return;
       el._timepicker.expanded = !el._timepicker.expanded;
       el.setAttribute('aria-expanded', el._timepicker.expanded);
       Alpine.nextTick(() => {
@@ -148,9 +152,11 @@ export default function (Alpine) {
     };
 
     el.addEventListener('click', handler);
+    el.addEventListener('keydown', handler);
 
     cleanup(() => {
       el.removeEventListener('click', handler);
+      el.removeEventListener('keydown', handler);
       top.removeEventListener('click', el._timepicker.close);
     });
   });

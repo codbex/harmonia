@@ -119,25 +119,25 @@ Distributes space between and around items along the main axis of a flex contain
 <div class="vbox gap-2">
   <label x-h-label>End</label>
   <div class="flex justify-end gap-2 overflow-hidden">
-    <span class="bg-primary text-primary-foreground py-2 px-12">1</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">2</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">3</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">4</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">5</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">6</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">7</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">8</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">1</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">2</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">3</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">4</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">5</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">6</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">7</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">8</span>
   </div>
   <label x-h-label>End safe</label>
   <div class="flex justify-end-safe gap-2 overflow-hidden">
-    <span class="bg-primary text-primary-foreground py-2 px-12">1</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">2</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">3</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">4</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">5</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">6</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">7</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">8</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">1</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">2</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">3</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">4</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">5</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">6</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">7</span>
+    <span class="bg-primary text-primary-foreground px-12 py-2">8</span>
   </div>
 </div>
 ```

@@ -1,16 +1,14 @@
+import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { v4 as uuidv4 } from 'uuid';
-import { computePosition, offset, flip, shift, size, autoUpdate } from '@floating-ui/dom';
 
 export default function (Alpine) {
-  Alpine.directive('h-popover', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine }) => {
+  Alpine.directive('h-popover-trigger', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine, cleanup }) => {
     el._popover = Alpine.reactive({
       id: undefined,
       controls: `hpc${uuidv4()}`,
-      auto: modifiers.includes('auto'),
+      auto: expression ? false : true,
       expanded: expression ? evaluate(expression) : false,
     });
-    el.setAttribute('data-slot', 'popover');
-
     if (expression) {
       const getExpanded = evaluateLater(expression);
       effect(() => {
@@ -18,13 +16,6 @@ export default function (Alpine) {
           el._popover.expanded = expanded;
         });
       });
-    }
-  });
-
-  Alpine.directive('h-popover-trigger', (el, { modifiers }, { effect, Alpine, cleanup }) => {
-    const popover = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_popover'));
-    if (!popover) {
-      throw new Error('h-popover-trigger must be inside an h-popover element');
     }
     el.setAttribute('type', 'button');
     if (modifiers.includes('chevron')) {
@@ -34,35 +25,37 @@ export default function (Alpine) {
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'popover-trigger');
 
     if (el.hasAttribute('id')) {
-      popover._popover.id = el.getAttribute('id');
+      el._popover.id = el.getAttribute('id');
     } else {
-      popover._popover.id = `hp${uuidv4()}`;
-      el.setAttribute('id', popover._popover.id);
+      el._popover.id = `hp${uuidv4()}`;
+      el.setAttribute('id', el._popover.id);
     }
-    el.setAttribute('aria-controls', popover._popover.controls);
+    el.setAttribute('aria-controls', el._popover.controls);
     el.setAttribute('aria-haspopup', 'dialog');
 
     const setAttributes = () => {
-      el.setAttribute('data-state', popover._popover.expanded ? 'open' : 'closed');
-      el.setAttribute('aria-expanded', popover._popover.expanded);
+      el.setAttribute('data-state', el._popover.expanded ? 'open' : 'closed');
+      el.setAttribute('aria-expanded', el._popover.expanded);
     };
 
     const close = () => {
-      popover._popover.expanded = false;
+      el._popover.expanded = false;
+      el.addEventListener('click', handler);
     };
 
     const handler = () => {
-      popover._popover.expanded = !popover._popover.expanded;
+      el._popover.expanded = !el._popover.expanded;
       setAttributes();
       Alpine.nextTick(() => {
-        if (popover._popover.auto && popover._popover.expanded) {
+        if (el._popover.auto && el._popover.expanded) {
           top.addEventListener('click', close, { once: true });
+          el.removeEventListener('click', handler);
         }
       });
     };
     setAttributes();
 
-    if (popover._popover.auto) {
+    if (el._popover.auto) {
       el.addEventListener('click', handler);
 
       cleanup(() => {
@@ -76,13 +69,20 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-popover-content', (el, { modifiers }, { effect, Alpine }) => {
-    const popover = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_popover'));
+  Alpine.directive('h-popover', (el, { modifiers }, { effect }) => {
+    const popover = (() => {
+      let sibling = el.previousElementSibling;
+      while (sibling && !sibling.hasOwnProperty('_popover')) {
+        sibling = sibling.previousElementSibling;
+      }
+      return sibling;
+    })();
+
     if (!popover) {
-      throw new Error('h-popover-content must be inside an h-popover element');
+      throw new Error('h-popover-content must be placed after an h-popover element');
     }
-    el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'rounded-control', 'border', 'shadow-md', 'outline-hidden', 'overflow-scroll');
-    el.setAttribute('data-slot', 'popover-content');
+    el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'rounded-md', 'border', 'shadow-md', 'outline-hidden', 'overflow-scroll');
+    el.setAttribute('data-slot', 'popover');
     el.setAttribute('role', 'dialog');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('id', popover._popover.controls);
@@ -95,15 +95,10 @@ export default function (Alpine) {
       el.classList.add('overflow-none');
     }
 
-    const control = popover.querySelector(`#${popover._popover.id}`);
-    if (!control) {
-      throw new Error('h-popover-content: trigger not found');
-    }
-
     let autoUpdateCleanup;
 
     function updatePosition() {
-      computePosition(control, el, {
+      computePosition(popover, el, {
         placement: el.getAttribute('data-align') || 'bottom-start',
         middleware: [
           offset(4),
@@ -131,8 +126,7 @@ export default function (Alpine) {
     effect(() => {
       el.setAttribute('data-state', popover._popover.expanded ? 'open' : 'closed');
       if (popover._popover.expanded) {
-        // debugger;
-        autoUpdateCleanup = autoUpdate(control, el, updatePosition);
+        autoUpdateCleanup = autoUpdate(popover, el, updatePosition);
       } else {
         if (autoUpdateCleanup) autoUpdateCleanup();
         Object.assign(el.style, {

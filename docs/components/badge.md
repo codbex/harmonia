@@ -19,7 +19,7 @@ x-h-badge
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col gap-4">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col gap-4">
 <div x-h-badge>Badge</div>
 <div x-h-badge data-variant="primary">Primary</div>
 <div x-h-badge data-variant="positive"><i role="img" data-lucide="check"></i>Positive</div>

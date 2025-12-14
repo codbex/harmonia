@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Harmonia UI",
   "repository": {
     "url": "https://github.com/codbex/harmonia.git",
@@ -8,7 +8,9 @@
   },
   "type": "module",
   "main": "dist/harmonia.min.js",
-  "module": "dist/harmonia.esm.js",
+  "module": "dist/harmonia.esm.min.js",
+  "unpkg": "dist/harmonia.min.js",
+  "exports": "./dist/harmonia.esm.min.js",
   "keywords": [],
   "author": "StanGenchev",
   "license": "MIT",
@@ -23,26 +25,33 @@
     "dist/"
   ],
   "scripts": {
-    "build": "node scripts/build.cjs && npm run tailwind && node ./scripts/docs.cjs",
-    "build:prod": "node scripts/build.cjs && npm run tailwind",
+    "build": "node ./scripts/build.cjs && npm run tailwind && node ./scripts/doc-build.cjs",
+    "build:prod": "node ./scripts/build.cjs && npm run tailwind",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
     "tailwind:watch": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css -w",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
-    "docs:install": "npm install alpinejs@3.15.1 lucide@0.553.0 --prefix ./docs/public",
+    "docs:install": "node ./scripts/doc-install.cjs",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
+  "docDependencies": {
+    "alpinejs": "^3.15.1",
+    "lucide": "^0.544.0",
+    "culori": "^4.0.2",
+    "@fontsource/open-sans": "^5.2.7"
+  },
   "devDependencies": {
-    "@fontsource/open-sans": "^5.2.7",
     "@tailwindcss/cli": "^4.1.13",
     "alpinejs": "^3.15.1",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.9",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.4",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.1.13",
-    "vitepress": "^2.0.0-alpha.12"
+    "vitepress": "^2.0.0-alpha.15"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.4",

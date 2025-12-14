@@ -22,6 +22,8 @@ outline: deep
 [Input](/components/input)<br />
 [Input Group](/components/input-group)<br />
 [Label](/components/label)<br />
+[List](/components/list)<br />
+[Listbox](/components/listbox)<br />
 [Menu](/components/menu)<br />
 [Pagination](/components/pagination)<br />
 [Popover](/components/popover)<br />
@@ -40,6 +42,6 @@ outline: deep
 [Text](/components/text)<br />
 [Textarea](/components/textarea)<br />
 [Tile](/components/tile)<br />
-[Toolbar](/components/timepicker)<br />
+[Time Picker](/components/timepicker)<br />
 [Toolbar](/components/toolbar)<br />
 [Tooltip](/components/tooltip)<br />

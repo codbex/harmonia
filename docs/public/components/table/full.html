@@ -6,7 +6,9 @@
     <thead x-h-table-header>
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Invoice Number</th>
-        <th x-h-table-head scope="col">Invoice Date</th>
+        <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+          <div class="flex items-center justify-between">Invoice Date<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+        </th>
         <th x-h-table-head scope="col">Customer Name</th>
         <th x-h-table-head scope="col">Due Date</th>
         <th x-h-table-head scope="col">Amount Total</th>
@@ -21,7 +23,7 @@
     </thead>
     <tbody x-h-table-body>
       <template x-for="invoice in invoices">
-        <tr x-h-table-row>
+        <tr x-h-table-row data-hoverable="true" data-activable="true">
           <th x-h-table-head x-text="invoice.invoiceNumber"></th>
           <td x-h-table-cell x-text="invoice.invoiceDate"></td>
           <td x-h-table-cell x-text="invoice.customerName"></td>
@@ -59,16 +61,16 @@
   }
 
   function formatDate(date) {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleString('en-US', { month: 'long' });
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "long" });
     const year = date.getFullYear();
     return `${day} ${month} ${year}`;
   }
 
-  const names = ['Ivan Strashimechkarov', 'Anna Petrova', 'John Doe', 'Maria Gonzalez', 'Liam Smith', 'Emma Johnson', 'Noah Brown', 'Olivia Davis', 'William Wilson', 'Sophia Moore'];
+  const names = ["Ivan Strashimechkarov", "Anna Petrova", "John Doe", "Maria Gonzalez", "Liam Smith", "Emma Johnson", "Noah Brown", "Olivia Davis", "William Wilson", "Sophia Moore"];
 
-  const categories = ['Consulting', 'Software', 'Design', 'Training', 'Marketing'];
-  const statuses = ['paid', 'unpaid', 'overdue', 'partial'];
+  const categories = ["Consulting", "Software", "Design", "Training", "Marketing"];
+  const statuses = ["paid", "unpaid", "overdue", "partial"];
 
   function generateInvoices() {
     const baseDate = new Date();
@@ -86,35 +88,37 @@
       const status = randomChoice(statuses);
 
       let outstandingBalance;
-      if (status === 'partial') {
+      if (status === "partial") {
         outstandingBalance = parseFloat((amountTotal * randomFloat(0.1, 0.65)).toFixed(2));
-      } else if (status === 'paid') {
+      } else if (status === "paid") {
         outstandingBalance = 0.0;
       } else {
         outstandingBalance = amountTotal;
       }
 
       const invoice = {
-        invoiceNumber: `INV-${String(i + 1).padStart(2, '0')}`,
+        invoiceNumber: `INV-${String(i + 1).padStart(2, "0")}`,
         invoiceDate: formatDate(invoiceDate),
         customerName: randomChoice(names),
         dueDate: formatDate(dueDate),
         amountTotal: amountTotal,
         status: status,
         outstandingBalance: outstandingBalance,
-        createdBy: 'admin',
+        createdBy: "admin",
         lastSent: formatDate(invoiceDate),
         taxAmount: taxAmount,
         category: randomChoice(categories),
-        currency: 'EUR',
+        currency: "EUR",
       };
 
       invoices.push(invoice);
     }
     return invoices;
   }
-
-  Alpine.data('tableData', () => ({
+  lucide.createIcons({
+    root: container,
+  });
+  Alpine.data("tableData", () => ({
     invoices: generateInvoices(),
   }));
 </script>

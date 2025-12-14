@@ -42,7 +42,7 @@ x-h-separator
 
 ```html
 <div class="flex flex-col gap-3">
-  <div class="flex gap-4 h-6 items-center">
+  <div class="flex h-6 items-center gap-4">
     <p x-h-text>Text</p>
     <div x-h-separator data-orientation="vertical"></div>
     <p x-h-text>Text</p>
@@ -50,7 +50,7 @@ x-h-separator
     <p x-h-text>Text</p>
   </div>
   <div x-h-separator data-orientation="horizontal"></div>
-  <div class="flex gap-4 h-6 items-center">
+  <div class="flex h-6 items-center gap-4">
     <p x-h-text>Text</p>
     <div x-h-separator data-orientation="vertical"></div>
     <p x-h-text>Text</p>

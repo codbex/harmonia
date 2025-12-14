@@ -1,0 +1,18 @@
+<div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'ht1' }">
+  <div x-h-tab-bar data-floating="true">
+    <div x-h-tab-list>
+      <button x-h-tab id="ht1" aria-controls="ht1c" :aria-selected="activeTabId === 'ht1'" @click="activeTabId = 'ht1'">Tab 1</button>
+      <button x-h-tab id="ht2" aria-controls="ht2c" :aria-selected="activeTabId === 'ht2'" @click="activeTabId = 'ht2'">Tab 2</button>
+      <button x-h-tab id="ht3" aria-controls="ht3c" :aria-selected="activeTabId === 'ht3'" @click="activeTabId = 'ht3'">Tab 3</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="ht1c" aria-labelledby="ht1" :hidden="activeTabId !== 'ht1'">
+    <div class="p-2">Tab 1 Content</div>
+  </div>
+  <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" :hidden="activeTabId !== 'ht2'">
+    <div class="p-2">Tab 2 Content</div>
+  </div>
+  <div x-h-tabs-content id="ht3c" aria-labelledby="ht3" :hidden="activeTabId !== 'ht3'">
+    <div class="p-2">Tab 3 Content</div>
+  </div>
+</div>

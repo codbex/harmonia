@@ -50,7 +50,7 @@ export default function (Alpine) {
       'rounded-lg',
       'border',
       'p-4',
-      'shadow-lg',
+      'shadow-xl',
       'sm:max-w-lg'
     );
     el.setAttribute('role', 'dialog');

@@ -1,4 +1,4 @@
-import { createElement, ChevronDown } from 'lucide';
+import { ChevronDown, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
@@ -89,7 +89,6 @@ export default function (Alpine) {
       'items-start',
       'justify-between',
       'gap-4',
-      'rounded-md',
       'py-4',
       'text-left',
       'text-sm',

@@ -43,7 +43,7 @@ Many components already have margins and paddings set, so you may have to add `!
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary m-4">m-4</div>
 </div>
@@ -52,12 +52,12 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary m-4">m-4</div>
+  <div class="m-4 bg-secondary text-secondary">m-4</div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary m-8">m-8</div>
 </div>
@@ -66,12 +66,12 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary m-8">m-8</div>
+  <div class="m-8 bg-secondary text-secondary">m-8</div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary m-12">m-12</div>
 </div>
@@ -80,7 +80,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary m-12">m-12</div>
+  <div class="m-12 bg-secondary text-secondary">m-12</div>
 </div>
 ```
 
@@ -89,7 +89,7 @@ Many components already have margins and paddings set, so you may have to add `!
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary ml-8">ml-8</div>
 </div>
@@ -98,7 +98,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary ml-8">ml-8</div>
+  <div class="ml-8 bg-secondary text-secondary">ml-8</div>
 </div>
 ```
 
@@ -107,7 +107,7 @@ Many components already have margins and paddings set, so you may have to add `!
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary mr-8">mr-8</div>
 </div>
@@ -116,7 +116,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary mr-8">mr-8</div>
+  <div class="mr-8 bg-secondary text-secondary">mr-8</div>
 </div>
 ```
 
@@ -125,7 +125,7 @@ Many components already have margins and paddings set, so you may have to add `!
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary mx-8">mx-8</div>
 </div>
@@ -134,7 +134,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary mx-8">mx-8</div>
+  <div class="mx-8 bg-secondary text-secondary">mx-8</div>
 </div>
 ```
 
@@ -143,7 +143,7 @@ Many components already have margins and paddings set, so you may have to add `!
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary mt-8">mt-8</div>
 </div>
@@ -152,7 +152,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary mt-8">mt-8</div>
+  <div class="mt-8 bg-secondary text-secondary">mt-8</div>
 </div>
 ```
 
@@ -161,7 +161,7 @@ Many components already have margins and paddings set, so you may have to add `!
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary mb-8">mb-8</div>
 </div>
@@ -170,7 +170,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary mb-8">mb-8</div>
+  <div class="mb-8 bg-secondary text-secondary">mb-8</div>
 </div>
 ```
 
@@ -179,7 +179,7 @@ Many components already have margins and paddings set, so you may have to add `!
 Responsive left and right margin based on the screen size.
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary mx-0 sm:mx-2 md:mx-4 lg:mx-8 xl:mx-12">Responsive</div>
 </div>
@@ -188,7 +188,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary mx-0 sm:mx-2 md:mx-4 lg:mx-8 xl:mx-12">Responsive</div>
+  <div class="mx-0 bg-secondary text-secondary sm:mx-2 md:mx-4 lg:mx-8 xl:mx-12">Responsive</div>
 </div>
 ```
 
@@ -197,7 +197,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary">
   <div class="bg-secondary text-secondary my-8">my-8</div>
 </div>
@@ -206,7 +206,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary">
-  <div class="bg-secondary text-secondary my-8">my-8</div>
+  <div class="my-8 bg-secondary text-secondary">my-8</div>
 </div>
 ```
 
@@ -215,7 +215,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary flex">
   <div class="bg-secondary text-secondary px-2">Left content</div>
   <div class="bg-secondary text-secondary ml-auto">ml-auto</div>
@@ -225,10 +225,10 @@ Responsive left and right margin based on the screen size.
 </ClientOnly>
 
 ```html
-<div class="bg-primary flex">
-  <div class="bg-secondary text-secondary px-2">Left content</div>
-  <div class="bg-secondary text-secondary ml-auto">ml-auto</div>
-  <div class="bg-secondary text-secondary px-2">Right content</div>
+<div class="flex bg-primary">
+  <div class="bg-secondary px-2 text-secondary">Left content</div>
+  <div class="ml-auto bg-secondary text-secondary">ml-auto</div>
+  <div class="bg-secondary px-2 text-secondary">Right content</div>
 </div>
 ```
 
@@ -237,7 +237,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary flex">
   <div class="bg-secondary text-secondary px-2">Left content</div>
   <div class="bg-secondary text-secondary mr-auto">ml-auto</div>
@@ -247,10 +247,10 @@ Responsive left and right margin based on the screen size.
 </ClientOnly>
 
 ```html
-<div class="bg-primary flex">
-  <div class="bg-secondary text-secondary px-2">Left content</div>
-  <div class="bg-secondary text-secondary mr-auto">ml-auto</div>
-  <div class="bg-secondary text-secondary px-2">Right content</div>
+<div class="flex bg-primary">
+  <div class="bg-secondary px-2 text-secondary">Left content</div>
+  <div class="mr-auto bg-secondary text-secondary">ml-auto</div>
+  <div class="bg-secondary px-2 text-secondary">Right content</div>
 </div>
 ```
 
@@ -261,7 +261,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary p-4">
   <div class="bg-secondary text-secondary">p-4</div>
 </div>
@@ -275,7 +275,7 @@ Responsive left and right margin based on the screen size.
 ```
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary p-8">
   <div class="bg-secondary text-secondary">p-8</div>
 </div>
@@ -289,7 +289,7 @@ Responsive left and right margin based on the screen size.
 ```
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary p-12">
   <div class="bg-secondary text-secondary">p-12</div>
 </div>
@@ -307,7 +307,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary pl-8">
   <div class="bg-secondary text-secondary">pl-8</div>
 </div>
@@ -325,7 +325,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary pr-8">
   <div class="bg-secondary text-secondary">pr-8</div>
 </div>
@@ -343,7 +343,7 @@ Responsive left and right margin based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary px-8">
   <div class="bg-secondary text-secondary">px-8</div>
 </div>
@@ -361,7 +361,7 @@ Responsive left and right margin based on the screen size.
 Responsive left and right padding based on the screen size.
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary px-0 sm:px-2 md:px-4 lg:px-8 xl:px-12">
   <div class="bg-secondary text-secondary">Responsive</div>
 </div>
@@ -379,7 +379,7 @@ Responsive left and right padding based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary pt-8">
   <div class="bg-secondary text-secondary">pt-8</div>
 </div>
@@ -397,7 +397,7 @@ Responsive left and right padding based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary pb-8">
   <div class="bg-secondary text-secondary">pb-8</div>
 </div>
@@ -415,7 +415,7 @@ Responsive left and right padding based on the screen size.
 <br />
 
 <ClientOnly>
-<component-container data-class="!p-0 flex flex-col items-stretch">
+<component-container data-padding="false" data-class="flex flex-col items-stretch">
 <div class="bg-primary py-8">
   <div class="bg-secondary text-secondary">py-8</div>
 </div>

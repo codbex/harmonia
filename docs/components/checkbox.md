@@ -14,14 +14,18 @@ x-h-checkbox
 
 <ClientOnly>
 <component-container data-class="flex items-center gap-3 justify-center">
-<input x-h-checkbox type="checkbox" id="terms" />
+<span x-h-checkbox>
+  <input type="checkbox" id="terms" />
+</span>
 <label x-h-label for="terms">Accept terms</label>
 </component-container>
 </ClientOnly>
 
 ```html
 <div class="flex items-center gap-3">
-  <input x-h-checkbox type="checkbox" id="terms" />
+  <span x-h-checkbox>
+    <input x-h-checkbox type="checkbox" id="terms" />
+  </span>
   <label x-h-label for="terms">Just accept</label>
 </div>
 ```

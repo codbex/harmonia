@@ -1,6 +1,6 @@
-import { createElement, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight } from 'lucide';
+import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
-import { computePosition, offset, flip, shift, autoUpdate } from '@floating-ui/dom';
 
 export default function (Alpine) {
   Alpine.directive('h-calendar', (el, { expression }, { effect, evaluateLater, cleanup, Alpine }) => {
@@ -28,7 +28,7 @@ export default function (Alpine) {
     let minDate = undefined;
     let maxDate = undefined;
 
-    function modelChange() {
+    function modelChange(triggerInput = false) {
       Alpine.nextTick(() => {
         el.dispatchEvent(new CustomEvent('change', { detail: { date: selected } }));
       });
@@ -41,24 +41,29 @@ export default function (Alpine) {
       }
       if (datepicker) {
         datepicker._datepicker.input.value = formatter.format(selected);
+        datepicker._datepicker.input.setCustomValidity('');
+        if (triggerInput) datepicker._datepicker.input.dispatchEvent(new Event('change', { bubbles: true }));
       } else {
         el.setAttribute('data-invalid', 'false');
       }
     }
 
-    if (datepicker) {
-      datepicker._datepicker.input.addEventListener('change', () => {
-        selected = new Date(datepicker._datepicker.input.value);
-        if (isNaN(selected)) {
-          console.error(`h-calendar: input value is not a valid date - ${datepicker._datepicker.input.value}`);
-          datepicker._datepicker.input.setCustomValidity('Input value is not a valid date.');
-          return;
-        } else {
-          datepicker._datepicker.input.setCustomValidity('');
-        }
+    const onInputChange = () => {
+      const newValue = new Date(datepicker._datepicker.input.value);
+      if (isNaN(newValue)) {
+        console.error(`h-calendar: input value is not a valid date - ${datepicker._datepicker.input.value}`);
+        datepicker._datepicker.input.setCustomValidity('Input value is not a valid date.');
+        return;
+      } else if (selected.getTime() !== newValue.getTime()) {
+        selected = newValue;
         modelChange();
         render();
-      });
+      }
+      datepicker._datepicker.input.setCustomValidity('');
+    };
+
+    if (datepicker) {
+      datepicker._datepicker.input.addEventListener('change', onInputChange);
     }
 
     function checkForModel() {
@@ -78,7 +83,7 @@ export default function (Alpine) {
       if (event.target.getAttribute('aria-disabled') === 'true') return;
       focusedDay = new Date(event.target.dataset.year, event.target.dataset.month, event.target.dataset.day);
       selected = new Date(focusedDay);
-      modelChange();
+      modelChange(true);
       render();
       if (datepicker) datepicker._datepicker.expanded = false;
     }
@@ -257,7 +262,7 @@ export default function (Alpine) {
           'align-middle',
           'text-center',
           'size-8',
-          'rounded-sm',
+          'rounded-control',
           'outline-none',
           'hover:bg-secondary-hover',
           'hover:text-secondary-foreground',
@@ -500,6 +505,9 @@ export default function (Alpine) {
       el.removeEventListener('keydown', onKeyDown);
       for (let d = 0; d < dayCells.length; d++) {
         dayCells[d].removeEventListener('click', dayClick);
+      }
+      if (datepicker) {
+        datepicker._datepicker.input.removeEventListener('change', onInputChange);
       }
     });
   });

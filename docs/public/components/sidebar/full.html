@@ -1,14 +1,11 @@
 <div x-h-sidebar>
   <div x-h-sidebar-header>
-    <div x-h-popover.auto>
-      <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-        <span>Header popover</span>
-        <i role="img" data-lucide="chevron-down"></i>
-      </button>
-      <div class="p-4" x-h-popover-content data-align="bottom-start">Header popover content</div>
-    </div>
+    <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
+      <span>Header popover</span>
+      <i role="img" data-lucide="chevron-down"></i>
+    </button>
+    <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
-  <div x-h-sidebar-separator></div>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group x-h-collapsible="true">
       <div x-h-sidebar-group-label>
@@ -125,19 +122,18 @@
       </div>
     </div>
   </div>
-  <div x-h-sidebar-separator></div>
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
       <span>Footer popover</span>
-      <ul x-h-menu aria-label="dropdown" data-align="top-start">
-        <li x-h-menu-item>Set yourself as away</li>
-        <div x-h-menu-label>Team</div>
-        <li x-h-menu-item>Invite users</li>
-        <div x-h-menu-separator></div>
-        <li x-h-menu-item data-variant="negative">Log out</li>
-      </ul>
       <i role="img" data-lucide="chevrons-up-down"></i>
     </button>
+    <ul x-h-menu aria-label="dropdown" data-align="top-start">
+      <li x-h-menu-item>Set yourself as away</li>
+      <div x-h-menu-label>Team</div>
+      <li x-h-menu-item>Invite users</li>
+      <div x-h-menu-separator></div>
+      <li x-h-menu-item data-variant="negative">Log out</li>
+    </ul>
   </div>
 </div>
 <script type="text/javascript">

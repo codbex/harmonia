@@ -29,6 +29,14 @@ npm run build
 npm run docs:install
 ```
 
+3. Build the library
+
+Even if you did a library build before, you need to do this after you install the document dependencies
+
+```sh
+npm run build
+```
+
 3. Build the documentation
 
 ```sh

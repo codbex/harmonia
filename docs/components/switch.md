@@ -19,29 +19,37 @@ x-h-switch
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex items-center gap-3 justify-center">
-<input x-h-switch type="checkbox" id="sw" />
+<component-container data-js="/js/init-icons.js" data-class="flex items-center gap-3 justify-center">
+<span x-h-switch>
+  <input type="checkbox" id="sw" />
+</span>
 <label x-h-label for="sw">Just switch</label>
 </component-container>
 </ClientOnly>
 
 ```html
 <div class="flex items-center gap-3">
-  <input x-h-switch type="checkbox" id="sw" />
+  <span x-h-switch>
+    <input type="checkbox" id="sw" />
+  </span>
   <label x-h-label for="sw">Just switch</label>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex items-center gap-3 justify-center">
-<input x-h-switch data-size="sm" type="checkbox" id="sws" />
+<component-container data-js="/js/init-icons.js" data-class="flex items-center gap-3 justify-center">
+<span x-h-switch data-size="sm">
+  <input type="checkbox" id="sws" />
+</span>
 <label x-h-label for="sws">Just switch</label>
 </component-container>
 </ClientOnly>
 
 ```html
 <div class="flex items-center gap-3">
-  <input x-h-switch data-size="sm" type="checkbox" id="sws" />
+  <span x-h-switch data-size="sm">
+    <input type="checkbox" id="sws" />
+  </span>
   <label x-h-label for="sws">Just switch</label>
 </div>
 ```

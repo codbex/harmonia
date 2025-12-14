@@ -73,7 +73,7 @@ x-h-avatar-fallback
 <br />
 
 <ClientOnly>
-<component-container data-js="/components/init-icons.js" data-class="flex flex-col items-center">
+<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center">
 <span x-h-avatar aria-label="camera">
   <i role="img" data-lucide="camera"></i>
 </span>
@@ -88,7 +88,7 @@ x-h-avatar-fallback
 
 ### Interactive
 
-<br />
+To make an avatar interactive, use the `button` HTML element instead of a `span`.
 
 <ClientOnly>
 <component-container data-class="flex flex-col items-center">
