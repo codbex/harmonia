@@ -21,9 +21,10 @@ x-h-select-separator
 
 #### x-h-select-trigger
 
-| Attribute | Type                        | Required | Description                 |
-| --------- | --------------------------- | -------- | --------------------------- |
-| data-size | `default`<br/>`sm`<br/>`xs` | false    | Size of the select trigger. |
+| Attribute    | Type                                          | Required | Description                                   |
+| ------------ | --------------------------------------------- | -------- | --------------------------------------------- |
+| data-variant | `default`<br />`secondary`<br />`transparent` | false    | Changes the color/shape of the select button. |
+| data-size    | `default`<br />`xs`<br />`sm`<br />`lg`<br /> | false    | Changes the size of the select button.        |
 
 #### x-h-select-content
 

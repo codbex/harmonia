@@ -58,9 +58,9 @@ npm install @codbex/harmonia
 
 ```js [Automatic]
 import Alpine from 'alpinejs';
-import Harmonia from '@codbex/harmonia';
+import registerComponents from '@codbex/harmonia';
 
-Harmonia.init(Alpine.plugin);
+registerComponents(Alpine.plugin);
 
 Alpine.start();
 ```
@@ -375,9 +375,9 @@ Here is an example `fonts.css` file:
     <button x-h-button>Button</button>
     <script type="module">
       import Alpine from 'alpinejs';
-      import Harmonia from '@codbex/harmonia';
+      import registerComponents from '@codbex/harmonia';
 
-      Harmonia.init(Alpine.plugin);
+      registerComponents(Alpine.plugin);
 
       Alpine.start();
     </script>

@@ -19,7 +19,7 @@ export default function (Alpine) {
       throw new Error('h-accordion-item must be inside an h-accordion');
     }
 
-    el.classList.add('border-b', 'last:border-b-0');
+    el.classList.add('border-b', 'last:border-b-0', '[[data-variant=header]_&]:data-[state=closed]:border-b-0');
     el.setAttribute('data-slot', 'accordion-item');
 
     const itemId = expression ?? `ha${uuidv4()}`;
@@ -64,7 +64,18 @@ export default function (Alpine) {
       throw new Error('h-accordion-trigger must be inside an h-accordion-item, which must be inside an h-accordion');
     }
 
-    el.classList.add('flex');
+    el.classList.add(
+      'flex',
+      'h-12',
+      '[[data-size=md]_&]:h-10',
+      '[[data-size=sm]_&]:h-8',
+      '[[data-variant=header]_&]:bg-object-header',
+      '[[data-variant=header]_&]:text-object-header-foreground',
+      '[[data-variant=header]_&]:px-4',
+      '[[data-variant=header]_&]:border-b',
+      '[[data-size=md][data-variant=header]_&]:px-3',
+      '[[data-size=sm][data-variant=header]_&]:px-2.5'
+    );
     el.setAttribute('tabIndex', '-1');
 
     const getLabel = evaluateLater(expression);
@@ -86,10 +97,9 @@ export default function (Alpine) {
       'focus-visible:ring-ring/50',
       'flex',
       'flex-1',
-      'items-start',
+      'items-center',
       'justify-between',
       'gap-4',
-      'py-4',
       'text-left',
       'text-sm',
       'font-medium',

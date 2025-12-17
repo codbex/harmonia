@@ -38,9 +38,9 @@ export default function (Alpine) {
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
-      'invalid:ring-negative/20',
-      'dark:invalid:ring-negative/40',
-      'invalid:border-negative'
+      'invalid:!ring-negative/20',
+      'dark:invalid:!ring-negative/40',
+      'invalid:!border-negative'
     );
     if (modifiers.includes('group')) {
       el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'shadow-control', 'focus-visible:ring-[3px]');

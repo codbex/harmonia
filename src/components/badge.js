@@ -20,12 +20,6 @@ export default function (Alpine) {
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
       'focus-visible:ring-[3px]',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'invalid:ring-negative/20',
-      'dark:invalid:ring-negative/40',
-      'invalid:border-negative',
       'transition-[color,box-shadow]',
       'overflow-hidden'
     );
@@ -50,14 +44,12 @@ export default function (Alpine) {
     setVariant(el.getAttribute('data-variant') ?? 'default');
 
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-variant') {
-          setVariant(el.getAttribute('data-variant') ?? 'default');
-        }
+      mutations.forEach(() => {
+        setVariant(el.getAttribute('data-variant') ?? 'default');
       });
     });
 
-    observer.observe(el, { attributes: true });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-variant'] });
 
     cleanup(() => {
       observer.disconnect();

@@ -37,8 +37,9 @@ import timepicker from './components/timepicker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 
-import { version } from '../package.json';
-import { getColorScheme, setColorScheme } from './utils/theme';
+export { version } from '../package.json';
+export { getBreakpointListener } from './utils/breakpoint-listener';
+export { getColorScheme, setColorScheme } from './utils/theme';
 
 export {
   accordion as Accordion,
@@ -81,50 +82,45 @@ export {
   tooltip as Tooltip,
 };
 
-const Harmonia = {
-  init(registerPlugin) {
-    registerPlugin(accordion);
-    registerPlugin(alert);
-    registerPlugin(avatar);
-    registerPlugin(badge);
-    registerPlugin(button);
-    registerPlugin(calendar);
-    registerPlugin(card);
-    registerPlugin(checkbox);
-    registerPlugin(collapsible);
-    registerPlugin(datepicker);
-    registerPlugin(dialog);
-    registerPlugin(fieldset);
-    registerPlugin(icon);
-    registerPlugin(infoPage);
-    registerPlugin(input);
-    registerPlugin(label);
-    registerPlugin(list);
-    registerPlugin(menu);
-    registerPlugin(pagination);
-    registerPlugin(popover);
-    registerPlugin(progress);
-    registerPlugin(radio);
-    registerPlugin(range);
-    registerPlugin(select);
-    registerPlugin(separator);
-    registerPlugin(sidebar);
-    registerPlugin(skeleton);
-    registerPlugin(spinner);
-    registerPlugin(_switch);
-    registerPlugin(table);
-    registerPlugin(tabs);
-    registerPlugin(tag);
-    registerPlugin(text);
-    registerPlugin(textarea);
-    registerPlugin(tile);
-    registerPlugin(timepicker);
-    registerPlugin(toolbar);
-    registerPlugin(tooltip);
-  },
-  setColorScheme,
-  getColorScheme,
-  version,
+export const registerComponents = (registerPlugin) => {
+  registerPlugin(accordion);
+  registerPlugin(alert);
+  registerPlugin(avatar);
+  registerPlugin(badge);
+  registerPlugin(button);
+  registerPlugin(calendar);
+  registerPlugin(card);
+  registerPlugin(checkbox);
+  registerPlugin(collapsible);
+  registerPlugin(datepicker);
+  registerPlugin(dialog);
+  registerPlugin(fieldset);
+  registerPlugin(icon);
+  registerPlugin(infoPage);
+  registerPlugin(input);
+  registerPlugin(label);
+  registerPlugin(list);
+  registerPlugin(menu);
+  registerPlugin(pagination);
+  registerPlugin(popover);
+  registerPlugin(progress);
+  registerPlugin(radio);
+  registerPlugin(range);
+  registerPlugin(select);
+  registerPlugin(separator);
+  registerPlugin(sidebar);
+  registerPlugin(skeleton);
+  registerPlugin(spinner);
+  registerPlugin(_switch);
+  registerPlugin(table);
+  registerPlugin(tabs);
+  registerPlugin(tag);
+  registerPlugin(text);
+  registerPlugin(textarea);
+  registerPlugin(tile);
+  registerPlugin(timepicker);
+  registerPlugin(toolbar);
+  registerPlugin(tooltip);
 };
 
-export default Harmonia;
+export default registerComponents;

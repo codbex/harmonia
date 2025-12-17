@@ -5,8 +5,8 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'dialog-overlay');
 
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-open' && el.getAttribute('data-open') === 'true') {
+      mutations.forEach(() => {
+        if (el.getAttribute('data-open') === 'true') {
           const inputs = el.getElementsByTagName('INPUT');
           if (inputs.length) {
             for (let i = 0; i < inputs.length; i++) {
@@ -26,7 +26,7 @@ export default function (Alpine) {
       });
     });
 
-    observer.observe(el, { attributes: true });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-open'] });
 
     cleanup(() => {
       observer.disconnect();

@@ -22,8 +22,11 @@ export default function (Alpine) {
       case 'blockquote':
         el.classList.add('mt-6', 'border-l-2', 'pl-6', 'italic');
         break;
+      case 'code-inline':
+        el.classList.add('bg-muted', 'relative', 'rounded', 'px-[0.3rem]', 'py-[0.2rem]', 'font-mono', 'text-sm', 'font-semibold', 'whitespace-pre');
+        break;
       case 'code':
-        el.classList.add('bg-muted', 'relative', 'rounded', 'px-[0.3rem]', 'py-[0.2rem]', 'font-mono', 'text-sm', 'font-semibold');
+        el.classList.add('bg-muted', 'relative', 'rounded', 'p-3', 'font-mono', 'text-sm', 'font-semibold', 'whitespace-pre');
         break;
       case 'lead':
         el.classList.add('text-muted-foreground', 'text-xl');

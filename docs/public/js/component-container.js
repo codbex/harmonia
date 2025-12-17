@@ -1,4 +1,4 @@
-import Harmonia from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
+import registerComponents from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
 import Alpine from '/harmonia/lib/node_modules/alpinejs/dist/module.esm.min.js';
 
 class ComponentContainer extends HTMLElement {
@@ -14,10 +14,8 @@ class ComponentContainer extends HTMLElement {
     this.container.setAttribute('v-pre', '');
     this.shadowRoot.appendChild(this.container);
     this.observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          this.classToggle();
-        }
+      mutations.forEach(() => {
+        this.classToggle();
       });
     });
   }
@@ -46,7 +44,7 @@ class ComponentContainer extends HTMLElement {
       this.container.style.height = this.getAttribute('data-height');
     }
     this.classToggle();
-    this.observer.observe(window.document.documentElement, { attributes: true });
+    this.observer.observe(window.document.documentElement, { attributes: true, attributeFilter: ['class'] });
     if (this.hasAttribute('data-html')) {
       fetch('/harmonia' + this.getAttribute('data-html'))
         .then((response) => {
@@ -61,12 +59,12 @@ class ComponentContainer extends HTMLElement {
             for (let a = 0; a < staticScript.attributes.length; a++) {
               script.setAttribute(staticScript.attributes[a].name, staticScript.attributes[a].value);
             }
-            const scriptText = document.createTextNode(`function initJS(Alpine, container) {${staticScript.innerHTML}}`);
+            const scriptText = document.createTextNode(`function initJS(container) {${staticScript.innerHTML}}`);
             script.appendChild(scriptText);
             staticScript.parentNode.replaceChild(script, staticScript);
-            initJS(Alpine, this.container);
+            initJS(this.container);
           }
-          Harmonia.init(Alpine.plugin);
+          registerComponents(Alpine.plugin);
           Alpine.initTree(this.container);
         })
         .catch((response) => {
@@ -75,13 +73,13 @@ class ComponentContainer extends HTMLElement {
     } else if (this.hasAttribute('data-js')) {
       this.container.append(...this.childNodes);
       import('/harmonia' + this.getAttribute('data-js')).then((mod) => {
-        mod.initJS(Alpine, this.container);
-        Harmonia.init(Alpine.plugin);
+        mod.initJS(this.container);
+        registerComponents(Alpine.plugin);
         Alpine.initTree(this.container);
       });
     } else {
       this.container.append(...this.childNodes);
-      Harmonia.init(Alpine.plugin);
+      registerComponents(Alpine.plugin);
       Alpine.initTree(this.container);
     }
   }

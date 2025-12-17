@@ -58,7 +58,6 @@ export const buttonVariants = {
     'border',
     'bg-background',
     'text-foreground',
-    'shadow-none',
     'hover:bg-secondary',
     'hover:text-secondary-foreground',
     'active:bg-secondary-active',
@@ -107,10 +106,31 @@ export const setButtonClasses = (el) => {
     'aria-invalid:ring-negative/20',
     'dark:aria-invalid:ring-negative/40',
     'aria-invalid:border-negative',
-    'invalid:ring-negative/20',
-    'dark:invalid:ring-negative/40',
-    'invalid:border-negative'
+    'invalid:!ring-negative/20',
+    'dark:invalid:!ring-negative/40',
+    'invalid:!border-negative'
   );
+};
+
+export const getButtonSize = (size, inGroup = false) => {
+  switch (size) {
+    case 'xs':
+      return inGroup ? ['h-6', 'gap-1', 'px-2', "[&>svg:not([class*='size-'])]:size-3.5", 'has-[>svg]:px-2'] : ['h-6.5', 'gap-1.5', 'px-2.5', 'has-[>svg]:px-2.5'];
+    case 'sm':
+      return inGroup ? ['h-8', 'px-2.5', 'gap-1.5', 'has-[>svg]:px-2.5'] : ['h-8', 'gap-1.5', 'px-3', 'has-[>svg]:px-2.5'];
+    case 'lg':
+      return ['h-10', 'px-6', 'has-[>svg]:px-4'];
+    case 'icon-xs':
+      return inGroup ? ['size-6', 'p-0', 'has-[>svg]:p-0'] : ['size-6.5'];
+    case 'icon-sm':
+      return inGroup ? ['size-8', 'p-0', 'has-[>svg]:p-0'] : ['size-8'];
+    case 'icon':
+      return ['size-9'];
+    case 'icon-lg':
+      return ['size-10'];
+    default:
+      return ['h-9', 'px-4', 'py-2', 'has-[>svg]:px-3'];
+  }
 };
 
 export default function (Alpine) {
@@ -122,17 +142,6 @@ export default function (Alpine) {
 
     const inGroup = modifiers.includes('group');
 
-    const sizes = {
-      default: ['h-9', 'px-4', 'py-2', 'has-[>svg]:px-3'],
-      xs: inGroup ? ['h-6', 'gap-1', 'px-2', "[&>svg:not([class*='size-'])]:size-3.5", 'has-[>svg]:px-2'] : ['h-6.5', 'gap-1.5', 'px-2.5', 'has-[>svg]:px-2.5'],
-      sm: inGroup ? ['h-8', 'px-2.5', 'gap-1.5', 'has-[>svg]:px-2.5'] : ['h-8', 'gap-1.5', 'px-3', 'has-[>svg]:px-2.5'],
-      lg: ['h-10', 'px-6', 'has-[>svg]:px-4'],
-      'icon-xs': inGroup ? ['size-6', 'p-0', 'has-[>svg]:p-0'] : ['size-6.5'],
-      'icon-sm': inGroup ? ['size-8', 'p-0', 'has-[>svg]:p-0'] : ['size-8'],
-      icon: ['size-9'],
-      'icon-lg': ['size-10'],
-    };
-
     function setVariant(variant) {
       for (const [_, value] of Object.entries(buttonVariants)) {
         el.classList.remove(...value);
@@ -141,12 +150,9 @@ export default function (Alpine) {
     }
 
     function setSize(size) {
-      if (sizes.hasOwnProperty(size)) {
-        el.classList.add(...sizes[size]);
-        el.setAttribute('data-size', size);
-        if (size.startsWith('icon') && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-          console.error('h-button: Icon-only buttons must have an "aria-label" or "aria-labelledby" attribute', el);
-        }
+      el.classList.add(...getButtonSize(size, inGroup));
+      if (size && size.startsWith('icon') && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
+        console.error('h-button: Icon-only buttons must have an "aria-label" or "aria-labelledby" attribute', el);
       }
     }
 
@@ -162,21 +168,19 @@ export default function (Alpine) {
         if (['date-picker-trigger', 'time-picker-trigger'].includes(el.getAttribute('data-slot'))) {
           setSize('icon-xs');
         } else {
-          setSize('default');
+          setSize();
         }
       }
     }
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes') {
-          if (mutation.attributeName === 'data-variant') setVariant(el.getAttribute('data-variant') ?? 'default');
-          else if (mutation.attributeName === 'data-size') setSize(el.getAttribute('data-size') ?? (inGroup ? 'xs' : 'default'));
-        }
+        if (mutation.attributeName === 'data-variant') setVariant(el.getAttribute('data-variant') ?? 'default');
+        else setSize(el.getAttribute('data-size') ?? (inGroup ? 'xs' : 'default'));
       });
     });
 
-    observer.observe(el, { attributes: true });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-variant', 'data-size'] });
 
     cleanup(() => {
       observer.disconnect();

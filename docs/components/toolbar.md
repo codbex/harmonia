@@ -18,11 +18,11 @@ x-h-toolbar-separator
 
 #### x-h-toolbar
 
-| Attribute     | Type                         | Required | Description                                               |
-| ------------- | ---------------------------- | -------- | --------------------------------------------------------- |
-| data-variant  | `default`<br />`transparent` | false    | Transparent background color. Does not remove the border. |
-| data-size     | `default`<br />`sm`          | false    | Make the toolbar smaller.                                 |
-| data-floating | boolean                      | false    | Floating style toolbar.                                   |
+| Attribute     | Type                          | Required | Description                                               |
+| ------------- | ----------------------------- | -------- | --------------------------------------------------------- |
+| data-variant  | `default`<br />`transparent`  | false    | Transparent background color. Does not remove the border. |
+| data-size     | `default`<br />`md`<br />`sm` | false    | Make the toolbar smaller.                                 |
+| data-floating | boolean                       | false    | Floating style toolbar.                                   |
 
 ### Modifiers
 
@@ -135,6 +135,32 @@ x-h-toolbar-separator
   <button x-h-button data-size="xs" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
   <button x-h-button data-size="xs" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+```
+
+### Medium
+
+<br />
+
+<ClientOnly>
+<component-container data-js="/js/init-icons.js">
+<div x-h-toolbar data-size="md">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-toolbar data-size="md">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 

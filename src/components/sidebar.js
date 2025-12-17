@@ -17,16 +17,12 @@ export default function (Alpine) {
     setFloating();
 
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes') {
-          if (mutation.attributeName === 'data-floating') {
-            setFloating();
-          }
-        }
+      mutations.forEach(() => {
+        setFloating();
       });
     });
 
-    observer.observe(el, { attributes: true });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-floating'] });
 
     cleanup(() => {
       observer.disconnect();

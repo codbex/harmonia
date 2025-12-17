@@ -1,4 +1,4 @@
-export function initJS(Alpine, container) {
+export function initJS(container) {
   lucide.createIcons({
     root: container,
   });

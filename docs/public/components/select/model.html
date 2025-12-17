@@ -12,16 +12,16 @@
 </div>
 <script>
   const originalItems = [
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Blueberry', value: 'blueberry' },
-    { label: 'Grapes', value: 'grapes' },
-    { label: 'Pineapple', value: 'pineapple' },
-    { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
+    { label: "Apple", value: "apple" },
+    { label: "Banana", value: "banana" },
+    { label: "Blueberry", value: "blueberry" },
+    { label: "Grapes", value: "grapes" },
+    { label: "Pineapple", value: "pineapple" },
+    { label: "Jamaican tangelo", value: "jamaicanTangelo" },
   ];
-  Alpine.data('selectData', () => ({
-    selected: 'banana',
-    placeholder: 'Select',
+  Alpine.data("selectData", () => ({
+    selected: "banana",
+    placeholder: "Select",
     items: structuredClone(originalItems),
     addFromSearch(event) {
       let nItems = structuredClone(originalItems);

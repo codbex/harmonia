@@ -66,7 +66,7 @@
   --table-active: oklch(0.9393 0.0011 197.14);
   --table-active-foreground: oklch(0.3211 0 0);
 
-  --font-sans: Open Sans, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --tracking-normal: -0.025em;
@@ -288,7 +288,7 @@ body {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  a {
+  a:not([data-slot]) {
     @apply text-primary underline-offset-4 hover:underline;
   }
 }

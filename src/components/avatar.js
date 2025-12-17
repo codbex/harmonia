@@ -9,6 +9,7 @@ export default function (Alpine) {
       'has-[img]:border-0',
       'flex',
       'size-8',
+      'aspect-square',
       'shrink-0',
       'overflow-hidden',
       'rounded-full',
@@ -58,14 +59,12 @@ export default function (Alpine) {
     }
 
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes') {
-          if (mutation.attributeName === 'src') interval = setInterval(completeCheck, 10);
-        }
+      mutations.forEach(() => {
+        interval = setInterval(completeCheck, 10);
       });
     });
 
-    observer.observe(el, { attributes: true });
+    observer.observe(el, { attributes: true, attributeFilter: ['src'] });
 
     cleanup(() => {
       if (interval) clearInterval(interval);

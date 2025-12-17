@@ -67,6 +67,10 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Utilities',
+        items: [{ text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' }],
+      },
+      {
         text: 'Utility classes',
         items: [
           { text: 'Width & Height', link: '/utility-classes/width-height' },

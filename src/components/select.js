@@ -1,6 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { Check, ChevronDown, createElement, Search } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { buttonVariants, getButtonSize, setButtonClasses } from './button';
 
 const FilterType = Object.freeze({
   'starts-with': 0,
@@ -33,11 +34,29 @@ export default function (Alpine) {
       select._select.multiple = Array.isArray(el._x_model.get());
       select._select.model = el._x_model.get();
     }
+    setButtonClasses(el);
+    const setVariant = (variant) => {
+      if (variant === 'secondary') {
+        el.classList.add(...buttonVariants['default']);
+        return;
+      } else if (variant === 'transparent') {
+        el.classList.add(...buttonVariants['transparent']);
+      } else el.classList.add('shadow-control', ...buttonVariants['outline']);
+    };
+    const setSize = (size) => {
+      const sizes = ['sm', 'xs', 'lg'];
+      if (sizes.includes(size)) {
+        el.classList.add(...getButtonSize(size));
+      } else el.classList.add(...getButtonSize());
+    };
+    setVariant(el.getAttribute('data-variant'));
+    setSize(el.getAttribute('data-size'));
+    el.classList.add('w-full', '[&_svg]:opacity-50', '[&[data-state=open]>svg]:rotate-180');
     el.setAttribute('type', 'button');
 
     const selectValue = document.createElement('span');
     selectValue.setAttribute('data-slot', 'select-value');
-    selectValue.classList.add('pointer-events-none');
+    selectValue.classList.add('text-left', 'truncate', 'pointer-events-none', 'w-full');
 
     function getPlaceholder() {
       if (!el.value) {
@@ -55,18 +74,16 @@ export default function (Alpine) {
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes') {
-          if (mutation.attributeName === 'value') {
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-            if (el.value) selectValue.classList.remove('text-muted-foreground');
-          } else if (mutation.attributeName === 'placeholder' && !select._select.label.length) {
-            getPlaceholder();
-          }
+        if (mutation.attributeName === 'value') {
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+          if (el.value) selectValue.classList.remove('text-muted-foreground');
+        } else if (mutation.attributeName === 'placeholder' && !select._select.label.length) {
+          getPlaceholder();
         }
       });
     });
 
-    observer.observe(el, { attributes: true });
+    observer.observe(el, { attributes: true, attributeFilter: ['value', 'placeholder'] });
 
     effect(() => {
       if (select._select.label.length === 1) {
@@ -78,48 +95,6 @@ export default function (Alpine) {
       }
     });
 
-    el.classList.add(
-      '[&>*]:pointer-events-none',
-      'cursor-pointer',
-      'border-input',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'invalid:ring-negative/20',
-      'dark:invalid:ring-negative/40',
-      'invalid:border-negative',
-      'hover:bg-secondary-hover',
-      'active:bg-secondary-active',
-      'flex',
-      'w-full',
-      'items-center',
-      'justify-between',
-      'gap-2',
-      'rounded-control',
-      'border',
-      'bg-input-inner',
-      'px-3',
-      'text-sm',
-      'whitespace-nowrap',
-      'shadow-control',
-      'transition-[color,box-shadow]',
-      'outline-none',
-      'focus-visible:ring-[3px]',
-      'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
-      '*:data-[slot=select-value]:line-clamp-1',
-      '*:data-[slot=select-value]:flex',
-      '*:data-[slot=select-value]:items-center',
-      '*:data-[slot=select-value]:gap-2',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4",
-      '[&_svg]:size-4',
-      '[&_svg]:opacity-50',
-      '[&[data-state=open]>svg]:rotate-180'
-    );
     el.setAttribute('data-slot', 'select-trigger');
 
     if (el.hasAttribute('id')) {
@@ -132,23 +107,6 @@ export default function (Alpine) {
     el.setAttribute('aria-haspopup', 'listbox');
     el.setAttribute('aria-autocomplete', 'none');
     el.setAttribute('role', 'combobox');
-
-    const sizes = {
-      default: ['h-9', 'py-2'],
-      xs: ['h-6.5', 'py-[0.188rem]'],
-      sm: ['h-8', 'py-1.5'],
-    };
-
-    function setSize(size) {
-      for (const [_, value] of Object.entries(sizes)) {
-        el.classList.remove(...value);
-      }
-      if (sizes.hasOwnProperty(size)) {
-        el.classList.add(...sizes[size]);
-      }
-    }
-    if (!el.hasAttribute('data-size')) el.setAttribute('data-size', 'default');
-    setSize(el.getAttribute('data-size'));
 
     effect(() => {
       el.setAttribute('data-state', select._select.expanded ? 'open' : 'closed');
@@ -243,7 +201,7 @@ export default function (Alpine) {
     if (!select) {
       throw new Error('h-select-content must be inside an h-select element');
     }
-    el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'p-1', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-control', 'border', 'shadow-md');
+    el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'p-1', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-md', 'border', 'shadow-md');
     el.setAttribute('data-slot', 'select-content');
     el.setAttribute('role', 'listbox');
     el.setAttribute('role', 'presentation');
@@ -392,7 +350,7 @@ export default function (Alpine) {
       'cursor-default',
       'items-center',
       'gap-2',
-      'rounded-control',
+      'rounded-sm',
       'py-1.5',
       'pr-8',
       'pl-2',

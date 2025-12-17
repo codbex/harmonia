@@ -39,9 +39,11 @@ import tooltip from './components/tooltip';
 
 import { getColorScheme, setColorScheme } from './utils/theme';
 
+import { getBreakpointListener } from './utils/breakpoint-listener';
+
 import { version } from '../package.json';
 
-window.Harmonia = { getColorScheme, setColorScheme, version };
+window.Harmonia = { getBreakpointListener, getColorScheme, setColorScheme, version };
 
 document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(accordion);

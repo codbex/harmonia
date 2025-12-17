@@ -66,6 +66,7 @@
 @source inline("float-right");
 @source inline("hidden");
 @source inline("block");
+@source inline("{xs:,sm:,md:,lg:,xl:}{hidden,block}");
 @source inline("sr-only");
 @source inline("box-border");
 @source inline("border");
