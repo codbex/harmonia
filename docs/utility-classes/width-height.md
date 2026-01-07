@@ -9,6 +9,7 @@ The width class names start with `w`.
 | w-auto   | Auto width.                               |
 | w-full   | 100% width.                               |
 | w-screen | Makes the width equal to the screen size. |
+| min-w-0  | Minimum width of 0 px.                    |
 | w-1/2    | 50% width.                                |
 | w-1/3    | 33% width.                                |
 | w-1/4    | 25% width.                                |
@@ -30,14 +31,15 @@ The height class names start with `h`.
 
 In case both width and height have to be applied and they must be the same, the `size-*` class can be used with a range from 4 to 12.
 
-| Class       | Description                 |
-| ----------- | --------------------------- |
-| size-full   | Full size container.        |
-| size-`4-12` | Width and height.           |
-| tile-xs     | Extra small size container. |
-| tile-sm     | Small size container.       |
-| tile-md     | Medium size container.      |
-| tile-lg     | Large size container.       |
+| Class       | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| size-full   | Full size container.                                            |
+| size-`4-12` | Width and height.                                               |
+| min-size-4  | Minimum width and height of `var(--spacing)*4`. Used for icons. |
+| tile-xs     | Extra small size container.                                     |
+| tile-sm     | Small size container.                                           |
+| tile-md     | Medium size container.                                          |
+| tile-lg     | Large size container.                                           |
 
 ::: info
 All of the classes above can be used with the `!` prefix in order to force their use in case the target element already has a certain size set.

@@ -1,6 +1,6 @@
 # Textarea
 
-Displays an textarea field. It should be paired with a label.
+Displays a textarea field. It should be paired with a label.
 
 ## API Reference
 
@@ -26,4 +26,18 @@ x-h-textarea
 
 ```html
 <textarea x-h-textarea placeholder="Comment..."></textarea>
+```
+
+### Without resize handle
+
+<br />
+
+<ClientOnly>
+<component-container>
+<textarea x-h-textarea class="resize-none"></textarea>
+</component-container>
+</ClientOnly>
+
+```html
+<textarea x-h-textarea class="resize-none"></textarea>
 ```

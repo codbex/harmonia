@@ -2,7 +2,7 @@ export const buttonVariants = {
   default: [
     'bg-secondary',
     'text-secondary-foreground',
-    'shadow-control',
+    'shadow-button',
     'hover:bg-secondary-hover',
     'active:bg-secondary-active',
     'aria-pressed:bg-secondary-active',
@@ -13,7 +13,7 @@ export const buttonVariants = {
   primary: [
     'bg-primary',
     'text-primary-foreground',
-    'shadow-control',
+    'shadow-button',
     'hover:bg-primary-hover',
     'active:bg-primary-active',
     'aria-pressed:bg-primary-active',
@@ -24,7 +24,7 @@ export const buttonVariants = {
   positive: [
     'bg-positive',
     'text-positive-foreground',
-    'shadow-control',
+    'shadow-button',
     'hover:bg-positive-hover',
     'active:bg-positive-active',
     'aria-pressed:bg-positive-active',
@@ -35,7 +35,7 @@ export const buttonVariants = {
   negative: [
     'bg-negative',
     'text-negative-foreground',
-    'shadow-control',
+    'shadow-button',
     'hover:bg-negative-hover',
     'active:bg-negative-active',
     'aria-pressed:bg-negative-active',
@@ -46,7 +46,7 @@ export const buttonVariants = {
   warning: [
     'bg-warning',
     'text-warning-foreground',
-    'shadow-control',
+    'shadow-button',
     'hover:bg-warning-hover',
     'active:bg-warning-active',
     'aria-pressed:bg-warning-active',
@@ -142,6 +142,8 @@ export default function (Alpine) {
 
     const inGroup = modifiers.includes('group');
 
+    let lastSize;
+
     function setVariant(variant) {
       for (const [_, value] of Object.entries(buttonVariants)) {
         el.classList.remove(...value);
@@ -149,16 +151,18 @@ export default function (Alpine) {
       if (buttonVariants.hasOwnProperty(variant)) el.classList.add(...buttonVariants[variant]);
     }
 
-    function setSize(size) {
+    function setSize(size = 'default') {
+      el.classList.remove(...getButtonSize(lastSize, inGroup));
       el.classList.add(...getButtonSize(size, inGroup));
-      if (size && size.startsWith('icon') && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
+      if (size.startsWith('icon') && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
         console.error('h-button: Icon-only buttons must have an "aria-label" or "aria-labelledby" attribute', el);
       }
+      lastSize = size;
     }
 
     setVariant(el.getAttribute('data-variant') ?? 'default');
     if (inGroup) {
-      el.classList.remove('shadow-control', 'inline-flex');
+      el.classList.remove('shadow-button', 'inline-flex');
       el.classList.add('shadow-none', 'flex');
       setSize(el.getAttribute('data-size') ?? 'xs');
     } else {

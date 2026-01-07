@@ -19,7 +19,7 @@ export default function (Alpine) {
       '[&>svg]:size-5'
     );
     el.setAttribute('data-slot', 'avatar');
-    el._avatar = Alpine.reactive({
+    el._h_avatar = Alpine.reactive({
       fallback: false,
     });
     if (el.tagName === 'BUTTON') {
@@ -28,7 +28,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-avatar-image', (el, {}, { cleanup }) => {
-    const avatar = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_avatar'));
+    const avatar = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_avatar'));
     if (!avatar) {
       throw new Error('h-avatar-image must be inside an h-avatar element');
     }
@@ -42,7 +42,7 @@ export default function (Alpine) {
     function fallback(active = false) {
       if (active) el.classList.add('hidden');
       else el.classList.remove('hidden');
-      avatar._avatar.fallback = active;
+      avatar._h_avatar.fallback = active;
     }
 
     function completeCheck() {
@@ -73,7 +73,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-avatar-fallback', (el, {}, { effect }) => {
-    const avatar = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_avatar'));
+    const avatar = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_avatar'));
     if (!avatar) {
       throw new Error('h-avatar-fallback must be inside an h-avatar element');
     }
@@ -82,7 +82,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'avatar-fallback');
 
     effect(() => {
-      if (avatar._avatar.fallback) el.classList.remove('hidden');
+      if (avatar._h_avatar.fallback) el.classList.remove('hidden');
       else el.classList.add('hidden');
     });
   });

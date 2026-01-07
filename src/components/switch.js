@@ -21,7 +21,7 @@ export default function (Alpine) {
       'before:pointer-events-none',
       'before:ring-0',
       'before:rounded-full',
-      'before:shadow-control',
+      'before:shadow-input',
       'before:size-5',
       'before:transition-transform',
       'bg-muted',

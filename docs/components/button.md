@@ -49,7 +49,7 @@ x-h-button
 <button x-h-button data-variant="positive">Positive</button>
 <button x-h-button data-variant="negative">Negative</button>
 <button x-h-button data-variant="warning">Warning</button>
-<button x-h-button data-variant="outline">Button</button>
+<button x-h-button data-variant="outline">Outline</button>
 <button x-h-button data-variant="transparent">Transparent</button>
 <a x-h-button data-variant="link" href="#">Link</a>
 </component-container>
@@ -61,7 +61,7 @@ x-h-button
 <button x-h-button data-variant="positive">Positive</button>
 <button x-h-button data-variant="negative">Negative</button>
 <button x-h-button data-variant="warning">Warning</button>
-<button x-h-button data-variant="outline">Button</button>
+<button x-h-button data-variant="outline">Outline</button>
 <button x-h-button data-variant="transparent">Transparent</button>
 <a x-h-button data-variant="link" href="#">Link</a>
 ```

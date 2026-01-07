@@ -260,7 +260,9 @@ export default function (Alpine) {
   Alpine.directive('h-menu-item', (el, {}, { cleanup, Alpine }) => {
     el.classList.add(
       'focus:bg-secondary-hover',
+      'focus:text-secondary-foreground',
       'hover:bg-secondary-hover',
+      'hover:text-secondary-foreground',
       'data-[variant=negative]:text-negative',
       'data-[variant=negative]:focus:bg-negative/10',
       'data-[variant=negative]:hover:bg-negative/10',
@@ -386,6 +388,7 @@ export default function (Alpine) {
           Alpine.nextTick(() => {
             submenuitem.focus();
             el._menu_sub.expanded = true;
+            el.setAttribute('aria-expanded', true);
           });
         }
       }
@@ -396,13 +399,13 @@ export default function (Alpine) {
       if (event.type === 'mouseleave') {
         el._menu_sub.close();
         el._menu_sub.expanded = false;
+        el.setAttribute('aria-expanded', false);
         parentMenu.pauseKeyEvents = false;
-        el.setAttribute('aria-expanded', 'false');
         parentMenu.focus();
       } else if (el._menu_sub.expanded) {
-        el.setAttribute('aria-expanded', 'false');
         el._menu_sub.close();
         el._menu_sub.expanded = false;
+        el.setAttribute('aria-expanded', false);
         parentMenu.pauseKeyEvents = false;
         el.removeEventListener('keydown', onKeydown);
       }
@@ -410,15 +413,20 @@ export default function (Alpine) {
 
     function focusIn(event) {
       el.setAttribute('tabindex', '0');
-      if (event.type === 'mouseenter') {
-        el.setAttribute('aria-expanded', 'true');
+      if (event.type === 'click' && event.pointerType === 'touch' && (event.target === el || event.target.parentElement === el)) {
+        el._menu_sub.open(el);
+        el._menu_sub.expanded = true;
+        el.setAttribute('aria-expanded', true);
+        event.stopPropagation();
+      } else if (event.type === 'mouseenter') {
         el.addEventListener('mouseleave', focusOut);
         el._menu_sub.open(el);
         el._menu_sub.expanded = true;
+        el.setAttribute('aria-expanded', true);
       } else {
         if (el._menu_sub.expanded) {
-          el.setAttribute('aria-expanded', 'false');
           el._menu_sub.expanded = false;
+          el.setAttribute('aria-expanded', false);
           parentMenu.pauseKeyEvents = false;
         }
         el.addEventListener('keydown', onKeydown);
@@ -427,10 +435,12 @@ export default function (Alpine) {
     }
 
     el.addEventListener('mouseenter', focusIn);
+    el.addEventListener('click', focusIn);
     el.addEventListener('focus', focusIn);
 
     cleanup(() => {
       el.removeEventListener('mouseenter', focusIn);
+      el.removeEventListener('click', focusIn);
       el.removeEventListener('focus', focusIn);
       el.removeEventListener('blur', focusOut);
       el.removeEventListener('mouseleave', focusOut);

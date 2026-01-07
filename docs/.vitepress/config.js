@@ -18,7 +18,12 @@ export default defineConfig({
     sidebar: [
       {
         text: 'Get started',
-        items: [{ text: 'Installation', link: '/get-started' }],
+        items: [
+          { text: 'Installation', link: '/installation' },
+          { text: 'Dark Mode', link: '/dark-mode' },
+          { text: 'Theme Customization', link: '/custom-themes' },
+          { text: 'Theme Generator', link: '/theming/generator.html', target: '_self' },
+        ],
       },
       {
         text: 'Components',
@@ -51,6 +56,7 @@ export default defineConfig({
           { text: 'Range', link: '/components/range' },
           { text: 'Select', link: '/components/select' },
           { text: 'Separator', link: '/components/separator' },
+          { text: 'Sheet', link: '/components/sheet' },
           { text: 'Sidebar', link: '/components/sidebar' },
           { text: 'Skeleton', link: '/components/skeleton' },
           { text: 'Spinner', link: '/components/spinner' },
@@ -68,7 +74,11 @@ export default defineConfig({
       },
       {
         text: 'Utilities',
-        items: [{ text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' }],
+        items: [
+          { text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' },
+          { text: 'Focus', link: '/utilities/focus' },
+          { text: 'Theme', link: '/utilities/theme' },
+        ],
       },
       {
         text: 'Utility classes',

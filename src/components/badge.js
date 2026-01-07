@@ -5,7 +5,7 @@ export default function (Alpine) {
       'inline-flex',
       'items-center',
       'justify-center',
-      'rounded-md',
+      'rounded-full',
       'border',
       'px-2',
       'py-0.5',

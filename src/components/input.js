@@ -19,7 +19,7 @@ export default function (Alpine) {
       '[&::-webkit-color-swatch-wrapper]:rounded-0',
       '[&::-webkit-color-swatch-wrapper]:p-0',
       'text-base',
-      'shadow-control',
+      'shadow-input',
       'transition-[color,box-shadow]',
       'outline-none',
       'file:inline-flex',
@@ -43,7 +43,7 @@ export default function (Alpine) {
       'invalid:!border-negative'
     );
     if (modifiers.includes('group')) {
-      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'shadow-control', 'focus-visible:ring-[3px]');
+      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'shadow-input', 'focus-visible:ring-[3px]');
       el.classList.add('flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
     } else el.setAttribute('data-slot', 'input');
@@ -63,7 +63,7 @@ export default function (Alpine) {
       'items-center',
       'rounded-control',
       'border',
-      'shadow-control',
+      'shadow-input',
       'transition-[color,box-shadow]',
       'outline-none',
       'h-9',

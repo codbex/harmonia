@@ -27,10 +27,14 @@
 @source inline("{sm:,md:,lg:,xl:,}grid-cols-{1..12}");
 
 @source inline("{!,}w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}");
+@source inline("min-{w}-0");
 @source inline("{!,}h-{auto,full,screen,1/2}");
 
 @source inline("{!,}size-{4..12}");
 @source inline("{!,}size-full");
+.min-size-4 {
+  @apply min-h-4 min-w-4;
+}
 .tile-xs {
   width: calc(var(--container-xs) / 2);
   height: calc(var(--container-xs) / 2);
@@ -60,6 +64,7 @@
 @source inline("align-middle");
 @source inline("whitespace-nowrap");
 @source inline("rotate-{90,180,270}");
+@source inline("resize-none");
 
 @source inline("overflow-{hidden,visible,scroll,x-scroll,y-scroll,x-visible,y-visible,x-hidden,y-hidden}");
 @source inline("object-{contain,cover,fill}");

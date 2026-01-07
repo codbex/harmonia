@@ -59,10 +59,10 @@ class ComponentContainer extends HTMLElement {
             for (let a = 0; a < staticScript.attributes.length; a++) {
               script.setAttribute(staticScript.attributes[a].name, staticScript.attributes[a].value);
             }
-            const scriptText = document.createTextNode(`function initJS(container) {${staticScript.innerHTML}}`);
+            const scriptText = document.createTextNode(`function initJS(Alpine, container) {${staticScript.innerHTML}}`);
             script.appendChild(scriptText);
             staticScript.parentNode.replaceChild(script, staticScript);
-            initJS(this.container);
+            initJS(Alpine, this.container);
           }
           registerComponents(Alpine.plugin);
           Alpine.initTree(this.container);

@@ -9,7 +9,7 @@ export default function (Alpine) {
       'border-input',
       'border',
       'rounded-control',
-      'shadow-control',
+      'shadow-input',
       'outline-none',
       'disabled:pointer-events-none',
       'disabled:cursor-not-allowed',
@@ -116,13 +116,11 @@ export default function (Alpine) {
     if (!list) {
       throw new Error('h-list-header: must be placed inside an h-list element');
     }
-    if (el.hasAttribute('id')) {
-      list.setAttribute('aria-labelledby', el.getAttribute('id'));
-    } else {
+    if (!el.hasAttribute('id')) {
       const id = `lbh${uuidv4()}`;
       el.setAttribute('id', id);
-      list.setAttribute('aria-labelledby', id);
     }
+    list.setAttribute('aria-labelledby', el.getAttribute('id'));
   });
 
   Alpine.directive('h-list-item', (el, { modifiers }) => {

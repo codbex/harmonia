@@ -38,7 +38,7 @@ export default function (Alpine) {
       'has-[input:invalid]:ring-negative/20',
       'relative',
       'rounded-full',
-      'shadow-control',
+      'shadow-input',
       'shrink-0',
       'size-5'
     );

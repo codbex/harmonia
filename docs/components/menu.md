@@ -84,7 +84,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
   <div x-h-menu-label>Profile</div>
   <li x-h-menu-item>Set yourself as away</li>
   <li x-h-menu-sub id="pnsm">
-    Pause notifications
+    <span>Pause notifications</span>
     <ul x-h-menu.sub aria-labelledby="pnsm">
       <li x-h-menu-item>15 minutes</li>
       <li x-h-menu-item>30 minutes</li>
@@ -108,7 +108,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
   <div x-h-menu-label>Profile</div>
   <li x-h-menu-item>Set yourself as away</li>
   <li x-h-menu-sub id="pnsm">
-    Pause notifications
+    <span>Pause notifications</span>
     <ul x-h-menu.sub aria-labelledby="pnsm">
       <li x-h-menu-item>15 minutes</li>
       <li x-h-menu-item>30 minutes</li>

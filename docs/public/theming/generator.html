@@ -2,9 +2,9 @@
 <html lang="en" class="h-screen">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" sizes="any" href="data:;base64,iVBORw0KGgo=" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Harmonia</title>
+    <title>Theme Generator | Harmonia UI</title>
 
     <script defer src="/harmonia/js/color-convert.js" type="module"></script>
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
@@ -12,165 +12,171 @@
     <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
     <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
     <link href="/harmonia/fonts.css" rel="stylesheet" />
+    <style id="importStyles" type="text/css"></style>
   </head>
-  <body class="hbox h-full" x-data="breakpointController">
+  <body class="hbox h-full" x-data="breakpointController" x-ref="bpCtrl">
+    <div x-h-sheet-overlay="showSidebar">
+      <div x-h-sheet data-align="left" x-ref="sidebarSheet"></div>
+    </div>
+    <div x-h-sheet-overlay="showVars">
+      <div x-h-sheet data-align="right" x-ref="varsSheet"></div>
+    </div>
+
     <div x-data="mainController" class="hbox flex-1" :class="floating && 'gap-4 p-4'">
-      <div x-show="!isNarrow || showSidebar" :class="isNarrow && 'absolute size-full bg-black/60'" :style="isNarrow && 'z-index: 10'" data-slot="sidebar-container" @click="sidebarContanerClick(event)">
-        <div :style="isNarrow && 'max-width: 80%'" x-h-sidebar :data-floating="floating">
-          <div x-h-sidebar-header>
-            <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-              <span>Header popover</span>
-              <i role="img" data-lucide="chevron-down"></i>
-            </button>
-            <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
-          </div>
-          <div x-h-sidebar-content>
-            <div x-h-sidebar-group x-h-collapsible="true">
-              <div x-h-sidebar-group-label>
-                Application
-                <div x-h-sidebar-group-action x-h-collapsible-trigger.chevron>
-                  <span class="sr-only">Expand</span>
-                  <i role="img" data-lucide="chevron-down"></i>
+      <div x-h-sidebar :data-floating="floating && !isNarrow" x-ref="sidebar" style="order: 1">
+        <div x-h-sidebar-header>
+          <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
+            <span>Header popover</span>
+            <i role="img" data-lucide="chevron-down"></i>
+          </button>
+          <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
+        </div>
+        <div x-h-sidebar-content>
+          <div x-h-sidebar-group x-h-collapsible="true">
+            <div x-h-sidebar-group-label>
+              Application
+              <div x-h-sidebar-group-action x-h-collapsible-trigger.chevron>
+                <span class="sr-only">Expand</span>
+                <i role="img" data-lucide="chevron-down"></i>
+              </div>
+            </div>
+            <div x-h-sidebar-group-content x-h-collapsible-content>
+              <div x-h-sidebar-menu>
+                <div x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button>
+                    <i role="img" data-lucide="house"></i>
+                    Home
+                  </button>
+                  <div x-h-sidebar-menu-badge>11</div>
+                </div>
+                <div x-h-sidebar-menu-item>
+                  <a x-h-sidebar-menu-button href="#">
+                    <i role="img" data-lucide="file-text"></i>
+                    Documents
+                  </a>
+                  <div x-h-sidebar-menu-action.autohide>
+                    <i role="img" data-lucide="info"></i>
+                    <span class="sr-only">Info</span>
+                  </div>
                 </div>
               </div>
-              <div x-h-sidebar-group-content x-h-collapsible-content>
-                <div x-h-sidebar-menu>
-                  <div x-h-sidebar-menu-item>
-                    <button x-h-sidebar-menu-button>
-                      <i role="img" data-lucide="house"></i>
-                      Home
+            </div>
+          </div>
+          <div x-h-sidebar-separator></div>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-group-label.action>Skeleton</div>
+            <div x-h-sidebar-group-content>
+              <div x-h-sidebar-menu>
+                <template x-for="i in 5">
+                  <div x-h-sidebar-menu-item :key="i">
+                    <div x-h-sidebar-menu-skeleton.icon></div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+          <div x-h-sidebar-separator></div>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-menu>
+              <div x-h-sidebar-menu-item x-h-collapsible="true">
+                <button x-h-sidebar-menu-button x-h-collapsible-trigger.chevron.90>
+                  <i role="img" data-lucide="list-tree"></i>
+                  <span>With subitems (Tree mode)</span>
+                  <i role="img" data-lucide="chevron-right"></i>
+                </button>
+                <ul x-h-sidebar-menu-sub x-h-collapsible-content>
+                  <li x-h-sidebar-menu-sub-item>
+                    <button x-h-sidebar-menu-sub-button data-active="true">
+                      <span>Sub Item 1</span>
                     </button>
-                    <div x-h-sidebar-menu-badge>11</div>
-                  </div>
-                  <div x-h-sidebar-menu-item>
-                    <a x-h-sidebar-menu-button href="#">
-                      <i role="img" data-lucide="file-text"></i>
-                      Documents
-                    </a>
-                    <div x-h-sidebar-menu-action.autohide>
-                      <i role="img" data-lucide="info"></i>
-                      <span class="sr-only">Info</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div x-h-sidebar-separator></div>
-            <div x-h-sidebar-group>
-              <div x-h-sidebar-group-label.action>Skeleton</div>
-              <div x-h-sidebar-group-content>
-                <div x-h-sidebar-menu>
-                  <template x-for="i in 5">
-                    <div x-h-sidebar-menu-item :key="i">
-                      <div x-h-sidebar-menu-skeleton.icon></div>
-                    </div>
-                  </template>
-                </div>
-              </div>
-            </div>
-            <div x-h-sidebar-separator></div>
-            <div x-h-sidebar-group>
-              <div x-h-sidebar-menu>
-                <div x-h-sidebar-menu-item x-h-collapsible>
-                  <button x-h-sidebar-menu-button x-h-collapsible-trigger.chevron.90>
-                    <i role="img" data-lucide="list-tree"></i>
-                    <span>With subitems (Tree mode)</span>
-                    <i role="img" data-lucide="chevron-right"></i>
-                  </button>
-                  <ul x-h-sidebar-menu-sub x-h-collapsible-content>
-                    <li x-h-sidebar-menu-sub-item>
-                      <button x-h-sidebar-menu-sub-button data-active="true">
-                        <span>Sub Item 1</span>
-                      </button>
-                    </li>
-                    <li x-h-sidebar-menu-sub-item x-h-collapsible>
-                      <button x-h-sidebar-menu-sub-button x-h-collapsible-trigger.chevron.90>
-                        <span>Sub Item 2</span>
-                        <i role="img" data-lucide="chevron-right"></i>
-                      </button>
-                      <ul x-h-sidebar-menu-sub x-h-collapsible-content>
-                        <li x-h-sidebar-menu-sub-item>
-                          <button x-h-sidebar-menu-sub-button>
-                            <span>Sub Item 3</span>
-                          </button>
-                        </li>
-                        <li x-h-sidebar-menu-sub-item>
-                          <button x-h-sidebar-menu-sub-button data-active="true">
-                            <span>Sub Item 4 </span>
-                          </button>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div x-h-sidebar-separator></div>
-            <div x-h-sidebar-group>
-              <div x-h-sidebar-menu>
-                <div x-h-sidebar-menu-item x-data="{ expand: false }">
-                  <button x-h-sidebar-menu-button @click="expand = !expand">
-                    <i role="img" data-lucide="list-tree"></i>
-                    <span>With subitems (Flat mode)</span>
-                    <i role="img" data-lucide="chevron-right" :class="{ 'rotate-90': expand }"></i>
-                  </button>
-                  <ul x-h-sidebar-menu-sub.flat x-show="expand">
-                    <li x-h-sidebar-menu-sub-item>
-                      <button x-h-sidebar-menu-sub-button data-active="true">
-                        <span>Sub Item 1</span>
-                      </button>
-                    </li>
-                    <li x-h-sidebar-menu-sub-item>
-                      <button x-h-sidebar-menu-sub-button>
-                        <span>Sub Item 2</span>
-                      </button>
-                    </li>
-                    <li x-h-sidebar-menu-sub-item>
-                      <button x-h-sidebar-menu-sub-button>
-                        <span>Sub Item 3</span>
-                      </button>
-                    </li>
-                    <li x-h-sidebar-menu-sub-item>
-                      <button x-h-sidebar-menu-sub-button>
-                        <span>Sub Item 4</span>
-                      </button>
-                    </li>
-                  </ul>
-                </div>
+                  </li>
+                  <li x-h-sidebar-menu-sub-item x-h-collapsible="true">
+                    <button x-h-sidebar-menu-sub-button x-h-collapsible-trigger.chevron.90>
+                      <span>Sub Item 2</span>
+                      <i role="img" data-lucide="chevron-right"></i>
+                    </button>
+                    <ul x-h-sidebar-menu-sub x-h-collapsible-content>
+                      <li x-h-sidebar-menu-sub-item>
+                        <button x-h-sidebar-menu-sub-button>
+                          <span>Sub Item 3</span>
+                        </button>
+                      </li>
+                      <li x-h-sidebar-menu-sub-item>
+                        <button x-h-sidebar-menu-sub-button data-active="true">
+                          <span>Sub Item 4 </span>
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-          <div x-h-sidebar-footer>
-            <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
-              <span>Footer popover</span>
-              <i role="img" data-lucide="chevrons-up-down"></i>
-            </button>
-            <ul x-h-menu aria-label="dropdown" data-align="top-start">
-              <li x-h-menu-item>Set yourself as away</li>
-              <div x-h-menu-label>Team</div>
-              <li x-h-menu-item>Invite users</li>
-              <div x-h-menu-separator></div>
-              <li x-h-menu-item data-variant="negative">Log out</li>
-            </ul>
+          <div x-h-sidebar-separator></div>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-menu>
+              <div x-h-sidebar-menu-item x-data="{ expand: false }">
+                <button x-h-sidebar-menu-button @click="expand = !expand">
+                  <i role="img" data-lucide="list-tree"></i>
+                  <span>With subitems (Flat mode)</span>
+                  <i role="img" data-lucide="chevron-right" :class="{ 'rotate-90': expand }"></i>
+                </button>
+                <ul x-h-sidebar-menu-sub.flat x-show="expand">
+                  <li x-h-sidebar-menu-sub-item>
+                    <button x-h-sidebar-menu-sub-button data-active="true">
+                      <span>Sub Item 1</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-sub-item>
+                    <button x-h-sidebar-menu-sub-button>
+                      <span>Sub Item 2</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-sub-item>
+                    <button x-h-sidebar-menu-sub-button>
+                      <span>Sub Item 3</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-sub-item>
+                    <button x-h-sidebar-menu-sub-button>
+                      <span>Sub Item 4</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
+        </div>
+        <div x-h-sidebar-footer>
+          <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
+            <span>Footer popover</span>
+            <i role="img" data-lucide="chevrons-up-down"></i>
+          </button>
+          <ul x-h-menu aria-label="dropdown" data-align="top-start">
+            <li x-h-menu-item>Set yourself as away</li>
+            <div x-h-menu-label>Team</div>
+            <li x-h-menu-item>Invite users</li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item data-variant="negative">Log out</li>
+          </ul>
         </div>
       </div>
 
-      <div class="vbox flex-1" :class="floating && 'gap-4'">
+      <div class="vbox flex-1" :class="floating && 'gap-4'" style="order: 2">
         <div x-h-toolbar :data-floating="floating">
-          <button x-show="isNarrow" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar button" @click="showSidebar = true">
+          <button x-show="isNarrow" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar sheet open button" @click="showSidebar = true">
             <i role="img" data-lucide="menu"></i>
           </button>
           <span x-h-toolbar-title :class="!isNarrow && 'pl-2'">Harmonia UI</span>
           <div x-h-toolbar-spacer></div>
-          <div class="flex items-center gap-2 pr-2">
-            <span x-h-switch>
-              <input type="checkbox" id="floatingSw" x-model="floating" />
-            </span>
-            <label x-h-label for="floatingSw">Floating</label>
-          </div>
-          <div x-h-toolbar-separator></div>
-          <button x-h-button data-variant="transparent" @click="showAbout = true"><i role="img" data-lucide="info"></i>About</button>
+          <button x-h-button data-variant="transparent" @click="showAbout = true" aria-label="about dialog button">
+            <i role="img" data-lucide="info"></i>
+            <span x-show="!isNarrow">About</span>
+          </button>
+          <div x-show="isNarrow" x-h-toolbar-separator></div>
+          <button x-show="isNarrow" x-h-button data-variant="transparent" data-size="icon" aria-label="variables sheet open button" @click="showVars = true">
+            <i role="img" data-lucide="panel-right-open"></i>
+          </button>
         </div>
 
         <div class="h-full" x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'componentsTab' }">
@@ -229,7 +235,7 @@
                 <button x-h-button data-variant="positive">Positive</button>
                 <button x-h-button data-variant="negative">Negative</button>
                 <button x-h-button data-variant="warning">Warning</button>
-                <button x-h-button data-variant="outline">Button</button>
+                <button x-h-button data-variant="outline">Outline</button>
                 <button x-h-button class="truncate" data-variant="transparent">Transparent</button>
                 <a x-h-button data-variant="link" href="#">Link</a>
               </div>
@@ -293,6 +299,11 @@
                     <div x-h-tile-title>Harmonia UI</div>
                     <p x-h-tile-description>UI component library for Alpine.js</p>
                   </div>
+                  <div x-h-tile-actions>
+                    <span x-h-switch>
+                      <input type="checkbox" id="tileMediaSw" aria-label="tile action switch" checked />
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -308,8 +319,14 @@
                       </div>
                     </div>
                   </div>
-                  <div x-h-card-content class="h-full">
+                  <div x-h-card-content class="vbox h-full gap-4">
                     <textarea class="h-full" x-h-textarea placeholder="Add note to bill"></textarea>
+                    <div class="flex items-center gap-2 pr-2">
+                      <span x-h-switch data-size="sm">
+                        <input type="checkbox" id="saveNoteSw" />
+                      </span>
+                      <label x-h-label for="saveNoteSw">Save note</label>
+                    </div>
                   </div>
                   <div x-h-card-footer class="hbox justify-end gap-2">
                     <button x-h-button data-variant="link">Report</button>
@@ -351,16 +368,28 @@
                     <tr x-h-table-row>
                       <th x-h-table-head scope="col">Email</th>
                       <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
-                        <div class="flex items-center justify-between">First Name<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+                        <div class="flex items-center justify-between">
+                          <div class="min-w-0 truncate">First Name</div>
+                          <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+                        </div>
                       </th>
                       <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
-                        <div class="flex items-center justify-between">Last Name<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+                        <div class="flex items-center justify-between">
+                          <div class="min-w-0 truncate">Last Name</div>
+                          <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+                        </div>
                       </th>
                       <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
-                        <div class="flex items-center justify-between">Registration Date<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+                        <div class="flex items-center justify-between">
+                          <div class="min-w-0 truncate">Registration Date</div>
+                          <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+                        </div>
                       </th>
                       <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
-                        <div class="flex items-center justify-between">Status<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+                        <div class="flex items-center justify-between">
+                          <div class="min-w-0 truncate">Status</div>
+                          <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -377,8 +406,8 @@
                   </tbody>
                   <tfoot x-h-table-footer>
                     <tr x-h-table-row>
-                      <th x-h-table-head scope="row">Total Users</th>
-                      <td x-h-table-cell colspan="4" x-text="users.length"></td>
+                      <th class="truncate" x-h-table-head scope="row">Total Users</th>
+                      <td class="truncate" x-h-table-cell colspan="4" x-text="users.length"></td>
                     </tr>
                   </tfoot>
                 </table>
@@ -400,13 +429,13 @@
       </div>
 
       <div x-h-dialog-overlay :data-open="showAbout">
-        <div x-h-dialog aria-labelledby="aboutTitle" aria-describedby="aboutDesc">
+        <div x-h-dialog>
           <div x-h-dialog-header>
-            <h2 id="aboutTitle" x-h-dialog-title>Harmonia UI</h2>
+            <h2 x-h-dialog-title>Harmonia UI</h2>
             <button x-h-dialog-close aria-label="about button" @click="showAbout = false">
               <i role="img" data-lucide="x"></i>
             </button>
-            <p id="aboutDesc" x-h-dialog-description x-text="getVersion()"></p>
+            <p x-h-dialog-description x-text="getVersion()"></p>
           </div>
           <div>
             <p>Harmonia UI is an <a href="https://alpinejs.dev/">Alpine.js</a> component library made by <a href="https://www.codbex.com/">codbex</a>.</p>
@@ -420,17 +449,27 @@
       </div>
     </div>
 
-    <div x-data="themeController" class="vbox border-l" :class="isNarrow === true ? 'w-1/3' : 'w-1/5'">
+    <div x-data="themeController" class="vbox h-full border-l" :style="{ width: isNarrow ? '19rem' : '21rem' }">
       <div x-h-toolbar>
         <div x-h-toolbar-spacer></div>
+        <button x-h-button data-variant="transparent" @click="showImportDialog()"><i role="img" data-lucide="upload"></i>Import</button>
+        <div x-h-toolbar-separator></div>
+        <button x-h-button data-variant="transparent" @click="exportTheme()"><i role="img" data-lucide="download"></i>Export</button>
+      </div>
+      <div x-h-toolbar data-size="md">
+        <div x-h-toolbar-spacer></div>
+        <div class="flex items-center gap-2 pr-2">
+          <span x-h-switch>
+            <input type="checkbox" id="floatingSw" x-model="floating" />
+          </span>
+          <label x-h-label for="floatingSw">Float</label>
+        </div>
         <div class="flex items-center gap-2 pr-2">
           <div x-h-switch>
             <input type="checkbox" id="modeSw" x-model="darkMode" @change="enableDarkMode()" />
           </div>
           <label x-h-label for="modeSw">Dark Mode</label>
         </div>
-        <div x-h-toolbar-separator></div>
-        <button x-h-button data-variant="transparent" @click="exportTheme()"><i role="img" data-lucide="download"></i>Export</button>
       </div>
       <div class="relative flex-1">
         <div class="absolute-fit absolute overflow-scroll" x-h-accordion data-variant="header" data-size="md">
@@ -547,16 +586,32 @@
       </div>
 
       <div x-h-dialog-overlay :data-open="showExport">
-        <div class="h-1/2" x-h-dialog aria-labelledby="exportTitle" aria-describedby="exportDesc">
+        <div class="h-1/2" x-h-dialog>
           <div x-h-dialog-header>
-            <h2 id="exportTitle" x-h-dialog-title>Theme CSS Variables</h2>
+            <h2 x-h-dialog-title>Theme CSS Variables</h2>
             <button x-h-dialog-close aria-label="close button" @click="showExport = false">
               <i role="img" data-lucide="x"></i>
             </button>
           </div>
           <p class="overflow-scroll" x-h-text.code x-text="themeStylesheet"></p>
           <div x-h-dialog-footer>
-            <button x-h-button data-variant="primary" @click="copy(event)"><i role="img" data-lucide="copy"></i>Copy</button>
+            <button x-h-button data-variant="primary" @click="copy($refs.copyBtn)"><i role="img" data-lucide="copy"></i><span x-ref="copyBtn">Copy</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-dialog-overlay :data-open="showImport">
+        <div class="h-1/2" x-h-dialog>
+          <div x-h-dialog-header>
+            <h2 x-h-dialog-title>Import CSS Variables</h2>
+            <button x-h-dialog-close aria-label="close button" @click="showImport = false">
+              <i role="img" data-lucide="x"></i>
+            </button>
+            <p x-h-dialog-description>This will override the existing theme!</p>
+          </div>
+          <textarea class="h-full" x-h-textarea :placeholder="importPlaceholder" x-ref="themeCssInput"></textarea>
+          <div x-h-dialog-footer>
+            <button x-h-button data-variant="primary" @click="importTheme($refs)">Import</button>
           </div>
         </div>
       </div>
@@ -603,16 +658,13 @@
       document.addEventListener("alpine:init", () => {
         Alpine.data("breakpointController", () => ({
           isNarrow: false,
-          breakpointListener: undefined,
-          init() {
-            this.breakpointListener = Harmonia.getBreakpointListener((matches) => {
-              console.log(matches);
-              this.isNarrow = matches;
-            }, 1184);
-          },
+          showSidebar: false,
+          showVars: false,
+          sidebarBreakpointListener: undefined,
+          varsBreakpointListener: undefined,
+          floating: false,
         }));
         Alpine.data("mainController", () => ({
-          floating: false,
           caldate: (() => {
             let date = new Date();
             if (date.getDate() === 1) {
@@ -624,19 +676,25 @@
           })(),
           users: generateUsers(),
           showAbout: false,
-          showSidebar: false,
           getVersion() {
             return `Version ${Harmonia.version}`;
           },
-          sidebarContanerClick(event) {
-            if (event.target.getAttribute("data-slot") === "sidebar-container") {
-              this.showSidebar = false;
-            }
+          init() {
+            this.sidebarBreakpointListener = Harmonia.getBreakpointListener((matches) => {
+              if (matches) {
+                this.$refs.sidebarSheet.appendChild(this.$refs.sidebar);
+              } else if (this.$refs.sidebarSheet.firstElementChild) {
+                this.showSidebar = false;
+                this.$el.appendChild(this.$refs.sidebar);
+              }
+              this.isNarrow = matches;
+            }, 1184);
           },
         }));
         Alpine.data("themeController", () => ({
           darkMode: Harmonia.getColorScheme() === "dark",
           showExport: false,
+          showImport: false,
           enableDarkMode() {
             Harmonia.setColorScheme(this.darkMode ? "dark" : "light");
           },
@@ -701,7 +759,7 @@
             "table-active",
             "table-active-foreground",
           ],
-          shadowVars: ["shadow-xs", "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl", "shadow-control"],
+          shadowVars: ["shadow-xs", "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl", "shadow-button", "shadow-input"],
           fontVars: ["font-sans", "font-serif", "font-mono", "tracking-normal"],
           othersVars: ["radius-control", "radius", "spacing"],
           getVarLabel(name) {
@@ -751,18 +809,28 @@
             light: [],
             dark: [],
           },
-          async copy(event) {
+          async copy(text) {
             try {
               await navigator.clipboard.writeText(this.themeStylesheet);
-              event.target.innerText = "Copied!";
+              text.innerText = "Copied!";
               setTimeout(() => {
-                event.target.innerText = "Copy";
+                text.innerText = "Copy";
               }, 1000);
             } catch (error) {
               console.error(error.message);
             }
           },
           themeStylesheet: "",
+          importPlaceholder: `:root,\n:host {\n  --background: ...\n}\n\n.dark {\n  --background: ...\n}`,
+          showImportDialog() {
+            this.showImport = true;
+          },
+          importTheme(refs) {
+            const importStyle = document.getElementById("importStyles");
+            importStyle.textContent = refs.themeCssInput.value;
+            this.getThemeVars();
+            this.showImport = false;
+          },
           exportTheme() {
             let themeCss = ":root,\n:host {\n";
             for (let c = 0; c < this.colors.light.length; c++) {
@@ -794,11 +862,14 @@
             this.themeStylesheet = themeCss;
             this.showExport = true;
           },
-          init() {
+          getThemeVars() {
             const tempDoc = document.implementation.createHTMLDocument("TempDoc");
             tempDoc.body.classList.add("dark");
             const lightStyles = window.getComputedStyle(tempDoc.documentElement);
             const darkStyles = window.getComputedStyle(tempDoc.body);
+
+            this.colors.light.length = 0;
+            this.colors.dark.length = 0;
             for (let v = 0; v < this.colorVars.length; v++) {
               this.colors.light.push({
                 name: this.colorVars[v],
@@ -809,6 +880,9 @@
                 value: darkStyles.getPropertyValue(`--${this.colorVars[v]}`).trim(),
               });
             }
+
+            this.shadows.light.length = 0;
+            this.shadows.dark.length = 0;
             for (let v = 0; v < this.shadowVars.length; v++) {
               this.shadows.light.push({
                 name: this.shadowVars[v],
@@ -819,6 +893,9 @@
                 value: darkStyles.getPropertyValue(`--${this.shadowVars[v]}`).trim(),
               });
             }
+
+            this.fonts.light.length = 0;
+            this.fonts.dark.length = 0;
             for (let v = 0; v < this.fontVars.length; v++) {
               this.fonts.light.push({
                 name: this.fontVars[v],
@@ -829,6 +906,9 @@
                 value: darkStyles.getPropertyValue(`--${this.fontVars[v]}`).trim(),
               });
             }
+
+            this.others.light.length = 0;
+            this.others.dark.length = 0;
             for (let v = 0; v < this.othersVars.length; v++) {
               this.others.light.push({
                 name: this.othersVars[v],
@@ -839,6 +919,17 @@
                 value: darkStyles.getPropertyValue(`--${this.othersVars[v]}`).trim(),
               });
             }
+          },
+          init() {
+            this.getThemeVars();
+            this.varsBreakpointListener = Harmonia.getBreakpointListener((matches) => {
+              if (matches) {
+                this.$refs.varsSheet.appendChild(this.$el);
+              } else if (this.$refs.varsSheet.firstElementChild) {
+                this.showVars = false;
+                this.$refs.bpCtrl.appendChild(this.$el);
+              }
+            }, 1184);
           },
         }));
       });

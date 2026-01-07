@@ -32,6 +32,7 @@ outline: deep
 [Range](/components/range)<br />
 [Select](/components/select)<br />
 [Separator](/components/separator)<br />
+[Sheet](/components/sheet)<br />
 [Sidebar](/components/sidebar)<br />
 [Skeleton](/components/skeleton)<br />
 [Spinner](/components/spinner)<br />

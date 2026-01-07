@@ -23,6 +23,7 @@ import radio from './components/radio';
 import range from './components/range';
 import select from './components/select';
 import separator from './components/separator';
+import sheet from './components/sheet';
 import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
 import spinner from './components/spinner';
@@ -41,6 +42,8 @@ export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
 export { getColorScheme, setColorScheme } from './utils/theme';
 
+import focus from './utils/focus';
+
 export {
   accordion as Accordion,
   alert as Alert,
@@ -54,6 +57,7 @@ export {
   datepicker as DatePicker,
   dialog as Dialog,
   fieldset as Fieldset,
+  focus as Focus,
   icon as Icon,
   infoPage as InfoPage,
   input as Input,
@@ -67,6 +71,7 @@ export {
   range as Range,
   select as Select,
   separator as Separator,
+  sheet as Sheet,
   sidebar as Sidebar,
   skeleton as Skeleton,
   spinner as Spinner,
@@ -95,6 +100,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(datepicker);
   registerPlugin(dialog);
   registerPlugin(fieldset);
+  registerPlugin(focus);
   registerPlugin(icon);
   registerPlugin(infoPage);
   registerPlugin(input);
@@ -108,6 +114,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(range);
   registerPlugin(select);
   registerPlugin(separator);
+  registerPlugin(sheet);
   registerPlugin(sidebar);
   registerPlugin(skeleton);
   registerPlugin(spinner);

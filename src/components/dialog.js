@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export default function (Alpine) {
   Alpine.directive('h-dialog-overlay', (el, {}, { cleanup }) => {
     el.classList.add('hidden', 'data-[open=true]:block', 'fixed', 'inset-0', 'z-50', 'bg-black/60');
@@ -16,11 +18,23 @@ export default function (Alpine) {
               }
             }
             inputs[0].focus();
+            return;
           } else {
-            const buttons = el.getElementsByTagName('BUTTON');
-            if (buttons.length) {
-              buttons[0].focus();
+            const textareas = el.getElementsByTagName('TEXTAREA');
+            if (textareas.length) {
+              for (let i = 0; i < textareas.length; i++) {
+                if (textareas[i].autofocus) {
+                  textareas[i].focus();
+                  return;
+                }
+              }
+              textareas[0].focus();
+              return;
             }
+          }
+          const buttons = el.getElementsByTagName('BUTTON');
+          if (buttons.length) {
+            buttons[0].focus();
           }
         }
       });
@@ -41,7 +55,8 @@ export default function (Alpine) {
       'top-[50%]',
       'left-[50%]',
       'z-50',
-      'grid',
+      'flex',
+      'flex-col',
       'w-full',
       'max-w-[calc(100%-2rem)]',
       'translate-x-[-50%]',
@@ -51,16 +66,11 @@ export default function (Alpine) {
       'border',
       'p-4',
       'shadow-xl',
-      'sm:max-w-lg'
+      'sm:max-w-lg',
+      'outline-none'
     );
     el.setAttribute('role', 'dialog');
     el.setAttribute('data-slot', 'dialog');
-    if (!el.hasAttribute('aria-labelledby')) {
-      console.error('h-dialog: attribute "aria-labelledby" is missing');
-    }
-    if (!el.hasAttribute('aria-describedby')) {
-      console.error('h-dialog: attribute "aria-describedby" is missing');
-    }
   });
 
   Alpine.directive('h-dialog-header', (el) => {
@@ -68,9 +78,17 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'dialog-header');
   });
 
-  Alpine.directive('h-dialog-title', (el) => {
+  Alpine.directive('h-dialog-title', (el, {}, { Alpine }) => {
     el.classList.add('text-lg', 'leading-none', 'font-semibold');
     el.setAttribute('data-slot', 'dialog-title');
+    const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
+    if (dialog && (!dialog.hasAttribute('aria-labelledby') || !dialog.hasAttribute('aria-label'))) {
+      if (!el.hasAttribute('id')) {
+        const id = `dht${uuidv4()}`;
+        el.setAttribute('id', id);
+      }
+      dialog.setAttribute('aria-labelledby', el.getAttribute('id'));
+    }
   });
 
   Alpine.directive('h-dialog-close', (el) => {
@@ -92,9 +110,17 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'dialog-close');
   });
 
-  Alpine.directive('h-dialog-description', (el) => {
+  Alpine.directive('h-dialog-description', (el, {}, { Alpine }) => {
     el.classList.add('col-span-full', 'text-muted-foreground', 'text-sm');
     el.setAttribute('data-slot', 'dialog-description');
+    const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
+    if (dialog && (!dialog.hasAttribute('aria-describedby') || !dialog.hasAttribute('aria-description'))) {
+      if (!el.hasAttribute('id')) {
+        const id = `dhd${uuidv4()}`;
+        el.setAttribute('id', id);
+      }
+      dialog.setAttribute('aria-describedby', el.getAttribute('id'));
+    }
   });
 
   Alpine.directive('h-dialog-footer', (el) => {

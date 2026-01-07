@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
   Alpine.directive('h-accordion', (el, { expression, modifiers }, { Alpine }) => {
-    el._accordion = modifiers.includes('single')
+    el._h_accordion = modifiers.includes('single')
       ? Alpine.reactive({
           single: true,
           expandedId: expression ?? '',
@@ -13,7 +13,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-accordion-item', (el, { expression, modifiers }, { effect, Alpine }) => {
-    const accordion = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_accordion'));
+    const accordion = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordion'));
 
     if (!accordion) {
       throw new Error('h-accordion-item must be inside an h-accordion');
@@ -25,11 +25,11 @@ export default function (Alpine) {
     const itemId = expression ?? `ha${uuidv4()}`;
 
     function getIsExpanded() {
-      if (accordion._accordion.single) {
-        if (accordion._accordion.expandedId !== '') {
-          return accordion._accordion.expandedId === itemId;
+      if (accordion._h_accordion.single) {
+        if (accordion._h_accordion.expandedId !== '') {
+          return accordion._h_accordion.expandedId === itemId;
         } else if (modifiers.includes('default')) {
-          accordion._accordion.expandedId = itemId;
+          accordion._h_accordion.expandedId = itemId;
           return true;
         }
         return false;
@@ -37,14 +37,14 @@ export default function (Alpine) {
       return modifiers.includes('default');
     }
 
-    el._accordionItem = Alpine.reactive({
+    el._h_accordionItem = Alpine.reactive({
       id: itemId,
       controls: `ha${uuidv4()}`,
       expanded: getIsExpanded(),
     });
 
     const setAttributes = () => {
-      el.setAttribute('data-state', el._accordionItem.expanded ? 'open' : 'closed');
+      el.setAttribute('data-state', el._h_accordionItem.expanded ? 'open' : 'closed');
     };
 
     setAttributes();
@@ -56,9 +56,9 @@ export default function (Alpine) {
     if (el.tagName.length !== 2 && !el.tagName.startsWith('H')) {
       throw new Error('h-accordion-trigger must be a header element');
     }
-    const accordion = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_accordion'));
+    const accordion = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordion'));
 
-    const accordionItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_accordionItem'));
+    const accordionItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordionItem'));
 
     if (!accordionItem || !accordion) {
       throw new Error('h-accordion-trigger must be inside an h-accordion-item, which must be inside an h-accordion');
@@ -120,19 +120,19 @@ export default function (Alpine) {
       });
     });
 
-    button.setAttribute('id', accordionItem._accordionItem.id);
-    button.setAttribute('aria-controls', accordionItem._accordionItem.controls);
+    button.setAttribute('id', accordionItem._h_accordionItem.id);
+    button.setAttribute('aria-controls', accordionItem._h_accordionItem.controls);
 
     const setAttributes = () => {
-      button.setAttribute('data-state', accordionItem._accordionItem.expanded ? 'open' : 'closed');
-      button.setAttribute('aria-expanded', accordionItem._accordionItem.expanded);
+      button.setAttribute('data-state', accordionItem._h_accordionItem.expanded ? 'open' : 'closed');
+      button.setAttribute('aria-expanded', accordionItem._h_accordionItem.expanded);
     };
 
     const handler = () => {
-      accordionItem._accordionItem.expanded = !accordionItem._accordionItem.expanded;
+      accordionItem._h_accordionItem.expanded = !accordionItem._h_accordionItem.expanded;
       setAttributes();
-      if (accordion._accordion.single) {
-        accordion._accordion.expandedId = accordionItem._accordionItem.id;
+      if (accordion._h_accordion.single) {
+        accordion._h_accordion.expandedId = accordionItem._h_accordionItem.id;
       }
     };
     setAttributes();
@@ -143,10 +143,10 @@ export default function (Alpine) {
       el.removeEventListener('click', handler);
     });
 
-    if (accordion._accordion.single) {
+    if (accordion._h_accordion.single) {
       effect(() => {
-        if (accordion._accordion.expandedId !== accordionItem._accordionItem.id) {
-          accordionItem._accordionItem.expanded = false;
+        if (accordion._h_accordion.expandedId !== accordionItem._h_accordionItem.id) {
+          accordionItem._h_accordionItem.expanded = false;
           setAttributes();
         }
       });
@@ -156,13 +156,13 @@ export default function (Alpine) {
   Alpine.directive('h-accordion-content', (el, {}, { effect, Alpine }) => {
     el.classList.add('pt-0', 'pb-4', 'overflow-hidden', 'text-sm', 'data-[state=closed]:hidden');
     el.setAttribute('data-slot', 'accordion-content');
-    const parent = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_accordionItem'));
+    const parent = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordionItem'));
     if (parent) {
-      el.setAttribute('id', parent._accordionItem.controls);
-      el.setAttribute('aria-labelledby', parent._accordionItem.id);
-      el.setAttribute('data-state', parent._accordionItem.expanded ? 'open' : 'closed');
+      el.setAttribute('id', parent._h_accordionItem.controls);
+      el.setAttribute('aria-labelledby', parent._h_accordionItem.id);
+      el.setAttribute('data-state', parent._h_accordionItem.expanded ? 'open' : 'closed');
       effect(() => {
-        el.setAttribute('data-state', parent._accordionItem.expanded ? 'open' : 'closed');
+        el.setAttribute('data-state', parent._h_accordionItem.expanded ? 'open' : 'closed');
       });
     }
   });

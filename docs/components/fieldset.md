@@ -148,7 +148,7 @@ x-h-field-error
     <div x-h-field-group>
       <div x-h-field data-invalid="true">
         <label x-h-label.field for="visuallyDisabled" data-state="checked">Invalid</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input inactive" required aria-invalid="true" />
+        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required aria-invalid="true" />
         <p x-h-text.xs>The input is required</p>
       </div>
     </div>
@@ -163,7 +163,7 @@ x-h-field-error
     <div x-h-field-group>
       <div x-h-field data-invalid="true">
         <label x-h-label.field for="visuallyDisabled" data-state="checked">Invalid</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input inactive" />
+        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" />
         <p x-h-text.xs>The input is required</p>
       </div>
     </div>

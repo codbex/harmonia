@@ -1,7 +1,7 @@
 export default function (Alpine) {
   Alpine.directive('h-table-container', (el, { modifiers }) => {
     if (modifiers.includes('scroll')) {
-      el.classList.add('overflow-scroll', '[&_thead]:sticky', '[&_thead]:top-0', '[&_thead]:z-10', '[&_tfoot]:sticky', '[&_tfoot]:bottom-0', '[&_tfoot]:z-10', '[&_tbody_tr_th]:sticky', '[&_tbody_tr_th]:left-0', '[&_tbody_tr_th]:z-5');
+      el.classList.add('overflow-scroll', '[&_thead]:sticky', '[&_thead]:top-0', '[&_thead]:z-2', '[&_tfoot]:sticky', '[&_tfoot]:bottom-0', '[&_tfoot]:z-2', '[&_tbody_tr_th]:sticky', '[&_tbody_tr_th]:left-0', '[&_tbody_tr_th]:z-1');
     } else {
       el.classList.add('relative', 'w-full', 'overflow-x-auto');
     }

@@ -77,7 +77,8 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 1px 6px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);
 
-  --shadow-control: var(--shadow-xs);
+  --shadow-button: none;
+  --shadow-input: var(--shadow-xs);
 
   --radius-control: 0.5rem;
   --radius: 0.625rem;
@@ -149,7 +150,8 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 1px 6px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);
 
-  --shadow-control: var(--shadow-xs);
+  --shadow-button: none;
+  --shadow-input: var(--shadow-xs);
 }
 
 @theme inline {
@@ -220,7 +222,8 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
 
-  --shadow-control: var(--shadow-control);
+  --shadow-button: var(--shadow-button);
+  --shadow-input: var(--shadow-input);
 
   --radius-control: var(--radius-control);
   --radius-sm: calc(var(--radius) - 4px);

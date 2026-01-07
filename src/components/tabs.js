@@ -25,6 +25,7 @@ export default function (Alpine) {
       '[&:not([data-floating=true])]:data-[size=lg]:group-data-[orientation=horizontal]/tabs:min-h-12',
       'data-[floating=true]:border',
       'data-[floating=true]:shadow-xs',
+      'data-[floating=true]:z-1',
       'data-[floating=true]:rounded-lg',
       'data-[floating=true]:p-[0.188rem]'
     );

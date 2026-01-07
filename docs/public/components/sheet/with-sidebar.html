@@ -1,0 +1,49 @@
+<div x-data="mainCtl">
+  <div x-h-sheet-overlay="isOpen">
+    <div x-h-sheet :data-align="side">
+      <div x-h-sidebar>
+        <div x-h-sidebar-content>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-group-label>Application</div>
+            <div x-h-sidebar-group-content>
+              <div x-h-sidebar-menu>
+                <div x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                    <i role="img" data-lucide="house"></i>
+                    Home
+                  </button>
+                  <div x-h-sidebar-menu-badge>11</div>
+                </div>
+                <div x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                    <i role="img" data-lucide="file-text"></i>
+                    Documents
+                  </button>
+                </div>
+                <div x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                    <i role="img" data-lucide="blocks"></i>
+                    Extensions
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button x-h-button @click="openSheet()">Open Sheet</button>
+</div>
+
+<script>
+  lucide.createIcons();
+  Alpine.data("mainCtl", () => ({
+    isOpen: false,
+    side: "left",
+    openSheet() {
+      this.isOpen = true;
+    },
+  }));
+</script>

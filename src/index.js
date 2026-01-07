@@ -23,6 +23,7 @@ import radio from './components/radio';
 import range from './components/range';
 import select from './components/select';
 import separator from './components/separator';
+import sheet from './components/sheet';
 import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
 import spinner from './components/spinner';
@@ -40,6 +41,8 @@ import tooltip from './components/tooltip';
 import { getColorScheme, setColorScheme } from './utils/theme';
 
 import { getBreakpointListener } from './utils/breakpoint-listener';
+
+import focus from './utils/focus';
 
 import { version } from '../package.json';
 
@@ -71,6 +74,7 @@ document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(range);
   window.Alpine.plugin(select);
   window.Alpine.plugin(separator);
+  window.Alpine.plugin(sheet);
   window.Alpine.plugin(sidebar);
   window.Alpine.plugin(skeleton);
   window.Alpine.plugin(spinner);
@@ -84,4 +88,6 @@ document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(timepicker);
   window.Alpine.plugin(toolbar);
   window.Alpine.plugin(tooltip);
+  // Utility plugins
+  window.Alpine.plugin(focus);
 });

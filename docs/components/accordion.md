@@ -20,7 +20,7 @@ x-h-accordion-content
 | Attribute    | Type                          | Required | Description                           |
 | ------------ | ----------------------------- | -------- | ------------------------------------- |
 | data-size    | `default`<br />`md`<br />`sm` | false    | Height of the accordion header items. |
-| data-variant | `default`<br />`toolbar`      | false    | Toolbar-style accordion header items. |
+| data-variant | `default`<br />`header`       | false    | Toolbar-style accordion header items. |
 
 #### x-h-accordion-item
 
@@ -138,7 +138,7 @@ x-h-accordion-content
 </div>
 ```
 
-### Toolbar style with medium size
+### Header variant and medium size
 
 <br />
 

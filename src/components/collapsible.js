@@ -1,6 +1,6 @@
 export default function (Alpine) {
   Alpine.directive('h-collapsible', (el, { expression }, { effect, evaluate, evaluateLater, Alpine }) => {
-    el._collapsible = Alpine.reactive({
+    el._h_collapsible = Alpine.reactive({
       expanded: expression ? evaluate(expression) : false,
     });
 
@@ -10,14 +10,14 @@ export default function (Alpine) {
       const getExpanded = evaluateLater(expression);
       effect(() => {
         getExpanded((expanded) => {
-          el._collapsible.expanded = expanded;
+          el._h_collapsible.expanded = expanded;
         });
       });
     }
   });
 
   Alpine.directive('h-collapsible-trigger', (el, { modifiers }, { effect, Alpine, cleanup }) => {
-    const collapsible = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_collapsible'));
+    const collapsible = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_collapsible'));
 
     if (!collapsible) {
       throw new Error('h-collapsible-trigger must be inside an h-collapsible element');
@@ -32,11 +32,11 @@ export default function (Alpine) {
     }
 
     const handler = () => {
-      collapsible._collapsible.expanded = !collapsible._collapsible.expanded;
+      collapsible._h_collapsible.expanded = !collapsible._h_collapsible.expanded;
     };
 
     effect(() => {
-      el.setAttribute('data-state', collapsible._collapsible.expanded ? 'open' : 'closed');
+      el.setAttribute('data-state', collapsible._h_collapsible.expanded ? 'open' : 'closed');
     });
 
     el.addEventListener('click', handler);
@@ -47,14 +47,14 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-collapsible-content', (el, {}, { effect, Alpine }) => {
-    const collapsible = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_collapsible'));
+    const collapsible = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_collapsible'));
     if (!collapsible) {
       throw new Error('h-collapsible-content must be inside an h-collapsible element');
     }
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'collapsible-content');
-    el.classList.add('data-[state=closed]:hidden');
+    el.classList.add('data-[state=closed]:!hidden');
     effect(() => {
-      el.setAttribute('data-state', collapsible._collapsible.expanded ? 'open' : 'closed');
+      el.setAttribute('data-state', collapsible._h_collapsible.expanded ? 'open' : 'closed');
     });
   });
 }

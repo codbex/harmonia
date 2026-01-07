@@ -28,13 +28,13 @@ x-h-dialog-footer
   <button x-h-button @click="showDialog = !showDialog">Show</button>
 
   <div x-h-dialog-overlay :data-open="showDialog">
-    <div x-h-dialog aria-labelledby="dialog1Title" aria-describedby="dialog1Desc">
+    <div x-h-dialog>
       <div x-h-dialog-header>
-        <h2 id="dialog1Title" x-h-dialog-title>Edit profile</h2>
+        <h2 x-h-dialog-title>Edit profile</h2>
         <button x-h-dialog-close aria-label="Icon button" @click="showDialog = false">
           <i role="img" data-lucide="x"></i>
         </button>
-        <p id="dialog1Desc" x-h-dialog-description>Make changes to your profile and click save.</p>
+        <p x-h-dialog-description>Make changes to your profile and click save.</p>
       </div>
       <div class="grid gap-4">
         <div class="grid gap-3">
