@@ -2,7 +2,7 @@
 
 Harmonia supports three color schemes: `light`, `dark`, and `auto`.
 
-The default setting is auto, which automatically aligns the application’s color scheme with the user’s browser or operating system preferences. When the system color mode changes—for example, from light to dark or vice versa—Harmonia updates its appearance accordingly in real time, without requiring a page reload.
+The default setting is auto, which automatically aligns the application’s color scheme with the user’s browser or operating system preferences. When the system color mode changes, from light to dark or vice versa, Harmonia updates its appearance accordingly in real time, without requiring a page reload.
 
 ## API Reference
 

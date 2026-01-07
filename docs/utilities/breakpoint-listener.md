@@ -12,7 +12,7 @@ The `getBreakpointListener` function creates a breakpoint listener using media q
 | breakpoint | integer  | false    | The desired breakpoint in pixels. By default, it's 768px.                                                                   |
 
 ::: info Threshold event
-The handler function is invoked only when the window width crosses the specified breakpoint—either becoming narrower or wider—rather than on every resize event. A boolean value is passed as the first argument, indicating the direction of the change.
+The handler function is invoked only when the window width crosses the specified breakpoint, either becoming narrower or wider, rather than on every resize event. A boolean value is passed as the first argument, indicating the direction of the change.
 :::
 
 ### Returns
