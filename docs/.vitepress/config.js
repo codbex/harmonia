@@ -73,6 +73,10 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Layouts',
+        items: [{ text: 'Split', link: '/layouts/split' }],
+      },
+      {
         text: 'Utilities',
         items: [
           { text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' },

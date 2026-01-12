@@ -250,6 +250,16 @@
                 <a x-h-badge href="#">Link</a>
               </div>
 
+              <div class="w-full" style="min-height: 10rem" x-h-split :data-orientation="isNarrow ? 'vertical' : 'horizontal'" data-variant="handle">
+                <div class="rounded-md border shadow-md" x-h-split-panel style="width: 100%">
+                  <div class="flex size-full items-center justify-center">Left panel</div>
+                </div>
+                <div x-h-split-gutter></div>
+                <div class="rounded-md border shadow-md" x-h-split-panel style="width: 100%">
+                  <div class="flex size-full items-center justify-center">Right panel</div>
+                </div>
+              </div>
+
               <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <div x-h-tile data-variant="outline">
                   <div x-h-tile-media data-variant="icon">
@@ -723,6 +733,7 @@
             "secondary-active",
             "muted",
             "muted-foreground",
+            "split-handle",
             "border",
             "input-border",
             "input-background",

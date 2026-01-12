@@ -31,6 +31,8 @@
   --input-background: oklch(1 0 0);
   --ring: oklch(0.6231 0.188 259.8145);
 
+  --split-handle: oklch(0.5155 0.0078 286.12);
+
   --negative: oklch(0.6268 0.2133 19.36);
   --negative-foreground: oklch(1 0 0);
   --negative-hover: oklch(0.6568 0.1921 16.84);
@@ -109,6 +111,8 @@
   --input-background: oklch(0.2 0 0);
   --ring: oklch(0.5768 0.1721 259.73);
 
+  --split-handle: oklch(0.64 0.0102 286.13);
+
   --negative: oklch(0.4817 0.1805 24.53);
   --negative-foreground: oklch(1 0 0);
   --negative-hover: oklch(0.5264 0.166 21.28);
@@ -176,6 +180,8 @@
   --color-ring: var(--ring);
   --color-input: var(--input-border);
   --color-input-inner: var(--input-background);
+
+  --color-split-handle: var(--split-handle);
 
   --color-negative: var(--negative);
   --color-negative-foreground: var(--negative-foreground);

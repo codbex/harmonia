@@ -27,6 +27,7 @@ import sheet from './components/sheet';
 import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
 import spinner from './components/spinner';
+import split from './components/split';
 import _switch from './components/switch';
 import table from './components/table';
 import tabs from './components/tabs';
@@ -75,6 +76,7 @@ export {
   sidebar as Sidebar,
   skeleton as Skeleton,
   spinner as Spinner,
+  split as Split,
   _switch as Switch,
   table as Table,
   tabs as Tabs,
@@ -118,6 +120,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(sidebar);
   registerPlugin(skeleton);
   registerPlugin(spinner);
+  registerPlugin(split);
   registerPlugin(_switch);
   registerPlugin(table);
   registerPlugin(tabs);

@@ -27,6 +27,7 @@ import sheet from './components/sheet';
 import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
 import spinner from './components/spinner';
+import split from './components/split';
 import _switch from './components/switch';
 import table from './components/table';
 import tabs from './components/tabs';
@@ -78,6 +79,7 @@ document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(sidebar);
   window.Alpine.plugin(skeleton);
   window.Alpine.plugin(spinner);
+  window.Alpine.plugin(split);
   window.Alpine.plugin(_switch);
   window.Alpine.plugin(table);
   window.Alpine.plugin(tabs);
