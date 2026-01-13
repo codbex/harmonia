@@ -134,7 +134,7 @@ export const getButtonSize = (size, inGroup = false) => {
 };
 
 export default function (Alpine) {
-  Alpine.directive('h-button', (el, { modifiers }, { cleanup }) => {
+  Alpine.directive('h-button', (el, { original, modifiers }, { cleanup }) => {
     setButtonClasses(el);
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'button');
@@ -155,7 +155,7 @@ export default function (Alpine) {
       el.classList.remove(...getButtonSize(lastSize, inGroup));
       el.classList.add(...getButtonSize(size, inGroup));
       if (size.startsWith('icon') && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-        console.error('h-button: Icon-only buttons must have an "aria-label" or "aria-labelledby" attribute', el);
+        console.error(`${original}: Icon-only buttons must have an "aria-label" or "aria-labelledby" attribute`, el);
       }
       lastSize = size;
     }

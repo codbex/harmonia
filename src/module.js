@@ -41,9 +41,10 @@ import tooltip from './components/tooltip';
 
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
-export { getColorScheme, setColorScheme } from './utils/theme';
+export { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import focus from './utils/focus';
+import template from './utils/template';
 
 export {
   accordion as Accordion,
@@ -81,6 +82,7 @@ export {
   table as Table,
   tabs as Tabs,
   tag as Tag,
+  template as Template,
   text as Text,
   textarea as Textarea,
   tile as Tile,
@@ -125,6 +127,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(table);
   registerPlugin(tabs);
   registerPlugin(tag);
+  registerPlugin(template);
   registerPlugin(text);
   registerPlugin(textarea);
   registerPlugin(tile);

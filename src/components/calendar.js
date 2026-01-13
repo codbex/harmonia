@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createElement }
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-calendar', (el, { expression }, { effect, evaluateLater, cleanup, Alpine }) => {
+  Alpine.directive('h-calendar', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
     const datepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_datepicker'));
     el.classList.add('border', 'rounded-control', 'gap-2', 'p-2');
     el.setAttribute('tabindex', '-1');
@@ -51,7 +51,7 @@ export default function (Alpine) {
     const onInputChange = () => {
       const newValue = new Date(datepicker._h_datepicker.input.value);
       if (isNaN(newValue)) {
-        console.error(`h-calendar: input value is not a valid date - ${datepicker._h_datepicker.input.value}`);
+        console.error(`${original}: input value is not a valid date - ${datepicker._h_datepicker.input.value}`);
         datepicker._h_datepicker.input.setCustomValidity('Input value is not a valid date.');
         return;
       } else if (selected.getTime() !== newValue.getTime()) {
@@ -70,7 +70,7 @@ export default function (Alpine) {
       if (el.hasOwnProperty('_x_model') && el._x_model.get()) {
         selected = new Date(el._x_model.get());
         if (isNaN(selected)) {
-          console.error(`h-calendar: input value is not a valid date - ${el._x_model.get()}`);
+          console.error(`${original}: input value is not a valid date - ${el._x_model.get()}`);
           if (datepicker) datepicker._h_datepicker.input.setCustomValidity('Input value is not a valid date.');
           else el.setAttribute('data-invalid', 'true');
         } else if (datepicker) {

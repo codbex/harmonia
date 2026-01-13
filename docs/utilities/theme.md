@@ -6,33 +6,64 @@ Utility functions for retrieving and updating the color scheme.
 
 ### Functions
 
-| Property       | Arguments                       | Returns                         | Description                    |
-| -------------- | ------------------------------- | ------------------------------- | ------------------------------ |
-| getColorScheme | none                            | `light`<br />`dark`<br />`auto` | Gets the current color scheme. |
-| setColorScheme | `light`<br />`dark`<br />`auto` | none                            | Sets the color scheme.         |
+| Property                  | Arguments                       | Returns                         | Description                                                       |
+| ------------------------- | ------------------------------- | ------------------------------- | ----------------------------------------------------------------- |
+| getColorScheme            | none                            | `light`<br />`dark`<br />`auto` | Retrieves the currently active color scheme.                      |
+| setColorScheme            | `light`<br />`dark`<br />`auto` | none                            | Updates the application’s color scheme to the specified value.    |
+| addColorSchemeListener    | callbackFunction                | none                            | Registers a callback to be invoked when the color scheme changes. |
+| removeColorSchemeListener | callbackFunction                | none                            | Unregisters a previously registered callback.                     |
 
 ::: info Seting the color scheme
-The `setColorScheme` function automatically persists the most recently selected color scheme in the browser’s local storage, eliminating the need to manually retrieve or reapply the setting on each page load.
+The `setColorScheme` function automatically persists the most recently selected color scheme to the browser’s local storage, ensuring the preference is retained and reapplied across page loads without requiring additional work.
 :::
+
+### callbackFunction
+
+| Arguments | Description                                                   |
+| --------- | ------------------------------------------------------------- |
+| scheme    | The current color scheme. It can be either `light` or `dark`. |
 
 ## Examples
 
 ### In plain JS
 
 ```js
+const listener = (scheme) => {
+  if (scheme === 'light') {
+    console.log('Switched to a light theme!');
+  } else {
+    console.log('Switched to a dark theme!');
+  }
+};
+Harmonia.addColorSchemeListener(listener);
+
 const isDark = Harmonia.getColorScheme() === 'dark';
 if (isDark) {
   Harmonia.setColorScheme('light');
 }
+
+Harmonia.removeColorSchemeListener(listener);
 ```
 
 ### In a module
 
 ```js
-import { getColorScheme, setColorScheme } from '@codbex/harmonia';
+import { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme } from '@codbex/harmonia';
+
+const listener = (scheme) => {
+  if (scheme === 'light') {
+    console.log('Switched to a light theme!');
+  } else {
+    console.log('Switched to a dark theme!');
+  }
+};
+
+Harmonia.addColorSchemeListener(listener);
 
 const isDark = getColorScheme() === 'dark';
 if (isDark) {
   setColorScheme('light');
 }
+
+Harmonia.removeColorSchemeListener(listener);
 ```

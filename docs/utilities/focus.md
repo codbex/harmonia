@@ -1,6 +1,6 @@
 # Focus
 
-The focus utility component enables programmatic focus management for an element based on a specified condition.
+The focus directive enables programmatic focus management for an element based on a specified condition.
 
 ## API Reference
 
@@ -21,12 +21,12 @@ x-h-focus
 ### Focus an input with a delay
 
 ```html
-<div x-data="mainCtl">
+<div x-data="app">
   <input x-h-input x-h-focus="focusInput" />
 </div>
 <script>
   document.addEventListener('alpine:init', () => {
-    Alpine.data('mainCtl', () => ({
+    Alpine.data('app', () => ({
       focusInput: false,
       init() {
         setTimeout(() => {

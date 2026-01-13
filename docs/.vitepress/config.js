@@ -81,6 +81,7 @@ export default defineConfig({
         items: [
           { text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' },
           { text: 'Focus', link: '/utilities/focus' },
+          { text: 'Template', link: '/utilities/template' },
           { text: 'Theme', link: '/utilities/theme' },
         ],
       },

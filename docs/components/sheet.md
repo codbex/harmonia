@@ -37,7 +37,7 @@ x-h-sheet-overlay
 </ClientOnly>
 
 ```html
-<div x-data="mainCtl">
+<div x-data="app">
   <div x-h-sheet-overlay="isOpen">
     <div x-h-sheet :data-align="side">
       <div x-h-sidebar>
@@ -78,7 +78,7 @@ x-h-sheet-overlay
 
 <script>
   lucide.createIcons();
-  Alpine.data('mainCtl', () => ({
+  Alpine.data('app', () => ({
     isOpen: false,
     side: 'left',
     openSheet() {
