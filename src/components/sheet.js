@@ -25,7 +25,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-sheet', (el, {}, { cleanup }) => {
+  Alpine.directive('h-sheet', (el, _, { cleanup }) => {
     el.classList.add('bg-background', 'fixed', 'shadow-lg');
     el.setAttribute('data-slot', 'sheet');
 

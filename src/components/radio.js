@@ -7,7 +7,7 @@ export default function (Alpine) {
       '[&>input]:border-0',
       '[&>input]:cursor-pointer',
       '[&>input]:focus-visible:border-ring',
-      '[&>input]:focus-visible:ring-[3px]',
+      '[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]',
       '[&>input]:focus-visible:ring-ring/50',
       '[&>input]:left-0',
       '[&>input]:outline-none',

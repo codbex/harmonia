@@ -24,13 +24,13 @@ export default function (Alpine) {
       'shadow-input',
       'transition-[color,box-shadow]',
       'outline-none',
-      'focus-visible:ring-[3px]',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'disabled:cursor-not-allowed',
       'disabled:opacity-50',
       'md:text-sm'
     );
     if (modifiers.includes('group')) {
-      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'py-2', 'shadow-input', 'focus-visible:ring-[3px]');
+      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'py-2', 'shadow-input', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
       el.classList.add('flex-1', 'resize-none', 'rounded-none', 'border-0', 'bg-transparent', 'py-3', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
     } else el.setAttribute('data-slot', 'textarea');

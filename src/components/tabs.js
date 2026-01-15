@@ -27,7 +27,7 @@ export default function (Alpine) {
       'data-[floating=true]:shadow-xs',
       'data-[floating=true]:z-1',
       'data-[floating=true]:rounded-lg',
-      'data-[floating=true]:p-[0.188rem]'
+      'data-[floating=true]:p-[calc(var(--spacing)*0.75)]'
     );
     el.setAttribute('data-slot', 'tab-bar');
   });
@@ -48,7 +48,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'tab-list');
   });
 
-  Alpine.directive('h-tab', (el) => {
+  Alpine.directive('h-tab', (el, { original }) => {
     el.classList.add(
       'cursor-pointer',
       'focus-visible:border-ring',
@@ -95,8 +95,8 @@ export default function (Alpine) {
     );
     el.setAttribute('role', 'tab');
     el.setAttribute('data-slot', 'tab');
-    if (!el.hasAttribute('id')) throw new Error('h-tab: Tabs must have an id');
-    if (!el.hasAttribute('aria-controls')) throw new Error('h-tab: aria-controls must be set to the tab-content id.');
+    if (!el.hasAttribute('id')) throw new Error(`${original}: Tabs must have an id`);
+    if (!el.hasAttribute('aria-controls')) throw new Error(`${original}: aria-controls must be set to the tab-content id.`);
   });
 
   Alpine.directive('h-tab-action', (el) => {
@@ -134,12 +134,12 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'tab-list-action');
   });
 
-  Alpine.directive('h-tabs-content', (el) => {
+  Alpine.directive('h-tabs-content', (el, { original }) => {
     el.classList.add('flex-1', 'outline-none');
     el.setAttribute('role', 'tabpanel');
     el.setAttribute('tabindex', '0');
     el.setAttribute('data-slot', 'tabs-content');
-    if (!el.hasAttribute('id')) throw new Error('h-tabs-content: Tab content must have an id');
-    if (!el.hasAttribute('aria-labelledby')) throw new Error('h-tabs-content: aria-labelledby must be set to the tab id.');
+    if (!el.hasAttribute('id')) throw new Error(`${original}: Tab content must have an id`);
+    if (!el.hasAttribute('aria-labelledby')) throw new Error(`${original}: aria-labelledby must be set to the tab id.`);
   });
 }

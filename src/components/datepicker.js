@@ -2,7 +2,7 @@ import { Calendar, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-date-picker', (el, {}, { Alpine }) => {
+  Alpine.directive('h-date-picker', (el, { original }, { Alpine }) => {
     el._h_datepicker = Alpine.reactive({
       id: undefined,
       controls: `hdpc${uuidv4()}`,
@@ -11,7 +11,7 @@ export default function (Alpine) {
     });
     el._h_datepicker.input = el.querySelector('input');
     if (!el._h_datepicker.input || el._h_datepicker.input.tagName !== 'INPUT') {
-      throw new Error('h-date-picker must have an input inside it');
+      throw new Error(`${original} must contain an input`);
     } else if (el._h_datepicker.input.hasAttribute('id')) {
       el._h_datepicker.id = el._h_datepicker.input.getAttribute('id');
     } else {
@@ -39,7 +39,7 @@ export default function (Alpine) {
       'min-w-0',
       'has-[input:focus-visible]:border-ring',
       'has-[input:focus-visible]:ring-ring/50',
-      'has-[input:focus-visible]:ring-[3px]',
+      'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
       'has-[input[aria-invalid=true]]:ring-negative/20',
       'has-[input[aria-invalid=true]]:border-negative',
       'dark:has-[input[aria-invalid=true]]:ring-negative/40',
@@ -54,16 +54,16 @@ export default function (Alpine) {
     el._h_datepicker.input.setAttribute('type', 'text');
   });
 
-  Alpine.directive('h-date-picker-trigger', (el, {}, { effect, cleanup, Alpine }) => {
+  Alpine.directive('h-date-picker-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
     if (el.tagName !== 'BUTTON') {
-      throw new Error('h-date-picker-trigger must be a button');
+      throw new Error(`${original} must be a button`);
     }
     if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-      throw new Error('h-date-picker-trigger: must have an "aria-label" or "aria-labelledby" attribute');
+      throw new Error(`${original}: must have an "aria-label" or "aria-labelledby" attribute`);
     }
     const datepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_datepicker'));
     if (!datepicker) {
-      throw new Error('h-date-picker-trigger must be inside an h-date-picker element');
+      throw new Error(`${original} must be inside an date-picker element`);
     }
     el.setAttribute('aria-controls', datepicker._h_datepicker.controls);
     el.setAttribute('aria-expanded', 'false');

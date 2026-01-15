@@ -69,7 +69,7 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-popover', (el, { modifiers }, { effect }) => {
+  Alpine.directive('h-popover', (el, { original, modifiers }, { effect }) => {
     const popover = (() => {
       let sibling = el.previousElementSibling;
       while (sibling && !sibling.hasOwnProperty('_popover')) {
@@ -79,7 +79,7 @@ export default function (Alpine) {
     })();
 
     if (!popover) {
-      throw new Error('h-popover-content must be placed after an h-popover element');
+      throw new Error(`${original} must be placed after a popover element`);
     }
     el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'rounded-md', 'border', 'shadow-md', 'outline-hidden', 'overflow-scroll');
     el.setAttribute('data-slot', 'popover');

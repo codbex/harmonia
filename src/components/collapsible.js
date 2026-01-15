@@ -16,11 +16,11 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-collapsible-trigger', (el, { modifiers }, { effect, Alpine, cleanup }) => {
+  Alpine.directive('h-collapsible-trigger', (el, { original, modifiers }, { effect, Alpine, cleanup }) => {
     const collapsible = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_collapsible'));
 
     if (!collapsible) {
-      throw new Error('h-collapsible-trigger must be inside an h-collapsible element');
+      throw new Error(`${original} must be inside a collapsible element`);
     }
 
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'collapsible-trigger');
@@ -46,10 +46,10 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-collapsible-content', (el, {}, { effect, Alpine }) => {
+  Alpine.directive('h-collapsible-content', (el, { original }, { effect, Alpine }) => {
     const collapsible = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_collapsible'));
     if (!collapsible) {
-      throw new Error('h-collapsible-content must be inside an h-collapsible element');
+      throw new Error(`${original} must be inside an h-collapsible element`);
     }
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'collapsible-content');
     el.classList.add('data-[state=closed]:!hidden');

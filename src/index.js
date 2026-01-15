@@ -38,6 +38,7 @@ import tile from './components/tile';
 import timepicker from './components/timepicker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
+import tree from './components/tree';
 
 import { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
@@ -92,6 +93,7 @@ document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(timepicker);
   window.Alpine.plugin(toolbar);
   window.Alpine.plugin(tooltip);
+  window.Alpine.plugin(tree);
   // Utility plugins
   window.Alpine.plugin(focus);
   window.Alpine.plugin(template);

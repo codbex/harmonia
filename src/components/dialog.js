@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-dialog-overlay', (el, {}, { cleanup }) => {
+  Alpine.directive('h-dialog-overlay', (el, _, { cleanup }) => {
     el.classList.add('hidden', 'data-[open=true]:block', 'fixed', 'inset-0', 'z-50', 'bg-black/60');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'dialog-overlay');
@@ -78,7 +78,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'dialog-header');
   });
 
-  Alpine.directive('h-dialog-title', (el, {}, { Alpine }) => {
+  Alpine.directive('h-dialog-title', (el, _, { Alpine }) => {
     el.classList.add('text-lg', 'leading-none', 'font-semibold');
     el.setAttribute('data-slot', 'dialog-title');
     const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
@@ -110,7 +110,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'dialog-close');
   });
 
-  Alpine.directive('h-dialog-description', (el, {}, { Alpine }) => {
+  Alpine.directive('h-dialog-description', (el, _, { Alpine }) => {
     el.classList.add('col-span-full', 'text-muted-foreground', 'text-sm');
     el.setAttribute('data-slot', 'dialog-description');
     const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');

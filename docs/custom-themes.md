@@ -47,6 +47,7 @@ Harmonia themes provide both light and dark variants. Light theme values are def
 | --secondary-active             | Color applied to secondary elements when active or selected.                                |
 | --muted                        | Subdued color used for disabled states, placeholders, icons, and low-emphasis UI elements.  |
 | --muted-foreground             | Foreground color used on muted surfaces.                                                    |
+| --split-handle                 | Default color for split view gutter handle.                                                 |
 | --border                       | Default color for borders and dividers.                                                     |
 | --input-border                 | Border color for all input components, including text fields, selects, and date pickers.    |
 | --input-background             | Background color for input components.                                                      |

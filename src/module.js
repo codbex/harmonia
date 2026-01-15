@@ -38,6 +38,7 @@ import tile from './components/tile';
 import timepicker from './components/timepicker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
+import tree from './components/tree';
 
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
@@ -89,6 +90,7 @@ export {
   timepicker as TimePicker,
   toolbar as Toolbar,
   tooltip as Tooltip,
+  tree as Tree,
 };
 
 export const registerComponents = (registerPlugin) => {
@@ -134,6 +136,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(timepicker);
   registerPlugin(toolbar);
   registerPlugin(tooltip);
+  registerPlugin(tree);
 };
 
 export default registerComponents;

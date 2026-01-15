@@ -1,11 +1,11 @@
 export default function (Alpine) {
-  Alpine.directive('h-icon', (el) => {
+  Alpine.directive('h-icon', (el, { original }) => {
     if (el.tagName.toLowerCase() !== 'svg') {
-      throw new Error('h-icon works only on svg elements');
+      throw new Error(`${original} works only on svg elements`);
     } else if (!el.hasAttribute('role')) {
-      throw new Error('h-icon must have a role');
+      throw new Error(`${original} must have a role`);
     } else if (el.getAttribute('role') === 'img' && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-      throw new Error('h-icon: svg images with the role of img must have an "aria-label" or "aria-labelledby" attribute');
+      throw new Error(`${original}: svg images with the role of img must have an "aria-label" or "aria-labelledby" attribute`);
     }
     el.classList.add('fill-current');
     el.setAttribute('data-slot', 'icon');

@@ -37,25 +37,25 @@
     "docs:preview": "vitepress preview docs"
   },
   "docDependencies": {
-    "alpinejs": "^3.15.1",
-    "lucide": "^0.544.0",
+    "alpinejs": "^3.15.4",
+    "lucide": "^0.562.0",
     "culori": "^4.0.2",
     "@fontsource/open-sans": "^5.2.7"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.13",
-    "alpinejs": "^3.15.1",
+    "@tailwindcss/cli": "^4.1.18",
+    "alpinejs": "^3.15.4",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.9",
     "prettier": "^3.7.4",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "tailwindcss": "^4.1.13",
+    "tailwindcss": "^4.1.18",
     "vitepress": "^2.0.0-alpha.15"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.4",
-    "lucide": "^0.544.0",
+    "lucide": "^0.562.0",
     "nouislider": "^15.8.1",
     "uuid": "^13.0.0"
   }

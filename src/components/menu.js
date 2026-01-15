@@ -7,14 +7,14 @@ export default function (Alpine) {
     };
   });
 
-  Alpine.directive('h-menu', (el, { modifiers }, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu', (el, { original, modifiers }, { cleanup, Alpine }) => {
     el.classList.add('hidden', 'fixed', 'bg-popover', 'text-popover-foreground', 'font-normal', 'z-50', 'min-w-[8rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-md', 'p-1', 'shadow-md', 'border', 'outline-none');
     el.setAttribute('role', 'menu');
     el.setAttribute('aria-orientation', 'vertical');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'menu');
     if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-      throw new Error('h-menu: must have an "aria-label" or "aria-labelledby" attribute');
+      throw new Error(`${original} must have an "aria-label" or "aria-labelledby" attribute`);
     }
 
     const isSubmenu = modifiers.includes('sub');
@@ -29,7 +29,7 @@ export default function (Alpine) {
     })();
 
     if (!isSubmenu && !menuTrigger) {
-      throw new Error('h-menu: menu must be placed after an h-menu-trigger element');
+      throw new Error(`${original} menu must be placed after a menu trigger element`);
     }
 
     let menuSubItem;
@@ -257,7 +257,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-menu-item', (el, {}, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu-item', (el, _, { cleanup, Alpine }) => {
     el.classList.add(
       'focus:bg-secondary-hover',
       'focus:text-secondary-foreground',
@@ -316,7 +316,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-menu-sub', (el, {}, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu-sub', (el, { original }, { cleanup, Alpine }) => {
     el.classList.add(
       'focus:bg-secondary-hover',
       'hover:bg-secondary-hover',
@@ -341,12 +341,13 @@ export default function (Alpine) {
       "[&_svg:not([class*='size-'])]:size-4",
       'after:block',
       'after:bg-transparent',
-      'after:border-t-[0.063rem]',
-      'after:border-r-[0.063rem]',
+      'after:border-t-[calc(var(--spacing)*0.25)]',
+      'after:border-r-[calc(var(--spacing)*0.25)]',
       'after:border-muted-foreground',
       'after:pointer-events-none',
-      'after:size-[0.438rem]',
-      'after:rounded-[0.063rem]',
+      'after:min-w-1.75',
+      'after:size-1.75',
+      'after:rounded-[calc(var(--spacing)*0.25)]',
       'after:rotate-45',
       'after:ml-auto',
       'after:-translate-x-0.75'
@@ -358,7 +359,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'menu-sub');
 
     const parentMenu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
-    if (!parentMenu) throw new Error('h-menu-sub: Menu sub item must have a parent');
+    if (!parentMenu) throw new Error(`${original} must have a parent`);
 
     el._menu_sub = {
       open: undefined,
@@ -463,7 +464,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'menu-label');
   });
 
-  Alpine.directive('h-menu-checkbox-item', (el, {}, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu-checkbox-item', (el, _, { cleanup, Alpine }) => {
     el.classList.add(
       'focus:bg-secondary-hover',
       'hover:bg-secondary-hover',
@@ -492,7 +493,6 @@ export default function (Alpine) {
       'before:pointer-events-none',
       'before:w-2.5',
       'before:h-1.5',
-      'before:rounded-[0.125rem]',
       'before:-rotate-45',
       'before:-translate-x-0.75',
       'aria-[checked=true]:before:visible'

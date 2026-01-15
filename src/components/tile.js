@@ -21,7 +21,7 @@ export default function (Alpine) {
       'outline-none',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
-      'focus-visible:ring-[3px]'
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]'
     );
     el.setAttribute('data-slot', 'tile');
 

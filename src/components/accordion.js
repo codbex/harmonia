@@ -12,11 +12,11 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'accordion');
   });
 
-  Alpine.directive('h-accordion-item', (el, { expression, modifiers }, { effect, Alpine }) => {
+  Alpine.directive('h-accordion-item', (el, { original, expression, modifiers }, { effect, Alpine }) => {
     const accordion = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordion'));
 
     if (!accordion) {
-      throw new Error('h-accordion-item must be inside an h-accordion');
+      throw new Error(`${original} must be inside an accordion`);
     }
 
     el.classList.add('border-b', 'last:border-b-0', '[[data-variant=header]_&]:data-[state=closed]:border-b-0');
@@ -52,16 +52,16 @@ export default function (Alpine) {
     effect(setAttributes);
   });
 
-  Alpine.directive('h-accordion-trigger', (el, { expression }, { effect, evaluateLater, Alpine, cleanup }) => {
+  Alpine.directive('h-accordion-trigger', (el, { original, expression }, { effect, evaluateLater, Alpine, cleanup }) => {
     if (el.tagName.length !== 2 && !el.tagName.startsWith('H')) {
-      throw new Error('h-accordion-trigger must be a header element');
+      throw new Error(`${original} must be a header element`);
     }
     const accordion = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordion'));
 
     const accordionItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordionItem'));
 
     if (!accordionItem || !accordion) {
-      throw new Error('h-accordion-trigger must be inside an h-accordion-item, which must be inside an h-accordion');
+      throw new Error(`${original} must have an accordion and accordion item parent elements`);
     }
 
     el.classList.add(
@@ -106,7 +106,7 @@ export default function (Alpine) {
       'transition-all',
       'outline-none',
       'hover:underline',
-      'focus-visible:ring-[3px]',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'disabled:pointer-events-none',
       'disabled:opacity-50',
       '[&[data-state=open]>svg]:rotate-180'
@@ -153,7 +153,7 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-accordion-content', (el, {}, { effect, Alpine }) => {
+  Alpine.directive('h-accordion-content', (el, _, { effect, Alpine }) => {
     el.classList.add('pt-0', 'pb-4', 'overflow-hidden', 'text-sm', 'data-[state=closed]:hidden');
     el.setAttribute('data-slot', 'accordion-content');
     const parent = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_accordionItem'));

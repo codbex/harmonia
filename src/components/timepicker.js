@@ -72,7 +72,7 @@ export default function (Alpine) {
       'border-input',
       '[&>input]:appearance-none',
       'has-[input:focus-visible]:border-ring',
-      'has-[input:focus-visible]:ring-[3px]',
+      'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
       'has-[input:focus-visible]:ring-ring/50',
       'dark:has-[aria-invalid=true]:ring-negative/40',
       'dark:has-[input:invalid]:ring-negative/40',
@@ -161,13 +161,13 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-time-picker-input', (el, {}, { effect, Alpine }) => {
+  Alpine.directive('h-time-picker-input', (el, { original }, { effect, Alpine }) => {
     if (el.tagName !== 'INPUT') {
-      throw new Error('h-time-picker-input must be a readonly input of type text');
+      throw new Error(`${original} must be a readonly input of type "text"`);
     }
     const timepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_timepicker'));
     if (!timepicker) {
-      throw new Error('h-time-picker-input must be inside an h-time-picker element');
+      throw new Error(`${original} must be inside a time-picker element`);
     }
     timepicker._time.changed = () => {
       Alpine.nextTick(() => {
@@ -248,7 +248,7 @@ export default function (Alpine) {
     });
   }).before('h-button');
 
-  Alpine.directive('h-time-picker-popup', (el, {}, { effect, cleanup, Alpine }) => {
+  Alpine.directive('h-time-picker-popup', (el, _, { effect, cleanup, Alpine }) => {
     const timepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_timepicker'));
     el.classList.add(
       'overflow-hidden',

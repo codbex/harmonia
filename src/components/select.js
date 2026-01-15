@@ -11,7 +11,7 @@ const FilterType = Object.freeze({
 });
 
 export default function (Alpine) {
-  Alpine.directive('h-select', (el, {}, { Alpine }) => {
+  Alpine.directive('h-select', (el, _, { Alpine }) => {
     el._h_select = Alpine.reactive({
       id: undefined,
       controls: `hsc${uuidv4()}`,
@@ -26,11 +26,11 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'select');
   });
 
-  Alpine.directive('h-select-trigger', (el, {}, { effect, cleanup, Alpine }) => {
+  Alpine.directive('h-select-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
 
     if (!select) {
-      throw new Error('h-select-trigger must be inside an h-select element');
+      throw new Error(`${original} must be inside a select element`);
     } else if (el.hasOwnProperty('_x_model')) {
       select._h_select.multiple = Array.isArray(el._x_model.get());
       select._h_select.model = el._x_model.get();
@@ -257,10 +257,10 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-select-content', (el, {}, { effect, Alpine }) => {
+  Alpine.directive('h-select-content', (el, { original }, { effect, Alpine }) => {
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
     if (!select) {
-      throw new Error('h-select-content must be inside an h-select element');
+      throw new Error(`${original} must be inside a select element`);
     }
     el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'p-1', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-md', 'border', 'shadow-md');
     el.setAttribute('data-slot', 'select-content');
@@ -273,7 +273,7 @@ export default function (Alpine) {
 
     const control = select.querySelector(`#${select._h_select.id}`);
     if (!control) {
-      throw new Error('h-select-content: trigger not found');
+      throw new Error(`${original}: trigger not found`);
     }
 
     let autoUpdateCleanup;
@@ -316,10 +316,10 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-select-search', (el, { modifiers }, { effect, cleanup }) => {
+  Alpine.directive('h-select-search', (el, { original, modifiers }, { effect, cleanup }) => {
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
     if (!select) {
-      throw new Error('h-select-search must be inside an h-select element');
+      throw new Error(`${original} must be inside an h-select element`);
     } else {
       select._h_select.filterType = FilterType[modifiers[0]] ?? FilterType['starts-with'];
     }
@@ -372,7 +372,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-select-group', (el, {}, { effect }) => {
+  Alpine.directive('h-select-group', (el, _, { effect }) => {
     el.setAttribute('data-slot', 'select-group');
     el._h_selectGroup = Alpine.reactive({
       labelledby: undefined,
@@ -397,10 +397,10 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-select-option', (el, { expression }, { effect, evaluateLater, cleanup }) => {
+  Alpine.directive('h-select-option', (el, { original, expression }, { effect, evaluateLater, cleanup }) => {
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
     if (!select) {
-      throw new Error('h-select-option must be inside an h-select element');
+      throw new Error(`${original} must be inside an h-select element`);
     }
 
     el.classList.add(

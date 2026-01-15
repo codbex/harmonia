@@ -5,13 +5,13 @@
   @apply size-5;
 }
 .harmonia-slider.noUi-horizontal .noUi-handle {
-  @apply top-[-0.438rem] -right-2.5;
+  @apply top-[calc(var(--spacing)*-1.75)] -right-2.5;
 }
 .harmonia-slider.noUi-vertical {
   @apply w-2;
 }
 .harmonia-slider.noUi-vertical .noUi-handle {
-  @apply right-[-0.438rem] -bottom-2.5;
+  @apply right-[calc(var(--spacing)*-1.75)] -bottom-2.5;
 }
 .harmonia-slider.noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
   @apply right-auto -left-5;
@@ -55,16 +55,16 @@
 }
 .harmonia-slider .noUi-pips-horizontal {
   height: 100%;
-  padding: 0.625rem 0 0 0;
+  padding: calc(var(--spacing) * 2.5) 0 0 0;
 }
 .harmonia-slider .noUi-tooltip {
-  @apply absolute block rounded-md border-1 bg-background px-2 py-0.5 text-center whitespace-nowrap text-foreground shadow-md;
+  @apply absolute block rounded-md border bg-background px-2 py-0.5 text-center text-base whitespace-nowrap text-foreground shadow-md;
 }
 .harmonia-slider.noUi-horizontal .noUi-tooltip {
-  bottom: 140%;
+  bottom: 150%;
 }
 .harmonia-slider.noUi-vertical .noUi-tooltip {
-  right: 140%;
+  right: 150%;
 }
 .harmonia-slider.noUi-horizontal .noUi-origin > .noUi-tooltip {
   bottom: 10px;

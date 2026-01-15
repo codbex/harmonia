@@ -2,7 +2,7 @@ import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-tooltip-trigger', (el, {}, { Alpine, cleanup }) => {
+  Alpine.directive('h-tooltip-trigger', (el, _, { Alpine, cleanup }) => {
     el._tooltip = Alpine.reactive({
       id: undefined,
       controls: `hpc${uuidv4()}`,
@@ -30,7 +30,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-tooltip', (el, {}, { effect }) => {
+  Alpine.directive('h-tooltip', (el, { original }, { effect }) => {
     const tooltip = (() => {
       let sibling = el.previousElementSibling;
       while (sibling && !sibling.hasOwnProperty('_tooltip')) {
@@ -40,14 +40,14 @@ export default function (Alpine) {
     })();
 
     if (!tooltip) {
-      throw new Error('h-tooltip must be placed after an h-tooltip-trigger element');
+      throw new Error(`${original} must be placed after a tooltip trigger element`);
     }
     el.classList.add('absolute', 'bg-foreground', 'text-background', 'z-50', 'w-fit', 'rounded-md', 'px-3', 'py-1.5', 'text-xs', 'text-balance');
     el.setAttribute('data-slot', 'tooltip');
     el.setAttribute('id', tooltip._tooltip.controls);
 
     const arrowEl = document.createElement('span');
-    arrowEl.classList.add('absolute', 'bg-foreground', 'fill-foreground', 'z-50', 'size-2.5', 'rotate-45', 'rounded-[2px]');
+    arrowEl.classList.add('absolute', 'bg-foreground', 'size-2.5', 'rotate-45');
     el.appendChild(arrowEl);
 
     function updatePosition() {
@@ -59,11 +59,12 @@ export default function (Alpine) {
           left: `${x}px`,
           top: `${y}px`,
         });
-        if (middlewareData.arrow)
+        if (middlewareData.arrow) {
           Object.assign(arrowEl.style, {
             left: middlewareData.arrow.x != null ? `${middlewareData.arrow.x}px` : '',
-            top: placement === 'top' ? `${el.offsetHeight - 5}px` : `-5px`,
+            top: placement === 'top' ? `${el.offsetHeight - arrowEl.clientHeight / 2}px` : `-${arrowEl.clientHeight / 2}px`,
           });
+        }
       });
     }
 

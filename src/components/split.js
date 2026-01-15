@@ -10,7 +10,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'split-panel');
   });
 
-  Alpine.directive('h-split-gutter', (el, {}, { cleanup }) => {
+  Alpine.directive('h-split-gutter', (el, _, { cleanup }) => {
     el.classList.add(
       'relative',
       'shrink-0',
@@ -46,10 +46,10 @@ export default function (Alpine) {
       'hover:before:bg-primary-hover',
       'group-data-[orientation=horizontal]/split:!w-px',
       'group-data-[orientation=horizontal]/split:before:h-full',
-      'group-data-[orientation=horizontal]/split:before:w-[0.313rem]',
+      'group-data-[orientation=horizontal]/split:before:w-[calc(var(--spacing)*1.25)]',
       'group-data-[orientation=vertical]/split:!h-px',
       'group-data-[orientation=vertical]/split:before:w-full',
-      'group-data-[orientation=vertical]/split:before:h-[0.313rem]',
+      'group-data-[orientation=vertical]/split:before:h-[calc(var(--spacing)*1.25)]',
     ];
     const handleClasses = [
       'bg-transparent',

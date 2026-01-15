@@ -1,5 +1,5 @@
 export default function (Alpine) {
-  Alpine.directive('h-badge', (el, {}, { cleanup }) => {
+  Alpine.directive('h-badge', (el, _, { cleanup }) => {
     el.classList.add(
       '[a&]:cursor-pointer',
       'inline-flex',
@@ -19,7 +19,7 @@ export default function (Alpine) {
       '[&>svg]:pointer-events-none',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
-      'focus-visible:ring-[3px]',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'transition-[color,box-shadow]',
       'overflow-hidden'
     );

@@ -16,10 +16,8 @@ export default function (Alpine) {
 
     setFloating();
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        setFloating();
-      });
+    const observer = new MutationObserver(() => {
+      setFloating();
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-floating'] });

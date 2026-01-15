@@ -34,7 +34,7 @@ export default function (Alpine) {
       'md:text-sm',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
-      'focus-visible:ring-[3px]',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
@@ -43,7 +43,7 @@ export default function (Alpine) {
       'invalid:!border-negative'
     );
     if (modifiers.includes('group')) {
-      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'shadow-input', 'focus-visible:ring-[3px]');
+      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'shadow-input', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
       el.classList.add('flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
     } else el.setAttribute('data-slot', 'input');
@@ -79,7 +79,7 @@ export default function (Alpine) {
       'has-[>[data-align=block-end]]:[&>input]:pt-3',
       'has-[[data-slot=input-group-control]:focus-visible]:border-ring',
       'has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
-      'has-[[data-slot=input-group-control]:focus-visible]:ring-[3px]',
+      'has-[[data-slot=input-group-control]:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
       'has-[[data-slot][aria-invalid=true]]:ring-negative/20',
       'has-[[data-slot][aria-invalid=true]]:border-negative',
       'dark:has-[[data-slot][aria-invalid=true]]:ring-negative/40'
@@ -88,7 +88,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'input-group');
   });
 
-  Alpine.directive('h-input-group-addon', (el, {}, { cleanup }) => {
+  Alpine.directive('h-input-group-addon', (el, _, { cleanup }) => {
     el.classList.add(
       'text-muted-foreground',
       'flex',

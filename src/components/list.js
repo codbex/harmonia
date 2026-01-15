@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-listbox', (el, {}, { cleanup }) => {
+  Alpine.directive('h-listbox', (el, _, { cleanup }) => {
     el.classList.add(
       'divide-solid',
       'divide-y',
@@ -16,7 +16,7 @@ export default function (Alpine) {
       'disabled:opacity-50',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
-      'focus-visible:ring-[3px]',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
@@ -108,13 +108,13 @@ export default function (Alpine) {
     el.setAttribute('role', 'group');
   });
 
-  Alpine.directive('h-list-header', (el, {}, { Alpine }) => {
+  Alpine.directive('h-list-header', (el, { original }, { Alpine }) => {
     el.classList.add('font-medium', 'flex', 'items-center', 'p-2', 'gap-2', 'align-middle', 'bg-table-header', 'text-table-header-foreground');
     el.setAttribute('role', 'presentation');
     el.setAttribute('data-slot', 'list-header');
     const list = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'list');
     if (!list) {
-      throw new Error('h-list-header: must be placed inside an h-list element');
+      throw new Error(`${original} must be placed inside a list element`);
     }
     if (!el.hasAttribute('id')) {
       const id = `lbh${uuidv4()}`;
