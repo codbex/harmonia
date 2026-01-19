@@ -59,6 +59,7 @@ export default function (Alpine) {
         case 'End':
           focusLastOption(el);
           break;
+        case 'Up':
         case 'ArrowUp':
           let prevElem = event.target.previousElementSibling;
           if (prevElem && prevElem.getAttribute('data-slot') !== 'list-header') {
@@ -70,6 +71,7 @@ export default function (Alpine) {
             }
           }
           break;
+        case 'Down':
         case 'ArrowDown':
           let nextElem = event.target.nextElementSibling;
           if (nextElem) {

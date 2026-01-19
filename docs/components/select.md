@@ -2,13 +2,25 @@
 
 The select component is used to select an item from a predefined list. It should be used when there are 12 or less items to choose from.
 
+## Keyboard Handling
+
+The user can use the following keyboard shortcuts in order to navigate trough the select:
+
+- `Up` / `Down` — Moves focus to the previous or next option.
+- `Home` / `Page Up` — Moves focus to the first option.
+- `End` / `Page Down` — Moves focus to the last option.
+- `Enter` / `Space` — Selects the focused option. If the list is closed, opens it.
+- `Esc` — Closes the list without changing the current selection.
+- `Tab` — Closes the list and moves focus to the next focusable element.
+- `Character keys (A–Z)` — Moves focus to the next option whose label starts with the typed character.
+
 ## API Reference
 
 ### Component attubute(s)
 
 ```
 x-h-select
-x-h-select-trigger
+x-h-select-input
 x-h-select-content
 x-h-select-search
 x-h-select-group
@@ -19,12 +31,17 @@ x-h-select-separator
 
 ### Attributes
 
-#### x-h-select-trigger
+#### x-h-select
 
-| Attribute    | Type                                          | Required | Description                                   |
-| ------------ | --------------------------------------------- | -------- | --------------------------------------------- |
-| data-variant | `default`<br />`secondary`<br />`transparent` | false    | Changes the color/shape of the select button. |
-| data-size    | `default`<br />`xs`<br />`sm`<br />`lg`<br /> | false    | Changes the size of the select button.        |
+| Attribute | Type                          | Required | Description                            |
+| --------- | ----------------------------- | -------- | -------------------------------------- |
+| data-size | `default`<br />`sm`<br />`xs` | false    | Changes the size of the select button. |
+
+#### x-h-select-input
+
+| Attribute | Type   | Required | Description                                                                                                                                                         |
+| --------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-id   | string | false    | Since the native input is hidden, this attribute provides an ID for proper labeling and accessibility. The value is forwarded to the actual select trigger element. |
 
 #### x-h-select-content
 
@@ -37,18 +54,14 @@ x-h-select-separator
 | Attribute     | Type    | Required | Description                                                          |
 | ------------- | ------- | -------- | -------------------------------------------------------------------- |
 | `self`        | string  | false    | Sets the label of the option. Either a string literal or a variable. |
+| data-value    | boolean | false    | Sets the value of the option.                                        |
 | data-disabled | boolean | false    | Disables the option.                                                 |
-
-### Modifiers
 
 #### x-h-select-search
 
-| Modifier      | Description                                                                               |
-| ------------- | ----------------------------------------------------------------------------------------- |
-| starts-with   | Search input will use the 'starts-with' filter.                                           |
-| contains      | Search input will use the 'contains' filter.                                              |
-| contains-each | Search input will use the 'contains-each' filter. Search terms are separated using space. |
-| none          | Search input will not use a filter. Usefull when creating a custom search.                |
+| Attribute   | Type                                                           | Required | Description                                                                                                                                                                                   |
+| ----------- | -------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-filter | `starts-with`<br />`contains`<br />`contains-each`<br />`none` | false    | Defines the search matching strategy. Use `none` to disable built-in filtering and implement custom search behavior. With the 'contains-each' filter, search terms are separated using space. |
 
 ## Examples
 
@@ -62,15 +75,17 @@ x-h-select-separator
 </ClientOnly>
 
 ```html
-<div x-h-select x-data="selectData">
-  <button x-h-select-trigger :placeholder="placeholder" x-model="selected"></button>
-  <div x-h-select-content>
-    <div x-h-select-search></div>
-    <div x-h-select-group>
-      <div x-h-select-label>Fruits</div>
-      <template x-for="option in items">
-        <div x-h-select-option="option.label" :value="option.value"></div>
-      </template>
+<div x-data="selectData">
+  <div x-h-select>
+    <input x-h-select-input :placeholder="placeholder" x-model="selected" />
+    <div x-h-select-content>
+      <div x-h-select-search></div>
+      <div x-h-select-group>
+        <div x-h-select-label>Fruits</div>
+        <template x-for="option in items">
+          <div x-h-select-option="option.label" :data-value="option.value"></div>
+        </template>
+      </div>
     </div>
   </div>
 </div>
@@ -108,15 +123,17 @@ The input automatically switches modes based on the model. If you want to select
 </ClientOnly>
 
 ```html
-<div x-h-select x-data="selectData">
-  <button x-h-select-trigger :placeholder="placeholder" x-model="selected"></button>
-  <div x-h-select-content>
-    <div x-h-select-search></div>
-    <div x-h-select-group>
-      <div x-h-select-label>Fruits</div>
-      <template x-for="option in items">
-        <div x-h-select-option="option.label" :value="option.value"></div>
-      </template>
+<div x-data="selectData">
+  <div x-h-select>
+    <input x-h-select-input :placeholder="placeholder" x-model="selected" />
+    <div x-h-select-content>
+      <div x-h-select-search></div>
+      <div x-h-select-group>
+        <div x-h-select-label>Fruits</div>
+        <template x-for="option in items">
+          <div x-h-select-option="option.label" :data-value="option.value"></div>
+        </template>
+      </div>
     </div>
   </div>
 </div>
@@ -151,13 +168,13 @@ The input automatically switches modes based on the model. If you want to select
 <ClientOnly>
 <component-container>
 <div x-h-select>
-  <button x-h-select-trigger placeholder="Select"></button>
+  <input x-h-select-input placeholder="Select" />
   <div x-h-select-content>
-    <div x-h-select-option="'Option 1'" value="1"></div>
-    <div x-h-select-option="'Option 2'" value="2"></div>
-    <div x-h-select-option="'Option 3'" value="3"></div>
-    <div x-h-select-option="'Option 4'" value="4" data-disabled="true"></div>
-    <div x-h-select-option="'Option 5'" value="5"></div>
+    <div x-h-select-option="'Option 1'" data-value="1"></div>
+    <div x-h-select-option="'Option 2'" data-value="2"></div>
+    <div x-h-select-option="'Option 3'" data-value="3"></div>
+    <div x-h-select-option="'Option 4'" data-value="4" data-disabled="true"></div>
+    <div x-h-select-option="'Option 5'" data-value="5"></div>
   </div>
 </div>
 </component-container>
@@ -165,13 +182,13 @@ The input automatically switches modes based on the model. If you want to select
 
 ```html
 <div x-h-select>
-  <button x-h-select-trigger placeholder="Select"></button>
+  <input x-h-select-input placeholder="Select" />
   <div x-h-select-content>
-    <div x-h-select-option="'Option 1'" value="1"></div>
-    <div x-h-select-option="'Option 2'" value="2"></div>
-    <div x-h-select-option="'Option 3'" value="3"></div>
-    <div x-h-select-option="'Option 4'" value="4" data-disabled="true"></div>
-    <div x-h-select-option="'Option 5'" value="5"></div>
+    <div x-h-select-option="'Option 1'" data-value="1"></div>
+    <div x-h-select-option="'Option 2'" data-value="2"></div>
+    <div x-h-select-option="'Option 3'" data-value="3"></div>
+    <div x-h-select-option="'Option 4'" data-value="4" data-disabled="true"></div>
+    <div x-h-select-option="'Option 5'" data-value="5"></div>
   </div>
 </div>
 ```
@@ -183,19 +200,19 @@ The input automatically switches modes based on the model. If you want to select
 <ClientOnly>
 <component-container>
 <div x-h-select>
-  <button x-h-select-trigger placeholder="Select"></button>
+  <input x-h-select-input placeholder="Select" />
   <div x-h-select-content>
     <div x-h-select-group>
       <div x-h-select-label>First two options</div>
-      <div x-h-select-option="'Option 1'" value="1"></div>
-      <div x-h-select-option="'Option 2'" value="2"></div>
+      <div x-h-select-option="'Option 1'" data-value="1"></div>
+      <div x-h-select-option="'Option 2'" data-value="2"></div>
     </div>
     <div x-h-select-group>
       <div x-h-select-label>The rest</div>
-      <div x-h-select-option="'Option 3'" value="3"></div>
-      <div x-h-select-option="'Option 4'" value="4"></div>
+      <div x-h-select-option="'Option 3'" data-value="3"></div>
+      <div x-h-select-option="'Option 4'" data-value="4"></div>
       <div x-h-select-separator></div>
-      <div x-h-select-option="'Option 5'" value="5"></div>
+      <div x-h-select-option="'Option 5'" data-value="5"></div>
     </div>
   </div>
 </div>
@@ -204,19 +221,19 @@ The input automatically switches modes based on the model. If you want to select
 
 ```html
 <div x-h-select>
-  <button x-h-select-trigger placeholder="Select"></button>
+  <input x-h-select-input placeholder="Select" />
   <div x-h-select-content>
     <div x-h-select-group>
       <div x-h-select-label>First two options</div>
-      <div x-h-select-option="'Option 1'" value="1"></div>
-      <div x-h-select-option="'Option 2'" value="2"></div>
+      <div x-h-select-option="'Option 1'" data-value="1"></div>
+      <div x-h-select-option="'Option 2'" data-value="2"></div>
     </div>
     <div x-h-select-group>
       <div x-h-select-label>The rest</div>
-      <div x-h-select-option="'Option 3'" value="3"></div>
-      <div x-h-select-option="'Option 4'" value="4"></div>
+      <div x-h-select-option="'Option 3'" data-value="3"></div>
+      <div x-h-select-option="'Option 4'" data-value="4"></div>
       <div x-h-select-separator></div>
-      <div x-h-select-option="'Option 5'" value="5"></div>
+      <div x-h-select-option="'Option 5'" data-value="5"></div>
     </div>
   </div>
 </div>

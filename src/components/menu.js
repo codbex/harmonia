@@ -45,7 +45,7 @@ export default function (Alpine) {
       }
     }
 
-    function close(parent = false) {
+    function close(closeParent = false, focusTrigger = false) {
       el.pauseKeyEvents = false;
       el.classList.add('hidden');
       Object.assign(el.style, {
@@ -54,13 +54,14 @@ export default function (Alpine) {
       });
       top.removeEventListener('contextmenu', onClick);
       top.removeEventListener('click', onClick);
-      el.removeEventListener('keydown', onKeydown);
+      el.removeEventListener('keydown', onKeyDown);
       if (isSubmenu) {
-        if (parent) {
+        if (closeParent) {
           menuSubItem._menu_sub.closeTree();
         }
       } else {
         listenForTrigger(true);
+        if (focusTrigger) menuTrigger.focus();
       }
     }
 
@@ -93,7 +94,7 @@ export default function (Alpine) {
 
     el.pauseKeyEvents = false;
 
-    function onKeydown(event) {
+    function onKeyDown(event) {
       if (!el.pauseKeyEvents) {
         let menuitem;
         switch (event.key) {
@@ -109,7 +110,7 @@ export default function (Alpine) {
             if (isSubmenu) {
               Alpine.nextTick(() => menuSubItem.focus());
             }
-            close();
+            close(undefined, true);
             break;
           case 'Tab':
           case ' ':
@@ -209,7 +210,7 @@ export default function (Alpine) {
           Alpine.nextTick(() => {
             top.addEventListener('contextmenu', onClick);
             top.addEventListener('click', onClick);
-            el.addEventListener('keydown', onKeydown);
+            el.addEventListener('keydown', onKeyDown);
           });
           Object.assign(el.style, {
             left: `${x}px`,
@@ -253,7 +254,7 @@ export default function (Alpine) {
       listenForTrigger(false);
       top.removeEventListener('click', onClick);
       top.removeEventListener('contextmenu', onClick);
-      el.removeEventListener('keydown', onKeydown);
+      el.removeEventListener('keydown', onKeyDown);
     });
   });
 
@@ -368,7 +369,7 @@ export default function (Alpine) {
       closeTree() {
         el.setAttribute('aria-expanded', 'false');
         this.expanded = false;
-        el.removeEventListener('keydown', onKeydown);
+        el.removeEventListener('keydown', onKeyDown);
         parentMenu.pauseKeyEvents = false;
         parentMenu._menu.close(true);
       },
@@ -376,11 +377,11 @@ export default function (Alpine) {
 
     const keyEvents = ['Right', 'ArrowRight', 'Enter', ' '];
 
-    function onKeydown(event) {
+    function onKeyDown(event) {
       if (keyEvents.includes(event.key)) {
         event.stopPropagation();
         event.preventDefault();
-        el.removeEventListener('keydown', onKeydown);
+        el.removeEventListener('keydown', onKeyDown);
         const submenuitem = el.querySelector('[role^=menuitem][tabIndex="-1"]:first-of-type');
         if (submenuitem) {
           el.setAttribute('aria-expanded', 'true');
@@ -408,7 +409,7 @@ export default function (Alpine) {
         el._menu_sub.expanded = false;
         el.setAttribute('aria-expanded', false);
         parentMenu.pauseKeyEvents = false;
-        el.removeEventListener('keydown', onKeydown);
+        el.removeEventListener('keydown', onKeyDown);
       }
     }
 
@@ -430,7 +431,7 @@ export default function (Alpine) {
           el.setAttribute('aria-expanded', false);
           parentMenu.pauseKeyEvents = false;
         }
-        el.addEventListener('keydown', onKeydown);
+        el.addEventListener('keydown', onKeyDown);
         el.addEventListener('blur', focusOut); // ?
       }
     }
@@ -509,15 +510,15 @@ export default function (Alpine) {
       el.setAttribute('aria-checked', checked);
     }
 
-    if (el.hasOwnProperty('_x_model')) {
-      function handler() {
-        el._x_model.set(!el._x_model.get());
-        setState(el._x_model.get());
-      }
+    function onActivate() {
+      el._x_model.set(!el._x_model.get());
+      setState(el._x_model.get());
+    }
 
+    if (el.hasOwnProperty('_x_model')) {
       setState(el._x_model.get(), false);
 
-      el.addEventListener('click', handler);
+      el.addEventListener('click', onActivate);
     }
 
     const menu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
@@ -538,8 +539,8 @@ export default function (Alpine) {
 
     cleanup(() => {
       if (el.hasOwnProperty('_x_model')) {
-        el.removeEventListener('click', handler);
-        el.removeEventListener('keydown', handler);
+        el.removeEventListener('click', onActivate);
+        el.removeEventListener('keydown', onActivate);
       }
       el.removeEventListener('mouseenter', focusIn);
       el.removeEventListener('focus', focusIn);
@@ -594,26 +595,26 @@ export default function (Alpine) {
       if (dispatch) el.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
-    if (el.hasOwnProperty('_x_model')) {
-      function handler(event) {
-        if (event.type === 'keydown') {
-          if (event.key !== ' ' && event.key !== 'Enter') {
-            return;
-          } else if (event.key === ' ') {
-            event.preventDefault();
-          }
-        }
-        if (el._x_model.get() !== value) {
-          el._x_model.set(value);
+    function onActivate(event) {
+      if (event.type === 'keydown') {
+        if (event.key !== ' ' && event.key !== 'Enter') {
+          return;
+        } else if (event.key === ' ') {
+          event.preventDefault();
         }
       }
+      if (el._x_model.get() !== value) {
+        el._x_model.set(value);
+      }
+    }
 
+    if (el.hasOwnProperty('_x_model')) {
       effect(() => {
         setState(el._x_model.get() === value);
       });
 
-      el.addEventListener('click', handler);
-      el.addEventListener('keydown', handler);
+      el.addEventListener('click', onActivate);
+      el.addEventListener('keydown', onActivate);
     }
 
     const menu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
@@ -634,8 +635,8 @@ export default function (Alpine) {
 
     cleanup(() => {
       if (el.hasOwnProperty('_x_model')) {
-        el.removeEventListener('click', handler);
-        el.removeEventListener('keydown', handler);
+        el.removeEventListener('click', onActivate);
+        el.removeEventListener('keydown', onActivate);
       }
       el.removeEventListener('mouseenter', focusIn);
       el.removeEventListener('focus', focusIn);

@@ -385,36 +385,50 @@ export default function (Alpine) {
       let newDay = new Date(focusedDay);
 
       switch (event.key) {
+        case 'Left':
         case 'ArrowLeft':
+          event.preventDefault();
           newDay.setDate(newDay.getDate() - 1);
           break;
+        case 'Right':
         case 'ArrowRight':
+          event.preventDefault();
           newDay.setDate(newDay.getDate() + 1);
           break;
+        case 'Up':
         case 'ArrowUp':
+          event.preventDefault();
           newDay.setDate(newDay.getDate() - 7);
           break;
+        case 'Down':
         case 'ArrowDown':
+          event.preventDefault();
           newDay.setDate(newDay.getDate() + 7);
           break;
         case 'Home':
+          event.preventDefault();
           newDay.setDate(1);
           break;
         case 'End':
+          event.preventDefault();
           newDay.setDate(end.getDate());
           break;
         case 'PageUp':
+          event.preventDefault();
           newDay.setMonth(newDay.getMonth() - 1);
           break;
         case 'PageDown':
+          event.preventDefault();
           newDay.setMonth(newDay.getMonth() + 1);
           break;
         case 'Escape':
+          event.preventDefault();
           if (datepicker) datepicker._h_datepicker.expanded = false;
           return;
 
         case 'Enter':
         case ' ':
+          event.preventDefault();
           if (!isDisabled(focusedDay)) {
             selected = new Date(focusedDay);
             modelChange();

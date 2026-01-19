@@ -62,27 +62,27 @@ x-h-field-error
           <div x-h-field>
             <label x-h-label.field for="formCardMonth">Month</label>
             <div x-h-select>
-              <button id="formCardMonth" x-h-select-trigger placeholder="MM"></button>
+              <input data-id="formCardMonth" x-h-select-input placeholder="MM" />
               <div x-h-select-content>
-                <div x-h-select-option="'01'" value="01"></div>
-                <div x-h-select-option="'02'" value="02"></div>
-                <div x-h-select-option="'03'" value="03"></div>
-                <div x-h-select-option="'04'" value="04"></div>
-                <div x-h-select-option="'05'" value="05"></div>
-                <div x-h-select-option="'06'" value="06"></div>
-                <div x-h-select-option="'07'" value="07"></div>
-                <div x-h-select-option="'08'" value="08"></div>
-                <div x-h-select-option="'09'" value="09"></div>
-                <div x-h-select-option="'10'" value="10"></div>
-                <div x-h-select-option="'11'" value="11"></div>
-                <div x-h-select-option="'12'" value="12"></div>
+                <div x-h-select-option="'01'" data-value="01"></div>
+                <div x-h-select-option="'02'" data-value="02"></div>
+                <div x-h-select-option="'03'" data-value="03"></div>
+                <div x-h-select-option="'04'" data-value="04"></div>
+                <div x-h-select-option="'05'" data-value="05"></div>
+                <div x-h-select-option="'06'" data-value="06"></div>
+                <div x-h-select-option="'07'" data-value="07"></div>
+                <div x-h-select-option="'08'" data-value="08"></div>
+                <div x-h-select-option="'09'" data-value="09"></div>
+                <div x-h-select-option="'10'" data-value="10"></div>
+                <div x-h-select-option="'11'" data-value="11"></div>
+                <div x-h-select-option="'12'" data-value="12"></div>
               </div>
             </div>
           </div>
           <div x-h-field>
             <label x-h-label.field for="formCardYear">Year</label>
             <div x-h-select>
-              <button id="formCardYear" x-h-select-trigger placeholder="YYYY"></button>
+              <input data-id="formCardYear" x-h-select-input placeholder="YYYY" />
               <div
                 x-h-select-content
                 x-data="{
@@ -95,7 +95,7 @@ x-h-field-error
                 }"
               >
                 <template x-for="year in years">
-                  <div x-h-select-option="year" :value="year"></div>
+                  <div x-h-select-option="year" :data-value="year"></div>
                 </template>
               </div>
             </div>

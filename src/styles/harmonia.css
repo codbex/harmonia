@@ -28,6 +28,7 @@
 
 @source inline("{!,}w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}");
 @source inline("min-{w}-0");
+@source inline("max-{w}-{screen,dvw}");
 @source inline("{!,}h-{auto,full,screen,1/2}");
 
 @source inline("{!,}size-{4..12}");
@@ -90,3 +91,10 @@
 @source inline("fill-{current,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 /* prettier-ignore */
 @source inline("text-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

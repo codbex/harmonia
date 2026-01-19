@@ -2,6 +2,20 @@
 
 The datepicker allows the user to enter a date either through text input, or by choosing a date from a calendar popover.
 
+## Keyboard Handling
+
+The user can use the following keyboard shortcuts in order to navigate trough the date picker:
+
+- `Up` / `Down` — Moves focus to the day above/below the current day.
+- `Right` — Moves focus to the next day.
+- `Left` — Moves focus to the previous day.
+- `Enter` / `Space` — Shows and moves focus the calendar. If already shown, selects the focused day.
+- `Home` — Selects the first day of the month.
+- `End` — Selects the last day of the month.
+- `PageUp` — Selects the same or closest day of the previous month.
+- `PageDown` — Selects the same or closest day of the next month.
+- `Esc` — Closes the date picker calendar.
+
 ## API Reference
 
 ### Component attubute(s)

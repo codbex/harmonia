@@ -27,6 +27,25 @@ Harmonia themes provide both light and dark variants. Light theme values are def
 
 ## CSS Variables
 
+The default theme variables are defined in the base Harmonia CSS file, so it is not necessary to override every variable in your custom theme. If you only need to change the primary (brand) color, your theme CSS file can be as simple as the following:
+
+```
+:root,
+:host {
+  --primary: oklch(...);
+  --primary-foreground: oklch(...);
+  --primary-hover: oklch(...);
+  --primary-active: oklch(...);
+}
+
+.dark {
+  --primary: oklch(...);
+  --primary-foreground: oklch(...);
+  --primary-hover: oklch(...);
+  --primary-active: oklch(...);
+}
+```
+
 ### Colors
 
 | Property                       | Description                                                                                 |

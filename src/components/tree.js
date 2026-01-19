@@ -1,5 +1,5 @@
 export default function (Alpine) {
-  Alpine.directive('h-tree', (el, { modifiers }, { effect }) => {
+  Alpine.directive('h-tree', (el, { modifiers }, { effect, cleanup }) => {
     el.classList.add('vbox', 'w-full', 'min-w-0', 'gap-1');
     el.setAttribute('tabindex', '-1');
     if (modifiers.includes('sub')) {
@@ -9,15 +9,17 @@ export default function (Alpine) {
         'py-0.5',
         'pl-4',
         'data-[border=true]:before:absolute',
-        'data-[border=true]:before:left-[calc(var(--spacing)*3)]',
+        'data-[border=true]:before:left-[calc(var(--spacing)*2.5)]',
         'data-[border=true]:before:block',
-        'data-[border=true]:before:h-full',
+        'data-[border=true]:before:top-0.5',
+        'data-[border=true]:before:bottom-0.5',
         'data-[border=true]:before:min-w-px',
         'data-[border=true]:before:w-[calc(var(--spacing)*0.25)]',
         'data-[border=true]:before:bg-border'
       );
       el.setAttribute('data-slot', 'subtree');
       el.setAttribute('role', 'group');
+
       const treeItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_tree_item'));
       effect(() => {
         if (treeItem._h_tree_item.expanded) {
@@ -50,28 +52,25 @@ export default function (Alpine) {
         item.focus();
       }
 
-      el.addEventListener('keydown', (e) => {
+      function onKeyDown(event) {
         const items = getVisibleItems(el);
         const current = el.querySelector('li[tabindex="0"]');
         const index = items.indexOf(current);
 
-        // console.log(items, current, index);
-
         if (index === -1) return;
 
-        switch (e.key) {
-          // case 'Tab':
-          //   break;
+        switch (event.key) {
+          case 'Down':
           case 'ArrowDown':
-            e.preventDefault();
+            event.preventDefault();
             if (items[index + 1]) focusItem(items[index + 1]);
             break;
-
+          case 'Up':
           case 'ArrowUp':
-            e.preventDefault();
+            event.preventDefault();
             if (items[index - 1]) focusItem(items[index - 1]);
             break;
-
+          case 'Right':
           case 'ArrowRight':
             if (current.getAttribute('aria-expanded') === 'false') {
               current.click();
@@ -80,7 +79,7 @@ export default function (Alpine) {
               if (firstChild) focusItem(firstChild);
             }
             break;
-
+          case 'Left':
           case 'ArrowLeft':
             if (current.getAttribute('aria-expanded') === 'true') {
               current.click();
@@ -91,21 +90,26 @@ export default function (Alpine) {
             break;
 
           case 'Home':
-            e.preventDefault();
+            event.preventDefault();
             focusItem(items[0]);
             break;
 
           case 'End':
-            e.preventDefault();
+            event.preventDefault();
             focusItem(items[items.length - 1]);
             break;
 
           case 'Enter':
           case ' ':
-            e.preventDefault();
+            event.preventDefault();
             current.click();
             break;
         }
+      }
+
+      el.addEventListener('keydown', onKeyDown);
+      cleanup(() => {
+        el.removeEventListener('keydown', onClick);
       });
     }
   });
@@ -118,7 +122,6 @@ export default function (Alpine) {
     el.classList.add(
       'group/tree-item',
       'relative',
-      'aria-expanded:[&_ul]:!vbox',
       'outline-none',
       'focus:[&>[data-slot="tree-button"]]:bg-secondary',
       'focus:[&>[data-slot="tree-button"]]:text-secondary-foreground',
@@ -186,8 +189,7 @@ export default function (Alpine) {
       'gap-2',
       'overflow-hidden',
       'rounded-md',
-      'p-2',
-      'leading-none',
+      'p-1.5',
       'text-left',
       'text-sm',
       'align-middle',
@@ -203,10 +205,26 @@ export default function (Alpine) {
       'disabled:opacity-50',
       'aria-disabled:pointer-events-none',
       'aria-disabled:opacity-50',
+      '[&>span]:w-full',
       '[&>span]:truncate',
       '[&>span]:align-middle',
+      '[&>span]:pointer-events-none',
       '[&>svg]:size-4',
-      '[&>svg]:shrink-0'
+      '[&>svg]:shrink-0',
+      '[&>svg]:pointer-events-none',
+      'data-[indicator]:after:block',
+      'data-[indicator]:after:ml-auto',
+      'data-[indicator]:after:rounded-full',
+      'data-[indicator]:after:size-2',
+      'data-[indicator=positive]:after:bg-positive',
+      'data-[indicator=negative]:after:bg-negative',
+      'data-[indicator=warning]:after:bg-warning',
+      'data-[indicator=information]:after:bg-information',
+      'before:mr-1',
+      'before:bg-transparent',
+      'before:min-w-1.5',
+      'before:size-1.5',
+      'before:pointer-events-none'
     );
     el.setAttribute('data-slot', 'tree-button');
     el.setAttribute('tabindex', '-1');

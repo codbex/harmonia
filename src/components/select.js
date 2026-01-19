@@ -1,7 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { Check, ChevronDown, createElement, Search } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonVariants, getButtonSize, setButtonClasses } from './button';
 
 const FilterType = Object.freeze({
   'starts-with': 0,
@@ -11,62 +10,139 @@ const FilterType = Object.freeze({
 });
 
 export default function (Alpine) {
-  Alpine.directive('h-select', (el, _, { Alpine }) => {
+  Alpine.directive('h-select', (el, _, { Alpine, cleanup }) => {
     el._h_select = Alpine.reactive({
       id: undefined,
       controls: `hsc${uuidv4()}`,
       expanded: false,
-      model: undefined,
       multiple: false,
       label: [],
+      refreshLabel: undefined,
+      listeners: [],
       search: '',
       focusSearch: undefined,
       filterType: FilterType['starts-with'],
     });
+    el._h_model = {
+      set: undefined,
+      get: undefined,
+    };
+    el.classList.add(
+      'cursor-pointer',
+      'border-input',
+      'has-focus-visible:border-ring',
+      'has-focus-visible:ring-[calc(var(--spacing)*0.75)]',
+      'has-focus-visible:ring-ring/50',
+      'dark:has-[aria-invalid=true]:ring-negative/40',
+      'dark:has-[input:invalid]:ring-negative/40',
+      'has-[aria-invalid=true]:border-negative',
+      'has-[aria-invalid=true]:ring-negative/20',
+      'has-[input:invalid]:border-negative',
+      'has-[input:invalid]:ring-negative/20',
+      'hover:bg-secondary-hover',
+      'active:bg-secondary-active',
+      'w-full',
+      'rounded-control',
+      'border',
+      'bg-input-inner',
+      'text-sm',
+      'whitespace-nowrap',
+      'shadow-input',
+      'transition-[color,box-shadow]',
+      'duration-200',
+      'outline-none',
+      'has-[input:disabled]:pointer-events-none',
+      'has-[input:disabled]:opacity-50',
+      '[&_svg]:pointer-events-none',
+      '[&_svg]:shrink-0',
+      '[&_svg]:size-4',
+      '[&_svg]:opacity-50'
+    );
     el.setAttribute('data-slot', 'select');
+
+    const setSize = (size) => {
+      if (size === 'sm') {
+        el.classList.add('h-8');
+        el.classList.remove('h-9', 'h-6.5');
+      } else if (size === 'xs') {
+        el.classList.add('h-6.5');
+        el.classList.remove('h-9', 'h-8');
+      } else {
+        el.classList.add('h-9');
+        el.classList.remove('h-8', 'h-6.5');
+      }
+    };
+
+    setSize(el.getAttribute('data-size'));
+
+    const observer = new MutationObserver(() => {
+      setSize(el.getAttribute('data-size'));
+    });
+
+    observer.observe(el, { attributes: true, attributeFilter: ['data-size'] });
+
+    cleanup(() => {
+      observer.disconnect();
+    });
   });
 
-  Alpine.directive('h-select-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
+  Alpine.directive('h-select-input', (el, { original }, { effect, cleanup, Alpine }) => {
+    if (el.tagName !== 'INPUT') {
+      throw new Error(`${original} must be a readonly input of type "text"`);
+    }
+
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
 
     if (!select) {
       throw new Error(`${original} must be inside a select element`);
     } else if (el.hasOwnProperty('_x_model')) {
       select._h_select.multiple = Array.isArray(el._x_model.get());
-      select._h_select.model = el._x_model.get();
+      select._h_model.set = (value) => {
+        if (select._h_select.multiple) {
+          const vIndex = el._x_model.get().indexOf(value);
+          if (vIndex > -1) {
+            const newArr = el._x_model.get();
+            newArr.splice(vIndex, 1);
+            el._x_model.set(newArr);
+          } else {
+            const arr = el._x_model.get();
+            arr.push(value);
+            el._x_model.set(arr);
+          }
+        } else if (el._x_model.get() !== value) {
+          el._x_model.set(value);
+        } else {
+          el._x_model.set('');
+        }
+      };
+      select._h_model.get = el._x_model.get;
+    } else {
+      select._h_model.set = (value) => {
+        el.value = value;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+      select._h_model.get = () => el.value;
     }
-    setButtonClasses(el);
-    const setVariant = (variant) => {
-      if (variant === 'secondary') {
-        el.classList.add(...buttonVariants['default']);
-        return;
-      } else if (variant === 'transparent') {
-        el.classList.add(...buttonVariants['transparent']);
-      } else el.classList.add('shadow-input', ...buttonVariants['outline']);
-    };
-    const setSize = (size) => {
-      const sizes = ['sm', 'xs', 'lg'];
-      if (sizes.includes(size)) {
-        el.classList.add(...getButtonSize(size));
-      } else el.classList.add(...getButtonSize());
-    };
-    setVariant(el.getAttribute('data-variant'));
-    setSize(el.getAttribute('data-size'));
-    el.classList.add('w-full', '[&_svg]:opacity-50', '[&[data-state=open]>svg]:rotate-180');
-    el.setAttribute('type', 'button');
 
-    const selectValue = document.createElement('span');
-    selectValue.setAttribute('data-slot', 'select-value');
-    selectValue.classList.add('text-left', 'truncate', 'pointer-events-none', 'w-full');
+    el.classList.add('hidden');
+    el.setAttribute('type', 'text');
+
+    const fakeTrigger = document.createElement('span');
+    const displayValue = document.createElement('span');
+    displayValue.classList.add('text-left', 'truncate', 'w-full');
+    fakeTrigger.appendChild(displayValue);
+    fakeTrigger.setAttribute('data-slot', 'select-value');
+    fakeTrigger.setAttribute('tabindex', '0');
+    fakeTrigger.classList.add('flex', 'items-center', 'justify-between', 'gap-2', 'outline-none', 'pl-3', 'pr-2', 'size-full', '[&[data-state=open]>svg]:rotate-180');
 
     function getPlaceholder() {
       if (!el.value) {
         const value = el.getAttribute('placeholder');
         if (value) {
-          selectValue.innerText = value;
-          selectValue.classList.add('text-muted-foreground');
+          displayValue.innerText = value;
+          displayValue.classList.add('text-muted-foreground');
         } else {
-          selectValue.classList.remove('text-muted-foreground');
+          displayValue.classList.remove('text-muted-foreground');
         }
       }
     }
@@ -75,53 +151,55 @@ export default function (Alpine) {
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'value') {
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-          if (el.value) selectValue.classList.remove('text-muted-foreground');
+        if (mutation.attributeName === 'data-id') {
+          select._h_select.id = el.getAttribute('data-id');
+          fakeTrigger.setAttribute('id', select._h_select.id);
         } else if (mutation.attributeName === 'placeholder' && !select._h_select.label.length) {
           getPlaceholder();
         }
       });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['value', 'placeholder'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-id', 'placeholder'] });
 
     effect(() => {
       if (select._h_select.label.length === 1) {
-        selectValue.innerText = select._h_select.label[0];
+        displayValue.innerText = select._h_select.label[0];
+        displayValue.classList.remove('text-muted-foreground');
       } else if (select._h_select.label.length > 1) {
-        selectValue.innerText = select._h_select.label.join(', ');
+        displayValue.innerText = select._h_select.label.join(', ');
+        displayValue.classList.remove('text-muted-foreground');
       } else {
         getPlaceholder();
       }
     });
 
-    el.setAttribute('data-slot', 'select-trigger');
+    fakeTrigger.setAttribute('data-slot', 'select-input');
 
-    if (el.hasAttribute('id')) {
-      select._h_select.id = el.getAttribute('id');
-    } else {
-      select._h_select.id = `hs${uuidv4()}`;
-      el.setAttribute('id', select._h_select.id);
-    }
-    el.setAttribute('aria-controls', select._h_select.controls);
-    el.setAttribute('aria-haspopup', 'listbox');
-    el.setAttribute('aria-autocomplete', 'none');
-    el.setAttribute('role', 'combobox');
+    select._h_select.id = el.hasAttribute('data-id') ? el.getAttribute('data-id') : `hs${uuidv4()}`;
+    fakeTrigger.setAttribute('id', select._h_select.id);
+    fakeTrigger.setAttribute('aria-controls', select._h_select.controls);
+    fakeTrigger.setAttribute('aria-haspopup', 'listbox');
+    fakeTrigger.setAttribute('aria-autocomplete', 'none');
+    fakeTrigger.setAttribute('role', 'combobox');
 
     effect(() => {
-      el.setAttribute('data-state', select._h_select.expanded ? 'open' : 'closed');
-      el.setAttribute('aria-expanded', select._h_select.expanded);
+      fakeTrigger.setAttribute('data-state', select._h_select.expanded ? 'open' : 'closed');
+      fakeTrigger.setAttribute('aria-expanded', select._h_select.expanded);
     });
 
-    const close = () => {
+    const close = (focusSelect = false) => {
       select._h_select.expanded = false;
+      top.removeEventListener('click', close);
+      el.parentElement.removeEventListener('keydown', onKeyDown);
+      options = null;
+      if (focusSelect) fakeTrigger.focus();
     };
 
     let content;
     let options;
 
-    const shiftFocus = (event) => {
+    const onKeyDown = (event) => {
       switch (event.key) {
         case 'Down':
         case 'ArrowDown':
@@ -193,13 +271,19 @@ export default function (Alpine) {
           options[options.length - 1].setAttribute('tabindex', '0');
           options[options.length - 1].focus();
           break;
+        case ' ':
         case 'Enter':
+          event.preventDefault();
+          if (!select._h_select.multiple) {
+            close(true);
+          }
+          break;
         case 'Escape':
-          handler();
-          el.focus();
+          event.preventDefault();
+          close(true);
           break;
         case 'Tab':
-          handler();
+          close();
           break;
         case 'Control':
         case 'Shift':
@@ -218,7 +302,7 @@ export default function (Alpine) {
       }
     };
 
-    const handler = () => {
+    const onClick = () => {
       select._h_select.expanded = !select._h_select.expanded;
       if (select._h_select.expanded) {
         if (!content) content = select.querySelector(`#${select._h_select.controls}`);
@@ -227,16 +311,28 @@ export default function (Alpine) {
       Alpine.nextTick(() => {
         if (select._h_select.expanded) {
           top.addEventListener('click', close, { once: true });
-          el.parentElement.addEventListener('keydown', shiftFocus);
+          el.parentElement.addEventListener('keydown', onKeyDown);
         } else {
           top.removeEventListener('click', close);
-          el.parentElement.removeEventListener('keydown', shiftFocus);
+          el.parentElement.removeEventListener('keydown', onKeyDown);
           options = null;
         }
       });
     };
 
-    el.addEventListener('click', handler);
+    const onPress = (event) => {
+      if (event.key === 'Escape' && select._h_select.expanded) close(true);
+      else if (event.key === 'Enter') {
+        event.preventDefault();
+        onClick();
+      } else if (event.key === ' ') {
+        event.preventDefault();
+        setTimeout(() => onClick(), 0);
+      }
+    };
+
+    fakeTrigger.addEventListener('keydown', onPress);
+    fakeTrigger.addEventListener('click', onClick);
 
     const chevronDown = createElement(ChevronDown, {
       class: ['opacity-50 size-4 transition-transform duration-200'],
@@ -246,13 +342,29 @@ export default function (Alpine) {
       role: 'presentation',
     });
 
-    el.appendChild(selectValue);
-    el.appendChild(chevronDown);
+    el.parentElement.appendChild(fakeTrigger);
+    fakeTrigger.appendChild(chevronDown);
+
+    const onInputChange = () => {
+      select._h_select.label.length = 0;
+      for (let i = 0; i < select._h_select.listeners.length; i++) {
+        const label = select._h_select.listeners[i](select._h_model.get());
+        if (label) {
+          select._h_select.label.push(label);
+        }
+      }
+    };
+
+    select._h_select.refreshLabel = onInputChange;
+
+    el.addEventListener('change', onInputChange);
 
     cleanup(() => {
-      el.removeEventListener('click', handler);
-      el.parentElement.removeEventListener('keydown', shiftFocus);
+      fakeTrigger.removeEventListener('click', onClick);
+      fakeTrigger.removeEventListener('keydown', onPress);
+      el.parentElement.removeEventListener('keydown', onKeyDown);
       top.removeEventListener('click', close);
+      el.removeEventListener('change', onInputChange);
       observer.disconnect();
     });
   });
@@ -268,7 +380,6 @@ export default function (Alpine) {
     el.setAttribute('role', 'presentation');
     el.setAttribute('id', select._h_select.controls);
     el.setAttribute('tabindex', '-1');
-    el.setAttribute('aria-labelledby', select._h_select.id);
     el.setAttribute('data-state', select._h_select.expanded ? 'open' : 'closed');
 
     const control = select.querySelector(`#${select._h_select.id}`);
@@ -303,6 +414,10 @@ export default function (Alpine) {
     }
 
     effect(() => {
+      el.setAttribute('aria-labelledby', select._h_select.id);
+    });
+
+    effect(() => {
       el.setAttribute('data-state', select._h_select.expanded ? 'open' : 'closed');
       if (select._h_select.expanded) {
         autoUpdateCleanup = autoUpdate(control, el, updatePosition);
@@ -316,12 +431,12 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-select-search', (el, { original, modifiers }, { effect, cleanup }) => {
+  Alpine.directive('h-select-search', (el, { original }, { effect, cleanup, Alpine }) => {
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
     if (!select) {
       throw new Error(`${original} must be inside an h-select element`);
     } else {
-      select._h_select.filterType = FilterType[modifiers[0]] ?? FilterType['starts-with'];
+      select._h_select.filterType = FilterType[el.getAttribute('data-filter')] ?? FilterType['starts-with'];
     }
     el.classList.add('flex', 'h-8', 'items-center', 'gap-2', 'border-b', 'px-2');
     el.setAttribute('data-slot', 'select-search');
@@ -344,13 +459,13 @@ export default function (Alpine) {
       searchInput.focus();
     };
 
-    function handler(event) {
+    function onActivate(event) {
       if (event.type === 'keydown' && (event.key === 'Escape' || event.key === 'ArrowDown' || event.key === 'Down')) return;
       event.stopPropagation();
     }
 
-    el.addEventListener('click', handler);
-    el.addEventListener('keydown', handler);
+    el.addEventListener('click', onActivate);
+    el.addEventListener('keydown', onActivate);
 
     if (select._h_select.filterType !== FilterType.none) {
       function onInput() {
@@ -365,10 +480,18 @@ export default function (Alpine) {
       el.setAttribute('aria-expanded', select._h_select.expanded);
     });
 
+    const observer = new MutationObserver(() => {
+      select._h_select.filterType = FilterType[el.getAttribute('data-filter')] ?? FilterType['starts-with'];
+      el.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
+    });
+
+    observer.observe(el, { attributes: true, attributeFilter: ['data-filter'] });
+
     cleanup(() => {
-      el.removeEventListener('click', handler);
-      el.removeEventListener('keydown', handler);
+      el.removeEventListener('click', onActivate);
+      el.removeEventListener('keydown', onActivate);
       if (select._h_select.filterType !== FilterType.none) searchInput.removeEventListener('keyup', onInput);
+      observer.disconnect();
     });
   });
 
@@ -452,19 +575,15 @@ export default function (Alpine) {
     el.appendChild(labelEl);
 
     function getValue() {
-      if (el.hasOwnProperty('_x_bindings') && el._x_bindings.hasOwnProperty('value')) return el._x_bindings.value;
-      else return el.getAttribute('value');
+      return el.getAttribute('data-value');
     }
 
     const getLabel = evaluateLater(expression);
+
     effect(() => {
       getLabel((label) => {
-        if (select._h_select.multiple && select._h_select.model.includes(getValue())) {
-          select._h_select.label[select._h_select.label.indexOf(labelEl.innerText)] = label;
-        } else if (select._h_select.model === getValue()) {
-          select._h_select.label[0] = label;
-        }
         labelEl.innerText = label;
+        select._h_select.refreshLabel();
       });
     });
 
@@ -493,56 +612,45 @@ export default function (Alpine) {
       if (selected) {
         indicatorEl.classList.remove('invisible');
         el.setAttribute('aria-selected', 'true');
-        if (!select._h_select.label.length) {
-          select._h_select.label.push(labelEl.innerText);
-        } else if (!select._h_select.label.includes(labelEl.innerText)) {
-          if (select._h_select.multiple) select._h_select.label.push(labelEl.innerText);
-          else select._h_select.label[0] = labelEl.innerText;
-        }
-      } else {
-        indicatorEl.classList.add('invisible');
-        el.setAttribute('aria-selected', 'false');
+        return labelEl.innerText;
       }
+      indicatorEl.classList.add('invisible');
+      el.setAttribute('aria-selected', 'false');
+      return '';
     }
 
-    function removeLabel() {
-      const lIndex = select._h_select.label.indexOf(labelEl.innerText);
-      if (lIndex > -1) select._h_select.label.splice(lIndex, 1);
-    }
+    const onModelChange = (value) => {
+      return setSelectedState(select._h_select.multiple ? value.includes(getValue()) : value === getValue());
+    };
 
-    effect(() => {
-      if (select._h_select.multiple) {
-        setSelectedState(select._h_select.model.includes(getValue()));
-      } else {
-        setSelectedState(select._h_select.model === getValue());
-      }
-    });
+    select._h_select.listeners.push(onModelChange);
 
-    const handler = (event) => {
-      if ((event.type === 'keydown' && event.key === 'Enter') || event.type === 'click') {
+    const onActivate = (event) => {
+      if ((event.type === 'keydown' && (event.key === 'Enter' || event.key === ' ')) || event.type === 'click') {
         if (select._h_select.multiple) {
-          const vIndex = select._h_select.model.indexOf(getValue());
+          const vIndex = select._h_model.get().indexOf(getValue());
           if (vIndex > -1) {
-            select._h_select.model.splice(vIndex, 1);
-            removeLabel();
+            const val = select._h_model.get().splice(vIndex, 1);
+            select._h_model.set(val);
           } else {
-            select._h_select.model.push(getValue());
+            select._h_model.get().push(getValue());
           }
-        } else if (select._h_select.model !== getValue()) {
-          select._h_select.model = getValue();
+        } else if (select._h_model.get() !== getValue()) {
+          select._h_model.set(getValue());
         } else {
-          select._h_select.model = '';
-          removeLabel();
+          select._h_model.set('');
         }
       }
     };
 
-    el.addEventListener('click', handler);
-    el.addEventListener('keydown', handler);
+    el.addEventListener('click', onActivate);
+    el.addEventListener('keydown', onActivate);
 
     cleanup(() => {
-      el.removeEventListener('click', handler);
-      el.removeEventListener('keydown', handler);
+      el.removeEventListener('click', onActivate);
+      el.removeEventListener('keydown', onActivate);
+      const lIndex = select._h_select.listeners.indexOf(onModelChange);
+      select._h_select.listeners.splice(lIndex, 1);
     });
   });
 

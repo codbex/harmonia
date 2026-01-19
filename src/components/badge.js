@@ -43,10 +43,8 @@ export default function (Alpine) {
 
     setVariant(el.getAttribute('data-variant') ?? 'default');
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        setVariant(el.getAttribute('data-variant') ?? 'default');
-      });
+    const observer = new MutationObserver(() => {
+      setVariant(el.getAttribute('data-variant') ?? 'default');
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-variant'] });

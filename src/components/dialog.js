@@ -6,38 +6,36 @@ export default function (Alpine) {
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'dialog-overlay');
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        if (el.getAttribute('data-open') === 'true') {
-          const inputs = el.getElementsByTagName('INPUT');
-          if (inputs.length) {
-            for (let i = 0; i < inputs.length; i++) {
-              if (inputs[i].autofocus) {
-                inputs[i].focus();
-                return;
-              }
-            }
-            inputs[0].focus();
-            return;
-          } else {
-            const textareas = el.getElementsByTagName('TEXTAREA');
-            if (textareas.length) {
-              for (let i = 0; i < textareas.length; i++) {
-                if (textareas[i].autofocus) {
-                  textareas[i].focus();
-                  return;
-                }
-              }
-              textareas[0].focus();
+    const observer = new MutationObserver(() => {
+      if (el.getAttribute('data-open') === 'true') {
+        const inputs = el.getElementsByTagName('INPUT');
+        if (inputs.length) {
+          for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].autofocus) {
+              inputs[i].focus();
               return;
             }
           }
-          const buttons = el.getElementsByTagName('BUTTON');
-          if (buttons.length) {
-            buttons[0].focus();
+          inputs[0].focus();
+          return;
+        } else {
+          const textareas = el.getElementsByTagName('TEXTAREA');
+          if (textareas.length) {
+            for (let i = 0; i < textareas.length; i++) {
+              if (textareas[i].autofocus) {
+                textareas[i].focus();
+                return;
+              }
+            }
+            textareas[0].focus();
+            return;
           }
         }
-      });
+        const buttons = el.getElementsByTagName('BUTTON');
+        if (buttons.length) {
+          buttons[0].focus();
+        }
+      }
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-open'] });

@@ -8,6 +8,9 @@ export default defineConfig({
   description: 'Harmonia UI Component Library',
   base: basePath,
   themeConfig: {
+    search: {
+      provider: 'local',
+    },
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo/harmonia-circle.svg',
     nav: [
@@ -70,6 +73,7 @@ export default defineConfig({
           { text: 'Time Picker', link: '/components/timepicker' },
           { text: 'Toolbar', link: '/components/toolbar' },
           { text: 'Tooltip', link: '/components/tooltip' },
+          { text: 'Tree', link: '/components/tree' },
         ],
       },
       {
@@ -112,8 +116,10 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/codbex/harmonia' }],
   },
   head: [
+    ['link', { href: `${basePath}theme/custom.css`, rel: 'stylesheet' }],
     ['link', { rel: 'icon', href: `${basePath}favicon.ico` }],
     ['script', { src: `${basePath}js/component-container.js`, type: 'module' }],
+    ['script', { src: `${basePath}js/svg-icon.js`, type: 'module' }],
     ['script', { src: `${basePath}lib/node_modules/lucide/dist/umd/lucide.min.js`, type: 'text/javascript' }],
     ['link', { href: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.css`, rel: 'stylesheet' }],
     ['link', { href: `${basePath}fonts.css`, rel: 'stylesheet' }],
@@ -121,7 +127,7 @@ export default defineConfig({
   vue: {
     template: {
       compilerOptions: {
-        isCustomElement: (tag) => tag === 'component-container' || tag === 'component-test',
+        isCustomElement: (tag) => tag === 'component-container' || tag === 'svg-icon',
       },
     },
   },

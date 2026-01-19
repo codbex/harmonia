@@ -39,10 +39,8 @@ export default function (Alpine) {
 
     setVariant(el.getAttribute('data-variant') ?? 'default');
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        setVariant(el.getAttribute('data-variant') ?? 'default');
-      });
+    const observer = new MutationObserver(() => {
+      setVariant(el.getAttribute('data-variant') ?? 'default');
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-variant'] });
@@ -51,6 +49,7 @@ export default function (Alpine) {
       observer.disconnect();
     });
   });
+
   Alpine.directive('h-alert-title', (el) => {
     el.classList.add('col-start-2', 'line-clamp-1', 'min-h-4', 'font-medium', 'tracking-tight');
     el.setAttribute('data-slot', 'alert-title');
@@ -60,6 +59,7 @@ export default function (Alpine) {
     el.classList.add('text-muted-foreground', 'col-start-2', 'vbox', 'gap-1', 'text-sm', '[&_p]:leading-relaxed');
     el.setAttribute('data-slot', 'alert-description');
   });
+
   Alpine.directive('h-alert-actions', (el) => {
     el.classList.add('col-start-3', 'row-start-1');
     el.setAttribute('data-slot', 'alert-actions');

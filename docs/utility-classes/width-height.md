@@ -4,21 +4,23 @@
 
 The width class names start with `w`.
 
-| Class    | Description                               |
-| -------- | ----------------------------------------- |
-| w-auto   | Auto width.                               |
-| w-full   | 100% width.                               |
-| w-screen | Makes the width equal to the screen size. |
-| min-w-0  | Minimum width of 0 px.                    |
-| w-1/2    | 50% width.                                |
-| w-1/3    | 33% width.                                |
-| w-1/4    | 25% width.                                |
-| w-1/5    | 20% width.                                |
-| w-2/3    | 66% width.                                |
-| w-2/5    | 40% width.                                |
-| w-3/4    | 75% width.                                |
-| w-3/5    | 60% width.                                |
-| w-4/5    | 80% width.                                |
+| Class        | Description                                            |
+| ------------ | ------------------------------------------------------ |
+| w-auto       | Auto width.                                            |
+| w-full       | 100% width.                                            |
+| w-screen     | Makes the width equal to the screen size.              |
+| max-w-screen | Sets maximum width to the width of the screen.         |
+| max-w-dvw    | Sets maximum width to the dynamic width of the screen. |
+| min-w-0      | Minimum width of 0 px.                                 |
+| w-1/2        | 50% width.                                             |
+| w-1/3        | 33% width.                                             |
+| w-1/4        | 25% width.                                             |
+| w-1/5        | 20% width.                                             |
+| w-2/3        | 66% width.                                             |
+| w-2/5        | 40% width.                                             |
+| w-3/4        | 75% width.                                             |
+| w-3/5        | 60% width.                                             |
+| w-4/5        | 80% width.                                             |
 
 The height class names start with `h`.
 

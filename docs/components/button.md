@@ -12,17 +12,145 @@ x-h-button
 
 ### Attributes
 
-| Attribute    | Type                                                                                                   | Required | Description                                                                                                |
-| ------------ | ------------------------------------------------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------- |
-| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`outline`<br />`transparent`<br />`link` | false    | Changes the color/shape of the button. Can be used to indicate different states.                           |
-| data-size    | `xs`<br />`sm`<br />`lg`<br />`icon-xs`<br />`icon-sm`<br />`icon`<br />`icon-lg`                      | false    | Changes the size of the button. When the button contains only an icon, the `icon-*` values should be used. |
-| data-toggled | boolean                                                                                                | false    | Set the toggle state.                                                                                      |
+| Attribute    | Type                                                                                                                      | Required | Description                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline`<br />`transparent`<br />`link` | false    | Changes the color/shape of the button. Can be used to indicate different states.                           |
+| data-size    | `xs`<br />`sm`<br />`lg`<br />`icon-xs`<br />`icon-sm`<br />`icon`<br />`icon-lg`                                         | false    | Changes the size of the button. When the button contains only an icon, the `icon-*` values should be used. |
+| data-toggled | boolean                                                                                                                   | false    | Set the toggle state.                                                                                      |
 
 ### Modifiers
 
 | Modifier | Description                                   |
 | -------- | --------------------------------------------- |
 | group    | Used when the button is inside a button group |
+
+## Button Variants
+
+#### Default
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button>Default</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button>Default</button>
+```
+
+#### Primary
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="primary">Primary</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="primary">Primary</button>
+```
+
+#### Positive
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="positive">Positive</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="positive">Positive</button>
+```
+
+#### Negative
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="negative">Negative</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="negative">Negative</button>
+```
+
+#### Warning
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="warning">Warning</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="warning">Warning</button>
+```
+
+#### Information
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="information">Information</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="information">Information</button>
+```
+
+#### Outline
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="outline">Outline</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="outline">Outline</button>
+```
+
+#### Transparent
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button data-variant="transparent">Transparent</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button data-variant="transparent">Transparent</button>
+```
+
+#### Link
+
+<br />
+
+<ClientOnly>
+<component-container>
+<a x-h-button data-variant="link" href="#">Link</a>
+</component-container>
+</ClientOnly>
+
+```html
+<a x-h-button data-variant="link" href="#">Link</a>
+```
 
 ## Toggle Button
 
@@ -38,32 +166,6 @@ x-h-button
 <div x-data="{ toggled: true }">
   <button x-h-button :data-toggled="toggled" @:click="toggled = !toggled">Toggle</button>
 </div>
-```
-
-## Button Variants
-
-<ClientOnly>
-<component-container data-class="flex flex-col items-start gap-4">
-<button x-h-button>Default</button>
-<button x-h-button data-variant="primary">Primary</button>
-<button x-h-button data-variant="positive">Positive</button>
-<button x-h-button data-variant="negative">Negative</button>
-<button x-h-button data-variant="warning">Warning</button>
-<button x-h-button data-variant="outline">Outline</button>
-<button x-h-button data-variant="transparent">Transparent</button>
-<a x-h-button data-variant="link" href="#">Link</a>
-</component-container>
-</ClientOnly>
-
-```html
-<button x-h-button>Default</button>
-<button x-h-button data-variant="primary">Primary</button>
-<button x-h-button data-variant="positive">Positive</button>
-<button x-h-button data-variant="negative">Negative</button>
-<button x-h-button data-variant="warning">Warning</button>
-<button x-h-button data-variant="outline">Outline</button>
-<button x-h-button data-variant="transparent">Transparent</button>
-<a x-h-button data-variant="link" href="#">Link</a>
 ```
 
 ## Button with icons

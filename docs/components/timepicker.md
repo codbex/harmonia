@@ -2,6 +2,21 @@
 
 The time picker component lets the user select a time.
 
+## Keyboard Handling
+
+The user can use the following keyboard shortcuts in order to navigate trough the date picker:
+
+- `Up` / `Down` — Moves focus to the next/previous column item.
+- `Tab` — Moves focus to the next column (hour -> minute -> second -> day period). If the "Now" buton is enabled, it will move focus to it first before looping back to the first column.
+- `Shift` + `Tab` - Moves focus to the previous column.
+- `Right` — Moves focus to the next column. Focuses the first item or the last focused/selected one.
+- `Left` — Moves focus to the previous column. Focuses the first item or the last focused/selected one.
+- `Enter` — Shows and moves focus the time picker popover. If already shown, selects the focused item from the first column.
+- `Space` — Selects the focused item.
+- `PageUp` / `Home` — Selects the first item in the column.
+- `PageDown` / `End` — Selects the last item in the column.
+- `Esc` — Closes the date picker calendar.
+
 ## API Reference
 
 ### Component attubute(s)

@@ -58,10 +58,8 @@ export default function (Alpine) {
       interval = setInterval(completeCheck, 10);
     }
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        interval = setInterval(completeCheck, 10);
-      });
+    const observer = new MutationObserver(() => {
+      interval = setInterval(completeCheck, 10);
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['src'] });

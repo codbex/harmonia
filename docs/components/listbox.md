@@ -2,6 +2,15 @@
 
 The listbox component is a single-select listbox with grouped options. It is functionally similar to an HTML select element.
 
+## Keyboard Handling
+
+The user can use the following keyboard shortcuts in order to navigate trough the list:
+
+- `Up` / `Down` — Moves focus to the previous or next visible item in the tree.
+- `Home` — Moves focus to the first item in the listbox.
+- `End` — Moves focus to the last item in the listbox.
+- `Enter` / `Space` — Selects the focused item.
+
 ## Related components
 
 [List](/components/list)

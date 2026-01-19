@@ -2,6 +2,20 @@
 
 The menu component is a listing structure with optional headers to create menus. It can be used as a dropdown and as a context menu.
 
+## Keyboard Handling
+
+The user can use the following keyboard shortcuts in order to navigate trough the menu:
+
+- `Up` / `Down` — Moves focus to the previous or next menu item.
+- `Right` — Opens a submenu (if present) and moves focus to its first item.
+- `Left` — Closes the current submenu and moves focus to its parent item.
+- `Home` / `PageUp` — Moves focus to the first item in the menu.
+- `End` / `PageDown` — Moves focus to the last item in the menu.
+- `Enter` / `Space` — Activates the focused menu item.
+- `Esc` — Closes the menu or submenu and returns focus to the controlling element.
+- `Tab` — Closes the menu and submenus and sets focus to the next element.
+- `Character keys (A–Z)` — Moves focus to the next item whose label starts with the typed character.
+
 ## API Reference
 
 ### Component attubute(s)

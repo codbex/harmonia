@@ -58,6 +58,18 @@ export const buttonVariants = {
     'hover:data-[toggled=true]:bg-warning-hover',
     'data-[toggled=true]:bg-warning-active',
   ],
+  information: [
+    'bg-information',
+    'text-information-foreground',
+    'shadow-button',
+    'focus-visible:outline-information/50',
+    'hover:bg-information-hover',
+    'active:bg-information-active',
+    'aria-pressed:bg-information-active',
+    'active:data-[toggled=true]:bg-information-active',
+    'hover:data-[toggled=true]:bg-information-hover',
+    'data-[toggled=true]:bg-information-active',
+  ],
   outline: [
     'border',
     'bg-background',
