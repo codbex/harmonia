@@ -1,0 +1,13 @@
+<form @submit.prevent="getFormData($event.target)" x-data="inputData">
+  <input x-h-input name="multi" x-model="inputText" />
+  <button>Click</button>
+</form>
+<script>
+  Alpine.data("inputData", () => ({
+    getFormData(form) {
+      let formData = new FormData(form);
+      console.log(formData.get("multi"));
+    },
+    inputText: "some text",
+  }));
+</script>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" class="h-screen">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" sizes="any" href="data:;base64,iVBORw0KGgo=" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harmonia</title>
+
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="hbox h-full p-4" x-data="mainCtl">
+    <!-- <div x-h-split class="size-full" data-min="5" data-min-px="120" data-orientation="horizontal" data-persist="codbex.harmonia.split.state">
+      <div x-h-split-panel id="nav">
+        <div class="size-full p-4">A</div>
+      </div>
+      <div x-h-split-handle data-size="sm" data-variant="border" data-locked="false"></div>
+
+      <div x-h-split-panel id="content-1">
+        <div class="size-full p-4">B</div>
+      </div>
+      <div x-h-split-handle data-size="md"></div>
+
+      <div x-h-split-panel id="content-2">
+        <div class="size-full border p-4">C</div>
+      </div>
+    </div> -->
+
+    <!-- <div x-h-split class="size-full" data-orientation="horizontal">
+      <template x-for="(panel, index) in panels">
+        <div x-h-split-panel class="rounded-md shadow-md">
+          <div class="flex size-full items-center justify-center rounded-md border" x-text="`Panel ${index}`"></div>
+        </div>
+
+        <div x-h-split-handle></div>
+      </template>
+    </div> -->
+
+    <div x-h-split class="size-full" data-min="5" data-min-px="120" data-orientation="horizontal" data-persist="codbex.harmonia.split.state">
+      <template x-if="third">
+        <div x-h-split-panel id="content-2">
+          <div class="size-full border p-4">C</div>
+        </div>
+      </template>
+      <div x-h-split-panel id="nav">
+        <div class="size-full p-4">A</div>
+      </div>
+      <div x-h-split-handle data-size="sm" data-variant="border" data-locked="false"></div>
+
+      <div x-h-split-panel id="content-1">
+        <div class="size-full p-4">B</div>
+      </div>
+    </div>
+
+    <button @click="third = true">Click</button>
+
+    <!-- <div x-h-s>
+      <template x-for="(panel, index) in panels">
+        <div x-h-p x-text="`Panel ${index}`"></div>
+      </template>
+    </div> -->
+    <script>
+      // lucide.createIcons();
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("mainCtl", () => ({
+          third: false,
+          panels: [1, 2, 3],
+          init() {},
+        }));
+        Alpine.directive("h-s", (el) => {
+          el._init = () => {
+            console.log("init");
+          };
+        });
+        Alpine.directive("h-p", (el, _, { Alipne }) => {
+          const split = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty("_init"));
+        }).before("h-s");
+      });
+    </script>
+  </body>
+</html>

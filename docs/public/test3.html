@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" class="h-screen">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" sizes="any" href="data:;base64,iVBORw0KGgo=" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harmonia</title>
+
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <!-- <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script> -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.5/split.min.js"
+      integrity="sha512-lNjb0qWDVvt1zfSiXufaxtlFtenve3BLbvljxuMXuSr0DE0HYp5OhX0u89uwNd6MvlX1bgJ8ulfG4JMGurs8UA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="hbox h-full p-4" x-data="mainCtl">
+    <div class="size-full" x-h-split :data-orientation="orientation" data-variant="handle" data-locked="false">
+      <div id="split-0" class="border" x-h-split-panel>
+        <button>B1</button>
+      </div>
+      <div id="split-1" class="border" x-h-split-panel>
+        <button>B2</button>
+      </div>
+    </div>
+    <script>
+      // lucide.createIcons();
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("mainCtl", () => ({
+          panels: [1, 2, 3],
+          orientation: "horizontal",
+          init() {
+            Split(["#split-0", "#split-1"], {
+              direction: this.orientation,
+              sizes: [20, 80],
+              minSize: 0,
+              maxSize: undefined,
+              // expandToMin: true,
+              gutter: () => {
+                const gutter = document.createElement("div");
+                gutter.setAttribute(Alpine.prefixed("h-split-gutter"), "");
+                return gutter;
+              },
+            });
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>
