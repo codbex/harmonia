@@ -27,15 +27,17 @@ CSS utility classes to style text. It is recommended that you first look at the 
 | font-normal   | Normal font weight.   |
 | font-light    | Light font weight.    |
 
-| Class             | Description                                          |
-| ----------------- | ---------------------------------------------------- |
-| italic            | Italic font style.                                   |
-| uppercase         | Transform text to be all in uppercase.               |
-| lowercase         | Transform text to be all in lowercase.               |
-| capitalize        | Capitalize words in text.                            |
-| truncate          | Do not wrap text and use ellipsis when it overflows. |
-| align-middle      | Align text in the middle of its container.           |
-| whitespace-nowrap | Prevent text from wrapping within its container.     |
+| Class               | Description                                          |
+| ------------------- | ---------------------------------------------------- |
+| italic              | Italic font style.                                   |
+| uppercase           | Transform text to be all in uppercase.               |
+| lowercase           | Transform text to be all in lowercase.               |
+| capitalize          | Capitalize words in text.                            |
+| truncate            | Do not wrap text and use ellipsis when it overflows. |
+| align-middle        | Align text in the middle of its container.           |
+| whitespace-nowrap   | Prevent text from wrapping within its container.     |
+| whitespace-pre      | Preserve newlines and spaces, no wrapping.           |
+| whitespace-pre-wrap | Preserve newlines and spaces, wrap normally.         |
 
 ## Examples
 

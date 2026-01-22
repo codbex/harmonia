@@ -8,7 +8,7 @@ export default function (Alpine) {
     el.classList.add('border', 'rounded-control', 'gap-2', 'p-2');
     el.setAttribute('tabindex', '-1');
     if (datepicker) {
-      el.classList.add('fixed', 'bg-popover', 'text-popover-foreground', 'data-[state=open]:flex', 'data-[state=open]:flex-col', 'data-[state=closed]:hidden', 'z-50', 'shadow-md');
+      el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=open]:flex', 'data-[state=open]:flex-col', 'data-[state=closed]:hidden', 'z-50', 'shadow-md');
       el.setAttribute('role', 'dialog');
       el.setAttribute('aria-modal', 'true');
       el.setAttribute('data-slot', 'date-picker-calendar');
@@ -487,7 +487,6 @@ export default function (Alpine) {
     function updatePosition() {
       computePosition(datepicker, el, {
         placement: el.getAttribute('data-align') || 'bottom-start',
-        strategy: 'fixed',
         middleware: [offset(4), flip(), shift({ padding: 4 })],
       }).then(({ x, y }) => {
         Object.assign(el.style, {

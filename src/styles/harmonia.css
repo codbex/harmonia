@@ -63,7 +63,7 @@
 @source inline("capitalize");
 @source inline("truncate");
 @source inline("align-middle");
-@source inline("whitespace-nowrap");
+@source inline("whitespace-{nowrap,pre,pre-wrap}");
 @source inline("rotate-{90,180,270}");
 @source inline("resize-none");
 

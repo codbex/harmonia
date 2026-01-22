@@ -42,6 +42,18 @@ const getSelectedTime = (rawTime, convertTo12) => {
   return { hour, minute, second, period };
 };
 
+function scrollIntoCenter(container, element, behavior = 'instant') {
+  const containerRect = container.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+
+  const offset = elementRect.top - containerRect.top - container.clientHeight / 2 + element.clientHeight / 2;
+
+  container.scrollBy({
+    top: offset,
+    behavior,
+  });
+}
+
 export default function (Alpine) {
   Alpine.directive('h-time-picker', (el, { expression }, { evaluateLater, cleanup, effect, Alpine }) => {
     el._h_timepicker = Alpine.reactive({
@@ -262,7 +274,7 @@ export default function (Alpine) {
       'outline-none',
       'border',
       'rounded-control',
-      'fixed',
+      'absolute',
       'bg-popover',
       'text-popover-foreground',
       'data-[state=open]:flex',
@@ -703,21 +715,27 @@ export default function (Alpine) {
 
     let autoUpdateCleanup;
 
+    let focusFirstItem = true;
+
     function updatePosition() {
       computePosition(timepicker, el, {
         placement: el.getAttribute('data-align') || 'bottom-start',
-        strategy: 'fixed',
         middleware: [offset(4), flip(), shift({ padding: 4 })],
       }).then(({ x, y }) => {
-        if (selectedHour) {
-          selectedHour.focus();
-        } else {
-          hoursList.children[timepicker._h_timepicker.is12Hour ? 1 : 0].focus();
-        }
         Object.assign(el.style, {
           left: `${x}px`,
           top: `${y}px`,
         });
+        if (focusFirstItem) {
+          focusFirstItem = false;
+          Alpine.nextTick(() => {
+            if (selectedHour) {
+              selectedHour.focus();
+            } else {
+              hoursList.children[timepicker._h_timepicker.is12Hour ? 1 : 0].focus();
+            }
+          });
+        }
       });
     }
 
@@ -726,11 +744,12 @@ export default function (Alpine) {
       if (timepicker._h_timepicker.expanded) {
         render();
         autoUpdateCleanup = autoUpdate(timepicker, el, updatePosition);
-        if (selectedHour) selectedHour.scrollIntoView({ block: 'center' });
-        if (selectedMinute) selectedMinute.scrollIntoView({ block: 'center' });
-        if (selectedSecond && timepicker._h_timepicker.seconds) selectedSecond.scrollIntoView({ block: 'center' });
+        if (selectedHour) scrollIntoCenter(selectedHour.parentElement, selectedHour);
+        if (selectedMinute) scrollIntoCenter(selectedMinute.parentElement, selectedMinute);
+        if (selectedSecond && timepicker._h_timepicker.seconds) scrollIntoCenter(selectedSecond.parentElement, selectedSecond);
       } else {
         if (autoUpdateCleanup) autoUpdateCleanup();
+        focusFirstItem = true;
         Object.assign(el.style, {
           left: '0px',
           top: '0px',

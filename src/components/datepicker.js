@@ -49,7 +49,19 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'date-picker');
 
-    el._h_datepicker.input.classList.add('bg-transparent', 'outline-none', 'flex-1', 'border-0', 'focus-visible:ring-0', 'disabled:pointer-events-none', 'disabled:cursor-not-allowed', 'disabled:opacity-50', 'md:text-sm', 'text-base');
+    el._h_datepicker.input.classList.add(
+      'bg-transparent',
+      'outline-none',
+      'flex-1',
+      'h-full',
+      'border-0',
+      'focus-visible:ring-0',
+      'disabled:pointer-events-none',
+      'disabled:cursor-not-allowed',
+      'disabled:opacity-50',
+      'md:text-sm',
+      'text-base'
+    );
     el._h_datepicker.input.setAttribute('aria-autocomplete', 'none');
     el._h_datepicker.input.setAttribute('type', 'text');
   });

@@ -28,12 +28,12 @@ x-h-text
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-4">
-<p x-h-text.h1>Heading 1</p>
-<p x-h-text.h2>Heading 2</p>
-<p x-h-text.h3>Heading 3</p>
-<p x-h-text.h4>Heading 4</p>
-<p x-h-text.h5>Heading 5</p>
-<p x-h-text.h6>Heading 6</p>
+<h1 x-h-text.h1>Heading 1</h1>
+<h2 x-h-text.h2>Heading 2</h2>
+<h3 x-h-text.h3>Heading 3</h3>
+<h4 x-h-text.h4>Heading 4</h4>
+<h5 x-h-text.h5>Heading 5</h5>
+<h6 x-h-text.h6>Heading 6</h6>
 <p x-h-text.blockquote>A quote from a comment</p>
 <p x-h-text.code-inline>console.log('Hello, Harmonia!');</p>
 <p x-h-text.code x-text="`function sayHello() {
@@ -49,12 +49,12 @@ x-h-text
 </ClientOnly>
 
 ```html
-<p x-h-text.h1>Heading 1</p>
-<p x-h-text.h2>Heading 2</p>
-<p x-h-text.h3>Heading 3</p>
-<p x-h-text.h4>Heading 4</p>
-<p x-h-text.h5>Heading 5</p>
-<p x-h-text.h6>Heading 6</p>
+<h1 x-h-text.h1>Heading 1</h1>
+<h2 x-h-text.h2>Heading 2</h2>
+<h3 x-h-text.h3>Heading 3</h3>
+<h4 x-h-text.h4>Heading 4</h4>
+<h5 x-h-text.h5>Heading 5</h5>
+<h6 x-h-text.h6>Heading 6</h6>
 <p x-h-text.blockquote>A quote from a comment</p>
 <p x-h-text.code-inline>console.log('Hello, Harmonia!');</p>
 <p
