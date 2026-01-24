@@ -4,10 +4,10 @@ export default function (Alpine) {
     if (modifiers.includes('control')) {
       el.classList.add('rounded-control');
       switch (el.getAttribute('data-size')) {
-        case 'xs':
+        case 'sm':
           el.classList.add('h-6.5');
           break;
-        case 'sm':
+        case 'md':
           el.classList.add('h-8');
           break;
         default:

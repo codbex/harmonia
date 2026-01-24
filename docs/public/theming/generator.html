@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/harmonia/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Theme Generator | Harmonia UI</title>
+    <title>Theme Generator | Harmonia</title>
 
     <script defer src="/harmonia/js/color-convert.js" type="module"></script>
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
@@ -167,7 +167,7 @@
           <button x-show="isNarrow" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar sheet open button" @click="showSidebar = true">
             <i role="img" data-lucide="menu"></i>
           </button>
-          <span x-h-toolbar-title :class="!isNarrow && 'pl-2'">Harmonia UI</span>
+          <span x-h-toolbar-title :class="!isNarrow && 'pl-2'">Harmonia</span>
           <div x-h-toolbar-spacer></div>
           <button x-h-button data-variant="transparent" @click="showAbout = true" aria-label="about dialog button">
             <i role="img" data-lucide="info"></i>
@@ -273,7 +273,7 @@
                     <svg x-h-icon data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
                   </div>
                   <div x-h-tile-content>
-                    <div x-h-tile-title>Harmonia UI</div>
+                    <div x-h-tile-title>Harmonia</div>
                     <p x-h-tile-description>UI component library for Alpine.js</p>
                   </div>
                 </div>
@@ -283,18 +283,18 @@
                     <img src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
                   </div>
                   <div x-h-tile-content>
-                    <div x-h-tile-title>Harmonia UI</div>
+                    <div x-h-tile-title>Harmonia</div>
                     <p x-h-tile-description>UI component library for Alpine.js</p>
                   </div>
                 </div>
 
                 <div x-h-tile data-variant="muted">
                   <div x-h-tile-content>
-                    <div x-h-tile-title>Harmonia UI</div>
+                    <div x-h-tile-title>Harmonia</div>
                     <p x-h-tile-description>UI component library for Alpine.js</p>
                   </div>
                   <div x-h-tile-actions>
-                    <button x-h-button x-h-tooltip-trigger data-size="sm" data-variant="outline">Hover</button>
+                    <button x-h-button x-h-tooltip-trigger data-size="md" data-variant="outline">Hover</button>
                     <div x-h-tooltip>
                       Buttons are clickable
                       <div x-h-tag-group>
@@ -313,7 +313,7 @@
                     </button>
                   </div>
                   <div x-h-tile-content>
-                    <div x-h-tile-title>Harmonia UI</div>
+                    <div x-h-tile-title>Harmonia</div>
                     <p x-h-tile-description>UI component library for Alpine.js</p>
                   </div>
                   <div x-h-tile-actions>
@@ -456,13 +456,14 @@
                     <div x-h-field>
                       <label x-h-label.field for="formCardNumber">Card Number</label>
                       <input x-h-input id="formCardNumber" placeholder="2141 9614 2401 7895" required />
-                      <p x-h-field-description>Enter your 16-digit card number</p>
+                      <p x-h-field-error>Enter your 16-digit card number</p>
+                      <p x-h-field-description data-hide-on-error="true">This is just a demo. Do NOT enter your real card number.</p>
                     </div>
                     <div class="grid grid-cols-3 gap-4">
                       <div x-h-field>
                         <label x-h-label.field for="formCardMonth">Month</label>
                         <div x-h-select>
-                          <input data-id="formCardMonth" x-h-select-input placeholder="MM" />
+                          <input data-id="formCardMonth" x-h-select-input placeholder="MM" required />
                           <div x-h-select-content>
                             <div x-h-select-option="'01'" data-value="01"></div>
                             <div x-h-select-option="'02'" data-value="02"></div>
@@ -482,7 +483,7 @@
                       <div x-h-field>
                         <label x-h-label.field for="formCardYear">Year</label>
                         <div x-h-select>
-                          <input data-id="formCardYear" x-h-select-input placeholder="YYYY" />
+                          <input data-id="formCardYear" x-h-select-input placeholder="YYYY" required />
                           <div x-h-select-content>
                             <template x-for="year in years">
                               <div x-h-select-option="year" :data-value="year"></div>
@@ -532,14 +533,14 @@
       <div x-h-dialog-overlay :data-open="showAbout">
         <div x-h-dialog>
           <div x-h-dialog-header>
-            <h2 x-h-dialog-title>Harmonia UI</h2>
+            <h2 x-h-dialog-title>Harmonia</h2>
             <button x-h-dialog-close aria-label="about button" @click="showAbout = false">
               <i role="img" data-lucide="x"></i>
             </button>
             <p x-h-dialog-description x-text="getVersion()"></p>
           </div>
           <div>
-            <p>Harmonia UI is an <a href="https://alpinejs.dev/">Alpine.js</a> component library made by <a href="https://www.codbex.com/">codbex</a>.</p>
+            <p>Harmonia is an <a href="https://alpinejs.dev/">Alpine.js</a> component library made by <a href="https://www.codbex.com/">codbex</a>.</p>
             <p>This page is both a demo page and a theme generator.</p>
           </div>
           <div x-h-dialog-footer>

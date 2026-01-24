@@ -1,6 +1,10 @@
 # Button Group
 
-A container that groups buttons together.
+Groups related buttons into a single container to present them as a unified set of actions. This helps establish visual relationships and improves clarity when multiple actions are closely related.
+
+## Usage
+
+Use button groups to organize actions that share a common context or hierarchy. Choose a horizontal or vertical layout based on available space and the flow of the interface. Avoid grouping unrelated or loosely related actions.
 
 ## API Reference
 

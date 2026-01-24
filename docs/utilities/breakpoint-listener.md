@@ -1,6 +1,10 @@
 # Breakpoint Listener
 
-The `getBreakpointListener` function creates a breakpoint listener using media queries.
+Creates a listener that triggers actions when the viewport reaches specified breakpoint. This function helps implement responsive behavior dynamically in the application.
+
+## Usage
+
+Use `getBreakpointListener` to respond to changes in screen width, such as adjusting layouts, toggling visibility, or modifying component behavior. Avoid excessive listeners that could impact performance. Combine with clear responsive design patterns to maintain usability across devices.
 
 ## API Reference
 

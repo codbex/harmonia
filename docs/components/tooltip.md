@@ -1,6 +1,10 @@
 # Tooltip
 
-The tooltip (aka hint) is a small pop-up that displays extra information about an element on hover.
+A small pop-up that provides additional information or context about an interface element, displayed on hover. Tooltips offer brief guidance without taking up permanent space in the layout.
+
+## Usage
+
+Use tooltips to clarify controls, explain icons, or provide contextual hints. Keep the content concise and relevant, and avoid placing critical information exclusively in tooltips, as they may be inaccessible on touch devices or overlooked by users.
 
 ## API Reference
 

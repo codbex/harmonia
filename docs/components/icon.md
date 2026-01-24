@@ -1,6 +1,10 @@
 # Icon
 
-The icon component is a simple SVG loader. It can be used for small icons or full svg images. By default, it applies the `fill-current` class to the svg.
+Renders an SVG graphic from a link that can represent an action, status, or decorative element. By default, it applies the fill-current class, allowing the icon to inherit the current text color.
+
+## Usage
+
+Icons work best when paired with clear labels or context, and should not be the sole method of conveying information. They can be used as small interface symbols or full SVG illustrations, depending on the design needs.
 
 ## API Reference
 
@@ -25,13 +29,13 @@ x-h-icon
 
 <ClientOnly>
 <component-container data-class="!p-1 hbox justify-center">
-<svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia UI logo"></svg>
+<svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
 </component-container>
 </ClientOnly>
 
 <!-- prettier-ignore -->
 ```html
-<svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia UI logo"></svg>
+<svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
 ```
 
 ### SVG icon

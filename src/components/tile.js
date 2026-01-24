@@ -10,6 +10,10 @@ export default function (Alpine) {
       'group/tile',
       'flex',
       'items-center',
+      'py-3',
+      'px-4',
+      'has-data-[slot=tile-header]:py-4',
+      'gap-2.5',
       'text-sm',
       'rounded-lg',
       'transition-colors',
@@ -25,16 +29,6 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'tile');
 
-    const sizes = {
-      default: ['p-4', 'gap-4'],
-      sm: ['py-3', 'px-4', 'gap-2.5'],
-    };
-
-    function setSize(size) {
-      el.classList.add(...sizes[size]);
-      el.setAttribute('data-size', size);
-    }
-
     switch (el.getAttribute('data-variant')) {
       case 'outline':
         el.classList.add('border', 'border-border');
@@ -48,10 +42,6 @@ export default function (Alpine) {
       default:
         el.classList.add('border', 'bg-transparent', 'border-transparent');
     }
-
-    if (el.getAttribute('data-size') === 'sm') {
-      setSize('sm');
-    } else setSize('sm');
   });
 
   Alpine.directive('h-tile-header', (el) => {

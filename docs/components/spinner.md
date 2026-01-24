@@ -1,6 +1,10 @@
 # Spinner
 
-The spinner component informs the user about an ongoing operation. Similar to progress but it does not show how much is done or is left to be done.
+A visual indicator that signals an ongoing operation or process. Unlike a progress bar, the spinner does not convey the completion status, only that work is in progress.
+
+## Usage
+
+Use spinners to indicate loading, processing, or other indefinite tasks where the duration is unknown. Avoid using spinners for very short operations, as brief displays can be distracting or unnecessary. Pair with text or context when needed to clarify what is loading.
 
 ## API Reference
 

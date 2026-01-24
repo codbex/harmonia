@@ -1,6 +1,10 @@
 # Switch
 
-The switch lets the user set a binary value such as “true/false”. Functionally, it's the same as the checkbox component.
+Allows users to toggle a binary state, such as true/false or on/off. Functionally, switches serve the same purpose as checkboxes but emphasize immediate, interactive state changes.
+
+## Usage
+
+Use switches for settings or options that can be turned on or off instantly, especially when the change takes effect immediately. Make sure the associated label clearly indicates the action. Avoid using switches for independent yes/no choices that do not have immediate effect. [Checkboxes](/components/checkbox) are more appropriate in that case.
 
 ## API Reference
 

@@ -1,6 +1,10 @@
 # Alert
 
-Alerts are used to relay information to the user about a situation or task that requires their attention. It can be used as a notification.
+Communicates important information to the user about a situation or task that requires attention. Alerts can be used to highlight status changes or show critical messages but they can also be used as notification popups.
+
+## Usage
+
+Use alerts to surface timely or important information that impacts the user’s current context. Avoid overusing alerts for non-critical content, as this can reduce their effectiveness.
 
 ## API Reference
 
@@ -38,7 +42,7 @@ x-h-alert-actions
   <div x-h-alert-title>Floating</div>
   <div x-h-alert-description>Usually used as a notification</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-xs" data-variant="outline" class="rounded-full" aria-label="Close"><i role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Close"><i role="img" data-lucide="x"></i></button>
   </div>
 </div>
 </component-container>
@@ -50,7 +54,7 @@ x-h-alert-actions
   <div x-h-alert-title>Floating</div>
   <div x-h-alert-description>Usually used as a notification</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-xs" data-variant="outline"><i role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline"><i role="img" data-lucide="x"></i></button>
   </div>
 </div>
 ```
@@ -61,7 +65,7 @@ x-h-alert-actions
   <i role="img" data-lucide="files"></i>
   <div x-h-alert-title>No description!</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-xs" data-variant="outline" aria-label="Close"><i role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i role="img" data-lucide="x"></i></button>
   </div>
 </div>
 </component-container>
@@ -72,7 +76,7 @@ x-h-alert-actions
   <i role="img" data-lucide="files"></i>
   <div x-h-alert-title>No description!</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-xs" data-variant="outline" aria-label="Close"><i role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i role="img" data-lucide="x"></i></button>
   </div>
 </div>
 ```

@@ -1,6 +1,10 @@
 # Toolbar
 
-The toolbar provides a set of actions (buttons, popovers/dropdowns and inputs) that are relevant to the current view, usually located right below the toolbar. It can also be used as a footer.
+A container that groups actions (like buttons, inputs, or popovers) relevant to the current view. Toolbars are typically positioned at the top or bottom of a section, providing convenient access to context-specific functionality.
+
+## Usage
+
+Use toolbars to organize controls that operate on the current content or view, such as formatting actions, filters, or navigation shortcuts. Ensure actions are clearly labeled, logically grouped, and do not overwhelm the interface. Toolbars can also serve as footers when contextual actions are needed at the bottom of a view.
 
 ## API Reference
 
@@ -121,9 +125,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="xs" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="xs" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -132,9 +136,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="xs" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="xs" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -147,9 +151,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="md">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -158,9 +162,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="md">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -172,8 +176,8 @@ x-h-toolbar-separator
 <component-container>
 <div x-h-toolbar.footer>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="primary">Apply</button>
-  <button x-h-button data-size="sm" data-variant="transparent">Cancel</button>
+  <button x-h-button data-size="md" data-variant="primary">Apply</button>
+  <button x-h-button data-size="md" data-variant="transparent">Cancel</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -181,8 +185,8 @@ x-h-toolbar-separator
 ```html
 <div x-h-toolbar.footer>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="primary">Apply</button>
-  <button x-h-button data-size="sm" data-variant="transparent">Cancel</button>
+  <button x-h-button data-size="md" data-variant="primary">Apply</button>
+  <button x-h-button data-size="md" data-variant="transparent">Cancel</button>
 </div>
 ```
 
@@ -202,7 +206,7 @@ x-h-toolbar-separator
       <i role="img" data-lucide="search"></i>
     </div>
     <div x-h-input-group-addon data-align="inline-end">
-      <button x-h-button.group aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
+      <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
         <i role="img" data-lucide="x"></i>
       </button>
     </div>
@@ -243,7 +247,7 @@ x-h-toolbar-separator
       <i role="img" data-lucide="search"></i>
     </div>
     <div x-h-input-group-addon data-align="inline-end">
-      <button x-h-button.group aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
+      <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
         <i role="img" data-lucide="x"></i>
       </button>
     </div>

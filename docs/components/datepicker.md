@@ -1,6 +1,10 @@
 # Date Picker
 
-The datepicker allows the user to enter a date either through text input, or by choosing a date from a calendar popover.
+Allows users to enter a date either by typing it directly or by selecting it from a calendar popover. The component combines text input flexibility with a visual calendar to simplify accurate date selection.
+
+## Usage
+
+Use the Date Picker when users need to input a specific date while providing both manual entry and visual selection options. For scenarios requiring only simple date selection, a [Calendar](/components/calendar) alone may suffice.
 
 ## Keyboard Handling
 

@@ -1,6 +1,10 @@
 # Badge
 
-The badge is a short text that represents the semantic status of an object. It has a semantic color and an optional icon.
+Displays a short label used to convey the semantic status of an object. Badges use color and, optionally, an icon to provide quick visual cues and reinforce meaning at a glance.
+
+## Usage
+
+Use badges to highlight status, category, or state in a compact and non-intrusive way. Select the appropriate semantic variant to match the context and intent. Avoid overusing badges or relying on color alone and ensure the meaning remains clear through text or iconography. The outline variant can be used when a more subtle visual emphasis is required.
 
 ## API Reference
 
@@ -12,9 +16,9 @@ x-h-badge
 
 ### Attributes
 
-| Attribute    | Type                                                                                       | Required | Description          |
-| ------------ | ------------------------------------------------------------------------------------------ | -------- | -------------------- |
-| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline` | false    | Semantic color state |
+| Attribute    | Type                                                                                       | Required | Description    |
+| ------------ | ------------------------------------------------------------------------------------------ | -------- | -------------- |
+| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline` | false    | Semantic color |
 
 ## Examples
 

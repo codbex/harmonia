@@ -1,12 +1,17 @@
 # Theme Customization
 
-Harmonia leverages CSS variables to give you full control over the look and feel of its components. By customizing these variables, you can effortlessly create bespoke themes and apply your brand’s identity with consistency and precision.
+Harmonia gives you complete control over the look and feel of your interface through **CSS variables**. This makes it easy to create fully customized themes that reflect your brand’s identity, without breaking consistency or spending hours rewriting styles.
 
-You can define these variables manually in your own CSS file or `<style>` block, or use the provided Theme Generator tool to create and export a theme.
+You can define these variables manually in your own CSS file or `<style>` block, or speed things up using Harmonia’s **Theme Generator** to design, preview, and export a theme in minutes.
 
 ## CSS Theme Structure
 
-Harmonia themes provide both light and dark variants. Light theme values are defined under the :root and :host pseudo-class selectors, while dark theme values are defined under the .dark CSS class selector.
+Every Harmonia theme includes both **light** and **dark** variants.
+
+- Light theme values are applied under the `:root` and `:host` pseudo-class selectors.
+- Dark theme values are defined under the `.dark` CSS class selector.
+
+This structure makes it simple to switch between themes dynamically and keep the design consistent.
 
 ### Example
 
@@ -27,7 +32,9 @@ Harmonia themes provide both light and dark variants. Light theme values are def
 
 ## CSS Variables
 
-The default theme variables are defined in the base Harmonia CSS file, so it is not necessary to override every variable in your custom theme. If you only need to change the primary (brand) color, your theme CSS file can be as simple as the following:
+Harmonia ships with a **default set of theme variables** in the base CSS file. This means you don’t need to redefine every variable, just override the ones you care about.
+
+For example, if you only want to change your **primary brand color**, your custom theme CSS can be as simple as:
 
 ```
 :root,
@@ -45,6 +52,8 @@ The default theme variables are defined in the base Harmonia CSS file, so it is 
   --primary-active: oklch(...);
 }
 ```
+
+This approach keeps theming lightweight, flexible, and easy to maintain.
 
 ### Colors
 
@@ -131,5 +140,3 @@ The default theme variables are defined in the base Harmonia CSS file, so it is 
 | --radius-control | Border radius applied to all interactive control components, such as buttons, inputs, popovers, calendars, and listboxes. |
 | --radius         | Base radius value used to derive small, medium, large, and extra-large border radius variants.                            |
 | --spacing        | Base spacing unit used to calculate paddings and margins throughout the interface.                                        |
-
-###

@@ -1,10 +1,10 @@
 <p align="center">
-  <a href="https://codbex.com/harmonia/" rel="noopener" target="_blank"><img width="256" height="256" src="docs/public/logo/harmonia.svg" alt="Harmonia UI logo"></a>
+  <a href="https://codbex.com/harmonia/" rel="noopener" target="_blank"><img width="256" height="256" src="docs/public/logo/harmonia.svg" alt="Harmonia logo"></a>
 </p>
 
-<h1 align="center">Harmonia UI</h1>
+<h1 align="center">Harmonia</h1>
 
-Harmonia UI is an Alpine.js directive/component UI library.
+Harmonia is a modern UI Component Library for Alpine.js
 
 ## Build steps
 

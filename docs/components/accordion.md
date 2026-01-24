@@ -1,6 +1,10 @@
 # Accordion
 
-Allows users to show and hide sections of related content.
+Organizes related content into expandable and collapsible sections, allowing users to reveal or hide information as needed while keeping the interface clean and compact.
+
+## Usage
+
+Use accordions to group related content that doesn’t need to be visible all at once, such as FAQs, settings panels, or detailed lists. Section headers must be clear and descriptive. Avoid nesting too many accordions, as excessive collapsible layers can reduce usability and overwhelm users.
 
 ## API Reference
 

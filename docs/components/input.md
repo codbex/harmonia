@@ -1,6 +1,10 @@
 # Input
 
-Displays an input field. It should be paired with a label.
+Provides a single-line field for users to enter text or color values. Inputs should always be paired with a label to clearly communicate the expected content and ensure accessibility.
+
+## Usage
+
+Use input fields for capturing user data, such as names, emails, or color. If you need a numeric input, use the [Input Number](/components/input-number) instead. Avoid leaving inputs unlabeled, as this can confuse users and reduce accessibility.
 
 ## API Reference
 
@@ -12,9 +16,9 @@ x-h-input
 
 ### Attributes
 
-| Attribute | Values        | Required | Description                    |
-| --------- | ------------- | -------- | ------------------------------ |
-| data-size | `xs`<br/>`sm` | false    | Changes the size of the input. |
+| Attribute | Values             | Required | Description                    |
+| --------- | ------------------ | -------- | ------------------------------ |
+| data-size | `sm`<br/>`default` | false    | Changes the size of the input. |
 
 ### Modifiers
 
@@ -22,23 +26,26 @@ x-h-input
 | -------- | -------------------------------------------- |
 | group    | Used when the input is inside an input group |
 
-## Text Input
+## Examples
+
+### Text Input
+
+<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-4">
 <input x-h-input type="text" placeholder="Search..." />
 <input x-h-input data-size="sm" type="text" placeholder="Search..." />
-<input x-h-input data-size="xs" type="text" placeholder="Search..." />
 </component-container>
 </ClientOnly>
 
 ```html
-<input x-h-input type="text" placeholder="Search..." />
-<input x-h-input data-size="sm" type="text" placeholder="Search..." />
-<input x-h-input data-size="xs" type="text" placeholder="Search..." />
+<input x-h-input type="text" placeholder="Search..." /> <input x-h-input data-size="sm" type="text" placeholder="Search..." />
 ```
 
-## Color Input
+### Color Input
+
+<br />
 
 <ClientOnly>
 <component-container>
@@ -50,7 +57,9 @@ x-h-input
 <input x-h-input type="color" value="#26a269" />
 ```
 
-## Invalid Input
+### Invalid Input
+
+<br />
 
 <ClientOnly>
 <component-container>

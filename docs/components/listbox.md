@@ -1,6 +1,10 @@
 # Listbox
 
-The listbox component is a single-select listbox with grouped options. It is functionally similar to an HTML select element.
+A single-selection list component with support for grouped options, functionally similar to an HTML <select> element. Listboxes allow users to choose one item from a structured set of choices.
+
+## Usage
+
+Use listboxes when users need to select a single option from a clearly defined set of choices. Options should be grouped logically if applicable, and provide descriptive labels to support accessibility.
 
 ## Keyboard Handling
 

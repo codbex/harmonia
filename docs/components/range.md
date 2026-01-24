@@ -1,6 +1,10 @@
 # Range
 
-A range slider based on [noUiSlider](https://github.com/leongersen/noUiSlider)
+Allows users to select a value—or a range of values—by dragging a handle along a track. The component is based on [noUiSlider](https://github.com/leongersen/noUiSlider) and an interactive control over numeric inputs.
+
+## Usage
+
+Use range sliders for selecting numeric values within a defined range, such as volume, price, or time intervals. Avoid using sliders for exact numeric input as precision can be difficult with dragging alone.
 
 ## API Reference
 

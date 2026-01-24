@@ -1,6 +1,10 @@
 # Skeleton
 
-Placeholder component while content is loading.
+A placeholder component used to indicate that content is loading. Skeletons provide a visual cue to users, reducing perceived wait times and improving the overall experience.
+
+## Usage
+
+Use skeletons to temporarily fill the space of content that is being fetched or rendered. Make sure the placeholder visually resembles the final content layout to maintain context. Avoid overusing skeletons for static or instant-loading content, as this can create unnecessary visual noise.
 
 ## API Reference
 
@@ -20,9 +24,9 @@ x-h-skeleton
 
 ### Attributes
 
-| Attribute | Type           | Required | Description                                                                   |
-| --------- | -------------- | -------- | ----------------------------------------------------------------------------- |
-| data-size | `xs`<br />`sm` | false    | Height of the skeleton. Works only when combined with the `control` modifier. |
+| Attribute | Type                          | Required | Description                                                                   |
+| --------- | ----------------------------- | -------- | ----------------------------------------------------------------------------- |
+| data-size | `sm`<br />`md`<br />`default` | false    | Height of the skeleton. Works only when combined with the `control` modifier. |
 
 ## Examples
 

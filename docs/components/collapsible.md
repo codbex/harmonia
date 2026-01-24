@@ -1,6 +1,10 @@
 # Collapsible
 
-The collapsible component is used when an element`s visibility must be toggled based on a click.
+Provides expand-and-collapse functionality for any element, allowing content to be shown or hidden based on user interaction. This is a "behavioral" component, it does not include its own visual presentation and can be applied to a variety of UI elements.
+
+## Usage
+
+Use the Collapsible to add toggleable visibility to content areas without imposing a specific layout or style. Ideal for hiding optional details, advanced settings, or expandable sections within custom components. The interactive triggers must be clearly indicated to users, so the toggle behavior is discoverable.
 
 ## API Reference
 

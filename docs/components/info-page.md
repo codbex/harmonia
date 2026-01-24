@@ -1,6 +1,10 @@
 # Info Page
 
-The info page can be used to present instructions with actions, show a message to the user when a page or list is empty or as an error page.
+Provides a structured layout to display instructional content, messages, or status information, such as empty states or error notifications. Info Pages combine text, imagery, and optional actions to clearly communicate context to the user.
+
+## Usage
+
+Use Info Pages to guide users, explain empty states, or report errors in a visually distinct and informative way. Include clear messaging and actionable steps when appropriate, and avoid overloading the page with unnecessary details.
 
 ## API Reference
 
@@ -80,7 +84,7 @@ x-h-info-page-content
     <div x-h-info-page-media>
       <img src="/logo/harmonia.svg" alt="@harmonia" width="256px" />
     </div>
-    <div x-h-info-page-title>Harmonia UI</div>
+    <div x-h-info-page-title>Harmonia</div>
     <div x-h-info-page-description>UI component library for Alpine.js</div>
   </div>
   <div x-h-info-page-content>
@@ -96,7 +100,7 @@ x-h-info-page-content
     <div x-h-info-page-media>
       <img src="/logo/harmonia.svg" alt="@harmonia" width="256px" />
     </div>
-    <div x-h-info-page-title>Harmonia UI</div>
+    <div x-h-info-page-title>Harmonia</div>
     <div x-h-info-page-description>UI component library for Alpine.js</div>
   </div>
   <div x-h-info-page-content>

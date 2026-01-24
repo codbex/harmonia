@@ -1,6 +1,10 @@
 # Time Picker
 
-The time picker component lets the user select a time.
+Allows users to select a specific time, providing a controlled and consistent input method for hours, minutes and seconds.
+
+## Usage
+
+Use the Time Picker when users need to input or select a time value, such as setting alarms.
 
 ## Keyboard Handling
 

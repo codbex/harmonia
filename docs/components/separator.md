@@ -1,6 +1,10 @@
 # Separator
 
-Simple separator component.
+A simple visual divider used to separate content or sections within an interface. Separators help improve layout clarity and guide the user’s eye through the content.
+
+## Usage
+
+Use separators to distinguish between related groups of elements, such as menu items, form sections, or content blocks. Avoid overusing separators, as excessive dividers can clutter the interface and reduce visual hierarchy.
 
 ## API Reference
 

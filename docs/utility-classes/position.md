@@ -31,7 +31,7 @@ Element positioning.
           <div x-h-info-page-media>
             <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
           </div>
-          <div x-h-info-page-title>Harmonia UI</div>
+          <div x-h-info-page-title>Harmonia</div>
           <div x-h-info-page-description>UI component library for Alpine.js</div>
         </div>
         <div x-h-info-page-content>
@@ -58,7 +58,7 @@ Element positioning.
           <div x-h-info-page-media>
             <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
           </div>
-          <div x-h-info-page-title>Harmonia UI</div>
+          <div x-h-info-page-title>Harmonia</div>
           <div x-h-info-page-description>UI component library for Alpine.js</div>
         </div>
         <div x-h-info-page-content>

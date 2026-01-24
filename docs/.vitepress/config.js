@@ -4,8 +4,8 @@ const basePath = '/harmonia/';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'Harmonia UI',
-  description: 'Harmonia UI Component Library',
+  title: 'Harmonia',
+  description: 'UI Component Library',
   base: basePath,
   themeConfig: {
     search: {
@@ -48,6 +48,7 @@ export default defineConfig({
           { text: 'Info Page', link: '/components/info-page' },
           { text: 'Input', link: '/components/input' },
           { text: 'Input Group', link: '/components/input-group' },
+          { text: 'Input Number', link: '/components/input-number' },
           { text: 'Label', link: '/components/label' },
           { text: 'List', link: '/components/list' },
           { text: 'Listbox', link: '/components/listbox' },

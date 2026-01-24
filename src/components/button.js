@@ -127,24 +127,22 @@ export const setButtonClasses = (el) => {
   );
 };
 
-export const getButtonSize = (size, inGroup = false) => {
+export const getButtonSize = (size, isAddon = false) => {
   switch (size) {
-    case 'xs':
-      return inGroup ? ['h-6', 'gap-1', 'px-2', "[&>svg:not([class*='size-'])]:size-3.5", 'has-[>svg]:px-2'] : ['h-6.5', 'gap-1.5', 'px-2.5', 'has-[>svg]:px-2.5'];
     case 'sm':
-      return inGroup ? ['h-8', 'px-2.5', 'gap-1.5', 'has-[>svg]:px-2.5'] : ['h-8', 'gap-1.5', 'px-3', 'has-[>svg]:px-2.5'];
-    case 'lg':
-      return ['h-10', 'px-6', 'has-[>svg]:px-4'];
-    case 'icon-xs':
-      return inGroup ? ['size-6', 'p-0', 'has-[>svg]:p-0'] : ['size-6.5'];
+      return isAddon
+        ? ['h-6', '[[data-slot=input-group][data-size=sm]_&]:h-5', 'gap-1', 'px-2', "[&>svg:not([class*='size-'])]:size-3.5", 'has-[>svg]:px-2', 'has-[>[data-slot=spinner]]:px-2']
+        : ['h-6.5', 'gap-1.5', 'px-2.5', 'has-[>svg]:px-2', 'has-[>[data-slot=spinner]]:px-2'];
+    case 'md':
+      return isAddon ? ['h-8', 'px-2.5', 'gap-1.5', 'has-[>svg]:px-2.5', 'has-[>[data-slot=spinner]]:px-2.5'] : ['h-8', 'gap-1.5', 'px-3', 'has-[>svg]:px-2.5', 'has-[>[data-slot=spinner]]:px-2.5'];
     case 'icon-sm':
-      return inGroup ? ['size-8', 'p-0', 'has-[>svg]:p-0'] : ['size-8'];
+      return isAddon ? ['size-6', '[[data-slot=input-group][data-size=sm]_&]:size-5', 'p-0', 'has-[>svg]:p-0', 'has-[>[data-slot=spinner]]:p-0'] : ['size-6.5'];
+    case 'icon-md':
+      return isAddon ? ['size-8', 'p-0', 'has-[>svg]:p-0'] : ['size-8'];
     case 'icon':
       return ['size-9'];
-    case 'icon-lg':
-      return ['size-10'];
     default:
-      return ['h-9', 'px-4', 'py-2', 'has-[>svg]:px-3'];
+      return ['h-9', 'px-4', 'py-2', 'has-[>svg]:px-3', 'has-[>[data-slot=spinner]]:px-3'];
   }
 };
 
@@ -155,7 +153,7 @@ export default function (Alpine) {
       el.setAttribute('data-slot', 'button');
     }
 
-    const inGroup = modifiers.includes('group');
+    const isAddon = modifiers.includes('addon');
 
     let lastSize;
 
@@ -167,8 +165,8 @@ export default function (Alpine) {
     }
 
     function setSize(size = 'default') {
-      el.classList.remove(...getButtonSize(lastSize, inGroup));
-      el.classList.add(...getButtonSize(size, inGroup));
+      el.classList.remove(...getButtonSize(lastSize, isAddon));
+      el.classList.add(...getButtonSize(size, isAddon));
       if (size.startsWith('icon') && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
         console.error(`${original}: Icon-only buttons must have an "aria-label" or "aria-labelledby" attribute`, el);
       }
@@ -176,16 +174,16 @@ export default function (Alpine) {
     }
 
     setVariant(el.getAttribute('data-variant') ?? 'default');
-    if (inGroup) {
+    if (isAddon) {
       el.classList.remove('shadow-button', 'inline-flex');
       el.classList.add('shadow-none', 'flex');
-      setSize(el.getAttribute('data-size') ?? 'xs');
+      setSize(el.getAttribute('data-size') ?? 'sm');
     } else {
       if (el.hasAttribute('data-size')) {
         setSize(el.getAttribute('data-size'));
       } else {
         if (['date-picker-trigger', 'time-picker-trigger'].includes(el.getAttribute('data-slot'))) {
-          setSize('icon-xs');
+          setSize('icon-sm');
         } else {
           setSize();
         }
@@ -195,7 +193,7 @@ export default function (Alpine) {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'data-variant') setVariant(el.getAttribute('data-variant') ?? 'default');
-        else setSize(el.getAttribute('data-size') ?? (inGroup ? 'xs' : 'default'));
+        else setSize(el.getAttribute('data-size') ?? (isAddon ? 'sm' : 'default'));
       });
     });
 

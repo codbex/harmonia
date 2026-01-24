@@ -1,6 +1,10 @@
 # Avatar
 
-The avatar is used for presenting various images, including user profiles, user initials, images or icons.
+Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic. Avatars help provide visual context and identity within the interface.
+
+## Usage
+
+Use avatars to visually identify users or related entities in lists, profiles, or collaborative features. Choose the appropriate variant based on available data - images for personal recognition, initials or icons as fallbacks.
 
 ## API Reference
 

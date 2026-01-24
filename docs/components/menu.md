@@ -1,6 +1,10 @@
 # Menu
 
-The menu component is a listing structure with optional headers to create menus. It can be used as a dropdown and as a context menu.
+A structured list of options, optionally including headers, used to create navigational menus, context menus, or dropdowns. Menus organize actions or links in a clear and accessible way.
+
+## Usage
+
+Use menus to present a set of related actions or navigation links. Menu items should be clearly labeled and grouped logically.
 
 ## Keyboard Handling
 

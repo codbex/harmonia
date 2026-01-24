@@ -1,6 +1,10 @@
 # Fieldset
 
-This is a container that combines labels, controls, and text to compose accessible form fields and grouped inputs.
+A container that groups related form elements, including labels, controls, and helper text, to create accessible and organized input sections. Fieldsets improve the structure and clarity of complex forms.
+
+## Usage
+
+Use fieldsets to logically group related inputs, such as multiple options within a survey or sections of a settings form. Each fieldset should include a descriptive legend or label to maintain accessibility and provide context for users navigating the form.
 
 ## API Reference
 
@@ -23,9 +27,14 @@ x-h-field-error
 
 | Attribute        | Values                                       | Required | Description                                                               |
 | ---------------- | -------------------------------------------- | -------- | ------------------------------------------------------------------------- |
-| data-invalid     | boolean                                      | false    | Indicates that the field is invalid.                                      |
 | data-disabled    | boolean                                      | false    | Applies a disabled style to the field and label. Does NOT disable inputs. |
 | data-orientation | `vertical`<br/>`horizontal`<br/>`responsive` | false    | Changes the aligment of the label and input.                              |
+
+#### x-h-field-description
+
+| Attribute          | Values  | Required | Description                                                                                                        |
+| ------------------ | ------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| data-hide-on-error | boolean | false    | When enabled, the description will be hidden when the input is invalid, and the error message will appear instead. |
 
 ### Modifiers
 
@@ -51,18 +60,19 @@ x-h-field-error
       <div x-h-field-group>
         <div x-h-field>
           <label x-h-label.field for="formCardName" data-state="checked">Name on Card</label>
-          <input x-h-input id="formCardName" placeholder="Evil Rabbit" required />
+          <input x-h-input id="formCardName" placeholder="John Doe" required />
         </div>
         <div x-h-field>
           <label x-h-label.field for="formCardNumber">Card Number</label>
           <input x-h-input id="formCardNumber" placeholder="2141 9614 2401 7895" required />
-          <p x-h-field-description>Enter your 16-digit card number</p>
+          <p x-h-field-error>Enter your 16-digit card number</p>
+          <p x-h-field-description data-hide-on-error="true">This is just a demo. Do NOT enter your real card number.</p>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <div x-h-field>
             <label x-h-label.field for="formCardMonth">Month</label>
             <div x-h-select>
-              <input data-id="formCardMonth" x-h-select-input placeholder="MM" />
+              <input data-id="formCardMonth" x-h-select-input placeholder="MM" required />
               <div x-h-select-content>
                 <div x-h-select-option="'01'" data-value="01"></div>
                 <div x-h-select-option="'02'" data-value="02"></div>
@@ -82,7 +92,7 @@ x-h-field-error
           <div x-h-field>
             <label x-h-label.field for="formCardYear">Year</label>
             <div x-h-select>
-              <input data-id="formCardYear" x-h-select-input placeholder="YYYY" />
+              <input data-id="formCardYear" x-h-select-input placeholder="YYYY" required />
               <div
                 x-h-select-content
                 x-data="{
@@ -137,19 +147,19 @@ x-h-field-error
 </form>
 ```
 
-### Invalid field
+### Invalid field with error message
 
-<br/>
+When you type something in the input below, it will no longer be invalid and the error message will disappear.
 
 <ClientOnly>
 <component-container>
 <form>
   <fieldset x-h-fieldset>
     <div x-h-field-group>
-      <div x-h-field data-invalid="true">
+      <div x-h-field>
         <label x-h-label.field for="visuallyDisabled" data-state="checked">Invalid</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required aria-invalid="true" />
-        <p x-h-text.xs>The input is required</p>
+        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required/>
+        <p x-h-field-error>The input is cannot be empty</p>
       </div>
     </div>
   </fieldset>
@@ -161,10 +171,10 @@ x-h-field-error
 <form>
   <fieldset x-h-fieldset>
     <div x-h-field-group>
-      <div x-h-field data-invalid="true">
+      <div x-h-field>
         <label x-h-label.field for="visuallyDisabled" data-state="checked">Invalid</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" />
-        <p x-h-text.xs>The input is required</p>
+        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required />
+        <p x-h-field-error>The input is cannot be empty</p>
       </div>
     </div>
   </fieldset>
@@ -228,7 +238,7 @@ x-h-field-error
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
         <label x-h-label.field for="visuallyDisabled" data-state="checked">Label Disabled</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input still active" disabled />
+        <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
       </div>
     </div>
   </fieldset>

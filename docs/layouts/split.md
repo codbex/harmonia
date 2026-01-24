@@ -1,6 +1,10 @@
 # Split
 
-A style-only component designed to be used alongside another library to create a split view.
+A style-only component that provides a flexible layout for dividing content into resizable panes. It is designed to work alongside other libraries to implement split view functionality.
+
+## Usage
+
+Use Split when you need a side-by-side layout for content, such as editors, dashboards, or comparison panels. Avoid using Split for layouts where resizable content is unnecessary, as it may add unnecessary complexity.
 
 ## API Reference
 

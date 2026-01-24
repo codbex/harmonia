@@ -1,6 +1,10 @@
 # Calendar
 
-The calendar allows the user to select a date.
+Allows users to view and select dates within a monthly or yearly context. The component provides navigation between months and years.
+
+## Usage
+
+Use the calendar when users need to choose specific dates, such as scheduling events. For filtering data by date, use a [Date Picker](/components/datepicker). Make sure it is paired with clear labels and context to prevent confusion, especially when selecting critical dates.
 
 ## Keyboard Handling
 

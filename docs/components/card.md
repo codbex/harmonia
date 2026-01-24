@@ -1,6 +1,10 @@
 # Card
 
-The card is a container that consists of a header, content and footer area.
+A flexible container that organizes content into distinct sections, typically including a header, main content area, and footer. Cards provide a clear, self-contained layout for displaying related information.
+
+## Usage
+
+Use cards to group related information or actions in a visually distinct container, such as product details or summaries. Avoid overloading cards with excessive information.
 
 ## API Reference
 

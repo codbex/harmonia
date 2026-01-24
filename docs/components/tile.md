@@ -1,6 +1,10 @@
 # Tile
 
-Tiles can provide shortcuts to pages and modules. They can also be used as previews or to group related information in a container.
+A container that presents content, previews, or shortcuts in a compact, visually distinct format. Tiles can group related information, link to pages or modules, or provide an interactive preview.
+
+## Usage
+
+Use tiles to create visually engaging entry points to content, functionality, or related information. Ensure the purpose is clear, and avoid overloading tiles with too much information.
 
 ## API Reference
 
@@ -25,7 +29,6 @@ x-h-tile-footer
 | Attribute    | Type                               | Required | Description                    |
 | ------------ | ---------------------------------- | -------- | ------------------------------ |
 | data-variant | `outline`<br/>`shadow`<br/>`muted` | false    | Changes the style of the tile. |
-| data-size    | `default`<br/>`sm`                 | false    | Changes the size of the tile.  |
 
 #### x-h-tile-media
 
@@ -47,7 +50,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Action</button>
+    <button x-h-button data-size="md" data-variant="outline">Action</button>
   </div>
 </div>
 
@@ -57,7 +60,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Icon button">
+    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
       <i role="img" data-lucide="plus"></i>
     </button>
   </div>
@@ -69,7 +72,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Action</button>
+    <button x-h-button data-size="md" data-variant="outline">Action</button>
   </div>
 </div>
 
@@ -79,7 +82,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Icon button">
+    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
       <i role="img" data-lucide="plus"></i>
     </button>
   </div>
@@ -94,7 +97,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Action</button>
+    <button x-h-button data-size="md" data-variant="outline">Action</button>
   </div>
 </div>
 
@@ -104,7 +107,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Icon button">
+    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
       <i role="img" data-lucide="plus"></i>
     </button>
   </div>
@@ -116,7 +119,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Action</button>
+    <button x-h-button data-size="md" data-variant="outline">Action</button>
   </div>
 </div>
 
@@ -126,7 +129,7 @@ x-h-tile-footer
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Icon button">
+    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
       <i role="img" data-lucide="plus"></i>
     </button>
   </div>
@@ -139,7 +142,7 @@ x-h-tile-footer
 
 <ClientOnly>
 <component-container data-js="/js/init-icons.js">
-<a x-h-tile data-variant="outline" data-size="sm" href="#variants">
+<a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
     <i role="img" data-lucide="link" class="size-5"></i>
   </div>
@@ -154,7 +157,7 @@ x-h-tile-footer
 </ClientOnly>
 
 ```html
-<a x-h-tile data-variant="outline" data-size="sm" href="#variants">
+<a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
     <i role="img" data-lucide="link" class="size-5"></i>
   </div>
@@ -182,7 +185,7 @@ x-h-tile-footer
     <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Review</button>
+    <button x-h-button data-size="md" data-variant="outline">Review</button>
   </div>
 </div>
 
@@ -198,7 +201,7 @@ x-h-tile-footer
     <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Review</button>
+    <button x-h-button data-size="md" data-variant="outline">Review</button>
   </div>
 </div>
 
@@ -207,7 +210,7 @@ x-h-tile-footer
     <img src="/logo/harmonia-square.svg" alt="@harmonia" />
   </div>
   <div x-h-tile-content>
-    <div x-h-tile-title>Harmonia UI</div>
+    <div x-h-tile-title>Harmonia</div>
     <p x-h-tile-description>UI component library for Alpine.js</p>
   </div>
 </div>
@@ -224,7 +227,7 @@ x-h-tile-footer
     <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Review</button>
+    <button x-h-button data-size="md" data-variant="outline">Review</button>
   </div>
 </div>
 
@@ -240,7 +243,7 @@ x-h-tile-footer
     <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="sm" data-variant="outline">Review</button>
+    <button x-h-button data-size="md" data-variant="outline">Review</button>
   </div>
 </div>
 
@@ -249,7 +252,7 @@ x-h-tile-footer
     <img src="/logo/harmonia-square.svg" alt="@harmonia" />
   </div>
   <div x-h-tile-content>
-    <div x-h-tile-title>Harmonia UI</div>
+    <div x-h-tile-title>Harmonia</div>
     <p x-h-tile-description>UI component library for Alpine.js</p>
   </div>
 </div>
@@ -267,7 +270,7 @@ x-h-tile-footer
       <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia UI</div>
+      <div x-h-tile-title>Harmonia</div>
       <p x-h-tile-description>UI component library for Alpine.js</p>
     </div>
   </div>
@@ -276,7 +279,7 @@ x-h-tile-footer
       <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia UI</div>
+      <div x-h-tile-title>Harmonia</div>
       <p x-h-tile-description>UI component library for Alpine.js</p>
     </div>
   </div>
@@ -285,7 +288,7 @@ x-h-tile-footer
       <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia UI</div>
+      <div x-h-tile-title>Harmonia</div>
       <p x-h-tile-description>UI component library for Alpine.js</p>
     </div>
   </div>
@@ -300,7 +303,7 @@ x-h-tile-footer
       <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia UI</div>
+      <div x-h-tile-title>Harmonia</div>
       <p x-h-tile-description>UI component library for Alpine.js</p>
     </div>
   </div>
@@ -309,7 +312,7 @@ x-h-tile-footer
       <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia UI</div>
+      <div x-h-tile-title>Harmonia</div>
       <p x-h-tile-description>UI component library for Alpine.js</p>
     </div>
   </div>
@@ -318,7 +321,7 @@ x-h-tile-footer
       <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia UI</div>
+      <div x-h-tile-title>Harmonia</div>
       <p x-h-tile-description>UI component library for Alpine.js</p>
     </div>
   </div>

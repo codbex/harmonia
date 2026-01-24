@@ -1,6 +1,10 @@
 # Textarea
 
-Displays a textarea field. It should be paired with a label.
+Provides a multi-line input field for users to enter longer text. Textareas should always be paired with a label to clearly communicate the expected content and ensure accessibility.
+
+## Usage
+
+Use textareas for capturing extended input, such as comments, descriptions, or messages. The label should be descriptive. Provide optional hints or validation to guide proper entry. Avoid leaving textareas unlabeled, as this can confuse users and reduce accessibility.
 
 ## API Reference
 

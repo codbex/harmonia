@@ -15,7 +15,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-field', (el) => {
-    el.classList.add('group/field', 'w-full', 'gap-3', 'data-[invalid=true]:text-negative');
+    el.classList.add('group/field', 'w-full', 'gap-3', 'has-[input:invalid]:text-negative', 'has-[textarea:invalid]:text-negative', 'has-[[aria-invalid=true]]:text-negative');
     switch (el.getAttribute('data-orientation')) {
       case 'horizontal':
         el.classList.add('hbox', 'items-center', '[&>[data-slot=field-label]]:flex-auto', 'has-[>[data-slot=field-content]]:items-start', 'has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px');
@@ -65,10 +65,34 @@ export default function (Alpine) {
       '[&>a]:underline-offset-4'
     );
     el.setAttribute('data-slot', 'field-description');
+
+    if (el.getAttribute('data-hide-on-error') === 'true') {
+      el.classList.add(
+        '[[data-slot=field]_input:invalid~&]:hidden',
+        '[[data-slot=field]_textarea:invalid~&]:hidden',
+        '[[data-slot=field]_[aria-invalid=true]~&]:hidden',
+        'group-has-[input:invalid]/field:hidden',
+        'group-has-[textarea:invalid)]/field:hidden',
+        'group-has-[[aria-invalid=true]]/field:hidden'
+      );
+    }
   });
 
   Alpine.directive('h-field-error', (el) => {
-    el.classList.add('text-negative', 'text-sm', 'font-normal');
+    el.classList.add(
+      'hidden',
+      '[[data-slot=field]_input:invalid~&]:block',
+      '[[data-slot=field]_textarea:invalid~&]:block',
+      '[[data-slot=field]_[aria-invalid=true]~&]:block',
+      'group-has-[input:invalid]/field:block',
+      'group-has-[textarea:invalid)]/field:block',
+      'group-has-[[aria-invalid=true]]/field:block',
+      'text-negative',
+      'text-sm',
+      'leading-normal',
+      'font-normal',
+      'group-has-[[data-orientation=horizontal]]/field:text-balance'
+    );
     el.setAttribute('data-slot', 'field-error');
   });
 }

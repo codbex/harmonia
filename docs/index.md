@@ -3,11 +3,11 @@
 layout: home
 
 hero:
-  name: 'Harmonia UI'
+  name: 'Harmonia'
   text: 'A Modern UI Component Library for Alpine.js'
   image:
     src: '/logo/harmonia.svg'
-    alt: 'Harmonia UI Logo'
+    alt: 'Harmonia Logo'
   actions:
     - theme: brand
       text: Get Started
@@ -24,12 +24,12 @@ hero:
       target: _self
 
 features:
-  - title: 42 Ready-to-Use Components
-    details: A comprehensive collection of carefully crafted components for building sophisticated user interfaces.
+  - title: 44 Ready-to-Use Components
+    details: A comprehensive collection of carefully crafted components for building complex user interfaces.
   - title: Lightweight by Design
     details: Built with simplicity in mind, leveraging native browser APIs and minimal overhead.
   - title: Highly Customizable
     details: Easily adaptable through CSS variables, with access to a free and intuitive theme generator.
   - title: No Build Step Required
-    details: Start using Harmonia UI immediately. No compilation or tooling needed, just drop it into your project.
+    details: Start using Harmonia immediately. No compilation or tooling needed, just drop it into your project.
 ---

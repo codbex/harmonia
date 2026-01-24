@@ -1,6 +1,10 @@
 # Popover
 
-The popover displays additional information for an object in a compact way without leaving the page. Do NOT use this as a dropdown. Use the menu component instead.
+Displays supplementary information or content in a compact overlay without navigating away from the current page. Popovers provide contextual details or actions while maintaining focus on the primary interface.
+
+## Usage
+
+Use popovers to show contextual help, tips, or additional options related to a specific element. Avoid using popovers as dropdowns and use the [Menu](/components/menu) component for selectable lists or navigation. The trigger should be clearly indicated.
 
 ## API Reference
 

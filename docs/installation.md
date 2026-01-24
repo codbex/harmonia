@@ -1,9 +1,9 @@
 # Installation
 
-There are 2 ways to include Harmonia UI into your project:
+You can include **Harmonia** in your project in two ways:
 
-- Including it from a `<script>` tag
-- Importing it as a module
+- **Using a `<script>` tag** – quick and easy for adding Harmonia to an existing HTML page.
+- **Importing as a module** – ideal for modern JavaScript workflows with bundlers like Vite, Webpack, or Rollup.
 
 ::: info
 As a prerequsite, you must have Alpine.js already installed.
@@ -80,8 +80,9 @@ Alpine.start();
 
 ## Configure fonts
 
-Harmonia uses the Open Sans font by default but no fonts are included in the package or as a dependency.
-You will have to provide your own `fonts.css` file that links to where your instalation of Open Sans is (or the custom font you have configured in your theme).
+By default, Harmonia uses the **Open Sans** font, but no fonts are included in the package itself. This gives you full flexibility to choose the fonts that match your brand.
+
+To use Open Sans, or any custom font, you’ll need to provide your own `fonts.css` file that links to your font installation or CDN. You can also configure this font in your theme for a consistent look across all components.
 
 Here is an example `fonts.css` file:
 

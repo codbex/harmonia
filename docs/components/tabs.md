@@ -1,6 +1,10 @@
 # Tabs
 
-A set of sections of content that are displayed one at a time.
+Organizes content into multiple sections, displaying only one section at a time while keeping others easily accessible through a tabbed navigation interface. Tabs help structure information without overwhelming the user.
+
+## Usage
+
+Use tabs to group related content or functionality, allowing users to switch between sections without leaving the current view.
 
 ## API Reference
 

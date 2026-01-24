@@ -1,6 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { Check, ChevronDown, createElement, Search } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { sizeObserver } from './../common/input-size';
 
 const FilterType = Object.freeze({
   'starts-with': 0,
@@ -60,26 +61,7 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'select');
 
-    const setSize = (size) => {
-      if (size === 'sm') {
-        el.classList.add('h-8');
-        el.classList.remove('h-9', 'h-6.5');
-      } else if (size === 'xs') {
-        el.classList.add('h-6.5');
-        el.classList.remove('h-9', 'h-8');
-      } else {
-        el.classList.add('h-9');
-        el.classList.remove('h-8', 'h-6.5');
-      }
-    };
-
-    setSize(el.getAttribute('data-size'));
-
-    const observer = new MutationObserver(() => {
-      setSize(el.getAttribute('data-size'));
-    });
-
-    observer.observe(el, { attributes: true, attributeFilter: ['data-size'] });
+    const observer = sizeObserver(el);
 
     cleanup(() => {
       observer.disconnect();

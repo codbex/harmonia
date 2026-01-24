@@ -1,6 +1,10 @@
 # Tag
 
-Tags are small items of information. They can also be used to indicate a keyboard shortcut.
+A compact element used to display small pieces of information, labels, or metadata. Tags can also indicate keyboard shortcuts or other contextual cues.
+
+## Usage
+
+Use tags to highlight keywords, categories, statuses, or shortcuts in a concise and visually distinct way. Make sure tags are clear and readable, and avoid overcrowding interfaces with too many tags, as this can reduce clarity and focus.
 
 ## API Reference
 

@@ -1,6 +1,10 @@
 # Focus
 
-The focus directive enables programmatic focus management for an element based on a specified condition.
+A behavior-only directive that programmatically sets focus on an element based on a specified condition. Focus helps guide user interaction and improves accessibility by controlling which elements receive input or attention.
+
+## Usage
+
+Use the focus directive to move or trap focus in forms, dialogs, modals, or other interactive elements. Avoid shifting focus unnecessarily, as this can disrupt the user experience and accessibility.
 
 ## API Reference
 

@@ -1,6 +1,10 @@
 # Table
 
-A table contains a set of line items and usually comprises rows (with each row showing one line item) and columns.
+Organizes data into rows and columns, with each row representing a single item and each column representing a specific attribute. Tables provide a structured way to display complex or tabular information clearly.
+
+## Usage
+
+Use tables to present datasets, lists, or records where a clear relationship between rows and columns is important. Headers must be descriptive and for large datasets, consider features like sorting or filtering. Do NOT use tables for layout purposes.
 
 ## API Reference
 

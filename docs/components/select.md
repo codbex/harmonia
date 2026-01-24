@@ -1,6 +1,10 @@
 # Select
 
-The select component is used to select an item from a predefined list. It should be used when there are 12 or less items to choose from.
+Allows users to choose one or more items from a predefined list of options. This component provides a compact way to present choices without overwhelming the interface.
+
+## Usage
+
+Use the Select component without a search option when there are a limited number of options, ideally 12 or fewer. For longer lists, enable the search feature.
 
 ## Keyboard Handling
 
@@ -33,9 +37,9 @@ x-h-select-separator
 
 #### x-h-select
 
-| Attribute | Type                          | Required | Description                            |
-| --------- | ----------------------------- | -------- | -------------------------------------- |
-| data-size | `default`<br />`sm`<br />`xs` | false    | Changes the size of the select button. |
+| Attribute | Type               | Required | Description                            |
+| --------- | ------------------ | -------- | -------------------------------------- |
+| data-size | `sm`<br/>`default` | false    | Changes the size of the select button. |
 
 #### x-h-select-input
 

@@ -2,6 +2,10 @@
 
 The sheet component is a side panel that overlays the window content and is shown on one side of the screen. It can be used for displaying additional content like settings, input forms, cookie notices or other components like a [Sidebar](/components/sidebar).
 
+## Usage
+
+Use sheets to present supplementary information or interactive content without navigating away from the main interface. Avoid overloading sheets with too much content, as the available space is limited.
+
 ## API Reference
 
 ### Component attubute(s)

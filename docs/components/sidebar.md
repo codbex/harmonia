@@ -1,6 +1,10 @@
 # Sidebar
 
-The sidebar is used as a top-level application navigation list.
+A vertical navigation panel used to present top-level application links or sections. Sidebars provide persistent access to primary navigation, helping users move through the interface.
+
+## Usage
+
+Use sidebars for main application navigation or other persistent content that benefits from being constantly accessible. Buttons must be clearly labeled and grouped logically.
 
 ## API Reference
 

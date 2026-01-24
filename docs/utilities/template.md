@@ -2,6 +2,10 @@
 
 The template directive makes it easy to insert and initialize an Alpine.js snippet inside a referenced `<template>` element. When used in combination with Alpine’s `x-for` directive, it enables recursive template rendering on the client side.
 
+## Usage
+
+Use the template directive to reuse HTML snippets and generate repeated or nested content efficiently. The template should be clearly structured and maintainable. Avoid overcomplicating recursive structures, as deeply nested templates can impact performance and readability.
+
 ::: info
 Similar to Alpine's `x-for` directive, the referenced `<template>` element MUST contain only one root element.
 :::

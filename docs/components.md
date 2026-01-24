@@ -126,6 +126,13 @@ outline: deep
       <p class="text">Composite input container that combines text fields with addons or buttons.</p>
     </div>
   </a>
+  <a href="./components/input-number" class="card">
+    <svg-icon class="card-media" src="./images/input-number.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Input Number</h3>
+      <p class="text">Input container that combines a number field with increase and decrease buttons.</p>
+    </div>
+  </a>
   <a href="./components/label" class="card">
     <svg-icon class="card-media" src="./images/label.svg"></svg-icon>
     <div class="card-content">

@@ -1,6 +1,10 @@
 # Dialog
 
-The dialog component is a container that appears in response to an action made by the user. It interrupts the app's current process to prompt the user for either information or a confirmation, which requires them to make a decision before the process can continue.
+A modal container that appears in response to a user action, temporarily interrupting the current workflow to request information or confirmation. Dialogs require users to make a decision before they can continue interacting with the underlying interface.
+
+## Usage
+
+Use dialogs to capture critical decisions, confirmations, or inputs that demand immediate attention. Avoid overusing dialogs for non-essential interactions, as frequent interruptions can disrupt the user experience.
 
 ## API Reference
 

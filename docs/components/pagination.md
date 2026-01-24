@@ -1,6 +1,10 @@
 # Pagination
 
-Pagination allows users to separate their content into discrete pages, making it easier to digest and navigate through. Pagination is commonly used for tables, card grids and tiles.
+Divides content into discrete pages, allowing users to navigate large datasets or collections more easily. Pagination improves readability and helps users focus on manageable portions of content.
+
+## Usage
+
+Use pagination for tables, card grids, lists, or other content-heavy interfaces where displaying all items at once would overwhelm the user. Avoid excessive page counts without additional navigation aids, such as "jump to page" or filtering options.
 
 ## API Reference
 

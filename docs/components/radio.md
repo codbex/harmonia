@@ -1,6 +1,10 @@
 # Radio
 
-Native radio control with custom styles.
+A single-choice input that allows users to select one option from a set.
+
+## Usage
+
+Use radio buttons when users must choose only one option from a group. All options must clearly labeled and grouped logically. Avoid using radio buttons for independent yes/no choices as [checkboxes](/components/checkbox) are more appropriate in that case.
 
 ## API Reference
 

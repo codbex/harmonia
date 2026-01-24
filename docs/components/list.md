@@ -1,6 +1,10 @@
 # List
 
-The list component is a container displaying a list of items.
+A container that displays a collection of related items in a structured format. Lists help organize content clearly and improve readability by grouping similar elements together.
+
+## Usage
+
+Use lists to present multiple related items, such as options, tasks, or entries. Avoid using lists for grouping unrelated content.
 
 ## API Reference
 
@@ -96,7 +100,7 @@ x-h-list-header
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
     List Item 1
     <div class="flex-1"></div>
-    <button x-h-button data-variant="outline" data-size="icon-xs" aria-label="Icon button">
+    <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
       <i role="img" data-lucide="save"></i>
     </button>
   </li>
@@ -118,7 +122,7 @@ x-h-list-header
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
     List Item 1
     <div class="flex-1"></div>
-    <button x-h-button data-variant="outline" data-size="icon-xs" aria-label="Icon button">
+    <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
       <i role="img" data-lucide="save"></i>
     </button>
   </li>

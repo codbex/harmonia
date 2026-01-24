@@ -6,18 +6,19 @@
       <div x-h-field-group>
         <div x-h-field>
           <label x-h-label.field for="formCardName" data-state="checked">Name on Card</label>
-          <input x-h-input id="formCardName" placeholder="Evil Rabbit" required />
+          <input x-h-input id="formCardName" placeholder="John Doe" required />
         </div>
         <div x-h-field>
           <label x-h-label.field for="formCardNumber">Card Number</label>
           <input x-h-input id="formCardNumber" placeholder="2141 9614 2401 7895" required />
-          <p x-h-field-description>Enter your 16-digit card number</p>
+          <p x-h-field-error>Enter your 16-digit card number</p>
+          <p x-h-field-description data-hide-on-error="true">This is just a demo. Do NOT enter your real card number.</p>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <div x-h-field>
             <label x-h-label.field for="formCardMonth">Month</label>
             <div x-h-select>
-              <input data-id="formCardMonth" x-h-select-input placeholder="MM" />
+              <input data-id="formCardMonth" x-h-select-input placeholder="MM" required />
               <div x-h-select-content>
                 <div x-h-select-option="'01'" data-value="01"></div>
                 <div x-h-select-option="'02'" data-value="02"></div>
@@ -37,7 +38,7 @@
           <div x-h-field>
             <label x-h-label.field for="formCardYear">Year</label>
             <div x-h-select>
-              <input data-id="formCardYear" x-h-select-input placeholder="YYYY" />
+              <input data-id="formCardYear" x-h-select-input placeholder="YYYY" required />
               <div
                 x-h-select-content
                 x-data="{

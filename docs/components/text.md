@@ -1,6 +1,6 @@
 # Text
 
-Applies styles to headings and text sections.
+Applies consistent typography styles to headings, paragraphs, single lines, and code blocks, ensuring a cohesive visual hierarchy and readability across the interface.
 
 ## API Reference
 

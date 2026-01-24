@@ -1,6 +1,10 @@
 # Tree
 
-The Tree component provides a structured way to display and work with hierarchical data. It allows users to explore, expand, and interact with nested items in a clear and intuitive layout.
+Displays hierarchical data in a structured, expandable format, allowing users to explore nested items efficiently. Tree components provide a clear and intuitive way to navigate complex relationships or grouped content.
+
+## Usage
+
+Use tree components for file systems, category hierarchies, or any dataset with nested relationships. Avoid overly deep or complex trees that could overwhelm users or reduce usability.
 
 ## Keyboard Handling
 

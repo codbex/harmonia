@@ -1,6 +1,10 @@
 # Checkbox
 
-Checkboxes allow the user to set a binary value such as “true/false”.
+Allows users to select or deselect an option, representing a binary choice (true/false). Checkboxes indicate the current state of a setting or preference.
+
+## Usage
+
+Use checkboxes for independent options where multiple selections are allowed. For mutually exclusive choices, use a [Radio button](/components/radio).
 
 ## API Reference
 
