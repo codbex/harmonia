@@ -146,7 +146,7 @@ export default function (Alpine) {
     previousYearBtn.setAttribute('type', 'button');
     previousYearBtn.appendChild(
       createElement(ChevronsLeft, {
-        class: ['opacity-50 size-4 shrink-0 pointer-events-none'],
+        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
         width: '16',
         height: '16',
         'aria-hidden': true,
@@ -165,7 +165,7 @@ export default function (Alpine) {
     previousMonthBtn.setAttribute('type', 'button');
     previousMonthBtn.appendChild(
       createElement(ChevronLeft, {
-        class: ['opacity-50 size-4 shrink-0 pointer-events-none'],
+        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
         width: '16',
         height: '16',
         'aria-hidden': true,
@@ -190,7 +190,7 @@ export default function (Alpine) {
     nextMonthBtn.setAttribute('type', 'button');
     nextMonthBtn.appendChild(
       createElement(ChevronRight, {
-        class: ['opacity-50 size-4 shrink-0 pointer-events-none'],
+        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
         width: '16',
         height: '16',
         'aria-hidden': true,
@@ -209,7 +209,7 @@ export default function (Alpine) {
     nextYearBtn.setAttribute('type', 'button');
     nextYearBtn.appendChild(
       createElement(ChevronsRight, {
-        class: ['opacity-50 size-4 shrink-0 pointer-events-none'],
+        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
         width: '16',
         height: '16',
         'aria-hidden': true,

@@ -33,6 +33,12 @@ x-h-time-picker-popup
 
 ### Attributes
 
+#### x-h-time-picker
+
+| Attribute | Values             | Required | Description                          |
+| --------- | ------------------ | -------- | ------------------------------------ |
+| data-size | `sm`<br/>`default` | false    | Changes the size of the time picker. |
+
 #### x-h-time-picker-popup
 
 | Attribute           | Values                                                                                                                                                                        | Required | Description                                                                                      |

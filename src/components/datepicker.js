@@ -1,8 +1,9 @@
 import { Calendar, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { sizeObserver } from './../common/input-size';
 
 export default function (Alpine) {
-  Alpine.directive('h-date-picker', (el, { original }, { Alpine }) => {
+  Alpine.directive('h-date-picker', (el, { original }, { Alpine, cleanup }) => {
     el._h_datepicker = Alpine.reactive({
       id: undefined,
       controls: `hdpc${uuidv4()}`,
@@ -32,10 +33,7 @@ export default function (Alpine) {
       'transition-[color,box-shadow]',
       'duration-200',
       'outline-none',
-      'h-9',
       'pl-3',
-      'pr-1',
-      'gap-2',
       'min-w-0',
       'has-[input:focus-visible]:border-ring',
       'has-[input:focus-visible]:ring-ring/50',
@@ -52,18 +50,28 @@ export default function (Alpine) {
     el._h_datepicker.input.classList.add(
       'bg-transparent',
       'outline-none',
-      'flex-1',
-      'h-full',
-      'border-0',
+      'size-full',
+      'pr-1',
+      'border-r',
+      'border-input',
+      'aria-invalid:border-negative',
+      'invalid:border-negative',
       'focus-visible:ring-0',
       'disabled:pointer-events-none',
       'disabled:cursor-not-allowed',
       'disabled:opacity-50',
       'md:text-sm',
-      'text-base'
+      'text-base',
+      'truncate'
     );
     el._h_datepicker.input.setAttribute('aria-autocomplete', 'none');
     el._h_datepicker.input.setAttribute('type', 'text');
+
+    const observer = sizeObserver(el);
+
+    cleanup(() => {
+      observer.disconnect();
+    });
   });
 
   Alpine.directive('h-date-picker-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
@@ -77,6 +85,28 @@ export default function (Alpine) {
     if (!datepicker) {
       throw new Error(`${original} must be inside an date-picker element`);
     }
+    el.classList.add(
+      'cursor-pointer',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      'rounded-r-control',
+      'h-full',
+      'aspect-square',
+      'bg-transparent',
+      'hover:bg-secondary',
+      'active:bg-secondary-active',
+      'outline-none',
+      'focus-visible:border-ring',
+      'focus-visible:ring-ring/50',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
+      '[input[aria-invalid=true]~&]:ring-negative/20',
+      '[input[aria-invalid=true]~&]:border-negative',
+      'dark:[input[aria-invalid=true]~&]:ring-negative/40',
+      '[input:invalid~&]:ring-negative/20',
+      '[input:invalid~&]:border-negative',
+      'dark:[input:invalid~&]:ring-negative/40'
+    );
     el.setAttribute('aria-controls', datepicker._h_datepicker.controls);
     el.setAttribute('aria-expanded', 'false');
     el.setAttribute('aria-haspopup', 'dialog');
@@ -85,7 +115,7 @@ export default function (Alpine) {
 
     el.appendChild(
       createElement(Calendar, {
-        class: ['opacity-50 size-4 transition-transform duration-200'],
+        class: ['opacity-70 text-foreground size-4'],
         width: '16',
         height: '16',
         'aria-hidden': true,
@@ -120,5 +150,5 @@ export default function (Alpine) {
       el.removeEventListener('click', handler);
       top.removeEventListener('click', close);
     });
-  }).before('h-button');
+  });
 }

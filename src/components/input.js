@@ -216,8 +216,11 @@ export default function (Alpine) {
     stepDown.setAttribute('aria-controls', input.getAttribute('id'));
     stepDown.setAttribute('data-slot', 'step-up-trigger');
     stepDown.classList.add(
+      'cursor-pointer',
       'border-l',
       'border-input',
+      '[input[aria-invalid=true]~&]:border-negative',
+      '[input:invalid~&]:border-negative',
       'h-full',
       'aspect-square',
       'bg-transparent',
@@ -226,6 +229,7 @@ export default function (Alpine) {
       'outline-none',
       'relative',
       'before:block',
+      'before:opacity-70',
       'before:rounded-full',
       'before:h-0.5',
       'before:min-h-px',
@@ -251,8 +255,11 @@ export default function (Alpine) {
     stepUp.setAttribute('aria-controls', input.getAttribute('id'));
     stepUp.setAttribute('data-slot', 'step-up-trigger');
     stepUp.classList.add(
+      'cursor-pointer',
       'border-l',
       'border-input',
+      '[input[aria-invalid=true]~&]:border-negative',
+      '[input:invalid~&]:border-negative',
       'rounded-r-control',
       'h-full',
       'aspect-square',
@@ -262,6 +269,7 @@ export default function (Alpine) {
       'outline-none',
       'relative',
       'before:block',
+      'before:opacity-70',
       'before:absolute',
       'before:rounded-full',
       'before:h-0.5',
@@ -274,6 +282,7 @@ export default function (Alpine) {
       'before:bg-foreground',
       'before:hover:bg-secondary-foreground',
       'after:block',
+      'after:opacity-70',
       'after:absolute',
       'after:rounded-full',
       'after:h-3',

@@ -32,6 +32,12 @@ x-h-calendar
 
 ### Attributes
 
+#### x-h-date-picker
+
+| Attribute | Values             | Required | Description                          |
+| --------- | ------------------ | -------- | ------------------------------------ |
+| data-size | `sm`<br/>`default` | false    | Changes the size of the date picker. |
+
 #### x-h-calendar
 
 See [Calendar](/components/calendar)
@@ -42,7 +48,7 @@ See [Calendar](/components/calendar)
 <component-container>
 <div x-h-date-picker x-data="{ date: new Date().toISOString() }">
   <input type="text" id="date-input-1" />
-  <button x-h-button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-calendar x-model="date"></div>
 </div>
 </component-container>
@@ -51,7 +57,7 @@ See [Calendar](/components/calendar)
 ```html
 <div x-h-date-picker x-data="{ date: new Date().toISOString() }">
   <input type="text" id="date-input-1" />
-  <button x-h-button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-calendar x-model="date"></div>
 </div>
 ```

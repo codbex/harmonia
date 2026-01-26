@@ -64,7 +64,7 @@ x-h-field-error
         </div>
         <div x-h-field>
           <label x-h-label.field for="formCardNumber">Card Number</label>
-          <input x-h-input id="formCardNumber" placeholder="2141 9614 2401 7895" required />
+          <input x-h-input type="text" id="formCardNumber" placeholder="2141 9614 2401 7895" required />
           <p x-h-field-error>Enter your 16-digit card number</p>
           <p x-h-field-description data-hide-on-error="true">This is just a demo. Do NOT enter your real card number.</p>
         </div>
@@ -113,6 +113,30 @@ x-h-field-error
           <div x-h-field>
             <label x-h-label.field for="formCVV">CVV</label>
             <input x-h-input id="formCVV" placeholder="123" required />
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <div x-h-separator data-orientation="horizontal"></div>
+    <fieldset x-h-fieldset>
+      <legend x-h-legend>Delivery time</legend>
+      <p x-h-field-description>The date and time when the package will be delivered to you</p>
+      <div x-h-field-group>
+        <div class="grid grid-cols-2 gap-4">
+          <div x-h-field>
+            <label x-h-label.field for="delivery-dp">Date</label>
+            <div x-h-date-picker>
+              <input type="text" id="delivery-dp" required />
+              <button x-h-date-picker-trigger aria-label="Choose date"></button>
+              <div x-h-calendar></div>
+            </div>
+          </div>
+          <div x-h-field>
+            <label x-h-label.field for="delivery-tp">Time</label>
+            <div x-h-time-picker>
+              <input type="text" id="delivery-tp" x-h-time-picker-input required />
+              <div x-h-time-picker-popup></div>
+            </div>
           </div>
         </div>
       </div>

@@ -53,11 +53,7 @@ export default function (Alpine) {
       'duration-200',
       'outline-none',
       'has-[input:disabled]:pointer-events-none',
-      'has-[input:disabled]:opacity-50',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      '[&_svg]:size-4',
-      '[&_svg]:opacity-50'
+      'has-[input:disabled]:opacity-50'
     );
     el.setAttribute('data-slot', 'select');
 
@@ -317,7 +313,7 @@ export default function (Alpine) {
     fakeTrigger.addEventListener('click', onClick);
 
     const chevronDown = createElement(ChevronDown, {
-      class: ['opacity-50 size-4 transition-transform duration-200'],
+      class: ['opacity-70 text-foreground size-4 shrink-0 pointer-events-none transition-transform duration-200'],
       width: '16',
       height: '16',
       'aria-hidden': true,

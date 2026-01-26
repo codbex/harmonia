@@ -1,6 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { Clock, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { sizeObserver } from './../common/input-size';
 
 const dayPeriodLabels = { am: 'AM', pm: 'PM' };
 
@@ -90,12 +91,12 @@ export default function (Alpine) {
       'has-[input:focus-visible]:border-ring',
       'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
       'has-[input:focus-visible]:ring-ring/50',
-      'dark:has-[aria-invalid=true]:ring-negative/40',
-      'dark:has-[input:invalid]:ring-negative/40',
-      'has-[aria-invalid=true]:border-negative',
-      'has-[aria-invalid=true]:ring-negative/20',
-      'has-[input:invalid]:border-negative',
+      'has-[input[aria-invalid=true]]:ring-negative/20',
+      'has-[input[aria-invalid=true]]:border-negative',
+      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
       'has-[input:invalid]:ring-negative/20',
+      'has-[input:invalid]:border-negative',
+      'dark:has-[input:invalid]:ring-negative/40',
       'hover:bg-secondary-hover',
       'active:bg-secondary-active',
       'flex',
@@ -103,12 +104,12 @@ export default function (Alpine) {
       'items-center',
       'justify-between',
       'gap-2',
-      'h-9',
       'rounded-control',
       'border',
       'bg-input-inner',
       'pl-3',
       'pr-2',
+      'data-[size=sm]:pr-1',
       'text-sm',
       'whitespace-nowrap',
       'shadow-input',
@@ -116,17 +117,13 @@ export default function (Alpine) {
       'duration-200',
       'outline-none',
       'has-[input:disabled]:pointer-events-none',
-      'has-[input:disabled]:opacity-50',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      '[&_svg]:size-4',
-      '[&_svg]:opacity-50'
+      'has-[input:disabled]:opacity-50'
     );
     el.setAttribute('data-slot', 'time-picker');
     el.setAttribute('tabindex', '-1');
     el.appendChild(
       createElement(Clock, {
-        class: ['opacity-50 size-4 transition-transform duration-200'],
+        class: ['opacity-70 text-foreground size-4 shrink-0 pointer-events-none'],
         width: '16',
         height: '16',
         'aria-hidden': true,
@@ -170,14 +167,17 @@ export default function (Alpine) {
     el.addEventListener('click', handler);
     el.addEventListener('keydown', handler);
 
+    const observer = sizeObserver(el);
+
     cleanup(() => {
+      observer.disconnect();
       el.removeEventListener('click', handler);
       el.removeEventListener('keydown', handler);
       top.removeEventListener('click', el._h_timepicker.close);
     });
   });
 
-  Alpine.directive('h-time-picker-input', (el, { original }, { effect, Alpine }) => {
+  Alpine.directive('h-time-picker-input', (el, { original }, { effect, cleanup, Alpine }) => {
     if (el.tagName !== 'INPUT') {
       throw new Error(`${original} must be a readonly input of type "text"`);
     }
@@ -211,8 +211,7 @@ export default function (Alpine) {
       timepicker._h_timepicker.id = `htp${uuidv4()}`;
       el.setAttribute('id', timepicker._h_timepicker.id);
     }
-    el.classList.add('cursor-pointer', 'bg-transparent', 'text-transparent', 'text-shadow-[0_0_0_var(--foreground)]', 'outline-none', 'flex-1', 'h-full', 'border-0', 'md:text-sm', 'text-base');
-    el.readOnly = true;
+    el.classList.add('cursor-pointer', 'bg-transparent', 'text-transparent', 'text-shadow-[0_0_0_var(--foreground)]', 'placeholder:text-muted-foreground', 'outline-none', 'size-full', 'border-0', 'md:text-sm', 'text-base', 'truncate');
     el.setAttribute('aria-autocomplete', 'none');
     el.setAttribute('aria-controls', timepicker._h_timepicker.controls);
     el.setAttribute('aria-expanded', 'false');
@@ -261,11 +260,23 @@ export default function (Alpine) {
     }
     el.setAttribute('placeholder', placeholder);
 
+    const preventInput = (event) => {
+      event.preventDefault();
+    };
+
+    el.addEventListener('beforeinput', preventInput);
+    el.addEventListener('paste', preventInput);
+
     effect(() => {
       el.setAttribute('data-state', timepicker._h_timepicker.expanded ? 'open' : 'closed');
       el.setAttribute('aria-expanded', timepicker._h_timepicker.expanded);
     });
-  }).before('h-button');
+
+    cleanup(() => {
+      el.removeEventListener('keydown', preventInput);
+      el.removeEventListener('paste', preventInput);
+    });
+  });
 
   Alpine.directive('h-time-picker-popup', (el, _, { effect, cleanup, Alpine }) => {
     const timepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_timepicker'));
@@ -283,6 +294,7 @@ export default function (Alpine) {
       'z-50',
       'shadow-md'
     );
+    el.setAttribute('id', timepicker._h_timepicker.controls);
     el.setAttribute('tabindex', '-1');
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-modal', 'true');
@@ -486,7 +498,7 @@ export default function (Alpine) {
     }
 
     const timeContainer = document.createElement('div');
-    timeContainer.classList.add('hbox', 'max-h-[18rem]', '[&>ul]:border-r', '[&>ul:last-of-type]:border-r-0');
+    timeContainer.classList.add('hbox', 'max-h-[14rem]', '[&>ul]:border-r', '[&>ul:last-of-type]:border-r-0');
     if (el.firstChild) el.classList.add('border-b');
     timeContainer.setAttribute('role', 'group');
     timeContainer.addEventListener('click', setTime);
@@ -584,6 +596,7 @@ export default function (Alpine) {
     footer.setAttribute('tabindex', '-1');
 
     const nowButton = document.createElement('button');
+    nowButton.setAttribute('type', 'button');
     nowButton.setAttribute(Alpine.prefixed('h-button'), '');
     nowButton.setAttribute('data-size', 'sm');
     nowButton.setAttribute('data-action', 'time');
@@ -592,6 +605,7 @@ export default function (Alpine) {
     footer.appendChild(nowButton);
 
     const okButton = document.createElement('button');
+    okButton.setAttribute('type', 'button');
     okButton.setAttribute(Alpine.prefixed('h-button'), '');
     okButton.setAttribute('data-variant', 'primary');
     okButton.setAttribute('data-size', 'sm');
