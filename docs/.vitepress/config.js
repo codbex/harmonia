@@ -117,7 +117,6 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/codbex/harmonia' }],
   },
   head: [
-    ['link', { href: `${basePath}theme/custom.css`, rel: 'stylesheet' }],
     ['link', { rel: 'icon', href: `${basePath}favicon.ico` }],
     ['script', { src: `${basePath}js/component-container.js`, type: 'module' }],
     ['script', { src: `${basePath}js/svg-icon.js`, type: 'module' }],
