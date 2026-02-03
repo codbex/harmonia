@@ -1,6 +1,6 @@
 export default function (Alpine) {
   Alpine.directive('h-split', (el) => {
-    el.classList.add('group/split', 'flex', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
+    el.classList.add('flex', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split');
   });
@@ -27,9 +27,9 @@ export default function (Alpine) {
       'before:block',
       'before:bg-transparent',
       'hover:before:bg-primary-hover',
-      'group-data-[locked=true]/split:pointer-events-none',
-      'group-data-[orientation=horizontal]/split:cursor-col-resize',
-      'group-data-[orientation=vertical]/split:cursor-row-resize'
+      '[[data-locked=true]>&]:pointer-events-none',
+      '[[data-orientation=horizontal]>&]:cursor-col-resize',
+      '[[data-orientation=vertical]>&]:cursor-row-resize'
     );
     const borderClasses = [
       'bg-border',
@@ -44,12 +44,12 @@ export default function (Alpine) {
       'before:block',
       'before:bg-transparent',
       'hover:before:bg-primary-hover',
-      'group-data-[orientation=horizontal]/split:!w-px',
-      'group-data-[orientation=horizontal]/split:before:h-full',
-      'group-data-[orientation=horizontal]/split:before:w-[calc(var(--spacing)*1.25)]',
-      'group-data-[orientation=vertical]/split:!h-px',
-      'group-data-[orientation=vertical]/split:before:w-full',
-      'group-data-[orientation=vertical]/split:before:h-[calc(var(--spacing)*1.25)]',
+      '[[data-orientation=horizontal]>&]:!w-px',
+      '[[data-orientation=horizontal]>&]:before:h-full',
+      '[[data-orientation=horizontal]>&]:before:w-[calc(var(--spacing)*1.25)]',
+      '[[data-orientation=vertical]>&]:!h-px',
+      '[[data-orientation=vertical]>&]:before:w-full',
+      '[[data-orientation=vertical]>&]:before:h-[calc(var(--spacing)*1.25)]',
     ];
     const handleClasses = [
       'bg-transparent',
@@ -84,19 +84,19 @@ export default function (Alpine) {
       'active:before:bg-primary-active',
       'active:before:via-transparent',
       // Orientation classes
-      'group-data-[orientation=horizontal]/split:before:h-full',
-      'group-data-[orientation=horizontal]/split:before:w-0.5',
-      'group-data-[orientation=horizontal]/split:before:bg-gradient-to-b',
-      'group-data-[orientation=vertical]/split:before:h-0.5',
-      'group-data-[orientation=vertical]/split:before:w-full',
-      'group-data-[orientation=vertical]/split:before:bg-gradient-to-r',
+      '[[data-orientation=horizontal]>&]:before:h-full',
+      '[[data-orientation=horizontal]>&]:before:w-0.5',
+      '[[data-orientation=horizontal]>&]:before:bg-gradient-to-b',
+      '[[data-orientation=vertical]>&]:before:h-0.5',
+      '[[data-orientation=vertical]>&]:before:w-full',
+      '[[data-orientation=vertical]>&]:before:bg-gradient-to-r',
       // Size classes
-      'group-data-[orientation=horizontal]/split:!w-4',
-      'group-data-[orientation=horizontal]/split:after:w-2.5',
-      'group-data-[orientation=horizontal]/split:after:h-5',
-      'group-data-[orientation=vertical]/split:!h-4',
-      'group-data-[orientation=vertical]/split:after:w-5',
-      'group-data-[orientation=vertical]/split:after:h-2.5',
+      '[[data-orientation=horizontal]>&]:!w-4',
+      '[[data-orientation=horizontal]>&]:after:w-2.5',
+      '[[data-orientation=horizontal]>&]:after:h-5',
+      '[[data-orientation=vertical]>&]:!h-4',
+      '[[data-orientation=vertical]>&]:after:w-5',
+      '[[data-orientation=vertical]>&]:after:h-2.5',
     ];
     el.setAttribute('data-slot', 'split-gutter');
     el.setAttribute('tabindex', '-1');

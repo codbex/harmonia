@@ -6,6 +6,10 @@ A style-only component that provides a flexible layout for dividing content into
 
 Use Split when you need a side-by-side layout for content, such as editors, dashboards, or comparison panels. Avoid using Split for layouts where resizable content is unnecessary, as it may add unnecessary complexity.
 
+::: info Element hierarchy
+The panel elements MUST be direct children of the split element. Otherwise, there will be some collisions with the styles.
+:::
+
 ## API Reference
 
 ### Component attubute(s)
@@ -35,11 +39,11 @@ x-h-split-gutter
 <ClientOnly>
 <component-container data-style="height: 12rem">
 <div class="size-full" x-h-split data-orientation="horizontal" data-variant="handle" data-locked="false">
-  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 50%">
     <div class="flex size-full items-center justify-center">Left panel</div>
   </div>
   <div x-h-split-gutter></div>
-  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 50%">
     <div class="flex size-full items-center justify-center">Right panel</div>
   </div>
 </div>
@@ -48,11 +52,11 @@ x-h-split-gutter
 
 ```html
 <div class="size-full" x-h-split data-orientation="horizontal" data-variant="handle" data-locked="false">
-  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 50%">
     <div class="flex size-full items-center justify-center">Left panel</div>
   </div>
   <div x-h-split-gutter></div>
-  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="width: 50%">
     <div class="flex size-full items-center justify-center">Right panel</div>
   </div>
 </div>
@@ -65,11 +69,11 @@ x-h-split-gutter
 <ClientOnly>
 <component-container data-style="height: 16rem">
 <div class="size-full" x-h-split data-orientation="vertical" data-variant="handle" data-locked="false">
-  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Left panel</div>
   </div>
   <div x-h-split-gutter></div>
-  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Right panel</div>
   </div>
 </div>
@@ -77,12 +81,12 @@ x-h-split-gutter
 </ClientOnly>
 
 ```html
-<div class="size-full" x-h-split data-orientation="horizontal" data-variant="handle" data-locked="false">
-  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 100%">
+<div class="size-full" x-h-split data-orientation="vertical" data-variant="handle" data-locked="false">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Left panel</div>
   </div>
   <div x-h-split-gutter></div>
-  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 100%">
+  <div class="rounded-md border shadow-md" x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Right panel</div>
   </div>
 </div>
@@ -94,12 +98,12 @@ This is useful for split-window layouts. The gutter is visually thin but provide
 
 <ClientOnly>
 <component-container data-padding="false" data-style="height: 12rem">
-<div class="size-full" x-h-split data-orientation="horizontal" data-variant="border" data-locked="false">
-  <div x-h-split-panel style="width: 100%">
+<div class="size-full" x-h-split data-orientation="vertical" data-variant="border" data-locked="false">
+  <div x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Left panel</div>
   </div>
   <div x-h-split-gutter></div>
-  <div x-h-split-panel style="width: 100%">
+  <div x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Right panel</div>
   </div>
 </div>
@@ -107,12 +111,12 @@ This is useful for split-window layouts. The gutter is visually thin but provide
 </ClientOnly>
 
 ```html
-<div class="size-full" x-h-split data-orientation="horizontal" data-variant="border" data-locked="false">
-  <div x-h-split-panel style="width: 100%">
+<div class="size-full" x-h-split data-orientation="vertical" data-variant="border" data-locked="false">
+  <div x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Left panel</div>
   </div>
   <div x-h-split-gutter></div>
-  <div x-h-split-panel style="width: 100%">
+  <div x-h-split-panel style="height: 50%">
     <div class="flex size-full items-center justify-center">Right panel</div>
   </div>
 </div>
