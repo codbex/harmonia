@@ -1,3 +1,5 @@
+import { Check, createSvg } from './../common/icons';
+
 export default function (Alpine) {
   Alpine.directive('h-checkbox', (el) => {
     el.classList.add(
@@ -15,18 +17,6 @@ export default function (Alpine) {
       '[&>input]:size-full',
       '[&>input]:top-0',
       'aspect-square',
-      'before:bg-transparent',
-      'before:block',
-      'before:border-b-2',
-      'before:border-l-2',
-      'before:border-primary-foreground',
-      'before:h-2',
-      'before:invisible',
-      'before:pointer-events-none',
-      'before:-rotate-45',
-      'before:translate-x-0.5',
-      'before:translate-y-0.75',
-      'before:w-3.5',
       'bg-input-inner',
       'border',
       'border-input',
@@ -35,7 +25,6 @@ export default function (Alpine) {
       'duration-200',
       'has-[aria-invalid=true]:border-negative',
       'has-[aria-invalid=true]:ring-negative/20',
-      'has-[input:checked]:before:visible',
       'has-[input:checked]:bg-primary',
       'has-[input:checked]:border-primary',
       'has-[input:disabled]:cursor-not-allowed',
@@ -51,5 +40,8 @@ export default function (Alpine) {
     );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'checkbox');
+
+    const check = createSvg({ icon: Check, classes: 'size-full [input:checked~&]:visible invisible fill-primary-foreground', attrs: { 'aria-hidden': true, role: 'presentation' } });
+    el.appendChild(check);
   });
 }

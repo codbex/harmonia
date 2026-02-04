@@ -1,3 +1,5 @@
+import { ChevronRight, createSvg } from './../common/icons';
+
 export default function (Alpine) {
   Alpine.directive('h-tree', (el, { modifiers }, { effect, cleanup }) => {
     el.classList.add('vbox', 'w-full', 'min-w-0', 'gap-1');
@@ -9,7 +11,7 @@ export default function (Alpine) {
         'py-0.5',
         'pl-4',
         'data-[border=true]:before:absolute',
-        'data-[border=true]:before:left-[calc(var(--spacing)*2.5)]',
+        'data-[border=true]:before:left-[calc(var(--spacing)*3)]',
         'data-[border=true]:before:block',
         'data-[border=true]:before:top-0.5',
         'data-[border=true]:before:bottom-0.5',
@@ -219,38 +221,24 @@ export default function (Alpine) {
       'data-[indicator=positive]:after:bg-positive',
       'data-[indicator=negative]:after:bg-negative',
       'data-[indicator=warning]:after:bg-warning',
-      'data-[indicator=information]:after:bg-information',
-      'before:mr-1',
-      'before:bg-transparent',
-      'before:min-w-1.5',
-      'before:size-1.5',
-      'before:pointer-events-none'
+      'data-[indicator=information]:after:bg-information'
     );
     el.setAttribute('data-slot', 'tree-button');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('role', 'presentation');
 
     if (treeItem._h_tree_item.hasSubtree) {
-      el.classList.add(
-        'before:block',
-        'before:mr-1',
-        'before:bg-transparent',
-        'before:border-t-[calc(var(--spacing)*0.25)]',
-        'before:border-r-[calc(var(--spacing)*0.25)]',
-        'before:border-foreground',
-        'active:before:border-primary-foreground',
-        'before:pointer-events-none',
-        'before:min-w-1.5',
-        'before:size-1.5',
-        'before:rounded-[calc(var(--spacing)*0.25)]',
-        'before:rotate-135',
-        'before:translate-x-1/2',
-        'before:-translate-y-0.25',
-        'data-[expanded=false]:before:rotate-45',
-        'data-[expanded=false]:before:translate-x-1/2',
-        'data-[expanded=false]:before:-translate-y-0',
-        'aria-selected:before:border-primary-foreground'
-      );
+      const chevronDown = createSvg({
+        icon: ChevronRight,
+        classes: 'size-4 shrink-0 transition-transform duration-200 [[data-expanded=true]>&]:rotate-90',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
+      });
+      el.prepend(chevronDown);
+    } else {
+      el.classList.add('before:size-4');
     }
 
     effect(() => {

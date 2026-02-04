@@ -1,4 +1,5 @@
 import { computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { Check, ChevronRight, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-menu-trigger', (el, { modifiers }) => {
@@ -339,25 +340,16 @@ export default function (Alpine) {
       'data-[inset=true]:pl-8',
       '[&_svg]:pointer-events-none',
       '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4",
-      'after:block',
-      'after:bg-transparent',
-      'after:border-t-[calc(var(--spacing)*0.25)]',
-      'after:border-r-[calc(var(--spacing)*0.25)]',
-      'after:border-muted-foreground',
-      'after:pointer-events-none',
-      'after:min-w-1.75',
-      'after:size-1.75',
-      'after:rounded-[calc(var(--spacing)*0.25)]',
-      'after:rotate-45',
-      'after:ml-auto',
-      'after:-translate-x-0.75'
+      "[&_svg:not([class*='size-'])]:size-4"
     );
     el.setAttribute('role', 'menuitem');
     el.setAttribute('aria-haspopup', 'true');
     el.setAttribute('aria-expanded', 'false');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'menu-sub');
+
+    const chevronRight = createSvg({ icon: ChevronRight, classes: 'size-4 ml-auto', attrs: { 'aria-hidden': true, role: 'presentation' } });
+    el.appendChild(chevronRight);
 
     const parentMenu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
     if (!parentMenu) throw new Error(`${original} must have a parent`);
@@ -475,8 +467,7 @@ export default function (Alpine) {
       'items-center',
       'gap-2',
       'rounded-sm',
-      'pr-2',
-      'pl-3.5',
+      'px-2',
       'py-1.5',
       'text-sm',
       'outline-hidden',
@@ -486,21 +477,14 @@ export default function (Alpine) {
       'aria-[disabled=true]:opacity-50',
       'transition-all',
       'overflow-hidden',
-      'before:invisible',
-      'before:bg-transparent',
-      'before:border-l-2',
-      'before:border-b-2',
-      'before:border-foreground',
-      'before:pointer-events-none',
-      'before:w-2.5',
-      'before:h-1.5',
-      'before:-rotate-45',
-      'before:-translate-x-0.75',
-      'aria-[checked=true]:before:visible'
+      'aria-[checked=true]:[&>svg]:visible'
     );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('role', 'menuitemcheckbox');
     el.setAttribute('data-slot', 'menu-checkbox-item');
+
+    const check = createSvg({ icon: Check, classes: 'size-4 invisible', attrs: { 'aria-hidden': true, role: 'presentation' } });
+    el.prepend(check);
 
     function setState(checked, dispatch = true) {
       if (dispatch)

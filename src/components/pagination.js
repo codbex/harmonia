@@ -1,3 +1,5 @@
+import { Ellipsis, createSvg } from './../common/icons';
+
 export default function (Alpine) {
   Alpine.directive('h-pagination', (el) => {
     el.classList.add('mx-auto', 'flex', 'w-full', 'justify-center');
@@ -71,32 +73,15 @@ export default function (Alpine) {
   Alpine.directive('h-pagination-ellipsis', (el) => {
     el.classList.add('flex', 'size-9', 'items-center', 'justify-center');
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttributeNS(null, 'width', '16');
-    svg.setAttributeNS(null, 'height', '16');
-    svg.setAttributeNS(null, 'viewBox', '0 0 16 16');
-    svg.setAttributeNS(null, 'fill', 'currentColor');
-    svg.setAttributeNS(null, 'class', 'size-4');
-
-    const circle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle1.setAttributeNS(null, 'cx', '2');
-    circle1.setAttributeNS(null, 'cy', '8');
-    circle1.setAttributeNS(null, 'r', '1.5');
-    svg.appendChild(circle1);
-
-    const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle2.setAttributeNS(null, 'cx', '8');
-    circle2.setAttributeNS(null, 'cy', '8');
-    circle2.setAttributeNS(null, 'r', '1.5');
-    svg.appendChild(circle2);
-
-    const circle3 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle3.setAttributeNS(null, 'cx', '14');
-    circle3.setAttributeNS(null, 'cy', '8');
-    circle3.setAttributeNS(null, 'r', '1.5');
-    svg.appendChild(circle3);
-
-    el.appendChild(svg);
+    el.appendChild(
+      createSvg({
+        icon: Ellipsis,
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
+      })
+    );
 
     el.setAttribute('data-slot', 'pagination-ellipsis');
   });

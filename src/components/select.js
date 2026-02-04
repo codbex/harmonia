@@ -1,6 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
-import { Check, ChevronDown, createElement, Search } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { Check, ChevronDown, Search, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
 
 const FilterType = Object.freeze({
@@ -312,12 +312,13 @@ export default function (Alpine) {
     fakeTrigger.addEventListener('keydown', onPress);
     fakeTrigger.addEventListener('click', onClick);
 
-    const chevronDown = createElement(ChevronDown, {
-      class: ['opacity-70 text-foreground size-4 shrink-0 pointer-events-none transition-transform duration-200'],
-      width: '16',
-      height: '16',
-      'aria-hidden': true,
-      role: 'presentation',
+    const chevronDown = createSvg({
+      icon: ChevronDown,
+      classes: 'opacity-70 text-foreground size-4 shrink-0 pointer-events-none transition-transform duration-200',
+      attrs: {
+        'aria-hidden': true,
+        role: 'presentation',
+      },
     });
 
     el.parentElement.appendChild(fakeTrigger);
@@ -425,7 +426,7 @@ export default function (Alpine) {
     el.setAttribute('autocomplete', 'off');
     el.setAttribute('autocorrect', 'off');
     el.setAttribute('spellcheck', 'false');
-    const searchIcon = createElement(Search, { class: ['size-4 shrink-0 opacity-50'], width: '16', height: '16', 'aria-hidden': true, role: 'presentation' });
+    const searchIcon = createSvg({ icon: Search, classes: 'size-4 shrink-0 opacity-50', attrs: { 'aria-hidden': true, role: 'presentation' } });
     const searchInput = document.createElement('input');
     searchInput.setAttribute('type', 'text');
     searchInput.setAttribute('data-slot', 'select-input');
@@ -546,7 +547,7 @@ export default function (Alpine) {
     labelEl.setAttribute('id', id);
     indicatorEl.classList.add('absolute', 'right-2', 'flex', 'size-3.5', 'items-center', 'justify-center', 'invisible');
     indicatorEl.setAttribute('aria-hidden', 'true');
-    const check = createElement(Check, { class: ['size-4'], width: '16', height: '16', 'aria-hidden': true, role: 'presentation' });
+    const check = createSvg({ icon: Check, attrs: { 'aria-hidden': true, role: 'presentation' } });
     indicatorEl.appendChild(check);
 
     el.appendChild(indicatorEl);

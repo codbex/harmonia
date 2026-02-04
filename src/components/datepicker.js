@@ -1,5 +1,5 @@
-import { Calendar, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { Calendar, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
 
 export default function (Alpine) {
@@ -114,12 +114,13 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'date-picker-trigger');
 
     el.appendChild(
-      createElement(Calendar, {
-        class: ['opacity-70 text-foreground size-4'],
-        width: '16',
-        height: '16',
-        'aria-hidden': true,
-        role: 'presentation',
+      createSvg({
+        icon: Calendar,
+        classes: 'opacity-70 text-foreground size-4',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
       })
     );
 

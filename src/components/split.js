@@ -6,6 +6,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-split-panel', (el) => {
+    el.classList.add('[&.hidden+[data-slot="split-gutter"]]:hidden');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split-panel');
   });

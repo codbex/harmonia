@@ -1,6 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { Clock, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { Clock, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
 
 const dayPeriodLabels = { am: 'AM', pm: 'PM' };
@@ -122,12 +122,13 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'time-picker');
     el.setAttribute('tabindex', '-1');
     el.appendChild(
-      createElement(Clock, {
-        class: ['opacity-70 text-foreground size-4 shrink-0 pointer-events-none'],
-        width: '16',
-        height: '16',
-        'aria-hidden': true,
-        role: 'presentation',
+      createSvg({
+        icon: Clock,
+        classes: 'opacity-70 text-foreground size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
       })
     );
 

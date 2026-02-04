@@ -1,5 +1,5 @@
-import { ChevronDown, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { ChevronDown, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-accordion', (el, { expression, modifiers }, { Alpine }) => {
@@ -80,12 +80,13 @@ export default function (Alpine) {
 
     const getLabel = evaluateLater(expression);
 
-    const chevronDown = createElement(ChevronDown, {
-      class: ['text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200'],
-      width: '16',
-      height: '16',
-      'aria-hidden': true,
-      role: 'presentation',
+    const chevronDown = createSvg({
+      icon: ChevronDown,
+      classes: 'text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200',
+      attrs: {
+        'aria-hidden': true,
+        role: 'presentation',
+      },
     });
 
     const button = document.createElement('button');

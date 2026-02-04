@@ -1,6 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createElement } from 'lucide';
 import { v4 as uuidv4 } from 'uuid';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-calendar', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
@@ -145,12 +145,13 @@ export default function (Alpine) {
     previousYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-year') ? el.hasAttribute('data-aria-prev-year') : 'previous year');
     previousYearBtn.setAttribute('type', 'button');
     previousYearBtn.appendChild(
-      createElement(ChevronsLeft, {
-        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
-        width: '16',
-        height: '16',
-        'aria-hidden': true,
-        role: 'presentation',
+      createSvg({
+        icon: ChevronsLeft,
+        classes: 'opacity-70 size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
       })
     );
     previousYearBtn.addEventListener('click', () => {
@@ -164,12 +165,13 @@ export default function (Alpine) {
     previousMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-month') ? el.hasAttribute('data-aria-prev-month') : 'previous month');
     previousMonthBtn.setAttribute('type', 'button');
     previousMonthBtn.appendChild(
-      createElement(ChevronLeft, {
-        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
-        width: '16',
-        height: '16',
-        'aria-hidden': true,
-        role: 'presentation',
+      createSvg({
+        icon: ChevronLeft,
+        classes: 'opacity-70 size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
       })
     );
     previousMonthBtn.addEventListener('click', () => {
@@ -189,12 +191,13 @@ export default function (Alpine) {
     nextMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-month') ? el.hasAttribute('data-aria-next-month') : 'next month');
     nextMonthBtn.setAttribute('type', 'button');
     nextMonthBtn.appendChild(
-      createElement(ChevronRight, {
-        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
-        width: '16',
-        height: '16',
-        'aria-hidden': true,
-        role: 'presentation',
+      createSvg({
+        icon: ChevronRight,
+        classes: 'opacity-70 size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
       })
     );
     nextMonthBtn.addEventListener('click', () => {
@@ -208,12 +211,13 @@ export default function (Alpine) {
     nextYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-year') ? el.hasAttribute('data-aria-next-year') : 'next year');
     nextYearBtn.setAttribute('type', 'button');
     nextYearBtn.appendChild(
-      createElement(ChevronsRight, {
-        class: ['opacity-70 size-4 shrink-0 pointer-events-none'],
-        width: '16',
-        height: '16',
-        'aria-hidden': true,
-        role: 'presentation',
+      createSvg({
+        icon: ChevronsRight,
+        classes: 'opacity-70 size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
       })
     );
     nextYearBtn.addEventListener('click', () => {
