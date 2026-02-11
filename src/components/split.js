@@ -22,6 +22,7 @@ export default function (Alpine) {
     const usableSize = () => {
       const visiblePanels = panels.filter((p) => !p.hidden);
       const gutters = Math.max(0, visiblePanels.length - 1);
+      console.log(containerSize());
       return containerSize() - gutters * gutterSize();
     };
 
@@ -36,36 +37,96 @@ export default function (Alpine) {
       return parseFloat(value);
     };
 
+    let initialized = false;
+
+    const DELTA_ABS = 0.01;
+
     const layout = () => {
       const visible = panels.filter((p) => !p.hidden);
       if (!visible.length) return;
 
-      const totalSpace = usableSize();
+      const total = usableSize();
 
-      // Step 1: Clamp explicit panel sizes to their min/max
-      const sizes = visible.map((p) => {
-        if (p.explicit) return Math.min(Math.max(p.size, p.min), p.max);
-        return null; // auto panel
-      });
+      if (!initialized) {
+        initialized = true;
 
-      // Step 2: Compute remaining space for auto panels
-      const usedSpace = sizes.reduce((sum, s) => sum + (s ?? 0), 0);
-      const remainingSpace = totalSpace - usedSpace;
+        const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
 
-      // Step 3: Distribute remaining space evenly among auto panels
-      const autoPanels = visible.filter((p, i) => sizes[i] === null);
-      if (autoPanels.length) {
-        const share = remainingSpace / autoPanels.length;
-        autoPanels.forEach((p) => {
-          sizes[visible.indexOf(p)] = Math.min(Math.max(share, p.min), p.max);
+        const autoPanels = visible.filter((p) => !p.explicit);
+        const remaining = total - explicitTotal;
+        const share = remaining / autoPanels.length;
+
+        visible.forEach((p) => {
+          if (p.explicit) {
+            p.size = p.declaredSize;
+          } else {
+            p.size = share;
+          }
+
+          p.size = Math.min(Math.max(p.size ?? share, p.min), p.max);
         });
       }
 
-      // Step 4: Apply all sizes
-      visible.forEach((p, i) => {
-        p.size = sizes[i];
-        p.apply();
+      // Ensure all panels have a starting size
+      visible.forEach((p) => {
+        if (p.size == null) {
+          p.size = p.min ?? 0;
+        }
+
+        // Clamp to bounds
+        p.size = Math.min(Math.max(p.size, p.min), p.max);
       });
+
+      let currentTotal = visible.reduce((sum, p) => sum + p.size, 0);
+      let delta = total - currentTotal;
+
+      if (Math.abs(delta) < DELTA_ABS) {
+        visible.forEach((p) => p.apply());
+        return;
+      }
+
+      // Panels allowed to change:
+      let flexible = visible.filter((p) => {
+        if (delta > 0) {
+          return p.size < p.max;
+        } else {
+          return p.size > p.min;
+        }
+      });
+
+      while (flexible.length && Math.abs(delta) > DELTA_ABS) {
+        const share = delta / flexible.length;
+        let consumed = 0;
+
+        const nextFlexible = [];
+
+        flexible.forEach((p) => {
+          const proposed = p.size + share;
+          const clamped = Math.min(Math.max(proposed, p.min), p.max);
+
+          const actualChange = clamped - p.size;
+
+          if (Math.abs(actualChange) > DELTA_ABS) {
+            p.size = clamped;
+            consumed += actualChange;
+          }
+
+          // Still can grow/shrink?
+          if (delta > 0) {
+            if (p.size < p.max) nextFlexible.push(p);
+          } else {
+            if (p.size > p.min) nextFlexible.push(p);
+          }
+        });
+
+        delta -= consumed;
+        flexible = nextFlexible;
+
+        // If nothing was consumed, break to avoid infinite loop
+        if (Math.abs(consumed) < DELTA_ABS) break;
+      }
+
+      visible.forEach((p) => p.apply());
     };
 
     const refreshGutters = () => {
@@ -77,26 +138,29 @@ export default function (Alpine) {
       panels,
       addPanel(panel) {
         panels.push(panel);
-        if (!panel.size) {
-          panel.size = 0;
+        if (panel.size == null) {
+          panel.size = null; // keep null
         }
+        initialized = false;
         refreshGutters();
         layout();
       },
       removePanel(panel) {
         const i = panels.indexOf(panel);
         if (i !== -1) panels.splice(i, 1);
+        initialized = false;
         refreshGutters();
         layout();
       },
       panelHidden() {
+        initialized = false;
         refreshGutters();
         layout();
       },
       normalize,
     };
 
-    el.classList.add('flex', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
+    el.classList.add('flex', 'flex-1', 'min-w-0', 'min-h-0', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
 
     const observer = new MutationObserver(() => {
       state.isHorizontal = el.getAttribute('data-orientation') === 'horizontal';
@@ -122,7 +186,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an split element`);
     }
 
-    el.classList.add('size-full', 'shrink-0', 'grow-0', 'box-border');
+    el.classList.add('shrink', 'grow-0', 'box-border', 'min-w-0', 'min-h-0', 'overflow-visible');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split-panel');
 
@@ -240,6 +304,7 @@ export default function (Alpine) {
       el,
       gutter,
       hidden: el.getAttribute('data-hidden') === 'true',
+      declaredSize: initialSize,
       size: initialSize,
       explicit: initialSize != null,
       min: split._h_split.normalize(el.getAttribute('data-min')) ?? 0,
@@ -293,6 +358,8 @@ export default function (Alpine) {
 
         panel.size = startA + clamped;
         next.size = startB - clamped;
+
+        panel.explicit = false;
 
         panel.apply();
         next.apply();
