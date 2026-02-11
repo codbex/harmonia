@@ -128,6 +128,8 @@ export default function (Alpine) {
 
       // Panels allowed to change:
       let flexible = visible.filter((p) => {
+        if (p.collapsed) return false;
+
         if (delta > 0) {
           return p.size < p.max;
         } else {
@@ -209,6 +211,10 @@ export default function (Alpine) {
         initialized = false;
         refreshGutters();
         queueLayout();
+      },
+      panelChange() {
+        queueLayout();
+        saveSizes();
       },
       normalize,
       saveSizes,
@@ -374,6 +380,8 @@ export default function (Alpine) {
       explicit: initialSize != null,
       min: split._h_split.normalize(el.getAttribute('data-min')) ?? 0,
       max: split._h_split.normalize(el.getAttribute('data-max')) ?? Infinity,
+      collapsed: false,
+      prevSize: null,
 
       apply() {
         el.style.flexBasis = `${this.size.toFixed(2)}px`;
@@ -431,6 +439,13 @@ export default function (Alpine) {
 
         panel.explicit = false;
 
+        if (panel.collapsed) {
+          panel.collapsed = false;
+        }
+        if (next.collapsed) {
+          next.collapsed = false;
+        }
+
         panel.apply();
         next.apply();
       };
@@ -448,6 +463,43 @@ export default function (Alpine) {
 
     gutter.addEventListener('pointerdown', drag);
 
+    const collapse = () => {
+      if (panel.collapsed) return;
+
+      panel.prevSize = panel.size;
+      panel.size = panel.min ?? 0;
+      panel.collapsed = true;
+      panel.explicit = true;
+
+      split._h_split.panelChange();
+    };
+    const expand = () => {
+      if (!panel.collapsed) return;
+
+      const target = panel.prevSize ?? panel.min ?? 0;
+      const delta = target - panel.size;
+
+      const visible = split._h_split.panels.filter((p) => !p.hidden && p !== panel);
+
+      let remaining = delta;
+
+      for (const p of visible) {
+        const available = p.size - p.min;
+        const take = Math.min(available, remaining);
+
+        p.size -= take;
+        remaining -= take;
+
+        if (remaining <= 0) break;
+      }
+
+      panel.size = target;
+      panel.collapsed = false;
+      panel.explicit = true;
+
+      split._h_split.panelChange();
+    };
+
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'data-hidden') {
@@ -458,13 +510,19 @@ export default function (Alpine) {
             el.classList.remove('hidden');
           }
           split._h_split.panelHidden();
-        } else {
+        } else if (mutation.attributeName === 'data-locked') {
           panel.setLocked();
+        } else {
+          if (el.getAttribute('data-collapse') === 'true') {
+            collapse();
+          } else {
+            expand();
+          }
         }
       });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-hidden', 'data-locked'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-hidden', 'data-locked', 'data-collapse'] });
 
     cleanup(() => {
       gutter.remove();
