@@ -7,6 +7,36 @@ export default function (Alpine) {
       isBorder: el.getAttribute('data-variant') === 'border',
     });
 
+    const storageKey = el.getAttribute('data-key');
+
+    const loadSizes = () => {
+      if (!storageKey) return null;
+
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    };
+
+    let saveTimer = null;
+    const SAVE_DELAY = 200;
+
+    const saveSizes = () => {
+      if (!storageKey) return;
+
+      if (saveTimer) clearTimeout(saveTimer);
+
+      saveTimer = setTimeout(() => {
+        const visible = panels.filter((p) => !p.hidden);
+        const sizes = visible.map((p) => p.size);
+        localStorage.setItem(storageKey, JSON.stringify(sizes));
+        saveTimer = null;
+      }, SAVE_DELAY);
+    };
+
     const sizeProp = () => (state.isHorizontal ? 'width' : 'height');
 
     const containerSize = () => (state.isHorizontal ? el.getBoundingClientRect().width : el.getBoundingClientRect().height);
@@ -49,21 +79,33 @@ export default function (Alpine) {
       if (!initialized) {
         initialized = true;
 
-        const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
+        const visible = panels.filter((p) => !p.hidden);
 
-        const autoPanels = visible.filter((p) => !p.explicit);
-        const remaining = total - explicitTotal;
-        const share = remaining / autoPanels.length;
+        // Try restoring persisted sizes
+        const stored = loadSizes();
 
-        visible.forEach((p) => {
-          if (p.explicit) {
-            p.size = p.declaredSize;
-          } else {
-            p.size = share;
-          }
+        if (stored && stored.length === visible.length) {
+          visible.forEach((p, i) => {
+            p.size = stored[i];
+            p.explicit = true;
+          });
+        } else {
+          const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
 
-          p.size = Math.min(Math.max(p.size ?? share, p.min), p.max);
-        });
+          const autoPanels = visible.filter((p) => !p.explicit);
+          const remaining = total - explicitTotal;
+          const share = remaining / autoPanels.length;
+
+          visible.forEach((p) => {
+            if (p.explicit) {
+              p.size = p.declaredSize;
+            } else {
+              p.size = share;
+            }
+
+            p.size = Math.min(Math.max(p.size ?? share, p.min), p.max);
+          });
+        }
       }
 
       // Ensure all panels have a starting size
@@ -126,6 +168,7 @@ export default function (Alpine) {
       }
 
       visible.forEach((p) => p.apply());
+      saveSizes();
     };
 
     const refreshGutters = () => {
@@ -157,6 +200,7 @@ export default function (Alpine) {
         layout();
       },
       normalize,
+      saveSizes,
     };
 
     el.classList.add('flex', 'flex-1', 'min-w-0', 'min-h-0', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
@@ -182,6 +226,7 @@ export default function (Alpine) {
     containerObserver.observe(el);
 
     cleanup(() => {
+      if (saveTimer) clearTimeout(saveTimer);
       containerObserver.disconnect();
       observer.disconnect();
     });
@@ -199,7 +244,7 @@ export default function (Alpine) {
 
     const gutter = document.createElement('div');
     gutter.setAttribute('data-slot', 'split-gutter');
-    gutter.setAttribute('data-locked', el.getAttribute('data-locked') === 'true');
+    gutter.setAttribute('aria-disabled', el.getAttribute('data-locked') === 'true');
     gutter.setAttribute('tabindex', '-1');
     gutter.setAttribute('role', 'separator');
     gutter.classList.add(
@@ -219,7 +264,7 @@ export default function (Alpine) {
       'before:block',
       'before:bg-transparent',
       'hover:before:bg-primary-hover',
-      'data-[locked=true]:pointer-events-none',
+      'aria-disabled:pointer-events-none',
       '[[data-orientation=horizontal]>&]:cursor-col-resize',
       '[[data-orientation=vertical]>&]:cursor-row-resize'
     );
@@ -331,7 +376,8 @@ export default function (Alpine) {
       },
 
       setLocked(locked = false) {
-        gutter.setAttribute('data-locked', el.getAttribute('data-locked') === 'true' || locked);
+        const isLocked = el.getAttribute('data-locked') === 'true' || locked;
+        gutter.setAttribute('aria-disabled', isLocked);
       },
     };
 
@@ -381,6 +427,7 @@ export default function (Alpine) {
         gutter.releasePointerCapture(e.pointerId);
         gutter.removeEventListener('pointermove', move);
         gutter.removeEventListener('pointerup', up);
+        split._h_split.saveSizes();
       };
 
       gutter.addEventListener('pointermove', move);
