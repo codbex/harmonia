@@ -22,7 +22,6 @@ export default function (Alpine) {
     const usableSize = () => {
       const visiblePanels = panels.filter((p) => !p.hidden);
       const gutters = Math.max(0, visiblePanels.length - 1);
-      console.log(containerSize());
       return containerSize() - gutters * gutterSize();
     };
 
@@ -162,10 +161,18 @@ export default function (Alpine) {
 
     el.classList.add('flex', 'flex-1', 'min-w-0', 'min-h-0', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
 
-    const observer = new MutationObserver(() => {
-      state.isHorizontal = el.getAttribute('data-orientation') === 'horizontal';
-      state.isBorder = el.getAttribute('data-variant') === 'border';
-      layout();
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-orientation') {
+          state.isHorizontal = el.getAttribute('data-orientation') === 'horizontal';
+          layout();
+        } else if (mutation.attributeName === 'data-variant') {
+          state.isBorder = el.getAttribute('data-variant') === 'border';
+          layout();
+        } else {
+          panels.forEach((p) => p.setLocked(el.getAttribute('data-locked') === 'true'));
+        }
+      });
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-orientation', 'data-variant', 'data-locked'] });
@@ -192,6 +199,7 @@ export default function (Alpine) {
 
     const gutter = document.createElement('div');
     gutter.setAttribute('data-slot', 'split-gutter');
+    gutter.setAttribute('data-locked', el.getAttribute('data-locked') === 'true');
     gutter.setAttribute('tabindex', '-1');
     gutter.setAttribute('role', 'separator');
     gutter.classList.add(
@@ -211,7 +219,7 @@ export default function (Alpine) {
       'before:block',
       'before:bg-transparent',
       'hover:before:bg-primary-hover',
-      '[[data-locked=true]>&]:pointer-events-none',
+      'data-[locked=true]:pointer-events-none',
       '[[data-orientation=horizontal]>&]:cursor-col-resize',
       '[[data-orientation=vertical]>&]:cursor-row-resize'
     );
@@ -321,6 +329,10 @@ export default function (Alpine) {
           el.after(gutter);
         }
       },
+
+      setLocked(locked = false) {
+        gutter.setAttribute('data-locked', el.getAttribute('data-locked') === 'true' || locked);
+      },
     };
 
     split._h_split.addPanel(panel);
@@ -377,17 +389,23 @@ export default function (Alpine) {
 
     gutter.addEventListener('pointerdown', drag);
 
-    const observer = new MutationObserver(() => {
-      panel.hidden = el.getAttribute('data-hidden') === 'true';
-      if (panel.hidden) {
-        el.classList.add('hidden');
-      } else {
-        el.classList.remove('hidden');
-      }
-      split._h_split.panelHidden();
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-hidden') {
+          panel.hidden = el.getAttribute('data-hidden') === 'true';
+          if (panel.hidden) {
+            el.classList.add('hidden');
+          } else {
+            el.classList.remove('hidden');
+          }
+          split._h_split.panelHidden();
+        } else {
+          panel.setLocked();
+        }
+      });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-hidden'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-hidden', 'data-locked'] });
 
     cleanup(() => {
       gutter.remove();
