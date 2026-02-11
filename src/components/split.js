@@ -94,7 +94,7 @@ export default function (Alpine) {
 
           const autoPanels = visible.filter((p) => !p.explicit);
           const remaining = total - explicitTotal;
-          const share = remaining / autoPanels.length;
+          const share = autoPanels.length ? remaining / autoPanels.length : 0;
 
           visible.forEach((p) => {
             if (p.explicit) {
@@ -171,6 +171,17 @@ export default function (Alpine) {
       saveSizes();
     };
 
+    let layoutFrame = null;
+
+    const queueLayout = () => {
+      if (layoutFrame) cancelAnimationFrame(layoutFrame);
+
+      layoutFrame = requestAnimationFrame(() => {
+        layout();
+        layoutFrame = null;
+      });
+    };
+
     const refreshGutters = () => {
       panels.forEach((p, i) => p.setGutter(i === panels.length - 1));
     };
@@ -185,19 +196,19 @@ export default function (Alpine) {
         }
         initialized = false;
         refreshGutters();
-        layout();
+        queueLayout();
       },
       removePanel(panel) {
         const i = panels.indexOf(panel);
         if (i !== -1) panels.splice(i, 1);
         initialized = false;
         refreshGutters();
-        layout();
+        queueLayout();
       },
       panelHidden() {
         initialized = false;
         refreshGutters();
-        layout();
+        queueLayout();
       },
       normalize,
       saveSizes,
@@ -209,10 +220,10 @@ export default function (Alpine) {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'data-orientation') {
           state.isHorizontal = el.getAttribute('data-orientation') === 'horizontal';
-          layout();
+          queueLayout();
         } else if (mutation.attributeName === 'data-variant') {
           state.isBorder = el.getAttribute('data-variant') === 'border';
-          layout();
+          queueLayout();
         } else {
           panels.forEach((p) => p.setLocked(el.getAttribute('data-locked') === 'true'));
         }
@@ -221,11 +232,12 @@ export default function (Alpine) {
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-orientation', 'data-variant', 'data-locked'] });
 
-    const containerObserver = new ResizeObserver(layout);
+    const containerObserver = new ResizeObserver(queueLayout);
 
     containerObserver.observe(el);
 
     cleanup(() => {
+      if (layoutFrame) cancelAnimationFrame(layoutFrame);
       if (saveTimer) clearTimeout(saveTimer);
       containerObserver.disconnect();
       observer.disconnect();
