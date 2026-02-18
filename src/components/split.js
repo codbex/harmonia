@@ -31,7 +31,7 @@ export default function (Alpine) {
 
       saveTimer = setTimeout(() => {
         const visible = panels.filter((p) => !p.hidden);
-        const sizes = visible.map((p) => p.size);
+        const sizes = visible.map((p) => p.size / usableSize());
         localStorage.setItem(storageKey, JSON.stringify(sizes));
         saveTimer = null;
       }, SAVE_DELAY);
@@ -86,7 +86,7 @@ export default function (Alpine) {
 
         if (stored && stored.length === visible.length) {
           visible.forEach((p, i) => {
-            p.size = stored[i];
+            p.size = stored[i] * usableSize();
             p.explicit = true;
           });
         } else {
@@ -256,11 +256,11 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an split element`);
     }
 
-    el.classList.add('shrink', 'grow-0', 'box-border', 'min-w-0', 'min-h-0', 'overflow-visible');
+    el.classList.add('flex', 'shrink', 'grow-0', 'box-border', 'min-w-0', 'min-h-0', 'overflow-visible');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split-panel');
 
-    const gutter = document.createElement('div');
+    const gutter = document.createElement('span');
     gutter.setAttribute('data-slot', 'split-gutter');
     gutter.setAttribute('aria-disabled', el.getAttribute('data-locked') === 'true');
     gutter.setAttribute('tabindex', '-1');
@@ -274,13 +274,6 @@ export default function (Alpine) {
       'outline-none',
       'hover:bg-primary-hover',
       'active:bg-primary-active',
-      'before:absolute',
-      'before:top-1/2',
-      'before:left-1/2',
-      'before:-translate-x-1/2',
-      'before:-translate-y-1/2',
-      'before:block',
-      'before:bg-transparent',
       'hover:before:bg-primary-hover',
       'aria-disabled:pointer-events-none',
       '[[data-orientation=horizontal]>&]:cursor-col-resize',
@@ -293,19 +286,19 @@ export default function (Alpine) {
       'hover:bg-primary-hover',
       'active:bg-primary-active',
       'before:absolute',
-      'before:top-1/2',
-      'before:left-1/2',
-      'before:-translate-x-1/2',
-      'before:-translate-y-1/2',
       'before:block',
       'before:bg-transparent',
       'hover:before:bg-primary-hover',
+      '[[data-orientation=horizontal]>&]:before:-translate-x-1/2',
+      '[[data-orientation=horizontal]>&]:before:left-1/2',
       '[[data-orientation=horizontal]>&]:!w-px',
       '[[data-orientation=horizontal]>&]:before:h-full',
-      '[[data-orientation=horizontal]>&]:before:w-[calc(var(--spacing)*1.25)]',
+      '[[data-orientation=horizontal]>&]:before:w-[calc(var(--spacing)*1)]',
+      '[[data-orientation=vertical]>&]:before:-translate-y-1/2',
+      '[[data-orientation=vertical]>&]:before:top-1/2',
       '[[data-orientation=vertical]>&]:!h-px',
       '[[data-orientation=vertical]>&]:before:w-full',
-      '[[data-orientation=vertical]>&]:before:h-[calc(var(--spacing)*1.25)]',
+      '[[data-orientation=vertical]>&]:before:h-[calc(var(--spacing)*1)]',
     ];
     const handleClasses = [
       'bg-transparent',
@@ -493,7 +486,7 @@ export default function (Alpine) {
         if (remaining <= 0) break;
       }
 
-      panel.size = target;
+      panel.size = target - remaining;
       panel.collapsed = false;
       panel.explicit = true;
 

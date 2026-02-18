@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.18",
-    "alpinejs": "^3.15.4",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.9",
     "prettier": "^3.7.4",
@@ -52,6 +51,9 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.1.18",
     "vitepress": "^2.0.0-alpha.15"
+  },
+  "peerDependencies": {
+    "alpinejs": "^3.15.4"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.4",
