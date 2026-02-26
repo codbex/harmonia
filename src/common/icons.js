@@ -8,6 +8,8 @@ export const ChevronsRight = 6;
 export const Clock = 7;
 export const Search = 8;
 export const Ellipsis = 9;
+export const Minus = 10;
+export const Plus = 11;
 
 function setCalendarContent(svg) {
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -135,6 +137,22 @@ function setEllipsisContent(svg) {
   svg.appendChild(circle3);
 }
 
+function setMinusContent(svg) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttributeNS(null, 'd', 'm2.75 7.25h10.5c0.4155 0 0.75 0.3345 0.75 0.75s-0.3345 0.75-0.75 0.75h-10.5c-0.4155 0-0.75-0.3345-0.75-0.75s0.3345-0.75 0.75-0.75z');
+  svg.appendChild(path);
+}
+
+function setPlusContent(svg) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttributeNS(
+    null,
+    'd',
+    'm8 2c-0.4155 0-0.75 0.3345-0.75 0.75v4.5h-4.5c-0.4155 0-0.75 0.3345-0.75 0.75s0.3345 0.75 0.75 0.75h4.5v4.5c0 0.4155 0.3345 0.75 0.75 0.75s0.75-0.3345 0.75-0.75v-4.5h4.5c0.4155 0 0.75-0.3345 0.75-0.75s-0.3345-0.75-0.75-0.75h-4.5v-4.5c0-0.4155-0.3345-0.75-0.75-0.75z'
+  );
+  svg.appendChild(path);
+}
+
 export function createSvg({ icon, classes = 'size-4', attrs } = {}) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttributeNS(null, 'width', '16');
@@ -180,11 +198,64 @@ export function createSvg({ icon, classes = 'size-4', attrs } = {}) {
     case Ellipsis:
       setEllipsisContent(svg);
       break;
+    case Minus:
+      setMinusContent(svg);
+      break;
+    case Plus:
+      setPlusContent(svg);
+      break;
+    default:
+      break;
   }
 
   return svg;
 }
 
-// const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-// group.setAttributeNS(null, 'fill-rule', 'evenodd');
-// svg.appendChild(group);
+export function setSvgContent(svg, icon) {
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('width', '16');
+  svg.setAttribute('height', '16');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('fill', 'currentColor');
+
+  switch (icon) {
+    case 'calendar':
+      setCalendarContent(svg);
+      break;
+    case 'check':
+      setCheckContent(svg);
+      break;
+    case 'chevron-down':
+      setChevronDownContent(svg);
+      break;
+    case 'chevron-left':
+      setChevronLeftContent(svg);
+      break;
+    case 'chevron-right':
+      setChevronRightContent(svg);
+      break;
+    case 'chevrons-left':
+      setChevronsLeftContent(svg);
+      break;
+    case 'chevrons-right':
+      setChevronsRightContent(svg);
+      break;
+    case 'clock':
+      setClockContent(svg);
+      break;
+    case 'search':
+      setSearchContent(svg);
+      break;
+    case 'ellipsis':
+      setEllipsisContent(svg);
+      break;
+    case 'minus':
+      setMinusContent(svg);
+      break;
+    case 'plus':
+      setPlusContent(svg);
+      break;
+    default:
+      break;
+  }
+}

@@ -252,7 +252,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-menu-sub', (el, { modifiers }) => {
-    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'py-0.5', 'group-data-[collapsed=true]/sidebar:hidden');
+    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'py-0.5', 'group-data-[collapsed=true]/sidebar:!hidden');
     if (!modifiers.includes('flat')) {
       el.classList.add('border-sidebar-border', 'mx-3.5', 'border-l', 'px-2.5');
     }

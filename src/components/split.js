@@ -2,6 +2,7 @@ export default function (Alpine) {
   Alpine.directive('h-split', (el, {}, { cleanup, Alpine }) => {
     const panels = [];
 
+    // Reactive state
     const state = Alpine.reactive({
       isHorizontal: el.getAttribute('data-orientation') === 'horizontal',
       isBorder: el.getAttribute('data-variant') === 'border',
@@ -49,12 +50,14 @@ export default function (Alpine) {
       return 0;
     };
 
+    // Total space available for panels (excluding hidden panels and gutters)
     const usableSize = () => {
       const visiblePanels = panels.filter((p) => !p.hidden);
       const gutters = Math.max(0, visiblePanels.length - 1);
       return containerSize() - gutters * gutterSize();
     };
 
+    // Normalize a size value: number, percentage string, or null
     const normalize = (value) => {
       if (value == null) return null;
       if (typeof value === 'number') return value;
@@ -70,6 +73,7 @@ export default function (Alpine) {
 
     const DELTA_ABS = 0.01;
 
+    // Layout function: calculate and apply sizes to all visible panels
     const layout = () => {
       const visible = panels.filter((p) => !p.hidden);
       if (!visible.length) return;
@@ -90,12 +94,15 @@ export default function (Alpine) {
             p.explicit = true;
           });
         } else {
+          // Compute the total size of explicitly sized panels
           const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
 
+          // Compute & distribute remaining space for auto panels
           const autoPanels = visible.filter((p) => !p.explicit);
           const remaining = total - explicitTotal;
           const share = autoPanels.length ? remaining / autoPanels.length : 0;
 
+          // Apply computed sizes to panels
           visible.forEach((p) => {
             if (p.explicit) {
               p.size = p.declaredSize;
@@ -170,7 +177,6 @@ export default function (Alpine) {
       }
 
       visible.forEach((p) => p.apply());
-      saveSizes();
     };
 
     let layoutFrame = null;
@@ -180,14 +186,17 @@ export default function (Alpine) {
 
       layoutFrame = requestAnimationFrame(() => {
         layout();
+        saveSizes();
         layoutFrame = null;
       });
     };
 
+    // Refresh gutter elements after add/remove or hide/show
     const refreshGutters = () => {
       panels.forEach((p, i) => p.setGutter(i === panels.length - 1));
     };
 
+    // Expose API on the element
     el._h_split = {
       state,
       panels,
@@ -214,7 +223,6 @@ export default function (Alpine) {
       },
       panelChange() {
         queueLayout();
-        saveSizes();
       },
       normalize,
       saveSizes,
@@ -290,11 +298,15 @@ export default function (Alpine) {
       'before:bg-transparent',
       'hover:before:bg-primary-hover',
       '[[data-orientation=horizontal]>&]:before:-translate-x-1/2',
+      '[[data-orientation=horizontal]>&[data-edge=end]]:before:-translate-x-1',
+      '[[data-orientation=horizontal]>&[data-edge=start]]:before:translate-x-0',
       '[[data-orientation=horizontal]>&]:before:left-1/2',
       '[[data-orientation=horizontal]>&]:!w-px',
       '[[data-orientation=horizontal]>&]:before:h-full',
       '[[data-orientation=horizontal]>&]:before:w-[calc(var(--spacing)*1)]',
       '[[data-orientation=vertical]>&]:before:-translate-y-1/2',
+      '[[data-orientation=vertical]>&[data-edge=end]]:before:-translate-y-1',
+      '[[data-orientation=vertical]>&[data-edge=start]]:before:translate-y-0',
       '[[data-orientation=vertical]>&]:before:top-1/2',
       '[[data-orientation=vertical]>&]:!h-px',
       '[[data-orientation=vertical]>&]:before:w-full',
@@ -364,6 +376,8 @@ export default function (Alpine) {
 
     const initialSize = split._h_split.normalize(el.getAttribute('data-size'));
 
+    let handleSize = 0;
+
     const panel = {
       el,
       gutter,
@@ -378,6 +392,9 @@ export default function (Alpine) {
 
       apply() {
         el.style.flexBasis = `${this.size.toFixed(2)}px`;
+        if (split._h_split.state.isBorder) {
+          this.setHandleOffset();
+        }
       },
 
       setGutter(last) {
@@ -385,12 +402,42 @@ export default function (Alpine) {
           gutter.remove();
         } else if (!gutter.parentElement) {
           el.after(gutter);
+          handleSize = this.getHandleSize();
+        }
+      },
+
+      setHandleOffset() {
+        const panels = split._h_split.panels.filter((p) => !p.hidden);
+        const index = panels.indexOf(panel);
+        const next = panels[index + 1];
+        if (!next) return;
+        if (next.size < handleSize) {
+          gutter.setAttribute('data-edge', 'end');
+        } else if (this.size < handleSize) {
+          gutter.setAttribute('data-edge', 'start');
+        } else {
+          gutter.removeAttribute('data-edge');
+        }
+      },
+
+      getHandleSize() {
+        if (split._h_split.state.isBorder) {
+          const beforeStyle = window.getComputedStyle(gutter, '::before');
+          return Number(beforeStyle[split._h_split.state.isHorizontal ? 'width' : 'height'].replace('px', '')) / 2;
+        } else {
+          return 0;
         }
       },
 
       setLocked(locked = false) {
-        const isLocked = el.getAttribute('data-locked') === 'true' || locked;
-        gutter.setAttribute('aria-disabled', isLocked);
+        const panelLocked = el.getAttribute('data-locked') === 'true';
+        if (locked) {
+          gutter.classList.add('pointer-events-none');
+        } else if (panelLocked) {
+          gutter.classList.add('pointer-events-none');
+        } else {
+          gutter.classList.remove('pointer-events-none');
+        }
       },
     };
 
@@ -439,15 +486,13 @@ export default function (Alpine) {
           next.collapsed = false;
         }
 
-        panel.apply();
-        next.apply();
+        split._h_split.panelChange();
       };
 
       const up = () => {
         gutter.releasePointerCapture(e.pointerId);
         gutter.removeEventListener('pointermove', move);
         gutter.removeEventListener('pointerup', up);
-        split._h_split.saveSizes();
       };
 
       gutter.addEventListener('pointermove', move);

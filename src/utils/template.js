@@ -14,6 +14,7 @@ export default function (Alpine) {
         Alpine.initTree(clone);
       });
       cleanup(() => {
+        Alpine.destroyTree(clone);
         clone.remove();
       });
     } else {

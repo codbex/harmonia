@@ -38,6 +38,12 @@ x-h-calendar
 | --------- | ------------------ | -------- | ------------------------------------ |
 | data-size | `sm`<br/>`default` | false    | Changes the size of the date picker. |
 
+### Modifiers
+
+| Modifier | Description                          |
+| -------- | ------------------------------------ |
+| table    | Use when the input is inside a table |
+
 #### x-h-calendar
 
 See [Calendar](/components/calendar)

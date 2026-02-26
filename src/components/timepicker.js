@@ -56,7 +56,7 @@ function scrollIntoCenter(container, element, behavior = 'instant') {
 }
 
 export default function (Alpine) {
-  Alpine.directive('h-time-picker', (el, { expression }, { evaluateLater, cleanup, effect, Alpine }) => {
+  Alpine.directive('h-time-picker', (el, { expression, modifiers }, { evaluateLater, cleanup, effect, Alpine }) => {
     el._h_timepicker = Alpine.reactive({
       id: undefined,
       controls: `htpc${uuidv4()}`,
@@ -87,39 +87,55 @@ export default function (Alpine) {
     el.classList.add(
       'cursor-pointer',
       'border-input',
-      '[&>input]:appearance-none',
-      'has-[input:focus-visible]:border-ring',
-      'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
-      'has-[input:focus-visible]:ring-ring/50',
-      'has-[input[aria-invalid=true]]:ring-negative/20',
-      'has-[input[aria-invalid=true]]:border-negative',
-      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-      'has-[input:invalid]:ring-negative/20',
-      'has-[input:invalid]:border-negative',
-      'dark:has-[input:invalid]:ring-negative/40',
       'hover:bg-secondary-hover',
       'active:bg-secondary-active',
       'flex',
-      'w-full',
       'items-center',
       'justify-between',
       'gap-2',
-      'rounded-control',
-      'border',
-      'bg-input-inner',
       'pl-3',
       'pr-2',
       'data-[size=sm]:pr-1',
       'text-sm',
       'whitespace-nowrap',
-      'shadow-input',
       'transition-[color,box-shadow]',
       'duration-200',
       'outline-none',
       'has-[input:disabled]:pointer-events-none',
+      'has-[input:disabled]:cursor-not-allowed',
       'has-[input:disabled]:opacity-50'
     );
-    el.setAttribute('data-slot', 'time-picker');
+    if (modifiers.includes('table')) {
+      el.classList.add(
+        'size-full',
+        'h-10',
+        'has-[input:focus-visible]:inset-ring-ring/50',
+        'has-[input:focus-visible]:inset-ring-2',
+        'has-[input[aria-invalid=true]]:inset-ring-negative/20',
+        'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
+        'has-[input:invalid]:!inset-ring-negative/20',
+        'dark:has-[input:invalid]:!inset-ring-negative/40'
+      );
+      el.setAttribute('data-slot', 'cell-input-time');
+    } else {
+      el.classList.add(
+        'w-full',
+        'rounded-control',
+        'border',
+        'bg-input-inner',
+        'shadow-input',
+        'has-[input:focus-visible]:border-ring',
+        'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
+        'has-[input:focus-visible]:ring-ring/50',
+        'has-[input[aria-invalid=true]]:ring-negative/20',
+        'has-[input[aria-invalid=true]]:border-negative',
+        'dark:has-[input[aria-invalid=true]]:ring-negative/40',
+        'has-[input:invalid]:ring-negative/20',
+        'has-[input:invalid]:border-negative',
+        'dark:has-[input:invalid]:ring-negative/40'
+      );
+      el.setAttribute('data-slot', 'time-picker');
+    }
     el.setAttribute('tabindex', '-1');
     el.appendChild(
       createSvg({
@@ -212,7 +228,20 @@ export default function (Alpine) {
       timepicker._h_timepicker.id = `htp${uuidv4()}`;
       el.setAttribute('id', timepicker._h_timepicker.id);
     }
-    el.classList.add('cursor-pointer', 'bg-transparent', 'text-transparent', 'text-shadow-[0_0_0_var(--foreground)]', 'placeholder:text-muted-foreground', 'outline-none', 'size-full', 'border-0', 'md:text-sm', 'text-base', 'truncate');
+    el.classList.add(
+      'appearance-none',
+      'cursor-pointer',
+      'bg-transparent',
+      'text-transparent',
+      'text-shadow-[0_0_0_var(--foreground)]',
+      'placeholder:text-muted-foreground',
+      'outline-none',
+      'size-full',
+      'border-0',
+      'md:text-sm',
+      'text-base',
+      'truncate'
+    );
     el.setAttribute('aria-autocomplete', 'none');
     el.setAttribute('aria-controls', timepicker._h_timepicker.controls);
     el.setAttribute('aria-expanded', 'false');

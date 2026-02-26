@@ -51,6 +51,14 @@ x-h-time-picker-popup
 | data-label-ok       | string                                                                                                                                                                        | false    | Label for the button that sets confirms and closes the popup. Default value is `OK`.             |
 | data-align          | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the calendar popover relative to the trigger.                                             |
 
+### Modifiers
+
+#### x-h-time-picker
+
+| Modifier | Description                          |
+| -------- | ------------------------------------ |
+| table    | Use when the input is inside a table |
+
 ### Config
 
 You can pass a configuration object to the time picker as an expression or as a value.

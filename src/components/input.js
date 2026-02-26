@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { Minus, Plus, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
 
 export default function (Alpine) {
@@ -42,6 +43,18 @@ export default function (Alpine) {
     if (modifiers.includes('group')) {
       el.classList.add('h-full', 'flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
+    } else if (modifiers.includes('table')) {
+      el.classList.add(
+        'size-full',
+        'h-10',
+        'focus-visible:inset-ring-ring/50',
+        'focus-visible:inset-ring-2',
+        'aria-invalid:inset-ring-negative/20',
+        'dark:aria-invalid:inset-ring-negative/40',
+        'invalid:!inset-ring-negative/20',
+        'dark:invalid:!inset-ring-negative/40'
+      );
+      el.setAttribute('data-slot', 'cell-input');
     } else {
       el.classList.add('w-full', 'rounded-control', 'border', 'bg-input-inner', 'shadow-input', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
       el.setAttribute('data-slot', 'input');
@@ -167,6 +180,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-input-number', (el, { original }, { cleanup }) => {
     el.classList.add(
+      'overflow-hidden',
       'group/input-number',
       'border-input',
       'bg-input-inner',
@@ -180,12 +194,18 @@ export default function (Alpine) {
       'transition-[color,box-shadow]',
       'outline-none',
       'min-w-0',
-      'has-[[data-slot=input-number-control]:focus-visible]:border-ring',
-      'has-[[data-slot=input-number-control]:focus-visible]:ring-ring/50',
-      'has-[[data-slot=input-number-control]:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
-      'has-[[data-slot][aria-invalid=true]]:ring-negative/20',
-      'has-[[data-slot][aria-invalid=true]]:border-negative',
-      'dark:has-[[data-slot][aria-invalid=true]]:ring-negative/40'
+      'has-[input:focus-visible]:border-ring',
+      'has-[input:focus-visible]:ring-ring/50',
+      'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
+      'has-[input[aria-invalid=true]]:ring-negative/20',
+      'has-[input[aria-invalid=true]]:border-negative',
+      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
+      'has-[input:invalid]:ring-negative/20',
+      'has-[input:invalid]:border-negative',
+      'dark:has-[input:invalid]:ring-negative/40',
+      'has-[input:disabled]:pointer-events-none',
+      'has-[input:disabled]:cursor-not-allowed',
+      'has-[input:disabled]:opacity-50'
     );
     el.setAttribute('role', 'group');
     el.setAttribute('data-slot', 'input-number');
@@ -207,7 +227,7 @@ export default function (Alpine) {
     input.setAttribute('autocorrect', 'off');
     input.setAttribute('spellcheck', 'off');
     input.setAttribute('data-slot', 'input-number-control');
-    input.classList.add('rounded-l-control', 'size-full', 'px-3', 'py-1', 'outline-none');
+    input.classList.add('size-full', 'px-3', 'py-1', 'outline-none');
 
     const stepDown = document.createElement('button');
     stepDown.setAttribute('type', 'button');
@@ -215,7 +235,20 @@ export default function (Alpine) {
     stepDown.setAttribute('aria-label', 'Decrease');
     stepDown.setAttribute('aria-controls', input.getAttribute('id'));
     stepDown.setAttribute('data-slot', 'step-up-trigger');
+    stepDown.appendChild(
+      createSvg({
+        icon: Minus,
+        classes: 'opacity-70 fill-foreground size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
+      })
+    );
     stepDown.classList.add(
+      'inline-flex',
+      'items-center',
+      'justify-center',
       'cursor-pointer',
       'border-l',
       'border-input',
@@ -228,15 +261,7 @@ export default function (Alpine) {
       'active:bg-secondary-active',
       'outline-none',
       'relative',
-      'before:block',
-      'before:opacity-70',
-      'before:rounded-full',
-      'before:h-0.5',
-      'before:min-h-px',
-      'before:w-3',
-      'before:mx-auto',
-      'before:bg-foreground',
-      'before:hover:bg-secondary-foreground'
+      '[&:hover>svg]:text-secondary-foreground'
     );
     el.appendChild(stepDown);
 
@@ -254,13 +279,25 @@ export default function (Alpine) {
     stepUp.setAttribute('aria-label', 'Increase');
     stepUp.setAttribute('aria-controls', input.getAttribute('id'));
     stepUp.setAttribute('data-slot', 'step-up-trigger');
+    stepUp.appendChild(
+      createSvg({
+        icon: Plus,
+        classes: 'opacity-70 fill-foreground size-4 shrink-0 pointer-events-none',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
+      })
+    );
     stepUp.classList.add(
+      'inline-flex',
+      'items-center',
+      'justify-center',
       'cursor-pointer',
       'border-l',
       'border-input',
       '[input[aria-invalid=true]~&]:border-negative',
       '[input:invalid~&]:border-negative',
-      'rounded-r-control',
       'h-full',
       'aspect-square',
       'bg-transparent',
@@ -268,32 +305,7 @@ export default function (Alpine) {
       'active:bg-secondary-active',
       'outline-none',
       'relative',
-      'before:block',
-      'before:opacity-70',
-      'before:absolute',
-      'before:rounded-full',
-      'before:h-0.5',
-      'before:min-h-px',
-      'before:w-3',
-      'before:top-1/2',
-      'before:left-1/2',
-      'before:-translate-x-1/2',
-      'before:-translate-y-1/2',
-      'before:bg-foreground',
-      'before:hover:bg-secondary-foreground',
-      'after:block',
-      'after:opacity-70',
-      'after:absolute',
-      'after:rounded-full',
-      'after:h-3',
-      'after:min-w-px',
-      'after:w-0.5',
-      'after:top-1/2',
-      'after:left-1/2',
-      'after:-translate-x-1/2',
-      'after:-translate-y-1/2',
-      'after:bg-foreground',
-      'after:hover:bg-secondary-foreground'
+      '[&:hover>svg]:text-secondary-foreground'
     );
 
     el.appendChild(stepUp);

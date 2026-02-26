@@ -67,6 +67,14 @@ x-h-select-separator
 | ----------- | -------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data-filter | `starts-with`<br />`contains`<br />`contains-each`<br />`none` | false    | Defines the search matching strategy. Use `none` to disable built-in filtering and implement custom search behavior. With the 'contains-each' filter, search terms are separated using space. |
 
+### Modifiers
+
+#### x-h-select
+
+| Modifier | Description                                 |
+| -------- | ------------------------------------------- |
+| table    | Use when the select input is inside a table |
+
 ## Examples
 
 ### With model

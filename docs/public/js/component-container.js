@@ -1,4 +1,4 @@
-import registerComponents from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
+import { getBreakpointListener, registerComponents } from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
 import Alpine from '/harmonia/lib/node_modules/alpinejs/dist/module.esm.min.js';
 
 class ComponentContainer extends HTMLElement {
@@ -17,6 +17,15 @@ class ComponentContainer extends HTMLElement {
       mutations.forEach(() => {
         this.classToggle();
       });
+    });
+    this.destroyObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.removedNodes.forEach((node) => {
+          if (node.nodeType === 1) {
+            Alpine.destroyTree(node);
+          }
+        });
+      }
     });
   }
 
@@ -59,10 +68,10 @@ class ComponentContainer extends HTMLElement {
             for (let a = 0; a < staticScript.attributes.length; a++) {
               script.setAttribute(staticScript.attributes[a].name, staticScript.attributes[a].value);
             }
-            const scriptText = document.createTextNode(`function initJS(Alpine, container) {${staticScript.innerHTML}}`);
+            const scriptText = document.createTextNode(`function initJS(Alpine, container, getBreakpointListener) {${staticScript.innerHTML}}`);
             script.appendChild(scriptText);
             staticScript.parentNode.replaceChild(script, staticScript);
-            initJS(Alpine, this.container);
+            initJS(Alpine, this.container, getBreakpointListener);
           }
           registerComponents(Alpine.plugin);
           Alpine.initTree(this.container);
@@ -82,10 +91,15 @@ class ComponentContainer extends HTMLElement {
       registerComponents(Alpine.plugin);
       Alpine.initTree(this.container);
     }
+    this.destroyObserver.observe(this.container, {
+      childList: true,
+      subtree: true,
+    });
   }
 
   disconnectedCallback() {
     this.observer.disconnect();
+    this.destroyObserver.disconnect();
   }
 }
 

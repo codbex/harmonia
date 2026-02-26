@@ -16,6 +16,12 @@ x-h-input-number
 | --------- | ------------------ | -------- | ------------------------------ |
 | data-size | `sm`<br/>`default` | false    | Changes the size of the input. |
 
+### Modifiers
+
+| Modifier | Description                           |
+| -------- | ------------------------------------- |
+| table    | Used when the input is inside a table |
+
 ## Examples
 
 ### Number Input

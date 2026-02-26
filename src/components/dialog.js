@@ -77,7 +77,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-dialog-title', (el, _, { Alpine }) => {
-    el.classList.add('text-lg', 'leading-none', 'font-semibold');
+    el.classList.add('order-1', 'text-lg', 'leading-none', 'font-semibold');
     el.setAttribute('data-slot', 'dialog-title');
     const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
     if (dialog && (!dialog.hasAttribute('aria-labelledby') || !dialog.hasAttribute('aria-label'))) {
@@ -91,6 +91,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-dialog-close', (el) => {
     el.classList.add(
+      'order-2',
       'ring-offset-background',
       'focus:ring-ring',
       'rounded-xs',
@@ -106,10 +107,11 @@ export default function (Alpine) {
       "[&_svg:not([class*='size-'])]:size-4"
     );
     el.setAttribute('data-slot', 'dialog-close');
+    el.setAttribute('type', 'button');
   });
 
   Alpine.directive('h-dialog-description', (el, _, { Alpine }) => {
-    el.classList.add('col-span-full', 'text-muted-foreground', 'text-sm');
+    el.classList.add('order-3', 'col-span-full', 'text-muted-foreground', 'text-sm');
     el.setAttribute('data-slot', 'dialog-description');
     const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
     if (dialog && (!dialog.hasAttribute('aria-describedby') || !dialog.hasAttribute('aria-description'))) {

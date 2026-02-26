@@ -5,10 +5,17 @@ export default function (Alpine) {
   Alpine.directive('h-menu-trigger', (el, { modifiers }) => {
     el._menu_trigger = {
       isDropdown: modifiers.includes('dropdown'),
+      setOpen(open) {
+        el.setAttribute('data-state', open ? 'open' : 'closed');
+      },
     };
+    el.setAttribute('data-state', 'closed');
   });
 
   Alpine.directive('h-menu', (el, { original, modifiers }, { cleanup, Alpine }) => {
+    if (el.tagName !== 'UL') {
+      throw new Error(`${original} must be an ul element`);
+    }
     el.classList.add('hidden', 'fixed', 'bg-popover', 'text-popover-foreground', 'font-normal', 'z-50', 'min-w-[8rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-md', 'p-1', 'shadow-md', 'border', 'outline-none');
     el.setAttribute('role', 'menu');
     el.setAttribute('aria-orientation', 'vertical');
@@ -63,6 +70,9 @@ export default function (Alpine) {
       } else {
         listenForTrigger(true);
         if (focusTrigger) menuTrigger.focus();
+        if (menuTrigger._menu_trigger.isDropdown) {
+          menuTrigger._menu_trigger.setOpen(false);
+        }
       }
     }
 
@@ -222,6 +232,9 @@ export default function (Alpine) {
     }
 
     function openDropdown() {
+      if (menuTrigger._menu_trigger.isDropdown) {
+        menuTrigger._menu_trigger.setOpen(true);
+      }
       open(menuTrigger);
     }
 
@@ -259,7 +272,10 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-menu-item', (el, _, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu-item', (el, { original }, { cleanup, Alpine }) => {
+    if (el.tagName !== 'LI') {
+      throw new Error(`${original} must be a li element`);
+    }
     el.classList.add(
       'focus:bg-secondary-hover',
       'focus:text-secondary-foreground',
@@ -457,7 +473,10 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'menu-label');
   });
 
-  Alpine.directive('h-menu-checkbox-item', (el, _, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu-checkbox-item', (el, { original }, { cleanup, Alpine }) => {
+    if (el.tagName !== 'LI' && el.tagName !== 'DIV') {
+      throw new Error(`${original} must be a li or div element`);
+    }
     el.classList.add(
       'focus:bg-secondary-hover',
       'hover:bg-secondary-hover',
@@ -533,7 +552,10 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-menu-radio-item', (el, { expression }, { effect, evaluateLater, cleanup, Alpine }) => {
+  Alpine.directive('h-menu-radio-item', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
+    if (el.tagName !== 'LI' && el.tagName !== 'DIV') {
+      throw new Error(`${original} must be a li or div element`);
+    }
     el.classList.add(
       'focus:bg-secondary-hover',
       'hover:bg-secondary-hover',

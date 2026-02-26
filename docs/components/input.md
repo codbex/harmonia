@@ -25,6 +25,7 @@ x-h-input
 | Modifier | Description                                  |
 | -------- | -------------------------------------------- |
 | group    | Used when the input is inside an input group |
+| table    | Used when the input is inside a table        |
 
 ## Examples
 

@@ -165,7 +165,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
     Delete
     <span x-h-menu-item-secondary>Del</span>
   </li>
-  <li x-h-menu-separator></li>
+  <div x-h-menu-separator></div>
   <div x-h-menu-label data-inset="false">Other items</div>
   <li x-h-menu-item data-inset="true">Menu Item 1</li>
   <li x-h-menu-sub data-inset="true" id="submenu1">

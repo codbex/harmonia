@@ -12,7 +12,7 @@ export default function (Alpine) {
       el.setAttribute('role', 'dialog');
       el.setAttribute('aria-modal', 'true');
       el.setAttribute('data-slot', 'date-picker-calendar');
-      el.setAttribute('data-state', datepicker._h_datepicker.expanded ? 'open' : 'closed');
+      el.setAttribute('data-state', datepicker._h_datepicker.state.expanded ? 'open' : 'closed');
     } else {
       el.classList.add('shadow-input', 'data-[invalid=true]:border-negative', 'data-[invalid=true]:ring-negative/20', 'dark:data-[invalid=true]:ring-negative/40');
     }
@@ -85,7 +85,7 @@ export default function (Alpine) {
       selected = new Date(focusedDay);
       modelChange(true);
       render();
-      if (datepicker) datepicker._h_datepicker.expanded = false;
+      if (datepicker) datepicker._h_datepicker.state.expanded = false;
     }
 
     function isDisabled(d) {
@@ -427,7 +427,7 @@ export default function (Alpine) {
           break;
         case 'Escape':
           event.preventDefault();
-          if (datepicker) datepicker._h_datepicker.expanded = false;
+          if (datepicker) datepicker._h_datepicker.state.expanded = false;
           return;
 
         case 'Enter':
@@ -502,8 +502,8 @@ export default function (Alpine) {
 
     if (datepicker) {
       effect(() => {
-        el.setAttribute('data-state', datepicker._h_datepicker.expanded ? 'open' : 'closed');
-        if (datepicker._h_datepicker.expanded) {
+        el.setAttribute('data-state', datepicker._h_datepicker.state.expanded ? 'open' : 'closed');
+        if (datepicker._h_datepicker.state.expanded) {
           autoUpdateCleanup = autoUpdate(datepicker, el, updatePosition);
           Alpine.nextTick(() => {
             focusDay();

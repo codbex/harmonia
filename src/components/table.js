@@ -1,7 +1,18 @@
 export default function (Alpine) {
   Alpine.directive('h-table-container', (el, { modifiers }) => {
     if (modifiers.includes('scroll')) {
-      el.classList.add('overflow-scroll', '[&_thead]:sticky', '[&_thead]:top-0', '[&_thead]:z-2', '[&_tfoot]:sticky', '[&_tfoot]:bottom-0', '[&_tfoot]:z-2', '[&_tbody_tr_th]:sticky', '[&_tbody_tr_th]:left-0', '[&_tbody_tr_th]:z-1');
+      el.classList.add(
+        'overflow-scroll',
+        '[&_thead[data-slot|=table]]:sticky',
+        '[&_thead[data-slot|=table]]:top-0',
+        '[&_thead[data-slot|=table]]:z-2',
+        '[&_tfoot[data-slot|=table]]:sticky',
+        '[&_tfoot[data-slot|=table]]:bottom-0',
+        '[&_tfoot[data-slot|=table]]:z-2',
+        '[&_tbody_tr_th[data-slot|=table]]:sticky',
+        '[&_tbody_tr_th[data-slot|=table]]:left-0',
+        '[&_tbody_tr_th[data-slot|=table]]:z-1'
+      );
     } else {
       el.classList.add('relative', 'w-full', 'overflow-x-auto');
     }
@@ -19,13 +30,19 @@ export default function (Alpine) {
 
     switch (el.getAttribute('data-borders')) {
       case 'rows':
-        el.classList.add('[&_tr_td]:border-b', '[&_tr_th]:border-b', 'first:[&_tfoot_tr_td]:border-t', 'first:[&_tfoot_tr_th]:border-t');
+        el.classList.add('[&_tr_td[data-slot|=table]]:border-b', '[&_tr_th[data-slot|=table]]:border-b', 'first:[&_tfoot_tr_td[data-slot|=table]]:border-t', 'first:[&_tfoot_tr_th[data-slot|=table]]:border-t');
         break;
       case 'columns':
-        el.classList.add('[&_tr]:divide-x');
+        el.classList.add('[&_tr[data-slot|=table]]:divide-x');
         break;
       case 'both':
-        el.classList.add('[&_tr_td]:border-b', '[&_tr_th]:border-b', 'first:[&_tfoot_tr_td]:border-t', 'first:[&_tfoot_tr_th]:border-t', '[&_tr]:divide-x');
+        el.classList.add(
+          '[&_tr_td[data-slot|=table]]:border-b',
+          '[&_tr_th[data-slot|=table]]:border-b',
+          'first:[&_tfoot_tr_td[data-slot|=table]]:border-t',
+          'first:[&_tfoot_tr_th[data-slot|=table]]:border-t',
+          '[&_tr[data-slot|=table]]:divide-x'
+        );
         break;
     }
   });
@@ -58,6 +75,7 @@ export default function (Alpine) {
   Alpine.directive('h-table-cell', (el) => {
     el.classList.add(
       'p-2',
+      '[&:has([data-slot|=cell-input])]:p-0',
       'align-middle',
       'whitespace-nowrap',
       '[&:has([role=checkbox])]:pr-0',
@@ -71,15 +89,48 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'table-cell');
   });
 
+  Alpine.directive('h-table-cell-button', (el) => {
+    el.classList.add(
+      'px-2',
+      'size-full',
+      'h-10',
+      'cursor-pointer',
+      'inline-flex',
+      'items-center',
+      'justify-between',
+      'outline-none',
+      'gap-2',
+      'transition-[color,box-shadow]',
+      '[&_svg]:pointer-events-none',
+      '[&_svg]:opacity-70',
+      '[&_svg]:text-foreground',
+      '[&_svg]:transition-transform',
+      '[&_svg]:duration-200',
+      "[&_svg:not([class*='size-'])]:size-4",
+      'shrink-0',
+      '[&_svg]:shrink-0',
+      'focus-visible:inset-ring-ring/50',
+      'focus-visible:inset-ring-2',
+      'hover:bg-table-hover',
+      'hover:text-table-hover-foreground',
+      'active:!bg-table-active',
+      'active:!text-table-active-foreground',
+      '[&[data-state=open]>svg:not(:first-child):last-child]:rotate-180',
+      '[&[data-state=open]>svg:only-child]:rotate-180'
+    );
+    el.setAttribute('type', 'button');
+    el.setAttribute('data-slot', 'cell-input-button');
+  });
+
   Alpine.directive('h-table-body', (el) => {
     el.classList.add(
-      '[&_tr:last-child_td]:border-b-0',
-      '[&_tr:last-child_th]:border-b-0',
-      '[&_tr_th]:bg-table-header',
-      '[&_tr[data-hoverable=true]:hover_th]:bg-table-hover',
-      '[&_tr[data-hoverable=true]:hover_th]:text-table-hover-foreground',
-      '[&_tr[data-activable=true]:active_th]:!bg-table-active',
-      '[&_tr[data-activable=true]:active_th]:!text-table-active-foreground'
+      '[&_tr:last-child_td[data-slot|=table]]:border-b-0',
+      '[&_tr:last-child_th[data-slot|=table]]:border-b-0',
+      '[&_tr_th[data-slot|=table]]:bg-table-header',
+      '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:bg-table-hover',
+      '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:text-table-hover-foreground',
+      '[&_tr[data-activable=true]:active_th[data-slot|=table]]:!bg-table-active',
+      '[&_tr[data-activable=true]:active_th[data-slot|=table]]:!text-table-active-foreground'
     );
     el.setAttribute('data-slot', 'table-body');
   });
@@ -102,7 +153,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-table-footer', (el) => {
-    el.classList.add('bg-table-header', 'font-medium', 'last:[&>tr_td]:border-b-0', 'last:[&>tr_th]:border-b-0');
+    el.classList.add('bg-table-header', 'font-medium', 'last:[&>tr_td[data-slot|=table]]:border-b-0', 'last:[&>tr_th[data-slot|=table]]:border-b-0');
     el.setAttribute('data-slot', 'table-footer');
   });
 }

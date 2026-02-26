@@ -1,0 +1,38 @@
+<div x-data="app" class="vbox size-full">
+  <div x-h-toolbar>
+    <button x-h-button data-variant="primary" @click="add()">Add</button>
+    <div x-h-toolbar-spacer></div>
+    <button x-h-button data-variant="negative" @click="remove()">Remove</button>
+  </div>
+  <div x-h-split data-orientation="vertical" data-variant="border">
+    <template x-for="panel in panels" x-bind:key="panel.id">
+      <div x-h-split-panel>
+        <div class="overflow-scroll" x-text="panel.name"></div>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script>
+  Alpine.data("app", () => ({
+    panels: [
+      {
+        name: "Panel 1",
+        id: 1,
+      },
+      {
+        name: "Panel 2",
+        id: 2,
+      },
+    ],
+    add() {
+      this.panels.push({
+        name: `Panel ${this.panels.length + 1}`,
+        id: this.panels.length + 1,
+      });
+    },
+    remove() {
+      this.panels.pop();
+    },
+  }));
+</script>

@@ -17,6 +17,7 @@ x-h-table-container
 x-h-table-header
 x-h-table-head
 x-h-table-cell
+x-h-table-cell-button
 x-h-table-body
 x-h-table-row
 x-h-table-caption
@@ -584,4 +585,166 @@ x-h-table-footer
     </tr>
   </tbody>
 </table>
+```
+
+### Table with cell button
+
+The cell button can be used to trigger some action.
+
+<ClientOnly>
+<component-container>
+<div x-h-table-container data-border="true">
+  <table x-h-table data-borders="both" data-fixed="true">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Header 1</th>
+        <th x-h-table-head scope="col">Header 2</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-cell>Normal cell</td>
+        <td x-h-table-cell>
+          <button x-h-table-cell-button>Cell button</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-table-container data-border="true">
+  <table x-h-table data-borders="both" data-fixed="true">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Header 1</th>
+        <th x-h-table-head scope="col">Header 2</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-cell>Normal cell</td>
+        <td x-h-table-cell>
+          <button x-h-table-cell-button>Cell button</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+### Table with inputs
+
+You can use input, dropdown, select, date and time pickers inside a table by using the `table` modifier.
+
+<ClientOnly>
+<component-container>
+<div x-h-table-container.scroll data-border="true">
+  <table x-h-table data-borders="both">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Input</th>
+        <th x-h-table-head scope="col">Dropdown</th>
+        <th x-h-table-head scope="col">Select</th>
+        <th x-h-table-head scope="col">Date</th>
+        <th x-h-table-head scope="col">Time</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-cell>
+          <input x-h-input.table placeholder="Name" />
+        </td>
+        <td x-h-table-cell>
+          <button x-h-table-cell-button x-h-menu-trigger.dropdown>Dropdown<svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg></button>
+          <ul x-h-menu aria-label="dropdown">
+            <li x-h-menu-item>Item 1</li>
+            <li x-h-menu-item>Item 2</li>
+            <li x-h-menu-item>Item 3</li>
+          </ul>
+        </td>
+        <td x-h-table-cell>
+          <div x-h-select.table>
+            <input x-h-select-input placeholder="Select" />
+            <div x-h-select-content>
+              <div x-h-select-option="'Option 1'" data-value="1"></div>
+              <div x-h-select-option="'Option 2'" data-value="2"></div>
+              <div x-h-select-option="'Option 3'" data-value="3"></div>
+            </div>
+          </div>
+        </td>
+        <td x-h-table-cell>
+          <div x-h-date-picker.table x-data="{ date: new Date().toISOString() }">
+            <input type="text" id="tableDate" />
+            <button x-h-date-picker-trigger aria-label="Choose date"></button>
+            <div x-h-calendar x-model="date"></div>
+          </div>
+        </td>
+        <td x-h-table-cell>
+          <div x-data="{ timeConfig: { is12Hour: true } }" x-h-time-picker.table="timeConfig">
+            <input type="text" id="tableTime" x-h-time-picker-input />
+            <div x-h-time-picker-popup></div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-table-container.scroll data-border="true">
+  <table x-h-table data-borders="both">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Input</th>
+        <th x-h-table-head scope="col">Dropdown</th>
+        <th x-h-table-head scope="col">Select</th>
+        <th x-h-table-head scope="col">Date</th>
+        <th x-h-table-head scope="col">Time</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-cell>
+          <input x-h-input.table placeholder="Name" />
+        </td>
+        <td x-h-table-cell>
+          <button x-h-table-cell-button x-h-menu-trigger.dropdown>Dropdown<svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg></button>
+          <ul x-h-menu aria-label="dropdown">
+            <li x-h-menu-item>Item 1</li>
+            <li x-h-menu-item>Item 2</li>
+            <li x-h-menu-item>Item 3</li>
+          </ul>
+        </td>
+        <td x-h-table-cell>
+          <div x-h-select.table>
+            <input x-h-select-input placeholder="Select" />
+            <div x-h-select-content>
+              <div x-h-select-option="'Option 1'" data-value="1"></div>
+              <div x-h-select-option="'Option 2'" data-value="2"></div>
+              <div x-h-select-option="'Option 3'" data-value="3"></div>
+            </div>
+          </div>
+        </td>
+        <td x-h-table-cell>
+          <div x-h-date-picker.table x-data="{ date: new Date().toISOString() }">
+            <input type="text" id="tableDate" />
+            <button x-h-date-picker-trigger aria-label="Choose date"></button>
+            <div x-h-calendar x-model="date"></div>
+          </div>
+        </td>
+        <td x-h-table-cell>
+          <div x-data="{ timeConfig: { is12Hour: true } }" x-h-time-picker.table="timeConfig">
+            <input type="text" id="tableTime" x-h-time-picker-input />
+            <div x-h-time-picker-popup></div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 ```

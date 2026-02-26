@@ -11,7 +11,7 @@ const FilterType = Object.freeze({
 });
 
 export default function (Alpine) {
-  Alpine.directive('h-select', (el, _, { Alpine, cleanup }) => {
+  Alpine.directive('h-select', (el, { modifiers }, { Alpine, cleanup }) => {
     el._h_select = Alpine.reactive({
       id: undefined,
       controls: `hsc${uuidv4()}`,
@@ -28,40 +28,39 @@ export default function (Alpine) {
       set: undefined,
       get: undefined,
     };
-    el.classList.add(
-      'cursor-pointer',
-      'border-input',
-      'has-focus-visible:border-ring',
-      'has-focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      'has-focus-visible:ring-ring/50',
-      'dark:has-[aria-invalid=true]:ring-negative/40',
-      'dark:has-[input:invalid]:ring-negative/40',
-      'has-[aria-invalid=true]:border-negative',
-      'has-[aria-invalid=true]:ring-negative/20',
-      'has-[input:invalid]:border-negative',
-      'has-[input:invalid]:ring-negative/20',
-      'hover:bg-secondary-hover',
-      'active:bg-secondary-active',
-      'w-full',
-      'rounded-control',
-      'border',
-      'bg-input-inner',
-      'text-sm',
-      'whitespace-nowrap',
-      'shadow-input',
-      'transition-[color,box-shadow]',
-      'duration-200',
-      'outline-none',
-      'has-[input:disabled]:pointer-events-none',
-      'has-[input:disabled]:opacity-50'
-    );
-    el.setAttribute('data-slot', 'select');
+    el.classList.add('cursor-pointer', 'outline-none', 'transition-[color,box-shadow]', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-50');
+    if (modifiers.includes('table')) {
+      el.classList.add('h-10', 'flex', 'focus-visible:inset-ring-ring/50', 'focus-visible:inset-ring-2', 'hover:bg-table-hover', 'hover:text-table-hover-foreground', 'active:!bg-table-active', 'active:!text-table-active-foreground');
+      el.setAttribute('data-slot', 'cell-input-select');
+    } else {
+      el.classList.add(
+        'border-input',
+        'has-focus-visible:border-ring',
+        'has-focus-visible:ring-[calc(var(--spacing)*0.75)]',
+        'has-focus-visible:ring-ring/50',
+        'dark:has-[aria-invalid=true]:ring-negative/40',
+        'dark:has-[input:invalid]:ring-negative/40',
+        'has-[aria-invalid=true]:border-negative',
+        'has-[aria-invalid=true]:ring-negative/20',
+        'has-[input:invalid]:border-negative',
+        'has-[input:invalid]:ring-negative/20',
+        'hover:bg-secondary-hover',
+        'active:bg-secondary-active',
+        'rounded-control',
+        'border',
+        'bg-input-inner',
+        'text-sm',
+        'whitespace-nowrap',
+        'shadow-input'
+      );
+      el.setAttribute('data-slot', 'select');
 
-    const observer = sizeObserver(el);
+      const observer = sizeObserver(el);
 
-    cleanup(() => {
-      observer.disconnect();
-    });
+      cleanup(() => {
+        observer.disconnect();
+      });
+    }
   });
 
   Alpine.directive('h-select-input', (el, { original }, { effect, cleanup, Alpine }) => {

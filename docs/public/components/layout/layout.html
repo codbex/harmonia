@@ -1,0 +1,28 @@
+<div x-data="app" class="size-full">
+  <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border">
+    <div x-h-split-panel :data-hidden="panelVisiblility.left">
+      <div class="overflow-scroll">Left panel</div>
+    </div>
+    <div x-h-split-panel>
+      <div class="overflow-scroll">Cener panel</div>
+    </div>
+    <div x-h-split-panel :data-hidden="panelVisiblility.right">
+      <div class="overflow-scroll">Right panel</div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  Alpine.data("app", () => ({
+    panelVisiblility: {
+      left: true,
+      right: true,
+    },
+    init() {
+      const breakpointListener = getBreakpointListener((matches) => {
+        this.panelVisiblility.left = matches;
+        this.panelVisiblility.right = matches;
+      }, 1024);
+    },
+  }));
+</script>

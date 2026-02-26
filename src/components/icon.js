@@ -1,5 +1,7 @@
+import { setSvgContent } from './../common/icons';
+
 export default function (Alpine) {
-  Alpine.directive('h-icon', (el, { original }) => {
+  Alpine.directive('h-icon', (el, { original, modifiers }) => {
     if (el.tagName.toLowerCase() !== 'svg') {
       throw new Error(`${original} works only on svg elements`);
     } else if (!el.hasAttribute('role')) {
@@ -26,6 +28,8 @@ export default function (Alpine) {
         .catch((response) => {
           console.error(response);
         });
+    } else if (modifiers[0]) {
+      setSvgContent(el, modifiers[0]);
     }
   });
 }

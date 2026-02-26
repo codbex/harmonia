@@ -1,0 +1,49 @@
+<div x-data="app" class="vbox size-full">
+  <div x-h-split data-orientation="horizontal" data-variant="border">
+    <template x-for="panel in panels" :key="panel.id">
+      <template x-h-template="$refs.panelTemplate" x-data="{ panel: panel }"></template>
+    </template>
+    <template x-ref="panelTemplate">
+      <div x-h-split-panel>
+        <template x-if="panel.children">
+          <div x-h-split data-orientation="vertical" data-variant="border">
+            <template x-for="childPanel in panel.children" :key="childPanel.id">
+              <template x-h-template="$refs.panelTemplate" x-data="{ panel: childPanel }"></template>
+            </template>
+          </div>
+        </template>
+        <template x-if="!panel.children">
+          <div class="overflow-scroll" x-text="panel.name"></div>
+        </template>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script>
+  Alpine.data("app", () => ({
+    panels: [
+      {
+        name: "Left",
+        id: 1,
+      },
+      {
+        id: 2,
+        children: [
+          {
+            name: "Top",
+            id: "top",
+          },
+          {
+            name: "Bottom",
+            id: "bottom",
+          },
+        ],
+      },
+      {
+        name: "Right",
+        id: 3,
+      },
+    ],
+  }));
+</script>
