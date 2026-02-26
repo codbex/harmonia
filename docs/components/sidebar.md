@@ -505,10 +505,10 @@ x-h-sidebar-footer
     <div x-h-sidebar-group x-h-collapsible="true">
       <div x-h-sidebar-group-label>
         Application
-        <div x-h-sidebar-group-action x-h-collapsible-trigger.chevron>
+        <button x-h-sidebar-group-action x-h-collapsible-trigger.chevron type="button">
           <span class="sr-only">Expand</span>
           <i role="img" data-lucide="chevron-down"></i>
-        </div>
+        </button>
       </div>
       <div x-h-sidebar-group-content x-h-collapsible-content>
         <div x-h-sidebar-menu>
@@ -524,10 +524,10 @@ x-h-sidebar-footer
               <i role="img" data-lucide="file-text"></i>
               Documents
             </a>
-            <div x-h-sidebar-menu-action.autohide>
+            <button x-h-sidebar-menu-action.autohide type="button">
               <i role="img" data-lucide="info"></i>
               <span class="sr-only">Info</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>

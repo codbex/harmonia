@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",

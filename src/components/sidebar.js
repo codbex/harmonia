@@ -94,6 +94,11 @@ export default function (Alpine) {
       'md:after:hidden',
       'group-data-[collapsed=true]/sidebar:hidden'
     );
+    if (el.tagName !== 'BUTTON') {
+      el.setAttribute('role', 'button');
+    } else {
+      el.setAttribute('type', 'button');
+    }
     el.setAttribute('data-slot', 'sidebar-group-action');
   });
 
@@ -107,12 +112,19 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-menu');
   });
 
-  Alpine.directive('h-sidebar-menu-item', (el) => {
+  Alpine.directive('h-sidebar-menu-item', (el, { original }) => {
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button`);
+    }
     el.classList.add('group/menu-item', 'relative');
+    el.setAttribute('type', 'button');
     el.setAttribute('data-slot', 'sidebar-menu-item');
   });
 
   Alpine.directive('h-sidebar-menu-button', (el) => {
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button`);
+    }
     el.classList.add(
       'peer/menu-button',
       'flex',
@@ -152,6 +164,7 @@ export default function (Alpine) {
       '[&>svg]:shrink-0',
       '[&>svg:not(:first-child):last-child]:ml-auto'
     );
+    el.setAttribute('type', 'button');
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-button');
 
     const sizes = {
@@ -200,6 +213,11 @@ export default function (Alpine) {
     );
     if (modifiers.includes('autohide')) {
       el.classList.add('peer-data-[active=true]/menu-button:text-sidebar-secondary-foreground', 'group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'data-[state=open]:opacity-100', 'md:opacity-0');
+    }
+    if (el.tagName !== 'BUTTON') {
+      el.setAttribute('role', 'button');
+    } else {
+      el.setAttribute('type', 'button');
     }
     el.setAttribute('data-slot', 'sidebar-menu-action');
   });
@@ -265,6 +283,9 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-menu-sub-button', (el) => {
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button`);
+    }
     el.classList.add(
       'text-sidebar-foreground',
       'ring-sidebar-ring',
@@ -299,6 +320,7 @@ export default function (Alpine) {
       'data-[active=true]:text-sidebar-primary-foreground',
       'group-data-[collapsed=true]/sidebar:hidden'
     );
+    el.setAttribute('type', 'button');
     el.setAttribute('data-slot', 'sidebar-menu-sub-button');
 
     const sizes = {
