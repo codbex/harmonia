@@ -26,8 +26,6 @@ x-h-sidebar-menu-badge
 x-h-sidebar-menu-skeleton
 x-h-sidebar-separator
 x-h-sidebar-menu-sub
-x-h-sidebar-menu-sub-item
-x-h-sidebar-menu-sub-button
 x-h-sidebar-footer
 ```
 
@@ -47,18 +45,17 @@ x-h-sidebar-footer
 | data-active | boolean                     | false    | Sets the menu button as active.   |
 | data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button. |
 
-#### x-h-sidebar-menu-sub-button
-
-| Attribute   | Type          | Required | Description                           |
-| ----------- | ------------- | -------- | ------------------------------------- |
-| data-active | boolean       | false    | Sets the menu sub button as active.   |
-| data-size   | `sm`<br/>`md` | false    | Sets the size of the menu sub button. |
-
 #### x-h-sidebar-header
 
 | Attribute       | Type    | Required | Description            |
 | --------------- | ------- | -------- | ---------------------- |
 | data-borderless | boolean | false    | Removes bottom border. |
+
+#### x-h-sidebar-menu-sub
+
+| Attribute | Type    | Required | Description                                                                                                |
+| --------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| data-line | boolean | false    | Draws a line on the left side of the menu, indicating which items are part of the menu. Default is `true`. |
 
 #### x-h-sidebar-footer
 
@@ -75,11 +72,11 @@ x-h-sidebar-footer
 | right    | Adds border to the left side.  |
 | left     | Adds border to the right side. |
 
-#### x-h-sidebar-group-label
+#### x-h-sidebar-group
 
-| Modifier | Description                  |
-| -------- | ---------------------------- |
-| action   | Makes the label interactive. |
+| Modifier  | Type    | Required | Description                                                        |
+| --------- | ------- | -------- | ------------------------------------------------------------------ |
+| collapsed | boolean | false    | Enables collapse/expand for the group content. Default is `false`. |
 
 #### x-h-sidebar-menu-action
 
@@ -92,12 +89,6 @@ x-h-sidebar-footer
 | Modifier | Description                                                                      |
 | -------- | -------------------------------------------------------------------------------- |
 | icon     | Adds an icon shape to the skeleton to indicate that the items will have an icon. |
-
-#### x-h-sidebar-menu-sub
-
-| Modifier | Description                                                                         |
-| -------- | ----------------------------------------------------------------------------------- |
-| flat     | Removes all offsets and makes the sub items appear on the same level as the parent. |
 
 ## Examples
 
@@ -170,27 +161,27 @@ x-h-sidebar-footer
     <div x-h-sidebar-group>
       <div x-h-sidebar-group-label>Application</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="house"></i>
-              Home
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
             </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="file-text"></i>
-              Documents
+              <span>Documents</span>
             </button>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
               <i role="img" data-lucide="blocks"></i>
-              Extensions
+              <span>Extensions</span>
             </button>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -204,27 +195,99 @@ x-h-sidebar-footer
     <div x-h-sidebar-group>
       <div x-h-sidebar-group-label>Application</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="house"></i>
-              Home
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
             </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="file-text"></i>
-              Documents
+              <span>Documents</span>
             </button>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
               <i role="img" data-lucide="blocks"></i>
-              Extensions
+              <span>Extensions</span>
             </button>
-          </div>
-        </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### Sidebar right side
+
+<br />
+
+<ClientOnly>
+<component-container data-js="/js/init-icons.js" data-padding="false" data-style="height:16rem">
+<div x-h-sidebar.right class="float-right">
+  <div x-h-sidebar-content>
+    <div x-h-sidebar-group>
+      <div x-h-sidebar-group-label>Application</div>
+      <div x-h-sidebar-group-content>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <i role="img" data-lucide="house"></i>
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <i role="img" data-lucide="file-text"></i>
+              <span>Documents</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
+              <i role="img" data-lucide="blocks"></i>
+              <span>Extensions</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-sidebar.right class="float-right">
+  <div x-h-sidebar-content>
+    <div x-h-sidebar-group>
+      <div x-h-sidebar-group-label>Application</div>
+      <div x-h-sidebar-group-content>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <i role="img" data-lucide="house"></i>
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <i role="img" data-lucide="file-text"></i>
+              <span>Documents</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
+              <i role="img" data-lucide="blocks"></i>
+              <span>Extensions</span>
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -250,27 +313,27 @@ x-h-sidebar-footer
     <div x-h-sidebar-group>
       <div x-h-sidebar-group-label>Application</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="house"></i>
-              Home
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
             </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="file-text"></i>
-              Documents
+              <span>Documents</span>
             </button>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="blocks"></i>
-              Extensions
+              <span>Extensions</span>
             </button>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -306,27 +369,27 @@ x-h-sidebar-footer
     <div x-h-sidebar-group>
       <div x-h-sidebar-group-label>Application</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="house"></i>
-              Home
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
             </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="file-text"></i>
-              Documents
+              <span>Documents</span>
             </button>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
               <i role="img" data-lucide="blocks"></i>
-              Extensions
+              <span>Extensions</span>
             </button>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -347,78 +410,6 @@ x-h-sidebar-footer
 </div>
 ```
 
-### Sidebar right side
-
-<br />
-
-<ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false" data-style="height:16rem">
-<div x-h-sidebar.right class="float-right">
-  <div x-h-sidebar-content>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label>Application</div>
-      <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
-              Home
-            </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
-              Documents
-            </button>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="blocks"></i>
-              Extensions
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
-
-```html
-<div x-h-sidebar.right class="float-right">
-  <div x-h-sidebar-content>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label>Application</div>
-      <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
-              Home
-            </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
-              Documents
-            </button>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="blocks"></i>
-              Extensions
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-```
-
 ### Sidebar skeleton
 
 <br />
@@ -428,25 +419,25 @@ x-h-sidebar-footer
 <div x-h-sidebar>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label.action>Skeleton</div>
+      <div x-h-sidebar-group-label>Skeleton</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -458,25 +449,25 @@ x-h-sidebar-footer
 <div x-h-sidebar>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label.action>Skeleton</div>
+      <div x-h-sidebar-group-label>Skeleton</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-          <div x-h-sidebar-menu-item>
+          </li>
+          <li x-h-sidebar-menu-item>
             <div x-h-sidebar-menu-skeleton.icon></div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -493,142 +484,175 @@ x-h-sidebar-footer
 </ClientOnly>
 
 ```html
-<div x-h-sidebar>
-  <div x-h-sidebar-header>
-    <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-      <span>Header popover</span>
-      <i role="img" data-lucide="chevron-down"></i>
-    </button>
-    <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
-  </div>
-  <div x-h-sidebar-content>
-    <div x-h-sidebar-group x-h-collapsible="true">
-      <div x-h-sidebar-group-label>
-        Application
-        <button x-h-sidebar-group-action x-h-collapsible-trigger.chevron type="button">
-          <span class="sr-only">Expand</span>
-          <i role="img" data-lucide="chevron-down"></i>
-        </button>
-      </div>
-      <div x-h-sidebar-group-content x-h-collapsible-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button>
-              <i role="img" data-lucide="house"></i>
-              Home
-            </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <a x-h-sidebar-menu-button href="#">
-              <i role="img" data-lucide="file-text"></i>
-              Documents
-            </a>
-            <button x-h-sidebar-menu-action.autohide type="button">
-              <i role="img" data-lucide="info"></i>
-              <span class="sr-only">Info</span>
-            </button>
-          </div>
+<div x-data="app">
+  <div x-h-sidebar>
+    <div x-h-sidebar-header>
+      <button type="button" x-h-sidebar-menu-button x-h-popover-trigger.chevron>
+        <span>Header popover</span>
+        <i role="img" data-lucide="chevron-down"></i>
+      </button>
+      <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
+    </div>
+
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>General</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button type="button" x-h-sidebar-menu-button :data-active="active === 'dashboard'" @click="changeActive('dashboard')">
+                <i role="img" data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'analytics'" @click="changeActive('analytics')">
+                <i role="img" data-lucide="chart-no-axes-combined"></i>
+                <span>Analytics</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
+
+      <div x-h-sidebar-group.collapsed="false">
+        <div x-h-sidebar-group-label>Application</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button type="button" x-h-sidebar-menu-button :data-active="active === 'files'" @click="changeActive('files')">
+                <i role="img" data-lucide="folder"></i>
+                <span>Files</span>
+                <span x-h-sidebar-menu-badge>11</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'docs'" @click="changeActive('docs')">
+                <i role="img" data-lucide="file-text"></i>
+                <span>Documents</span>
+              </a>
+              <button type="button" x-h-sidebar-menu-action.autohide>
+                <i role="img" data-lucide="info"></i>
+                <span class="sr-only">Info</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div x-h-sidebar-separator></div>
+
+      <div x-h-sidebar-group>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree'" @click="changeActive('tree')">
+              <i role="img" data-lucide="list-tree"></i>
+              <span>Tree</span>
+            </button>
+            <ul x-h-sidebar-menu-sub>
+              <li x-h-sidebar-menu-item>
+                <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i1_l1'" @click="changeActive('tree_i1_l1')">
+                  <span>Item 1 (L1)</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i2_l1'" @click="changeActive('tree_i2_l1')">
+                  <span>Item 2 (L1)</span>
+                </button>
+                <ul x-h-sidebar-menu-sub>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i1_l2'" @click="changeActive('tree_i1_l2')">
+                      <span>Item 1 (L2)</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i2_l2'" @click="changeActive('tree_i2_l2')">
+                      <span>Item 2 (L2)</span>
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div x-h-sidebar-separator></div>
+
+      <div x-h-sidebar-group>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item.collapsed>
+            <button type="button" x-h-sidebar-menu-button>
+              <i role="img" data-lucide="list-tree"></i>
+              <span>Tree (Collapsable)</span>
+            </button>
+            <ul x-h-sidebar-menu-sub>
+              <li x-h-sidebar-menu-item>
+                <button type="button" x-h-sidebar-menu-button>
+                  <span>Item 1 (L1)</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item.collapsed="false">
+                <button type="button" x-h-sidebar-menu-button>
+                  <span>Item 2 (L1)</span>
+                </button>
+                <ul x-h-sidebar-menu-sub>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button>
+                      <span>Item 1 (L2)</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button>
+                      <span>Item 2 (L2)</span>
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
+
     <div x-h-sidebar-separator></div>
+
     <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label.action>Skeleton</div>
+      <div x-h-sidebar-group-label>Skeleton</div>
       <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
+        <ul x-h-sidebar-menu>
           <template x-for="i in 5">
-            <div x-h-sidebar-menu-item :key="i">
+            <li x-h-sidebar-menu-item :key="i">
               <div x-h-sidebar-menu-skeleton.icon></div>
-            </div>
+            </li>
           </template>
-        </div>
+        </ul>
       </div>
     </div>
-    <div x-h-sidebar-separator></div>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-menu>
-        <div x-h-sidebar-menu-item x-h-collapsible>
-          <button x-h-sidebar-menu-button x-h-collapsible-trigger.chevron.90>
-            <i role="img" data-lucide="list-tree"></i>
-            <span>With subitems (Tree mode)</span>
-            <i role="img" data-lucide="chevron-right"></i>
-          </button>
-          <ul x-h-sidebar-menu-sub x-h-collapsible-content>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button data-active="true">
-                <span>Sub Item 1</span>
-              </button>
-            </li>
-            <li x-h-sidebar-menu-sub-item x-h-collapsible>
-              <button x-h-sidebar-menu-sub-button x-h-collapsible-trigger.chevron.90>
-                <span>Sub Item 2</span>
-                <i role="img" data-lucide="chevron-right"></i>
-              </button>
-              <ul x-h-sidebar-menu-sub x-h-collapsible-content>
-                <li x-h-sidebar-menu-sub-item>
-                  <button x-h-sidebar-menu-sub-button>
-                    <span>Sub Item 3</span>
-                  </button>
-                </li>
-                <li x-h-sidebar-menu-sub-item>
-                  <button x-h-sidebar-menu-sub-button data-active="true">
-                    <span>Sub Item 4 </span>
-                  </button>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
+
+    <div x-h-sidebar-footer>
+      <button type="button" x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
+        <span>Footer popover</span>
+        <i role="img" data-lucide="chevrons-up-down"></i>
+      </button>
+      <ul x-h-menu aria-label="dropdown" data-align="top-start">
+        <li x-h-menu-item>Set yourself as away</li>
+        <div x-h-menu-label>Team</div>
+        <li x-h-menu-item>Invite users</li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item data-variant="negative">Log out</li>
+      </ul>
     </div>
-    <div x-h-sidebar-separator></div>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-menu>
-        <div x-h-sidebar-menu-item x-data="{ expand: false }">
-          <button x-h-sidebar-menu-button @click="expand = !expand">
-            <i role="img" data-lucide="list-tree"></i>
-            <span>With subitems (Flat mode)</span>
-            <i role="img" data-lucide="chevron-right" :class="{ 'rotate-90': expand }"></i>
-          </button>
-          <ul x-h-sidebar-menu-sub.flat x-show="expand">
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button data-active="true">
-                <span>Sub Item 1</span>
-              </button>
-            </li>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button>
-                <span>Sub Item 2</span>
-              </button>
-            </li>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button>
-                <span>Sub Item 3</span>
-              </button>
-            </li>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button>
-                <span>Sub Item 4</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div x-h-sidebar-footer>
-    <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
-      <span>Footer popover</span>
-      <i role="img" data-lucide="chevrons-up-down"></i>
-    </button>
-    <ul x-h-menu aria-label="dropdown" data-align="top-start">
-      <li x-h-menu-item>Set yourself as away</li>
-      <div x-h-menu-label>Team</div>
-      <li x-h-menu-item>Invite users</li>
-      <div x-h-menu-separator></div>
-      <li x-h-menu-item data-variant="negative">Log out</li>
-    </ul>
   </div>
 </div>
+<script type="text/javascript">
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('app', () => ({
+      active: 'dashboard',
+      changeActive(active) {
+        this.active = active;
+      },
+    }));
+  });
+</script>
 ```

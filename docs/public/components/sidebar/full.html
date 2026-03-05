@@ -1,143 +1,172 @@
-<div x-h-sidebar>
-  <div x-h-sidebar-header>
-    <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-      <span>Header popover</span>
-      <i role="img" data-lucide="chevron-down"></i>
-    </button>
-    <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
-  </div>
-  <div x-h-sidebar-content>
-    <div x-h-sidebar-group x-h-collapsible="true">
-      <div x-h-sidebar-group-label>
-        Application
-        <button x-h-sidebar-group-action x-h-collapsible-trigger.chevron type="button">
-          <span class="sr-only">Expand</span>
-          <i role="img" data-lucide="chevron-down"></i>
-        </button>
-      </div>
-      <div x-h-sidebar-group-content x-h-collapsible-content>
-        <div x-h-sidebar-menu>
-          <div x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button>
-              <i role="img" data-lucide="house"></i>
-              Home
-            </button>
-            <div x-h-sidebar-menu-badge>11</div>
-          </div>
-          <div x-h-sidebar-menu-item>
-            <a x-h-sidebar-menu-button href="#">
-              <i role="img" data-lucide="file-text"></i>
-              Documents
-            </a>
-            <button x-h-sidebar-menu-action.autohide type="button">
-              <i role="img" data-lucide="info"></i>
-              <span class="sr-only">Info</span>
-            </button>
-          </div>
-        </div>
-      </div>
+<div x-data="app">
+  <div x-h-sidebar>
+    <div x-h-sidebar-header>
+      <button type="button" x-h-sidebar-menu-button x-h-popover-trigger.chevron>
+        <span>Header popover</span>
+        <i role="img" data-lucide="chevron-down"></i>
+      </button>
+      <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
     </div>
-    <div x-h-sidebar-separator></div>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label.action>Skeleton</div>
-      <div x-h-sidebar-group-content>
-        <div x-h-sidebar-menu>
-          <template x-for="i in 5">
-            <div x-h-sidebar-menu-item :key="i">
-              <div x-h-sidebar-menu-skeleton.icon></div>
-            </div>
-          </template>
-        </div>
-      </div>
-    </div>
-    <div x-h-sidebar-separator></div>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-menu>
-        <div x-h-sidebar-menu-item x-h-collapsible>
-          <button x-h-sidebar-menu-button x-h-collapsible-trigger.chevron.90>
-            <i role="img" data-lucide="list-tree"></i>
-            <span>With subitems (Tree mode)</span>
-            <i role="img" data-lucide="chevron-right"></i>
-          </button>
-          <ul x-h-sidebar-menu-sub x-h-collapsible-content>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button data-active="true">
-                <span>Sub Item 1</span>
+
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>General</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button type="button" x-h-sidebar-menu-button :data-active="active === 'dashboard'" @click="changeActive('dashboard')">
+                <i role="img" data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
               </button>
             </li>
-            <li x-h-sidebar-menu-sub-item x-h-collapsible>
-              <button x-h-sidebar-menu-sub-button x-h-collapsible-trigger.chevron.90>
-                <span>Sub Item 2</span>
-                <i role="img" data-lucide="chevron-right"></i>
-              </button>
-              <ul x-h-sidebar-menu-sub x-h-collapsible-content>
-                <li x-h-sidebar-menu-sub-item>
-                  <button x-h-sidebar-menu-sub-button>
-                    <span>Sub Item 3</span>
-                  </button>
-                </li>
-                <li x-h-sidebar-menu-sub-item>
-                  <button x-h-sidebar-menu-sub-button data-active="true">
-                    <span>Sub Item 4 </span>
-                  </button>
-                </li>
-              </ul>
+            <li x-h-sidebar-menu-item>
+              <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'analytics'" @click="changeActive('analytics')">
+                <i role="img" data-lucide="chart-no-axes-combined"></i>
+                <span>Analytics</span>
+              </a>
             </li>
           </ul>
         </div>
       </div>
-    </div>
-    <div x-h-sidebar-separator></div>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-menu>
-        <div x-h-sidebar-menu-item x-data="{ expand: false }">
-          <button x-h-sidebar-menu-button @click="expand = !expand">
-            <i role="img" data-lucide="list-tree"></i>
-            <span>With subitems (Flat mode)</span>
-            <i role="img" data-lucide="chevron-right" :class="{ 'rotate-90': expand }"></i>
-          </button>
-          <ul x-h-sidebar-menu-sub.flat x-show="expand">
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button data-active="true">
-                <span>Sub Item 1</span>
+
+      <div x-h-sidebar-group.collapsed="false">
+        <div x-h-sidebar-group-label>Application</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button type="button" x-h-sidebar-menu-button :data-active="active === 'files'" @click="changeActive('files')">
+                <i role="img" data-lucide="folder"></i>
+                <span>Files</span>
+                <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button>
-                <span>Sub Item 2</span>
-              </button>
-            </li>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button>
-                <span>Sub Item 3</span>
-              </button>
-            </li>
-            <li x-h-sidebar-menu-sub-item>
-              <button x-h-sidebar-menu-sub-button>
-                <span>Sub Item 4</span>
+            <li x-h-sidebar-menu-item>
+              <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'docs'" @click="changeActive('docs')">
+                <i role="img" data-lucide="file-text"></i>
+                <span>Documents</span>
+              </a>
+              <button type="button" x-h-sidebar-menu-action.autohide>
+                <i role="img" data-lucide="info"></i>
+                <span class="sr-only">Info</span>
               </button>
             </li>
           </ul>
         </div>
       </div>
+
+      <div x-h-sidebar-separator></div>
+
+      <div x-h-sidebar-group>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree'" @click="changeActive('tree')">
+              <i role="img" data-lucide="list-tree"></i>
+              <span>Tree</span>
+            </button>
+            <ul x-h-sidebar-menu-sub>
+              <li x-h-sidebar-menu-item>
+                <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i1_l1'" @click="changeActive('tree_i1_l1')">
+                  <span>Item 1 (L1)</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i2_l1'" @click="changeActive('tree_i2_l1')">
+                  <span>Item 2 (L1)</span>
+                </button>
+                <ul x-h-sidebar-menu-sub>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i1_l2'" @click="changeActive('tree_i1_l2')">
+                      <span>Item 1 (L2)</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree_i2_l2'" @click="changeActive('tree_i2_l2')">
+                      <span>Item 2 (L2)</span>
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div x-h-sidebar-separator></div>
+
+      <div x-h-sidebar-group>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item.collapsed>
+            <button type="button" x-h-sidebar-menu-button>
+              <i role="img" data-lucide="list-tree"></i>
+              <span>Tree (Collapsable)</span>
+            </button>
+            <ul x-h-sidebar-menu-sub>
+              <li x-h-sidebar-menu-item>
+                <button type="button" x-h-sidebar-menu-button>
+                  <span>Item 1 (L1)</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item.collapsed="false">
+                <button type="button" x-h-sidebar-menu-button>
+                  <span>Item 2 (L1)</span>
+                </button>
+                <ul x-h-sidebar-menu-sub>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button>
+                      <span>Item 1 (L2)</span>
+                    </button>
+                  </li>
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button>
+                      <span>Item 2 (L2)</span>
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div x-h-sidebar-separator></div>
+
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Skeleton</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <template x-for="i in 5">
+              <li x-h-sidebar-menu-item :key="i">
+                <div x-h-sidebar-menu-skeleton.icon></div>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
     </div>
-  </div>
-  <div x-h-sidebar-footer>
-    <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
-      <span>Footer popover</span>
-      <i role="img" data-lucide="chevrons-up-down"></i>
-    </button>
-    <ul x-h-menu aria-label="dropdown" data-align="top-start">
-      <li x-h-menu-item>Set yourself as away</li>
-      <div x-h-menu-label>Team</div>
-      <li x-h-menu-item>Invite users</li>
-      <div x-h-menu-separator></div>
-      <li x-h-menu-item data-variant="negative">Log out</li>
-    </ul>
+
+    <div x-h-sidebar-footer>
+      <button type="button" x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
+        <span>Footer popover</span>
+        <i role="img" data-lucide="chevrons-up-down"></i>
+      </button>
+      <ul x-h-menu aria-label="dropdown" data-align="top-start">
+        <li x-h-menu-item>Set yourself as away</li>
+        <div x-h-menu-label>Team</div>
+        <li x-h-menu-item>Invite users</li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item data-variant="negative">Log out</li>
+      </ul>
+    </div>
   </div>
 </div>
 <script type="text/javascript">
   lucide.createIcons({
     root: container,
   });
+  Alpine.data("app", () => ({
+    active: "dashboard",
+    changeActive(active) {
+      this.active = active;
+    },
+  }));
 </script>

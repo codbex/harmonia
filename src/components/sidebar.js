@@ -1,3 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
+import { ChevronRight, createSvg } from './../common/icons';
+
 export default function (Alpine) {
   Alpine.directive('h-sidebar', (el, { modifiers }, { cleanup }) => {
     el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
@@ -38,14 +41,36 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-content');
   });
 
-  Alpine.directive('h-sidebar-group', (el) => {
+  Alpine.directive('h-sidebar-group', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine }) => {
     el.classList.add('relative', 'vbox', 'w-full', 'min-w-0', 'p-2');
     el.setAttribute('data-slot', 'sidebar-group');
+    el._h_sidebar_group = {
+      collapsable: modifiers.includes('collapsed'),
+      controlId: undefined,
+      controls: undefined,
+      state: Alpine.reactive({
+        collapsed: evaluate(expression || 'false'),
+      }),
+    };
+    if (expression) {
+      el._h_sidebar_group.state = Alpine.reactive({
+        collapsed: evaluate(expression || 'false'),
+      });
+      const getCollapsed = evaluateLater(expression);
+      effect(() => {
+        getCollapsed((collapsed) => {
+          el._h_sidebar_group.state.collapsed = collapsed;
+        });
+      });
+    }
   });
 
-  Alpine.directive('h-sidebar-group-label', (el, { modifiers }) => {
+  Alpine.directive('h-sidebar-group-label', (el, { original }, { cleanup }) => {
+    const group = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_sidebar_group'));
+    if (!group) {
+      throw new Error(`${original} must be placed inside a sidebar group`);
+    }
     el.classList.add(
-      'text-sidebar-foreground/70',
       'ring-sidebar-ring',
       'flex',
       'h-8',
@@ -53,7 +78,6 @@ export default function (Alpine) {
       'items-center',
       'rounded-md',
       'px-2',
-      'text-xs',
       'font-medium',
       'outline-hidden',
       'transition-[margin,opacity]',
@@ -64,8 +88,45 @@ export default function (Alpine) {
       '[&>svg]:shrink-0',
       'group-data-[collapsed=true]/sidebar:!hidden'
     );
-    if (modifiers.includes('action')) el.classList.add('hover:bg-secondary-hover', 'active:bg-secondary-active');
     el.setAttribute('data-slot', 'sidebar-group-label');
+
+    if (group._h_sidebar_group.collapsable) {
+      el.classList.add('text-sidebar-foreground', 'text-sm', 'hover:bg-secondary-hover', 'active:bg-secondary-active');
+
+      if (el.hasAttribute('id')) {
+        group._h_sidebar_group.controlId = el.getAttribute('id');
+      } else {
+        group._h_sidebar_group.controlId = `sgl${uuidv4()}`;
+        el.setAttribute('id', group._h_sidebar_group.controlId);
+      }
+      group._h_sidebar_group.controls = `sgc${uuidv4()}`;
+      el.setAttribute('aria-controls', group._h_sidebar_group.controls);
+      el.setAttribute('aria-expanded', !group._h_sidebar_group.state.collapsed);
+
+      const handler = () => {
+        group._h_sidebar_group.state.collapsed = !group._h_sidebar_group.state.collapsed;
+        el.setAttribute('aria-expanded', !group._h_sidebar_group.state.collapsed);
+      };
+
+      el.appendChild(
+        createSvg({
+          icon: ChevronRight,
+          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform duration-200 [[aria-expanded=true]>&]:rotate-90',
+          attrs: {
+            'aria-hidden': true,
+            role: 'presentation',
+          },
+        })
+      );
+
+      el.addEventListener('click', handler);
+
+      cleanup(() => {
+        el.removeEventListener('click', handler);
+      });
+    } else {
+      el.classList.add('text-sidebar-foreground/70', 'text-xs');
+    }
   });
 
   Alpine.directive('h-sidebar-group-action', (el) => {
@@ -102,44 +163,90 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-group-action');
   });
 
-  Alpine.directive('h-sidebar-group-content', (el) => {
-    el.classList.add('w-full', 'text-sm');
+  Alpine.directive('h-sidebar-group-content', (el, { original }, { effect }) => {
+    const group = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_sidebar_group'));
+    if (!group) {
+      throw new Error(`${original} must be placed inside a sidebar group`);
+    }
+    el.classList.add('w-full', 'text-sm', 'data-[collapsed=true]:hidden', 'group-data-[collapsed=true]/sidebar:!block');
     el.setAttribute('data-slot', 'sidebar-group-content');
+
+    if (group._h_sidebar_group.collapsable) {
+      el.setAttribute('id', group._h_sidebar_group.controls);
+      el.setAttribute('aria-labelledby', group._h_sidebar_group.controlId);
+      el.setAttribute('data-collapsed', group._h_sidebar_group.state.collapsed);
+      effect(() => {
+        el.setAttribute('data-collapsed', group._h_sidebar_group.state.collapsed);
+      });
+    }
   });
 
-  Alpine.directive('h-sidebar-menu', (el) => {
+  Alpine.directive('h-sidebar-menu', (el, { original }) => {
+    if (el.tagName !== 'UL') {
+      throw new Error(`${original} must be an ul element`);
+    }
     el.classList.add('vbox', 'w-full', 'min-w-0', 'gap-1');
     el.setAttribute('data-slot', 'sidebar-menu');
   });
 
-  Alpine.directive('h-sidebar-menu-item', (el, { original }) => {
-    if (el.tagName !== 'BUTTON') {
-      throw new Error(`${original} must be a button`);
+  Alpine.directive('h-sidebar-menu-item', (el, { original, expression, modifiers }, { effect, evaluate, evaluateLater, Alpine }) => {
+    if (el.tagName !== 'LI') {
+      throw new Error(`${original} must be a li element`);
     }
-    el.classList.add('group/menu-item', 'relative');
-    el.setAttribute('type', 'button');
+    el._h_sidebar_menu_item = {
+      isSub: false,
+      collapsable: modifiers.includes('collapsed'),
+      controlId: undefined,
+      controls: undefined,
+      state: Alpine.reactive({
+        collapsed: evaluate(expression || 'false'),
+      }),
+    };
+    let parent = el.parentElement;
+    while (parent) {
+      if (parent.getAttribute('data-slot') === 'sidebar-menu-sub') {
+        el._h_sidebar_menu_item.isSub = true;
+        break;
+      } else if (parent.getAttribute('data-slot') === 'sidebar') {
+        break;
+      }
+      parent = parent.parentElement;
+    }
+    if (!el._h_sidebar_menu_item.isSub) {
+      el.classList.add('group/menu-item', 'relative');
+    } else {
+      el.classList.add('relative');
+    }
     el.setAttribute('data-slot', 'sidebar-menu-item');
+
+    if (expression) {
+      const getCollapsed = evaluateLater(expression);
+      effect(() => {
+        getCollapsed((collapsed) => {
+          el._h_sidebar_menu_item.state.collapsed = collapsed;
+        });
+      });
+    }
   });
 
-  Alpine.directive('h-sidebar-menu-button', (el) => {
-    if (el.tagName !== 'BUTTON') {
-      throw new Error(`${original} must be a button`);
+  Alpine.directive('h-sidebar-menu-button', (el, { original }, { cleanup, Alpine }) => {
+    if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+      throw new Error(`${original} must be a button or a link`);
+    } else if (el.tagName === 'BUTTON') {
+      el.setAttribute('type', 'button');
     }
+    const menuItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_sidebar_menu_item'));
     el.classList.add(
-      'peer/menu-button',
       'flex',
       'w-full',
       'items-center',
       'gap-2',
       'overflow-hidden',
       'rounded-md',
-      'p-2',
-      'text-left',
-      'text-sm',
       'align-middle',
+      '[&>span]:align-middle',
       'outline-hidden',
       'ring-sidebar-ring',
-      'transition-[width,height,padding]',
       'hover:bg-sidebar-secondary',
       'hover:text-sidebar-secondary-foreground',
       'focus-visible:ring-2',
@@ -147,38 +254,87 @@ export default function (Alpine) {
       'active:text-sidebar-primary-foreground',
       'disabled:pointer-events-none',
       'disabled:opacity-50',
-      'group-has-data-[sidebar=menu-action]/menu-item:pr-8',
       'aria-disabled:pointer-events-none',
       'aria-disabled:opacity-50',
       'data-[active=true]:bg-sidebar-primary',
-      'data-[active=true]:font-medium',
       'data-[active=true]:text-sidebar-primary-foreground',
-      'data-[state=open]:hover:bg-sidebar-secondary',
-      'data-[state=open]:hover:text-sidebar-secondary-foreground',
-      'group-data-[collapsed=true]/sidebar:!size-8',
-      'group-data-[collapsed=true]/sidebar:!p-2',
-      'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:!hidden',
       '[&>span]:truncate',
-      '[&>span]:align-middle',
       '[&>svg]:size-4',
-      '[&>svg]:shrink-0',
-      '[&>svg:not(:first-child):last-child]:ml-auto'
+      '[&>svg]:shrink-0'
     );
-    el.setAttribute('type', 'button');
-    if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-button');
 
     const sizes = {
       default: ['h-8', 'text-sm'],
       sm: ['h-7', 'text-xs'],
       lg: ['h-12', 'text-sm', 'group-data-[collapsed=true]/sidebar:p-0!'],
     };
+
     function setSize(size) {
       if (sizes.hasOwnProperty(size)) {
         el.classList.add(...sizes[size]);
       }
     }
-    if (!el.hasAttribute('data-size')) el.setAttribute('data-size', 'default');
-    setSize(el.getAttribute('data-size'));
+
+    setSize(el.getAttribute('data-size') || 'default');
+
+    if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-button');
+
+    if (menuItem && menuItem._h_sidebar_menu_item.isSub) {
+      el.classList.add('text-sidebar-foreground', 'h-7', 'min-w-0', '-translate-x-px', 'px-2', '[&>svg:not(:first-child):last-child]:ml-auto', 'group-data-[collapsed=true]/sidebar:hidden');
+      if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-sub-button');
+    } else {
+      el.classList.add(
+        'peer/menu-button',
+        'p-2',
+        'text-left',
+        'text-sm',
+        'duration-200',
+        'transition-[width,height,padding]',
+        'group-has-data-[sidebar=menu-action]/menu-item:pr-8',
+        'data-[active=true]:font-medium',
+        'data-[state=open]:hover:bg-sidebar-secondary',
+        'data-[state=open]:hover:text-sidebar-secondary-foreground',
+        'group-data-[collapsed=true]/sidebar:!size-8',
+        'group-data-[collapsed=true]/sidebar:!p-2',
+        'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:!hidden'
+      );
+    }
+
+    if (menuItem && menuItem._h_sidebar_menu_item.collapsable) {
+      if (el.hasAttribute('id')) {
+        menuItem._h_sidebar_menu_item.controlId = el.getAttribute('id');
+      } else {
+        menuItem._h_sidebar_menu_item.controlId = `sgl${uuidv4()}`;
+        el.setAttribute('id', menuItem._h_sidebar_menu_item.controlId);
+      }
+      menuItem._h_sidebar_menu_item.controls = `sgc${uuidv4()}`;
+      el.setAttribute('aria-controls', menuItem._h_sidebar_menu_item.controls);
+      el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
+
+      const handler = () => {
+        menuItem._h_sidebar_menu_item.state.collapsed = !menuItem._h_sidebar_menu_item.state.collapsed;
+        el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
+      };
+
+      el.appendChild(
+        createSvg({
+          icon: ChevronRight,
+          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform duration-200 [[aria-expanded=true]>&]:rotate-90',
+          attrs: {
+            'aria-hidden': true,
+            role: 'presentation',
+          },
+        })
+      );
+
+      el.addEventListener('click', handler);
+
+      cleanup(() => {
+        el.removeEventListener('click', handler);
+      });
+    } else {
+      el.classList.add('[&>svg:not(:first-child):last-child]:ml-auto');
+    }
   });
 
   Alpine.directive('h-sidebar-menu-action', (el, { modifiers }) => {
@@ -186,14 +342,18 @@ export default function (Alpine) {
       'text-sidebar-foreground',
       'ring-sidebar-ring',
       'hover:bg-sidebar-secondary',
+      'active:bg-sidebar-secondary/70',
       'hover:text-sidebar-secondary-foreground',
       'peer-hover/menu-button:text-sidebar-secondary-foreground',
+      'peer-active/menu-button:text-sidebar-primary-foreground',
+      'peer-data-[active=true]/menu-button:text-sidebar-primary-foreground',
       'absolute',
-      'top-1.5',
-      'right-1.5',
+      'top-0.5',
+      'right-0.5',
+      'bottom-0.5',
       'flex',
       'aspect-square',
-      'w-5',
+      'h-auto',
       'items-center',
       'justify-center',
       'rounded-md',
@@ -206,13 +366,10 @@ export default function (Alpine) {
       'after:absolute',
       'after:-inset-2',
       'md:after:hidden',
-      'peer-data-[size=sm]/menu-button:top-1',
-      'peer-data-[size=default]/menu-button:top-1.5',
-      'peer-data-[size=lg]/menu-button:top-2.5',
       'group-data-[collapsed=true]/sidebar:hidden'
     );
     if (modifiers.includes('autohide')) {
-      el.classList.add('peer-data-[active=true]/menu-button:text-sidebar-secondary-foreground', 'group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'data-[state=open]:opacity-100', 'md:opacity-0');
+      el.classList.add('group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'data-[state=open]:opacity-100', 'md:opacity-0');
     }
     if (el.tagName !== 'BUTTON') {
       el.setAttribute('role', 'button');
@@ -222,30 +379,11 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-menu-action');
   });
 
-  Alpine.directive('h-sidebar-menu-badge', (el) => {
-    el.classList.add(
-      'text-sidebar-foreground',
-      'pointer-events-none',
-      'absolute',
-      'right-1.5',
-      'flex',
-      'h-5',
-      'min-w-5',
-      'items-center',
-      'justify-center',
-      'rounded-md',
-      'px-1',
-      'text-xs',
-      'font-medium',
-      'tabular-nums',
-      'select-none',
-      'peer-hover/menu-button:text-sidebar-secondary-foreground',
-      'peer-data-[active=true]/menu-button:text-sidebar-primary-foreground',
-      'peer-data-[size=sm]/menu-button:top-1',
-      'peer-data-[size=default]/menu-button:top-1.5',
-      'peer-data-[size=lg]/menu-button:top-2.5',
-      'group-data-[collapsed=true]/sidebar:hidden'
-    );
+  Alpine.directive('h-sidebar-menu-badge', (el, { original }) => {
+    if (el.tagName !== 'SPAN') {
+      throw new Error(`${original} must be a span element`);
+    }
+    el.classList.add('flex-1', 'pointer-events-none', 'flex', 'h-full', 'min-w-min', 'items-center', 'justify-end', 'text-xs', 'font-medium', 'tabular-nums', 'select-none', 'group-data-[collapsed=true]/sidebar:hidden');
     el.setAttribute('data-slot', 'sidebar-menu-badge');
   });
 
@@ -269,71 +407,28 @@ export default function (Alpine) {
     el.setAttribute('role', 'none');
   });
 
-  Alpine.directive('h-sidebar-menu-sub', (el, { modifiers }) => {
-    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'py-0.5', 'group-data-[collapsed=true]/sidebar:!hidden');
-    if (!modifiers.includes('flat')) {
-      el.classList.add('border-sidebar-border', 'mx-3.5', 'border-l', 'px-2.5');
+  Alpine.directive('h-sidebar-menu-sub', (el, { original }, { effect, Alpine }) => {
+    if (el.tagName !== 'UL') {
+      throw new Error(`${original} must be an ul element`);
+    }
+    const menuItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_sidebar_menu_item'));
+    if (!menuItem) {
+      throw new Error(`${original} must be placed inside a sidebar menu item`);
+    }
+    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'pl-2.5', 'py-0.5', 'ml-3.5', 'data-[collapsed=true]:!hidden', 'group-data-[collapsed=true]/sidebar:!hidden');
+    if (el.getAttribute('data-line') !== 'false') {
+      el.classList.add('border-sidebar-border', 'border-l');
     }
     el.setAttribute('data-slot', 'sidebar-menu-sub');
-  });
 
-  Alpine.directive('h-sidebar-menu-sub-item', (el) => {
-    el.classList.add('group/menu-sub-item', 'relative');
-    el.setAttribute('data-slot', 'sidebar-menu-sub-item');
-  });
-
-  Alpine.directive('h-sidebar-menu-sub-button', (el) => {
-    if (el.tagName !== 'BUTTON') {
-      throw new Error(`${original} must be a button`);
+    if (menuItem._h_sidebar_menu_item.collapsable) {
+      el.setAttribute('id', menuItem._h_sidebar_menu_item.controls);
+      el.setAttribute('aria-labelledby', menuItem._h_sidebar_menu_item.controlId);
+      el.setAttribute('data-collapsed', menuItem._h_sidebar_menu_item.state.collapsed);
+      effect(() => {
+        el.setAttribute('data-collapsed', menuItem._h_sidebar_menu_item.state.collapsed);
+      });
     }
-    el.classList.add(
-      'text-sidebar-foreground',
-      'ring-sidebar-ring',
-      'hover:bg-sidebar-secondary',
-      'hover:text-sidebar-secondary-foreground',
-      'active:bg-primary-secondary',
-      'active:text-sidebar-primary-foreground',
-      '[&>svg]:text-sidebar-secondary-foreground',
-      'flex',
-      'h-7',
-      'w-full',
-      'min-w-0',
-      '-translate-x-px',
-      'items-center',
-      'gap-2',
-      'overflow-hidden',
-      'rounded-md',
-      'px-2',
-      'align-middle',
-      'outline-hidden',
-      'focus-visible:ring-2',
-      'disabled:pointer-events-none',
-      'disabled:opacity-50',
-      'aria-disabled:pointer-events-none',
-      'aria-disabled:opacity-50',
-      '[&>span]:truncate',
-      '[&>span]:align-middle',
-      '[&>svg]:size-4',
-      '[&>svg]:shrink-0',
-      '[&>svg:not(:first-child):last-child]:ml-auto',
-      'data-[active=true]:bg-sidebar-primary',
-      'data-[active=true]:text-sidebar-primary-foreground',
-      'group-data-[collapsed=true]/sidebar:hidden'
-    );
-    el.setAttribute('type', 'button');
-    el.setAttribute('data-slot', 'sidebar-menu-sub-button');
-
-    const sizes = {
-      sm: ['text-xs'],
-      md: ['text-sm'],
-    };
-    function setSize(size) {
-      if (sizes.hasOwnProperty(size)) {
-        el.classList.add(...sizes[size]);
-      }
-    }
-    if (!el.hasAttribute('data-size')) el.setAttribute('data-size', 'md');
-    setSize(el.getAttribute('data-size'));
   });
 
   Alpine.directive('h-sidebar-footer', (el) => {

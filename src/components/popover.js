@@ -41,6 +41,7 @@ export default function (Alpine) {
     const close = () => {
       el._popover.expanded = false;
       el.addEventListener('click', handler);
+      setAttributes();
     };
 
     const handler = () => {

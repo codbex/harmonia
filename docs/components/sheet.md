@@ -49,27 +49,27 @@ x-h-sheet-overlay
           <div x-h-sidebar-group>
             <div x-h-sidebar-group-label>Application</div>
             <div x-h-sidebar-group-content>
-              <div x-h-sidebar-menu>
-                <div x-h-sidebar-menu-item>
+              <ul x-h-sidebar-menu>
+                <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
                     <i role="img" data-lucide="house"></i>
-                    Home
+                    <span>Home</span>
+                    <span x-h-sidebar-menu-badge>11</span>
                   </button>
-                  <div x-h-sidebar-menu-badge>11</div>
-                </div>
-                <div x-h-sidebar-menu-item>
+                </li>
+                <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
                     <i role="img" data-lucide="file-text"></i>
-                    Documents
+                    <span>Documents</span>
                   </button>
-                </div>
-                <div x-h-sidebar-menu-item>
+                </li>
+                <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
                     <i role="img" data-lucide="blocks"></i>
-                    Extensions
+                    <span>Extensions</span>
                   </button>
-                </div>
-              </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
