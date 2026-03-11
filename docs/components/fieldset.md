@@ -72,7 +72,7 @@ x-h-field-error
           <div x-h-field>
             <label x-h-label.field for="formCardMonth">Month</label>
             <div x-h-select>
-              <input data-id="formCardMonth" x-h-select-input placeholder="MM" required />
+              <input id="formCardMonth" x-h-select-input placeholder="MM" required />
               <div x-h-select-content>
                 <div x-h-select-option="'01'" data-value="01"></div>
                 <div x-h-select-option="'02'" data-value="02"></div>
@@ -92,7 +92,7 @@ x-h-field-error
           <div x-h-field>
             <label x-h-label.field for="formCardYear">Year</label>
             <div x-h-select>
-              <input data-id="formCardYear" x-h-select-input placeholder="YYYY" required />
+              <input id="formCardYear" x-h-select-input placeholder="YYYY" required />
               <div
                 x-h-select-content
                 x-data="{

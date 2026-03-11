@@ -18,14 +18,14 @@ CSS utility classes to rotate elements.
 
 <ClientOnly>
 <component-container data-class="flex gap-3">
-<svg x-h-icon class="size-12 rotate-90" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-12 rotate-180" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-12 rotate-270" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-12 rotate-90" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-12 rotate-180" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-12 rotate-270" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
 </ClientOnly>
 
 ```html
-<svg x-h-icon class="size-12 rotate-90" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-12 rotate-180" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-12 rotate-270" data-link="/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-12 rotate-90" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-12 rotate-180" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+<svg x-h-icon class="size-12 rotate-270" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```

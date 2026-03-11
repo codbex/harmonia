@@ -7,7 +7,7 @@
   <div x-h-split data-orientation="vertical" data-variant="border">
     <template x-for="panel in panels" x-bind:key="panel.id">
       <div x-h-split-panel>
-        <div class="overflow-scroll" x-text="panel.name"></div>
+        <div class="overflow-auto" x-text="panel.name"></div>
       </div>
     </template>
   </div>

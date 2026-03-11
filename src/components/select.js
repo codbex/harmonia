@@ -13,7 +13,8 @@ const FilterType = Object.freeze({
 export default function (Alpine) {
   Alpine.directive('h-select', (el, { modifiers }, { Alpine, cleanup }) => {
     el._h_select = Alpine.reactive({
-      id: undefined,
+      fieldLabelId: undefined,
+      trigger: undefined,
       controls: `hsc${uuidv4()}`,
       expanded: false,
       multiple: false,
@@ -65,10 +66,17 @@ export default function (Alpine) {
 
   Alpine.directive('h-select-input', (el, { original }, { effect, cleanup, Alpine }) => {
     if (el.tagName !== 'INPUT') {
-      throw new Error(`${original} must be a readonly input of type "text"`);
+      throw new Error(`${original} must be an input of type "text"`);
     }
 
     const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
+    const label = (() => {
+      const field = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'field');
+      if (field) {
+        return field.querySelector('[data-slot=field-label]');
+      }
+      return;
+    })();
 
     if (!select) {
       throw new Error(`${original} must be inside a select element`);
@@ -111,6 +119,23 @@ export default function (Alpine) {
     fakeTrigger.setAttribute('data-slot', 'select-value');
     fakeTrigger.setAttribute('tabindex', '0');
     fakeTrigger.classList.add('flex', 'items-center', 'justify-between', 'gap-2', 'outline-none', 'pl-3', 'pr-2', 'size-full', '[&[data-state=open]>svg]:rotate-180');
+    select._h_select.trigger = fakeTrigger;
+
+    let labelObserver;
+
+    if (label) {
+      if (!label.hasAttribute('id')) {
+        label.setAttribute('id', `hsil${uuidv4()}`);
+      }
+      select._h_select.fieldLabelId = label.getAttribute('id');
+      fakeTrigger.setAttribute('aria-labelledby', label.getAttribute('id'));
+
+      labelObserver = new MutationObserver(() => {
+        select._h_select.fieldLabelId = label.getAttribute('id');
+      });
+
+      labelObserver.observe(label, { attributes: true, attributeFilter: ['id'] });
+    }
 
     function getPlaceholder() {
       if (!el.value) {
@@ -126,18 +151,11 @@ export default function (Alpine) {
 
     getPlaceholder();
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'data-id') {
-          select._h_select.id = el.getAttribute('data-id');
-          fakeTrigger.setAttribute('id', select._h_select.id);
-        } else if (mutation.attributeName === 'placeholder' && !select._h_select.label.length) {
-          getPlaceholder();
-        }
-      });
+    const observer = new MutationObserver(() => {
+      getPlaceholder();
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-id', 'placeholder'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['placeholder'] });
 
     effect(() => {
       if (select._h_select.label.length === 1) {
@@ -152,9 +170,6 @@ export default function (Alpine) {
     });
 
     fakeTrigger.setAttribute('data-slot', 'select-input');
-
-    select._h_select.id = el.hasAttribute('data-id') ? el.getAttribute('data-id') : `hs${uuidv4()}`;
-    fakeTrigger.setAttribute('id', select._h_select.id);
     fakeTrigger.setAttribute('aria-controls', select._h_select.controls);
     fakeTrigger.setAttribute('aria-haspopup', 'listbox');
     fakeTrigger.setAttribute('aria-autocomplete', 'none');
@@ -344,6 +359,9 @@ export default function (Alpine) {
       top.removeEventListener('click', close);
       el.removeEventListener('change', onInputChange);
       observer.disconnect();
+      if (labelObserver) {
+        labelObserver.disconnect();
+      }
     });
   });
 
@@ -355,20 +373,18 @@ export default function (Alpine) {
     el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'p-1', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-md', 'border', 'shadow-md');
     el.setAttribute('data-slot', 'select-content');
     el.setAttribute('role', 'listbox');
-    el.setAttribute('role', 'presentation');
     el.setAttribute('id', select._h_select.controls);
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-state', select._h_select.expanded ? 'open' : 'closed');
 
-    const control = select.querySelector(`#${select._h_select.id}`);
-    if (!control) {
+    if (!select._h_select.trigger) {
       throw new Error(`${original}: trigger not found`);
     }
 
     let autoUpdateCleanup;
 
     function updatePosition() {
-      computePosition(control, el, {
+      computePosition(select._h_select.trigger, el, {
         placement: el.getAttribute('data-align') || 'bottom-start',
         middleware: [
           offset(4),
@@ -392,13 +408,13 @@ export default function (Alpine) {
     }
 
     effect(() => {
-      el.setAttribute('aria-labelledby', select._h_select.id);
+      el.setAttribute('aria-labelledby', select._h_select.fieldLabelId);
     });
 
     effect(() => {
       el.setAttribute('data-state', select._h_select.expanded ? 'open' : 'closed');
       if (select._h_select.expanded) {
-        autoUpdateCleanup = autoUpdate(control, el, updatePosition);
+        autoUpdateCleanup = autoUpdate(select._h_select.trigger, el, updatePosition);
       } else {
         if (autoUpdateCleanup) autoUpdateCleanup();
         Object.assign(el.style, {

@@ -535,7 +535,7 @@ export default function (Alpine) {
     el.appendChild(timeContainer);
 
     const hoursList = document.createElement('ul');
-    hoursList.classList.add('flex-1', 'overflow-y-scroll', '[scrollbar-width:thin]');
+    hoursList.classList.add('flex-1', 'overflow-y-auto', '[scrollbar-width:thin]');
     hoursList.setAttribute('role', 'listbox');
     hoursList.setAttribute('tabindex', '-1');
     hoursList.setAttribute('aria-label', el.dataset.labelHours ?? 'Select hour');
@@ -554,7 +554,7 @@ export default function (Alpine) {
     }
 
     const minutesList = document.createElement('ul');
-    minutesList.classList.add('flex-1', 'overflow-y-scroll', '[scrollbar-width:thin]');
+    minutesList.classList.add('flex-1', 'overflow-y-auto', '[scrollbar-width:thin]');
     minutesList.setAttribute('role', 'listbox');
     minutesList.setAttribute('tabindex', '-1');
     minutesList.setAttribute('aria-label', el.dataset.labelMinutes ?? 'Select minute');
@@ -573,7 +573,7 @@ export default function (Alpine) {
     }
 
     const secondsList = document.createElement('ul');
-    secondsList.classList.add('flex-1', 'overflow-y-scroll', '[scrollbar-width:thin]');
+    secondsList.classList.add('flex-1', 'overflow-y-auto', '[scrollbar-width:thin]');
     if (!timepicker._h_timepicker.seconds) {
       secondsList.classList.add('hidden');
     }
@@ -595,7 +595,7 @@ export default function (Alpine) {
     }
 
     const periodList = document.createElement('ul');
-    periodList.classList.add('flex-1', 'overflow-y-scroll', '[scrollbar-width:thin]');
+    periodList.classList.add('flex-1', 'overflow-y-auto', '[scrollbar-width:thin]');
     if (!timepicker._h_timepicker.is12Hour) {
       periodList.classList.add('hidden');
     }

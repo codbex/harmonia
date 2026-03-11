@@ -164,13 +164,13 @@ In the following example, the left and right panels will hide if the screen is l
 <div x-data="app" class="size-full">
   <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border">
     <div x-h-split-panel :data-hidden="panelVisiblility.left">
-      <div class="overflow-scroll">Left panel</div>
+      <div class="overflow-auto">Left panel</div>
     </div>
     <div x-h-split-panel>
-      <div class="overflow-scroll">Cener panel</div>
+      <div class="overflow-auto">Cener panel</div>
     </div>
     <div x-h-split-panel :data-hidden="panelVisiblility.right">
-      <div class="overflow-scroll">Right panel</div>
+      <div class="overflow-auto">Right panel</div>
     </div>
   </div>
 </div>
@@ -212,7 +212,7 @@ You can use the `x-for` directive to add or remove panels dynamically.
   <div x-h-split data-orientation="vertical" data-variant="border">
     <template x-for="panel in panels" x-bind:key="panel.id">
       <div x-h-split-panel>
-        <div class="overflow-scroll" x-text="panel.name"></div>
+        <div class="overflow-auto" x-text="panel.name"></div>
       </div>
     </template>
   </div>
@@ -270,7 +270,7 @@ You can use the [Template](/utilities/template) directive to create layouts dyna
           </div>
         </template>
         <template x-if="!panel.children">
-          <div class="overflow-scroll" x-text="panel.name"></div>
+          <div class="overflow-auto" x-text="panel.name"></div>
         </template>
       </div>
     </template>

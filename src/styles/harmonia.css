@@ -67,7 +67,7 @@
 @source inline("rotate-{90,180,270}");
 @source inline("resize-none");
 
-@source inline("overflow-{hidden,visible,scroll,x-scroll,y-scroll,x-visible,y-visible,x-hidden,y-hidden}");
+@source inline("overflow-{auto,hidden,visible,scroll,x-scroll,y-scroll,x-visible,y-visible,x-auto,y-auto,x-hidden,y-hidden}");
 @source inline("object-{contain,cover,fill}");
 @source inline("float-right");
 @source inline("hidden");

@@ -358,7 +358,7 @@
                     </div>
                   </div>
                   <div x-h-card-content class="vbox h-full gap-4">
-                    <textarea class="h-full" x-h-textarea placeholder="Add note to bill"></textarea>
+                    <textarea class="h-full" name="note-to-bill" x-h-textarea placeholder="Add note to bill"></textarea>
                     <div class="flex items-center gap-2 pr-2">
                       <span x-h-switch data-size="sm">
                         <input type="checkbox" id="saveNoteSw" />
@@ -484,7 +484,7 @@
                       <div x-h-field>
                         <label x-h-label.field for="formCardMonth">Month</label>
                         <div x-h-select>
-                          <input data-id="formCardMonth" x-h-select-input placeholder="MM" required />
+                          <input id="formCardMonth" x-h-select-input placeholder="MM" required />
                           <div x-h-select-content>
                             <div x-h-select-option="'01'" data-value="01"></div>
                             <div x-h-select-option="'02'" data-value="02"></div>
@@ -504,7 +504,7 @@
                       <div x-h-field>
                         <label x-h-label.field for="formCardYear">Year</label>
                         <div x-h-select>
-                          <input data-id="formCardYear" x-h-select-input placeholder="YYYY" required />
+                          <input id="formCardYear" x-h-select-input placeholder="YYYY" required />
                           <div x-h-select-content>
                             <template x-for="year in years">
                               <div x-h-select-option="year" :data-value="year"></div>
@@ -602,18 +602,10 @@
               <div class="vbox gap-2 p-4" x-show="!darkMode">
                 <template x-for="color in colors.light">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="color.name" x-text="getVarLabel(color.name)"></label>
+                    <label x-h-label.field :for="color.name" x-text="color.name"></label>
                     <div class="hbox gap-2">
-                      <input
-                        class="aspect-square !w-auto"
-                        :id="color.name + 'Select'"
-                        :aria-label="'Select ' + color.name.replace('-', ' ') + ' color'"
-                        x-h-input
-                        type="color"
-                        :value="getHexColor(color.value)"
-                        @change="applyColSelect(event)"
-                      />
-                      <input x-h-input :id="color.name" @input="applyVar(event, true)" x-model="color.value" />
+                      <input class="aspect-square !w-auto" :id="color.name + 'Select'" :aria-label="'Select ' + color.name + ' color'" x-h-input type="color" :value="getHexColor(color.value)" @change="applyColSelect(event, color.varId)" />
+                      <input x-h-input :id="color.name" @input="applyVar(event, color.varId, true)" x-model="color.value" x-bind:data-col="color.value" />
                     </div>
                   </div>
                 </template>
@@ -621,18 +613,18 @@
               <div class="vbox gap-2 p-4" x-show="darkMode">
                 <template x-for="color in colors.dark">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="color.name" x-text="getVarLabel(color.name)"></label>
+                    <label x-h-label.field :for="color.name + 'Dark'" x-text="color.name"></label>
                     <div class="hbox gap-2">
                       <input
                         class="aspect-square !w-auto"
-                        :id="color.name + 'Select'"
-                        :aria-label="'Select ' + color.name.replace('-', ' ') + ' color'"
+                        :id="color.name + 'SelectDark'"
+                        :aria-label="'Select ' + color.name + ' color'"
                         x-h-input
                         type="color"
                         :value="getHexColor(color.value)"
-                        @change="applyColSelect(event)"
+                        @change="applyColSelect(event, color.varId)"
                       />
-                      <input x-h-input :id="color.name" @input="applyVar(event, true)" x-model="color.value" />
+                      <input x-h-input :id="color.name + 'Dark'" @input="applyVar(event, color.varId, true)" x-model="color.value" />
                     </div>
                   </div>
                 </template>
@@ -646,16 +638,16 @@
               <div class="vbox gap-2 p-4" x-show="!darkMode">
                 <template x-for="shadow in shadows.light">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="shadow.name" x-text="getVarLabel(shadow.name)"></label>
-                    <input x-h-input :id="shadow.name" x-model="shadow.value" @input="applyVar(event, false)" />
+                    <label x-h-label.field :for="shadow.name" x-text="shadow.name"></label>
+                    <input x-h-input :id="shadow.name" x-model="shadow.value" @input="applyVar(event, shadow.varId, false)" />
                   </div>
                 </template>
               </div>
               <div class="vbox gap-2 p-4" x-show="darkMode">
                 <template x-for="shadow in shadows.dark">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="shadow.name" x-text="getVarLabel(shadow.name)"></label>
-                    <input x-h-input :id="shadow.name" x-model="shadow.value" @input="applyVar(event, false)" />
+                    <label x-h-label.field :for="shadow.name + 'Dark'" x-text="shadow.name"></label>
+                    <input x-h-input :id="shadow.name + 'Dark'" x-model="shadow.value" @input="applyVar(event, shadow.varId, false)" />
                   </div>
                 </template>
               </div>
@@ -668,16 +660,16 @@
               <div class="vbox gap-2 p-4" x-show="!darkMode">
                 <template x-for="font in fonts.light">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="font.name" x-text="getVarLabel(font.name)"></label>
-                    <input x-h-input :id="font.name" x-model="font.value" @input="applyVar(event, false)" />
+                    <label x-h-label.field :for="font.name" x-text="font.name"></label>
+                    <input x-h-input :id="font.name" x-model="font.value" @input="applyVar(event, font.varId, false)" />
                   </div>
                 </template>
               </div>
               <div class="vbox gap-2 p-4" x-show="darkMode">
                 <template x-for="font in fonts.dark">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="font.name" x-text="getVarLabel(font.name)"></label>
-                    <input x-h-input :id="font.name" x-model="font.value" @input="applyVar(event, false)" />
+                    <label x-h-label.field :for="font.name + 'Dark'" x-text="font.name"></label>
+                    <input x-h-input :id="font.name + 'Dark'" x-model="font.value" @input="applyVar(event, font.varId, false)" />
                   </div>
                 </template>
               </div>
@@ -690,16 +682,16 @@
               <div class="vbox gap-2 p-4" x-show="!darkMode">
                 <template x-for="other in others.light">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="other.name" x-text="getVarLabel(other.name)"></label>
-                    <input x-h-input :id="other.name" x-model="other.value" @input="applyVar(event, false)" />
+                    <label x-h-label.field :for="other.name" x-text="other.name"></label>
+                    <input x-h-input :id="other.name" x-model="other.value" @input="applyVar(event, other.varId, false)" />
                   </div>
                 </template>
               </div>
               <div class="vbox gap-2 p-4" x-show="darkMode">
                 <template x-for="other in others.dark">
                   <div class="vbox gap-2">
-                    <label x-h-label.field :for="other.name" x-text="getVarLabel(other.name)"></label>
-                    <input x-h-input :id="other.name" x-model="other.value" @input="applyVar(event, false)" />
+                    <label x-h-label.field :for="other.name + 'Dark'" x-text="other.name"></label>
+                    <input x-h-input :id="other.name + 'Dark'" x-model="other.value" @input="applyVar(event, other.varId, false)" />
                   </div>
                 </template>
               </div>
@@ -732,7 +724,7 @@
             </button>
             <p x-h-dialog-description>This will override the existing theme!</p>
           </div>
-          <textarea class="h-full" x-h-textarea :placeholder="importPlaceholder" x-ref="themeCssInput"></textarea>
+          <textarea id="importCssVars" class="h-full" x-h-textarea :placeholder="importPlaceholder" x-ref="themeCssInput"></textarea>
           <div x-h-dialog-footer>
             <button x-h-button data-variant="primary" @click="importTheme($refs)">Import</button>
           </div>
@@ -840,66 +832,69 @@
             }
           },
           colorVars: [
-            "background",
-            "foreground",
-            "card",
-            "card-foreground",
-            "popover",
-            "popover-foreground",
-            "primary",
-            "primary-foreground",
-            "primary-hover",
-            "primary-active",
-            "secondary",
-            "secondary-foreground",
-            "secondary-hover",
-            "secondary-active",
-            "muted",
-            "muted-foreground",
-            "split-handle",
-            "border",
-            "input-border",
-            "input-background",
-            "ring",
-            "negative",
-            "negative-foreground",
-            "negative-hover",
-            "negative-active",
-            "positive",
-            "positive-foreground",
-            "positive-hover",
-            "positive-active",
-            "warning",
-            "warning-foreground",
-            "warning-hover",
-            "warning-active",
-            "information",
-            "information-foreground",
-            "information-hover",
-            "information-active",
-            "sidebar",
-            "sidebar-foreground",
-            "sidebar-primary",
-            "sidebar-primary-foreground",
-            "sidebar-secondary",
-            "sidebar-secondary-foreground",
-            "sidebar-border",
-            "object-header",
-            "object-header-foreground",
-            "table-header",
-            "table-header-foreground",
-            "table-hover",
-            "table-hover-foreground",
-            "table-active",
-            "table-active-foreground",
+            "--background",
+            "--foreground",
+            "--card",
+            "--card-foreground",
+            "--popover",
+            "--popover-foreground",
+            "--primary",
+            "--primary-foreground",
+            "--primary-hover",
+            "--primary-active",
+            "--secondary",
+            "--secondary-foreground",
+            "--secondary-hover",
+            "--secondary-active",
+            "--muted",
+            "--muted-foreground",
+            "--split-handle",
+            "--border",
+            "--input-border",
+            "--input-background",
+            "--ring",
+            "--negative",
+            "--negative-foreground",
+            "--negative-hover",
+            "--negative-active",
+            "--positive",
+            "--positive-foreground",
+            "--positive-hover",
+            "--positive-active",
+            "--warning",
+            "--warning-foreground",
+            "--warning-hover",
+            "--warning-active",
+            "--information",
+            "--information-foreground",
+            "--information-hover",
+            "--information-active",
+            "--sidebar",
+            "--sidebar-foreground",
+            "--sidebar-primary",
+            "--sidebar-primary-foreground",
+            "--sidebar-secondary",
+            "--sidebar-secondary-foreground",
+            "--sidebar-border",
+            "--object-header",
+            "--object-header-foreground",
+            "--table-header",
+            "--table-header-foreground",
+            "--table-hover",
+            "--table-hover-foreground",
+            "--table-active",
+            "--table-active-foreground",
           ],
-          shadowVars: ["shadow-xs", "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl", "shadow-button", "shadow-input"],
-          fontVars: ["font-sans", "font-serif", "font-mono", "tracking-normal"],
-          othersVars: ["radius-control", "radius", "spacing"],
+          shadowVars: ["--shadow-xs", "--shadow-sm", "--shadow-md", "--shadow-lg", "--shadow-xl", "--shadow-button", "--shadow-input"],
+          fontVars: ["--font-sans", "--font-serif", "--font-mono", "--tracking-normal"],
+          othersVars: ["--radius-control", "--radius", "--spacing"],
           getVarLabel(name) {
-            return name.replace("-", " ").replace(/\b\w/g, (l) => {
-              return l.toUpperCase();
-            });
+            return name
+              .replace("--", " ")
+              .replace("-", " ")
+              .replace(/\b\w/g, (l) => {
+                return l.toUpperCase();
+              });
           },
           getHexColor(color) {
             if (color.startsWith("var(")) {
@@ -911,11 +906,11 @@
               }
             } else return ColorConvert.formatHex(color);
           },
-          applyColSelect(event) {
+          applyColSelect(event, varId) {
             event.target.nextElementSibling.value = event.target.value;
-            document.documentElement.style.setProperty(`--${event.target.nextElementSibling.id}`, event.target.nextElementSibling.value);
+            event.target.nextElementSibling.dispatchEvent(new Event("input", { bubbles: true }));
           },
-          applyVar(event, isColor) {
+          applyVar(event, varId, isColor) {
             if (isColor && !event.target.value.startsWith("var(")) {
               try {
                 ColorConvert.parse(event.target.value);
@@ -925,7 +920,7 @@
               }
               event.target.setCustomValidity("");
             }
-            document.documentElement.style.setProperty(`--${event.target.id}`, event.target.value);
+            document.documentElement.style.setProperty(varId, event.target.value);
           },
           colors: {
             light: [],
@@ -997,61 +992,81 @@
             this.showExport = true;
           },
           getThemeVars() {
-            const tempDoc = document.implementation.createHTMLDocument("TempDoc");
-            tempDoc.body.classList.add("dark");
-            const lightStyles = window.getComputedStyle(tempDoc.documentElement);
-            const darkStyles = window.getComputedStyle(tempDoc.body);
-
             this.colors.light.length = 0;
             this.colors.dark.length = 0;
-            for (let v = 0; v < this.colorVars.length; v++) {
-              this.colors.light.push({
-                name: this.colorVars[v],
-                value: lightStyles.getPropertyValue(`--${this.colorVars[v]}`).trim(),
-              });
-              this.colors.dark.push({
-                name: this.colorVars[v],
-                value: darkStyles.getPropertyValue(`--${this.colorVars[v]}`).trim(),
-              });
-            }
-
             this.shadows.light.length = 0;
             this.shadows.dark.length = 0;
-            for (let v = 0; v < this.shadowVars.length; v++) {
-              this.shadows.light.push({
-                name: this.shadowVars[v],
-                value: lightStyles.getPropertyValue(`--${this.shadowVars[v]}`).trim(),
-              });
-              this.shadows.dark.push({
-                name: this.shadowVars[v],
-                value: darkStyles.getPropertyValue(`--${this.shadowVars[v]}`).trim(),
-              });
-            }
-
             this.fonts.light.length = 0;
             this.fonts.dark.length = 0;
-            for (let v = 0; v < this.fontVars.length; v++) {
-              this.fonts.light.push({
-                name: this.fontVars[v],
-                value: lightStyles.getPropertyValue(`--${this.fontVars[v]}`).trim(),
-              });
-              this.fonts.dark.push({
-                name: this.fontVars[v],
-                value: darkStyles.getPropertyValue(`--${this.fontVars[v]}`).trim(),
-              });
-            }
-
             this.others.light.length = 0;
             this.others.dark.length = 0;
-            for (let v = 0; v < this.othersVars.length; v++) {
-              this.others.light.push({
-                name: this.othersVars[v],
-                value: lightStyles.getPropertyValue(`--${this.othersVars[v]}`).trim(),
-              });
-              this.others.dark.push({
-                name: this.othersVars[v],
-                value: darkStyles.getPropertyValue(`--${this.othersVars[v]}`).trim(),
-              });
+
+            for (const sheet of document.styleSheets) {
+              for (const rule of sheet.cssRules) {
+                if (rule.selectorText === ":root, :host") {
+                  for (const name of rule.style) {
+                    if (name.startsWith("--")) {
+                      if (this.colorVars.includes(name)) {
+                        this.colors.light.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      } else if (this.shadowVars.includes(name)) {
+                        this.shadows.light.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      } else if (this.fontVars.includes(name)) {
+                        this.fonts.light.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      } else {
+                        this.others.light.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      }
+                    }
+                  }
+                }
+
+                if (rule.selectorText === ".dark") {
+                  for (const name of rule.style) {
+                    if (name.startsWith("--")) {
+                      if (this.colorVars.includes(name)) {
+                        this.colors.dark.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      } else if (this.shadowVars.includes(name)) {
+                        this.shadows.dark.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      } else if (this.fontVars.includes(name)) {
+                        this.fonts.dark.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      } else {
+                        this.others.dark.push({
+                          varId: name,
+                          name: this.getVarLabel(name),
+                          value: rule.style.getPropertyValue(name).trim(),
+                        });
+                      }
+                    }
+                  }
+                }
+              }
             }
           },
           init() {

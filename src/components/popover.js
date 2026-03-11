@@ -82,7 +82,7 @@ export default function (Alpine) {
     if (!popover) {
       throw new Error(`${original} must be placed after a popover element`);
     }
-    el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'rounded-md', 'border', 'shadow-md', 'outline-hidden', 'overflow-scroll');
+    el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=closed]:hidden', 'top-0', 'left-0', 'z-50', 'min-w-[1rem]', 'rounded-md', 'border', 'shadow-md', 'outline-hidden', 'overflow-auto');
     el.setAttribute('data-slot', 'popover');
     el.setAttribute('role', 'dialog');
     el.setAttribute('tabindex', '-1');

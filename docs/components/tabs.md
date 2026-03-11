@@ -143,7 +143,7 @@ x-h-tabs-content
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
-    <div class="absolute-fit absolute overflow-scroll">
+    <div class="absolute-fit absolute overflow-auto">
       <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
     </div>
   </div>
@@ -159,7 +159,7 @@ x-h-tabs-content
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
-    <div class="absolute-fit absolute overflow-scroll">
+    <div class="absolute-fit absolute overflow-auto">
       <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
     </div>
   </div>

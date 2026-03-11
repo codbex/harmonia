@@ -25,7 +25,7 @@ Element positioning.
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stc1c" aria-labelledby="stc1">
-    <div class="absolute-fit absolute overflow-scroll">
+    <div class="absolute-fit absolute overflow-auto">
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media>
@@ -52,7 +52,7 @@ Element positioning.
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stc1c" aria-labelledby="stc1">
-    <div class="absolute-fit absolute overflow-scroll">
+    <div class="absolute-fit absolute overflow-auto">
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media>
