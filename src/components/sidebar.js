@@ -37,7 +37,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-content', (el) => {
-    el.classList.add('vbox', 'min-h-0', 'flex-1', 'gap-2', 'overflow-auto', 'group-data-[collapsed=true]/sidebar:overflow-hidden');
+    el.classList.add('vbox', 'min-h-0', 'flex-1', 'overflow-auto', 'scrollbar-none');
     el.setAttribute('data-slot', 'sidebar-content');
   });
 
@@ -389,13 +389,16 @@ export default function (Alpine) {
 
   Alpine.directive('h-sidebar-menu-skeleton', (el, { modifiers }) => {
     el.classList.add('flex', 'h-8', 'items-center', 'gap-2', 'rounded-md', 'px-2');
+    const skeleton = document.createElement('div');
+    skeleton.classList.add('h-4', 'flex-1', 'bg-sidebar-secondary', 'animate-pulse', 'rounded-md');
     if (modifiers.includes('icon')) {
+      skeleton.classList.add('group-data-[collapsed=true]/sidebar:!hidden');
       const icon = document.createElement('div');
       icon.classList.add('size-4', 'rounded-md', 'bg-sidebar-secondary', 'animate-pulse', 'rounded-md');
       el.appendChild(icon);
+    } else {
+      skeleton.classList.add('group-data-[collapsed=true]/sidebar:!w-4', 'group-data-[collapsed=true]/sidebar:!max-w-4');
     }
-    const skeleton = document.createElement('div');
-    skeleton.classList.add('h-4', 'flex-1', 'bg-sidebar-secondary', 'animate-pulse', 'rounded-md');
     skeleton.style.maxWidth = `${Math.floor(Math.random() * 40) + 50}%`;
     el.appendChild(skeleton);
     el.setAttribute('data-slot', 'sidebar-menu-skeleton');

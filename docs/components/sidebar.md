@@ -618,20 +618,20 @@ x-h-sidebar-footer
           </li>
         </ul>
       </div>
-    </div>
 
-    <div x-h-sidebar-separator></div>
+      <div x-h-sidebar-separator></div>
 
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label>Skeleton</div>
-      <div x-h-sidebar-group-content>
-        <ul x-h-sidebar-menu>
-          <template x-for="i in 5">
-            <li x-h-sidebar-menu-item :key="i">
-              <div x-h-sidebar-menu-skeleton.icon></div>
-            </li>
-          </template>
-        </ul>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Skeleton</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <template x-for="i in 5">
+              <li x-h-sidebar-menu-item :key="i">
+                <div x-h-sidebar-menu-skeleton.icon></div>
+              </li>
+            </template>
+          </ul>
+        </div>
       </div>
     </div>
 
