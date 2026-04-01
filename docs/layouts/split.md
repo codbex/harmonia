@@ -55,14 +55,15 @@ x-h-split-panel
 
 #### x-h-split-panel
 
-| Attribute     | Type    | Required | Description                              |
-| ------------- | ------- | -------- | ---------------------------------------- |
-| data-collapse | boolean | false    | Collapses the panel to the minimum size. |
-| data-hidden   | boolean | false    | Hides the panel.                         |
-| data-locked   | boolean | false    | Locks/disables the resize handle.        |
-| data-size     | boolean | false    | Initial size of the panel.               |
-| data-min      | boolean | false    | Minimum size of the panel.               |
-| data-max      | boolean | false    | Naximum size of the panel.               |
+| Attribute       | Type    | Required | Description                                                   |
+| --------------- | ------- | -------- | ------------------------------------------------------------- |
+| data-collapse   | boolean | false    | Collapses the panel to the minimum size.                      |
+| data-gutterless | boolean | false    | Removes the resize handle. Usually paired with `data-locked`. |
+| data-hidden     | boolean | false    | Hides the panel.                                              |
+| data-locked     | boolean | false    | Locks/disables the resize handle.                             |
+| data-size       | boolean | false    | Initial size of the panel.                                    |
+| data-min        | boolean | false    | Minimum size of the panel.                                    |
+| data-max        | boolean | false    | Naximum size of the panel.                                    |
 
 ## Examples
 

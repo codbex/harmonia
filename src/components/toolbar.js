@@ -30,7 +30,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-toolbar-title', (el) => {
-    el.classList.add('text', '[[data-size=sm]_&]:text-sm', '[[data-size=md]_&]:text-sm', 'first:pl-2', 'font-medium', 'whitespace-nowrap', 'text-ellipsis', 'overflow-hidden');
+    el.classList.add('text', '[[data-size=sm]_&]:text-sm', '[[data-size=md]_&]:text-sm', 'first-of-type:pl-2', 'font-medium', 'whitespace-nowrap', 'text-ellipsis', 'overflow-hidden');
     el.setAttribute('data-slot', 'toolbar-title');
   });
 

@@ -221,6 +221,10 @@ export default function (Alpine) {
         refreshGutters();
         queueLayout();
       },
+      gutterHidden() {
+        refreshGutters();
+        queueLayout();
+      },
       panelChange() {
         queueLayout();
       },
@@ -267,6 +271,8 @@ export default function (Alpine) {
     el.classList.add('flex', 'shrink', 'grow-0', 'box-border', 'min-w-0', 'min-h-0', 'overflow-visible');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split-panel');
+
+    let gutterless = el.getAttribute('data-gutterless') === 'true';
 
     const gutter = document.createElement('span');
     gutter.setAttribute('data-slot', 'split-gutter');
@@ -398,7 +404,7 @@ export default function (Alpine) {
       },
 
       setGutter(last) {
-        if (this.hidden || last) {
+        if (this.hidden || gutterless || last) {
           gutter.remove();
         } else if (!gutter.parentElement) {
           el.after(gutter);
@@ -540,7 +546,10 @@ export default function (Alpine) {
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'data-hidden') {
+        if (mutation.attributeName === 'data-gutterless') {
+          gutterless = el.getAttribute('data-gutterless') === 'true';
+          split._h_split.gutterHidden();
+        } else if (mutation.attributeName === 'data-hidden') {
           panel.hidden = el.getAttribute('data-hidden') === 'true';
           if (panel.hidden) {
             el.classList.add('hidden');
@@ -560,7 +569,7 @@ export default function (Alpine) {
       });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-hidden', 'data-locked', 'data-collapse'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-hidden', 'data-locked', 'data-collapse', 'data-gutterless'] });
 
     cleanup(() => {
       gutter.remove();
