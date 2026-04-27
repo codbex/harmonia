@@ -22,8 +22,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       # Ensure npm 11.5.1 or later is installed
+      # Ensure npm 11.11 or earlier is installed
       - name: Update npm
-        run: npm install -g npm@latest
+        run: npm install -g npm@11.11.1
 
       - name: Install dependencies
         run: npm ci
