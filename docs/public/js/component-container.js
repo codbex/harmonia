@@ -1,4 +1,4 @@
-import { getBreakpointListener, registerComponents } from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
+import { getBreakpointListener, getColorScheme, getSystemColorScheme, registerComponents, setColorScheme } from '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.esm.js';
 import Alpine from '/harmonia/lib/node_modules/alpinejs/dist/module.esm.min.js';
 
 class ComponentContainer extends HTMLElement {
@@ -68,10 +68,10 @@ class ComponentContainer extends HTMLElement {
             for (let a = 0; a < staticScript.attributes.length; a++) {
               script.setAttribute(staticScript.attributes[a].name, staticScript.attributes[a].value);
             }
-            const scriptText = document.createTextNode(`function initJS(Alpine, container, getBreakpointListener) {${staticScript.innerHTML}}`);
+            const scriptText = document.createTextNode(`function initJS(Alpine, container, getBreakpointListener, getColorScheme, setColorScheme, getSystemColorScheme) {${staticScript.innerHTML}}`);
             script.appendChild(scriptText);
             staticScript.parentNode.replaceChild(script, staticScript);
-            initJS(Alpine, this.container, getBreakpointListener);
+            initJS(Alpine, this.container, getBreakpointListener, getColorScheme, setColorScheme, getSystemColorScheme);
           }
           registerComponents(Alpine.plugin);
           Alpine.initTree(this.container);

@@ -99,6 +99,7 @@ export default function (Alpine) {
         } else {
           el._x_model.set('');
         }
+        el.dispatchEvent(new Event('change', { bubbles: true }));
       };
       select._h_model.get = el._x_model.get;
     } else {

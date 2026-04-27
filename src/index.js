@@ -40,17 +40,19 @@ import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 import tree from './components/tree';
 
-import { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
+import { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import { getBreakpointListener } from './utils/breakpoint-listener';
 
 import template from './utils/template';
 
+import include from './utils/include';
+
 import focus from './utils/focus';
 
 import { version } from '../package.json';
 
-window.Harmonia = { getBreakpointListener, addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme, version };
+window.Harmonia = { getBreakpointListener, addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme, getSystemColorScheme, version };
 
 document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(accordion);
@@ -97,4 +99,5 @@ document.addEventListener('alpine:init', () => {
   // Utility plugins
   window.Alpine.plugin(focus);
   window.Alpine.plugin(template);
+  window.Alpine.plugin(include);
 });

@@ -817,7 +817,7 @@
           },
         }));
         Alpine.data("themeController", () => ({
-          darkMode: Harmonia.getColorScheme() === "dark",
+          darkMode: Harmonia.getColorScheme() === "dark" ? true : Harmonia.getSystemColorScheme() === "dark",
           showExport: false,
           showImport: false,
           enableDarkMode() {

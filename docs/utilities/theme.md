@@ -12,6 +12,7 @@ Utility functions for retrieving and updating the color scheme.
 | setColorScheme            | `light`<br />`dark`<br />`auto` | none                            | Updates the application’s color scheme to the specified value.    |
 | addColorSchemeListener    | callbackFunction                | none                            | Registers a callback to be invoked when the color scheme changes. |
 | removeColorSchemeListener | callbackFunction                | none                            | Unregisters a previously registered callback.                     |
+| getSystemColorScheme      | none                            | `light`<br />`dark`             | Retrieves the currently active browser/OS color scheme.           |
 
 ::: info Seting the color scheme
 The `setColorScheme` function automatically persists the most recently selected color scheme to the browser’s local storage, ensuring the preference is retained and reapplied across page loads without requiring additional work.

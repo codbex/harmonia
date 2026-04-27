@@ -65,6 +65,13 @@ const getColorScheme = () => {
   return 'light';
 };
 
+const getSystemColorScheme = () => {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  return 'light';
+};
+
 const addColorSchemeListener = (callback) => {
   callbacks.push(callback);
 };
@@ -80,4 +87,4 @@ const removeColorSchemeListener = (callback) => {
 
 initColorScheme();
 
-export { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme };
+export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme };

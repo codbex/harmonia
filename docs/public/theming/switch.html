@@ -1,0 +1,16 @@
+<div class="hbox items-center justify-center" x-data="themeSwitch">
+  <div class="flex items-center gap-2 pr-2">
+    <div x-h-switch>
+      <input type="checkbox" id="modeSw" x-model="darkMode" @change="toggleLightDark()" />
+    </div>
+    <label x-h-label for="modeSw">Dark Mode</label>
+  </div>
+</div>
+<script type="text/javascript">
+  Alpine.data("themeSwitch", () => ({
+    darkMode: getColorScheme() === "dark" ? true : getSystemColorScheme() === "dark",
+    toggleLightDark() {
+      setColorScheme(this.darkMode ? "dark" : "light");
+    },
+  }));
+</script>

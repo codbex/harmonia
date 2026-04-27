@@ -1,0 +1,18 @@
+<div class="hbox items-center justify-center" x-data="themeSelect">
+  <div x-h-select>
+    <input x-h-select-input placeholder="Select" x-model="mode" @change="themeChange()" />
+    <div x-h-select-content>
+      <div x-h-select-option="'Auto'" data-value="auto"></div>
+      <div x-h-select-option="'Light'" data-value="light"></div>
+      <div x-h-select-option="'Dark'" data-value="dark"></div>
+    </div>
+  </div>
+</div>
+<script>
+  Alpine.data("themeSelect", () => ({
+    mode: getColorScheme(),
+    themeChange() {
+      setColorScheme(this.mode);
+    },
+  }));
+</script>

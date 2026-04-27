@@ -42,9 +42,10 @@ import tree from './components/tree';
 
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
-export { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
+export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import focus from './utils/focus';
+import include from './utils/include';
 import template from './utils/template';
 
 export {
@@ -62,6 +63,7 @@ export {
   fieldset as Fieldset,
   focus as Focus,
   icon as Icon,
+  include as Include,
   infoPage as InfoPage,
   input as Input,
   label as Label,
@@ -108,6 +110,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(fieldset);
   registerPlugin(focus);
   registerPlugin(icon);
+  registerPlugin(include);
   registerPlugin(infoPage);
   registerPlugin(input);
   registerPlugin(label);

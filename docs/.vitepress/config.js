@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress';
+import { version } from '../../package.json';
 
 const basePath = '/harmonia/';
 
@@ -86,6 +87,7 @@ export default defineConfig({
         items: [
           { text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' },
           { text: 'Focus', link: '/utilities/focus' },
+          { text: 'Include', link: '/utilities/include' },
           { text: 'Template', link: '/utilities/template' },
           { text: 'Theme', link: '/utilities/theme' },
         ],
@@ -130,5 +132,18 @@ export default defineConfig({
         isCustomElement: (tag) => tag === 'component-container' || tag === 'svg-icon',
       },
     },
+  },
+  vite: {
+    plugins: [
+      {
+        name: 'replace-placeholder',
+        enforce: 'pre',
+        transform(code, id) {
+          if (id.endsWith('.md')) {
+            return code.replace(/__H_VER__/g, version);
+          }
+        },
+      },
+    ],
   },
 });
