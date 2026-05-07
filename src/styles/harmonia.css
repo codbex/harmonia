@@ -32,6 +32,12 @@
 @source inline("{!,}h-{auto,full,screen,1/2}");
 
 @source inline("{!,}size-{4..12}");
+@source inline("{!,}h-{4..12}");
+@source inline("min-h-{4..12}");
+@source inline("max-h-{4..12}");
+@source inline("{!,}w-{4..12}");
+@source inline("min-w-{4..12}");
+@source inline("max-w-{4..12}");
 @source inline("{!,}size-full");
 .min-size-4 {
   @apply min-h-4 min-w-4;

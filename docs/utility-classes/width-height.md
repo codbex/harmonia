@@ -7,11 +7,14 @@ The width class names start with `w`.
 | Class        | Description                                            |
 | ------------ | ------------------------------------------------------ |
 | w-auto       | Auto width.                                            |
+| w-`4-12`     | Width sizes 4 to 12.                                   |
 | w-full       | 100% width.                                            |
 | w-screen     | Makes the width equal to the screen size.              |
 | max-w-screen | Sets maximum width to the width of the screen.         |
 | max-w-dvw    | Sets maximum width to the dynamic width of the screen. |
+| max-w-`4-12` | Maximum width sizes 4 to 12.                           |
 | min-w-0      | Minimum width of 0 px.                                 |
+| min-w-`4-12` | Minimum width sizes 4 to 12.                           |
 | w-1/2        | 50% width.                                             |
 | w-1/3        | 33% width.                                             |
 | w-1/4        | 25% width.                                             |
@@ -24,19 +27,22 @@ The width class names start with `w`.
 
 The height class names start with `h`.
 
-| Class    | Description                               |
-| -------- | ----------------------------------------- |
-| h-auto   | Auto height.                              |
-| h-full   | 100% height.                              |
-| h-screen | Makes the width equal to the screen size. |
-| h-1/2    | 50% height.                               |
+| Class        | Description                               |
+| ------------ | ----------------------------------------- |
+| h-auto       | Auto height.                              |
+| h-`4-12`     | Height sizes 4 to 12.                     |
+| h-full       | 100% height.                              |
+| h-screen     | Makes the width equal to the screen size. |
+| h-1/2        | 50% height.                               |
+| max-h-`4-12` | Maximum height sizes 4 to 12.             |
+| min-h-`4-12` | Minimum height sizes 4 to 12.             |
 
 In case both width and height have to be applied and they must be the same, the `size-*` class can be used with a range from 4 to 12.
 
 | Class       | Description                                                     |
 | ----------- | --------------------------------------------------------------- |
 | size-full   | Full size container.                                            |
-| size-`4-12` | Width and height.                                               |
+| size-`4-12` | Width and height sizes 4 to 12.                                 |
 | min-size-4  | Minimum width and height of `var(--spacing)*4`. Used for icons. |
 | tile-xs     | Extra small size container.                                     |
 | tile-sm     | Small size container.                                           |
