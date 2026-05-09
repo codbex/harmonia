@@ -14,6 +14,8 @@ Use toolbars to organize controls that operate on the current content or view, s
 x-h-toolbar
 x-h-toolbar-image
 x-h-toolbar-title
+x-h-toolbar-subtitle
+x-h-toolbar-branding
 x-h-toolbar-spacer
 x-h-toolbar-separator
 ```
@@ -196,9 +198,12 @@ x-h-toolbar-separator
 
 <ClientOnly>
 <component-container data-js="/js/init-icons.js">
-<div x-h-toolbar x-data="{ showClear: false, search: '' }">
+<header x-h-toolbar x-data="{ showClear: false, search: '' }">
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
-  <span x-h-toolbar-title class="pl-1">Harmonia</span>
+  <span x-h-toolbar-branding>
+    <h1 x-h-toolbar-title>Harmonia</h1>
+    <h2 x-h-toolbar-subtitle>by codbex</h2>
+  </span>
   <div x-h-toolbar-spacer></div>
   <div x-h-input-group style="max-width:50%">
     <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
@@ -232,14 +237,17 @@ x-h-toolbar-separator
     <div x-h-menu-separator></div>
     <li x-h-menu-item data-variant="negative">Log out</li>
   </ul>
-</div>
+</header>
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-h-toolbar x-data="{ showClear: false, search: '' }">
+<header x-h-toolbar x-data="{ showClear: false, search: '' }">
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
-  <span x-h-toolbar-title class="pl-1">Harmonia</span>
+  <span x-h-toolbar-branding>
+    <h1 x-h-toolbar-title>Harmonia</h1>
+    <h2 x-h-toolbar-subtitle>by codbex</h2>
+  </span>
   <div x-h-toolbar-spacer></div>
   <div x-h-input-group style="max-width:50%">
     <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
@@ -273,5 +281,5 @@ x-h-toolbar-separator
     <div x-h-menu-separator></div>
     <li x-h-menu-item data-variant="negative">Log out</li>
   </ul>
-</div>
+</header>
 ```
