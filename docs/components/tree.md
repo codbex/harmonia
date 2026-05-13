@@ -60,7 +60,7 @@ x-h-tree-button
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <ul x-h-tree>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="positive">

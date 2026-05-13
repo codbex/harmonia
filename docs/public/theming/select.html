@@ -10,9 +10,9 @@
 </div>
 <script>
   Alpine.data("themeSelect", () => ({
-    mode: getColorScheme(),
+    mode: Harmonia.getColorScheme(),
     themeChange() {
-      setColorScheme(this.mode);
+      Harmonia.setColorScheme(this.mode);
     },
   }));
 </script>

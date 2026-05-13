@@ -159,7 +159,7 @@ CSS utility classes to apply colors to elements, svgs and text.
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <p class="bg-muted text-muted-foreground p-4">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 <svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>

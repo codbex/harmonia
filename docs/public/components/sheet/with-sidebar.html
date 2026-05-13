@@ -1,4 +1,4 @@
-<div x-data="app">
+<div x-data="SheetController">
   <div x-h-sheet-overlay="isOpen">
     <div x-h-sheet :data-align="side">
       <div x-h-sidebar>
@@ -38,10 +38,7 @@
 </div>
 
 <script type="text/javascript">
-  lucide.createIcons({
-    root: container,
-  });
-  Alpine.data("app", () => ({
+  Alpine.data("SheetController", () => ({
     isOpen: false,
     side: "left",
     openSheet() {

@@ -76,7 +76,7 @@ x-h-table-footer
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/table/full.html" data-class="border-0" data-padding="false">
+<component-container src="/components/table/full.html" data-class="border-0" data-icons="true">
 </component-container>
 </ClientOnly>
 

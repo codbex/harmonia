@@ -45,9 +45,9 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="hbox gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -67,9 +67,9 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="vbox gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -89,9 +89,9 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -111,9 +111,9 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row-reverse gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -122,7 +122,7 @@ The `flex-*` classes must be combined with the `flex` class.
 <br />
 
 <ClientOnly>
-<component-container data-height="18rem">
+<component-container data-style="height: 18rem">
 <div class="flex flex-col h-full gap-1">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
@@ -133,9 +133,9 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex h-full flex-col gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -144,7 +144,7 @@ The `flex-*` classes must be combined with the `flex` class.
 <br />
 
 <ClientOnly>
-<component-container data-height="18rem">
+<component-container data-style="height: 18rem">
 <div class="flex flex-col-reverse h-full gap-1">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
@@ -155,9 +155,9 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex h-full flex-col-reverse gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -198,30 +198,30 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row flex-wrap gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-  <span class="bg-primary text-primary-foreground p-2">7</span>
-  <span class="bg-primary text-primary-foreground p-2">8</span>
-  <span class="bg-primary text-primary-foreground p-2">9</span>
-  <span class="bg-primary text-primary-foreground p-2">10</span>
-  <span class="bg-primary text-primary-foreground p-2">11</span>
-  <span class="bg-primary text-primary-foreground p-2">12</span>
-  <span class="bg-primary text-primary-foreground p-2">13</span>
-  <span class="bg-primary text-primary-foreground p-2">14</span>
-  <span class="bg-primary text-primary-foreground p-2">15</span>
-  <span class="bg-primary text-primary-foreground p-2">16</span>
-  <span class="bg-primary text-primary-foreground p-2">17</span>
-  <span class="bg-primary text-primary-foreground p-2">18</span>
-  <span class="bg-primary text-primary-foreground p-2">19</span>
-  <span class="bg-primary text-primary-foreground p-2">20</span>
-  <span class="bg-primary text-primary-foreground p-2">21</span>
-  <span class="bg-primary text-primary-foreground p-2">22</span>
-  <span class="bg-primary text-primary-foreground p-2">23</span>
-  <span class="bg-primary text-primary-foreground p-2">24</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">7</span>
+  <span class="bg-primary p-2 text-primary-foreground">8</span>
+  <span class="bg-primary p-2 text-primary-foreground">9</span>
+  <span class="bg-primary p-2 text-primary-foreground">10</span>
+  <span class="bg-primary p-2 text-primary-foreground">11</span>
+  <span class="bg-primary p-2 text-primary-foreground">12</span>
+  <span class="bg-primary p-2 text-primary-foreground">13</span>
+  <span class="bg-primary p-2 text-primary-foreground">14</span>
+  <span class="bg-primary p-2 text-primary-foreground">15</span>
+  <span class="bg-primary p-2 text-primary-foreground">16</span>
+  <span class="bg-primary p-2 text-primary-foreground">17</span>
+  <span class="bg-primary p-2 text-primary-foreground">18</span>
+  <span class="bg-primary p-2 text-primary-foreground">19</span>
+  <span class="bg-primary p-2 text-primary-foreground">20</span>
+  <span class="bg-primary p-2 text-primary-foreground">21</span>
+  <span class="bg-primary p-2 text-primary-foreground">22</span>
+  <span class="bg-primary p-2 text-primary-foreground">23</span>
+  <span class="bg-primary p-2 text-primary-foreground">24</span>
 </div>
 ```
 
@@ -240,8 +240,8 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row gap-1">
-  <span class="bg-primary text-primary-foreground p-2">Normal</span>
-  <span class="bg-primary text-primary-foreground flex-1 p-2">Flex 1</span>
+  <span class="bg-primary p-2 text-primary-foreground">Normal</span>
+  <span class="flex-1 bg-primary p-2 text-primary-foreground">Flex 1</span>
 </div>
 ```
 
@@ -260,8 +260,8 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row gap-1">
-  <span class="bg-primary text-primary-foreground flex-auto p-2">Auto</span>
-  <span class="bg-primary text-primary-foreground flex-auto p-2">Auto</span>
+  <span class="flex-auto bg-primary p-2 text-primary-foreground">Auto</span>
+  <span class="flex-auto bg-primary p-2 text-primary-foreground">Auto</span>
 </div>
 ```
 
@@ -280,7 +280,7 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ```html
 <div class="flex flex-row gap-1">
-  <span class="bg-primary text-primary-foreground flex-none p-2">None</span>
-  <span class="bg-primary text-primary-foreground flex-none p-2">None</span>
+  <span class="flex-none bg-primary p-2 text-primary-foreground">None</span>
+  <span class="flex-none bg-primary p-2 text-primary-foreground">None</span>
 </div>
 ```

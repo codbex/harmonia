@@ -1,4 +1,4 @@
-<div x-data="app" class="vbox size-full">
+<div x-data="RecursiveSplitController" class="vbox size-full">
   <div x-h-split data-orientation="horizontal" data-variant="border">
     <template x-for="panel in panels" :key="panel.id">
       <template x-h-template="$refs.panelTemplate" x-data="{ panel: panel }"></template>
@@ -21,7 +21,7 @@
 </div>
 
 <script>
-  Alpine.data("app", () => ({
+  Alpine.data("RecursiveSplitController", () => ({
     panels: [
       {
         name: "Left",

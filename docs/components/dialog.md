@@ -23,7 +23,7 @@ x-h-dialog-footer
 ## Examples
 
 <ClientOnly>
-<component-container data-html="/components/dialog/dialog.html" data-class="flex flex-col items-center">
+<component-container src="/components/dialog/dialog.html" data-class="flex flex-col items-center">
 </component-container>
 </ClientOnly>
 

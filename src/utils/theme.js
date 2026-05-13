@@ -59,10 +59,7 @@ const setColorScheme = (mode) => {
 const getColorScheme = () => {
   const theme = localStorage.getItem(colorSchemeKey);
   if (theme) return theme;
-  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
-  }
-  return 'light';
+  return 'auto';
 };
 
 const getSystemColorScheme = () => {

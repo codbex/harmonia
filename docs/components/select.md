@@ -82,7 +82,7 @@ x-h-select-separator
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/select/model.html">
+<component-container src="/components/select/model.html">
 </component-container>
 </ClientOnly>
 
@@ -102,24 +102,29 @@ x-h-select-separator
   </div>
 </div>
 <script>
-  const originalItems = [
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Blueberry', value: 'blueberry' },
-    { label: 'Grapes', value: 'grapes' },
-    { label: 'Pineapple', value: 'pineapple' },
-    { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
-  ];
   Alpine.data('selectData', () => ({
+    getOriginalItems() {
+      return [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+        { label: 'Blueberry', value: 'blueberry' },
+        { label: 'Grapes', value: 'grapes' },
+        { label: 'Pineapple', value: 'pineapple' },
+        { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
+      ];
+    },
     selected: 'banana',
     placeholder: 'Select',
-    items: structuredClone(originalItems),
+    items: [],
     addFromSearch(event) {
-      let nItems = structuredClone(originalItems);
+      let nItems = this.getOriginalItems();
       nItems.forEach((element) => {
         element.label = `${event.target.value}${element.label}`;
       });
       this.items = nItems;
+    },
+    init() {
+      this.items = this.getOriginalItems();
     },
   }));
 </script>
@@ -130,12 +135,12 @@ x-h-select-separator
 The input automatically switches modes based on the model. If you want to select multiple items, pass an array as the model.
 
 <ClientOnly>
-<component-container data-html="/components/select/multiple.html">
+<component-container src="/components/select/multiple.html">
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-data="selectData">
+<div x-data="selectMultipleData">
   <div x-h-select>
     <input x-h-select-input :placeholder="placeholder" x-model="selected" />
     <div x-h-select-content>
@@ -150,24 +155,29 @@ The input automatically switches modes based on the model. If you want to select
   </div>
 </div>
 <script>
-  const originalItems = [
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Blueberry', value: 'blueberry' },
-    { label: 'Grapes', value: 'grapes' },
-    { label: 'Pineapple', value: 'pineapple' },
-    { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
-  ];
-  Alpine.data('selectData', () => ({
+  Alpine.data('selectMultipleData', () => ({
+    getOriginalItems() {
+      return [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+        { label: 'Blueberry', value: 'blueberry' },
+        { label: 'Grapes', value: 'grapes' },
+        { label: 'Pineapple', value: 'pineapple' },
+        { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
+      ];
+    },
     selected: ['apple', 'banana'],
     placeholder: 'Select',
-    items: structuredClone(originalItems),
+    items: [],
     addFromSearch(event) {
-      let nItems = structuredClone(originalItems);
+      let nItems = this.getOriginalItems();
       nItems.forEach((element) => {
         element.label = `${event.target.value}${element.label}`;
       });
       this.items = nItems;
+    },
+    init() {
+      this.items = this.getOriginalItems();
     },
   }));
 </script>

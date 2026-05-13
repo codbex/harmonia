@@ -32,7 +32,7 @@ x-h-template
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/template/tree.html">
+<component-container src="/components/template/tree.html">
 </component-container>
 </ClientOnly>
 

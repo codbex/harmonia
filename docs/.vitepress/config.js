@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress';
 import { version } from '../../package.json';
 
-const basePath = '/harmonia/';
+const basePath = '/harmonia/'; // Also in component-container.js
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -123,6 +123,8 @@ export default defineConfig({
     ['script', { src: `${basePath}js/component-container.js`, type: 'module' }],
     ['script', { src: `${basePath}js/svg-icon.js`, type: 'module' }],
     ['script', { src: `${basePath}lib/node_modules/lucide/dist/umd/lucide.min.js`, type: 'text/javascript' }],
+    ['script', { src: `${basePath}lib/node_modules/alpinejs/dist/cdn.min.js`, defer: true, type: 'text/javascript' }],
+    ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.js`, type: 'text/javascript' }],
     ['link', { href: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.css`, rel: 'stylesheet' }],
     ['link', { href: `${basePath}fonts.css`, rel: 'stylesheet' }],
   ],

@@ -1,4 +1,4 @@
-<div x-data="app" class="vbox size-full">
+<div x-data="DynamicSplitController" class="vbox size-full">
   <div x-h-toolbar>
     <button x-h-button data-variant="primary" @click="add()">Add</button>
     <div x-h-toolbar-spacer></div>
@@ -14,7 +14,7 @@
 </div>
 
 <script>
-  Alpine.data("app", () => ({
+  Alpine.data("DynamicSplitController", () => ({
     panels: [
       {
         name: "Panel 1",

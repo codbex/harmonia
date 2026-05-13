@@ -177,7 +177,7 @@ x-h-button
 You can include an icon directly inside the button.
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button>
   <i role="img" data-lucide="chevron-left"></i>
   Left-aligned
@@ -246,7 +246,7 @@ You can include a spinner directly inside the button. The spinner will adjust it
 ## Icon button
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="icon" aria-label="Icon button">
   <i role="img" data-lucide="save"></i>
 </button>
@@ -264,7 +264,7 @@ You can include a spinner directly inside the button. The spinner will adjust it
 ### Small
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="sm">
   <i role="img" data-lucide="save"></i>
   Save
@@ -288,7 +288,7 @@ You can include a spinner directly inside the button. The spinner will adjust it
 ### Medium
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center gap-4">
+<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="md">
   <i role="img" data-lucide="save"></i>
   Save

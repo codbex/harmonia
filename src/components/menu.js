@@ -33,6 +33,9 @@ export default function (Alpine) {
       while (sibling && !sibling.hasOwnProperty('_menu_trigger')) {
         sibling = sibling.previousElementSibling;
       }
+      if (!sibling.hasOwnProperty('_menu_trigger')) {
+        throw new Error(`${original} must be placed after the menu trigger`);
+      }
       return sibling;
     })();
 
@@ -265,7 +268,7 @@ export default function (Alpine) {
     }
 
     cleanup(() => {
-      listenForTrigger(false);
+      if (menuTrigger) listenForTrigger(false);
       top.removeEventListener('click', onClick);
       top.removeEventListener('contextmenu', onClick);
       el.removeEventListener('keydown', onKeyDown);

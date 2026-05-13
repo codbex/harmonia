@@ -77,7 +77,7 @@ x-h-avatar-fallback
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col items-center">
+<component-container data-icons="true" data-class="flex flex-col items-center">
 <span x-h-avatar aria-label="camera">
   <i role="img" data-lucide="camera"></i>
 </span>

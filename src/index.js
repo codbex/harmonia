@@ -54,7 +54,7 @@ import { version } from '../package.json';
 
 window.Harmonia = { getBreakpointListener, addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme, getSystemColorScheme, version };
 
-document.addEventListener('alpine:init', () => {
+function registerPlugins() {
   window.Alpine.plugin(accordion);
   window.Alpine.plugin(alert);
   window.Alpine.plugin(avatar);
@@ -100,4 +100,7 @@ document.addEventListener('alpine:init', () => {
   window.Alpine.plugin(focus);
   window.Alpine.plugin(template);
   window.Alpine.plugin(include);
-});
+}
+
+if (window.Alpine) registerPlugins();
+else document.addEventListener('alpine:init', registerPlugins, { once: true });

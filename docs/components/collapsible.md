@@ -36,7 +36,7 @@ x-h-collapsible-content
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-collapsible="true">
   <button x-h-button x-h-collapsible-trigger.chevron>
     Click
@@ -58,7 +58,7 @@ x-h-collapsible-content
 ```
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-collapsible="false">
   <button x-h-button x-h-collapsible-trigger.chevron.90>
     Click

@@ -43,7 +43,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col gap-4">
+<component-container data-icons="true" data-class="flex flex-col gap-4">
 <div x-h-tile>
   <div x-h-tile-content>
     <div x-h-tile-title>Default variant</div>
@@ -141,7 +141,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
     <i role="img" data-lucide="link" class="size-5"></i>
@@ -175,7 +175,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-col gap-4">
+<component-container data-icons="true" data-class="flex flex-col gap-4">
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="icon">
     <i role="img" data-lucide="cog" class="size-5"></i>
@@ -263,7 +263,7 @@ x-h-tile-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-tile-group class="flex">
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>

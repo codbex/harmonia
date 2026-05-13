@@ -805,18 +805,8 @@ export default function (Alpine) {
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
       okButton.removeEventListener('click', timepicker._h_timepicker.close);
-      for (let h = 0; h < hoursList.children.length; h++) {
-        hoursList.children[h].removeEventListener('click', setHour);
-      }
-      for (let m = 0; m < minutesList.children.length; m++) {
-        minutesList.children[m].removeEventListener('click', setMinute);
-      }
-      for (let s = 0; s < secondsList.children.length; s++) {
-        secondsList.children[s].removeEventListener('click', setSecond);
-      }
-      for (let p = 0; p < periodList.children.length; p++) {
-        periodList.children[p].removeEventListener('click', setPeriod);
-      }
+      nowButton.removeEventListener('click', getCurrentTime);
+      timeContainer.removeEventListener('click', setTime);
     });
   });
 }

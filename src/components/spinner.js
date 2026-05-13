@@ -14,6 +14,7 @@ export default function (Alpine) {
       'rounded-full',
       'animate-spin'
     );
+    if (el.tagName === 'SPAN') el.classList.add('inline-block');
     el.setAttribute('role', 'status');
     el.setAttribute('data-slot', 'spinner');
     if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', 'Loading');

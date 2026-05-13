@@ -7,10 +7,20 @@
   </div>
 </div>
 <script type="text/javascript">
+  function isDarkMode() {
+    const colorScheme = Harmonia.getColorScheme();
+    if (colorScheme === "dark") {
+      return true;
+    } else if (colorScheme === "light") {
+      return false;
+    } else {
+      return Harmonia.getSystemColorScheme() === "dark";
+    }
+  }
   Alpine.data("themeSwitch", () => ({
-    darkMode: getColorScheme() === "dark" ? true : getSystemColorScheme() === "dark",
+    darkMode: isDarkMode(),
     toggleLightDark() {
-      setColorScheme(this.darkMode ? "dark" : "light");
+      Harmonia.setColorScheme(this.darkMode ? "dark" : "light");
     },
   }));
 </script>

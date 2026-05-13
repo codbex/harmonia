@@ -111,7 +111,7 @@ export default function (Alpine) {
 
       el.addEventListener('keydown', onKeyDown);
       cleanup(() => {
-        el.removeEventListener('keydown', onClick);
+        el.removeEventListener('keydown', onKeyDown);
       });
     }
   });

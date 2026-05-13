@@ -24,7 +24,7 @@ x-h-button-group-separator
 ## Horizontal
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex flex-wrap justify-evenly gap-4">
+<component-container data-icons="true" data-class="flex flex-wrap justify-evenly gap-4">
 <div x-h-button-group>
   <button x-h-button data-variant="outline">Action</button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Add button">
@@ -56,7 +56,7 @@ x-h-button-group-separator
 ## Vertical
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex justify-evenly gap-4">
+<component-container data-icons="true" data-class="flex justify-evenly gap-4">
 <div x-h-button-group data-orientation="vertical">
   <button x-h-button data-variant="outline">Top</button>
   <button x-h-button data-variant="outline">Center</button>

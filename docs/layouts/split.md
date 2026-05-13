@@ -61,9 +61,9 @@ x-h-split-panel
 | data-gutterless | boolean | false    | Removes the resize handle. Usually paired with `data-locked`. |
 | data-hidden     | boolean | false    | Hides the panel.                                              |
 | data-locked     | boolean | false    | Locks/disables the resize handle.                             |
-| data-size       | boolean | false    | Initial size of the panel.                                    |
-| data-min        | boolean | false    | Minimum size of the panel.                                    |
-| data-max        | boolean | false    | Naximum size of the panel.                                    |
+| data-size       | number  | false    | Initial size of the panel.                                    |
+| data-min        | number  | false    | Minimum size of the panel.                                    |
+| data-max        | number  | false    | Naximum size of the panel.                                    |
 
 ## Examples
 
@@ -128,7 +128,7 @@ x-h-split-panel
 This is useful for split-window layouts. The gutter is visually thin but provides a wider interactive area for reliable mouse and touch interaction.
 
 <ClientOnly>
-<component-container data-padding="false" data-style="height: 12rem">
+<component-container data-class="p-0" data-style="height: 12rem">
 <div class="size-full" x-h-split data-orientation="vertical" data-variant="border" data-locked="false">
   <div x-h-split-panel>
     <div class="flex size-full items-center justify-center overflow-hidden">Left panel</div>
@@ -157,12 +157,12 @@ You can use the [Breakpoint Listener](/utilities/breakpoint-listener) in order t
 In the following example, the left and right panels will hide if the screen is less then 1024 pixels wide.
 
 <ClientOnly>
-<component-container data-padding="false" data-style="height: 16rem" data-html="/components/layout/layout.html">
+<component-container data-class="p-0" data-style="height: 16rem" src="/components/layout/layout.html">
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-data="app" class="size-full">
+<div x-data="ResponsiveSplitController" class="size-full">
   <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border">
     <div x-h-split-panel :data-hidden="panelVisiblility.left">
       <div class="overflow-auto">Left panel</div>
@@ -178,13 +178,13 @@ In the following example, the left and right panels will hide if the screen is l
 
 <script>
   document.addEventListener('alpine:init', () => {
-    Alpine.data('app', () => ({
+    Alpine.data('ResponsiveSplitController', () => ({
       panelVisiblility: {
         left: true,
         right: true,
       },
       init() {
-        const breakpointListener = getBreakpointListener((matches) => {
+        const breakpointListener = Harmonia.getBreakpointListener((matches) => {
           this.panelVisiblility.left = matches;
           this.panelVisiblility.right = matches;
         }, 1024);
@@ -199,12 +199,12 @@ In the following example, the left and right panels will hide if the screen is l
 You can use the `x-for` directive to add or remove panels dynamically.
 
 <ClientOnly>
-<component-container data-padding="false" data-style="height: 28rem" data-html="/components/layout/dynamic.html">
+<component-container data-class="p-0" data-style="height: 36rem" src="/components/layout/dynamic.html">
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-data="app" class="vbox size-full">
+<div x-data="DynamicSplitController" class="vbox size-full">
   <div x-h-toolbar>
     <button x-h-button data-variant="primary" @click="add()">Add</button>
     <div x-h-toolbar-spacer></div>
@@ -221,7 +221,7 @@ You can use the `x-for` directive to add or remove panels dynamically.
 
 <script>
   document.addEventListener('alpine:init', () => {
-    Alpine.data('app', () => ({
+    Alpine.data('DynamicSplitController', () => ({
       panels: [
         {
           name: 'Panel 1',
@@ -251,12 +251,12 @@ You can use the `x-for` directive to add or remove panels dynamically.
 You can use the [Template](/utilities/template) directive to create layouts dynamically.
 
 <ClientOnly>
-<component-container data-padding="false" data-style="height: 28rem" data-html="/components/layout/dynamic-recursive.html">
+<component-container data-class="p-0" data-style="height: 28rem" src="/components/layout/dynamic-recursive.html">
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-data="app" class="vbox size-full">
+<div x-data="RecursiveSplitController" class="vbox size-full">
   <div x-h-split data-orientation="horizontal" data-variant="border">
     <template x-for="panel in panels" :key="panel.id">
       <template x-h-template="$refs.panelTemplate" x-data="{ panel: panel }"></template>
@@ -280,7 +280,7 @@ You can use the [Template](/utilities/template) directive to create layouts dyna
 
 <script>
   document.addEventListener('alpine:init', () => {
-    Alpine.data('app', () => ({
+    Alpine.data('RecursiveSplitController', () => ({
       panels: [
         {
           name: 'Left',

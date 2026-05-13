@@ -193,7 +193,8 @@ export default function (Alpine) {
 
     // Refresh gutter elements after add/remove or hide/show
     const refreshGutters = () => {
-      panels.forEach((p, i) => p.setGutter(i === panels.length - 1));
+      const lastPanelIndex = panels.length - 1;
+      panels.forEach((p, i) => p.setGutter(i === lastPanelIndex));
     };
 
     // Expose API on the element
@@ -268,7 +269,19 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an split element`);
     }
 
-    el.classList.add('flex', 'shrink', 'grow-0', 'box-border', 'min-w-0', 'min-h-0', 'overflow-visible');
+    el.classList.add(
+      'flex',
+      'shrink',
+      'grow-0',
+      'box-border',
+      'overflow-visible',
+      '[[data-orientation=horizontal]_&]:min-w-(--h-split-panel-min)',
+      '[[data-orientation=horizontal]_&]:max-w-(--h-split-panel-max)',
+      '[[data-orientation=horizontal]_&]:min-h-0',
+      '[[data-orientation=vertical]_&]:min-h-(--h-split-panel-min)',
+      '[[data-orientation=vertical]_&]:max-h-(--h-split-panel-max)',
+      '[[data-orientation=vertical]_&]:min-w-0'
+    );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split-panel');
 
@@ -384,6 +397,8 @@ export default function (Alpine) {
 
     let handleSize = 0;
 
+    let layoutFrame = null;
+
     const panel = {
       el,
       gutter,
@@ -406,9 +421,13 @@ export default function (Alpine) {
       setGutter(last) {
         if (this.hidden || gutterless || last) {
           gutter.remove();
-        } else if (!gutter.parentElement) {
-          el.after(gutter);
-          handleSize = this.getHandleSize();
+        } else {
+          if (layoutFrame) cancelAnimationFrame(layoutFrame);
+          layoutFrame = requestAnimationFrame(() => {
+            el.after(gutter);
+            handleSize = this.getHandleSize();
+            layoutFrame = null;
+          });
         }
       },
 
@@ -437,6 +456,7 @@ export default function (Alpine) {
 
       setLocked(locked = false) {
         const panelLocked = el.getAttribute('data-locked') === 'true';
+        gutter.setAttribute('aria-disabled', locked || panelLocked);
         if (locked) {
           gutter.classList.add('pointer-events-none');
         } else if (panelLocked) {
@@ -446,6 +466,11 @@ export default function (Alpine) {
         }
       },
     };
+
+    el.style.setProperty('--h-split-panel-min', `${panel.min}px`);
+    if (panel.max < Infinity) {
+      el.style.setProperty('--h-split-panel-max', `${panel.max}px`);
+    }
 
     split._h_split.addPanel(panel);
 

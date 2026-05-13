@@ -816,8 +816,20 @@
             }, 1184);
           },
         }));
+
+        function isDarkMode() {
+          const colorScheme = Harmonia.getColorScheme();
+          if (colorScheme === "dark") {
+            return true;
+          } else if (colorScheme === "light") {
+            return false;
+          } else {
+            return Harmonia.getSystemColorScheme() === "dark";
+          }
+        }
+
         Alpine.data("themeController", () => ({
-          darkMode: Harmonia.getColorScheme() === "dark" ? true : Harmonia.getSystemColorScheme() === "dark",
+          darkMode: isDarkMode(),
           showExport: false,
           showImport: false,
           enableDarkMode() {

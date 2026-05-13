@@ -94,7 +94,7 @@ x-h-list-header
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <ul x-h-list>
   <li x-h-list-item>
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>

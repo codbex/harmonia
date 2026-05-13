@@ -45,7 +45,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-toolbar>
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -71,7 +71,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-toolbar data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -97,7 +97,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-toolbar data-variant="transparent">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -123,7 +123,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -149,7 +149,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-toolbar data-size="md">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -197,7 +197,7 @@ x-h-toolbar-separator
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <header x-h-toolbar x-data="{ showClear: false, search: '' }">
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
   <span x-h-toolbar-branding>

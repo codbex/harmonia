@@ -17,7 +17,7 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 <br />
 
 <ClientOnly>
-<component-container data-html="/theming/select.html">
+<component-container src="/theming/select.html">
 </component-container>
 </ClientOnly>
 
@@ -49,7 +49,7 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 <br />
 
 <ClientOnly>
-<component-container data-html="/theming/switch.html">
+<component-container src="/theming/switch.html">
 </component-container>
 </ClientOnly>
 
@@ -64,8 +64,18 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 </div>
 <script>
   document.addEventListener('alpine:init', () => {
+    function isDarkMode() {
+      const colorScheme = Harmonia.getColorScheme();
+      if (colorScheme === 'dark') {
+        return true;
+      } else if (colorScheme === 'light') {
+        return false;
+      } else {
+        return Harmonia.getSystemColorScheme() === 'dark';
+      }
+    }
     Alpine.data('themeSwitch', () => ({
-      darkMode: Harmonia.getColorScheme() === 'dark' ? true : Harmonia.getSystemColorScheme() === 'dark',
+      darkMode: isDarkMode(),
       toggleLightDark() {
         Harmonia.setColorScheme(this.darkMode ? 'dark' : 'light');
       },

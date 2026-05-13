@@ -1,4 +1,4 @@
-<div x-data="app" class="size-full">
+<div x-data="ResponsiveSplitController" class="size-full">
   <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border">
     <div x-h-split-panel :data-hidden="panelVisiblility.left">
       <div class="overflow-auto">Left panel</div>
@@ -13,13 +13,13 @@
 </div>
 
 <script type="text/javascript">
-  Alpine.data("app", () => ({
+  Alpine.data("ResponsiveSplitController", () => ({
     panelVisiblility: {
       left: true,
       right: true,
     },
     init() {
-      const breakpointListener = getBreakpointListener((matches) => {
+      const breakpointListener = Harmonia.getBreakpointListener((matches) => {
         this.panelVisiblility.left = matches;
         this.panelVisiblility.right = matches;
       }, 1024);

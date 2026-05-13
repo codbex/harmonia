@@ -97,7 +97,7 @@ x-h-sidebar-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false" data-style="height:16rem">
+<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
@@ -155,7 +155,7 @@ x-h-sidebar-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false" data-style="height:16rem">
+<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -227,7 +227,7 @@ x-h-sidebar-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false" data-style="height:16rem">
+<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar.right class="float-right">
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -299,7 +299,7 @@ x-h-sidebar-footer
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false" data-style="height:16rem">
+<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar data-collapsed="true">
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
@@ -415,7 +415,7 @@ x-h-sidebar-footer
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div x-h-sidebar>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -479,12 +479,12 @@ x-h-sidebar-footer
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/sidebar/full.html" data-padding="false">
+<component-container src="/components/sidebar/full.html" data-class="p-0">
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-data="app">
+<div x-data="SidebarController">
   <div x-h-sidebar>
     <div x-h-sidebar-header>
       <button type="button" x-h-sidebar-menu-button x-h-popover-trigger.chevron>
@@ -652,7 +652,7 @@ x-h-sidebar-footer
 </div>
 <script type="text/javascript">
   document.addEventListener('alpine:init', () => {
-    Alpine.data('app', () => ({
+    Alpine.data('SidebarController', () => ({
       active: 'dashboard',
       changeActive(active) {
         this.active = active;

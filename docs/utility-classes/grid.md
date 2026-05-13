@@ -56,18 +56,18 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid grid-cols-12 gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-  <span class="bg-primary text-primary-foreground p-2">7</span>
-  <span class="bg-primary text-primary-foreground p-2">8</span>
-  <span class="bg-primary text-primary-foreground p-2">9</span>
-  <span class="bg-primary text-primary-foreground p-2">10</span>
-  <span class="bg-primary text-primary-foreground p-2">11</span>
-  <span class="bg-primary text-primary-foreground p-2">12</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">7</span>
+  <span class="bg-primary p-2 text-primary-foreground">8</span>
+  <span class="bg-primary p-2 text-primary-foreground">9</span>
+  <span class="bg-primary p-2 text-primary-foreground">10</span>
+  <span class="bg-primary p-2 text-primary-foreground">11</span>
+  <span class="bg-primary p-2 text-primary-foreground">12</span>
 </div>
 ```
 
@@ -96,18 +96,18 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 xl:grid-cols-12">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-  <span class="bg-primary text-primary-foreground p-2">7</span>
-  <span class="bg-primary text-primary-foreground p-2">8</span>
-  <span class="bg-primary text-primary-foreground p-2">9</span>
-  <span class="bg-primary text-primary-foreground p-2">10</span>
-  <span class="bg-primary text-primary-foreground p-2">11</span>
-  <span class="bg-primary text-primary-foreground p-2">12</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">7</span>
+  <span class="bg-primary p-2 text-primary-foreground">8</span>
+  <span class="bg-primary p-2 text-primary-foreground">9</span>
+  <span class="bg-primary p-2 text-primary-foreground">10</span>
+  <span class="bg-primary p-2 text-primary-foreground">11</span>
+  <span class="bg-primary p-2 text-primary-foreground">12</span>
 </div>
 ```
 
@@ -130,12 +130,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid grid-cols-3 justify-items-start gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -158,12 +158,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid grid-cols-3 justify-items-center gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -186,12 +186,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid grid-cols-3 justify-items-end gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -214,12 +214,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid grid-cols-3 justify-items-stretch gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -228,7 +228,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 <br />
 
 <ClientOnly>
-<component-container data-height="18rem">
+<component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 place-items-start gap-4 h-full">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
@@ -242,12 +242,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid h-full grid-cols-3 justify-items-start gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -256,7 +256,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 <br />
 
 <ClientOnly>
-<component-container data-height="18rem">
+<component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 place-items-center gap-4 h-full">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
@@ -270,12 +270,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid h-full grid-cols-3 justify-items-center gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -284,7 +284,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 <br />
 
 <ClientOnly>
-<component-container data-height="18rem">
+<component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 place-items-end gap-4 h-full">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
@@ -298,12 +298,12 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid h-full grid-cols-3 justify-items-end gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
 
@@ -312,7 +312,7 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 <br />
 
 <ClientOnly>
-<component-container data-height="18rem">
+<component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 place-items-stretch gap-4 h-full">
   <span class="bg-primary text-primary-foreground p-2">1</span>
   <span class="bg-primary text-primary-foreground p-2">2</span>
@@ -326,11 +326,11 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ```html
 <div class="grid h-full grid-cols-3 justify-items-stretch gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
+  <span class="bg-primary p-2 text-primary-foreground">5</span>
+  <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```

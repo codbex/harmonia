@@ -23,7 +23,7 @@ x-h-switch
 ## Examples
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex items-center gap-3 justify-center">
+<component-container data-icons="true" data-class="flex items-center gap-3 justify-center">
 <span x-h-switch>
   <input type="checkbox" id="sw" />
 </span>
@@ -41,7 +41,7 @@ x-h-switch
 ```
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-class="flex items-center gap-3 justify-center">
+<component-container data-icons="true" data-class="flex items-center gap-3 justify-center">
 <span x-h-switch data-size="sm">
   <input type="checkbox" id="sws" />
 </span>

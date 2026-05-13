@@ -17,7 +17,7 @@ Element positioning.
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal" style="height:22rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>

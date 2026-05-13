@@ -39,10 +39,10 @@ export default function (Alpine) {
         'has-focus-visible:border-ring',
         'has-focus-visible:ring-[calc(var(--spacing)*0.75)]',
         'has-focus-visible:ring-ring/50',
-        'dark:has-[aria-invalid=true]:ring-negative/40',
+        'dark:has-[input[aria-invalid=true]]:ring-negative/40',
         'dark:has-[input:invalid]:ring-negative/40',
-        'has-[aria-invalid=true]:border-negative',
-        'has-[aria-invalid=true]:ring-negative/20',
+        'has-[input[aria-invalid=true]]:border-negative',
+        'has-[input[aria-invalid=true]]:ring-negative/20',
         'has-[input:invalid]:border-negative',
         'has-[input:invalid]:ring-negative/20',
         'hover:bg-secondary-hover',
@@ -462,11 +462,11 @@ export default function (Alpine) {
     el.addEventListener('click', onActivate);
     el.addEventListener('keydown', onActivate);
 
-    if (select._h_select.filterType !== FilterType.none) {
-      function onInput() {
-        select._h_select.search = searchInput.value.toLowerCase();
-      }
+    function onInput() {
+      select._h_select.search = searchInput.value.toLowerCase();
+    }
 
+    if (select._h_select.filterType !== FilterType.none) {
       searchInput.addEventListener('keyup', onInput);
     }
 

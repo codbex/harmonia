@@ -63,7 +63,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-size="sm">
     <div x-h-tab-list>
@@ -135,7 +135,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal" style="height:10rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -171,7 +171,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal.html" data-padding="false">
+<component-container src="/components/tabs/horizontal.html" data-class="p-0">
 </component-container>
 </ClientOnly>
 
@@ -201,7 +201,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal-button.html" data-padding="false">
+<component-container src="/components/tabs/horizontal-button.html" data-class="p-0" data-icons="true">
 </component-container>
 </ClientOnly>
 
@@ -249,7 +249,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false">
+<component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -301,7 +301,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false">
+<component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -353,7 +353,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal-floating.html">
+<component-container src="/components/tabs/horizontal-floating.html">
 </component-container>
 </ClientOnly>
 
@@ -383,7 +383,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/horizontal-button-floating.html">
+<component-container src="/components/tabs/horizontal-button-floating.html" data-icons="true">
 </component-container>
 </ClientOnly>
 
@@ -431,7 +431,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -483,7 +483,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -535,7 +535,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical.html" data-padding="false">
+<component-container src="/components/tabs/vertical.html" data-class="p-0">
 </component-container>
 </ClientOnly>
 
@@ -565,7 +565,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical-button.html" data-padding="false">
+<component-container src="/components/tabs/vertical-button.html" data-class="p-0" data-icons="true">
 </component-container>
 </ClientOnly>
 
@@ -613,7 +613,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false">
+<component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -665,7 +665,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js" data-padding="false">
+<component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -717,7 +717,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical-floating.html">
+<component-container src="/components/tabs/vertical-floating.html" data-icons="true">
 </component-container>
 </ClientOnly>
 
@@ -747,7 +747,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-html="/components/tabs/vertical-button-floating.html">
+<component-container src="/components/tabs/vertical-button-floating.html">
 </component-container>
 </ClientOnly>
 
@@ -795,7 +795,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -847,7 +847,7 @@ x-h-tabs-content
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>

@@ -42,7 +42,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -68,7 +68,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -106,7 +106,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -138,7 +138,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-input-group>
   <input x-h-input.group placeholder="Searching..." disabled />
   <div x-h-input-group-addon data-align="inline-end">
@@ -162,7 +162,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <br />
 
 <ClientOnly>
-<component-container data-js="/js/init-icons.js">
+<component-container data-icons="true">
 <div x-h-input-group>
   <textarea x-h-textarea.group placeholder="Message..."></textarea>
   <div x-h-input-group-addon data-align="block-start" class="border-b">

@@ -60,7 +60,7 @@ All of the classes above can be used with the `!` prefix in order to force their
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground flex justify-between w-screen">
   <span>Start</span>
   <span>End</span>
@@ -84,7 +84,7 @@ You may have to horizontally scroll the container to see the "End" label.
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground w-full">Full width</div>
 </component-container>
 </ClientOnly>
@@ -152,7 +152,7 @@ You may have to horizontally scroll the container to see the "End" label.
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground h-full">
 Full height
 </div>
@@ -168,7 +168,7 @@ Full height
 <br />
 
 <ClientOnly>
-<component-container data-padding="false">
+<component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground flex justify-between h-screen">
 <span>Start</span>
 <span>End</span>
@@ -185,7 +185,7 @@ Full height
 <br />
 
 <ClientOnly>
-<component-container data-class="h-12" data-padding="false">
+<component-container data-class="p-0 h-12">
 <div class="bg-primary text-primary-foreground h-1/2">50% height</div>
 </component-container>
 </ClientOnly>

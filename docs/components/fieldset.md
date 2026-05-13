@@ -47,7 +47,7 @@ x-h-field-error
 ## Examples
 
 <ClientOnly>
-<component-container data-html="/components/fieldset/full.html">
+<component-container src="/components/fieldset/full.html">
 </component-container>
 </ClientOnly>
 

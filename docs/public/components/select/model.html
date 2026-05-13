@@ -13,24 +13,29 @@
   </div>
 </div>
 <script>
-  const originalItems = [
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-    { label: "Blueberry", value: "blueberry" },
-    { label: "Grapes", value: "grapes" },
-    { label: "Pineapple", value: "pineapple" },
-    { label: "Jamaican tangelo", value: "jamaicanTangelo" },
-  ];
   Alpine.data("selectData", () => ({
+    getOriginalItems() {
+      return [
+        { label: "Apple", value: "apple" },
+        { label: "Banana", value: "banana" },
+        { label: "Blueberry", value: "blueberry" },
+        { label: "Grapes", value: "grapes" },
+        { label: "Pineapple", value: "pineapple" },
+        { label: "Jamaican tangelo", value: "jamaicanTangelo" },
+      ];
+    },
     selected: "banana",
     placeholder: "Select",
-    items: structuredClone(originalItems),
+    items: [],
     addFromSearch(event) {
-      let nItems = structuredClone(originalItems);
+      let nItems = this.getOriginalItems();
       nItems.forEach((element) => {
         element.label = `${event.target.value}${element.label}`;
       });
       this.items = nItems;
+    },
+    init() {
+      this.items = this.getOriginalItems();
     },
   }));
 </script>
