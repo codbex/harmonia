@@ -91,7 +91,7 @@ export default function (Alpine) {
 
     let noScroll = modifiers.includes('no-scroll');
     if (noScroll) {
-      el.classList.remove('overflow-scroll');
+      el.classList.remove('overflow-auto');
       el.classList.add('overflow-none');
     }
 
