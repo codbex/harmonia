@@ -8,7 +8,7 @@ Use tabs to group related content or functionality, allowing users to switch bet
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-tabs

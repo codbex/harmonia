@@ -15,7 +15,7 @@ The directive executes before any binding.
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-include

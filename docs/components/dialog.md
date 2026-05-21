@@ -8,7 +8,7 @@ Use dialogs to capture critical decisions, confirmations, or inputs that demand 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-dialog-overlay

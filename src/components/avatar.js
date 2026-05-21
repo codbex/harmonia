@@ -1,18 +1,36 @@
+import { classListStartsWith } from '../common/class-list';
 export default function (Alpine) {
   Alpine.directive('h-avatar', (el, _, { Alpine }) => {
+    if (!classListStartsWith(el.classList, 'rounded')) {
+      el.classList.add('rounded-full');
+    }
     el.classList.add(
       'relative',
       'bg-secondary',
       'text-secondary-foreground',
       'fill-secondary-foreground',
-      '[[data-slot=toolbar]:not([data-variant=transparent])_&]:border',
+      '[[data-slot=toolbar]:not([data-variant=transparent])>&]:border',
+      'data-[variant="information"]:bg-information/10',
+      'data-[variant="information"]:text-information',
+      'data-[variant="information"]:border-information',
+      '[&[data-variant="information"]>svg]:fill-information',
+      'data-[variant="warning"]:bg-warning/10',
+      'data-[variant="warning"]:text-warning',
+      'data-[variant="warning"]:border-warning',
+      '[&[data-variant="warning"]>svg]:fill-warning',
+      'data-[variant="positive"]:bg-positive/10',
+      'data-[variant="positive"]:text-positive',
+      'data-[variant="positive"]:border-positive',
+      '[&[data-variant="positive"]>svg]:fill-positive',
+      'data-[variant="negative"]:bg-negative/10',
+      'data-[variant="negative"]:text-negative',
+      'data-[variant="negative"]:border-negative',
+      '[&[data-variant="negative"]>svg]:fill-negative',
       'has-[img]:border-0',
       'flex',
       'size-8',
       'aspect-square',
       'shrink-0',
-      'overflow-hidden',
-      'rounded-full',
       'items-center',
       'justify-center',
       'text-sm',
@@ -33,7 +51,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an avatar element`);
     }
 
-    el.classList.add('aspect-square', 'size-full');
+    el.classList.add('aspect-square', 'size-full', 'rounded-[inherit]');
     el.setAttribute('data-slot', 'avatar-image');
     el.setAttribute('role', 'img');
 
@@ -76,7 +94,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an avatar element`);
     }
 
-    el.classList.add('hidden', 'bg-muted', 'flex', 'size-full', 'items-center', 'justify-center');
+    el.classList.add('hidden', 'bg-muted', 'flex', 'size-full', 'items-center', 'justify-center', 'rounded-[inherit]');
     el.setAttribute('data-slot', 'avatar-fallback');
 
     effect(() => {

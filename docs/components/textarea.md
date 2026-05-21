@@ -8,7 +8,7 @@ Use textareas for capturing extended input, such as comments, descriptions, or m
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-textarea

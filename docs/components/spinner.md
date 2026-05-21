@@ -8,7 +8,7 @@ Use spinners to indicate loading, processing, or other indefinite tasks where th
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-spinner

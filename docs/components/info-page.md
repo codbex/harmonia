@@ -8,7 +8,7 @@ Use Info Pages to guide users, explain empty states, or report errors in a visua
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-info-page

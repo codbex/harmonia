@@ -6,6 +6,8 @@ Element positioning.
 
 | Class        | Description                              |
 | ------------ | ---------------------------------------- |
+| fixed        | `position: fixed;`                       |
+| sticky       | `position: sticky;`                      |
 | absolute     | `position: absolute;`                    |
 | absolute-fit | ` top: 0; left: 0; right: 0; bottom: 0;` |
 | relative     | `position: relative;`                    |

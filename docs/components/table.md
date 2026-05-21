@@ -8,7 +8,7 @@ Use tables to present datasets, lists, or records where a clear relationship bet
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-table-container
@@ -76,7 +76,7 @@ x-h-table-footer
 <br />
 
 <ClientOnly>
-<component-container src="/components/table/full.html" data-class="border-0" data-icons="true">
+<component-container src="/components/table/full.html" data-class="p-0 border-0" data-icons="true">
 </component-container>
 </ClientOnly>
 
@@ -640,7 +640,7 @@ The cell button can be used to trigger some action.
 You can use input, dropdown, select, date and time pickers inside a table by using the `table` modifier.
 
 <ClientOnly>
-<component-container>
+<component-container data-class="p-0 border-0">
 <div x-h-table-container.scroll data-border="true">
   <table x-h-table data-borders="both">
     <thead x-h-table-header>

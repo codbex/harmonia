@@ -8,7 +8,7 @@ Use popovers to show contextual help, tips, or additional options related to a s
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-popover
@@ -29,9 +29,10 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 
 #### x-h-popover
 
-| Attribute  | Type                                                                                                                                                                          | Required | Description                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
-| data-align | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the popover body relative to the trigger. |
+| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the popover body relative to the trigger.                                                                                                                                |
+| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the popover from closing when it is clicked internally.<br />This is not a dynamic attribute. Its value is read on initialization and it is not monitored for changes. |
 
 ### Modifiers
 
@@ -65,7 +66,27 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 <div class="w-64 p-4" x-h-popover>Popover content</div>
 ```
 
-### Popover (manual open/close)
+### Disable closing on inner click events
+
+<br />
+
+<ClientOnly>
+<component-container>
+<button x-h-button x-h-popover-trigger>Popover</button>
+<div class="w-64 p-4" x-h-popover data-innerclicks="true">
+  <button x-h-button data-variant="primary">Click</button>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button x-h-popover-trigger>Popover</button>
+<div class="w-64 p-4" x-h-popover data-innerclicks="true">
+  <button x-h-button data-variant="primary">Click</button>
+</div>
+```
+
+### Manualy open and close the popover
 
 <br />
 

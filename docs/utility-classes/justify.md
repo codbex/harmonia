@@ -13,6 +13,7 @@ Distributes space between and around items along the main axis of a flex contain
 | justify-between  | `justify-content: space-between;` |
 | justify-around   | `justify-content: space-around;`  |
 | justify-evenly   | `justify-content: space-evenly;`  |
+| justify-stretch  | `justify-content: stretch;`       |
 
 ## Examples
 

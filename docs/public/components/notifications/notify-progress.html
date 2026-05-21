@@ -1,0 +1,72 @@
+<div x-data="notifyProgress">
+  <button x-h-button @click="showNotification">Start</button>
+</div>
+<script>
+  Alpine.data("notifyProgress", () => ({
+    progress: 0,
+    intervalID: undefined,
+    showNotification() {
+      // If there is an intervalID, that means the notification is already shown
+      if (!this.intervalID) {
+        // Reset the progress
+        this.progress = 10;
+
+        // Add the notification and set the timeout to 0, so it wouldn't automatically remove itself
+        this.$notifications.add({
+          id: "progress-demo",
+          template: "progress",
+          data: {
+            title: "Generating...",
+            progress: this.progress,
+          },
+          timeout: 0,
+        });
+
+        // Notification listeners do not have the access to the same 'this' object as the controller.
+        // We can work around this by creating a function and calling it instead.
+        const clearNotification = () => {
+          clearInterval(this.intervalID);
+          this.intervalID = undefined;
+          // Remove the notification listener
+          this.$notifications.removeListener(listenerRef);
+        };
+
+        // Add a notification listener that will watch for removal changes.
+        // If the user has canceled the notification, cancel the interval and progress update.
+        const listenerRef = this.$notifications.addListener({
+          removed(id) {
+            if (id === "progress-demo") {
+              clearNotification();
+            }
+          },
+        });
+
+        // Simulate work with setInterval
+        this.intervalID = setInterval(() => {
+          this.progress += 10;
+          if (this.progress >= 100) {
+            this.$notifications.update({
+              id: "progress-demo",
+              data: {
+                title: "Generated!",
+                progress: 100,
+              },
+            });
+            clearNotification();
+            // Remove the notification
+            setTimeout(() => {
+              this.$notifications.remove("progress-demo");
+            }, 3000);
+          } else {
+            this.$notifications.update({
+              id: "progress-demo",
+              data: {
+                progress: this.progress,
+              },
+            });
+          }
+        }, 1000);
+      }
+    },
+  }));
+</script>

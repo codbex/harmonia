@@ -8,7 +8,7 @@ Use lists to present multiple related items, such as options, tasks, or entries.
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-list

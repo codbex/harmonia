@@ -12,7 +12,7 @@
   @apply flex flex-col;
 }
 
-@source inline("justify-{start,center,end,between,around,evenly}");
+@source inline("justify-{start,center,end,between,around,evenly,stretch}");
 @source inline("justify-end-safe");
 @source inline("justify-items-{start,center,end,stretch}");
 @source inline("content-{start,center,end,between,around,evenly,stretch}");
@@ -27,7 +27,7 @@
 @source inline("{sm:,md:,lg:,xl:,}grid-cols-{1..12}");
 
 @source inline("{!,}w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}");
-@source inline("min-{w}-0");
+@source inline("min-{w,h}-0");
 @source inline("max-{w}-{screen,dvw}");
 @source inline("{!,}h-{auto,full,screen,1/2}");
 
@@ -36,32 +36,69 @@
 @source inline("min-h-{4..12}");
 @source inline("max-h-{4..12}");
 @source inline("{!,}w-{4..12}");
+@source inline("w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
 @source inline("min-w-{4..12}");
+@source inline("min-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,auto}");
 @source inline("max-w-{4..12}");
-@source inline("{!,}size-full");
+@source inline("max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,auto}");
+@source inline("{!,}size-{full,fit}");
 .min-size-4 {
   @apply min-h-4 min-w-4;
 }
-.tile-xs {
-  width: calc(var(--container-xs) / 2);
-  height: calc(var(--container-xs) / 2);
-}
 .tile-sm {
-  width: calc(var(--container-sm) / 2);
-  height: calc(var(--container-sm) / 2);
+  width: calc(var(--spacing) * 37);
+  height: calc(var(--spacing) * 37);
 }
-
 .tile-md {
-  width: calc(var(--container-md) / 2);
-  height: calc(var(--container-md) / 2);
+  width: calc(var(--spacing) * 44);
+  height: calc(var(--spacing) * 44);
 }
-
 .tile-lg {
-  width: calc(var(--container-lg) / 2);
-  height: calc(var(--container-lg) / 2);
+  width: calc(var(--spacing) * 55);
+  height: calc(var(--spacing) * 55);
 }
-
-@source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap,xs,sm,base,lg,xl,2xl,3xl,4xl}");
+.tile-xl {
+  width: calc(var(--spacing) * 66);
+  height: calc(var(--spacing) * 66);
+}
+.tile-double-sm {
+  width: calc(var(--spacing) * 76);
+  height: calc(var(--spacing) * 37);
+}
+.tile-double-md {
+  width: calc(var(--spacing) * 90);
+  height: calc(var(--spacing) * 44);
+}
+.tile-double-lg {
+  width: calc(var(--spacing) * 108);
+  height: calc(var(--spacing) * 55);
+}
+.tile-double-xl {
+  width: calc(var(--spacing) * 128);
+  height: calc(var(--spacing) * 66);
+}
+.tile-auto-sm {
+  max-width: 100%;
+  width: auto;
+  height: calc(var(--spacing) * 37);
+}
+.tile-auto-md {
+  max-width: 100%;
+  width: auto;
+  height: calc(var(--spacing) * 44);
+}
+.tile-auto-lg {
+  max-width: 100%;
+  width: auto;
+  height: calc(var(--spacing) * 55);
+}
+.tile-auto-xl {
+  max-width: 100%;
+  width: auto;
+  height: calc(var(--spacing) * 66);
+}
+@source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap}");
+@source inline("{!,}text-{xs,sm,base,lg,xl,2xl,3xl,4xl}");
 @source inline("font-{bold,semibold,medium,normal,light}");
 @source inline("italic");
 @source inline("uppercase");
@@ -78,6 +115,10 @@
 @source inline("float-right");
 @source inline("hidden");
 @source inline("block");
+@source inline("inline");
+@source inline("inline-block");
+@source inline("inline-flex");
+@source inline("cursor-{pointer,text,crosshair,wait,not-allowed,grab,grabbing,none}");
 @source inline("{xs:,sm:,md:,lg:,xl:}{hidden,block}");
 @source inline("sr-only");
 @source inline("box-border");
@@ -87,16 +128,22 @@
 @source inline("aspect-{square,video,3/2}");
 @source inline("absolute");
 @source inline("relative");
+@source inline("fixed");
+@source inline("sticky");
 .absolute-fit {
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
 }
+@source inline("opacity-{0,25,50,75,100}");
 
+@source inline("bg-{primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 @source inline("fill-{current,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 /* prettier-ignore */
-@source inline("text-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
+@source inline("text-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
+/* prettier-ignore */
+@source inline("border-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;

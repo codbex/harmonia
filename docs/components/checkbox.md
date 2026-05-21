@@ -8,7 +8,7 @@ Use checkboxes for independent options where multiple selections are allowed. Fo
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-checkbox

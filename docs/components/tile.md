@@ -8,7 +8,7 @@ Use tiles to create visually engaging entry points to content, functionality, or
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-tile-group
@@ -327,3 +327,13 @@ x-h-tile-footer
   </div>
 </div>
 ```
+
+### Sizes
+
+Use the [tile utility classes](/utility-classes/tile) to control the size of the tile.
+
+<ClientOnly>
+<component-container data-icons="true" data-class="flex flex-col gap-4">
+<div x-h-tile data-variant="outline" class="tile-double-md">Double length medium size custom tile</div>
+</component-container>
+</ClientOnly>

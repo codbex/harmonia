@@ -8,7 +8,7 @@ Use pagination for tables, card grids, lists, or other content-heavy interfaces 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-pagination

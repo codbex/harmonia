@@ -8,7 +8,7 @@ Use input fields for capturing user data, such as names, emails, or color. If yo
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-input

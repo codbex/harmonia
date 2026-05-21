@@ -53,4 +53,63 @@ export default function (Alpine) {
       observer.disconnect();
     });
   });
+
+  Alpine.directive('h-badge-indicator', (el, _, { cleanup }) => {
+    el.classList.add(
+      'absolute',
+      '-end-1',
+      '-top-1',
+      '[.rounded-full>&]:end-0',
+      '[.rounded-full>&]:top-0',
+      'inline-flex',
+      'h-4',
+      'min-w-4',
+      'items-center',
+      'justify-center',
+      'rounded-full',
+      'py-0.5',
+      'px-1',
+      'text-xs',
+      'font-bold',
+      'leading-none',
+      'transform-gpu',
+      'data-[dot=true]:p-0',
+      'data-[dot=true]:min-w-3',
+      'data-[dot=true]:h-3',
+      'data-[ping=true]:before:absolute',
+      'data-[ping=true]:before:inline-flex',
+      'data-[ping=true]:before:w-full',
+      'data-[ping=true]:before:h-full',
+      'data-[ping=true]:before:rounded-full',
+      'data-[ping=true]:before:opacity-75',
+      'data-[ping=true]:before:animate-ping'
+    );
+    el.setAttribute('data-slot', 'badge-indicator');
+    const variants = {
+      primary: ['bg-primary', 'text-primary-foreground', 'data-[ping=true]:before:bg-primary'],
+      positive: ['bg-positive', 'text-positive-foreground', 'data-[ping=true]:before:bg-positive'],
+      negative: ['bg-negative', 'text-negative-foreground', 'data-[ping=true]:before:bg-negative'],
+      warning: ['bg-warning', 'text-warning-foreground', 'data-[ping=true]:before:bg-warning'],
+      information: ['bg-information', 'text-information-foreground', 'data-[ping=true]:before:bg-information'],
+    };
+
+    function setVariant(variant) {
+      for (const [_, value] of Object.entries(variants)) {
+        el.classList.remove(...value);
+      }
+      if (variants.hasOwnProperty(variant)) el.classList.add(...variants[variant]);
+    }
+
+    setVariant(el.getAttribute('data-variant') ?? 'primary');
+
+    const observer = new MutationObserver(() => {
+      setVariant(el.getAttribute('data-variant') ?? 'primary');
+    });
+
+    observer.observe(el, { attributes: true, attributeFilter: ['data-variant'] });
+
+    cleanup(() => {
+      observer.disconnect();
+    });
+  });
 }

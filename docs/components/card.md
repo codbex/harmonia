@@ -8,7 +8,7 @@ Use cards to group related information or actions in a visually distinct contain
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-card

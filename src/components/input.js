@@ -1,7 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
+import uuidv4 from '../utils/uuid';
 import { Minus, Plus, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
-
 export default function (Alpine) {
   Alpine.directive('h-input', (el, { modifiers }, { cleanup }) => {
     el.classList.add(

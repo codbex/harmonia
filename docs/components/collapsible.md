@@ -8,7 +8,7 @@ Use the Collapsible to add toggleable visibility to content areas without imposi
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-collapsible

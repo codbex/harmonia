@@ -8,7 +8,7 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-alert

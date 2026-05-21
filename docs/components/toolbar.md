@@ -8,7 +8,7 @@ Use toolbars to organize controls that operate on the current content or view, s
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-toolbar
@@ -20,7 +20,7 @@ x-h-toolbar-spacer
 x-h-toolbar-separator
 ```
 
-### Attubutes
+### Attributes
 
 #### x-h-toolbar
 

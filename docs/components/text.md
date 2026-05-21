@@ -4,7 +4,7 @@ Applies consistent typography styles to headings, paragraphs, single lines, and 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-text

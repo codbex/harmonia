@@ -21,7 +21,7 @@ The user can use the following keyboard shortcuts in order to navigate trough th
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-calendar

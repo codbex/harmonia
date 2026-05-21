@@ -16,6 +16,7 @@ import input from './components/input';
 import label from './components/label';
 import list from './components/list';
 import menu from './components/menu';
+import notifications from './components/notifications';
 import pagination from './components/pagination';
 import popover from './components/popover';
 import progress from './components/progress';
@@ -73,6 +74,7 @@ function registerPlugins() {
   window.Alpine.plugin(label);
   window.Alpine.plugin(list);
   window.Alpine.plugin(menu);
+  window.Alpine.plugin(notifications);
   window.Alpine.plugin(pagination);
   window.Alpine.plugin(popover);
   window.Alpine.plugin(progress);

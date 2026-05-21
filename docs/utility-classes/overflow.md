@@ -28,14 +28,14 @@ CSS utility classes set overflow behaviour.
 
 <ClientOnly>
 <component-container>
-<div class="tile-xs overflow-scroll">
+<div class="tile-sm overflow-scroll">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div class="tile-xs overflow-scroll">
+<div class="tile-sm overflow-scroll">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
@@ -46,14 +46,14 @@ CSS utility classes set overflow behaviour.
 
 <ClientOnly>
 <component-container>
-<div class="tile-xs overflow-scroll scrollbar-none">
+<div class="tile-sm overflow-scroll scrollbar-none">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div class="tile-xs scrollbar-none overflow-scroll">
+<div class="tile-sm scrollbar-none overflow-scroll">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
@@ -64,14 +64,14 @@ CSS utility classes set overflow behaviour.
 
 <ClientOnly>
 <component-container>
-<div class="tile-xs overflow-x-scroll overflow-y-hidden">
+<div class="tile-sm overflow-x-scroll overflow-y-hidden">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div class="tile-xs overflow-x-scroll overflow-y-hidden">
+<div class="tile-sm overflow-x-scroll overflow-y-hidden">
   <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
@@ -82,14 +82,14 @@ CSS utility classes set overflow behaviour.
 
 <ClientOnly>
 <component-container>
-<div class="tile-xs overflow-y-scroll overflow-x-hidden">
+<div class="tile-sm overflow-y-scroll overflow-x-hidden">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div class="tile-xs overflow-x-hidden overflow-y-scroll">
+<div class="tile-sm overflow-x-hidden overflow-y-scroll">
   <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
@@ -100,14 +100,14 @@ CSS utility classes set overflow behaviour.
 
 <ClientOnly>
 <component-container>
-<div class="tile-xs overflow-hidden">
+<div class="tile-sm overflow-hidden">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div class="tile-xs overflow-hidden">
+<div class="tile-sm overflow-hidden">
   <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
@@ -118,14 +118,14 @@ CSS utility classes set overflow behaviour.
 
 <ClientOnly>
 <component-container>
-<div class="tile-xs overflow-visible">
+<div class="tile-sm overflow-visible">
   <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div class="tile-xs overflow-visible">
+<div class="tile-sm overflow-visible">
   <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```

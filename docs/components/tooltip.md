@@ -8,7 +8,7 @@ Use tooltips to clarify controls, explain icons, or provide contextual hints. Ke
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-tooltip

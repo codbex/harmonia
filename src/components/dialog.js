@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
-
+import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-dialog-overlay', (el, _, { cleanup }) => {
     el.classList.add('hidden', 'data-[open=true]:block', 'fixed', 'inset-0', 'z-50', 'bg-black/60');

@@ -54,6 +54,7 @@ export default defineConfig({
           { text: 'List', link: '/components/list' },
           { text: 'Listbox', link: '/components/listbox' },
           { text: 'Menu', link: '/components/menu' },
+          { text: 'Notifications', link: '/components/notifications' },
           { text: 'Pagination', link: '/components/pagination' },
           { text: 'Popover', link: '/components/popover' },
           { text: 'Progress', link: '/components/progress' },
@@ -95,7 +96,9 @@ export default defineConfig({
       {
         text: 'Utility classes',
         items: [
+          { text: 'Display', link: '/utility-classes/display' },
           { text: 'Width & Height', link: '/utility-classes/width-height' },
+          { text: 'Tile', link: '/utility-classes/tile' },
           { text: 'Margins & Paddings', link: '/utility-classes/margins-paddings' },
           { text: 'Position', link: '/utility-classes/position' },
           { text: 'Flex Layout', link: '/utility-classes/flex' },
@@ -107,6 +110,8 @@ export default defineConfig({
           { text: 'Gap', link: '/utility-classes/gap' },
           { text: 'Border', link: '/utility-classes/border' },
           { text: 'Color', link: '/utility-classes/color' },
+          { text: 'Opacity', link: '/utility-classes/opacity' },
+          { text: 'Cursor', link: '/utility-classes/cursor' },
           { text: 'Shadow', link: '/utility-classes/shadow' },
           { text: 'Images', link: '/utility-classes/images' },
           { text: 'Overflow', link: '/utility-classes/overflow' },

@@ -8,13 +8,21 @@ Use avatars to visually identify users or related entities in lists, profiles, o
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-avatar
 x-h-avatar-image
 x-h-avatar-fallback
 ```
+
+### Attributes
+
+#### x-h-avatar
+
+| Attribute    | Type                                                         | Required | Description          |
+| ------------ | ------------------------------------------------------------ | -------- | -------------------- |
+| data-variant | `positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color state |
 
 ## Examples
 
@@ -58,6 +66,26 @@ x-h-avatar-fallback
 </span>
 ```
 
+### Square avatar
+
+You canchange the avatar shape by using the `rounded-` classes.
+
+<ClientOnly>
+<component-container data-class="flex flex-col items-center">
+<span x-h-avatar class="rounded-md">
+  <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+</span>
+</component-container>
+</ClientOnly>
+
+```html
+<span x-h-avatar class="rounded-md">
+  <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+</span>
+```
+
 ### Text-only
 
 <br />
@@ -88,6 +116,64 @@ x-h-avatar-fallback
 <span x-h-avatar aria-label="camera">
   <i role="img" data-lucide="camera"></i>
 </span>
+```
+
+### Variants
+
+<br />
+
+<ClientOnly>
+<component-container data-icons="true" data-class="grid grid-cols-4 justify-items-center gap-4">
+<span x-h-avatar data-variant="information">
+  <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+</span>
+
+<span x-h-avatar data-variant="warning">
+  <svg x-h-icon.circle-info role="img" aria-label="warning"></svg>
+</span>
+
+<span x-h-avatar data-variant="positive">
+  <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+</span>
+
+<span x-h-avatar data-variant="negative">
+  <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+</span>
+
+<span x-h-avatar data-variant="information">IN</span>
+
+<span x-h-avatar data-variant="warning">WA</span>
+
+<span x-h-avatar data-variant="positive">PO</span>
+
+<span x-h-avatar data-variant="negative">NE</span>
+</component-container>
+</ClientOnly>
+
+```html
+<span x-h-avatar data-variant="information">
+  <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+</span>
+
+<span x-h-avatar data-variant="warning">
+  <svg x-h-icon.circle-info role="img" aria-label="warning"></svg>
+</span>
+
+<span x-h-avatar data-variant="positive">
+  <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+</span>
+
+<span x-h-avatar data-variant="negative">
+  <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+</span>
+
+<span x-h-avatar data-variant="information">IN</span>
+
+<span x-h-avatar data-variant="warning">WA</span>
+
+<span x-h-avatar data-variant="positive">PO</span>
+
+<span x-h-avatar data-variant="negative">NE</span>
 ```
 
 ### Interactive
