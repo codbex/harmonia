@@ -286,7 +286,7 @@ The notification item has four inner components but they have no strick structur
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media>
     <span x-h-avatar>
-      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -307,7 +307,7 @@ The notification item has four inner components but they have no strick structur
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media>
     <span x-h-avatar>
-      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -421,7 +421,7 @@ The notification item has four inner components but they have no strick structur
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media class="justify-start">
     <span x-h-avatar class="size-10">
-      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -448,7 +448,7 @@ The notification item has four inner components but they have no strick structur
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media class="justify-start">
     <span x-h-avatar class="size-10">
-      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -597,7 +597,7 @@ You can use the notification list anywhere but the most commot place is usually 
       <li x-h-notification class="hbox" data-unread="true">
         <div x-h-notification-media class="justify-start">
           <span x-h-avatar class="size-10">
-            <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+            <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
             <div x-h-avatar-fallback>HM</div>
           </span>
         </div>
@@ -668,7 +668,7 @@ You can use the notification list anywhere but the most commot place is usually 
       <li x-h-notification class="hbox" data-unread="true">
         <div x-h-notification-media class="justify-start">
           <span x-h-avatar class="size-10">
-            <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+            <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
             <div x-h-avatar-fallback>HM</div>
           </span>
         </div>

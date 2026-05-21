@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" class="h-screen">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" sizes="any" href="data:;base64,iVBORw0KGgo=" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Problem</title>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
+  </head>
+  <body x-data="app">
+    <button @click="add()">Add</button>
+    <button @click="remove()">Remove</button>
+    <div x-split>
+      <template x-for="panel in panels" x-bind:key="panel.id">
+        <div x-split-panel x-text="panel.name"></div>
+      </template>
+    </div>
+
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.directive("split", (el, { original, expression }, { evaluate, Alpine, cleanup }) => {
+          const panels = [];
+
+          const refreshGutters = () => {
+            const lastPanelIndex = panels.length - 1;
+            panels.forEach((p, i) => p.setGutter(i === lastPanelIndex));
+          };
+
+          el._split = {
+            addPanel(panel) {
+              panels.push(panel);
+              refreshGutters();
+            },
+            removePanel(panel) {
+              const i = panels.indexOf(panel);
+              if (i !== -1) panels.splice(i, 1);
+              refreshGutters();
+            },
+          };
+        });
+
+        Alpine.directive("split-panel", (el, { original, expression }, { evaluate, Alpine, cleanup }) => {
+          const split = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty("_split"));
+
+          const gutter = document.createElement("div");
+          gutter.style.borderTop = "1px solid black";
+          gutter.style.width = "100%";
+
+          const panel = {
+            setGutter(last) {
+              if (last) {
+                gutter.remove();
+              } else {
+                // Potential fix
+                requestAnimationFrame(() => {
+                  el.after(gutter);
+                });
+                // el.after(gutter);
+              }
+            },
+          };
+
+          split._split.addPanel(panel);
+
+          cleanup(() => {
+            gutter.remove();
+            split._split.removePanel(panel);
+          });
+        });
+
+        Alpine.data("app", () => ({
+          panels: [
+            {
+              name: "Panel 1",
+              id: 1,
+            },
+            {
+              name: "Panel 2",
+              id: 2,
+            },
+            {
+              name: "Panel 3",
+              id: 3,
+            },
+            {
+              name: "Panel 4",
+              id: 4,
+            },
+          ],
+          add() {
+            this.panels.push({
+              name: `Panel ${this.panels.length + 1}`,
+              id: this.panels.length + 1,
+            });
+          },
+          remove() {
+            this.panels.pop();
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>
