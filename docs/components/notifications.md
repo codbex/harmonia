@@ -1,0 +1,901 @@
+# Notifications
+
+The Notification component is used to present important system feedback, status updates, or contextual information to the user. Notifications communicate events that require awareness, confirmation, or action without interrupting the current workflow.
+
+## Usage
+
+Use Notifications to inform users about the result of an action, system state changes, or important contextual information.
+
+- Keep messages concise and actionable.
+- Prioritize clarity over technical detail.
+- Match the notification style to the severity and urgency of the message.
+- Use consistent wording and visual patterns across the product.
+- Include actions only when users can meaningfully respond.
+- Avoid showing multiple notifications simultaneously unless necessary.
+
+## API Reference
+
+The notification component contains a [magic method](https://alpinejs.dev/globals/alpine-data#using-magic-properties) called `$notifications`.
+It is used to add, update and remove notifications from the global state.
+
+### Component attribute(s)
+
+```
+x-h-notification-overlay
+x-h-notification-list
+x-h-notification
+x-h-notification-media
+x-h-notification-title
+x-h-notification-description
+x-h-notification-actions
+x-h-notification-close
+```
+
+- `x-h-notification-overlay`
+
+There can only be one `x-h-notification-overlay` element in the entire application.
+Notification templates are placed inside it and each template must have an id.
+
+- `x-h-notification-close`
+
+This component does not render any UI. It adds a click listener to the element that it is attached to and handles all the logic for closing the notification from within it.
+
+### Magic properties
+
+| Property       | Type     | Description                      |
+| -------------- | -------- | -------------------------------- |
+| add            | function | Adds a notification.             |
+| update         | function | Updates a notification.          |
+| remove         | function | Removes a notification.          |
+| addListener    | function | Adds a notification listener.    |
+| removeListener | function | Removes a notification listener. |
+
+#### Arguments
+
+- `add` function
+
+::: info Named arguments
+The `add` function uses object destructuring for its arguments. You will need to call it by passing a single object containing the arguments.
+:::
+
+| Argument | Type                                                                                                      | Required | Description                                                                                                                                                                                               |
+| -------- | --------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id       | string                                                                                                    | false    | Unique notification ID.                                                                                                                                                                                   |
+| template | string                                                                                                    | true     | Template ID.                                                                                                                                                                                              |
+| position | `top-left`<br />`top-center`<br />`top-right`<br />`bottom-left`<br />`bottom-center`<br />`bottom-right` | false    | Notification position. On medium-size screens, center notifications will be reassigned to the right top/bottom position. On mobile screens, they will be reassigned to the top and bottom center position |
+| timeout  | number                                                                                                    | false    | Miliseconds before removing the notification. If the notification should not be removed, use a value of `0`.                                                                                              |
+| data     | object                                                                                                    | false    | Contains all the properties that will be used to render the notification template.                                                                                                                        |
+
+```js
+this.$notifications.add({
+  id: 'fileDeleted',
+  template: 'basic',
+  position: 'bottom-center',
+  data: {
+    title: 'Delete operation',
+    message: 'File X was deleted',
+  },
+});
+```
+
+- `update` function
+
+::: info Named arguments
+The `update` function uses object destructuring for its arguments.
+:::
+
+| Argument | Type   | Required | Description                                                                                                                  |
+| -------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| id       | string | true     | Notification ID.                                                                                                             |
+| data     | object | true     | Contains the updated properties. They are merged with the existing data, so only the changed properties need to be provided. |
+
+```js
+this.$notifications.update({
+  id: 'fileDeleted',
+  data: {
+    message: 'File X was restored',
+  },
+});
+```
+
+- `remove` function
+
+| Argument | Type   | Required | Description      |
+| -------- | ------ | -------- | ---------------- |
+| id       | string | true     | Notification ID. |
+
+```js
+this.$notifications.remove('fileDeleted');
+```
+
+- `addListener` function
+
+| Argument   | Returns                   | Type   | Required | Description                                                                                |
+| ---------- | ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------ |
+| `listener` | Listener reference object | object | true     | Contains callbacks for one or more of the three events - `added`, `updated` and `removed`. |
+
+- `listener` object functions
+
+| function | Arguments    | Required | Description                                                                                                                   |
+| -------- | ------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| added    | `item`       | false    | Called when a notification has been added. First argument is the notification object.                                         |
+| updated  | `id`, `data` | false    | Called when a notification has been updated. First argument is the notification ID and the second is the updated data object. |
+| removed  | `id`         | false    | Called when a notification has been removed. First argument is the notification ID.                                           |
+
+```js
+const listenerRef = this.$notifications.addListener({
+  added(item) {
+    console.log(item);
+  },
+  updated(id, data) {
+    console.log(id, data);
+  },
+  removed(id) {
+    console.log(id);
+  },
+});
+```
+
+- `removeListener` function
+
+| Argument           | Returns | Type   | Required | Description                                                            |
+| ------------------ | ------- | ------ | -------- | ---------------------------------------------------------------------- |
+| Listener reference | void    | object | true     | The listener reference that is returned by the `addListener` function. |
+
+```js
+this.$notifications.removeListener(listenerRef);
+```
+
+### Attributes
+
+#### x-h-notification
+
+| Attribute    | Values  | Required | Description                      |
+| ------------ | ------- | -------- | -------------------------------- |
+| data-unread  | boolean | false    | Marks the notification as unread |
+| data-variant | `toast` | false    | Toast style notification         |
+
+#### x-h-notification-actions
+
+| Attribute        | Values                      | Required | Description                          |
+| ---------------- | --------------------------- | -------- | ------------------------------------ |
+| data-orientation | `vertical`<br/>`horizontal` | false    | Changes the aligment of the actions. |
+
+### Modifiers
+
+#### x-h-notification
+
+| Modifier | Type    | Required | Description                                          |
+| -------- | ------- | -------- | ---------------------------------------------------- |
+| floating | boolean | false    | Adds rounded corners and shadow to the notification. |
+
+## Examples
+
+### Notification Overlay
+
+In order to show a notification, you must place a `x-h-notification-overlay` component inside your application.
+
+It is recommended to place it inside the body tag or the topmost element initialized with Alpine.
+
+You can define multiple notification templates. Templates are not monitored for changes, so once the overlay initializes, any changes or new template additions will not be applied.
+
+```html
+<section x-h-notification-overlay>
+  <template id="basic">
+    <li x-h-notification.floating>
+      <div x-h-notification-title x-text="title"></div>
+    </li>
+  </template>
+  <template id="progress"> ... </template>
+  ...
+</section>
+```
+
+- Lucide icons
+
+If you use Lucide icons, you must enable template icon replacement in the `createIcons` configuration object.
+
+```js
+lucide.createIcons({ inTemplates: true });
+```
+
+### Notification Item
+
+The notification item has four inner components but they have no strick structure. This gives you the flexibility to design your own notification.
+
+- #### Toast-like notification
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating data-variant="toast">
+  <div x-h-notification-title>Toast</div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating data-variant="toast">
+  <div x-h-notification-title>Toast</div>
+</li>
+```
+
+- #### Basic notification with icon
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+  </div>
+  <div x-h-notification-title>Notification</div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+  </div>
+  <div x-h-notification-title>Notification</div>
+</li>
+```
+
+- #### Closable notification with icon, title and description
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-media>
+    <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+  </div>
+  <div class="vbox flex-1">
+    <h1 x-h-notification-title>Notification</h1>
+    <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+  </div>
+  <div x-h-notification-actions data-orientation="vertical">
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-media>
+    <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+  </div>
+  <div class="vbox flex-1">
+    <h1 x-h-notification-title>Notification</h1>
+    <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+  </div>
+  <div x-h-notification-actions data-orientation="vertical">
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+```
+
+- #### Closable notification with avatar, title and description
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-media>
+    <span x-h-avatar>
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <div x-h-avatar-fallback>HM</div>
+    </span>
+  </div>
+  <div class="vbox flex-1">
+    <h1 x-h-notification-title>Notification</h1>
+    <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+  </div>
+  <div x-h-notification-actions data-orientation="vertical">
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-media>
+    <span x-h-avatar>
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <div x-h-avatar-fallback>HM</div>
+    </span>
+  </div>
+  <div class="vbox flex-1">
+    <h1 x-h-notification-title>Notification</h1>
+    <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+  </div>
+  <div x-h-notification-actions data-orientation="vertical">
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+```
+
+- #### File deleted notification with undo button
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-title>File deleted</div>
+  <div x-h-notification-actions data-orientation="horizontal" data-align="center">
+    <button x-h-button data-size="sm" data-variant="outline">Undo</button>
+  </div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-title>File deleted</div>
+  <div x-h-notification-actions data-orientation="horizontal" data-align="center">
+    <button x-h-button data-size="sm" data-variant="outline">Undo</button>
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+```
+
+- #### Progress notification with cancel button
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-actions data-orientation="vertical">
+    <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+  <div class="vbox flex-1 gap-2">
+    <h1 x-h-notification-title>Generating project...</h1>
+    <div x-h-progress="40"></div>
+  </div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-actions data-orientation="vertical">
+    <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+  <div class="vbox flex-1 gap-2">
+    <h1 x-h-notification-title>Generating project...</h1>
+    <div x-h-progress="40"></div>
+  </div>
+</li>
+```
+
+- #### Upload notification with actions
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="vbox gap-2">
+  <div x-h-notification-title class="hbox items-center gap-2">
+    <svg x-h-icon.import class="size-6" role="img" aria-label="import"></svg>
+    <span class="text-lg">Uploading in progress</span>
+  </div>
+  <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
+  <div x-h-progress="40"></div>
+  <div x-h-notification-actions data-orientation="horizontal">
+    <button x-h-button class="flex-1" data-variant="outline">Cancel upload</button>
+    <button x-h-button class="flex-1" data-variant="primary">Show all uploads</button>
+  </div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="vbox gap-2">
+  <div x-h-notification-title class="hbox items-center gap-2">
+    <svg x-h-icon.import class="size-6" role="img" aria-label="import"></svg>
+    <span class="text-lg">Uploading in progress</span>
+  </div>
+  <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
+  <div x-h-progress="40"></div>
+  <div x-h-notification-actions data-orientation="horizontal">
+    <button x-h-button class="flex-1" data-variant="outline">Cancel upload</button>
+    <button x-h-button class="flex-1" data-variant="primary">Show all uploads</button>
+  </div>
+</li>
+```
+
+- #### Chat notification with avatar and reply button
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-media class="justify-start">
+    <span x-h-avatar class="size-10">
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <div x-h-avatar-fallback>HM</div>
+    </span>
+  </div>
+  <div class="vbox flex-1 gap-1">
+    <h1 x-h-notification-title>Harmonia Doe</h1>
+    <p x-h-notification-description>I just received the document. It looks good.</p>
+    <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+      <button x-h-button data-variant="primary" data-size="sm">
+        <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+        Reply
+      </button>
+    </div>
+  </div>
+  <div x-h-notification-actions data-orientation="vertical" class="justify-start">
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox">
+  <div x-h-notification-media class="justify-start">
+    <span x-h-avatar class="size-10">
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      <div x-h-avatar-fallback>HM</div>
+    </span>
+  </div>
+  <div class="vbox flex-1 gap-1">
+    <h1 x-h-notification-title>Harmonia Doe</h1>
+    <p x-h-notification-description>I just received the document. It looks good.</p>
+    <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+      <button x-h-button data-variant="primary" data-size="sm">
+        <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+        Reply
+      </button>
+    </div>
+  </div>
+  <div x-h-notification-actions data-orientation="vertical" class="justify-start">
+    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+      <svg x-h-icon.close role="img" aria-label="close"></svg>
+    </button>
+  </div>
+</li>
+```
+
+- #### Information variant notification
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="information">
+      <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Information</div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="information">
+      <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Information</div>
+</li>
+```
+
+- #### Warning variant notification
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="warning">
+      <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Warning</div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="warning">
+      <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Warning</div>
+</li>
+```
+
+- #### Success variant notification
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="positive">
+      <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Success</div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="positive">
+      <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Success</div>
+</li>
+```
+
+- #### Error variant notification
+
+<ClientOnly>
+<component-container data-class="vbox items-start">
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="negative">
+      <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Error</div>
+</li>
+</component-container>
+</ClientOnly>
+
+```html
+<li x-h-notification.floating class="hbox items-center">
+  <div x-h-notification-media>
+    <span x-h-avatar class="rounded-lg" data-variant="negative">
+      <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+    </span>
+  </div>
+  <div x-h-notification-title>Error</div>
+</li>
+```
+
+### Notification Popover List
+
+You can use the notification list anywhere but the most commot place is usually inside a popover in a toolbar.
+
+<ClientOnly>
+<component-container data-icons="true">
+<header x-h-toolbar>
+  <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
+  <h1 x-h-toolbar-title>Harmonia</h1>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
+    <i role="img" data-lucide="bell"></i>
+  </button>
+  <div x-h-popover data-innerclicks="true">
+    <div x-h-toolbar data-size="md">
+      <span x-h-toolbar-title>Notifications (3)</span>
+      <div x-h-toolbar-spacer></div>
+      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon.trash role="img" aria-label="trash"></svg>Clear</button>
+    </div>
+    <ol x-h-notification-list class="min-w-md">
+      <li x-h-notification class="hbox" data-unread="true">
+        <div x-h-notification-media class="justify-start">
+          <span x-h-avatar class="size-10">
+            <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+            <div x-h-avatar-fallback>HM</div>
+          </span>
+        </div>
+        <div class="vbox flex-1 gap-1">
+          <h1 x-h-notification-title>Harmonia Doe</h1>
+          <p x-h-notification-description>I just received the document. It looks good.</p>
+          <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+            <button x-h-button data-variant="primary" data-size="sm">
+              <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+              Reply
+            </button>
+          </div>
+        </div>
+        <div x-h-notification-actions data-orientation="vertical" class="justify-start">
+          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+            <svg x-h-icon.close role="img" aria-label="close"></svg>
+          </button>
+        </div>
+      </li>
+      <li x-h-notification class="hbox items-center">
+        <div x-h-notification-media class="w-10">
+          <span x-h-avatar class="rounded-lg" data-variant="negative">
+            <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+          </span>
+        </div>
+        <div class="vbox flex-1">
+          <h1 x-h-notification-title>Generation failed</h1>
+          <p x-h-notification-description>Failed to generate a montly report. Check console log.</p>
+        </div>
+        <div x-h-notification-actions data-orientation="vertical">
+          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+            <svg x-h-icon.close role="img" aria-label="close"></svg>
+          </button>
+        </div>
+      </li>
+      <li x-h-notification class="hbox items-center">
+        <div x-h-notification-media class="w-10">
+          <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+        </div>
+        <div x-h-notification-title class="flex-1">Montly report generation started</div>
+        <div x-h-notification-actions data-orientation="vertical">
+          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+            <svg x-h-icon.close role="img" aria-label="close"></svg>
+          </button>
+        </div>
+      </li>
+    </ol>
+  </div>
+</header>
+</component-container>
+</ClientOnly>
+
+```html
+<header x-h-toolbar>
+  <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
+  <h1 x-h-toolbar-title>Harmonia</h1>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
+    <i role="img" data-lucide="bell"></i>
+  </button>
+  <div x-h-popover data-innerclicks="true">
+    <div x-h-toolbar data-size="md">
+      <span x-h-toolbar-title>Notifications (3)</span>
+      <div x-h-toolbar-spacer></div>
+      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon.trash role="img" aria-label="trash"></svg>Clear</button>
+    </div>
+    <ol x-h-notification-list class="min-w-md">
+      <li x-h-notification class="hbox" data-unread="true">
+        <div x-h-notification-media class="justify-start">
+          <span x-h-avatar class="size-10">
+            <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+            <div x-h-avatar-fallback>HM</div>
+          </span>
+        </div>
+        <div class="vbox flex-1 gap-1">
+          <h1 x-h-notification-title>Harmonia Doe</h1>
+          <p x-h-notification-description>I just received the document. It looks good.</p>
+          <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+            <button x-h-button data-variant="primary" data-size="sm">
+              <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+              Reply
+            </button>
+          </div>
+        </div>
+        <div x-h-notification-actions data-orientation="vertical" class="justify-start">
+          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+            <svg x-h-icon.close role="img" aria-label="close"></svg>
+          </button>
+        </div>
+      </li>
+      <li x-h-notification class="hbox items-center">
+        <div x-h-notification-media class="w-10">
+          <span x-h-avatar class="rounded-lg" data-variant="negative">
+            <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+          </span>
+        </div>
+        <div class="vbox flex-1">
+          <h1 x-h-notification-title>Generation failed</h1>
+          <p x-h-notification-description>Failed to generate a montly report. Check console log.</p>
+        </div>
+        <div x-h-notification-actions data-orientation="vertical">
+          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+            <svg x-h-icon.close role="img" aria-label="close"></svg>
+          </button>
+        </div>
+      </li>
+      <li x-h-notification class="hbox items-center">
+        <div x-h-notification-media class="w-10">
+          <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+        </div>
+        <div x-h-notification-title class="flex-1">Montly report generation started</div>
+        <div x-h-notification-actions data-orientation="vertical">
+          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+            <svg x-h-icon.close role="img" aria-label="close"></svg>
+          </button>
+        </div>
+      </li>
+    </ol>
+  </div>
+</header>
+```
+
+### Add a notification
+
+The `$notifications` magic can be used both from inline HTML and from inside a component object.
+
+<ClientOnly>
+<component-container src="/components/notifications/notify.html">
+</component-container>
+</ClientOnly>
+
+- Inline
+
+```html
+<button x-h-button @click="$notifications.add({ template: 'basic', data: { title: 'You have been notified.' } })">Notify</button>
+```
+
+- Component Object
+
+```html
+<button x-h-button @click="notify()">Notify</button>
+
+<script>
+  Alpine.data('notifyController', () => ({
+    notify() {
+      this.$notifications.add({
+        template: 'basic',
+        data: {
+          title: 'You have been notified.',
+        },
+      });
+    },
+  }));
+</script>
+```
+
+### Notification with progress
+
+Notifications can contain actions and dynamic information. The following example simulates a generation progress notification.
+
+<ClientOnly>
+<component-container  src="/components/notifications/notify-progress.html">
+</component-container>
+</ClientOnly>
+
+```html
+<div x-data="notifyProgress">
+  <section x-h-notification-overlay>
+    <template id="progress">
+      <li x-h-notification.floating class="hbox min-w-xs">
+        <template x-if="progress >= 100">
+          <div x-h-notification-media>
+            <span x-h-avatar class="size-9" data-variant="information">
+              <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+            </span>
+          </div>
+        </template>
+        <template x-if="progress < 100">
+          <div x-h-notification-actions data-orientation="vertical">
+            <button x-h-button x-h-notification-close class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
+              <svg x-h-icon.close role="img" aria-label="close"></svg>
+            </button>
+          </div>
+        </template>
+        <div class="vbox flex-1 gap-2">
+          <h1 x-h-notification-title x-text="title"></h1>
+          <div x-h-progress="progress"></div>
+        </div>
+      </li>
+    </template>
+  </section>
+
+  <button x-h-button @click="showNotification">Start</button>
+</div>
+<script>
+  Alpine.data('notifyProgress', () => ({
+    progress: 0,
+    intervalID: undefined,
+    showNotification() {
+      // If there is an intervalID, that means the notification is already shown
+      if (!this.intervalID) {
+        // Reset the progress
+        this.progress = 10;
+
+        // Add the notification and set the timeout to 0, so it wouldn't automatically remove itself
+        this.$notifications.add({
+          id: 'progress-demo',
+          template: 'progress',
+          data: {
+            title: 'Generating...',
+            progress: this.progress,
+          },
+          timeout: 0,
+        });
+
+        // Notification listeners do not have the access to the same 'this' object as the controller.
+        // We can work around this by creating a function and calling it instead.
+        const clearNotification = () => {
+          clearInterval(this.intervalID);
+          this.intervalID = undefined;
+          // Remove the notification listener
+          this.$notifications.removeListener(listenerRef);
+        };
+
+        // Add a notification listener that will watch for removal changes.
+        // If the user has canceled the notification, cancel the interval and progress update.
+        const listenerRef = this.$notifications.addListener({
+          removed(id) {
+            if (id === 'progress-demo') {
+              clearNotification();
+            }
+          },
+        });
+
+        // Simulate work with setInterval
+        this.intervalID = setInterval(() => {
+          this.progress += 10;
+          if (this.progress >= 100) {
+            this.$notifications.update({
+              id: 'progress-demo',
+              data: {
+                title: 'Generated!',
+                progress: 100,
+              },
+            });
+            clearNotification();
+            // Remove the notification
+            setTimeout(() => {
+              this.$notifications.remove('progress-demo');
+            }, 3000);
+          } else {
+            this.$notifications.update({
+              id: 'progress-demo',
+              data: {
+                progress: this.progress,
+              },
+            });
+          }
+        }, 1000);
+      }
+    },
+  }));
+</script>
+```
+
+### Notification Position
+
+<br />
+
+<ClientOnly>
+<component-container src="/components/notifications/positions.html">
+</component-container>
+</ClientOnly>
+
+```html
+<div class="size-full" x-data="notifyPosition">
+  <section x-h-notification-overlay>
+    <template id="basic">
+      <li x-h-notification.floating>
+        <div x-h-notification-title x-text="title"></div>
+      </li>
+    </template>
+  </section>
+
+  <div class="grid size-full grid-cols-3 place-content-center gap-4">
+    <button x-h-button @click="notify('top-left')">Top Left</button>
+    <button x-h-button @click="notify('top-center')">Top Center</button>
+    <button x-h-button @click="notify('top-right')">Top Right</button>
+    <button x-h-button @click="notify('bottom-left')">Bottom Left</button>
+    <button x-h-button @click="notify('bottom-center')">Bottom Center</button>
+    <button x-h-button @click="notify('bottom-right')">Bottom Right</button>
+  </div>
+</div>
+<script>
+  Alpine.data('notifyPosition', () => ({
+    notify(pos) {
+      this.$notifications.add({ template: 'basic', position: pos, data: { title: pos }, timeout: 3000 });
+    },
+  }));
+</script>
+```

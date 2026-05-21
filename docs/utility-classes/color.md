@@ -1,8 +1,10 @@
 # Color
 
-CSS utility classes to apply colors to elements, svgs and text.
+CSS utility classes to apply colors to border, elements, svgs and text.
 
 ## Class names
+
+### Background colors
 
 | Class          | Description                                |
 | -------------- | ------------------------------------------ |
@@ -16,6 +18,8 @@ CSS utility classes to apply colors to elements, svgs and text.
 | bg-warning     | Set warning color as background color.     |
 | bg-information | Set information color as background color. |
 
+### Text colors
+
 | Class                       | Description                                     |
 | --------------------------- | ----------------------------------------------- |
 | text-background             | Set background color as text color.             |
@@ -24,6 +28,7 @@ CSS utility classes to apply colors to elements, svgs and text.
 | text-primary-foreground     | Set primary foreground color as text color.     |
 | text-secondary              | Set secondary color as text color.              |
 | text-secondary-foreground   | Set secondary foreground color as text color.   |
+| text-muted                  | Set muted color as text color.                  |
 | text-muted-foreground       | Set muted foreground color as text color.       |
 | text-negative               | Set negative color as text color.               |
 | text-negative-foreground    | Set negative foreground color as text color.    |
@@ -33,6 +38,8 @@ CSS utility classes to apply colors to elements, svgs and text.
 | text-warning-foreground     | Set warning foreground color as text color.     |
 | text-information            | Set information color as text color.            |
 | text-information-foreground | Set information foreground color as text color. |
+
+### SVG/Icon fill colors
 
 | Class                       | Description                                     |
 | --------------------------- | ----------------------------------------------- |
@@ -51,6 +58,27 @@ CSS utility classes to apply colors to elements, svgs and text.
 | fill-warning-foreground     | Set warning foreground color as fill color.     |
 | fill-information            | Set information color as fill color.            |
 | fill-information-foreground | Set information foreground color as fill color. |
+
+### Border colors
+
+| Class                         | Description                                       |
+| ----------------------------- | ------------------------------------------------- |
+| border-background             | Set background color as border color.             |
+| border-foreground             | Set foreground color as border color.             |
+| border-primary                | Set primary color as border color.                |
+| border-primary-foreground     | Set primary foreground color as border color.     |
+| border-secondary              | Set secondary color as border color.              |
+| border-secondary-foreground   | Set secondary foreground color as border color.   |
+| border-muted                  | Set muted color as border color.                  |
+| border-muted-foreground       | Set muted foreground color as border color.       |
+| border-negative               | Set negative color as border color.               |
+| border-negative-foreground    | Set negative foreground color as border color.    |
+| border-positive               | Set positive color as border color.               |
+| border-positive-foreground    | Set positive foreground color as border color.    |
+| border-warning                | Set warning color as border color.                |
+| border-warning-foreground     | Set warning foreground color as border color.     |
+| border-information            | Set information color as border color.            |
+| border-information-foreground | Set information foreground color as border color. |
 
 ## Examples
 
@@ -161,6 +189,7 @@ CSS utility classes to apply colors to elements, svgs and text.
 <ClientOnly>
 <component-container data-icons="true">
 <p class="bg-muted text-muted-foreground p-4">Muted</p>
+<p class="p-4 text-muted">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 <svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 </component-container>
@@ -168,6 +197,7 @@ CSS utility classes to apply colors to elements, svgs and text.
 
 ```html
 <p class="bg-muted p-4 text-muted-foreground">Muted</p>
+<p class="p-4 text-muted">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 <svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```

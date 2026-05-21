@@ -8,7 +8,7 @@ Use labels to clearly describe form fields, controls, or interactive elements. E
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-label

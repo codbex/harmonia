@@ -8,7 +8,7 @@ Use sheets to present supplementary information or interactive content without n
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-sheet

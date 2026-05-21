@@ -8,7 +8,7 @@ Use sidebars for main application navigation or other persistent content that be
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-sidebar

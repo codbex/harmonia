@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -38,7 +38,7 @@
   },
   "docDependencies": {
     "alpinejs": "^3.15.12",
-    "lucide": "^1.14.0",
+    "lucide": "^1.16.0",
     "culori": "^4.0.2",
     "@fontsource/open-sans": "^5.2.7"
   },
@@ -57,7 +57,6 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
-    "nouislider": "^15.8.1",
-    "uuid": "^14.0.0"
+    "nouislider": "^15.8.1"
   }
 }

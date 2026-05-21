@@ -8,7 +8,7 @@ Use switches for settings or options that can be turned on or off instantly, esp
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-switch

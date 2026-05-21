@@ -8,7 +8,7 @@ Use the focus directive to move or trap focus in forms, dialogs, modals, or othe
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-focus

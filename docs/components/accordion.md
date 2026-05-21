@@ -8,7 +8,7 @@ Use accordions to group related content that doesn’t need to be visible all at
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-accordion

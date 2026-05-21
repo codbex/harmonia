@@ -12,7 +12,7 @@ Similar to Alpine's `x-for` directive, the referenced `<template>` element MUST 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-template

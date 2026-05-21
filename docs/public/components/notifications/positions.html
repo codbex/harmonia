@@ -1,0 +1,47 @@
+<div class="size-full" x-data="notifyPosition">
+  <section x-h-notification-overlay>
+    <template id="basic">
+      <li x-h-notification.floating>
+        <div x-h-notification-title x-text="title"></div>
+      </li>
+    </template>
+    <template id="progress">
+      <li x-h-notification.floating class="hbox min-w-xs">
+        <template x-if="progress >= 100">
+          <div x-h-notification-media>
+            <span x-h-avatar class="size-9" data-variant="information">
+              <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+            </span>
+          </div>
+        </template>
+        <template x-if="progress < 100">
+          <div x-h-notification-actions data-orientation="vertical">
+            <button x-h-button x-h-notification-close class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
+              <svg x-h-icon.close role="img" aria-label="close"></svg>
+            </button>
+          </div>
+        </template>
+        <div class="vbox flex-1 gap-2">
+          <h1 x-h-notification-title x-text="title"></h1>
+          <div x-h-progress="progress"></div>
+        </div>
+      </li>
+    </template>
+  </section>
+
+  <div class="grid size-full grid-cols-3 place-content-center gap-4">
+    <button x-h-button @click="notify('top-left')">Top Left</button>
+    <button x-h-button @click="notify('top-center')">Top Center</button>
+    <button x-h-button @click="notify('top-right')">Top Right</button>
+    <button x-h-button @click="notify('bottom-left')">Bottom Left</button>
+    <button x-h-button @click="notify('bottom-center')">Bottom Center</button>
+    <button x-h-button @click="notify('bottom-right')">Bottom Right</button>
+  </div>
+</div>
+<script>
+  Alpine.data("notifyPosition", () => ({
+    notify(pos) {
+      this.$notifications.add({ template: "basic", position: pos, data: { title: pos }, timeout: 3000 });
+    },
+  }));
+</script>

@@ -1,6 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
+import uuidv4 from '../utils/uuid';
 import { ChevronDown, createSvg } from './../common/icons';
-
 export default function (Alpine) {
   Alpine.directive('h-accordion', (el, { expression, modifiers }, { Alpine }) => {
     el._h_accordion = modifiers.includes('single')

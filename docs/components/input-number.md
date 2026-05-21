@@ -4,7 +4,7 @@ Allows users to enter numeric values with built-in validation and step controls.
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-input-number

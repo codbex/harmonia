@@ -8,10 +8,11 @@ Use badges to highlight status, category, or state in a compact and non-intrusiv
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-badge
+x-h-badge-indicator
 ```
 
 ### Attributes
@@ -21,6 +22,8 @@ x-h-badge
 | data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline` | false    | Semantic color |
 
 ## Examples
+
+### Badge
 
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col gap-4">
@@ -44,4 +47,100 @@ x-h-badge
 <div x-h-badge data-variant="information"><i role="img" data-lucide="info"></i>Information</div>
 <div x-h-badge data-variant="outline">Outline</div>
 <a x-h-badge href="#">Link</a>
+```
+
+### Badge Indicator
+
+The badge indicator can be used on any element as long as it that element's position is relative (or has the `relative` class).
+
+- Button badge with text
+
+<ClientOnly>
+<component-container>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge">
+  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator>121</span>
+</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge">
+  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator>121</span>
+</button>
+```
+
+- Button badge as dot
+
+<ClientOnly>
+<component-container>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot">
+  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-dot="true"></span>
+</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot">
+  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-dot="true"></span>
+</button>
+```
+
+- Avatar with badge
+
+<ClientOnly>
+<component-container>
+<span x-h-avatar class="relative">
+  <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+  <span x-h-badge-indicator data-dot="true"></span>
+</span>
+</component-container>
+</ClientOnly>
+
+```html
+<span x-h-avatar class="relative">
+  <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+  <span x-h-badge-indicator data-dot="true"></span>
+</span>
+```
+
+- Dot badge with ping animation
+
+<ClientOnly>
+<component-container>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot ping">
+  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-dot="true" data-ping="true"></span>
+</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot ping">
+  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-dot="true" data-ping="true"></span>
+</button>
+```
+
+- Negative variant badge indicator
+
+<ClientOnly>
+<component-container>
+<button class="relative" x-h-button data-variant="outline">
+  Tasks
+  <span x-h-badge-indicator data-variant="negative">4</span>
+</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button class="relative" x-h-button data-variant="outline">
+  Tasks
+  <span x-h-badge-indicator data-variant="negative">4</span>
+</button>
 ```

@@ -8,7 +8,7 @@ Use tags to highlight keywords, categories, statuses, or shortcuts in a concise 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-tag

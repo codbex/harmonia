@@ -8,7 +8,7 @@ Use skeletons to temporarily fill the space of content that is being fetched or 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-skeleton
@@ -34,7 +34,7 @@ x-h-skeleton
 <component-container>
 <div class="flex flex-col gap-2">
   <div x-h-skeleton.avatar></div>
-  <div x-h-skeleton.card class="tile-xs"></div>
+  <div x-h-skeleton.card class="tile-sm"></div>
   <div x-h-skeleton.control class="w-1/2"></div>
   <div x-h-skeleton class="h-12 w-full"></div>
 </div>
@@ -44,7 +44,7 @@ x-h-skeleton
 ```html
 <div class="flex flex-col gap-2">
   <div x-h-skeleton.avatar></div>
-  <div x-h-skeleton.card class="tile-xs"></div>
+  <div x-h-skeleton.card class="tile-sm"></div>
   <div x-h-skeleton.control class="w-1/2"></div>
   <div x-h-skeleton class="h-12 w-full"></div>
 </div>

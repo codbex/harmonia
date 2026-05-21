@@ -8,7 +8,7 @@ Use range sliders for selecting numeric values within a defined range, such as v
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-range

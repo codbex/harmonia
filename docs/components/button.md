@@ -8,7 +8,7 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-button

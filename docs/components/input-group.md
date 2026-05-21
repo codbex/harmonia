@@ -8,7 +8,7 @@ Use Input Groups when you want to attach supplementary actions or indicators to 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-input-group

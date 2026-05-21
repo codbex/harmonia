@@ -8,7 +8,7 @@ Use separators to distinguish between related groups of elements, such as menu i
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-separator

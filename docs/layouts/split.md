@@ -35,7 +35,7 @@ The panel elements MUST be direct children of the split element. Otherwise, ther
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-split

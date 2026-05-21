@@ -1,8 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { v4 as uuidv4 } from 'uuid';
+import uuidv4 from '../utils/uuid';
 import { Clock, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
-
 const dayPeriodLabels = { am: 'AM', pm: 'PM' };
 
 const getSelectedTime = (rawTime, convertTo12) => {

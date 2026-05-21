@@ -8,7 +8,7 @@ Use radio buttons when users must choose only one option from a group. All optio
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-radio

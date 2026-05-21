@@ -8,7 +8,7 @@ Use progress bars to indicate the advancement of tasks such as uploads, download
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-progress

@@ -1,8 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
-import { v4 as uuidv4 } from 'uuid';
+import uuidv4 from '../utils/uuid';
 import { Check, ChevronDown, Search, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
-
 const FilterType = Object.freeze({
   'starts-with': 0,
   contains: 1,

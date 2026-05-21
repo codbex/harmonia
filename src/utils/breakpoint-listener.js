@@ -1,5 +1,6 @@
-export function getBreakpointListener(handler, breakpoint = 768) {
-  const mql = top.matchMedia(`(width <= ${breakpoint}px)`);
+export function getBreakpointListener(handler, breakpoint = 768, frame = false) {
+  let bps = Number.isFinite(breakpoint) ? `${breakpoint}px` : breakpoint;
+  const mql = frame ? window.matchMedia(`(width <= ${bps})`) : top.matchMedia(`(width <= ${bps})`);
   const onWidthChange = (event) => {
     handler(event.matches);
   };

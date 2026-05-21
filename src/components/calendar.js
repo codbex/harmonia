@@ -1,7 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { v4 as uuidv4 } from 'uuid';
+import uuidv4 from '../utils/uuid';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createSvg } from './../common/icons';
-
 export default function (Alpine) {
   Alpine.directive('h-calendar', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
     const datepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_datepicker'));

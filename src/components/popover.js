@@ -1,6 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
-import { v4 as uuidv4 } from 'uuid';
-
+import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-popover-trigger', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine, cleanup }) => {
     el._popover = Alpine.reactive({
@@ -70,7 +69,7 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-popover', (el, { original, modifiers }, { effect }) => {
+  Alpine.directive('h-popover', (el, { original, modifiers }, { effect, cleanup }) => {
     const popover = (() => {
       let sibling = el.previousElementSibling;
       while (sibling && !sibling.hasOwnProperty('_popover')) {
@@ -94,6 +93,14 @@ export default function (Alpine) {
     if (noScroll) {
       el.classList.remove('overflow-scroll');
       el.classList.add('overflow-none');
+    }
+
+    const stopPropagation = (event) => {
+      event.stopPropagation();
+    };
+
+    if (el.getAttribute('data-innerclicks') === 'true') {
+      el.addEventListener('click', stopPropagation);
     }
 
     let autoUpdateCleanup;
@@ -135,6 +142,10 @@ export default function (Alpine) {
           top: '0px',
         });
       }
+    });
+
+    cleanup(() => {
+      el.removeEventListener('click', stopPropagation);
     });
   });
 }

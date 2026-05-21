@@ -8,7 +8,7 @@ Use fieldsets to logically group related inputs, such as multiple options within
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-fieldset

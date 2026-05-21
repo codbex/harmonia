@@ -1,6 +1,5 @@
 import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { v4 as uuidv4 } from 'uuid';
-
+import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-tooltip-trigger', (el, _, { Alpine, cleanup }) => {
     el._tooltip = Alpine.reactive({

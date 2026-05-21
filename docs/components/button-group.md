@@ -8,7 +8,7 @@ Use button groups to organize actions that share a common context or hierarchy. 
 
 ## API Reference
 
-### Component attubute(s)
+### Component attribute(s)
 
 ```
 x-h-button-group

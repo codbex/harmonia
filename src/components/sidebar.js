@@ -1,6 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
+import uuidv4 from '../utils/uuid';
 import { ChevronRight, createSvg } from './../common/icons';
-
 export default function (Alpine) {
   Alpine.directive('h-sidebar', (el, { modifiers }, { cleanup }) => {
     el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
