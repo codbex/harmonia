@@ -79,16 +79,20 @@ export default function (Alpine) {
       datepicker._h_datepicker.input.addEventListener('change', onInputChange);
     }
 
+    function setFromModel() {
+      selected = new Date(el._x_model.get());
+      if (isNaN(selected)) {
+        console.error(`${original}: input value is not a valid date - ${el._x_model.get()}`);
+        if (datepicker) datepicker._h_datepicker.input.setCustomValidity('Input value is not a valid date.');
+        else el.setAttribute('data-invalid', 'true');
+      } else if (datepicker) {
+        datepicker._h_datepicker.input.value = formatter.format(selected);
+      }
+    }
+
     function checkForModel() {
       if (el.hasOwnProperty('_x_model') && el._x_model.get()) {
-        selected = new Date(el._x_model.get());
-        if (isNaN(selected)) {
-          console.error(`${original}: input value is not a valid date - ${el._x_model.get()}`);
-          if (datepicker) datepicker._h_datepicker.input.setCustomValidity('Input value is not a valid date.');
-          else el.setAttribute('data-invalid', 'true');
-        } else if (datepicker) {
-          datepicker._h_datepicker.input.value = formatter.format(selected);
-        }
+        setFromModel();
       }
     }
 
@@ -553,6 +557,25 @@ export default function (Alpine) {
 
     if (datepicker) {
       el.addEventListener('transitionend', onTransitionEnd);
+    }
+
+    if (el.hasOwnProperty('_x_model')) {
+      const modelExpression = el.getAttribute('x-model');
+
+      const evaluateModel = evaluateLater(modelExpression);
+
+      effect(() => {
+        evaluateModel((value) => {
+          if ((!selected && value) || (value && selected.getTime() !== new Date(value).getTime())) {
+            setFromModel();
+            render();
+          } else if (!value) {
+            if (datepicker) datepicker._h_datepicker.input.value = '';
+            selected = undefined;
+            render();
+          }
+        });
+      });
     }
 
     cleanup(() => {
