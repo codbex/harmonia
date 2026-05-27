@@ -21,10 +21,9 @@ x-h-accordion-content
 
 #### x-h-accordion
 
-| Attribute    | Type                          | Required | Description                           |
-| ------------ | ----------------------------- | -------- | ------------------------------------- |
-| data-size    | `default`<br />`md`<br />`sm` | false    | Height of the accordion header items. |
-| data-variant | `default`<br />`header`       | false    | Toolbar-style accordion header items. |
+| Attribute | Type                          | Required | Description                           |
+| --------- | ----------------------------- | -------- | ------------------------------------- |
+| data-size | `default`<br />`md`<br />`sm` | false    | Height of the accordion header items. |
 
 #### x-h-accordion-item
 
@@ -142,13 +141,13 @@ x-h-accordion-content
 </div>
 ```
 
-### Header variant and medium size
+### Medium size
 
 <br />
 
 <ClientOnly>
 <component-container>
-<div x-h-accordion data-variant="header" data-size="md">
+<div x-h-accordion data-size="md">
   <div x-h-accordion-item>
     <h3 x-h-accordion-trigger="'Accordion Item 1'"></h3>
     <div x-h-accordion-content>
@@ -168,7 +167,7 @@ x-h-accordion-content
 </ClientOnly>
 
 ```html
-<div x-h-accordion data-variant="header" data-size="md">
+<div x-h-accordion data-size="md">
   <div x-h-accordion-item>
     <h3 x-h-accordion-trigger="'Accordion Item 1'"></h3>
     <div x-h-accordion-content>
@@ -176,7 +175,51 @@ x-h-accordion-content
       Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </div>
   </div>
-  <div x-h-accordion-item.default>
+  <div x-h-accordion-item>
+    <h3 x-h-accordion-trigger="'Accordion Item 2'"></h3>
+    <div x-h-accordion-content>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+</div>
+```
+
+### Small size
+
+<br />
+
+<ClientOnly>
+<component-container>
+<div x-h-accordion data-size="sm">
+  <div x-h-accordion-item>
+    <h3 x-h-accordion-trigger="'Accordion Item 1'"></h3>
+    <div x-h-accordion-content>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+  <div x-h-accordion-item>
+    <h3 x-h-accordion-trigger="'Accordion Item 2'"></h3>
+    <div x-h-accordion-content>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-accordion data-size="sm">
+  <div x-h-accordion-item>
+    <h3 x-h-accordion-trigger="'Accordion Item 1'"></h3>
+    <div x-h-accordion-content>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+  <div x-h-accordion-item>
     <h3 x-h-accordion-trigger="'Accordion Item 2'"></h3>
     <div x-h-accordion-content>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.

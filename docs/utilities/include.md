@@ -7,7 +7,8 @@ The include directive makes it easy to fetch and insert an external HTML fragmen
 - Only use on trusted content and never on dynamic/user-provided content!<br />
 - Dynamically rendering HTML from third parties can easily lead to XSS vulnerabilities.<br />
 - Executing untrusted JavaScript code poses significant security risks and should be strictly avoided.
-  :::
+
+:::
 
 ::: info
 The directive executes before any binding.

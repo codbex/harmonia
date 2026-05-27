@@ -7,11 +7,25 @@ export default function (Alpine) {
     el.classList.add('border', 'rounded-control', 'gap-2', 'p-2');
     el.setAttribute('tabindex', '-1');
     if (datepicker) {
-      el.classList.add('absolute', 'bg-popover', 'text-popover-foreground', 'data-[state=open]:flex', 'data-[state=open]:flex-col', 'data-[state=closed]:hidden', 'z-50', 'shadow-md');
+      el.classList.add(
+        'absolute',
+        'bg-popover',
+        'text-popover-foreground',
+        'flex',
+        'flex-col',
+        'hidden',
+        'z-50',
+        'shadow-md',
+        'transition-[opacity,scale]',
+        'motion-reduce:transition-none',
+        'duration-100',
+        'ease-out',
+        'opacity-0',
+        'scale-95'
+      );
       el.setAttribute('role', 'dialog');
       el.setAttribute('aria-modal', 'true');
       el.setAttribute('data-slot', 'date-picker-calendar');
-      el.setAttribute('data-state', datepicker._h_datepicker.state.expanded ? 'open' : 'closed');
     } else {
       el.classList.add('shadow-input', 'data-[invalid=true]:border-negative', 'data-[invalid=true]:ring-negative/20', 'dark:data-[invalid=true]:ring-negative/40');
     }
@@ -128,6 +142,7 @@ export default function (Alpine) {
       'text-sm',
       'font-medium',
       'transition-all',
+      'motion-reduce:transition-none',
       'outline-none',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
@@ -267,6 +282,9 @@ export default function (Alpine) {
           'size-8',
           'rounded-control',
           'outline-none',
+          'duration-100',
+          'transition-all',
+          'motion-reduce:transition-none',
           'hover:bg-secondary-hover',
           'hover:text-secondary-foreground',
           'focus:bg-secondary-hover',
@@ -496,25 +514,45 @@ export default function (Alpine) {
           left: `${x}px`,
           top: `${y}px`,
         });
+        el.classList.remove('scale-95', 'opacity-0');
       });
     }
 
     if (datepicker) {
       effect(() => {
-        el.setAttribute('data-state', datepicker._h_datepicker.state.expanded ? 'open' : 'closed');
         if (datepicker._h_datepicker.state.expanded) {
+          el.classList.remove('hidden');
           autoUpdateCleanup = autoUpdate(datepicker, el, updatePosition);
           Alpine.nextTick(() => {
             focusDay();
           });
         } else {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            el.classList.add('hidden', 'scale-95', 'opacity-0');
+            Object.assign(el.style, {
+              left: '0px',
+              top: '0px',
+            });
+          } else {
+            el.classList.add('scale-95', 'opacity-0');
+          }
           if (autoUpdateCleanup) autoUpdateCleanup();
-          Object.assign(el.style, {
-            left: '0px',
-            top: '0px',
-          });
         }
       });
+    }
+
+    function onTransitionEnd(event) {
+      if (event.target === el && event.target.classList.contains('opacity-0')) {
+        el.classList.add('hidden');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      }
+    }
+
+    if (datepicker) {
+      el.addEventListener('transitionend', onTransitionEnd);
     }
 
     cleanup(() => {
@@ -524,6 +562,7 @@ export default function (Alpine) {
       }
       if (datepicker) {
         datepicker._h_datepicker.input.removeEventListener('change', onInputChange);
+        el.removeEventListener('transitionend', onTransitionEnd);
       }
     });
   });

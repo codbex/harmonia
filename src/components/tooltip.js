@@ -29,7 +29,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-tooltip', (el, { original }, { effect }) => {
+  Alpine.directive('h-tooltip', (el, { original }, { effect, cleanup }) => {
     const tooltip = (() => {
       let sibling = el.previousElementSibling;
       while (sibling && !sibling.hasOwnProperty('_tooltip')) {
@@ -41,7 +41,24 @@ export default function (Alpine) {
     if (!tooltip) {
       throw new Error(`${original} must be placed after a tooltip trigger element`);
     }
-    el.classList.add('absolute', 'bg-foreground', 'text-background', 'z-50', 'w-fit', 'rounded-md', 'px-3', 'py-1.5', 'text-xs', 'text-balance');
+    el.classList.add(
+      'absolute',
+      'bg-foreground',
+      'text-background',
+      'z-50',
+      'w-fit',
+      'rounded-md',
+      'px-3',
+      'py-1.5',
+      'text-xs',
+      'text-balance',
+      'transition-[opacity,scale]',
+      'motion-reduce:transition-none',
+      'duration-100',
+      'ease-out',
+      'opacity-0',
+      'scale-95'
+    );
     el.setAttribute('data-slot', 'tooltip');
     el.setAttribute('id', tooltip._tooltip.controls);
 
@@ -58,6 +75,7 @@ export default function (Alpine) {
           left: `${x}px`,
           top: `${y}px`,
         });
+        el.classList.remove('scale-95', 'opacity-0');
         if (middlewareData.arrow) {
           Object.assign(arrowEl.style, {
             left: middlewareData.arrow.x != null ? `${middlewareData.arrow.x}px` : '',
@@ -72,6 +90,24 @@ export default function (Alpine) {
         el.classList.remove('hidden');
         updatePosition();
       } else {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          el.classList.add('hidden', 'scale-95', 'opacity-0');
+          Object.assign(el.style, {
+            left: '0px',
+            top: '0px',
+          });
+          Object.assign(arrowEl.style, {
+            left: '0px',
+            top: '0px',
+          });
+        } else {
+          el.classList.add('scale-95', 'opacity-0');
+        }
+      }
+    });
+
+    function onTransitionEnd(event) {
+      if (event.target === el && event.target.classList.contains('opacity-0')) {
         el.classList.add('hidden');
         Object.assign(el.style, {
           left: '0px',
@@ -82,6 +118,12 @@ export default function (Alpine) {
           top: '0px',
         });
       }
+    }
+
+    el.addEventListener('transitionend', onTransitionEnd);
+
+    cleanup(() => {
+      el.removeEventListener('transitionend', onTransitionEnd);
     });
   });
 }

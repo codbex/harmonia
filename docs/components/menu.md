@@ -98,12 +98,12 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 <ClientOnly>
 <component-container data-class="flex flex-col items-start gap-4">
 <button x-h-button x-h-menu-trigger.dropdown>Dropdown</button>
-<ul x-h-menu aria-label="dropdown">
+<ul x-h-menu>
   <div x-h-menu-label>Profile</div>
   <li x-h-menu-item>Set yourself as away</li>
-  <li x-h-menu-sub id="pnsm">
+  <li x-h-menu-sub>
     <span>Pause notifications</span>
-    <ul x-h-menu.sub aria-labelledby="pnsm">
+    <ul x-h-menu.sub>
       <li x-h-menu-item>15 minutes</li>
       <li x-h-menu-item>30 minutes</li>
       <li x-h-menu-item>1 hour</li>
@@ -122,12 +122,12 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 ```html
 <button x-h-button x-h-menu-trigger.dropdown>Dropdown</button>
-<ul x-h-menu aria-label="dropdown">
+<ul x-h-menu>
   <div x-h-menu-label>Profile</div>
   <li x-h-menu-item>Set yourself as away</li>
-  <li x-h-menu-sub id="pnsm">
+  <li x-h-menu-sub>
     <span>Pause notifications</span>
-    <ul x-h-menu.sub aria-labelledby="pnsm">
+    <ul x-h-menu.sub>
       <li x-h-menu-item>15 minutes</li>
       <li x-h-menu-item>30 minutes</li>
       <li x-h-menu-item>1 hour</li>
@@ -168,15 +168,15 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
   <div x-h-menu-separator></div>
   <div x-h-menu-label data-inset="false">Other items</div>
   <li x-h-menu-item data-inset="true">Menu Item 1</li>
-  <li x-h-menu-sub data-inset="true" id="submenu1">
-    <span>Submenu<span>
-    <ul x-h-menu.sub aria-labelledby="submenu1">
+  <li x-h-menu-sub data-inset="true">
+    <span>Submenu</span>
+    <ul x-h-menu.sub>
       <li x-h-menu-item>Subitem 1</li>
       <li x-h-menu-item>Subitem 2</li>
       <li x-h-menu-item>Subitem 3</li>
-      <li x-h-menu-sub id="submenu2">
+      <li x-h-menu-sub>
         <span>Sub-submenu</span>
-        <ul x-h-menu.sub aria-labelledby="submenu2">
+        <ul x-h-menu.sub>
           <li x-h-menu-item>Subitem 1</li>
           <li x-h-menu-item>Subitem 2</li>
           <li x-h-menu-item>Subitem 3</li>

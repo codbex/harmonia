@@ -73,6 +73,7 @@ export default function (Alpine) {
       'font-medium',
       'whitespace-nowrap',
       'transition-[color,box-shadow]',
+      'motion-reduce:transition-none',
       'group-data-[floating=true]/tab-bar:rounded-md',
       'group-data-[floating=true]/tab-bar:border',
       'group-data-[floating=true]/tab-bar:border-transparent',

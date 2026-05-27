@@ -24,6 +24,7 @@ export default function (Alpine) {
       'before:h-full',
       'before:aspect-square',
       'before:transition-transform',
+      'before:motion-reduce:transition-none',
       'bg-muted',
       'border',
       'data-[size=sm]:h-5',
@@ -42,7 +43,8 @@ export default function (Alpine) {
       'relative',
       'rounded-full',
       'shrink-0',
-      'transition-color'
+      'transition-colors',
+      'motion-reduce:transition-none'
     );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'switch');

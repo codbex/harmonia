@@ -80,6 +80,7 @@ export default function (Alpine) {
       'font-medium',
       'outline-hidden',
       'transition-[margin,opacity]',
+      'motion-reduce:transition-none',
       'duration-200',
       'ease-linear',
       'focus-visible:ring-2',
@@ -110,7 +111,7 @@ export default function (Alpine) {
       el.appendChild(
         createSvg({
           icon: ChevronRight,
-          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform duration-200 [[aria-expanded=true]>&]:rotate-90',
+          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform motion-reduce:transition-none duration-200 [[aria-expanded=true]>&]:rotate-90',
           attrs: {
             'aria-hidden': true,
             role: 'presentation',
@@ -146,6 +147,7 @@ export default function (Alpine) {
       'p-0',
       'outline-hidden',
       'transition-transform',
+      'motion-reduce:transition-none',
       'focus-visible:ring-2',
       '[&>svg]:size-4',
       '[&>svg]:shrink-0',
@@ -289,10 +291,11 @@ export default function (Alpine) {
         'text-sm',
         'duration-200',
         'transition-[width,height,padding]',
+        'motion-reduce:transition-none',
         'group-has-data-[sidebar=menu-action]/menu-item:pr-8',
         'data-[active=true]:font-medium',
-        'data-[state=open]:hover:bg-sidebar-secondary',
-        'data-[state=open]:hover:text-sidebar-secondary-foreground',
+        'aria-[expanded=true]:hover:bg-sidebar-secondary',
+        'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
         'group-data-[collapsed=true]/sidebar:!size-8',
         'group-data-[collapsed=true]/sidebar:!p-2',
         'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:!hidden'
@@ -318,7 +321,7 @@ export default function (Alpine) {
       el.appendChild(
         createSvg({
           icon: ChevronRight,
-          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform duration-200 [[aria-expanded=true]>&]:rotate-90',
+          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform motion-reduce:transition-none duration-200 [[aria-expanded=true]>&]:rotate-90',
           attrs: {
             'aria-hidden': true,
             role: 'presentation',
@@ -359,6 +362,7 @@ export default function (Alpine) {
       'p-0',
       'outline-hidden',
       'transition-transform',
+      'motion-reduce:transition-none',
       'focus-visible:ring-2',
       '[&>svg]:size-4',
       '[&>svg]:shrink-0',
@@ -368,7 +372,7 @@ export default function (Alpine) {
       'group-data-[collapsed=true]/sidebar:hidden'
     );
     if (modifiers.includes('autohide')) {
-      el.classList.add('group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'data-[state=open]:opacity-100', 'md:opacity-0');
+      el.classList.add('group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'aria-[expanded=true]:opacity-100', 'md:opacity-0');
     }
     if (el.tagName !== 'BUTTON') {
       el.setAttribute('role', 'button');

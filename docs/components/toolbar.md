@@ -118,6 +118,32 @@ x-h-toolbar-separator
 </div>
 ```
 
+### Floating Transparent
+
+<br />
+
+<ClientOnly>
+<component-container data-icons="true">
+<div x-h-toolbar data-variant="transparent" data-floating="true">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-toolbar data-variant="transparent">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+```
+
 ### Small
 
 <br />

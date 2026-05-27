@@ -1,12 +1,23 @@
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-dialog-overlay', (el, _, { cleanup }) => {
-    el.classList.add('hidden', 'data-[open=true]:block', 'fixed', 'inset-0', 'z-50', 'bg-black/60');
+    el.classList.add('hidden', 'fixed', 'inset-0', 'z-50', 'bg-black/60', 'transition-[opacity,scale]', 'motion-reduce:transition-none', 'duration-200', 'ease-out', 'opacity-0', '*:scale-95');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'dialog-overlay');
 
     const observer = new MutationObserver(() => {
       if (el.getAttribute('data-open') === 'true') {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          el.classList.remove('hidden', '*:scale-95', 'opacity-0');
+        } else {
+          el.classList.remove('hidden');
+          Alpine.nextTick(() => {
+            // Reading 'offsetHeight' forces the browser to apply pending styles first.
+            // This guarantees that the animation will always happen.
+            el.offsetHeight;
+            el.classList.remove('*:scale-95', 'opacity-0');
+          });
+        }
         const inputs = el.getElementsByTagName('INPUT');
         if (inputs.length) {
           for (let i = 0; i < inputs.length; i++) {
@@ -34,13 +45,28 @@ export default function (Alpine) {
         if (buttons.length) {
           buttons[0].focus();
         }
+      } else {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          el.classList.add('hidden', '*:scale-95', 'opacity-0');
+        } else {
+          el.classList.add('*:scale-95', 'opacity-0');
+        }
       }
     });
+
+    function onTransitionEnd(event) {
+      if (event.target === el && event.target.classList.contains('opacity-0')) {
+        el.classList.add('hidden');
+      }
+    }
+
+    el.addEventListener('transitionend', onTransitionEnd);
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-open'] });
 
     cleanup(() => {
       observer.disconnect();
+      el.removeEventListener('transitionend', onTransitionEnd);
     });
   });
 
@@ -64,7 +90,11 @@ export default function (Alpine) {
       'p-4',
       'shadow-xl',
       'sm:max-w-lg',
-      'outline-none'
+      'outline-none',
+      'transition-[opacity,scale]',
+      'motion-reduce:transition-none',
+      'duration-200',
+      'ease-out'
     );
     el.setAttribute('role', 'dialog');
     el.setAttribute('data-slot', 'dialog');
@@ -96,6 +126,7 @@ export default function (Alpine) {
       'rounded-xs',
       'opacity-70',
       'transition-opacity',
+      'motion-reduce:transition-none',
       'hover:opacity-100',
       'focus:ring-2',
       'focus:ring-offset-2',

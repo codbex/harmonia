@@ -30,6 +30,7 @@ export default function (Alpine) {
       'flex',
       'items-center',
       'transition-[color,box-shadow]',
+      'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
       'pl-3',

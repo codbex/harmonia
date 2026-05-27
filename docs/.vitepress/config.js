@@ -41,9 +41,9 @@ export default defineConfig({
           { text: 'Calendar', link: '/components/calendar' },
           { text: 'Card', link: '/components/card' },
           { text: 'Checkbox', link: '/components/checkbox' },
-          { text: 'Collapsible', link: '/components/collapsible' },
           { text: 'Date Picker', link: '/components/datepicker' },
           { text: 'Dialog', link: '/components/dialog' },
+          { text: 'Expansion Panel', link: '/components/expansion-panel' },
           { text: 'Fieldset', link: '/components/fieldset' },
           { text: 'Icon', link: '/components/icon' },
           { text: 'Info Page', link: '/components/info-page' },
@@ -96,6 +96,7 @@ export default defineConfig({
       {
         text: 'Utility classes',
         items: [
+          { text: 'Animations', link: '/utility-classes/animations' },
           { text: 'Display', link: '/utility-classes/display' },
           { text: 'Width & Height', link: '/utility-classes/width-height' },
           { text: 'Tile', link: '/utility-classes/tile' },

@@ -109,6 +109,7 @@ export const setButtonClasses = (el) => {
     'text-sm',
     'font-medium',
     'transition-all',
+    'motion-reduce:transition-none',
     'disabled:pointer-events-none',
     'disabled:opacity-50',
     '[&_svg]:pointer-events-none',

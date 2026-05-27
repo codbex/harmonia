@@ -4,11 +4,11 @@
 
 @source inline("flex");
 @source inline("flex-{col,row,col-reverse,row-reverse,wrap,1,auto,none}");
-.hbox {
+.hbox:not(.hidden) {
   @apply flex flex-row;
 }
 
-.vbox {
+.vbox:not(.hidden) {
   @apply flex flex-col;
 }
 
@@ -137,6 +137,13 @@
   bottom: 0;
 }
 @source inline("opacity-{0,25,50,75,100}");
+@source inline("scale-{95,105}");
+@source inline("*:scale-95");
+@source inline("{-,}translate-{x,y}-{full,4}");
+@source inline("duration-{100,200,300}");
+@source inline("transition-{all,colors,opacity,transform,[opacity,scale]}");
+@source inline("motion-reduce:transition-none");
+@source inline("ease-{out,linear}");
 
 @source inline("bg-{primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 @source inline("fill-{current,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");

@@ -1,6 +1,6 @@
 # Border
 
-Add a shadow to an element.
+Classes for adding a border to an element.
 
 ## Class names
 

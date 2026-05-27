@@ -6,9 +6,9 @@ import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
 import checkbox from './components/checkbox';
-import collapsible from './components/collapsible';
 import datepicker from './components/datepicker';
 import dialog from './components/dialog';
+import expansionPanel from './components/expansion-panel';
 import fieldset from './components/fieldset';
 import icon from './components/icon';
 import infoPage from './components/info-page';
@@ -58,9 +58,9 @@ export {
   calendar as Calendar,
   card as Card,
   checkbox as Checkbox,
-  collapsible as Collapsible,
   datepicker as DatePicker,
   dialog as Dialog,
+  expansionPanel as ExpansionPanel,
   fieldset as Fieldset,
   focus as Focus,
   icon as Icon,
@@ -106,9 +106,9 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(calendar);
   registerPlugin(card);
   registerPlugin(checkbox);
-  registerPlugin(collapsible);
   registerPlugin(datepicker);
   registerPlugin(dialog);
+  registerPlugin(expansionPanel);
   registerPlugin(fieldset);
   registerPlugin(focus);
   registerPlugin(icon);

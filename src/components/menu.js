@@ -1,30 +1,53 @@
 import { computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import uuidv4 from '../utils/uuid';
 import { Check, ChevronRight, createSvg } from './../common/icons';
-
 export default function (Alpine) {
   Alpine.directive('h-menu-trigger', (el, { modifiers }) => {
     el._menu_trigger = {
       isDropdown: modifiers.includes('dropdown'),
       setOpen(open) {
-        el.setAttribute('data-state', open ? 'open' : 'closed');
+        el.setAttribute('aria-expanded', open);
       },
     };
-    el.setAttribute('data-state', 'closed');
+    if (el._menu_trigger.isDropdown) {
+      el.setAttribute('aria-haspopup', 'true');
+      el.setAttribute('aria-expanded', 'false');
+      if (!el.hasAttribute('id')) {
+        el.setAttribute('id', `mt${uuidv4()}`);
+      }
+    }
   });
 
   Alpine.directive('h-menu', (el, { original, modifiers }, { cleanup, Alpine }) => {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be an ul element`);
     }
-    el.classList.add('hidden', 'fixed', 'bg-popover', 'text-popover-foreground', 'font-normal', 'z-50', 'min-w-[8rem]', 'overflow-x-hidden', 'overflow-y-auto', 'rounded-md', 'p-1', 'shadow-md', 'border', 'outline-none');
+    el.classList.add(
+      'hidden',
+      'fixed',
+      'bg-popover',
+      'text-popover-foreground',
+      'font-normal',
+      'z-50',
+      'min-w-[8rem]',
+      'overflow-x-hidden',
+      'overflow-y-auto',
+      'rounded-md',
+      'p-1',
+      'shadow-md',
+      'border',
+      'outline-none',
+      'transition-[opacity,scale]',
+      'motion-reduce:transition-none',
+      'duration-100',
+      'ease-out',
+      'opacity-0',
+      'scale-95'
+    );
     el.setAttribute('role', 'menu');
     el.setAttribute('aria-orientation', 'vertical');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'menu');
-    if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-      throw new Error(`${original} must have an "aria-label" or "aria-labelledby" attribute`);
-    }
-
     const isSubmenu = modifiers.includes('sub');
 
     const menuTrigger = (() => {
@@ -34,17 +57,33 @@ export default function (Alpine) {
         sibling = sibling.previousElementSibling;
       }
       if (!sibling.hasOwnProperty('_menu_trigger')) {
-        throw new Error(`${original} must be placed after the menu trigger`);
+        throw new Error(`${original} menu must be placed after a menu trigger element`);
       }
       return sibling;
     })();
 
-    if (!isSubmenu && !menuTrigger) {
-      throw new Error(`${original} menu must be placed after a menu trigger element`);
+    function setAriaAttrubutes(parent) {
+      if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
+        if (parent && parent.hasAttribute('id')) {
+          el.setAttribute('aria-labelledby', parent.id);
+        } else {
+          throw new Error(`${original} must have an "aria-label" or "aria-labelledby" attribute`);
+        }
+      }
     }
 
     let menuSubItem;
-    if (isSubmenu) menuSubItem = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'menu-sub');
+    if (isSubmenu) {
+      menuSubItem = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'menu-sub');
+      if (!menuSubItem) {
+        throw new Error(`${original} must be placed inside a ${Alpine.prefixed('h-menu-sub')} element`);
+      }
+      setAriaAttrubutes(menuSubItem);
+    } else if (menuTrigger) {
+      setAriaAttrubutes(menuTrigger._menu_trigger.isDropdown ? menuTrigger : undefined);
+    } else {
+      setAriaAttrubutes();
+    }
 
     function listenForTrigger(listen) {
       if (listen) {
@@ -58,11 +97,15 @@ export default function (Alpine) {
 
     function close(closeParent = false, focusTrigger = false) {
       el.pauseKeyEvents = false;
-      el.classList.add('hidden');
-      Object.assign(el.style, {
-        left: '0px',
-        top: '0px',
-      });
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.classList.add('hidden', 'scale-95', 'opacity-0');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      } else {
+        el.classList.add('scale-95', 'opacity-0');
+      }
       top.removeEventListener('contextmenu', onClick);
       top.removeEventListener('click', onClick);
       el.removeEventListener('keydown', onKeyDown);
@@ -230,6 +273,7 @@ export default function (Alpine) {
             left: `${x}px`,
             top: `${y}px`,
           });
+          el.classList.remove('scale-95', 'opacity-0');
         });
       }
     }
@@ -267,11 +311,24 @@ export default function (Alpine) {
       listenForTrigger(true);
     }
 
+    function onTransitionEnd(event) {
+      if (event.target === el && event.target.classList.contains('opacity-0')) {
+        el.classList.add('hidden');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      }
+    }
+
+    el.addEventListener('transitionend', onTransitionEnd);
+
     cleanup(() => {
       if (menuTrigger) listenForTrigger(false);
       top.removeEventListener('click', onClick);
       top.removeEventListener('contextmenu', onClick);
       el.removeEventListener('keydown', onKeyDown);
+      el.removeEventListener('transitionend', onTransitionEnd);
     });
   });
 
@@ -372,6 +429,10 @@ export default function (Alpine) {
 
     const parentMenu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
     if (!parentMenu) throw new Error(`${original} must have a parent`);
+
+    if (!el.hasAttribute('id')) {
+      el.setAttribute('id', `ms${uuidv4()}`);
+    }
 
     el._menu_sub = {
       open: undefined,
@@ -498,6 +559,7 @@ export default function (Alpine) {
       'aria-[disabled=true]:cursor-not-allowed',
       'aria-[disabled=true]:opacity-50',
       'transition-all',
+      'motion-reduce:transition-none',
       'overflow-hidden',
       'aria-[checked=true]:[&>svg]:visible'
     );
@@ -578,6 +640,7 @@ export default function (Alpine) {
       'aria-[disabled=true]:cursor-not-allowed',
       'aria-[disabled=true]:opacity-50',
       'transition-all',
+      'motion-reduce:transition-none',
       'overflow-hidden',
       'before:invisible',
       'before:bg-foreground',

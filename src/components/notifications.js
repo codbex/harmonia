@@ -137,7 +137,7 @@ export default function (Alpine) {
     const listener = {
       added(item) {
         const clone = notificationTemplates[item.template].content.firstElementChild.cloneNode(true);
-        clone.classList.add('transform', 'transition-all', 'duration-300', 'ease-out', 'opacity-0');
+        clone.classList.add('transform', 'transition-all', 'motion-reduce:transition-none', 'duration-300', 'ease-out', 'opacity-0');
         clone.setAttribute('id', item.id);
         Alpine.addScopeToNode(clone, item.data);
         if (!isExtraLarge && !isLarge) {
@@ -194,15 +194,20 @@ export default function (Alpine) {
       removed(id) {
         const element = el.querySelector(`#${id}`);
         if (element) {
-          element.addEventListener(
-            'transitionend',
-            () => {
-              Alpine.destroyTree(element);
-              element.remove();
-            },
-            { once: true }
-          );
-          element.classList.add(element._h_animation_class, 'opacity-0');
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            Alpine.destroyTree(element);
+            element.remove();
+          } else {
+            element.addEventListener(
+              'transitionend',
+              () => {
+                Alpine.destroyTree(element);
+                element.remove();
+              },
+              { once: true }
+            );
+            element.classList.add(element._h_animation_class, 'opacity-0');
+          }
         }
       },
     };

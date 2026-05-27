@@ -36,7 +36,8 @@ export default function (Alpine) {
       'shadow-input',
       'shrink-0',
       'size-5',
-      'transition-color'
+      'transition-colors',
+      'motion-reduce:transition-none'
     );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'checkbox');

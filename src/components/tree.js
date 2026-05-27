@@ -198,6 +198,7 @@ export default function (Alpine) {
       'outline-hidden',
       'ring-ring',
       'transition-[width,height,padding]',
+      'motion-reduce:transition-none',
       'hover:bg-secondary',
       'hover:text-secondary-foreground',
       'focus-visible:ring-2',
@@ -230,7 +231,7 @@ export default function (Alpine) {
     if (treeItem._h_tree_item.hasSubtree) {
       const chevronDown = createSvg({
         icon: ChevronRight,
-        classes: 'size-4 shrink-0 transition-transform duration-200 [[data-expanded=true]>&]:rotate-90',
+        classes: 'size-4 shrink-0 transition-transform motion-reduce:transition-none duration-200 [[data-expanded=true]>&]:rotate-90',
         attrs: {
           'aria-hidden': true,
           role: 'presentation',

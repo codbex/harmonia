@@ -23,6 +23,7 @@ export default function (Alpine) {
       'text-base',
       'shadow-input',
       'transition-[color,box-shadow]',
+      'motion-reduce:transition-none',
       'outline-none',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'disabled:cursor-not-allowed',

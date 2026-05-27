@@ -98,6 +98,7 @@ export default function (Alpine) {
       'text-sm',
       'whitespace-nowrap',
       'transition-[color,box-shadow]',
+      'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
       'has-[input:disabled]:pointer-events-none',
@@ -297,7 +298,6 @@ export default function (Alpine) {
     el.addEventListener('paste', preventInput);
 
     effect(() => {
-      el.setAttribute('data-state', timepicker._h_timepicker.expanded ? 'open' : 'closed');
       el.setAttribute('aria-expanded', timepicker._h_timepicker.expanded);
     });
 
@@ -317,11 +317,17 @@ export default function (Alpine) {
       'absolute',
       'bg-popover',
       'text-popover-foreground',
-      'data-[state=open]:flex',
-      'data-[state=open]:flex-col',
-      'data-[state=closed]:hidden',
+      'flex',
+      'flex-col',
+      'hidden',
       'z-50',
-      'shadow-md'
+      'shadow-md',
+      'transition-[opacity,scale]',
+      'motion-reduce:transition-none',
+      'duration-100',
+      'ease-out',
+      'opacity-0',
+      'scale-95'
     );
     el.setAttribute('id', timepicker._h_timepicker.controls);
     el.setAttribute('tabindex', '-1');
@@ -329,7 +335,6 @@ export default function (Alpine) {
     el.setAttribute('aria-modal', 'true');
     el.setAttribute('data-slot', 'time-picker-popup');
     el.setAttribute('aria-labelledby', timepicker._h_timepicker.id);
-    el.setAttribute('data-state', timepicker._h_timepicker.expanded ? 'open' : 'closed');
 
     const optionClasses = [
       'px-3.5',
@@ -769,6 +774,7 @@ export default function (Alpine) {
           left: `${x}px`,
           top: `${y}px`,
         });
+        el.classList.remove('scale-95', 'opacity-0');
         if (focusFirstItem) {
           focusFirstItem = false;
           Alpine.nextTick(() => {
@@ -783,26 +789,44 @@ export default function (Alpine) {
     }
 
     effect(() => {
-      el.setAttribute('data-state', timepicker._h_timepicker.expanded ? 'open' : 'closed');
       if (timepicker._h_timepicker.expanded) {
         render();
+        el.classList.remove('hidden');
         autoUpdateCleanup = autoUpdate(timepicker, el, updatePosition);
         if (selectedHour) scrollIntoCenter(selectedHour.parentElement, selectedHour);
         if (selectedMinute) scrollIntoCenter(selectedMinute.parentElement, selectedMinute);
         if (selectedSecond && timepicker._h_timepicker.seconds) scrollIntoCenter(selectedSecond.parentElement, selectedSecond);
       } else {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          el.classList.add('hidden', 'scale-95', 'opacity-0');
+          Object.assign(el.style, {
+            left: '0px',
+            top: '0px',
+          });
+        } else {
+          el.classList.add('scale-95', 'opacity-0');
+        }
         if (autoUpdateCleanup) autoUpdateCleanup();
         focusFirstItem = true;
+      }
+    });
+
+    function onTransitionEnd(event) {
+      if (event.target === el && event.target.classList.contains('opacity-0')) {
+        el.classList.add('hidden');
         Object.assign(el.style, {
           left: '0px',
           top: '0px',
         });
       }
-    });
+    }
+
+    el.addEventListener('transitionend', onTransitionEnd);
 
     cleanup(() => {
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
+      el.removeEventListener('transitionend', onTransitionEnd);
       okButton.removeEventListener('click', timepicker._h_timepicker.close);
       nowButton.removeEventListener('click', getCurrentTime);
       timeContainer.removeEventListener('click', setTime);

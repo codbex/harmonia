@@ -70,13 +70,6 @@ outline: deep
       <p class="text">Standard selection control for multi-option forms and interfaces.</p>
     </div>
   </a>
-  <a href="./components/collapsible" class="card">
-    <svg-icon class="card-media" src="./images/collapsible.svg"></svg-icon>
-    <div class="card-content">
-      <h3>Collapsible</h3>
-      <p class="text">Generic trigger and section for revealing or hiding content.</p>
-    </div>
-  </a>
   <a href="./components/datepicker" class="card">
     <svg-icon class="card-media" src="./images/datepicker.svg"></svg-icon>
     <div class="card-content">
@@ -89,6 +82,13 @@ outline: deep
     <div class="card-content">
       <h3>Dialog</h3>
       <p class="text">Modal interface for focused user interactions such as confirmations, forms, and alerts.</p>
+    </div>
+  </a>
+  <a href="./components/expansion-panel" class="card">
+    <svg-icon class="card-media" src="./images/collapsible.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Expansion Panel</h3>
+      <p class="text">A container component that manages multiple collapsible panels within a layout.</p>
     </div>
   </a>
   <a href="./components/fieldset" class="card">
@@ -159,6 +159,13 @@ outline: deep
     <div class="card-content">
       <h3>Menu</h3>
       <p class="text">Context, navigation or dropdown menu for presenting action lists and nested options.</p>
+    </div>
+  </a>
+  <a href="./components/notifications" class="card">
+    <svg-icon class="card-media" src="./images/notification.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Notifications</h3>
+      <p class="text">Used to present important system feedback, status updates, or contextual information to the user.</p>
     </div>
   </a>
   <a href="./components/pagination" class="card">
