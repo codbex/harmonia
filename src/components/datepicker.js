@@ -106,7 +106,7 @@ export default function (Alpine) {
     if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
       throw new Error(`${original}: must have an "aria-label" or "aria-labelledby" attribute`);
     }
-    const datepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_datepicker'));
+    const datepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_datepicker'));
     if (!datepicker) {
       throw new Error(`${original} must be inside an date-picker element`);
     }

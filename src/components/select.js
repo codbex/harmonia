@@ -80,7 +80,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be an input of type "text"`);
     }
 
-    const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
+    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
     const label = (() => {
       const field = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'field');
       if (field) {
@@ -91,7 +91,7 @@ export default function (Alpine) {
 
     if (!select) {
       throw new Error(`${original} must be inside a select element`);
-    } else if (el.hasOwnProperty('_x_model')) {
+    } else if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       select._h_select.multiple = Array.isArray(el._x_model.get());
       select._h_model.set = (value) => {
         if (select._h_select.multiple) {
@@ -205,7 +205,7 @@ export default function (Alpine) {
     const onKeyDown = (event) => {
       switch (event.key) {
         case 'Down':
-        case 'ArrowDown':
+        case 'ArrowDown': {
           event.preventDefault();
           let nextIndex = 0;
           for (let o = 0; o < options.length; o++) {
@@ -227,8 +227,9 @@ export default function (Alpine) {
           options[nextIndex].setAttribute('tabindex', '0');
           options[nextIndex].focus();
           break;
+        }
         case 'Up':
-        case 'ArrowUp':
+        case 'ArrowUp': {
           event.preventDefault();
           let prevIndex = options.length - 1;
           for (let o = options.length - 1; o >= 0; o--) {
@@ -250,6 +251,7 @@ export default function (Alpine) {
           options[prevIndex].setAttribute('tabindex', '0');
           options[prevIndex].focus();
           break;
+        }
         case 'Home':
         case 'PageUp':
           event.preventDefault();
@@ -377,7 +379,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-select-content', (el, { original }, { effect, cleanup, Alpine }) => {
-    const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
+    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
     if (!select) {
       throw new Error(`${original} must be inside a select element`);
     }
@@ -479,7 +481,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-select-search', (el, { original }, { effect, cleanup, Alpine }) => {
-    const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
+    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
     if (!select) {
       throw new Error(`${original} must be inside an h-select element`);
     } else {
@@ -559,7 +561,7 @@ export default function (Alpine) {
     el.classList.add('text-muted-foreground', 'px-2', 'py-1.5', 'text-xs');
     el.setAttribute('data-slot', 'select-label');
 
-    const selectGroup = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_selectGroup'));
+    const selectGroup = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_selectGroup'));
     if (selectGroup) {
       const id = `hsl${uuidv4()}`;
       el.setAttribute('id', id);
@@ -568,7 +570,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-select-option', (el, { original, expression }, { effect, evaluateLater, cleanup }) => {
-    const select = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_select'));
+    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
     if (!select) {
       throw new Error(`${original} must be inside an h-select element`);
     }

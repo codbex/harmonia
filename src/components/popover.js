@@ -2,7 +2,7 @@ import { autoUpdate, computePosition, flip, offset, shift, size } from '@floatin
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-popover-trigger', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine, cleanup }) => {
-    el._popover = Alpine.reactive({
+    el._h_popover = Alpine.reactive({
       id: undefined,
       controls: `hpc${uuidv4()}`,
       auto: expression ? false : true,
@@ -12,7 +12,7 @@ export default function (Alpine) {
       const getExpanded = evaluateLater(expression);
       effect(() => {
         getExpanded((expanded) => {
-          el._popover.expanded = expanded;
+          el._h_popover.expanded = expanded;
         });
       });
     }
@@ -24,29 +24,29 @@ export default function (Alpine) {
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'popover-trigger');
 
     if (el.hasAttribute('id')) {
-      el._popover.id = el.getAttribute('id');
+      el._h_popover.id = el.getAttribute('id');
     } else {
-      el._popover.id = `hp${uuidv4()}`;
-      el.setAttribute('id', el._popover.id);
+      el._h_popover.id = `hp${uuidv4()}`;
+      el.setAttribute('id', el._h_popover.id);
     }
-    el.setAttribute('aria-controls', el._popover.controls);
+    el.setAttribute('aria-controls', el._h_popover.controls);
     el.setAttribute('aria-haspopup', 'dialog');
 
     const setAttributes = () => {
-      el.setAttribute('aria-expanded', el._popover.expanded);
+      el.setAttribute('aria-expanded', el._h_popover.expanded);
     };
 
     const close = () => {
-      el._popover.expanded = false;
+      el._h_popover.expanded = false;
       el.addEventListener('click', handler);
       setAttributes();
     };
 
     const handler = () => {
-      el._popover.expanded = !el._popover.expanded;
+      el._h_popover.expanded = !el._h_popover.expanded;
       setAttributes();
       Alpine.nextTick(() => {
-        if (el._popover.auto && el._popover.expanded) {
+        if (el._h_popover.auto && el._h_popover.expanded) {
           top.addEventListener('click', close, { once: true });
           el.removeEventListener('click', handler);
         }
@@ -54,7 +54,7 @@ export default function (Alpine) {
     };
     setAttributes();
 
-    if (el._popover.auto) {
+    if (el._h_popover.auto) {
       el.addEventListener('click', handler);
 
       cleanup(() => {
@@ -71,7 +71,7 @@ export default function (Alpine) {
   Alpine.directive('h-popover', (el, { original, modifiers }, { effect, cleanup }) => {
     const popover = (() => {
       let sibling = el.previousElementSibling;
-      while (sibling && !sibling.hasOwnProperty('_popover')) {
+      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_h_popover')) {
         sibling = sibling.previousElementSibling;
       }
       return sibling;
@@ -104,8 +104,8 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'popover');
     el.setAttribute('role', 'dialog');
     el.setAttribute('tabindex', '-1');
-    el.setAttribute('id', popover._popover.controls);
-    el.setAttribute('aria-labelledby', popover._popover.id);
+    el.setAttribute('id', popover._h_popover.controls);
+    el.setAttribute('aria-labelledby', popover._h_popover.id);
 
     let noScroll = modifiers.includes('no-scroll');
     if (noScroll) {
@@ -151,7 +151,7 @@ export default function (Alpine) {
     }
 
     effect(() => {
-      if (popover._popover.expanded) {
+      if (popover._h_popover.expanded) {
         el.classList.remove('hidden');
         autoUpdateCleanup = autoUpdate(popover, el, updatePosition);
       } else {

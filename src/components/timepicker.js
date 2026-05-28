@@ -211,7 +211,7 @@ export default function (Alpine) {
     if (el.tagName !== 'INPUT') {
       throw new Error(`${original} must be a readonly input of type "text"`);
     }
-    const timepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_timepicker'));
+    const timepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_timepicker'));
     if (!timepicker) {
       throw new Error(`${original} must be inside a time-picker element`);
     }
@@ -223,7 +223,7 @@ export default function (Alpine) {
         el.dispatchEvent(new Event('change'));
       });
     };
-    if (el.hasOwnProperty('_x_model')) {
+    if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       timepicker._h_timepicker.model = el._x_model;
     } else {
       timepicker._h_timepicker.model = {
@@ -321,7 +321,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-time-picker-popup', (el, _, { effect, cleanup, Alpine }) => {
-    const timepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_timepicker'));
+    const timepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_timepicker'));
     el.classList.add(
       'overflow-hidden',
       'outline-none',
@@ -425,7 +425,7 @@ export default function (Alpine) {
         }
         switch (event.key) {
           case 'Up':
-          case 'ArrowUp':
+          case 'ArrowUp': {
             event.target.setAttribute('tabindex', '-1');
             let prevElem = event.target.previousElementSibling;
             if (prevElem === null || prevElem.classList.contains('hidden')) {
@@ -438,8 +438,9 @@ export default function (Alpine) {
             prevElem.setAttribute('tabindex', '0');
             prevElem.focus();
             break;
+          }
           case 'Down':
-          case 'ArrowDown':
+          case 'ArrowDown': {
             event.target.setAttribute('tabindex', '-1');
             let nextElem = event.target.nextElementSibling;
             if (nextElem === null || nextElem.classList.contains('hidden')) {
@@ -452,8 +453,9 @@ export default function (Alpine) {
             nextElem.setAttribute('tabindex', '0');
             nextElem.focus();
             break;
+          }
           case 'Home':
-          case 'PageUp':
+          case 'PageUp': {
             let firstChild;
             if (list.firstChild === event.target) {
               break;
@@ -470,8 +472,9 @@ export default function (Alpine) {
             firstChild.setAttribute('tabindex', '0');
             firstChild.focus();
             break;
+          }
           case 'End':
-          case 'PageDown':
+          case 'PageDown': {
             let lastElem;
             if (list.lastChild === event.target) {
               break;
@@ -488,22 +491,25 @@ export default function (Alpine) {
             lastElem.setAttribute('tabindex', '0');
             lastElem.focus();
             break;
+          }
           case 'Right':
-          case 'ArrowRight':
+          case 'ArrowRight': {
             let nextColumn = event.target.parentElement.nextElementSibling;
             if (nextColumn) {
               const child = nextColumn.querySelector('li[tabindex="0"]');
               child.focus();
             }
             break;
+          }
           case 'Left':
-          case 'ArrowLeft':
+          case 'ArrowLeft': {
             let prevColumn = event.target.parentElement.previousElementSibling;
             if (prevColumn) {
               const child = prevColumn.querySelector('li[tabindex="0"]');
               child.focus();
             }
             break;
+          }
           case 'Enter':
           case ' ':
             event.target.click();

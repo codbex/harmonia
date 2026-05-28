@@ -155,7 +155,7 @@ export default function (Alpine) {
     };
 
     function setVariant(variant) {
-      if (variants.hasOwnProperty(variant)) el.classList.add(...variants[variant]);
+      if (Object.prototype.hasOwnProperty.call(variants, variant)) el.classList.add(...variants[variant]);
     }
 
     setVariant(el.getAttribute('data-align') ?? 'inline-start');

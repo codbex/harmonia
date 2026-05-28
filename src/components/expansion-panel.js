@@ -74,7 +74,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be a header element`);
     }
 
-    const expPanelItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_expPanelItem'));
+    const expPanelItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_expPanelItem'));
 
     if (!expPanelItem) {
       throw new Error(`${original} must have an exp-panel-item parent element`);

@@ -1,5 +1,5 @@
 export default function (Alpine) {
-  Alpine.directive('h-split', (el, {}, { cleanup, Alpine }) => {
+  Alpine.directive('h-split', (el, _, { cleanup, Alpine }) => {
     const panels = [];
 
     // Reactive state
@@ -264,7 +264,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-split-panel', (el, { original }, { effect, cleanup, Alpine }) => {
-    const split = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_split'));
+    const split = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_split'));
     if (!split) {
       throw new Error(`${original} must be inside an split element`);
     }

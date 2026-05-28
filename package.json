@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -29,6 +29,8 @@
     "build:prod": "node ./scripts/build.cjs && npm run tailwind",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
     "tailwind:watch": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css -w",
+    "lint": "eslint \"src/**/*.js\" \"scripts/**/*.cjs\"",
+    "lint:fix": "eslint --fix \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
     "docs:install": "node ./scripts/doc-install.cjs",
@@ -43,9 +45,13 @@
     "@fontsource/open-sans": "^5.2.7"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/cli": "^4.3.0",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.0",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
     "prettier": "^3.8.3",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2",

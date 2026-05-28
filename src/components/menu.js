@@ -53,10 +53,10 @@ export default function (Alpine) {
     const menuTrigger = (() => {
       if (isSubmenu) return;
       let sibling = el.previousElementSibling;
-      while (sibling && !sibling.hasOwnProperty('_menu_trigger')) {
+      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_menu_trigger')) {
         sibling = sibling.previousElementSibling;
       }
-      if (!sibling.hasOwnProperty('_menu_trigger')) {
+      if (!Object.prototype.hasOwnProperty.call(sibling, '_menu_trigger')) {
         throw new Error(`${original} menu must be placed after a menu trigger element`);
       }
       return sibling;
@@ -193,7 +193,7 @@ export default function (Alpine) {
             }
             break;
           case 'Up':
-          case 'ArrowUp':
+          case 'ArrowUp': {
             event.preventDefault();
             let menuitems = el.querySelectorAll(':scope > [role^=menuitem][tabIndex="-1"]:has(~ [role^=menuitem][tabIndex="0"])');
             if (menuitems.length) {
@@ -205,6 +205,7 @@ export default function (Alpine) {
               menuitem.focus();
             }
             break;
+          }
           case 'Home':
           case 'PageUp':
             event.preventDefault();
@@ -585,7 +586,7 @@ export default function (Alpine) {
       setState(el._x_model.get());
     }
 
-    if (el.hasOwnProperty('_x_model')) {
+    if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       setState(el._x_model.get(), false);
 
       el.addEventListener('click', onActivate);
@@ -608,7 +609,7 @@ export default function (Alpine) {
     el.addEventListener('focus', focusIn);
 
     cleanup(() => {
-      if (el.hasOwnProperty('_x_model')) {
+      if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
         el.removeEventListener('click', onActivate);
         el.removeEventListener('keydown', onActivate);
       }
@@ -682,7 +683,7 @@ export default function (Alpine) {
       }
     }
 
-    if (el.hasOwnProperty('_x_model')) {
+    if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       effect(() => {
         setState(el._x_model.get() === value);
       });
@@ -708,7 +709,7 @@ export default function (Alpine) {
     el.addEventListener('focus', focusIn);
 
     cleanup(() => {
-      if (el.hasOwnProperty('_x_model')) {
+      if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
         el.removeEventListener('click', onActivate);
         el.removeEventListener('keydown', onActivate);
       }

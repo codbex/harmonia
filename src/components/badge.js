@@ -40,7 +40,7 @@ export default function (Alpine) {
       for (const [_, value] of Object.entries(variants)) {
         el.classList.remove(...value);
       }
-      if (variants.hasOwnProperty(variant)) el.classList.add(...variants[variant]);
+      if (Object.prototype.hasOwnProperty.call(variants, variant)) el.classList.add(...variants[variant]);
     }
 
     setVariant(el.getAttribute('data-variant') ?? 'default');
@@ -99,7 +99,7 @@ export default function (Alpine) {
       for (const [_, value] of Object.entries(variants)) {
         el.classList.remove(...value);
       }
-      if (variants.hasOwnProperty(variant)) el.classList.add(...variants[variant]);
+      if (Object.prototype.hasOwnProperty.call(variants, variant)) el.classList.add(...variants[variant]);
     }
 
     setVariant(el.getAttribute('data-variant') ?? 'primary');

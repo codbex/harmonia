@@ -59,7 +59,8 @@ export default function (Alpine) {
           focusLastOption(el);
           break;
         case 'Up':
-        case 'ArrowUp':
+        case 'ArrowUp': {
+          event.preventDefault();
           let prevElem = event.target.previousElementSibling;
           if (prevElem && prevElem.getAttribute('data-slot') !== 'list-header') {
             prevElem.focus();
@@ -70,8 +71,10 @@ export default function (Alpine) {
             }
           }
           break;
+        }
         case 'Down':
-        case 'ArrowDown':
+        case 'ArrowDown': {
+          event.preventDefault();
           let nextElem = event.target.nextElementSibling;
           if (nextElem) {
             nextElem.focus();
@@ -82,6 +85,7 @@ export default function (Alpine) {
             }
           }
           break;
+        }
         case ' ':
         case 'Enter':
           selectOption(event.target);

@@ -46,7 +46,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-avatar-image', (el, { original }, { cleanup }) => {
-    const avatar = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_avatar'));
+    const avatar = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_avatar'));
     if (!avatar) {
       throw new Error(`${original} must be inside an avatar element`);
     }
@@ -89,7 +89,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-avatar-fallback', (el, { original }, { effect }) => {
-    const avatar = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_avatar'));
+    const avatar = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_avatar'));
     if (!avatar) {
       throw new Error(`${original} must be inside an avatar element`);
     }

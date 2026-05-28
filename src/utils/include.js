@@ -1,5 +1,5 @@
 export default function (Alpine) {
-  Alpine.directive('h-include', (el, { modifiers, expression }, { evaluateLater, effect, cleanup, Alpine }) => {
+  Alpine.directive('h-include', (el, { original, modifiers, expression }, { evaluateLater, effect, cleanup, Alpine }) => {
     const getUrl = evaluateLater(expression);
 
     function executeScript(oldScript) {

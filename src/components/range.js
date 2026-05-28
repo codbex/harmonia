@@ -5,7 +5,7 @@ export default function (Alpine) {
     el.classList.add('harmonia-slider');
     el.setAttribute('data-slot', 'range');
     create(el, evaluate(expression));
-    if (el.hasOwnProperty('_x_model')) {
+    if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       el.noUiSlider.on('change', (values) => {
         el._x_model.set(values);
         el.dispatchEvent(new Event('change', { bubbles: true }));

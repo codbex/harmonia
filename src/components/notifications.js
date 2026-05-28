@@ -19,7 +19,7 @@ export default function (Alpine) {
       };
       this.items.push(item);
       this.listeners.forEach((listener) => {
-        if (listener.hasOwnProperty('added')) listener.added(item);
+        if (Object.prototype.hasOwnProperty.call(listener, 'added')) listener.added(item);
       });
     },
 
@@ -33,7 +33,7 @@ export default function (Alpine) {
           this.items[index].data[key] = value;
         }
         this.listeners.forEach((listener) => {
-          if (listener.hasOwnProperty('updated')) listener.updated(id, data);
+          if (Object.prototype.hasOwnProperty.call(listener, 'updated')) listener.updated(id, data);
         });
       } else {
         console.error(`Notification with id "${id}" does not exist`);
@@ -45,7 +45,7 @@ export default function (Alpine) {
         throw new Error('Cannot remove a notification if an ID is not provided');
       }
       this.listeners.forEach((listener) => {
-        if (listener.hasOwnProperty('removed')) listener.removed(id);
+        if (Object.prototype.hasOwnProperty.call(listener, 'removed')) listener.removed(id);
       });
       this.items = this.items.filter((n) => n.id !== id);
     },

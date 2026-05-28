@@ -32,7 +32,7 @@ export default function (Alpine) {
   Alpine.directive('h-tooltip', (el, { original }, { effect, cleanup }) => {
     const tooltip = (() => {
       let sibling = el.previousElementSibling;
-      while (sibling && !sibling.hasOwnProperty('_tooltip')) {
+      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_tooltip')) {
         sibling = sibling.previousElementSibling;
       }
       return sibling;

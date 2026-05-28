@@ -3,7 +3,7 @@ import uuidv4 from '../utils/uuid';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-calendar', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
-    const datepicker = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_datepicker'));
+    const datepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_datepicker'));
     el.classList.add('border', 'rounded-control', 'gap-2', 'p-2');
     el.setAttribute('tabindex', '-1');
     if (datepicker) {
@@ -91,7 +91,7 @@ export default function (Alpine) {
     }
 
     function checkForModel() {
-      if (el.hasOwnProperty('_x_model') && el._x_model.get()) {
+      if (Object.prototype.hasOwnProperty.call(el, '_x_model') && el._x_model.get()) {
         setFromModel();
       }
     }
@@ -436,7 +436,7 @@ export default function (Alpine) {
           break;
         case 'End':
           event.preventDefault();
-          newDay.setDate(end.getDate());
+          newDay.setDate(new Date(newDay.getFullYear(), newDay.getMonth() + 1, 0).getDate());
           break;
         case 'PageUp':
           event.preventDefault();
@@ -559,7 +559,7 @@ export default function (Alpine) {
       el.addEventListener('transitionend', onTransitionEnd);
     }
 
-    if (el.hasOwnProperty('_x_model')) {
+    if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       const modelExpression = el.getAttribute('x-model');
 
       const evaluateModel = evaluateLater(modelExpression);

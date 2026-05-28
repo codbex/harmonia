@@ -22,7 +22,7 @@ export default function (Alpine) {
       el.setAttribute('data-slot', 'subtree');
       el.setAttribute('role', 'group');
 
-      const treeItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_tree_item'));
+      const treeItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_tree_item'));
       effect(() => {
         if (treeItem._h_tree_item.expanded) {
           el.classList.remove('!hidden');
@@ -182,7 +182,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-tree-button', (el, { original }, { effect }) => {
-    const treeItem = Alpine.findClosest(el.parentElement, (parent) => parent.hasOwnProperty('_h_tree_item'));
+    const treeItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_tree_item'));
     if (!treeItem) throw new Error(`${original} must be inside a tree item`);
     el.classList.add(
       'flex',
