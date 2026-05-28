@@ -86,8 +86,6 @@ export default function (Alpine) {
     el.classList.add(
       'cursor-pointer',
       'border-input',
-      'hover:bg-secondary-hover',
-      'active:bg-secondary-active',
       'flex',
       'items-center',
       'justify-between',
@@ -97,7 +95,8 @@ export default function (Alpine) {
       'data-[size=sm]:pr-1',
       'text-sm',
       'whitespace-nowrap',
-      'transition-[color,box-shadow]',
+      'transition-colors',
+      'transition-shadow',
       'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
@@ -114,16 +113,30 @@ export default function (Alpine) {
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
         'has-[input:invalid]:!inset-ring-negative/20',
-        'dark:has-[input:invalid]:!inset-ring-negative/40'
+        'dark:has-[input:invalid]:!inset-ring-negative/40',
+        'hover:bg-table-hover',
+        'hover:text-table-hover-foreground',
+        'active:!bg-table-active',
+        'active:!text-table-active-foreground',
+        'has-[[aria-expanded=true]]:bg-transparent',
+        'has-[[aria-expanded=true]]:text-foreground'
       );
       el.setAttribute('data-slot', 'cell-input-time');
     } else {
       el.classList.add(
         'w-full',
+        'hover:bg-secondary-hover',
+        'hover:text-secondary-foreground',
+        '[&>[data-slot="time-picker-input"]]:hover:text-secondary-foreground',
+        'active:bg-secondary-active',
+        'active:text-secondary-foreground',
+        '[&>[data-slot="time-picker-input"]]:active:text-secondary-foreground',
         'rounded-control',
         'border',
         'bg-input-inner',
         'shadow-input',
+        'has-[[aria-expanded=true]]:bg-input-inner',
+        'has-[[aria-expanded=true]]:text-foreground',
         'has-[input:focus-visible]:border-ring',
         'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
         'has-[input:focus-visible]:ring-ring/50',
@@ -140,7 +153,7 @@ export default function (Alpine) {
     el.appendChild(
       createSvg({
         icon: Clock,
-        classes: 'opacity-70 text-foreground size-4 shrink-0 pointer-events-none',
+        classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none',
         attrs: {
           'aria-hidden': true,
           role: 'presentation',

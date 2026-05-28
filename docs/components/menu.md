@@ -44,9 +44,10 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 #### x-h-menu
 
-| Attribute  | Type                                                                                                                                                                          | Required | Description                                                                            |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
-| data-align | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the menu relative to the cursor or relative to the trigger if in dropdown mode. |
+| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the menu relative to the cursor or relative to the trigger if in dropdown mode.                                                                                                                                 |
+| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the menu from closing when there is a click inside it.<br/>Enabling or disabling this option on a menu or submenu does not affect its nested submenus. Each menu and submenu can be configured independently. |
 
 #### x-h-menu-item
 

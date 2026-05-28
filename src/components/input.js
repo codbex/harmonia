@@ -18,7 +18,8 @@ export default function (Alpine) {
       '[&::-webkit-color-swatch-wrapper]:rounded-0',
       '[&::-webkit-color-swatch-wrapper]:p-0',
       'text-base',
-      'transition-[color,box-shadow]',
+      'transition-colors',
+      'transition-shadow',
       'motion-reduce:transition-none',
       'outline-none',
       'file:inline-flex',
@@ -79,7 +80,8 @@ export default function (Alpine) {
       'rounded-control',
       'border',
       'shadow-input',
-      'transition-[color,box-shadow]',
+      'transition-colors',
+      'transition-shadow',
       'motion-reduce:transition-none',
       'outline-none',
       'min-w-0',
@@ -192,8 +194,10 @@ export default function (Alpine) {
       'rounded-control',
       'border',
       'shadow-input',
-      'transition-[color,box-shadow]',
+      'transition-colors',
+      'transition-shadow',
       'motion-reduce:transition-none',
+      'duration-200',
       'outline-none',
       'min-w-0',
       'has-[input:focus-visible]:border-ring',
@@ -240,7 +244,7 @@ export default function (Alpine) {
     stepDown.appendChild(
       createSvg({
         icon: Minus,
-        classes: 'opacity-70 fill-foreground size-4 shrink-0 pointer-events-none',
+        classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none',
         attrs: {
           'aria-hidden': true,
           role: 'presentation',
@@ -258,9 +262,14 @@ export default function (Alpine) {
       '[input:invalid~&]:border-negative',
       'h-full',
       'aspect-square',
+      'transition-colors',
+      'motion-reduce:transition-none',
+      'duration-100',
       'bg-transparent',
       'hover:bg-secondary',
+      'hover:text-secondary-foreground',
       'active:bg-secondary-active',
+      'active:text-secondary-foreground',
       'outline-none',
       'relative',
       '[&:hover>svg]:text-secondary-foreground'
@@ -268,7 +277,9 @@ export default function (Alpine) {
     el.appendChild(stepDown);
 
     const onStepDown = () => {
-      input.stepDown();
+      if (input.step === 'any') {
+        input.value = (parseFloat(input.value) || 0) - 1;
+      } else input.stepDown();
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
     };
@@ -284,7 +295,7 @@ export default function (Alpine) {
     stepUp.appendChild(
       createSvg({
         icon: Plus,
-        classes: 'opacity-70 fill-foreground size-4 shrink-0 pointer-events-none',
+        classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none',
         attrs: {
           'aria-hidden': true,
           role: 'presentation',
@@ -302,9 +313,14 @@ export default function (Alpine) {
       '[input:invalid~&]:border-negative',
       'h-full',
       'aspect-square',
+      'transition-all',
+      'motion-reduce:transition-none',
+      'duration-100',
       'bg-transparent',
       'hover:bg-secondary',
+      'hover:text-secondary-foreground',
       'active:bg-secondary-active',
+      'active:text-secondary-foreground',
       'outline-none',
       'relative',
       '[&:hover>svg]:text-secondary-foreground'
@@ -313,7 +329,9 @@ export default function (Alpine) {
     el.appendChild(stepUp);
 
     const onStepUp = () => {
-      input.stepUp();
+      if (input.step === 'any') {
+        input.value = (parseFloat(input.value) || 0) + 1;
+      } else input.stepUp();
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
     };

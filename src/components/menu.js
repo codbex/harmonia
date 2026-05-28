@@ -146,7 +146,9 @@ export default function (Alpine) {
 
     function onClick(event) {
       if (event.type === 'contextmenu') event.preventDefault();
-      close(isSubmenu);
+      if (el.getAttribute('data-innerclicks') === 'true' && el.contains(event.composedPath()[0])) {
+        return;
+      } else close(isSubmenu);
     }
 
     el.pauseKeyEvents = false;

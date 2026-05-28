@@ -29,7 +29,8 @@ export default function (Alpine) {
       'border-input',
       'flex',
       'items-center',
-      'transition-[color,box-shadow]',
+      'transition-colors',
+      'transition-shadow',
       'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
@@ -109,7 +110,20 @@ export default function (Alpine) {
     if (!datepicker) {
       throw new Error(`${original} must be inside an date-picker element`);
     }
-    el.classList.add('cursor-pointer', 'inline-flex', 'items-center', 'justify-center', 'h-full', 'aspect-square', 'bg-transparent', 'hover:bg-secondary', 'active:bg-secondary-active', 'outline-none');
+    el.classList.add(
+      'cursor-pointer',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      'h-full',
+      'aspect-square',
+      'bg-transparent',
+      'hover:bg-secondary',
+      'hover:text-secondary-foreground',
+      'active:bg-secondary-active',
+      'active:text-secondary-foreground',
+      'outline-none'
+    );
     if (datepicker._h_datepicker.inTable) {
       el.classList.add(
         'focus-visible:inset-ring-ring/50',
@@ -141,7 +155,7 @@ export default function (Alpine) {
     el.appendChild(
       createSvg({
         icon: Calendar,
-        classes: 'opacity-70 text-foreground size-4',
+        classes: 'opacity-70 text-inherit size-4',
         attrs: {
           'aria-hidden': true,
           role: 'presentation',

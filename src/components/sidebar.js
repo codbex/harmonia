@@ -91,7 +91,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-group-label');
 
     if (group._h_sidebar_group.collapsable) {
-      el.classList.add('text-sidebar-foreground', 'text-sm', 'hover:bg-secondary-hover', 'active:bg-secondary-active');
+      el.classList.add('text-sidebar-foreground', 'text-sm', 'hover:bg-sidebar-secondary', 'hover:text-sidebar-secondary-foreground', 'active:bg-sidebar-secondary', 'active:text-sidebar-secondary-foreground');
 
       if (el.hasAttribute('id')) {
         group._h_sidebar_group.controlId = el.getAttribute('id');

@@ -28,9 +28,18 @@ export default function (Alpine) {
       set: undefined,
       get: undefined,
     };
-    el.classList.add('cursor-pointer', 'outline-none', 'transition-[color,box-shadow]', 'motion-reduce:transition-none', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-50');
+    el.classList.add('cursor-pointer', 'outline-none', 'transition-colors', 'transition-shadow', 'motion-reduce:transition-none', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-50');
     if (modifiers.includes('table')) {
-      el.classList.add('h-10', 'flex', 'focus-visible:inset-ring-ring/50', 'focus-visible:inset-ring-2', 'hover:bg-table-hover', 'hover:text-table-hover-foreground', 'active:!bg-table-active', 'active:!text-table-active-foreground');
+      el.classList.add(
+        'h-10',
+        'flex',
+        'focus-visible:inset-ring-ring/50',
+        'focus-visible:inset-ring-2',
+        '[&>[data-slot="select-input"]]:hover:bg-table-hover',
+        '[&>[data-slot="select-input"]]:hover:text-table-hover-foreground',
+        '[&>[data-slot="select-input"]]:active:!bg-table-active',
+        '[&>[data-slot="select-input"]]:active:!text-table-active-foreground'
+      );
       el.setAttribute('data-slot', 'cell-input-select');
     } else {
       el.classList.add(
@@ -44,8 +53,11 @@ export default function (Alpine) {
         'has-[input[aria-invalid=true]]:ring-negative/20',
         'has-[input:invalid]:border-negative',
         'has-[input:invalid]:ring-negative/20',
-        'hover:bg-secondary-hover',
-        'active:bg-secondary-active',
+        '[&>[data-slot="select-input"]]:hover:bg-secondary-hover',
+        '[&>[data-slot="select-input"]]:hover:text-secondary-foreground',
+        '[&>[data-slot="select-input"]]:active:bg-secondary-active',
+        '[&>[data-slot="select-input"]]:active:text-secondary-foreground',
+        '[&>[data-slot="select-input"]]:rounded-control',
         'rounded-control',
         'border',
         'bg-input-inner',
@@ -327,7 +339,7 @@ export default function (Alpine) {
 
     const chevronDown = createSvg({
       icon: ChevronDown,
-      classes: 'opacity-70 text-foreground size-4 shrink-0 pointer-events-none transition-transform motion-reduce:transition-none duration-200',
+      classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none transition-transform motion-reduce:transition-none duration-200',
       attrs: {
         'aria-hidden': true,
         role: 'presentation',
@@ -663,6 +675,7 @@ export default function (Alpine) {
     const onActivate = (event) => {
       if ((event.type === 'keydown' && (event.key === 'Enter' || event.key === ' ')) || event.type === 'click') {
         if (select._h_select.multiple) {
+          event.stopPropagation();
           const vIndex = select._h_model.get().indexOf(getValue());
           if (vIndex > -1) {
             const val = select._h_model.get().splice(vIndex, 1);

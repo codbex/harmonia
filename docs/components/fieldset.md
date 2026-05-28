@@ -59,7 +59,7 @@ x-h-field-error
       <p x-h-field-description>Enter your card and billing information</p>
       <div x-h-field-group>
         <div x-h-field>
-          <label x-h-label.field for="formCardName" data-state="checked">Name on Card</label>
+          <label x-h-label.field for="formCardName">Name on Card</label>
           <input x-h-input id="formCardName" placeholder="John Doe" required />
         </div>
         <div x-h-field>
@@ -181,7 +181,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field>
-        <label x-h-label.field for="visuallyDisabled" data-state="checked">Invalid</label>
+        <label x-h-label.field for="visuallyDisabled">Invalid</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required/>
         <p x-h-field-error>The input is cannot be empty</p>
       </div>
@@ -196,7 +196,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field>
-        <label x-h-label.field for="visuallyDisabled" data-state="checked">Invalid</label>
+        <label x-h-label.field for="visuallyDisabled">Invalid</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required />
         <p x-h-field-error>The input is cannot be empty</p>
       </div>
@@ -215,7 +215,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled" data-state="checked">Label Disabled</label>
+        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input still active" />
       </div>
     </div>
@@ -229,7 +229,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled" data-state="checked">Label Disabled</label>
+        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input still active" />
       </div>
     </div>
@@ -247,7 +247,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled" data-state="checked">Label Disabled</label>
+        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
       </div>
     </div>
@@ -261,7 +261,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled" data-state="checked">Label Disabled</label>
+        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
       </div>
     </div>

@@ -141,7 +141,7 @@
 @source inline("*:scale-95");
 @source inline("{-,}translate-{x,y}-{full,4}");
 @source inline("duration-{100,200,300}");
-@source inline("transition-{all,colors,opacity,transform,[opacity,scale]}");
+@source inline("transition-{all,colors,opacity,transform,shadow,[opacity,scale]}");
 @source inline("motion-reduce:transition-none");
 @source inline("ease-{out,linear}");
 

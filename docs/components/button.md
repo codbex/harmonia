@@ -187,9 +187,7 @@ You can include an icon directly inside the button.
   Right-aligned
 </button>
 <button x-h-button>
-  <svg class="fill-foreground" width="16" height="16" version="1.1" viewBox="0 0 .75 .75" xmlns="http://www.w3.org/2000/svg">
-    <path d="m0.32031 0.046875a0.27344 0.27344 0 0 0-0.27344 0.27344 0.27344 0.27344 0 0 0 0.27344 0.27343 0.27344 0.27344 0 0 0 0.17271-0.06145l0.17083 0.17083 0.039274-0.039274-0.17083-0.17083a0.27344 0.27344 0 0 0 0.06145-0.17271 0.27344 0.27344 0 0 0-0.27343-0.27344zm0 0.055543a0.2179 0.2179 0 0 1 0.2179 0.2179 0.2179 0.2179 0 0 1-0.2179 0.2179 0.2179 0.2179 0 0 1-0.2179-0.2179 0.2179 0.2179 0 0 1 0.2179-0.2179z" fill-rule="evenodd"/>
-  </svg>
+  <svg x-h-icon.search role="img" aria-label="search"></svg>
   Search
 </button>
 </component-container>
@@ -205,12 +203,7 @@ You can include an icon directly inside the button.
   Right-aligned
 </button>
 <button x-h-button>
-  <svg class="fill-foreground" width="512" height="512" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="m10 0a10 10 0 0 0-10 10 10 10 0 0 0 10 9.9999 10 10 0 0 0 6.3163-2.2473l6.2474 6.2474 1.4363-1.4363-6.2474-6.2474a10 10 0 0 0 2.2473-6.3163 10 10 0 0 0-9.9999-10zm0 2.0313a7.9688 7.9688 0 0 1 7.9688 7.9688 7.9688 7.9688 0 0 1-7.9688 7.9688 7.9688 7.9688 0 0 1-7.9688-7.9688 7.9688 7.9688 0 0 1 7.9688-7.9688z"
-      fill-rule="evenodd"
-    />
-  </svg>
+  <svg x-h-icon.search role="img" aria-label="search"></svg>
   Search
 </button>
 ```
