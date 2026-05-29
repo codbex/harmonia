@@ -28,7 +28,7 @@ x-h-checkbox
 ```html
 <div class="flex items-center gap-3">
   <span x-h-checkbox>
-    <input x-h-checkbox type="checkbox" id="terms" />
+    <input type="checkbox" id="terms" />
   </span>
   <label x-h-label for="terms">Just accept</label>
 </div>
