@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import sidebarPlugin from '../../src/components/sidebar.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-sidebar', () => {
   it('applies base classes', () => {
@@ -110,9 +110,7 @@ describe('h-sidebar-menu', () => {
 
   it('throws if element is not ul', () => {
     const el = document.createElement('div');
-    expect(() =>
-      mountDirective(sidebarPlugin, 'h-sidebar-menu', el, { original: 'x-h-sidebar-menu' })
-    ).toThrow();
+    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-menu', el, { original: 'x-h-sidebar-menu' })).toThrow();
   });
 });
 

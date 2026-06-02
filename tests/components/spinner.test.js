@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import spinnerPlugin from '../../src/components/spinner.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-spinner', () => {
   it('applies base classes', () => {

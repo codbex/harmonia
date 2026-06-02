@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import separatorPlugin from '../../src/components/separator.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-separator', () => {
   it('applies base classes', () => {

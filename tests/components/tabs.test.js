@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import tabsPlugin from '../../src/components/tabs.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-tabs', () => {
   it('applies base classes and data-slot', () => {
@@ -58,17 +58,13 @@ describe('h-tab', () => {
   it('throws if no id attribute', () => {
     const el = document.createElement('button');
     el.setAttribute('aria-controls', 'panel-1');
-    expect(() =>
-      mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })
-    ).toThrow();
+    expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow();
   });
 
   it('throws if no aria-controls attribute', () => {
     const el = document.createElement('button');
     el.setAttribute('id', 'tab-1');
-    expect(() =>
-      mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })
-    ).toThrow();
+    expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow();
   });
 });
 
@@ -116,16 +112,12 @@ describe('h-tabs-content', () => {
   it('throws if no id attribute', () => {
     const el = document.createElement('div');
     el.setAttribute('aria-labelledby', 'tab-1');
-    expect(() =>
-      mountDirective(tabsPlugin, 'h-tabs-content', el, { original: 'x-h-tabs-content' })
-    ).toThrow();
+    expect(() => mountDirective(tabsPlugin, 'h-tabs-content', el, { original: 'x-h-tabs-content' })).toThrow();
   });
 
   it('throws if no aria-labelledby attribute', () => {
     const el = document.createElement('div');
     el.setAttribute('id', 'panel-1');
-    expect(() =>
-      mountDirective(tabsPlugin, 'h-tabs-content', el, { original: 'x-h-tabs-content' })
-    ).toThrow();
+    expect(() => mountDirective(tabsPlugin, 'h-tabs-content', el, { original: 'x-h-tabs-content' })).toThrow();
   });
 });

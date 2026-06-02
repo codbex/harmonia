@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import treePlugin from '../../src/components/tree.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-tree (root)', () => {
   it('applies base classes', () => {
@@ -181,9 +181,7 @@ describe('h-tree-button', () => {
 
   it('throws if not inside a tree item', () => {
     const el = document.createElement('button');
-    expect(() =>
-      mountDirective(treePlugin, 'h-tree-button', el, { original: 'x-h-tree-button' })
-    ).toThrow();
+    expect(() => mountDirective(treePlugin, 'h-tree-button', el, { original: 'x-h-tree-button' })).toThrow();
   });
 
   it('sets data-expanded attribute via effect', () => {

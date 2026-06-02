@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import textPlugin from '../../src/components/text.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-text', () => {
   it('applies h1 classes for h1 modifier', () => {

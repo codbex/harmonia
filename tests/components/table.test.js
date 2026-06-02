@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import tablePlugin from '../../src/components/table.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-table-container', () => {
   it('applies base classes (non-scroll)', () => {

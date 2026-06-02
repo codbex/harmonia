@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import textareaPlugin from '../../src/components/textarea.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-textarea', () => {
   it('applies base classes', () => {

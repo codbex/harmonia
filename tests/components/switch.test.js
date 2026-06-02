@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import switchPlugin from '../../src/components/switch.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-switch', () => {
   it('applies base classes', () => {

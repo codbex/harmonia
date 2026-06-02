@@ -33,9 +33,9 @@ Distributes space between and around items along the main axis of a flex contain
 
 ```html
 <div class="flex justify-start gap-2">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -55,9 +55,9 @@ Distributes space between and around items along the main axis of a flex contain
 
 ```html
 <div class="flex justify-center gap-2">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -77,9 +77,9 @@ Distributes space between and around items along the main axis of a flex contain
 
 ```html
 <div class="flex justify-end gap-2">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -120,25 +120,25 @@ Distributes space between and around items along the main axis of a flex contain
 <div class="vbox gap-2">
   <label x-h-label>End</label>
   <div class="flex justify-end gap-2 overflow-hidden">
-    <span class="bg-primary text-primary-foreground px-12 py-2">1</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">2</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">3</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">4</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">5</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">6</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">7</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">8</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">1</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">2</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">3</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">4</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">5</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">6</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">7</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">8</span>
   </div>
   <label x-h-label>End safe</label>
   <div class="flex justify-end-safe gap-2 overflow-hidden">
-    <span class="bg-primary text-primary-foreground px-12 py-2">1</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">2</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">3</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">4</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">5</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">6</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">7</span>
-    <span class="bg-primary text-primary-foreground px-12 py-2">8</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">1</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">2</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">3</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">4</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">5</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">6</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">7</span>
+    <span class="bg-primary px-12 py-2 text-primary-foreground">8</span>
   </div>
 </div>
 ```
@@ -159,9 +159,9 @@ Distributes space between and around items along the main axis of a flex contain
 
 ```html
 <div class="flex justify-between">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -181,9 +181,9 @@ Distributes space between and around items along the main axis of a flex contain
 
 ```html
 <div class="flex justify-around">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
 
@@ -203,8 +203,8 @@ Distributes space between and around items along the main axis of a flex contain
 
 ```html
 <div class="flex justify-evenly">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```

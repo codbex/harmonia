@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { mountDirective } from '../test-utils.js';
+import { describe, expect, it } from 'vitest';
 import skeletonPlugin from '../../src/components/skeleton.js';
+import { mountDirective } from '../test-utils.js';
 
 describe('h-skeleton', () => {
   it('applies base classes for default (no modifier)', () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Must stub window.matchMedia BEFORE the theme module is imported, since it calls
 // initColorScheme() at module level which calls window.matchMedia.
@@ -16,13 +16,7 @@ function createMatchMediaMock(matches = false) {
 // Set up mock before dynamic import
 vi.stubGlobal('matchMedia', createMatchMediaMock(false));
 
-const {
-  setColorScheme,
-  getColorScheme,
-  getSystemColorScheme,
-  addColorSchemeListener,
-  removeColorSchemeListener,
-} = await import('../../src/utils/theme.js');
+const { setColorScheme, getColorScheme, getSystemColorScheme, addColorSchemeListener, removeColorSchemeListener } = await import('../../src/utils/theme.js');
 
 describe('getColorScheme', () => {
   beforeEach(() => {
