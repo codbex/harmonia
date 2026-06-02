@@ -3,7 +3,7 @@
 @source inline("{sm:,md:,lg:,xl:}{m,p}{x,y}-{2..12}");
 
 @source inline("flex");
-@source inline("flex-{col,row,col-reverse,row-reverse,wrap,1,auto,none}");
+@source inline("flex-{col,row,col-reverse,row-reverse,wrap,0,1,auto,none}");
 .hbox:not(.hidden) {
   @apply flex flex-row;
 }

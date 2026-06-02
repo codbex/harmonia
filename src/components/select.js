@@ -156,6 +156,7 @@ export default function (Alpine) {
           displayValue.innerText = value;
           displayValue.classList.add('text-muted-foreground');
         } else {
+          displayValue.innerText = '';
           displayValue.classList.remove('text-muted-foreground');
         }
       }
@@ -687,7 +688,7 @@ export default function (Alpine) {
           }
         } else if (select._h_model.get() !== getValue()) {
           select._h_model.set(getValue());
-        } else {
+        } else if (select.getAttribute('data-clearable') === 'true') {
           select._h_model.set('');
         }
       }

@@ -8,7 +8,7 @@ Use the Select component without a search option when there are a limited number
 
 ## Keyboard Handling
 
-The user can use the following keyboard shortcuts in order to navigate trough the select:
+The user can use the following keyboard shortcuts in order to navigate through the select:
 
 - `Up` / `Down` — Moves focus to the previous or next option.
 - `Home` / `Page Up` — Moves focus to the first option.
@@ -37,9 +37,10 @@ x-h-select-separator
 
 #### x-h-select
 
-| Attribute | Type               | Required | Description                            |
-| --------- | ------------------ | -------- | -------------------------------------- |
-| data-size | `sm`<br/>`default` | false    | Changes the size of the select button. |
+| Attribute      | Type               | Required | Description                            |
+| -------------- | ------------------ | -------- | -------------------------------------- |
+| data-size      | `sm`<br/>`default` | false    | Changes the size of the select button. |
+| data-clearable | boolean            | false    | When set to `true`, allows the current selection to be cleared by clicking the already-selected option again. By default, re-clicking a selected option has no effect. |
 
 #### x-h-select-input
 
@@ -58,7 +59,7 @@ x-h-select-separator
 | Attribute     | Type    | Required | Description                                                          |
 | ------------- | ------- | -------- | -------------------------------------------------------------------- |
 | `self`        | string  | false    | Sets the label of the option. Either a string literal or a variable. |
-| data-value    | boolean | false    | Sets the value of the option.                                        |
+| data-value    | string  | false    | Sets the value of the option.                                        |
 | data-disabled | boolean | false    | Disables the option.                                                 |
 
 #### x-h-select-search
@@ -128,6 +129,38 @@ x-h-select-separator
     },
   }));
 </script>
+```
+
+### Clearable
+
+<br />
+
+<ClientOnly>
+<component-container>
+<div x-data="{ selected: 'opt-1' }">
+  <div x-h-select data-clearable="true">
+    <input x-h-select-input placeholder="Select" x-model="selected" />
+    <div x-h-select-content>
+      <div x-h-select-option="'Option 1'" data-value="opt-1"></div>
+      <div x-h-select-option="'Option 2'" data-value="opt-2"></div>
+      <div x-h-select-option="'Option 3'" data-value="opt-3"></div>
+    </div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-data="{ selected: 'opt-1' }">
+  <div x-h-select data-clearable="true">
+    <input x-h-select-input placeholder="Select" x-model="selected" />
+    <div x-h-select-content>
+      <div x-h-select-option="'Option 1'" data-value="opt-1"></div>
+      <div x-h-select-option="'Option 2'" data-value="opt-2"></div>
+      <div x-h-select-option="'Option 3'" data-value="opt-3"></div>
+    </div>
+  </div>
+</div>
 ```
 
 ### Multiple

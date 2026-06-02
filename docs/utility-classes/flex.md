@@ -19,6 +19,7 @@
 | flex-row-reverse | Reverse order horizontal flex.   |
 | flex-col-reverse | Reverse order vertical flex.     |
 | flex-wrap        | Flex layout with wrapping items. |
+| flex-0           | `flex: 0;`                       |
 | flex-1           | `flex: 1;`                       |
 | flex-auto        | `flex: auto;`                    |
 | flex-none        | `flex: none;`                    |
