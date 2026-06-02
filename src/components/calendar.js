@@ -160,7 +160,7 @@ export default function (Alpine) {
     ];
     const previousYearBtn = document.createElement('button');
     previousYearBtn.classList.add(...buttonClasses);
-    previousYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-year') ? el.hasAttribute('data-aria-prev-year') : 'previous year');
+    previousYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-year') ? el.getAttribute('data-aria-prev-year') : 'previous year');
     previousYearBtn.setAttribute('type', 'button');
     previousYearBtn.appendChild(
       createSvg({
@@ -180,7 +180,7 @@ export default function (Alpine) {
 
     const previousMonthBtn = document.createElement('button');
     previousMonthBtn.classList.add(...buttonClasses);
-    previousMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-month') ? el.hasAttribute('data-aria-prev-month') : 'previous month');
+    previousMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-month') ? el.getAttribute('data-aria-prev-month') : 'previous month');
     previousMonthBtn.setAttribute('type', 'button');
     previousMonthBtn.appendChild(
       createSvg({
@@ -206,7 +206,7 @@ export default function (Alpine) {
 
     const nextMonthBtn = document.createElement('button');
     nextMonthBtn.classList.add(...buttonClasses);
-    nextMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-month') ? el.hasAttribute('data-aria-next-month') : 'next month');
+    nextMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-month') ? el.getAttribute('data-aria-next-month') : 'next month');
     nextMonthBtn.setAttribute('type', 'button');
     nextMonthBtn.appendChild(
       createSvg({
@@ -226,7 +226,7 @@ export default function (Alpine) {
 
     const nextYearBtn = document.createElement('button');
     nextYearBtn.classList.add(...buttonClasses);
-    nextYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-year') ? el.hasAttribute('data-aria-next-year') : 'next year');
+    nextYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-year') ? el.getAttribute('data-aria-next-year') : 'next year');
     nextYearBtn.setAttribute('type', 'button');
     nextYearBtn.appendChild(
       createSvg({

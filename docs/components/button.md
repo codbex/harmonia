@@ -168,7 +168,7 @@ x-h-button
 
 ```html
 <div x-data="{ toggled: true }">
-  <button x-h-button :data-toggled="toggled" @:click="toggled = !toggled">Toggle</button>
+  <button x-h-button :data-toggled="toggled" @click="toggled = !toggled">Toggle</button>
 </div>
 ```
 

@@ -109,7 +109,7 @@ export default function (Alpine) {
     el.classList.add('order-1', 'text-lg', 'leading-none', 'font-semibold');
     el.setAttribute('data-slot', 'dialog-title');
     const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
-    if (dialog && (!dialog.hasAttribute('aria-labelledby') || !dialog.hasAttribute('aria-label'))) {
+    if (dialog && !dialog.hasAttribute('aria-labelledby') && !dialog.hasAttribute('aria-label')) {
       if (!el.hasAttribute('id')) {
         const id = `dht${uuidv4()}`;
         el.setAttribute('id', id);
@@ -144,7 +144,7 @@ export default function (Alpine) {
     el.classList.add('order-3', 'col-span-full', 'text-muted-foreground', 'text-sm');
     el.setAttribute('data-slot', 'dialog-description');
     const dialog = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'dialog');
-    if (dialog && (!dialog.hasAttribute('aria-describedby') || !dialog.hasAttribute('aria-description'))) {
+    if (dialog && !dialog.hasAttribute('aria-describedby') && !dialog.hasAttribute('aria-description')) {
       if (!el.hasAttribute('id')) {
         const id = `dhd${uuidv4()}`;
         el.setAttribute('id', id);

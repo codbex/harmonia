@@ -4,14 +4,14 @@ export default function (Alpine) {
   Alpine.directive('h-tooltip-trigger', (el, _, { Alpine, cleanup }) => {
     el._tooltip = Alpine.reactive({
       id: undefined,
-      controls: `hpc${uuidv4()}`,
+      controls: `htp${uuidv4()}`,
       shown: false,
     });
 
     if (el.hasAttribute('id')) {
       el._tooltip.id = el.getAttribute('id');
     } else {
-      el._tooltip.id = `hp${uuidv4()}`;
+      el._tooltip.id = `htt${uuidv4()}`;
       el.setAttribute('id', el._tooltip.id);
     }
     el.setAttribute('aria-describedby', el._tooltip.controls);

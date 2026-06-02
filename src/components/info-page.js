@@ -28,6 +28,6 @@ export default function (Alpine) {
 
   Alpine.directive('h-info-page-content', (el) => {
     el.classList.add('vbox', 'w-full', 'max-w-sm', 'min-w-0', 'items-center', 'gap-4', 'text-sm', 'text-balance');
-    el.setAttribute('data-slot', 'info-page-description');
+    el.setAttribute('data-slot', 'info-page-content');
   });
 }

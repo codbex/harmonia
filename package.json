@@ -29,6 +29,9 @@
     "build:prod": "node ./scripts/build.cjs && npm run tailwind",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
     "tailwind:watch": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "lint:fix": "eslint --fix \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
@@ -47,16 +50,20 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tailwindcss/cli": "^4.3.0",
+    "@vitest/coverage-v8": "^4.1.7",
+    "alpinejs": "^3.15.12",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.0",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
+    "happy-dom": "^20.9.0",
     "prettier": "^3.8.3",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.3.0",
-    "vitepress": "^2.0.0-alpha.17"
+    "vitepress": "^2.0.0-alpha.17",
+    "vitest": "^4.1.7"
   },
   "peerDependencies": {
     "alpinejs": "^3.15.12"
