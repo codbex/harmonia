@@ -47,8 +47,8 @@ x-h-accordion-content
 
 #### x-h-accordion-item
 
-| Modifier | Type   | Required | Description                                                                                                                |
-| -------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Modifier | Type   | Required | Description                                                                                                                 |
+| -------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------- |
 | default  | string | false    | Accordion items are collapsed by default. If included, the item will be expanded by default. There can be only one default. |
 
 ## Examples

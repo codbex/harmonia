@@ -43,8 +43,8 @@ x-h-tree-button
 
 #### x-h-tree
 
-| Modifier | Description                     |
-| -------- | ------------------------------- |
+| Modifier | Description                   |
+| -------- | ----------------------------- |
 | sub      | Used when the tree is nested. |
 
 #### x-h-tree-item

@@ -37,9 +37,9 @@ x-h-select-separator
 
 #### x-h-select
 
-| Attribute      | Type               | Required | Description                            |
-| -------------- | ------------------ | -------- | -------------------------------------- |
-| data-size      | `sm`<br/>`default` | false    | Changes the size of the select button. |
+| Attribute      | Type               | Required | Description                                                                                                                                                            |
+| -------------- | ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-size      | `sm`<br/>`default` | false    | Changes the size of the select button.                                                                                                                                 |
 | data-clearable | boolean            | false    | When set to `true`, allows the current selection to be cleared by clicking the already-selected option again. By default, re-clicking a selected option has no effect. |
 
 #### x-h-select-input
