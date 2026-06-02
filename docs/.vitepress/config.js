@@ -41,6 +41,7 @@ export default defineConfig({
           { text: 'Calendar', link: '/components/calendar' },
           { text: 'Card', link: '/components/card' },
           { text: 'Checkbox', link: '/components/checkbox' },
+          { text: 'Chip', link: '/components/chip' },
           { text: 'Date Picker', link: '/components/datepicker' },
           { text: 'Dialog', link: '/components/dialog' },
           { text: 'Expansion Panel', link: '/components/expansion-panel' },

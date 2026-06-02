@@ -6,6 +6,7 @@ import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
 import checkbox from './components/checkbox';
+import chip from './components/chip';
 import datepicker from './components/datepicker';
 import dialog from './components/dialog';
 import expansionPanel from './components/expansion-panel';
@@ -64,6 +65,7 @@ function registerPlugins() {
   window.Alpine.plugin(calendar);
   window.Alpine.plugin(card);
   window.Alpine.plugin(checkbox);
+  window.Alpine.plugin(chip);
   window.Alpine.plugin(datepicker);
   window.Alpine.plugin(dialog);
   window.Alpine.plugin(expansionPanel);

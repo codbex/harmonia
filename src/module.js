@@ -6,6 +6,7 @@ import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
 import checkbox from './components/checkbox';
+import chip from './components/chip';
 import datepicker from './components/datepicker';
 import dialog from './components/dialog';
 import expansionPanel from './components/expansion-panel';
@@ -58,6 +59,7 @@ export {
   calendar as Calendar,
   card as Card,
   checkbox as Checkbox,
+  chip as Chip,
   datepicker as DatePicker,
   dialog as Dialog,
   expansionPanel as ExpansionPanel,
