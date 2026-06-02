@@ -8,7 +8,7 @@ Use the Time Picker when users need to input or select a time value, such as set
 
 ## Keyboard Handling
 
-The user can use the following keyboard shortcuts in order to navigate trough the date picker:
+The user can use the following keyboard shortcuts in order to navigate through the time picker:
 
 - `Up` / `Down` — Moves focus to the next/previous column item.
 - `Tab` — Moves focus to the next column (hour -> minute -> second -> day period). If the "Now" buton is enabled, it will move focus to it first before looping back to the first column.
@@ -19,7 +19,7 @@ The user can use the following keyboard shortcuts in order to navigate trough th
 - `Space` — Selects the focused item.
 - `PageUp` / `Home` — Selects the first item in the column.
 - `PageDown` / `End` — Selects the last item in the column.
-- `Esc` — Closes the date picker calendar.
+- `Esc` — Closes the time picker popover.
 
 ## API Reference
 

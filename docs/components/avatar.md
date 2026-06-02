@@ -68,7 +68,7 @@ x-h-avatar-fallback
 
 ### Square avatar
 
-You canchange the avatar shape by using the `rounded-` classes.
+You can change the avatar shape by using the `rounded-` classes.
 
 <ClientOnly>
 <component-container data-class="flex flex-col items-center">

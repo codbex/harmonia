@@ -48,7 +48,7 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | menu           | Menu icon                              |
 | reply          | Reply icon                             |
 | refresh        | Refresh icon                           |
-| circle-into    | Information icon in a circle           |
+| circle-info    | Information icon in a circle           |
 | circle-error   | Error icon in a circle                 |
 | circle-success | Success icon in a circle               |
 | circle-unknown | Unknown/Question mark icon in a circle |

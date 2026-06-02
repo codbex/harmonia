@@ -49,7 +49,7 @@ x-h-accordion-content
 
 | Modifier | Type   | Required | Description                                                                                                                |
 | -------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| default  | string | false    | Accordion items are collapsed by default. If included, the item will be expanded by default. Ther can be only one default. |
+| default  | string | false    | Accordion items are collapsed by default. If included, the item will be expanded by default. There can be only one default. |
 
 ## Examples
 

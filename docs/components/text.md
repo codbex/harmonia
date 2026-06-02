@@ -2,6 +2,10 @@
 
 Applies consistent typography styles to headings, paragraphs, single lines, and code blocks, ensuring a cohesive visual hierarchy and readability across the interface.
 
+## Usage
+
+Use the text directive to apply consistent typographic styles to any element without writing custom CSS classes. Prefer semantic HTML elements (e.g. `<h1>`–`<h6>`, `<p>`, `<blockquote>`) paired with the matching modifier, so both the visual style and document structure remain correct. Use `code-inline` for short expressions within a sentence and `code` for multiline blocks.
+
 ## API Reference
 
 ### Component attribute(s)

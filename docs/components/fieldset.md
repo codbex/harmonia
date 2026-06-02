@@ -183,7 +183,7 @@ When you type something in the input below, it will no longer be invalid and the
       <div x-h-field>
         <label x-h-label.field for="visuallyDisabled">Invalid</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required/>
-        <p x-h-field-error>The input is cannot be empty</p>
+        <p x-h-field-error>The input cannot be empty</p>
       </div>
     </div>
   </fieldset>
@@ -198,7 +198,7 @@ When you type something in the input below, it will no longer be invalid and the
       <div x-h-field>
         <label x-h-label.field for="visuallyDisabled">Invalid</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required />
-        <p x-h-field-error>The input is cannot be empty</p>
+        <p x-h-field-error>The input cannot be empty</p>
       </div>
     </div>
   </fieldset>

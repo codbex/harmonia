@@ -31,7 +31,7 @@ x-h-sheet-overlay
 
 ## Examples
 
-### Popover
+### Sheet with Sidebar
 
 <br />
 

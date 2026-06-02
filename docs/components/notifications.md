@@ -625,7 +625,7 @@ You can use the notification list anywhere but the most commot place is usually 
         </div>
         <div class="vbox flex-1">
           <h1 x-h-notification-title>Generation failed</h1>
-          <p x-h-notification-description>Failed to generate a montly report. Check console log.</p>
+          <p x-h-notification-description>Failed to generate a monthly report. Check console log.</p>
         </div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
@@ -696,7 +696,7 @@ You can use the notification list anywhere but the most commot place is usually 
         </div>
         <div class="vbox flex-1">
           <h1 x-h-notification-title>Generation failed</h1>
-          <p x-h-notification-description>Failed to generate a montly report. Check console log.</p>
+          <p x-h-notification-description>Failed to generate a monthly report. Check console log.</p>
         </div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
