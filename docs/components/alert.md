@@ -86,7 +86,7 @@ x-h-alert-actions
 <div x-h-alert>
   <i role="img" data-lucide="mail"></i>
   <div x-h-alert-title>Mail Sent</div>
-  <div x-h-alert-description>You mail has been sent</div>
+  <div x-h-alert-description>Your mail has been sent</div>
 </div>
 </component-container>
 </ClientOnly>
@@ -95,7 +95,7 @@ x-h-alert-actions
 <div x-h-alert>
   <i role="img" data-lucide="mail"></i>
   <div x-h-alert-title>Mail Sent</div>
-  <div x-h-alert-description>You mail has been sent</div>
+  <div x-h-alert-description>Your mail has been sent</div>
 </div>
 ```
 

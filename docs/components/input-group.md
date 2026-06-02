@@ -186,7 +186,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
     </button>
     <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
       <li x-h-menu-item>List</li>
-      <li x-h-menu-item>Text snipplet</li>
+      <li x-h-menu-item>Text snippet</li>
       <li x-h-menu-item>Upload file</li>
     </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>
@@ -222,7 +222,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
     </button>
     <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
       <li x-h-menu-item>List</li>
-      <li x-h-menu-item>Text snipplet</li>
+      <li x-h-menu-item>Text snippet</li>
       <li x-h-menu-item>Upload file</li>
     </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>

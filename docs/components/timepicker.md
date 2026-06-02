@@ -11,7 +11,7 @@ Use the Time Picker when users need to input or select a time value, such as set
 The user can use the following keyboard shortcuts in order to navigate through the time picker:
 
 - `Up` / `Down` — Moves focus to the next/previous column item.
-- `Tab` — Moves focus to the next column (hour -> minute -> second -> day period). If the "Now" buton is enabled, it will move focus to it first before looping back to the first column.
+- `Tab` — Moves focus to the next column (hour -> minute -> second -> day period). If the "Now" button is enabled, it will move focus to it first before looping back to the first column.
 - `Shift` + `Tab` - Moves focus to the previous column.
 - `Right` — Moves focus to the next column. Focuses the first item or the last focused/selected one.
 - `Left` — Moves focus to the previous column. Focuses the first item or the last focused/selected one.

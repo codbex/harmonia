@@ -156,7 +156,7 @@ You can change the avatar shape by using the `rounded-` classes.
 </span>
 
 <span x-h-avatar data-variant="warning">
-  <svg x-h-icon.circle-info role="img" aria-label="warning"></svg>
+  <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
 </span>
 
 <span x-h-avatar data-variant="positive">

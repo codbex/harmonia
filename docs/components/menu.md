@@ -8,7 +8,7 @@ Use menus to present a set of related actions or navigation links. Menu items sh
 
 ## Keyboard Handling
 
-The user can use the following keyboard shortcuts in order to navigate trough the menu:
+The user can use the following keyboard shortcuts in order to navigate through the menu:
 
 - `Up` / `Down` — Moves focus to the previous or next menu item.
 - `Right` — Opens a submenu (if present) and moves focus to its first item.
@@ -54,7 +54,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 | Attribute     | Type       | Required | Description                                                                 |
 | ------------- | ---------- | -------- | --------------------------------------------------------------------------- |
 | data-variant  | `negative` | false    | Semantic color of the item.                                                 |
-| data-disabled | boolean    | false    | Disabled the item.                                                          |
+| data-disabled | boolean    | false    | Disables the item.                                                          |
 | data-inset    | boolean    | false    | Adds padding to the item in order to align it with ones which have an icon. |
 
 #### x-h-menu-sub

@@ -8,7 +8,7 @@ Use tree components for file systems, category hierarchies, or any dataset with 
 
 ## Keyboard Handling
 
-The user can use the following keyboard shortcuts in order to navigate trough the tree:
+The user can use the following keyboard shortcuts in order to navigate through the tree:
 
 - `Up` / `Down` — Moves focus to the previous or next visible item in the tree.
 - `Right` — Expands the focused node to reveal its children. If expanded, moves focus to the first child.
@@ -45,7 +45,7 @@ x-h-tree-button
 
 | Modifier | Description                     |
 | -------- | ------------------------------- |
-| sub      | Used when the tree is a nested. |
+| sub      | Used when the tree is nested. |
 
 #### x-h-tree-item
 

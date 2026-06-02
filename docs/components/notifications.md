@@ -201,7 +201,7 @@ lucide.createIcons({ inTemplates: true });
 
 ### Notification Item
 
-The notification item has four inner components but they have no strick structure. This gives you the flexibility to design your own notification.
+The notification item has four inner components but they have no strict structure. This gives you the flexibility to design your own notification.
 
 - #### Toast-like notification
 
@@ -576,7 +576,7 @@ The notification item has four inner components but they have no strick structur
 
 ### Notification Popover List
 
-You can use the notification list anywhere but the most commot place is usually inside a popover in a toolbar.
+You can use the notification list anywhere but the most common place is usually inside a popover in a toolbar.
 
 <ClientOnly>
 <component-container data-icons="true">

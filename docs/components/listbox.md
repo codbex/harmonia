@@ -8,7 +8,7 @@ Use listboxes when users need to select a single option from a clearly defined s
 
 ## Keyboard Handling
 
-The user can use the following keyboard shortcuts in order to navigate trough the list:
+The user can use the following keyboard shortcuts in order to navigate through the list:
 
 - `Up` / `Down` — Moves focus to the previous or next visible item in the tree.
 - `Home` — Moves focus to the first item in the listbox.

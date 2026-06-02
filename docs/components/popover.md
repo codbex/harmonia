@@ -86,7 +86,7 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 </div>
 ```
 
-### Manualy open and close the popover
+### Manually open and close the popover
 
 <br />
 

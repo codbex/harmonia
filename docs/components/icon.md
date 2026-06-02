@@ -19,7 +19,7 @@ x-h-icon
 | Attribute | Type                     | Required | Description                                                                                                                                                                                                                                                                                                                                                                     |
 | --------- | ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data-link | url                      | false    | URL to the svg icon.                                                                                                                                                                                                                                                                                                                                                            |
-| role      | `img`<br/>`presentation` | true     | The role of the icon. This is required as it affects the accessibility.<br />The `presentation` role excludes the icon from being visible to assistive technologies.<br />When using the `img` role, either `aria-label` or `aria-labelledby` attribute must also me provided. If not, assistive technologies will have trouble conveying to the user what the icon represents. |
+| role      | `img`<br/>`presentation` | true     | The role of the icon. This is required as it affects the accessibility.<br />The `presentation` role excludes the icon from being visible to assistive technologies.<br />When using the `img` role, either `aria-label` or `aria-labelledby` attribute must also be provided. If not, assistive technologies will have trouble conveying to the user what the icon represents. |
 
 ### Modifiers
 
@@ -28,7 +28,7 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | Modifier       | Description                            |
 | -------------- | -------------------------------------- |
 | calendar       | Calendar icon                          |
-| check          | Calendar icon                          |
+| check          | Check icon                             |
 | chevron-down   | Chevron down icon                      |
 | chevron-left   | Chevron left icon                      |
 | chevron-right  | Chevron right icon                     |

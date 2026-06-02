@@ -28,7 +28,7 @@ x-h-field-error
 | Attribute        | Values                                       | Required | Description                                                               |
 | ---------------- | -------------------------------------------- | -------- | ------------------------------------------------------------------------- |
 | data-disabled    | boolean                                      | false    | Applies a disabled style to the field and label. Does NOT disable inputs. |
-| data-orientation | `vertical`<br/>`horizontal`<br/>`responsive` | false    | Changes the aligment of the label and input.                              |
+| data-orientation | `vertical`<br/>`horizontal`<br/>`responsive` | false    | Changes the alignment of the label and input.                              |
 
 #### x-h-field-description
 
