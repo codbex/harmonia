@@ -18,14 +18,14 @@ outline: deep
     <svg-icon class="card-media" src="./images/alert.svg"></svg-icon>
     <div class="card-content">
       <h3>Alert</h3>
-      <p class="text">Contextual feedback component for conveying important messages and system status to users.</p>
+      <p class="text">Contextual message for communicating status, warnings, or important information.</p>
     </div>
   </a>
   <a href="./components/avatar" class="card">
     <svg-icon class="card-media" src="./images/avatar.svg"></svg-icon>
     <div class="card-content">
       <h3>Avatar</h3>
-      <p class="text">Customizable visual representation for users or entities.</p>
+      <p class="text">Visual representation of a user or entity, displayed as an image, icon, or fallback initials.</p>
     </div>
   </a>
   <a href="./components/badge" class="card">
@@ -39,21 +39,21 @@ outline: deep
     <svg-icon class="card-media" src="./images/button.svg"></svg-icon>
     <div class="card-content">
       <h3>Button</h3>
-      <p class="text">Primary action trigger with multiple style variants.</p>
+      <p class="text">Interactive control for triggering actions, available in multiple semantic style variants.</p>
     </div>
   </a>
   <a href="./components/button-group" class="card">
     <svg-icon class="card-media" src="./images/button-group.svg"></svg-icon>
     <div class="card-content">
       <h3>Button Group</h3>
-      <p class="text">Coordinated set of buttons that enables grouped actions with consistent spacing and alignment.</p>
+      <p class="text">Container that visually groups related buttons into a single, cohesive control.</p>
     </div>
   </a>
   <a href="./components/calendar" class="card">
     <svg-icon class="card-media" src="./images/calendar.svg"></svg-icon>
     <div class="card-content">
       <h3>Calendar</h3>
-      <p class="text">Comprehensive date selection component.</p>
+      <p class="text">Interactive monthly calendar for browsing and selecting dates.</p>
     </div>
   </a>
   <a href="./components/card" class="card">
@@ -68,6 +68,13 @@ outline: deep
     <div class="card-content">
       <h3>Checkbox</h3>
       <p class="text">Standard selection control for multi-option forms and interfaces.</p>
+    </div>
+  </a>
+  <a href="./components/chip" class="card">
+    <svg-icon class="card-media" src="./images/chip.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Chip</h3>
+      <p class="text">Compact, interactive element representing a filter or selection, with an optional dismiss button.</p>
     </div>
   </a>
   <a href="./components/datepicker" class="card">
@@ -88,7 +95,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/collapsible.svg"></svg-icon>
     <div class="card-content">
       <h3>Expansion Panel</h3>
-      <p class="text">A container component that manages multiple collapsible panels within a layout.</p>
+      <p class="text">Container for toggling the visibility of a section of content with a clickable header.</p>
     </div>
   </a>
   <a href="./components/fieldset" class="card">
@@ -102,7 +109,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/icon.svg"></svg-icon>
     <div class="card-content">
       <h3>Icon</h3>
-      <p class="text">Component for visualizing scalable vector graphics.</p>
+      <p class="text">Renders built-in or custom SVG icons with accessible role and label support.</p>
     </div>
   </a>
   <a href="./components/info-page" class="card">
@@ -116,7 +123,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/input.svg"></svg-icon>
     <div class="card-content">
       <h3>Input</h3>
-      <p class="text">Core text entry field with support for single-line data capture.</p>
+      <p class="text">Single-line text field for capturing user input in forms.</p>
     </div>
   </a>
   <a href="./components/input-group" class="card">
@@ -165,7 +172,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/notification.svg"></svg-icon>
     <div class="card-content">
       <h3>Notifications</h3>
-      <p class="text">Used to present important system feedback, status updates, or contextual information to the user.</p>
+      <p class="text">Displays system feedback, status updates, or alerts as toast-style or inline notifications.</p>
     </div>
   </a>
   <a href="./components/pagination" class="card">
@@ -200,7 +207,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/range.svg"></svg-icon>
     <div class="card-content">
       <h3>Range</h3>
-      <p class="text">Slider control that allows users to adjust values within a defined range.</p>
+      <p class="text">Slider control for selecting a numeric value by dragging a thumb along a track.</p>
     </div>
   </a>
   <a href="./components/select" class="card">
@@ -256,14 +263,14 @@ outline: deep
     <svg-icon class="card-media" src="./images/table.svg"></svg-icon>
     <div class="card-content">
       <h3>Table</h3>
-      <p class="text">Table component for displaying tabular data with clear visual hierarchy.</p>
+      <p class="text">Styled component for displaying structured data in rows and columns with a clear visual hierarchy.</p>
     </div>
   </a>
   <a href="./components/tabs" class="card">
     <svg-icon class="card-media" src="./images/tabs.svg"></svg-icon>
     <div class="card-content">
       <h3>Tabs</h3>
-      <p class="text">Horizontal and vertical navigation component that segments content into easily switchable panels.</p>
+      <p class="text">Navigation control that switches between panels of related content using tab buttons.</p>
     </div>
   </a>
   <a href="./components/tag" class="card">
@@ -277,7 +284,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/text.svg"></svg-icon>
     <div class="card-content">
       <h3>Text</h3>
-      <p class="text">Base typography component for consistently styled informational text.</p>
+      <p class="text">Applies consistent typographic styles for headings, paragraphs, code blocks, and other text elements.</p>
     </div>
   </a>
   <a href="./components/textarea" class="card">
@@ -291,14 +298,14 @@ outline: deep
     <svg-icon class="card-media" src="./images/tile.svg"></svg-icon>
     <div class="card-content">
       <h3>Tile</h3>
-      <p class="text">Modular content block that can house nearly any type of content.</p>
+      <p class="text">Clickable or informational block combining an image, title, and supporting content.</p>
     </div>
   </a>
   <a href="./components/timepicker" class="card">
     <svg-icon class="card-media" src="./images/timepicker.svg"></svg-icon>
     <div class="card-content">
       <h3>Time Picker</h3>
-      <p class="text">Time input control with popup.</p>
+      <p class="text">Text input paired with a popup panel for selecting hours, minutes, and seconds.</p>
     </div>
   </a>
   <a href="./components/toolbar" class="card">
@@ -312,7 +319,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/tooltip.svg"></svg-icon>
     <div class="card-content">
       <h3>Tooltip</h3>
-      <p class="text">Grouped action bar providing quick access to common commands.</p>
+      <p class="text">Small floating label that appears on hover to provide context or clarify a UI element.</p>
     </div>
   </a>
   <a href="./components/tree" class="card">

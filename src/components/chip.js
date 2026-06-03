@@ -27,6 +27,10 @@ export default function (Alpine) {
       "[&_svg:not([class*='size-'])]:size-4",
       'shrink-0',
       '[&_svg]:shrink-0',
+      'aria-expanded:outline-[calc(var(--spacing)*0.75)]',
+      'aria-expanded:outline',
+      'focus:outline-[calc(var(--spacing)*0.75)]',
+      'focus:outline',
       'focus-visible:outline-[calc(var(--spacing)*0.75)]',
       'focus-visible:outline',
       'h-7',
@@ -36,7 +40,6 @@ export default function (Alpine) {
       'has-[>[data-slot=chip-close]]:pr-0',
       'has-[>[data-slot=spinner]]:px-2',
       'text-secondary-foreground',
-      'fill-secondary-foreground',
       'border'
     );
     if (!el.hasAttribute('type')) {
@@ -48,7 +51,7 @@ export default function (Alpine) {
       primary: [
         'bg-primary/10',
         'border-primary/50',
-        '[&>svg]:fill-primary',
+        '[&>svg]:text-primary',
         '[&:hover:not(:has([data-slot=chip-close]:hover)):not(:active)]:bg-primary/15',
         '[&:active:not(:has([data-slot=chip-close]:active))]:bg-primary/20',
         'outline-primary/50',
@@ -56,7 +59,7 @@ export default function (Alpine) {
       positive: [
         'bg-positive/10',
         'border-positive/50',
-        '[&>svg]:fill-positive',
+        '[&>svg]:text-positive',
         '[&:hover:not(:has([data-slot=chip-close]:hover)):not(:active)]:bg-positive/15',
         '[&:active:not(:has([data-slot=chip-close]:active))]:bg-positive/20',
         'outline-positive/50',
@@ -64,7 +67,7 @@ export default function (Alpine) {
       negative: [
         'bg-negative/10',
         'border-negative/50',
-        '[&>svg]:fill-negative',
+        '[&>svg]:text-negative',
         '[&:hover:not(:has([data-slot=chip-close]:hover)):not(:active)]:bg-negative/15',
         '[&:active:not(:has([data-slot=chip-close]:active))]:bg-negative/20',
         'outline-negative/50',
@@ -72,7 +75,7 @@ export default function (Alpine) {
       warning: [
         'bg-warning/10',
         'border-warning/50',
-        '[&>svg]:fill-warning',
+        '[&>svg]:text-warning',
         '[&:hover:not(:has([data-slot=chip-close]:hover)):not(:active)]:bg-warning/15',
         '[&:active:not(:has([data-slot=chip-close]:active))]:bg-warning/20',
         'outline-warning/50',
@@ -80,14 +83,14 @@ export default function (Alpine) {
       information: [
         'bg-information/10',
         'border-information/50',
-        '[&>svg]:fill-information',
+        '[&>svg]:text-information',
         '[&:hover:not(:has([data-slot=chip-close]:hover)):not(:active)]:bg-information/15',
         '[&:active:not(:has([data-slot=chip-close]:active))]:bg-information/20',
         'outline-information/50',
       ],
       outline: [
         'bg-background',
-        '[&>svg]:fill-secondary-foreground',
+        '[&>svg]:text-secondary-foreground',
         '[&:hover:not(:has([data-slot=chip-close]:hover)):not(:active)]:bg-secondary-hover',
         '[&:active:not(:has([data-slot=chip-close]:active))]:bg-secondary-active',
         'outline-ring/50',
