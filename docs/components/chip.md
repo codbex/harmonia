@@ -4,7 +4,7 @@ A compact, interactive element used to represent an applied filter, a selected i
 
 ## Usage
 
-Use chips to display user-generated input or active selections that can be reviewed and removed. Always apply `x-h-chip` to a `<button>` element — this ensures proper keyboard interaction and press states. The close button (`x-h-chip-close`) must be placed on a non-button element (typically a `<span>`) inside the chip and requires an accessible label via `aria-label` or `aria-labelledby`. Chips can optionally include an icon before the label text. When a chip controls a popover or menu dropdown, the close button will automatically allow click events to propagate when the chip is in its expanded state, so the overlay can respond correctly.
+Use chips to display user-generated input or active selections that can be reviewed and removed. Always apply `x-h-chip` to a `<button>` element — this ensures proper keyboard interaction and press states. The close button (`x-h-chip-close`) must be placed on a `<span>` element inside the chip and requires an accessible label via `aria-label` or `aria-labelledby`. Chips can optionally include an icon before the label text. When a chip controls a popover or menu dropdown, the close button will automatically allow click events to propagate when the chip is in its expanded state, so the overlay can respond correctly.
 
 ## API Reference
 
@@ -25,7 +25,7 @@ x-h-chip-close
 
 ### `x-h-chip-close` Attributes
 
-> Must NOT be applied to a `<button>` element. Use `<span>` or another non-interactive element.
+> Must be applied to a `<span>` element.
 
 | Attribute       | Type   | Required | Description                                              |
 | --------------- | ------ | -------- | -------------------------------------------------------- |
@@ -49,6 +49,24 @@ x-h-chip-close
 
 ```html
 <button x-h-chip>Chip</button>
+```
+
+### Truncate Text
+
+To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` element.
+
+<ClientOnly>
+<component-container>
+<button x-h-chip style="max-width:4rem">
+  <span>Truncate text</span>
+</button>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-chip style="max-width:4rem">
+  <span>Truncate text</span>
+</button>
 ```
 
 ### Icon & Text
@@ -166,7 +184,7 @@ x-h-chip-close
 <ClientOnly>
 <component-container>
 <button x-h-chip data-variant="warning">
-  <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+  <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>

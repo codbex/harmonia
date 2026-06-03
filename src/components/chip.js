@@ -40,7 +40,9 @@ export default function (Alpine) {
       'has-[>[data-slot=chip-close]]:pr-0',
       'has-[>[data-slot=spinner]]:px-2',
       'text-secondary-foreground',
-      'border'
+      'border',
+      '[&>:is(div,span:not([data-slot=chip-close]),p)]:py-1',
+      '[&>:is(div,span:not([data-slot=chip-close]),p)]:truncate'
     );
     if (!el.hasAttribute('type')) {
       el.setAttribute('type', 'button');
@@ -119,8 +121,8 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-chip-close', (el, { original }, { effect, cleanup }) => {
-    if (el.tagName === 'BUTTON') {
-      throw new Error(`${original} must NOT be a button element`);
+    if (el.tagName !== 'SPAN') {
+      throw new Error(`${original} must be a span element`);
     }
     const chip = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_chip'));
     el.classList.add(
