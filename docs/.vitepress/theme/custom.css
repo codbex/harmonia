@@ -95,3 +95,10 @@ a.card {
   font-weight: 500;
   color: var(--vp-c-text-2);
 }
+
+h3:has(+ component-container),
+h4:has(+ component-container),
+h5:has(+ component-container),
+h6:has(+ component-container) {
+  margin-bottom: 24px !important;
+}

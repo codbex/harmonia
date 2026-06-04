@@ -36,6 +36,7 @@ export default defineConfig({
           { text: 'Alert', link: '/components/alert' },
           { text: 'Avatar', link: '/components/avatar' },
           { text: 'Badge', link: '/components/badge' },
+          { text: 'Breadcrumb', link: '/components/breadcrumb' },
           { text: 'Button', link: '/components/button' },
           { text: 'Button Group', link: '/components/button-group' },
           { text: 'Calendar', link: '/components/calendar' },

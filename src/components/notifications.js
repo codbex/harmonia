@@ -90,8 +90,8 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'notification-overlay');
 
     const commonListClasses = ['flex', 'flex-col', 'py-4', 'p-10', 'gap-4', 'overflow-visible', 'size-full'];
-    const commonTopClasses = ['[mask-image:linear-gradient(to_bottom,black_80%,transparent)]', 'row-1'];
-    const commonBottomClasses = ['[mask-image:linear-gradient(to_top,black_80%,transparent)]', 'row-2'];
+    const commonTopClasses = ['mask-[linear-gradient(to_bottom,black_85%,transparent)]', 'row-1'];
+    const commonBottomClasses = ['mask-[linear-gradient(to_top,black_85%,transparent)]', 'row-2'];
 
     const olTopLeft = document.createElement('ol');
     olTopLeft.classList.add(...commonListClasses, ...commonTopClasses, 'max-lg:hidden', 'items-start');

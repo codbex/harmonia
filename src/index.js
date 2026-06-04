@@ -2,6 +2,7 @@ import accordion from './components/accordion';
 import alert from './components/alert';
 import avatar from './components/avatar';
 import badge from './components/badge';
+import breadcrumb from './components/breadcrumb';
 import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
@@ -61,6 +62,7 @@ function registerPlugins() {
   window.Alpine.plugin(alert);
   window.Alpine.plugin(avatar);
   window.Alpine.plugin(badge);
+  window.Alpine.plugin(breadcrumb);
   window.Alpine.plugin(button);
   window.Alpine.plugin(calendar);
   window.Alpine.plugin(card);

@@ -104,6 +104,45 @@ describe('h-notification-overlay', () => {
     expect(el.getAttribute('data-slot')).toBe('notification-overlay');
     expect(el.getAttribute('aria-live')).toBe('polite');
   });
+
+  it('creates 6 ol child elements', () => {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const el = createOverlayEl();
+    alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, createMockContext(alpine));
+    const lists = el.querySelectorAll('ol');
+    expect(lists.length).toBe(6);
+  });
+
+  it('top lists have common list classes and top mask', () => {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const el = createOverlayEl();
+    alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, createMockContext(alpine));
+    const lists = el.querySelectorAll('ol');
+    const topLists = [lists[0], lists[1], lists[2]];
+    for (const list of topLists) {
+      expect(list.classList.contains('flex')).toBe(true);
+      expect(list.classList.contains('flex-col')).toBe(true);
+      expect(list.classList.contains('overflow-visible')).toBe(true);
+      expect(list.classList.contains('mask-[linear-gradient(to_bottom,black_85%,transparent)]')).toBe(true);
+    }
+  });
+
+  it('bottom lists have common list classes and bottom mask', () => {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const el = createOverlayEl();
+    alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, createMockContext(alpine));
+    const lists = el.querySelectorAll('ol');
+    const bottomLists = [lists[3], lists[4], lists[5]];
+    for (const list of bottomLists) {
+      expect(list.classList.contains('flex')).toBe(true);
+      expect(list.classList.contains('flex-col')).toBe(true);
+      expect(list.classList.contains('overflow-visible')).toBe(true);
+      expect(list.classList.contains('mask-[linear-gradient(to_top,black_85%,transparent)]')).toBe(true);
+    }
+  });
 });
 
 describe('h-notification-list', () => {

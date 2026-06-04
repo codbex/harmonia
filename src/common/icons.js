@@ -27,6 +27,7 @@ export const CircleError = 25;
 export const CircleSuccess = 26;
 export const CircleUnknown = 27;
 export const CircleUser = 28;
+export const Home = 29;
 
 function setCalendarContent(svg) {
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -421,6 +422,16 @@ function setCircleUserContent(svg) {
   svg.appendChild(path2);
 }
 
+function setHomeContent(svg) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttributeNS(
+    null,
+    'd',
+    'm8 0.8252c-0.51124 0-1.0243 0.19615-1.416 0.58789l-4.4316 4.4297c-0.27162 0.2733-0.65234 0.7207-0.65234 1.6055v5.7266c0 1.108 0.892 2 2 2h9c1.108 0 2-0.892 2-2v-5.7266c0-0.88477-0.38073-1.3322-0.65234-1.6055l-4.4316-4.4297c-0.39174-0.39174-0.90478-0.58789-1.416-0.58789zm0 1.4258c0.25431-2.91e-4 0.5101 0.096117 0.70703 0.29297l4.2207 4.2188v0.00195c0.17404 0.1851 0.27111 0.42951 0.27148 0.68359v5.4277c0 0.554-0.446 1-1 1h-1.5078v-4.1289c0-1.108-0.892-2-2-2h-1.3828c-1.108 0-2 0.892-2 2v4.1289h-1.5078c-0.554 0-1-0.446-1-1v-5.4277c3.752e-4 -0.25408 0.09744-0.4985 0.27148-0.68359v-0.00195l4.2207-4.2188c0.19693-0.19685 0.45273-0.29326 0.70703-0.29297zm-0.58984 6.7949h1.1797c0.44244-4.323e-4 0.80121 0.35834 0.80078 0.80078v4.0293h-2.7812v-4.0293c-4.322e-4 -0.44244 0.35834-0.80121 0.80078-0.80078z'
+  );
+  svg.appendChild(path);
+}
+
 export function createSvg({ icon, classes = 'size-4', attrs } = {}) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttributeNS(null, 'width', '16');
@@ -523,6 +534,9 @@ export function createSvg({ icon, classes = 'size-4', attrs } = {}) {
     case CircleUser:
       setCircleUserContent(svg);
       break;
+    case Home:
+      setHomeContent(svg);
+      break;
     default:
       break;
   }
@@ -624,6 +638,9 @@ export function setSvgContent(svg, icon) {
       break;
     case 'circle-user':
       setCircleUserContent(svg);
+      break;
+    case 'home':
+      setHomeContent(svg);
       break;
     default:
       break;

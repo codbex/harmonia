@@ -53,6 +53,7 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | circle-success | Success icon in a circle               |
 | circle-unknown | Unknown/Question mark icon in a circle |
 | circle-user    | User icon in a circle                  |
+| home           | Home icon                              |
 
 ## Examples
 
@@ -109,154 +110,38 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 <br />
 
 <ClientOnly>
-<component-container data-class="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-4">
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.calendar class="size-8" role="img" aria-label="calendar"></svg>
-  <span>calendar</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.check class="size-8" role="img" aria-label="check"></svg>
-  <span>check</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.chevron-down class="size-8" role="img" aria-label="chevron down"></svg>
-  <span>chevron-down</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.chevron-left class="size-8" role="img" aria-label="chevron left"></svg>
-  <span>chevron-left</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.chevron-right class="size-8" role="img" aria-label="chevron right"></svg>
-  <span>chevron-right</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.chevrons-left class="size-8" role="img" aria-label="chevrons left"></svg>
-  <span>chevrons-left</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.chevrons-right class="size-8" role="img" aria-label="chevrons right"></svg>
-  <span>chevrons-right</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.clock role="img" class="size-8" aria-label="clock"></svg>
-  <span>clock</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.search role="img" class="size-8" aria-label="search"></svg>
-  <span>search</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.ellipsis role="img" class="size-8" aria-label="ellipsis"></svg>
-  <span>ellipsis</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.minus role="img" class="size-8" aria-label="minus"></svg>
-  <span>minus</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.plus role="img" class="size-8" aria-label="plus"></svg>
-  <span>plus</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.close role="img" class="size-8" aria-label="close"></svg>
-  <span>close</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.bell role="img" class="size-8" aria-label="bell"></svg>
-  <span>bell</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.trash role="img" class="size-8" aria-label="trash"></svg>
-  <span>trash</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.mail role="img" class="size-8" aria-label="mail"></svg>
-  <span>mail</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.send role="img" class="size-8" aria-label="send"></svg>
-  <span>send</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.export role="img" class="size-8" aria-label="export"></svg>
-  <span>export</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.import role="img" class="size-8" aria-label="import"></svg>
-  <span>import</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.edit role="img" class="size-8" aria-label="edit"></svg>
-  <span>edit</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.menu role="img" class="size-8" aria-label="menu"></svg>
-  <span>menu</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.reply role="img" class="size-8" aria-label="reply"></svg>
-  <span>reply</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.refresh role="img" class="size-8" aria-label="refresh"></svg>
-  <span>refresh</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.circle-info role="img" class="size-8" aria-label="info"></svg>
-  <span>circle-info</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.circle-warning role="img" class="size-8" aria-label="warning"></svg>
-  <span>circle-warning</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.circle-error role="img" class="size-8" aria-label="error"></svg>
-  <span>circle-error</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.circle-success role="img" class="size-8" aria-label="success"></svg>
-  <span>circle-success</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.circle-unknown role="img" class="size-8" aria-label="unknown"></svg>
-  <span>circle-unknown</span>
-</div>
-<div class="vbox gap-2 items-center">
-  <svg x-h-icon.circle-user role="img" class="size-8" aria-label="user"></svg>
-  <span>circle-user</span>
-</div>
-</component-container>
+<component-container src="/components/icons/grid.html" data-class="p-4"></component-container>
 </ClientOnly>
 
 ```html
-<svg x-h-icon.calendar class="size-8" role="img" aria-label="calendar"></svg>
-<svg x-h-icon.check class="size-8" role="img" aria-label="check"></svg>
-<svg x-h-icon.chevron-down class="size-8" role="img" aria-label="chevron down"></svg>
-<svg x-h-icon.chevron-left class="size-8" role="img" aria-label="chevron left"></svg>
-<svg x-h-icon.chevron-right class="size-8" role="img" aria-label="chevron right"></svg>
-<svg x-h-icon.chevrons-left class="size-8" role="img" aria-label="chevrons left"></svg>
-<svg x-h-icon.chevrons-right class="size-8" role="img" aria-label="chevrons right"></svg>
-<svg x-h-icon.clock class="size-8" role="img" aria-label="clock"></svg>
-<svg x-h-icon.search class="size-8" role="img" aria-label="search"></svg>
-<svg x-h-icon.ellipsis class="size-8" role="img" aria-label="ellipsis"></svg>
-<svg x-h-icon.minus class="size-8" role="img" aria-label="minus"></svg>
-<svg x-h-icon.plus class="size-8" role="img" aria-label="plus"></svg>
-<svg x-h-icon.close class="size-8" role="img" aria-label="close"></svg>
-<svg x-h-icon.bell class="size-8" role="img" aria-label="bell"></svg>
-<svg x-h-icon.trash class="size-8" role="img" aria-label="trash"></svg>
-<svg x-h-icon.mail class="size-8" role="img" aria-label="mail"></svg>
-<svg x-h-icon.send class="size-8" role="img" aria-label="send"></svg>
-<svg x-h-icon.export class="size-8" role="img" aria-label="export"></svg>
-<svg x-h-icon.import class="size-8" role="img" aria-label="import"></svg>
-<svg x-h-icon.edit class="size-8" role="img" aria-label="edit"></svg>
-<svg x-h-icon.menu class="size-8" role="img" aria-label="menu"></svg>
-<svg x-h-icon.reply class="size-8" role="img" aria-label="reply"></svg>
-<svg x-h-icon.refresh class="size-8" role="img" aria-label="refresh"></svg>
-<svg x-h-icon.circle-info class="size-8" role="img" aria-label="information"></svg>
-<svg x-h-icon.circle-warning class="size-8" role="img" aria-label="warning"></svg>
-<svg x-h-icon.circle-error class="size-8" role="img" aria-label="error"></svg>
-<svg x-h-icon.circle-success class="size-8" role="img" aria-label="success"></svg>
-<svg x-h-icon.circle-unknown class="size-8" role="img" aria-label="unknown"></svg>
-<svg x-h-icon.circle-user class="size-8" role="img" aria-label="user"></svg>
+<svg x-h-icon.calendar role="img" aria-label="calendar"></svg>
+<svg x-h-icon.check role="img" aria-label="check"></svg>
+<svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg>
+<svg x-h-icon.chevron-left role="img" aria-label="chevron left"></svg>
+<svg x-h-icon.chevron-right role="img" aria-label="chevron right"></svg>
+<svg x-h-icon.chevrons-left role="img" aria-label="chevrons left"></svg>
+<svg x-h-icon.chevrons-right role="img" aria-label="chevrons right"></svg>
+<svg x-h-icon.clock role="img" aria-label="clock"></svg>
+<svg x-h-icon.search role="img" aria-label="search"></svg>
+<svg x-h-icon.ellipsis role="img" aria-label="ellipsis"></svg>
+<svg x-h-icon.minus role="img" aria-label="minus"></svg>
+<svg x-h-icon.plus role="img" aria-label="plus"></svg>
+<svg x-h-icon.close role="img" aria-label="close"></svg>
+<svg x-h-icon.bell role="img" aria-label="bell"></svg>
+<svg x-h-icon.trash role="img" aria-label="trash"></svg>
+<svg x-h-icon.mail role="img" aria-label="mail"></svg>
+<svg x-h-icon.send role="img" aria-label="send"></svg>
+<svg x-h-icon.export role="img" aria-label="export"></svg>
+<svg x-h-icon.import role="img" aria-label="import"></svg>
+<svg x-h-icon.edit role="img" aria-label="edit"></svg>
+<svg x-h-icon.menu role="img" aria-label="menu"></svg>
+<svg x-h-icon.reply role="img" aria-label="reply"></svg>
+<svg x-h-icon.refresh role="img" aria-label="refresh"></svg>
+<svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+<svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+<svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+<svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+<svg x-h-icon.circle-unknown role="img" aria-label="unknown"></svg>
+<svg x-h-icon.circle-user role="img" aria-label="user"></svg>
+<svg x-h-icon.home role="img" aria-label="home"></svg>
 ```

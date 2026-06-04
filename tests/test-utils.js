@@ -28,6 +28,9 @@ export function createMockAlpine() {
     mutateDom(fn) {
       fn();
     },
+    nextTick(fn) {
+      fn();
+    },
     initTree: vi.fn(),
     destroyTree: vi.fn(),
   };

@@ -35,6 +35,13 @@ outline: deep
       <p class="text">Compact indicator used to highlight numeric values, statuses, or labels.</p>
     </div>
   </a>
+  <a href="./components/breadcrumb" class="card">
+  <svg-icon class="card-media" src="./images/breadcrumb.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Breadcrumb</h3>
+      <p class="text">Navigational trail showing the current page's location within the site hierarchy.</p>
+    </div>
+  </a>
   <a href="./components/button" class="card">
     <svg-icon class="card-media" src="./images/button.svg"></svg-icon>
     <div class="card-content">

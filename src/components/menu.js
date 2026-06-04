@@ -1,4 +1,4 @@
-import { computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
@@ -97,6 +97,10 @@ export default function (Alpine) {
 
     function close(closeParent = false, focusTrigger = false) {
       el.pauseKeyEvents = false;
+      if (autoUpdateCleanup) {
+        autoUpdateCleanup();
+        autoUpdateCleanup = null;
+      }
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.classList.add('hidden', 'scale-95', 'opacity-0');
         Object.assign(el.style, {
@@ -234,6 +238,8 @@ export default function (Alpine) {
       }
     }
 
+    let autoUpdateCleanup;
+
     function open(parent) {
       if (el.classList.contains('hidden')) {
         el.classList.remove('hidden');
@@ -246,38 +252,53 @@ export default function (Alpine) {
           }
           return 'right-start';
         }
-        computePosition(parent, el, {
-          placement: getPlacement(),
-          strategy: 'fixed',
-          middleware: [
-            offset(isSubmenu ? 0 : 4),
-            flip(),
-            shift({ padding: 4 }),
-            size({
-              apply({ availableWidth, availableHeight, elements }) {
-                Object.assign(elements.floating.style, {
-                  maxWidth: `${Math.max(0, availableWidth) - 4}px`,
-                  maxHeight: `${Math.max(0, availableHeight) - 4}px`,
-                });
-              },
-            }),
-          ],
-        }).then(({ x, y }) => {
-          if (!isSubmenu) {
-            Alpine.nextTick(() => el.focus());
-            listenForTrigger(false);
-          }
-          Alpine.nextTick(() => {
-            top.addEventListener('contextmenu', onClick);
-            top.addEventListener('click', onClick);
-            el.addEventListener('keydown', onKeyDown);
+
+        let firstOpen = true;
+
+        function updatePosition() {
+          const isFirst = firstOpen;
+          firstOpen = false;
+          computePosition(parent, el, {
+            placement: getPlacement(),
+            strategy: 'fixed',
+            middleware: [
+              offset(isSubmenu ? 0 : 4),
+              flip(),
+              shift({ padding: 4 }),
+              size({
+                apply({ availableWidth, availableHeight, elements }) {
+                  Object.assign(elements.floating.style, {
+                    maxWidth: `${Math.max(0, availableWidth) - 4}px`,
+                    maxHeight: `${Math.max(0, availableHeight) - 4}px`,
+                  });
+                },
+              }),
+            ],
+          }).then(({ x, y }) => {
+            if (isFirst) {
+              if (!isSubmenu) {
+                Alpine.nextTick(() => el.focus());
+                listenForTrigger(false);
+              }
+              Alpine.nextTick(() => {
+                top.addEventListener('contextmenu', onClick);
+                top.addEventListener('click', onClick);
+                el.addEventListener('keydown', onKeyDown);
+              });
+            }
+            Object.assign(el.style, {
+              left: `${x}px`,
+              top: `${y}px`,
+            });
+            el.classList.remove('scale-95', 'opacity-0');
           });
-          Object.assign(el.style, {
-            left: `${x}px`,
-            top: `${y}px`,
-          });
-          el.classList.remove('scale-95', 'opacity-0');
-        });
+        }
+
+        if (!isSubmenu && menuTrigger._menu_trigger.isDropdown) {
+          autoUpdateCleanup = autoUpdate(parent, el, updatePosition);
+        } else {
+          updatePosition();
+        }
       }
     }
 
@@ -327,6 +348,7 @@ export default function (Alpine) {
     el.addEventListener('transitionend', onTransitionEnd);
 
     cleanup(() => {
+      if (autoUpdateCleanup) autoUpdateCleanup();
       if (menuTrigger) listenForTrigger(false);
       top.removeEventListener('click', onClick);
       top.removeEventListener('contextmenu', onClick);
@@ -367,7 +389,10 @@ export default function (Alpine) {
       'data-[inset=true]:pl-8',
       '[&_svg]:pointer-events-none',
       '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4"
+      "[&_svg:not([class*='size-'])]:size-4",
+      '[&>a]:no-underline',
+      '[&>a]:text-inherit',
+      '[&>a]:size-full'
     );
     el.setAttribute('role', 'menuitem');
     el.setAttribute('tabindex', '-1');
