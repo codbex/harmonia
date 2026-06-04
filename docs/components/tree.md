@@ -10,10 +10,10 @@ Use tree components for file systems, category hierarchies, or any dataset with 
 
 The user can use the following keyboard shortcuts in order to navigate through the tree:
 
-- `Up` / `Down` — Moves focus to the previous or next visible item in the tree.
-- `Right` — Expands the focused node to reveal its children. If expanded, moves focus to the first child.
-- `Left` — Collapses the focused node and moves focus to its parent.
-- `Enter` / `Space` — Selects the focused item.
+- `Up` / `Down` - Moves focus to the previous or next visible item in the tree.
+- `Right` - Expands the focused node to reveal its children. If expanded, moves focus to the first child.
+- `Left` - Collapses the focused node and moves focus to its parent.
+- `Enter` / `Space` - Selects the focused item.
 
 ## API Reference
 

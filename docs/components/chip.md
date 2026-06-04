@@ -4,7 +4,7 @@ A compact, interactive element used to represent an applied filter, a selected i
 
 ## Usage
 
-Use chips to display user-generated input or active selections that can be reviewed and removed. Always apply `x-h-chip` to a `<button>` element — this ensures proper keyboard interaction and press states. The close button (`x-h-chip-close`) must be placed on a `<span>` element inside the chip and requires an accessible label via `aria-label` or `aria-labelledby`. Chips can optionally include an icon before the label text. When a chip controls a popover or menu dropdown, the close button will automatically allow click events to propagate when the chip is in its expanded state, so the overlay can respond correctly.
+Use chips to display user-generated input or active selections that can be reviewed and removed. Always apply `x-h-chip` to a `<button>` element - this ensures proper keyboard interaction and press states. The close button (`x-h-chip-close`) must be placed on a `<span>` element inside the chip and requires an accessible label via `aria-label` or `aria-labelledby`. Chips can optionally include an icon before the label text. When a chip controls a popover or menu dropdown, the close button will automatically allow click events to propagate when the chip is in its expanded state, so the overlay can respond correctly.
 
 ## API Reference
 

@@ -10,14 +10,14 @@ Use the calendar when users need to choose specific dates, such as scheduling ev
 
 The user can use the following keyboard shortcuts in order to navigate trough the calendar:
 
-- `Up` / `Down` — Moves focus to the day above/below the current day.
-- `Right` — Moves focus to the next day.
-- `Left` — Moves focus to the previous day.
-- `Enter` / `Space` — Selects the focused day.
-- `Home` — Selects the first day of the month.
-- `End` — Selects the last day of the month.
-- `PageUp` — Selects the same or closest day of the previous month.
-- `PageDown` — Selects the same or closest day of the next month.
+- `Up` / `Down` - Moves focus to the day above/below the current day.
+- `Right` - Moves focus to the next day.
+- `Left` - Moves focus to the previous day.
+- `Enter` / `Space` - Selects the focused day.
+- `Home` - Selects the first day of the month.
+- `End` - Selects the last day of the month.
+- `PageUp` - Selects the same or closest day of the previous month.
+- `PageDown` - Selects the same or closest day of the next month.
 
 ## API Reference
 

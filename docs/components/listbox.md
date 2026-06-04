@@ -10,10 +10,10 @@ Use listboxes when users need to select a single option from a clearly defined s
 
 The user can use the following keyboard shortcuts in order to navigate through the list:
 
-- `Up` / `Down` — Moves focus to the previous or next visible item in the tree.
-- `Home` — Moves focus to the first item in the listbox.
-- `End` — Moves focus to the last item in the listbox.
-- `Enter` / `Space` — Selects the focused item.
+- `Up` / `Down` - Moves focus to the previous or next visible item in the tree.
+- `Home` - Moves focus to the first item in the listbox.
+- `End` - Moves focus to the last item in the listbox.
+- `Enter` / `Space` - Selects the focused item.
 
 ## Related components
 

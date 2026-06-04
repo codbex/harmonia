@@ -10,13 +10,13 @@ Use the Select component without a search option when there are a limited number
 
 The user can use the following keyboard shortcuts in order to navigate through the select:
 
-- `Up` / `Down` — Moves focus to the previous or next option.
-- `Home` / `Page Up` — Moves focus to the first option.
-- `End` / `Page Down` — Moves focus to the last option.
-- `Enter` / `Space` — Selects the focused option. If the list is closed, opens it.
-- `Esc` — Closes the list without changing the current selection.
-- `Tab` — Closes the list and moves focus to the next focusable element.
-- `Character keys (A–Z)` — Moves focus to the next option whose label starts with the typed character.
+- `Up` / `Down` - Moves focus to the previous or next option.
+- `Home` / `Page Up` - Moves focus to the first option.
+- `End` / `Page Down` - Moves focus to the last option.
+- `Enter` / `Space` - Selects the focused option. If the list is closed, opens it.
+- `Esc` - Closes the list without changing the current selection.
+- `Tab` - Closes the list and moves focus to the next focusable element.
+- `Character keys (A–Z)` - Moves focus to the next option whose label starts with the typed character.
 
 ## API Reference
 

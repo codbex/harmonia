@@ -24,7 +24,7 @@ x-h-breadcrumb-page
 | ------------- | --------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | data-variant  | `outline`<br/>`default`     | false    | Changes the visual style of the breadcrumb.                                                                                                 |
 | data-size     | `sm`<br/>`md`<br/>`default` | false    | Changes the size of the breadcrumb. Only applied when the `outline` variant is set.                                                         |
-| data-overflow | `scroll`<br/>`nowrap`       | false    | `scroll` — enables horizontal scrolling, last item visible on load. `nowrap` — prevents wrapping without scrolling. Wraps items by default. |
+| data-overflow | `scroll`<br/>`nowrap`       | false    | `scroll` - enables horizontal scrolling, last item visible on load. `nowrap` - prevents wrapping without scrolling. Wraps items by default. |
 
 ## Examples
 

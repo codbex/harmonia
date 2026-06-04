@@ -1,6 +1,6 @@
 # Range
 
-Allows users to select a value—or a range of values—by dragging a handle along a track. The component is based on [noUiSlider](https://github.com/leongersen/noUiSlider) and an interactive control over numeric inputs.
+Allows users to select a value, or a range of values, by dragging a handle along a track. The component is based on [noUiSlider](https://github.com/leongersen/noUiSlider) and an interactive control over numeric inputs.
 
 ## Usage
 
