@@ -168,7 +168,7 @@ In the following example, the left and right panels will hide if the screen is l
       <div class="overflow-auto">Left panel</div>
     </div>
     <div x-h-split-panel>
-      <div class="overflow-auto">Cener panel</div>
+      <div class="overflow-auto">Center panel</div>
     </div>
     <div x-h-split-panel :data-hidden="panelVisiblility.right">
       <div class="overflow-auto">Right panel</div>

@@ -31,8 +31,13 @@ export default function (Alpine) {
       if (saveTimer) clearTimeout(saveTimer);
 
       saveTimer = setTimeout(() => {
+        const usable = usableSize();
+        if (usable <= 0) {
+          saveTimer = null;
+          return;
+        }
         const visible = panels.filter((p) => !p.hidden);
-        const sizes = visible.map((p) => p.size / usableSize());
+        const sizes = visible.map((p) => p.size / usable);
         localStorage.setItem(storageKey, JSON.stringify(sizes));
         saveTimer = null;
       }, SAVE_DELAY);
@@ -83,35 +88,56 @@ export default function (Alpine) {
       if (!initialized) {
         initialized = true;
 
-        const visible = panels.filter((p) => !p.hidden);
+        const anyRestore = visible.some((p) => p.restoreFraction != null);
 
-        // Try restoring persisted sizes
-        const stored = loadSizes();
+        if (anyRestore) {
+          // One or more panels are being restored after hide. Use saved fractions for them
+          // and distribute the remaining space to always-visible panels by their declaredSize ratio.
+          const restoreFractionSum = visible.reduce((sum, p) => sum + (p.restoreFraction ?? 0), 0);
+          const remainingSpace = total * (1 - restoreFractionSum);
+          const nonRestorePanels = visible.filter((p) => p.restoreFraction == null);
+          const nonRestoreDeclaredTotal = nonRestorePanels.reduce((s, p) => s + (p.declaredSize ?? 0), 0);
 
-        if (stored && stored.length === visible.length) {
-          visible.forEach((p, i) => {
-            p.size = stored[i] * usableSize();
-            p.explicit = true;
+          visible.forEach((p) => {
+            if (p.restoreFraction != null) {
+              p.size = p.restoreFraction * total;
+              p.explicit = true;
+              p.restoreFraction = null;
+            } else if (nonRestoreDeclaredTotal > 0) {
+              p.size = ((p.declaredSize ?? 0) / nonRestoreDeclaredTotal) * remainingSpace;
+            } else {
+              p.size = nonRestorePanels.length > 0 ? remainingSpace / nonRestorePanels.length : 0;
+            }
           });
         } else {
-          // Compute the total size of explicitly sized panels
-          const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
+          // Try restoring persisted sizes
+          const stored = loadSizes();
 
-          // Compute & distribute remaining space for auto panels
-          const autoPanels = visible.filter((p) => !p.explicit);
-          const remaining = total - explicitTotal;
-          const share = autoPanels.length ? remaining / autoPanels.length : 0;
+          if (stored && stored.length === visible.length) {
+            visible.forEach((p, i) => {
+              p.size = stored[i] * usableSize();
+              p.explicit = true;
+            });
+          } else {
+            // Compute the total size of explicitly sized panels
+            const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
 
-          // Apply computed sizes to panels
-          visible.forEach((p) => {
-            if (p.explicit) {
-              p.size = p.declaredSize;
-            } else {
-              p.size = share;
-            }
+            // Compute & distribute remaining space for auto panels
+            const autoPanels = visible.filter((p) => !p.explicit);
+            const remaining = total - explicitTotal;
+            const share = autoPanels.length ? remaining / autoPanels.length : 0;
 
-            p.size = Math.min(Math.max(p.size ?? share, p.min), p.max);
-          });
+            // Apply computed sizes to panels
+            visible.forEach((p) => {
+              if (p.explicit) {
+                p.size = p.declaredSize;
+              } else {
+                p.size = share;
+              }
+
+              p.size = Math.min(Math.max(p.size ?? share, p.min), p.max);
+            });
+          }
         }
       }
 
@@ -130,6 +156,7 @@ export default function (Alpine) {
 
       if (Math.abs(delta) < DELTA_ABS) {
         visible.forEach((p) => p.apply());
+        if (total > 0) visible.forEach((p) => { p.savedFraction = p.size / total; });
         return;
       }
 
@@ -177,6 +204,7 @@ export default function (Alpine) {
       }
 
       visible.forEach((p) => p.apply());
+      if (total > 0) visible.forEach((p) => { p.savedFraction = p.size / total; });
     };
 
     let layoutFrame = null;
@@ -218,7 +246,6 @@ export default function (Alpine) {
         queueLayout();
       },
       panelHidden() {
-        initialized = false;
         refreshGutters();
         queueLayout();
       },
@@ -228,6 +255,9 @@ export default function (Alpine) {
       },
       panelChange() {
         queueLayout();
+      },
+      resetInit() {
+        initialized = false;
       },
       normalize,
       saveSizes,
@@ -410,6 +440,9 @@ export default function (Alpine) {
       max: split._h_split.normalize(el.getAttribute('data-max')) ?? Infinity,
       collapsed: false,
       prevSize: null,
+      prevHiddenFraction: null,
+      savedFraction: null,
+      restoreFraction: null,
 
       apply() {
         el.style.flexBasis = `${this.size.toFixed(2)}px`;
@@ -535,7 +568,7 @@ export default function (Alpine) {
     const collapse = () => {
       if (panel.collapsed) return;
 
-      panel.prevSize = panel.size;
+      panel.prevSize = panel.size > (panel.min ?? 0) ? panel.size : panel.declaredSize;
       panel.size = panel.min ?? 0;
       panel.collapsed = true;
       panel.explicit = true;
@@ -586,7 +619,16 @@ export default function (Alpine) {
           gutterless = el.getAttribute('data-gutterless') === 'true';
           split._h_split.gutterHidden();
         } else if (mutation.attributeName === 'data-hidden') {
-          panel.hidden = el.getAttribute('data-hidden') === 'true';
+          const newHidden = el.getAttribute('data-hidden') === 'true';
+          if (!panel.hidden && newHidden) {
+            panel.prevHiddenFraction = panel.savedFraction;
+          } else if (panel.hidden && !newHidden) {
+            if (panel.prevHiddenFraction != null) {
+              panel.restoreFraction = panel.prevHiddenFraction;
+            }
+            split._h_split.resetInit();
+          }
+          panel.hidden = newHidden;
           setState();
         } else if (mutation.attributeName === 'data-locked') {
           panel.setLocked();

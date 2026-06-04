@@ -62,6 +62,7 @@ describe('h-split-panel', () => {
       panelHidden: vi.fn(),
       gutterHidden: vi.fn(),
       panelChange: vi.fn(),
+      resetInit: vi.fn(),
       normalize: vi.fn().mockReturnValue(null),
       saveSizes: vi.fn(),
     };
