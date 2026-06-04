@@ -97,4 +97,17 @@ describe('h-split-panel', () => {
     const el = document.createElement('div');
     expect(() => mountDirective(splitPlugin, 'h-split-panel', el, { original: 'x-h-split-panel' })).toThrow();
   });
+
+  it('applies hidden class on init when data-hidden is true', () => {
+    const { panel } = createSplitPanelSetup();
+    panel.setAttribute('data-hidden', 'true');
+    mountDirective(splitPlugin, 'h-split-panel', panel, { original: 'x-h-split-panel' });
+    expect(panel.classList.contains('hidden')).toBe(true);
+  });
+
+  it('does not apply hidden class on init when data-hidden is not set', () => {
+    const { panel } = createSplitPanelSetup();
+    mountDirective(splitPlugin, 'h-split-panel', panel, { original: 'x-h-split-panel' });
+    expect(panel.classList.contains('hidden')).toBe(false);
+  });
 });

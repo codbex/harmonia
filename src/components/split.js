@@ -569,6 +569,17 @@ export default function (Alpine) {
       split._h_split.panelChange();
     };
 
+    const setState = () => {
+      if (panel.hidden) {
+        el.classList.add('hidden');
+      } else {
+        el.classList.remove('hidden');
+      }
+      split._h_split.panelHidden();
+    };
+
+    setState();
+
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'data-gutterless') {
@@ -576,12 +587,7 @@ export default function (Alpine) {
           split._h_split.gutterHidden();
         } else if (mutation.attributeName === 'data-hidden') {
           panel.hidden = el.getAttribute('data-hidden') === 'true';
-          if (panel.hidden) {
-            el.classList.add('hidden');
-          } else {
-            el.classList.remove('hidden');
-          }
-          split._h_split.panelHidden();
+          setState();
         } else if (mutation.attributeName === 'data-locked') {
           panel.setLocked();
         } else {
