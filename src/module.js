@@ -18,6 +18,7 @@ import input from './components/input';
 import label from './components/label';
 import list from './components/list';
 import menu from './components/menu';
+import navigationMenu from './components/navigation-menu';
 import notifications from './components/notifications';
 import pagination from './components/pagination';
 import popover from './components/popover';
@@ -74,6 +75,7 @@ export {
   label as Label,
   list as List,
   menu as Menu,
+  navigationMenu as NavigationMenu,
   notifications as Notifications,
   pagination as Pagination,
   popover as Popover,
@@ -123,6 +125,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(label);
   registerPlugin(list);
   registerPlugin(menu);
+  registerPlugin(navigationMenu);
   registerPlugin(notifications);
   registerPlugin(pagination);
   registerPlugin(popover);

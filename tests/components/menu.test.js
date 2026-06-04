@@ -13,10 +13,10 @@ import menuPlugin from '../../src/components/menu.js';
 import { mountDirective } from '../test-utils.js';
 
 describe('h-menu-trigger', () => {
-  it('registers _menu_trigger on element', () => {
+  it('registers _h_menu_trigger on element', () => {
     const el = document.createElement('button');
     mountDirective(menuPlugin, 'h-menu-trigger', el, { modifiers: [] });
-    expect(el._menu_trigger).toBeDefined();
+    expect(el._h_menu_trigger).toBeDefined();
   });
 
   it('sets aria-haspopup and aria-expanded for dropdown modifier', () => {
@@ -25,7 +25,7 @@ describe('h-menu-trigger', () => {
     mountDirective(menuPlugin, 'h-menu-trigger', el, { modifiers: ['dropdown'] });
     expect(el.getAttribute('aria-haspopup')).toBe('true');
     expect(el.getAttribute('aria-expanded')).toBe('false');
-    expect(el._menu_trigger.isDropdown).toBe(true);
+    expect(el._h_menu_trigger.isDropdown).toBe(true);
   });
 
   it('does not set aria-haspopup without dropdown modifier', () => {
@@ -39,7 +39,7 @@ describe('h-menu', () => {
   function createMenuSetup() {
     const container = document.createElement('div');
     const trigger = document.createElement('button');
-    trigger._menu_trigger = {
+    trigger._h_menu_trigger = {
       isDropdown: true,
       setOpen: vi.fn(),
     };
@@ -96,6 +96,62 @@ describe('h-menu', () => {
       modifiers: [],
     });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  it('sets aria-controls on trigger pointing to the menu id', () => {
+    const { trigger, menu } = createMenuSetup();
+    mountDirective(menuPlugin, 'h-menu', menu, {
+      original: 'x-h-menu',
+      modifiers: [],
+    });
+    expect(trigger.getAttribute('aria-controls')).toBe(menu.getAttribute('id'));
+  });
+
+  it('sets aria-labelledby on menu from trigger id when menu has no aria-label', () => {
+    const container = document.createElement('div');
+    const trigger = document.createElement('button');
+    trigger._h_menu_trigger = {
+      isDropdown: true,
+      setOpen: vi.fn(),
+    };
+    trigger.setAttribute('id', 'ctrl-trigger');
+    const menu = document.createElement('ul');
+    container.appendChild(trigger);
+    container.appendChild(menu);
+    document.body.appendChild(container);
+
+    mountDirective(menuPlugin, 'h-menu', menu, {
+      original: 'x-h-menu',
+      modifiers: [],
+    });
+
+    expect(menu.getAttribute('aria-labelledby')).toBe('ctrl-trigger');
+  });
+
+  it('populates openMenu and closeMenu on navItem trigger', () => {
+    const container = document.createElement('div');
+    const trigger = document.createElement('button');
+    trigger._h_menu_trigger = {
+      isDropdown: true,
+      navItem: true,
+      openMenu: undefined,
+      closeMenu: undefined,
+      setOpen: vi.fn(),
+    };
+    trigger.setAttribute('id', 'nav-trigger-id');
+    const menu = document.createElement('ul');
+    menu.setAttribute('aria-label', 'Nav menu');
+    container.appendChild(trigger);
+    container.appendChild(menu);
+    document.body.appendChild(container);
+
+    mountDirective(menuPlugin, 'h-menu', menu, {
+      original: 'x-h-menu',
+      modifiers: [],
+    });
+
+    expect(typeof trigger._h_menu_trigger.openMenu).toBe('function');
+    expect(typeof trigger._h_menu_trigger.closeMenu).toBe('function');
   });
 });
 

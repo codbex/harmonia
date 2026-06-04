@@ -56,6 +56,7 @@ export default defineConfig({
           { text: 'List', link: '/components/list' },
           { text: 'Listbox', link: '/components/listbox' },
           { text: 'Menu', link: '/components/menu' },
+          { text: 'Navigation Menu', link: '/components/navigation-menu' },
           { text: 'Notifications', link: '/components/notifications' },
           { text: 'Pagination', link: '/components/pagination' },
           { text: 'Popover', link: '/components/popover' },

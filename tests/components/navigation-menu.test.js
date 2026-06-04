@@ -1,0 +1,363 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('@floating-ui/dom', () => ({
+  computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
+  autoUpdate: vi.fn().mockReturnValue(() => {}),
+  flip: vi.fn(),
+  offset: vi.fn(),
+  shift: vi.fn(),
+  size: vi.fn(),
+}));
+
+import menuPlugin from '../../src/components/menu.js';
+import navigationMenuPlugin from '../../src/components/navigation-menu.js';
+import { mountDirective } from '../test-utils.js';
+
+afterEach(() => {
+  document.body.innerHTML = '';
+});
+
+// ---------------------------------------------------------------------------
+// h-nav
+// ---------------------------------------------------------------------------
+
+describe('h-nav', () => {
+  it('throws if not a nav element', () => {
+    const el = document.createElement('div');
+    el.setAttribute('aria-label', 'Main');
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' })).toThrow();
+  });
+
+  it('throws if aria-label is missing', () => {
+    const el = document.createElement('nav');
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' })).toThrow();
+  });
+
+  it('applies base classes', () => {
+    const el = document.createElement('nav');
+    el.setAttribute('aria-label', 'Main');
+    mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
+    expect(el.classList.contains('relative')).toBe(true);
+    expect(el.classList.contains('z-10')).toBe(true);
+    expect(el.classList.contains('flex')).toBe(true);
+    expect(el.classList.contains('items-center')).toBe(true);
+  });
+
+  it('sets data-slot="nav"', () => {
+    const el = document.createElement('nav');
+    el.setAttribute('aria-label', 'Main');
+    mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
+    expect(el.getAttribute('data-slot')).toBe('nav');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// h-nav-list
+// ---------------------------------------------------------------------------
+
+describe('h-nav-list', () => {
+  function createNavListSetup() {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    const ul = document.createElement('ul');
+    nav.appendChild(ul);
+    document.body.appendChild(nav);
+    return { nav, ul };
+  }
+
+  it('throws if not a ul element', () => {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    const el = document.createElement('div');
+    nav.appendChild(el);
+    document.body.appendChild(nav);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-list', el, { original: 'x-h-nav-list' })).toThrow();
+  });
+
+  it('throws if no ancestor with data-slot="nav"', () => {
+    const container = document.createElement('div');
+    const ul = document.createElement('ul');
+    container.appendChild(ul);
+    document.body.appendChild(container);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' })).toThrow();
+  });
+
+  it('applies flex classes', () => {
+    const { ul } = createNavListSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.classList.contains('flex')).toBe(true);
+    expect(ul.classList.contains('flex-1')).toBe(true);
+    expect(ul.classList.contains('list-none')).toBe(true);
+    expect(ul.classList.contains('items-center')).toBe(true);
+  });
+
+  it('sets data-slot="nav-list"', () => {
+    const { ul } = createNavListSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.getAttribute('data-slot')).toBe('nav-list');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// h-nav-item
+// ---------------------------------------------------------------------------
+
+describe('h-nav-item', () => {
+  function createNavItemSetup() {
+    const ul = document.createElement('ul');
+    ul.setAttribute('data-slot', 'nav-list');
+    const li = document.createElement('li');
+    ul.appendChild(li);
+    return { ul, li };
+  }
+
+  it('throws if not a li element', () => {
+    const ul = document.createElement('ul');
+    ul.setAttribute('data-slot', 'nav-list');
+    const el = document.createElement('div');
+    ul.appendChild(el);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-item', el, { original: 'x-h-nav-item' })).toThrow();
+  });
+
+  it('throws if parent lacks data-slot="nav-list"', () => {
+    const ul = document.createElement('ul');
+    const li = document.createElement('li');
+    ul.appendChild(li);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-item', li, { original: 'x-h-nav-item' })).toThrow();
+  });
+
+  it('adds relative class', () => {
+    const { li } = createNavItemSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-item', li, { original: 'x-h-nav-item' });
+    expect(li.classList.contains('relative')).toBe(true);
+  });
+
+  it('sets data-slot="nav-item"', () => {
+    const { li } = createNavItemSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-item', li, { original: 'x-h-nav-item' });
+    expect(li.getAttribute('data-slot')).toBe('nav-item');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// h-nav-trigger
+// ---------------------------------------------------------------------------
+
+describe('h-nav-trigger', () => {
+  function createNavTriggerSetup({ withHover = false } = {}) {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    if (withHover) nav.setAttribute('data-open-on-hover', '');
+    const navItem = document.createElement('li');
+    navItem.setAttribute('data-slot', 'nav-item');
+    const button = document.createElement('button');
+    navItem.appendChild(button);
+    nav.appendChild(navItem);
+    document.body.appendChild(nav);
+    return { nav, navItem, button };
+  }
+
+  it('throws if not a button element', () => {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    const navItem = document.createElement('li');
+    navItem.setAttribute('data-slot', 'nav-item');
+    const el = document.createElement('span');
+    navItem.appendChild(el);
+    nav.appendChild(navItem);
+    document.body.appendChild(nav);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-trigger', el, { original: 'x-h-nav-trigger' })).toThrow();
+  });
+
+  it('throws if no ancestor with data-slot="nav-item"', () => {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    const button = document.createElement('button');
+    nav.appendChild(button);
+    document.body.appendChild(nav);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' })).toThrow();
+  });
+
+  it('sets _h_menu_trigger with isDropdown true and navItem true', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button._h_menu_trigger).toBeDefined();
+    expect(button._h_menu_trigger.isDropdown).toBe(true);
+    expect(button._h_menu_trigger.navItem).toBe(true);
+  });
+
+  it('sets aria-haspopup="menu", aria-expanded="false", data-state="closed"', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.getAttribute('aria-haspopup')).toBe('menu');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(button.getAttribute('data-state')).toBe('closed');
+  });
+
+  it('appends a chevron svg child', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    const svg = button.querySelector('svg');
+    expect(svg).not.toBeNull();
+  });
+
+  it('auto-generates an id when not present', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.hasAttribute('id')).toBe(true);
+    expect(button.getAttribute('id')).toMatch(/^nnt/);
+  });
+
+  it('preserves an existing id', () => {
+    const { button } = createNavTriggerSetup();
+    button.setAttribute('id', 'my-custom-id');
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.getAttribute('id')).toBe('my-custom-id');
+  });
+
+  it('sets data-slot="nav-trigger"', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.getAttribute('data-slot')).toBe('nav-trigger');
+  });
+
+  it('calls cleanup', () => {
+    const { button } = createNavTriggerSetup();
+    const { ctx } = mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  it('setOpen(true) updates aria-expanded and data-state', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    button._h_menu_trigger.setOpen(true);
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(button.getAttribute('data-state')).toBe('open');
+  });
+
+  it('setOpen(false) updates aria-expanded and data-state', () => {
+    const { button } = createNavTriggerSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    button._h_menu_trigger.setOpen(true);
+    button._h_menu_trigger.setOpen(false);
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(button.getAttribute('data-state')).toBe('closed');
+  });
+
+  it('with data-open-on-hover: mouseenter on navItem calls openMenu', () => {
+    vi.useFakeTimers();
+    try {
+      const { navItem, button } = createNavTriggerSetup({ withHover: true });
+      mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+      const openMenu = vi.fn();
+      button._h_menu_trigger.openMenu = openMenu;
+      navItem.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      expect(openMenu).toHaveBeenCalledOnce();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('with data-open-on-hover: mouseleave on navItem schedules close after 100ms timer', () => {
+    vi.useFakeTimers();
+    try {
+      const { navItem, button } = createNavTriggerSetup({ withHover: true });
+      mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+      const closeMenu = vi.fn();
+      button._h_menu_trigger.closeMenu = closeMenu;
+      navItem.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      expect(closeMenu).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(100);
+      expect(closeMenu).toHaveBeenCalledOnce();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// h-nav-link
+// ---------------------------------------------------------------------------
+
+describe('h-nav-link', () => {
+  function createLink({ active = false } = {}) {
+    const a = document.createElement('a');
+    a.setAttribute('href', '#');
+    if (active) a.setAttribute('data-active', '');
+    document.body.appendChild(a);
+    return a;
+  }
+
+  it('throws if element is not an anchor or button', () => {
+    const el = document.createElement('span');
+    document.body.appendChild(el);
+    expect(() => mountDirective(navigationMenuPlugin, 'h-nav-link', el, { original: 'x-h-nav-link' })).toThrow();
+  });
+
+  it('accepts a button element and sets type="button"', () => {
+    const button = document.createElement('button');
+    document.body.appendChild(button);
+    mountDirective(navigationMenuPlugin, 'h-nav-link', button, { original: 'x-h-nav-link' });
+    expect(button.getAttribute('type')).toBe('button');
+    expect(button.getAttribute('data-slot')).toBe('nav-link');
+  });
+
+  it('applies no-underline and text-inherit classes', () => {
+    const a = createLink();
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.classList.contains('no-underline')).toBe(true);
+    expect(a.classList.contains('text-inherit')).toBe(true);
+  });
+
+  it('sets data-slot="nav-link"', () => {
+    const a = createLink();
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.getAttribute('data-slot')).toBe('nav-link');
+  });
+
+  it('sets aria-current="page" when data-active is present on init', () => {
+    const a = createLink({ active: true });
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('does not set aria-current when data-active is absent on init', () => {
+    const a = createLink();
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.getAttribute('aria-current')).toBeNull();
+  });
+
+  it('calls cleanup', () => {
+    const a = createLink();
+    const { ctx } = mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// h-nav-trigger + h-menu aria-controls integration
+// ---------------------------------------------------------------------------
+
+describe('h-nav-trigger + h-menu', () => {
+  it('h-menu sets aria-controls on the nav trigger pointing to the menu id', () => {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    const navItem = document.createElement('li');
+    navItem.setAttribute('data-slot', 'nav-item');
+    const button = document.createElement('button');
+    button.setAttribute('id', 'nav-ctrl-trigger');
+    navItem.appendChild(button);
+    nav.appendChild(navItem);
+    document.body.appendChild(nav);
+
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+
+    const menu = document.createElement('ul');
+    navItem.appendChild(menu);
+
+    mountDirective(menuPlugin, 'h-menu', menu, { original: 'x-h-menu', modifiers: [] });
+
+    expect(menu.hasAttribute('id')).toBe(true);
+    expect(button.getAttribute('aria-controls')).toBe(menu.getAttribute('id'));
+  });
+});

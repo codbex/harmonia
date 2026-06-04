@@ -3,13 +3,13 @@ import uuidv4 from '../utils/uuid';
 import { Check, ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-menu-trigger', (el, { modifiers }) => {
-    el._menu_trigger = {
+    el._h_menu_trigger = {
       isDropdown: modifiers.includes('dropdown'),
       setOpen(open) {
         el.setAttribute('aria-expanded', open);
       },
     };
-    if (el._menu_trigger.isDropdown) {
+    if (el._h_menu_trigger.isDropdown) {
       el.setAttribute('aria-haspopup', 'true');
       el.setAttribute('aria-expanded', 'false');
       if (!el.hasAttribute('id')) {
@@ -53,10 +53,10 @@ export default function (Alpine) {
     const menuTrigger = (() => {
       if (isSubmenu) return;
       let sibling = el.previousElementSibling;
-      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_menu_trigger')) {
+      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_h_menu_trigger')) {
         sibling = sibling.previousElementSibling;
       }
-      if (!Object.prototype.hasOwnProperty.call(sibling, '_menu_trigger')) {
+      if (!Object.prototype.hasOwnProperty.call(sibling, '_h_menu_trigger')) {
         throw new Error(`${original} menu must be placed after a menu trigger element`);
       }
       return sibling;
@@ -80,17 +80,23 @@ export default function (Alpine) {
       }
       setAriaAttrubutes(menuSubItem);
     } else if (menuTrigger) {
-      setAriaAttrubutes(menuTrigger._menu_trigger.isDropdown ? menuTrigger : undefined);
+      if (menuTrigger._h_menu_trigger.isDropdown) {
+        if (!el.hasAttribute('id')) {
+          el.setAttribute('id', `m${uuidv4()}`);
+        }
+        menuTrigger.setAttribute('aria-controls', el.getAttribute('id'));
+        setAriaAttrubutes(menuTrigger);
+      } else setAriaAttrubutes();
     } else {
       setAriaAttrubutes();
     }
 
     function listenForTrigger(listen) {
       if (listen) {
-        if (menuTrigger._menu_trigger.isDropdown) menuTrigger.addEventListener('click', openDropdown);
+        if (menuTrigger._h_menu_trigger.isDropdown) menuTrigger.addEventListener('click', openDropdown);
         else menuTrigger.addEventListener('contextmenu', onContextmenu);
       } else {
-        if (menuTrigger._menu_trigger.isDropdown) menuTrigger.removeEventListener('click', openDropdown);
+        if (menuTrigger._h_menu_trigger.isDropdown) menuTrigger.removeEventListener('click', openDropdown);
         else menuTrigger.removeEventListener('contextmenu', onContextmenu);
       }
     }
@@ -120,8 +126,8 @@ export default function (Alpine) {
       } else {
         listenForTrigger(true);
         if (focusTrigger) menuTrigger.focus();
-        if (menuTrigger._menu_trigger.isDropdown) {
-          menuTrigger._menu_trigger.setOpen(false);
+        if (menuTrigger._h_menu_trigger.isDropdown) {
+          menuTrigger._h_menu_trigger.setOpen(false);
         }
       }
     }
@@ -247,7 +253,7 @@ export default function (Alpine) {
         function getPlacement() {
           if (isSubmenu) {
             return 'right-start';
-          } else if (menuTrigger._menu_trigger.isDropdown) {
+          } else if (menuTrigger._h_menu_trigger.isDropdown) {
             return el.getAttribute('data-align') || 'bottom-start';
           }
           return 'right-start';
@@ -294,7 +300,7 @@ export default function (Alpine) {
           });
         }
 
-        if (!isSubmenu && menuTrigger._menu_trigger.isDropdown) {
+        if (!isSubmenu && menuTrigger._h_menu_trigger.isDropdown) {
           autoUpdateCleanup = autoUpdate(parent, el, updatePosition);
         } else {
           updatePosition();
@@ -303,8 +309,8 @@ export default function (Alpine) {
     }
 
     function openDropdown() {
-      if (menuTrigger._menu_trigger.isDropdown) {
-        menuTrigger._menu_trigger.setOpen(true);
+      if (menuTrigger._h_menu_trigger.isDropdown) {
+        menuTrigger._h_menu_trigger.setOpen(true);
       }
       open(menuTrigger);
     }
@@ -332,6 +338,10 @@ export default function (Alpine) {
       menuSubItem._menu_sub.open = open;
       menuSubItem._menu_sub.close = close;
     } else {
+      if (menuTrigger._h_menu_trigger.navItem) {
+        menuTrigger._h_menu_trigger.openMenu = openDropdown;
+        menuTrigger._h_menu_trigger.closeMenu = close;
+      }
       listenForTrigger(true);
     }
 
