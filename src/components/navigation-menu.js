@@ -12,15 +12,12 @@ const navItemTriggerClasses = [
   'py-2',
   'text-sm',
   'font-medium',
+  'text-foreground',
   'whitespace-nowrap',
   'gap-1.5',
   'transition-colors',
   'duration-100',
   'motion-reduce:transition-none',
-  'hover:bg-secondary-hover',
-  'hover:text-secondary-foreground',
-  'focus:bg-secondary-hover',
-  'focus:text-secondary-foreground',
   'outline-ring/50',
   'focus-visible:outline-[calc(var(--spacing)*0.75)]',
   'focus-visible:outline',
@@ -30,6 +27,20 @@ const navItemTriggerClasses = [
   "[&_svg:not([class*='size-'])]:size-4",
   'has-[>svg]:px-2.5',
 ];
+
+const navLinkVariants = {
+  default: ['hover:bg-secondary-hover', 'hover:text-secondary-foreground', 'focus:bg-secondary-hover', 'focus:text-secondary-foreground', 'data-[active]:bg-secondary-hover'],
+  clear: ['data-[active]:text-primary'],
+  underline: ['hover:underline', 'data-[active]:text-primary'],
+  outline: ['border', 'border-transparent', 'hover:border-border', 'focus:border-border', 'data-[active]:border-border'],
+};
+
+const navTriggerVariants = {
+  default: [...navLinkVariants.default, 'data-[state=open]:bg-secondary-hover'],
+  clear: [...navLinkVariants.clear, 'data-[state=open]:text-primary'],
+  underline: [...navLinkVariants.underline, 'data-[state=open]:text-primary'],
+  outline: [...navLinkVariants.outline, 'data-[state=open]:border-border'],
+};
 
 export default function (Alpine) {
   Alpine.directive('h-nav', (el, { original }) => {
@@ -100,12 +111,27 @@ export default function (Alpine) {
     el.setAttribute('aria-expanded', 'false');
     el.setAttribute('data-state', 'closed');
 
-    el.classList.add('bg-transparent', 'data-[state=open]:bg-secondary-hover', 'disabled:opacity-50', 'disabled:pointer-events-none', ...navItemTriggerClasses);
+    el.classList.add('bg-transparent', 'disabled:opacity-50', 'disabled:pointer-events-none', ...navItemTriggerClasses);
 
     el.appendChild(chevron);
     el.setAttribute('data-slot', 'nav-trigger');
 
     const nav = Alpine.findClosest(el.parentElement, (p) => p.getAttribute('data-slot') === 'nav');
+
+    function setTriggerVariant(variant) {
+      for (const classes of Object.values(navTriggerVariants)) {
+        el.classList.remove(...classes);
+      }
+      el.classList.add(...(navTriggerVariants[variant] ?? navTriggerVariants.default));
+    }
+
+    setTriggerVariant(nav?.getAttribute('data-variant') ?? 'default');
+
+    const variantObserver = new MutationObserver(() => {
+      setTriggerVariant(nav.getAttribute('data-variant') ?? 'default');
+    });
+    if (nav) variantObserver.observe(nav, { attributes: true, attributeFilter: ['data-variant'] });
+
     let cancelHoverCleanup = null;
 
     if (nav?.hasAttribute('data-open-on-hover')) {
@@ -142,19 +168,35 @@ export default function (Alpine) {
     }
 
     cleanup(() => {
+      variantObserver.disconnect();
       if (cancelHoverCleanup) cancelHoverCleanup();
       if (chevron.parentElement === el) el.removeChild(chevron);
     });
   });
 
-  Alpine.directive('h-nav-link', (el, { original }, { cleanup }) => {
+  Alpine.directive('h-nav-link', (el, { original }, { cleanup, Alpine }) => {
     if (el.tagName !== 'A' && el.tagName !== 'BUTTON') {
       throw new Error(`${original} must be an anchor or button element`);
     } else if (el.tagName === 'BUTTON') {
       el.setAttribute('type', 'button');
     }
 
-    el.classList.add(...navItemTriggerClasses, 'no-underline', 'text-inherit', 'data-[active]:bg-secondary-hover', 'data-[active]:font-semibold');
+    el.classList.add(...navItemTriggerClasses, 'no-underline', 'text-inherit', 'data-[active]:font-semibold');
+
+    function setLinkVariant(variant) {
+      for (const classes of Object.values(navLinkVariants)) {
+        el.classList.remove(...classes);
+      }
+      el.classList.add(...(navLinkVariants[variant] ?? navLinkVariants.default));
+    }
+
+    const nav = Alpine.findClosest(el.parentElement, (p) => p.getAttribute('data-slot') === 'nav');
+    setLinkVariant(nav?.getAttribute('data-variant') ?? 'default');
+
+    const variantObserver = new MutationObserver(() => {
+      setLinkVariant(nav.getAttribute('data-variant') ?? 'default');
+    });
+    if (nav) variantObserver.observe(nav, { attributes: true, attributeFilter: ['data-variant'] });
 
     function syncActive() {
       if (el.hasAttribute('data-active')) {
@@ -171,6 +213,9 @@ export default function (Alpine) {
 
     el.setAttribute('data-slot', 'nav-link');
 
-    cleanup(() => observer.disconnect());
+    cleanup(() => {
+      variantObserver.disconnect();
+      observer.disconnect();
+    });
   });
 }

@@ -335,6 +335,135 @@ describe('h-nav-link', () => {
 });
 
 // ---------------------------------------------------------------------------
+// h-nav-trigger variants
+// ---------------------------------------------------------------------------
+
+describe('h-nav-trigger variants', () => {
+  function createTriggerWithVariant(variant) {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    if (variant) nav.setAttribute('data-variant', variant);
+    const navItem = document.createElement('li');
+    navItem.setAttribute('data-slot', 'nav-item');
+    const button = document.createElement('button');
+    navItem.appendChild(button);
+    nav.appendChild(navItem);
+    document.body.appendChild(nav);
+    return { nav, button };
+  }
+
+  it('default variant applies hover bg and open bg classes', () => {
+    const { button } = createTriggerWithVariant('default');
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    expect(button.classList.contains('data-[state=open]:bg-secondary-hover')).toBe(true);
+  });
+
+  it('clear variant applies open text-primary, no hover bg', () => {
+    const { button } = createTriggerWithVariant('clear');
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.classList.contains('data-[state=open]:text-primary')).toBe(true);
+    expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
+    expect(button.classList.contains('data-[state=open]:bg-secondary-hover')).toBe(false);
+  });
+
+  it('underline variant applies hover:underline and open text-primary', () => {
+    const { button } = createTriggerWithVariant('underline');
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.classList.contains('hover:underline')).toBe(true);
+    expect(button.classList.contains('data-[state=open]:text-primary')).toBe(true);
+    expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
+  });
+
+  it('outline variant applies border classes, no hover bg', () => {
+    const { button } = createTriggerWithVariant('outline');
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.classList.contains('border')).toBe(true);
+    expect(button.classList.contains('hover:border-border')).toBe(true);
+    expect(button.classList.contains('data-[state=open]:border-border')).toBe(true);
+    expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
+  });
+
+  it('updates classes when data-variant changes on nav', async () => {
+    const { nav, button } = createTriggerWithVariant('default');
+    mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
+    expect(button.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    nav.setAttribute('data-variant', 'clear');
+    await Promise.resolve();
+    expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
+    expect(button.classList.contains('data-[state=open]:text-primary')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// h-nav-link variants
+// ---------------------------------------------------------------------------
+
+describe('h-nav-link variants', () => {
+  function createLinkWithVariant(variant) {
+    const nav = document.createElement('nav');
+    nav.setAttribute('data-slot', 'nav');
+    if (variant) nav.setAttribute('data-variant', variant);
+    const a = document.createElement('a');
+    a.setAttribute('href', '#');
+    nav.appendChild(a);
+    document.body.appendChild(nav);
+    return { nav, a };
+  }
+
+  it('default variant applies hover bg and active bg classes', () => {
+    const { a } = createLinkWithVariant('default');
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    expect(a.classList.contains('data-[active]:bg-secondary-hover')).toBe(true);
+  });
+
+  it('clear variant applies active text-primary, no hover bg', () => {
+    const { a } = createLinkWithVariant('clear');
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.classList.contains('data-[active]:text-primary')).toBe(true);
+    expect(a.classList.contains('hover:bg-secondary-hover')).toBe(false);
+    expect(a.classList.contains('data-[active]:bg-secondary-hover')).toBe(false);
+  });
+
+  it('underline variant applies hover:underline and active text-primary', () => {
+    const { a } = createLinkWithVariant('underline');
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.classList.contains('hover:underline')).toBe(true);
+    expect(a.classList.contains('data-[active]:text-primary')).toBe(true);
+    expect(a.classList.contains('hover:bg-secondary-hover')).toBe(false);
+  });
+
+  it('outline variant applies border classes, no hover bg', () => {
+    const { a } = createLinkWithVariant('outline');
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.classList.contains('border')).toBe(true);
+    expect(a.classList.contains('hover:border-border')).toBe(true);
+    expect(a.classList.contains('data-[active]:border-border')).toBe(true);
+    expect(a.classList.contains('hover:bg-secondary-hover')).toBe(false);
+  });
+
+  it('always applies data-[active]:font-semibold regardless of variant', () => {
+    for (const variant of ['default', 'clear', 'underline', 'outline']) {
+      const { a } = createLinkWithVariant(variant);
+      mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+      expect(a.classList.contains('data-[active]:font-semibold')).toBe(true);
+      document.body.innerHTML = '';
+    }
+  });
+
+  it('updates classes when data-variant changes on nav', async () => {
+    const { nav, a } = createLinkWithVariant('default');
+    mountDirective(navigationMenuPlugin, 'h-nav-link', a, { original: 'x-h-nav-link' });
+    expect(a.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    nav.setAttribute('data-variant', 'underline');
+    await Promise.resolve();
+    expect(a.classList.contains('hover:bg-secondary-hover')).toBe(false);
+    expect(a.classList.contains('hover:underline')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // h-nav-trigger + h-menu aria-controls integration
 // ---------------------------------------------------------------------------
 

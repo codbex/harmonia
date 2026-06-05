@@ -175,6 +175,13 @@ outline: deep
       <p class="text">Context, navigation or dropdown menu for presenting action lists and nested options.</p>
     </div>
   </a>
+  <a href="./components/navigation-menu" class="card">
+    <svg-icon class="card-media" src="./images/navigation-menu.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Navigation Menu</h3>
+      <p class="text">Horizontal navigation bar with direct links and dropdown menus for top-level site navigation.</p>
+    </div>
+  </a>
   <a href="./components/notifications" class="card">
     <svg-icon class="card-media" src="./images/notification.svg"></svg-icon>
     <div class="card-content">

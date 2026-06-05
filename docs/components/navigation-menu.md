@@ -44,10 +44,11 @@ x-h-nav-link
 
 #### x-h-nav
 
-| Attribute          | Type    | Required | Description                                                                      |
-| ------------------ | ------- | -------- | -------------------------------------------------------------------------------- |
-| aria-label         | string  | true     | Labels the navigation landmark. Required for ARIA compliance.                    |
-| data-open-on-hover | boolean | false    | When present, all triggers in the nav open their menu on hover instead of click. |
+| Attribute          | Type    | Required | Description                                                                                                     |
+| ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| aria-label         | string  | true     | Labels the navigation landmark. Required for ARIA compliance.                                                   |
+| data-variant       | string  | false    | Visual style applied to all triggers and links. One of `default`, `clear`, `underline`, `outline`. Default: `default`. |
+| data-open-on-hover | boolean | false    | When present, all triggers in the nav open their menu on hover instead of click.                                |
 
 #### x-h-nav-link
 
@@ -190,6 +191,150 @@ Hover over the menu item to trigger the popover.
         <div x-h-menu-label>Small Business</div>
         <li x-h-menu-item>Starter Plan</li>
         <li x-h-menu-item>Growth Plan</li>
+      </ul>
+    </li>
+    <li x-h-nav-item>
+      <a x-h-nav-link href="#">Docs</a>
+    </li>
+  </ul>
+</nav>
+```
+
+### Clear
+
+No hover background. The active item is highlighted in the primary color.
+
+<ClientOnly>
+<component-container data-class="flex flex-col items-start">
+<nav x-h-nav aria-label="Clear navigation" data-variant="clear">
+  <ul x-h-nav-list>
+    <li x-h-nav-item>
+      <button x-h-nav-link data-active="true">Home</button>
+    </li>
+    <li x-h-nav-item>
+      <button x-h-nav-trigger>Products</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Product A</li>
+        <li x-h-menu-item>Product B</li>
+        <li x-h-menu-item>Product C</li>
+      </ul>
+    </li>
+    <li x-h-nav-item>
+      <a x-h-nav-link href="#">Docs</a>
+    </li>
+  </ul>
+</nav>
+</component-container>
+</ClientOnly>
+
+```html
+<nav x-h-nav aria-label="Clear navigation" data-variant="clear">
+  <ul x-h-nav-list>
+    <li x-h-nav-item>
+      <button x-h-nav-link data-active="true">Home</button>
+    </li>
+    <li x-h-nav-item>
+      <button x-h-nav-trigger>Products</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Product A</li>
+        <li x-h-menu-item>Product B</li>
+        <li x-h-menu-item>Product C</li>
+      </ul>
+    </li>
+    <li x-h-nav-item>
+      <a x-h-nav-link href="#">Docs</a>
+    </li>
+  </ul>
+</nav>
+```
+
+### Underline
+
+Same as `clear` but items show a text underline on hover.
+
+<ClientOnly>
+<component-container data-class="flex flex-col items-start">
+<nav x-h-nav aria-label="Underline navigation" data-variant="underline">
+  <ul x-h-nav-list>
+    <li x-h-nav-item>
+      <button x-h-nav-link data-active="true">Home</button>
+    </li>
+    <li x-h-nav-item>
+      <button x-h-nav-trigger>Products</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Product A</li>
+        <li x-h-menu-item>Product B</li>
+        <li x-h-menu-item>Product C</li>
+      </ul>
+    </li>
+    <li x-h-nav-item>
+      <a x-h-nav-link href="#">Docs</a>
+    </li>
+  </ul>
+</nav>
+</component-container>
+</ClientOnly>
+
+```html
+<nav x-h-nav aria-label="Underline navigation" data-variant="underline">
+  <ul x-h-nav-list>
+    <li x-h-nav-item>
+      <button x-h-nav-link data-active="true">Home</button>
+    </li>
+    <li x-h-nav-item>
+      <button x-h-nav-trigger>Products</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Product A</li>
+        <li x-h-menu-item>Product B</li>
+        <li x-h-menu-item>Product C</li>
+      </ul>
+    </li>
+    <li x-h-nav-item>
+      <a x-h-nav-link href="#">Docs</a>
+    </li>
+  </ul>
+</nav>
+```
+
+### Outline
+
+Hover and active states show a border outline instead of a filled background.
+
+<ClientOnly>
+<component-container data-class="flex flex-col items-start">
+<nav x-h-nav aria-label="Outline navigation" data-variant="outline">
+  <ul x-h-nav-list>
+    <li x-h-nav-item>
+      <button x-h-nav-link data-active="true">Home</button>
+    </li>
+    <li x-h-nav-item>
+      <button x-h-nav-trigger>Products</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Product A</li>
+        <li x-h-menu-item>Product B</li>
+        <li x-h-menu-item>Product C</li>
+      </ul>
+    </li>
+    <li x-h-nav-item>
+      <a x-h-nav-link href="#">Docs</a>
+    </li>
+  </ul>
+</nav>
+</component-container>
+</ClientOnly>
+
+```html
+<nav x-h-nav aria-label="Outline navigation" data-variant="outline">
+  <ul x-h-nav-list>
+    <li x-h-nav-item>
+      <button x-h-nav-link data-active="true">Home</button>
+    </li>
+    <li x-h-nav-item>
+      <button x-h-nav-trigger>Products</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Product A</li>
+        <li x-h-menu-item>Product B</li>
+        <li x-h-menu-item>Product C</li>
       </ul>
     </li>
     <li x-h-nav-item>

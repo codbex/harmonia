@@ -124,6 +124,9 @@
 @source inline("box-border");
 @source inline("border");
 @source inline("border-{l,r,t,b}");
+@source inline("border-{2..12}");
+@source inline("rounded-{s,e,t,b,tl,tr,bl,br}-{xs,sm,md,lg,xl,2xl,3xl,4xl,none,full}");
+@source inline("rounded-{xs,sm,md,lg,xl,2xl,3xl,4xl,none,full}");
 @source inline("shadow-{xs,sm,md,lg,xl,none}");
 @source inline("aspect-{square,video,3/2}");
 @source inline("absolute");
