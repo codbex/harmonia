@@ -44,11 +44,11 @@ x-h-nav-link
 
 #### x-h-nav
 
-| Attribute          | Type    | Required | Description                                                                                                     |
-| ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| aria-label         | string  | true     | Labels the navigation landmark. Required for ARIA compliance.                                                   |
+| Attribute          | Type    | Required | Description                                                                                                            |
+| ------------------ | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| aria-label         | string  | true     | Labels the navigation landmark. Required for ARIA compliance.                                                          |
 | data-variant       | string  | false    | Visual style applied to all triggers and links. One of `default`, `clear`, `underline`, `outline`. Default: `default`. |
-| data-open-on-hover | boolean | false    | When present, all triggers in the nav open their menu on hover instead of click.                                |
+| data-open-on-hover | boolean | false    | When present, all triggers in the nav open their menu on hover instead of click.                                       |
 
 #### x-h-nav-link
 
