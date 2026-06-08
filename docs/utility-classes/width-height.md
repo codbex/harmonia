@@ -4,83 +4,83 @@
 
 The width class names start with `w`.
 
-| Class    | Description                                         | `!` support |
-| -------- | --------------------------------------------------- | ----------- |
-| w-auto   | Auto width.                                         | Yes         |
-| w-`4-12` | Width sizes 4 to 12.                                | Yes         |
-| w-full   | 100% width.                                         | Yes         |
-| w-screen | Makes the width equal to the screen size.           | Yes         |
-| w-1/2    | 50% width.                                          | Yes         |
-| w-1/3    | 33% width.                                          | Yes         |
-| w-1/4    | 25% width.                                          | Yes         |
-| w-1/5    | 20% width.                                          | Yes         |
-| w-2/3    | 66% width.                                          | Yes         |
-| w-2/5    | 40% width.                                          | Yes         |
-| w-3/4    | 75% width.                                          | Yes         |
-| w-3/5    | 60% width.                                          | Yes         |
-| w-4/5    | 80% width.                                          | Yes         |
-| w-3xs    | `width: var(--container-3xs); /* 16rem (256px) */`  | No          |
-| w-2xs    | `width: var(--container-2xs); /* 18rem (288px) */`  | No          |
-| w-xs     | `width: var(--container-xs); /* 20rem (320px) */`   | No          |
-| w-sm     | `width: var(--container-sm); /* 24rem (384px) */`   | No          |
-| w-md     | `width: var(--container-md); /* 28rem (448px) */`   | No          |
-| w-lg     | `width: var(--container-lg); /* 32rem (512px) */`   | No          |
-| w-xl     | `width: var(--container-xl); /* 36rem (576px) */`   | No          |
-| w-2xl    | `width: var(--container-2xl); /* 42rem (672px) */`  | No          |
-| w-3xl    | `width: var(--container-3xl); /* 48rem (768px) */`  | No          |
-| w-4xl    | `width: var(--container-4xl); /* 56rem (896px) */`  | No          |
-| w-5xl    | `width: var(--container-5xl); /* 64rem (1024px) */` | No          |
-| w-6xl    | `width: var(--container-6xl); /* 72rem (1152px) */` | No          |
-| w-7xl    | `width: var(--container-7xl); /* 80rem (1280px) */`  | No          |
-| w-8xl    | `width: var(--container-8xl); /* 90rem (1440px) */`  | No          |
-| w-9xl    | `width: var(--container-9xl); /* 96rem (1536px) */`  | No          |
+| Class    | Description                                           | `!` support |
+| -------- | ----------------------------------------------------- | ----------- |
+| w-auto   | Auto width.                                           | Yes         |
+| w-`4-12` | Width sizes 4 to 12.                                  | Yes         |
+| w-full   | 100% width.                                           | Yes         |
+| w-screen | Makes the width equal to the screen size.             | Yes         |
+| w-1/2    | 50% width.                                            | Yes         |
+| w-1/3    | 33% width.                                            | Yes         |
+| w-1/4    | 25% width.                                            | Yes         |
+| w-1/5    | 20% width.                                            | Yes         |
+| w-2/3    | 66% width.                                            | Yes         |
+| w-2/5    | 40% width.                                            | Yes         |
+| w-3/4    | 75% width.                                            | Yes         |
+| w-3/5    | 60% width.                                            | Yes         |
+| w-4/5    | 80% width.                                            | Yes         |
+| w-3xs    | `width: var(--container-3xs); /* 16rem (256px) */`    | No          |
+| w-2xs    | `width: var(--container-2xs); /* 18rem (288px) */`    | No          |
+| w-xs     | `width: var(--container-xs); /* 20rem (320px) */`     | No          |
+| w-sm     | `width: var(--container-sm); /* 24rem (384px) */`     | No          |
+| w-md     | `width: var(--container-md); /* 28rem (448px) */`     | No          |
+| w-lg     | `width: var(--container-lg); /* 32rem (512px) */`     | No          |
+| w-xl     | `width: var(--container-xl); /* 36rem (576px) */`     | No          |
+| w-2xl    | `width: var(--container-2xl); /* 42rem (672px) */`    | No          |
+| w-3xl    | `width: var(--container-3xl); /* 48rem (768px) */`    | No          |
+| w-4xl    | `width: var(--container-4xl); /* 56rem (896px) */`    | No          |
+| w-5xl    | `width: var(--container-5xl); /* 64rem (1024px) */`   | No          |
+| w-6xl    | `width: var(--container-6xl); /* 72rem (1152px) */`   | No          |
+| w-7xl    | `width: var(--container-7xl); /* 80rem (1280px) */`   | No          |
+| w-8xl    | `width: var(--container-8xl); /* 90rem (1440px) */`   | No          |
+| w-9xl    | `width: var(--container-9xl); /* 96rem (1536px) */`   | No          |
 | w-10xl   | `width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
 The minimum width class names start with `min-w`.
 
-| Class        | Description                                             | `!` support |
-| ------------ | ------------------------------------------------------- | ----------- |
-| min-w-0      | Minimum width of 0 px.                                  | No          |
-| min-w-`4-12` | Minimum width sizes 4 to 12.                            | No          |
-| min-w-3xs    | `min-width: var(--container-3xs); /* 16rem (256px) */`  | No          |
-| min-w-2xs    | `min-width: var(--container-2xs); /* 18rem (288px) */`  | No          |
-| min-w-xs     | `min-width: var(--container-xs); /* 20rem (320px) */`   | No          |
-| min-w-sm     | `min-width: var(--container-sm); /* 24rem (384px) */`   | No          |
-| min-w-md     | `min-width: var(--container-md); /* 28rem (448px) */`   | No          |
-| min-w-lg     | `min-width: var(--container-lg); /* 32rem (512px) */`   | No          |
-| min-w-xl     | `min-width: var(--container-xl); /* 36rem (576px) */`   | No          |
-| min-w-2xl    | `min-width: var(--container-2xl); /* 42rem (672px) */`  | No          |
-| min-w-3xl    | `min-width: var(--container-3xl); /* 48rem (768px) */`  | No          |
-| min-w-4xl    | `min-width: var(--container-4xl); /* 56rem (896px) */`  | No          |
-| min-w-5xl    | `min-width: var(--container-5xl); /* 64rem (1024px) */` | No          |
-| min-w-6xl    | `min-width: var(--container-6xl); /* 72rem (1152px) */` | No          |
-| min-w-7xl    | `min-width: var(--container-7xl); /* 80rem (1280px) */`  | No          |
-| min-w-8xl    | `min-width: var(--container-8xl); /* 90rem (1440px) */`  | No          |
-| min-w-9xl    | `min-width: var(--container-9xl); /* 96rem (1536px) */`  | No          |
+| Class        | Description                                               | `!` support |
+| ------------ | --------------------------------------------------------- | ----------- |
+| min-w-0      | Minimum width of 0 px.                                    | No          |
+| min-w-`4-12` | Minimum width sizes 4 to 12.                              | No          |
+| min-w-3xs    | `min-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
+| min-w-2xs    | `min-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
+| min-w-xs     | `min-width: var(--container-xs); /* 20rem (320px) */`     | No          |
+| min-w-sm     | `min-width: var(--container-sm); /* 24rem (384px) */`     | No          |
+| min-w-md     | `min-width: var(--container-md); /* 28rem (448px) */`     | No          |
+| min-w-lg     | `min-width: var(--container-lg); /* 32rem (512px) */`     | No          |
+| min-w-xl     | `min-width: var(--container-xl); /* 36rem (576px) */`     | No          |
+| min-w-2xl    | `min-width: var(--container-2xl); /* 42rem (672px) */`    | No          |
+| min-w-3xl    | `min-width: var(--container-3xl); /* 48rem (768px) */`    | No          |
+| min-w-4xl    | `min-width: var(--container-4xl); /* 56rem (896px) */`    | No          |
+| min-w-5xl    | `min-width: var(--container-5xl); /* 64rem (1024px) */`   | No          |
+| min-w-6xl    | `min-width: var(--container-6xl); /* 72rem (1152px) */`   | No          |
+| min-w-7xl    | `min-width: var(--container-7xl); /* 80rem (1280px) */`   | No          |
+| min-w-8xl    | `min-width: var(--container-8xl); /* 90rem (1440px) */`   | No          |
+| min-w-9xl    | `min-width: var(--container-9xl); /* 96rem (1536px) */`   | No          |
 | min-w-10xl   | `min-width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
 The maximum width class names start with `min-w`.
 
-| Class        | Description                                             | `!` support |
-| ------------ | ------------------------------------------------------- | ----------- |
-| max-w-screen | Sets maximum width to the width of the screen.          | No          |
-| max-w-dvw    | Sets maximum width to the dynamic width of the screen.  | No          |
-| max-w-`4-12` | Maximum width sizes 4 to 12.                            | No          |
-| max-w-3xs    | `max-width: var(--container-3xs); /* 16rem (256px) */`  | No          |
-| max-w-2xs    | `max-width: var(--container-2xs); /* 18rem (288px) */`  | No          |
-| max-w-xs     | `max-width: var(--container-xs); /* 20rem (320px) */`   | No          |
-| max-w-sm     | `max-width: var(--container-sm); /* 24rem (384px) */`   | No          |
-| max-w-md     | `max-width: var(--container-md); /* 28rem (448px) */`   | No          |
-| max-w-lg     | `max-width: var(--container-lg); /* 32rem (512px) */`   | No          |
-| max-w-xl     | `max-width: var(--container-xl); /* 36rem (576px) */`   | No          |
-| max-w-2xl    | `max-width: var(--container-2xl); /* 42rem (672px) */`  | No          |
-| max-w-3xl    | `max-width: var(--container-3xl); /* 48rem (768px) */`  | No          |
-| max-w-4xl    | `max-width: var(--container-4xl); /* 56rem (896px) */`  | No          |
-| max-w-5xl    | `max-width: var(--container-5xl); /* 64rem (1024px) */` | No          |
-| max-w-6xl    | `max-width: var(--container-6xl); /* 72rem (1152px) */` | No          |
-| max-w-7xl    | `max-width: var(--container-7xl); /* 80rem (1280px) */`  | No          |
-| max-w-8xl    | `max-width: var(--container-8xl); /* 90rem (1440px) */`  | No          |
-| max-w-9xl    | `max-width: var(--container-9xl); /* 96rem (1536px) */`  | No          |
+| Class        | Description                                               | `!` support |
+| ------------ | --------------------------------------------------------- | ----------- |
+| max-w-screen | Sets maximum width to the width of the screen.            | No          |
+| max-w-dvw    | Sets maximum width to the dynamic width of the screen.    | No          |
+| max-w-`4-12` | Maximum width sizes 4 to 12.                              | No          |
+| max-w-3xs    | `max-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
+| max-w-2xs    | `max-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
+| max-w-xs     | `max-width: var(--container-xs); /* 20rem (320px) */`     | No          |
+| max-w-sm     | `max-width: var(--container-sm); /* 24rem (384px) */`     | No          |
+| max-w-md     | `max-width: var(--container-md); /* 28rem (448px) */`     | No          |
+| max-w-lg     | `max-width: var(--container-lg); /* 32rem (512px) */`     | No          |
+| max-w-xl     | `max-width: var(--container-xl); /* 36rem (576px) */`     | No          |
+| max-w-2xl    | `max-width: var(--container-2xl); /* 42rem (672px) */`    | No          |
+| max-w-3xl    | `max-width: var(--container-3xl); /* 48rem (768px) */`    | No          |
+| max-w-4xl    | `max-width: var(--container-4xl); /* 56rem (896px) */`    | No          |
+| max-w-5xl    | `max-width: var(--container-5xl); /* 64rem (1024px) */`   | No          |
+| max-w-6xl    | `max-width: var(--container-6xl); /* 72rem (1152px) */`   | No          |
+| max-w-7xl    | `max-width: var(--container-7xl); /* 80rem (1280px) */`   | No          |
+| max-w-8xl    | `max-width: var(--container-8xl); /* 90rem (1440px) */`   | No          |
+| max-w-9xl    | `max-width: var(--container-9xl); /* 96rem (1536px) */`   | No          |
 | max-w-10xl   | `max-width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
 The height class names start with `h`.
