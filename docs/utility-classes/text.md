@@ -4,21 +4,21 @@ CSS utility classes to style text. It is recommended that you first look at the 
 
 ## Class names
 
-| Class     | Description                                                        | `!` support |
-| --------- | ------------------------------------------------------------------ | ----------- |
-| text-xs   | Extra small text (0.75rem / 12px).                                 | Yes         |
-| text-sm   | Small text (0.875rem / 14px). Common for labels and secondary content. | Yes     |
-| text-base | Default body text size (1rem / 16px).                              | Yes         |
-| text-lg   | Large text (1.125rem / 18px).                                      | Yes         |
-| text-xl   | Extra large text (1.25rem / 20px).                                 | Yes         |
-| text-2xl  | 1.5rem / 24px.                                                     | Yes         |
-| text-3xl  | 1.875rem / 30px.                                                   | Yes         |
-| text-4xl  | 2.25rem / 36px.                                                    | Yes         |
-| text-5xl  | 3rem / 48px.                                                       | Yes         |
-| text-6xl  | 3.75rem / 60px.                                                    | Yes         |
-| text-7xl  | 4.5rem / 72px.                                                     | Yes         |
-| text-8xl  | 6rem / 96px.                                                       | Yes         |
-| text-9xl  | 8rem / 128px.                                                      | Yes         |
+| Class     | Description                                                            | `!` support |
+| --------- | ---------------------------------------------------------------------- | ----------- |
+| text-xs   | Extra small text (0.75rem / 12px).                                     | Yes         |
+| text-sm   | Small text (0.875rem / 14px). Common for labels and secondary content. | Yes         |
+| text-base | Default body text size (1rem / 16px).                                  | Yes         |
+| text-lg   | Large text (1.125rem / 18px).                                          | Yes         |
+| text-xl   | Extra large text (1.25rem / 20px).                                     | Yes         |
+| text-2xl  | 1.5rem / 24px.                                                         | Yes         |
+| text-3xl  | 1.875rem / 30px.                                                       | Yes         |
+| text-4xl  | 2.25rem / 36px.                                                        | Yes         |
+| text-5xl  | 3rem / 48px.                                                           | Yes         |
+| text-6xl  | 3.75rem / 60px.                                                        | Yes         |
+| text-7xl  | 4.5rem / 72px.                                                         | Yes         |
+| text-8xl  | 6rem / 96px.                                                           | Yes         |
+| text-9xl  | 8rem / 128px.                                                          | Yes         |
 
 | Class         | Description                                                                         |
 | ------------- | ----------------------------------------------------------------------------------- |

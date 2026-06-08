@@ -25,7 +25,11 @@ function reactive(obj) {
 function effect(fn) {
   const prev = activeEffect;
   activeEffect = fn;
-  try { fn(); } finally { activeEffect = prev; }
+  try {
+    fn();
+  } finally {
+    activeEffect = prev;
+  }
 }
 
 export function createMockAlpine() {
