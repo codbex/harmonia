@@ -4,11 +4,11 @@ Adds a gap to flex and grid layout items.
 
 ## Class names
 
-| Class        | Description                            |
-| ------------ | -------------------------------------- |
-| gap-`1-12`   | All-round gap size. From 1 to 12.      |
-| gap-x-`1-12` | Left and right gap size. From 1 to 12. |
-| gap-y-`1-12` | Top and bottom gap size. From 1 to 12. |
+| Class        | Description                            | `!` support |
+| ------------ | -------------------------------------- | ----------- |
+| gap-`1-12`   | All-round gap size. From 1 to 12.      | Yes         |
+| gap-x-`1-12` | Left and right gap size. From 1 to 12. | No          |
+| gap-y-`1-12` | Top and bottom gap size. From 1 to 12. | No          |
 
 ## Examples
 

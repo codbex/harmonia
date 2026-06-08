@@ -1,5 +1,5 @@
-@source inline("{!,}{m,p}{x,y,t,b,l,r,}-{0..12}");
-@source inline("{!,}{m,p}{l,r}-auto");
+@source inline("{m,p}{x,y,t,b,l,r,}-{0..12}{!,}");
+@source inline("{m,p}{l,r}-auto{!,}");
 @source inline("{sm:,md:,lg:,xl:}{m,p}{x,y}-{2..12}");
 
 @source inline("flex");
@@ -21,27 +21,27 @@
 @source inline("place-items-{start,center,end,stretch}");
 
 @source inline("gap-{x,y}-{1..12}");
-@source inline("gap-{1..12}");
+@source inline("gap-{1..12}{!,}");
 
 @source inline("grid");
 @source inline("{sm:,md:,lg:,xl:,}grid-cols-{1..12}");
 
-@source inline("{!,}w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}");
+@source inline("w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}{!,}");
 @source inline("min-{w,h}-0");
 @source inline("max-{w}-{screen,dvw}");
-@source inline("{!,}h-{auto,full,screen,1/2}");
+@source inline("h-{auto,full,screen,1/2}{!,}");
 
-@source inline("{!,}size-{4..12}");
-@source inline("{!,}h-{4..12}");
+@source inline("size-{4..12}{!,}");
+@source inline("h-{4..12}{!,}");
 @source inline("min-h-{4..12}");
 @source inline("max-h-{4..12}");
-@source inline("{!,}w-{4..12}");
+@source inline("w-{4..12}{!,}");
 @source inline("w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl}");
 @source inline("min-w-{4..12}");
 @source inline("min-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto}");
 @source inline("max-w-{4..12}");
 @source inline("max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto}");
-@source inline("{!,}size-{full,fit}");
+@source inline("size-{full,fit}{!,}");
 .min-size-4 {
   @apply min-h-4 min-w-4;
 }
@@ -98,9 +98,11 @@
   height: calc(var(--spacing) * 66);
 }
 @source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap}");
-@source inline("{!,}text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}");
-@source inline("font-{bold,semibold,medium,normal,light}");
-@source inline("font-{sans,serif,mono}");
+@source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}{!,}");
+@source inline("font-{extrabold,bold,semibold,medium,normal,light}{!,}");
+@source inline("font-{sans,serif,mono}{!,}");
+@source inline("leading-{none,normal,snug,relaxed}{!,}");
+@source inline("leading-{4..8}{!,}");
 @source inline("italic");
 @source inline("uppercase");
 @source inline("lowercase");

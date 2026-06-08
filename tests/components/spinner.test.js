@@ -9,7 +9,7 @@ describe('h-spinner', () => {
     expect(el.classList.contains('size-4')).toBe(true);
     expect(el.classList.contains('border-2')).toBe(true);
     expect(el.classList.contains('border-primary')).toBe(true);
-    expect(el.classList.contains('!border-t-transparent')).toBe(true);
+    expect(el.classList.contains('border-t-transparent!')).toBe(true);
     expect(el.classList.contains('rounded-full')).toBe(true);
     expect(el.classList.contains('animate-spin')).toBe(true);
   });

@@ -266,7 +266,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-button-group-separator', (el) => {
-    el.classList.add('bg-foreground/20', 'shrink-0', '[[data-orientation=vertical]_&]:h-px', '[[data-orientation=vertical]_&]:w-full', 'h-auto', 'w-px', 'relative', '!m-0', 'self-stretch');
+    el.classList.add('bg-foreground/20', 'shrink-0', '[[data-orientation=vertical]_&]:h-px', '[[data-orientation=vertical]_&]:w-full', 'h-auto', 'w-px', 'relative', 'm-0!', 'self-stretch');
     el.setAttribute('role', 'none');
     el.setAttribute('data-slot', 'button-group-separator');
   });

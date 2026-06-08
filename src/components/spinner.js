@@ -10,7 +10,7 @@ export default function (Alpine) {
       '[[data-slot=button][data-variant=negative]_&]:border-negative-foreground',
       '[[data-slot=button][data-variant=warning]_&]:border-warning-foreground',
       '[[data-slot=button][data-variant=information]_&]:border-information-foreground',
-      '!border-t-transparent',
+      'border-t-transparent!',
       'rounded-full',
       'animate-spin'
     );

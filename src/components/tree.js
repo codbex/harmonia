@@ -25,9 +25,9 @@ export default function (Alpine) {
       const treeItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_tree_item'));
       effect(() => {
         if (treeItem._h_tree_item.expanded) {
-          el.classList.remove('!hidden');
+          el.classList.remove('hidden!');
         } else {
-          el.classList.add('!hidden');
+          el.classList.add('hidden!');
         }
       });
     } else {

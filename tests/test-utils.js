@@ -1,5 +1,33 @@
 import { vi } from 'vitest';
 
+let activeEffect = null;
+
+function reactive(obj) {
+  const deps = {};
+  return new Proxy(obj, {
+    get(target, key) {
+      if (activeEffect && typeof key === 'string') {
+        if (!deps[key]) deps[key] = new Set();
+        deps[key].add(activeEffect);
+      }
+      return Reflect.get(target, key);
+    },
+    set(target, key, value) {
+      const result = Reflect.set(target, key, value);
+      if (deps[key]) {
+        for (const fn of [...deps[key]]) fn();
+      }
+      return result;
+    },
+  });
+}
+
+function effect(fn) {
+  const prev = activeEffect;
+  activeEffect = fn;
+  try { fn(); } finally { activeEffect = prev; }
+}
+
 export function createMockAlpine() {
   const _directives = {};
   return {
@@ -7,9 +35,7 @@ export function createMockAlpine() {
     directive(name, fn) {
       _directives[name] = fn;
     },
-    reactive(obj) {
-      return obj;
-    },
+    reactive,
     findClosest(el, fn) {
       let current = el;
       while (current) {
@@ -39,7 +65,7 @@ export function createMockAlpine() {
 export function createMockContext(alpine, overrides = {}) {
   return {
     cleanup: vi.fn(),
-    effect: (fn) => fn(),
+    effect,
     evaluate: vi.fn().mockReturnValue(null),
     evaluateLater: () => (cb) => cb(''),
     Alpine: alpine,

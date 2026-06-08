@@ -43,7 +43,7 @@ const navTriggerVariants = {
 };
 
 export default function (Alpine) {
-  Alpine.directive('h-nav', (el, { original }) => {
+  Alpine.directive('h-nav', (el, { original }, { Alpine, cleanup }) => {
     if (el.tagName !== 'NAV') {
       throw new Error(`${original} must be a nav element`);
     }
@@ -52,34 +52,33 @@ export default function (Alpine) {
     }
     el.classList.add('relative', 'flex', 'items-center');
     el.setAttribute('data-slot', 'nav');
+    el._h_nav = Alpine.reactive({ variant: el.getAttribute('data-variant') ?? 'default' });
+    const observer = new MutationObserver(() => {
+      el._h_nav.variant = el.getAttribute('data-variant') ?? 'default';
+    });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-variant'] });
+    cleanup(() => observer.disconnect());
   });
 
-  Alpine.directive('h-nav-list', (el, { original }, { cleanup, Alpine }) => {
+  Alpine.directive('h-nav-list', (el, { original }, { effect, Alpine }) => {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be a ul element`);
     }
-    const nav = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'nav');
+    const nav = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_nav'));
     if (!nav) {
       throw new Error(`${original} must be inside a ${Alpine.prefixed('h-nav')} element`);
     }
     el.classList.add('flex', 'flex-1', 'list-none', 'items-center');
     el.setAttribute('data-slot', 'nav-list');
 
-    function applyGap() {
-      const variant = nav.getAttribute('data-variant');
+    effect(() => {
+      const variant = nav._h_nav.variant;
       if (variant === 'clear' || variant === 'underline') {
         el.classList.remove('gap-1');
       } else {
         el.classList.add('gap-1');
       }
-    }
-
-    applyGap();
-
-    const variantObserver = new MutationObserver(applyGap);
-    variantObserver.observe(nav, { attributes: true, attributeFilter: ['data-variant'] });
-
-    cleanup(() => variantObserver.disconnect());
+    });
   });
 
   Alpine.directive('h-nav-item', (el, { original }) => {
@@ -93,7 +92,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'nav-item');
   });
 
-  Alpine.directive('h-nav-trigger', (el, { original }, { cleanup, Alpine }) => {
+  Alpine.directive('h-nav-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
     if (el.tagName !== 'BUTTON') {
       throw new Error(`${original} must be a button element`);
     }
@@ -132,7 +131,7 @@ export default function (Alpine) {
     el.appendChild(chevron);
     el.setAttribute('data-slot', 'nav-trigger');
 
-    const nav = Alpine.findClosest(el.parentElement, (p) => p.getAttribute('data-slot') === 'nav');
+    const nav = Alpine.findClosest(el.parentElement, (p) => Object.prototype.hasOwnProperty.call(p, '_h_nav'));
 
     function setTriggerVariant(variant) {
       for (const classes of Object.values(navTriggerVariants)) {
@@ -141,12 +140,11 @@ export default function (Alpine) {
       el.classList.add(...(navTriggerVariants[variant] ?? navTriggerVariants.default));
     }
 
-    setTriggerVariant(nav?.getAttribute('data-variant') ?? 'default');
-
-    const variantObserver = new MutationObserver(() => {
-      setTriggerVariant(nav.getAttribute('data-variant') ?? 'default');
-    });
-    if (nav) variantObserver.observe(nav, { attributes: true, attributeFilter: ['data-variant'] });
+    if (nav) {
+      effect(() => setTriggerVariant(nav._h_nav.variant));
+    } else {
+      setTriggerVariant('default');
+    }
 
     let cancelHoverCleanup = null;
 
@@ -184,13 +182,12 @@ export default function (Alpine) {
     }
 
     cleanup(() => {
-      variantObserver.disconnect();
       if (cancelHoverCleanup) cancelHoverCleanup();
       if (chevron.parentElement === el) el.removeChild(chevron);
     });
   });
 
-  Alpine.directive('h-nav-link', (el, { original }, { cleanup, Alpine }) => {
+  Alpine.directive('h-nav-link', (el, { original }, { effect, cleanup, Alpine }) => {
     if (el.tagName !== 'A' && el.tagName !== 'BUTTON') {
       throw new Error(`${original} must be an anchor or button element`);
     } else if (el.tagName === 'BUTTON') {
@@ -206,13 +203,12 @@ export default function (Alpine) {
       el.classList.add(...(navLinkVariants[variant] ?? navLinkVariants.default));
     }
 
-    const nav = Alpine.findClosest(el.parentElement, (p) => p.getAttribute('data-slot') === 'nav');
-    setLinkVariant(nav?.getAttribute('data-variant') ?? 'default');
-
-    const variantObserver = new MutationObserver(() => {
-      setLinkVariant(nav.getAttribute('data-variant') ?? 'default');
-    });
-    if (nav) variantObserver.observe(nav, { attributes: true, attributeFilter: ['data-variant'] });
+    const nav = Alpine.findClosest(el.parentElement, (p) => Object.prototype.hasOwnProperty.call(p, '_h_nav'));
+    if (nav) {
+      effect(() => setLinkVariant(nav._h_nav.variant));
+    } else {
+      setLinkVariant('default');
+    }
 
     function syncActive() {
       if (el.hasAttribute('data-active')) {
@@ -229,9 +225,6 @@ export default function (Alpine) {
 
     el.setAttribute('data-slot', 'nav-link');
 
-    cleanup(() => {
-      variantObserver.disconnect();
-      observer.disconnect();
-    });
+    cleanup(() => observer.disconnect());
   });
 }

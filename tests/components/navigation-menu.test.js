@@ -48,6 +48,41 @@ describe('h-nav', () => {
     mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
     expect(el.getAttribute('data-slot')).toBe('nav');
   });
+
+  it('creates _h_nav with default variant when data-variant is absent', () => {
+    const el = document.createElement('nav');
+    el.setAttribute('aria-label', 'Main');
+    mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
+    expect(el._h_nav).toBeDefined();
+    expect(el._h_nav.variant).toBe('default');
+  });
+
+  it('creates _h_nav with variant from data-variant attribute', () => {
+    const el = document.createElement('nav');
+    el.setAttribute('aria-label', 'Main');
+    el.setAttribute('data-variant', 'outline');
+    mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
+    expect(el._h_nav.variant).toBe('outline');
+  });
+
+  it('updates _h_nav.variant when data-variant attribute changes', async () => {
+    const el = document.createElement('nav');
+    el.setAttribute('aria-label', 'Main');
+    document.body.appendChild(el);
+    mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
+    expect(el._h_nav.variant).toBe('default');
+    el.setAttribute('data-variant', 'clear');
+    await Promise.resolve();
+    expect(el._h_nav.variant).toBe('clear');
+  });
+
+  it('calls cleanup', () => {
+    const el = document.createElement('nav');
+    el.setAttribute('aria-label', 'Main');
+    document.body.appendChild(el);
+    const { ctx } = mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
+    expect(ctx.cleanup).toHaveBeenCalled();
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -55,25 +90,28 @@ describe('h-nav', () => {
 // ---------------------------------------------------------------------------
 
 describe('h-nav-list', () => {
-  function createNavListSetup() {
+  function createNavListSetup({ variant } = {}) {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
+    if (variant) nav.setAttribute('data-variant', variant);
     const ul = document.createElement('ul');
     nav.appendChild(ul);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     return { nav, ul };
   }
 
   it('throws if not a ul element', () => {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     const el = document.createElement('div');
     nav.appendChild(el);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     expect(() => mountDirective(navigationMenuPlugin, 'h-nav-list', el, { original: 'x-h-nav-list' })).toThrow();
   });
 
-  it('throws if no ancestor with data-slot="nav"', () => {
+  it('throws if no ancestor with _h_nav', () => {
     const container = document.createElement('div');
     const ul = document.createElement('ul');
     container.appendChild(ul);
@@ -103,22 +141,19 @@ describe('h-nav-list', () => {
   });
 
   it('applies gap-1 for outline variant', () => {
-    const { nav, ul } = createNavListSetup();
-    nav.setAttribute('data-variant', 'outline');
+    const { ul } = createNavListSetup({ variant: 'outline' });
     mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
     expect(ul.classList.contains('gap-1')).toBe(true);
   });
 
   it('omits gap-1 for clear variant', () => {
-    const { nav, ul } = createNavListSetup();
-    nav.setAttribute('data-variant', 'clear');
+    const { ul } = createNavListSetup({ variant: 'clear' });
     mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
     expect(ul.classList.contains('gap-1')).toBe(false);
   });
 
   it('omits gap-1 for underline variant', () => {
-    const { nav, ul } = createNavListSetup();
-    nav.setAttribute('data-variant', 'underline');
+    const { ul } = createNavListSetup({ variant: 'underline' });
     mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
     expect(ul.classList.contains('gap-1')).toBe(false);
   });
@@ -181,7 +216,7 @@ describe('h-nav-item', () => {
 describe('h-nav-trigger', () => {
   function createNavTriggerSetup({ withHover = false } = {}) {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     if (withHover) nav.setAttribute('data-open-on-hover', '');
     const navItem = document.createElement('li');
     navItem.setAttribute('data-slot', 'nav-item');
@@ -189,27 +224,30 @@ describe('h-nav-trigger', () => {
     navItem.appendChild(button);
     nav.appendChild(navItem);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     return { nav, navItem, button };
   }
 
   it('throws if not a button element', () => {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     const navItem = document.createElement('li');
     navItem.setAttribute('data-slot', 'nav-item');
     const el = document.createElement('span');
     navItem.appendChild(el);
     nav.appendChild(navItem);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     expect(() => mountDirective(navigationMenuPlugin, 'h-nav-trigger', el, { original: 'x-h-nav-trigger' })).toThrow();
   });
 
   it('throws if no ancestor with data-slot="nav-item"', () => {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     const button = document.createElement('button');
     nav.appendChild(button);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     expect(() => mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' })).toThrow();
   });
 
@@ -376,7 +414,7 @@ describe('h-nav-link', () => {
 describe('h-nav-trigger variants', () => {
   function createTriggerWithVariant(variant) {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     if (variant) nav.setAttribute('data-variant', variant);
     const navItem = document.createElement('li');
     navItem.setAttribute('data-slot', 'nav-item');
@@ -384,6 +422,7 @@ describe('h-nav-trigger variants', () => {
     navItem.appendChild(button);
     nav.appendChild(navItem);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     return { nav, button };
   }
 
@@ -437,12 +476,13 @@ describe('h-nav-trigger variants', () => {
 describe('h-nav-link variants', () => {
   function createLinkWithVariant(variant) {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     if (variant) nav.setAttribute('data-variant', variant);
     const a = document.createElement('a');
     a.setAttribute('href', '#');
     nav.appendChild(a);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
     return { nav, a };
   }
 
@@ -505,7 +545,7 @@ describe('h-nav-link variants', () => {
 describe('h-nav-trigger + h-menu', () => {
   it('h-menu sets aria-controls on the nav trigger pointing to the menu id', () => {
     const nav = document.createElement('nav');
-    nav.setAttribute('data-slot', 'nav');
+    nav.setAttribute('aria-label', 'Main');
     const navItem = document.createElement('li');
     navItem.setAttribute('data-slot', 'nav-item');
     const button = document.createElement('button');
@@ -513,6 +553,7 @@ describe('h-nav-trigger + h-menu', () => {
     navItem.appendChild(button);
     nav.appendChild(navItem);
     document.body.appendChild(nav);
+    mountDirective(navigationMenuPlugin, 'h-nav', nav, { original: 'x-h-nav' });
 
     mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
 
