@@ -2,20 +2,10 @@ import { Check, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-checkbox', (el) => {
+    // Additional component styles in src/styles/checkbox.css
     el.classList.add(
-      '[&>input]:absolute',
-      '[&>input]:appearance-none',
-      '[&>input]:bg-transparent',
-      '[&>input]:border-0',
-      '[&>input]:cursor-pointer',
-      '[&>input]:focus-visible:border-ring',
       '[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      '[&>input]:focus-visible:ring-ring/50',
-      '[&>input]:left-0',
-      '[&>input]:outline-none',
       '[&>input]:rounded-[0.438rem]',
-      '[&>input]:size-full',
-      '[&>input]:top-0',
       'aspect-square',
       'bg-input-inner',
       'border',
@@ -27,6 +17,7 @@ export default function (Alpine) {
       'has-[input[aria-invalid=true]]:ring-negative/20',
       'has-[input:checked]:bg-primary',
       'has-[input:checked]:border-primary',
+      "has-[input:indeterminate]:after:content-['']",
       'has-[input:disabled]:cursor-not-allowed',
       'has-[input:disabled]:opacity-50',
       'has-[input:invalid]:border-negative',

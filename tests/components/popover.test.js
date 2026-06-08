@@ -51,7 +51,7 @@ describe('h-popover-trigger', () => {
   it('adds chevron rotation classes when chevron modifier is used', () => {
     const el = document.createElement('button');
     mountDirective(popoverPlugin, 'h-popover-trigger', el, { modifiers: ['chevron'], expression: '' });
-    expect(el.classList.contains('[&_svg]:transition-transform')).toBe(true);
+    expect(el.classList.contains('[&>svg]:transition-transform')).toBe(true);
   });
 
   it('calls cleanup', () => {

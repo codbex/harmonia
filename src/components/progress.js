@@ -4,7 +4,19 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'progress');
 
     const indicator = document.createElement('div');
-    indicator.classList.add('bg-primary', 'h-full', 'w-full', 'flex-1', 'transition-all', 'motion-reduce:transition-none', 'rounded-full');
+    indicator.classList.add(
+      'bg-primary',
+      '[[data-variant=information]>&]:bg-information',
+      '[[data-variant=warning]>&]:bg-warning',
+      '[[data-variant=positive]>&]:bg-positive',
+      '[[data-variant=negative]>&]:bg-negative',
+      'h-full',
+      'w-full',
+      'flex-1',
+      'transition-all',
+      'motion-reduce:transition-none',
+      'rounded-full'
+    );
     indicator.setAttribute('data-slot', 'progress-indicator');
     Object.assign(indicator.style, {
       transform: `translateX(-${100 - 0}%)`,

@@ -20,7 +20,71 @@ x-h-card-content
 x-h-card-footer
 ```
 
-## Login form
+## Exampes
+
+### Action Card
+
+<ClientOnly>
+<component-container data-class="flex flex-col items-stretch">
+<div x-h-card>
+  <div x-h-card-header>
+    <div x-h-card-title>Random Bill</div>
+    <div x-h-card-description>Billed to you</div>
+    <div x-h-card-action>
+      <div class="hbox items-start gap-1 text-positive">
+        <span class="text-2xl">$256</span>
+        <span class="text-sm" style="padding-top: 0.2rem">.16</span>
+      </div>
+    </div>
+  </div>
+  <div x-h-card-content class="vbox h-full gap-4">
+    <textarea class="h-full" name="note-to-bill" x-h-textarea placeholder="Add note to bill"></textarea>
+    <div class="flex items-center gap-2 pr-2">
+      <span x-h-switch data-size="sm">
+        <input type="checkbox" id="saveNoteSw" />
+      </span>
+      <label x-h-label for="saveNoteSw">Save note</label>
+    </div>
+  </div>
+  <div x-h-card-footer class="hbox justify-end gap-2">
+    <button x-h-button data-variant="link">Report</button>
+    <button x-h-button>Reject</button>
+    <button x-h-button data-variant="primary">Pay</button>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-card>
+  <div x-h-card-header>
+    <div x-h-card-title>Random Bill</div>
+    <div x-h-card-description>Billed to you</div>
+    <div x-h-card-action>
+      <div class="hbox items-start gap-1 text-positive">
+        <span class="text-2xl">$256</span>
+        <span class="text-sm" style="padding-top: 0.2rem">.16</span>
+      </div>
+    </div>
+  </div>
+  <div x-h-card-content class="vbox h-full gap-4">
+    <textarea class="h-full" name="note-to-bill" x-h-textarea placeholder="Add note to bill"></textarea>
+    <div class="flex items-center gap-2 pr-2">
+      <span x-h-switch data-size="sm">
+        <input type="checkbox" id="saveNoteSw" />
+      </span>
+      <label x-h-label for="saveNoteSw">Save note</label>
+    </div>
+  </div>
+  <div x-h-card-footer class="hbox justify-end gap-2">
+    <button x-h-button data-variant="link">Report</button>
+    <button x-h-button>Reject</button>
+    <button x-h-button data-variant="primary">Pay</button>
+  </div>
+</div>
+```
+
+### Login Form
 
 <ClientOnly>
 <component-container data-class="flex flex-col items-center">

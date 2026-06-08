@@ -80,9 +80,10 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 #### x-h-menu-trigger
 
-| Modifier | Description              |
-| -------- | ------------------------ |
-| dropdown | Activates dropdown mode. |
+| Modifier | Description                                              |
+| -------- | -------------------------------------------------------- |
+| dropdown | Activates dropdown mode.                                 |
+| chevron  | Rotates the last icon inside the trigger at 180 degrees. |
 
 #### x-h-menu
 

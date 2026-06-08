@@ -1,0 +1,28 @@
+<div
+  x-data="{
+    caldate: '',
+    getAdjacentDayInSameMonth() {
+        const today = new Date();
+        const day = today.getDate();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+
+        const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+        if (day === 1) {
+            return new Date(year, month, day + 1);
+        }
+
+        if (day === lastDayOfMonth) {
+            return new Date(year, month, day - 1);
+        }
+
+        return new Date(year, month, day + 1);
+    },
+    init() {
+      this.caldate = this.getAdjacentDayInSameMonth().toISOString()
+    }
+  }"
+>
+  <div x-h-calendar="{ locale: 'en-US', firstDay: 1 }" x-model="caldate"></div>
+</div>

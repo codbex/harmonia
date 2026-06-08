@@ -2,6 +2,8 @@
 @import "nouislider/dist/nouislider.min.css";
 @import "./slider.css";
 @import "./harmonia.css";
+@import "./checkbox.css";
+@import "./breadcrumb.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 @source not "../../docs/";
 
@@ -272,12 +274,18 @@ body {
   }
 }
 
+@theme {
+  --container-8xl: 90rem;
+  --container-9xl: 96rem;
+  --container-10xl: 100rem;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
   }
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

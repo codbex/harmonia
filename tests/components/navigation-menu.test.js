@@ -38,7 +38,6 @@ describe('h-nav', () => {
     el.setAttribute('aria-label', 'Main');
     mountDirective(navigationMenuPlugin, 'h-nav', el, { original: 'x-h-nav' });
     expect(el.classList.contains('relative')).toBe(true);
-    expect(el.classList.contains('z-10')).toBe(true);
     expect(el.classList.contains('flex')).toBe(true);
     expect(el.classList.contains('items-center')).toBe(true);
   });
@@ -95,6 +94,42 @@ describe('h-nav-list', () => {
     const { ul } = createNavListSetup();
     mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
     expect(ul.getAttribute('data-slot')).toBe('nav-list');
+  });
+
+  it('applies gap-1 for default variant', () => {
+    const { ul } = createNavListSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.classList.contains('gap-1')).toBe(true);
+  });
+
+  it('applies gap-1 for outline variant', () => {
+    const { nav, ul } = createNavListSetup();
+    nav.setAttribute('data-variant', 'outline');
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.classList.contains('gap-1')).toBe(true);
+  });
+
+  it('omits gap-1 for clear variant', () => {
+    const { nav, ul } = createNavListSetup();
+    nav.setAttribute('data-variant', 'clear');
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.classList.contains('gap-1')).toBe(false);
+  });
+
+  it('omits gap-1 for underline variant', () => {
+    const { nav, ul } = createNavListSetup();
+    nav.setAttribute('data-variant', 'underline');
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.classList.contains('gap-1')).toBe(false);
+  });
+
+  it('updates gap when data-variant changes on nav', async () => {
+    const { nav, ul } = createNavListSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-list', ul, { original: 'x-h-nav-list' });
+    expect(ul.classList.contains('gap-1')).toBe(true);
+    nav.setAttribute('data-variant', 'clear');
+    await Promise.resolve();
+    expect(ul.classList.contains('gap-1')).toBe(false);
   });
 });
 

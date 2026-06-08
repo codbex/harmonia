@@ -16,6 +16,9 @@ export default function (Alpine) {
         el.setAttribute('id', `mt${uuidv4()}`);
       }
     }
+    if (modifiers.includes('chevron')) {
+      el.classList.add('[&>svg]:transition-transform', 'motion-reduce:[&>svg]:transition-none', '[&[aria-expanded=true]>svg:not(:first-child):last-child]:rotate-180');
+    }
   });
 
   Alpine.directive('h-menu', (el, { original, modifiers }, { cleanup, Alpine }) => {

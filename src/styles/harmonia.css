@@ -36,11 +36,11 @@
 @source inline("min-h-{4..12}");
 @source inline("max-h-{4..12}");
 @source inline("{!,}w-{4..12}");
-@source inline("w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
+@source inline("w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl}");
 @source inline("min-w-{4..12}");
-@source inline("min-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,auto}");
+@source inline("min-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto}");
 @source inline("max-w-{4..12}");
-@source inline("max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,auto}");
+@source inline("max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto}");
 @source inline("{!,}size-{full,fit}");
 .min-size-4 {
   @apply min-h-4 min-w-4;
@@ -98,7 +98,7 @@
   height: calc(var(--spacing) * 66);
 }
 @source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap}");
-@source inline("{!,}text-{xs,sm,base,lg,xl,2xl,3xl,4xl}");
+@source inline("{!,}text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}");
 @source inline("font-{bold,semibold,medium,normal,light}");
 @source inline("font-{sans,serif,mono}");
 @source inline("italic");
@@ -113,6 +113,7 @@
 
 @source inline("overflow-{auto,hidden,visible,scroll,x-scroll,y-scroll,x-visible,y-visible,x-auto,y-auto,x-hidden,y-hidden}");
 @source inline("object-{contain,cover,fill}");
+@source inline("bg-{auto,contain,cover,repeat,repeat-x,repeat-y,no-repeat}");
 @source inline("float-right");
 @source inline("hidden");
 @source inline("block");
@@ -124,8 +125,12 @@
 @source inline("sr-only");
 @source inline("box-border");
 @source inline("border");
-@source inline("border-{l,r,t,b}");
+@source inline("border-{l,r,t,b,solid,dashed,dotted}");
+@source inline("border-0");
 @source inline("border-{2..12}");
+@source inline("divide-{x,y,x-reverse,y-reverse,solid,dashed,dotted}");
+@source inline("divide-{x,y}-0");
+@source inline("divide-{x,y}-{2..12}");
 @source inline("rounded-{s,e,t,b,tl,tr,bl,br}-{xs,sm,md,lg,xl,2xl,3xl,4xl,none,full}");
 @source inline("rounded-{xs,sm,md,lg,xl,2xl,3xl,4xl,none,full}");
 @source inline("shadow-{xs,sm,md,lg,xl,none}");
@@ -141,6 +146,7 @@
   bottom: 0;
 }
 @source inline("opacity-{0,25,50,75,100}");
+@source inline("backdrop-blur-{xs,sm,md}");
 @source inline("scale-{95,105}");
 @source inline("*:scale-95");
 @source inline("{-,}translate-{x,y}-{full,4}");

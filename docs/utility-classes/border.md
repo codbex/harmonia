@@ -10,11 +10,15 @@ Classes for adding a border or border radius to an element.
 | -------------- | -------------------------------------------------------- |
 | box-border     | `box-sizing: border-box`                                 |
 | border         | Border on all 4 sides, 1px.                              |
+| border-0       | No border.                                               |
 | border-`2..12` | Border width from 2 to 12px. `border-width: <number>px;` |
 | border-t       | Top border.                                              |
 | border-r       | Right border.                                            |
 | border-b       | Bottom border.                                           |
 | border-l       | Left border.                                             |
+| border-solid   | Solid line border.                                       |
+| border-dotted  | Dotted line border.                                      |
+| border-dashed  | Dashed line border.                                      |
 
 ### Examples
 
@@ -65,6 +69,111 @@ Classes for adding a border or border radius to an element.
   <div class="border-6 text-center">border-6</div>
   <div class="border-8 text-center">border-8</div>
   <div class="border-12 text-center">border-12</div>
+</div>
+```
+
+## Divide
+
+Adds a border between child elements by applying a border to all children except the last one.
+
+### Class names
+
+| Class                   | Description                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| divide-x                | Vertical dividers between horizontally stacked children (border on left side). |
+| divide-y                | Horizontal dividers between vertically stacked children (border on top side).  |
+| divide-x-reverse        | Adjusts `divide-x` for reversed flex row direction (`flex-row-reverse`).       |
+| divide-y-reverse        | Adjusts `divide-y` for reversed flex column direction (`flex-col-reverse`).    |
+| divide-x-0 / divide-y-0 | Removes the divider width.                                                     |
+| divide-x-`2..12`        | Sets the horizontal divider width from 2 to 12px.                              |
+| divide-y-`2..12`        | Sets the vertical divider width from 2 to 12px.                                |
+| divide-solid            | Solid divider line style.                                                      |
+| divide-dashed           | Dashed divider line style.                                                     |
+| divide-dotted           | Dotted divider line style.                                                     |
+
+### Examples
+
+#### Divide X
+
+<ClientOnly>
+<component-container>
+<div class="flex divide-x">
+  <div class="px-4 text-center">First</div>
+  <div class="px-4 text-center">Second</div>
+  <div class="px-4 text-center">Third</div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="flex divide-x">
+  <div class="px-4 text-center">First</div>
+  <div class="px-4 text-center">Second</div>
+  <div class="px-4 text-center">Third</div>
+</div>
+```
+
+#### Divide Y
+
+<ClientOnly>
+<component-container>
+<div class="flex flex-col divide-y">
+  <div class="py-2 text-center">First</div>
+  <div class="py-2 text-center">Second</div>
+  <div class="py-2 text-center">Third</div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="flex flex-col divide-y">
+  <div class="py-2 text-center">First</div>
+  <div class="py-2 text-center">Second</div>
+  <div class="py-2 text-center">Third</div>
+</div>
+```
+
+#### Divide Style
+
+<ClientOnly>
+<component-container>
+<div class="hbox gap-4">
+  <div class="vbox divide-y divide-solid">
+    <div class="px-4">Solid</div>
+    <div class="px-4">Solid</div>
+    <div class="px-4">Solid</div>
+  </div>
+  <div class="vbox divide-y-2 divide-dashed">
+    <div class="px-4">Dashed</div>
+    <div class="px-4">Dashed</div>
+    <div class="px-4">Dashed</div>
+  </div>
+  <div class="vbox divide-y-2 divide-dotted">
+    <div class="px-4">Dotted</div>
+    <div class="px-4">Dotted</div>
+    <div class="px-4">Dotted</div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="hbox gap-4">
+  <div class="vbox divide-y divide-solid">
+    <div class="px-4">Solid</div>
+    <div class="px-4">Solid</div>
+    <div class="px-4">Solid</div>
+  </div>
+  <div class="vbox divide-y-2 divide-dashed">
+    <div class="px-4">Dashed</div>
+    <div class="px-4">Dashed</div>
+    <div class="px-4">Dashed</div>
+  </div>
+  <div class="vbox divide-y-2 divide-dotted">
+    <div class="px-4">Dotted</div>
+    <div class="px-4">Dotted</div>
+    <div class="px-4">Dotted</div>
+  </div>
 </div>
 ```
 

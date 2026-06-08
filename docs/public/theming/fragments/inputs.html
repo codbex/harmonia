@@ -1,0 +1,127 @@
+<div class="vbox gap-4">
+  <input x-h-input type="text" placeholder="Search..." />
+
+  <input x-h-input type="color" value="#26a269" />
+
+  <div x-h-field>
+    <label x-h-label.field for="labelExmpl-2">Name</label>
+    <input x-h-input id="labelExmpl-2" name="name" placeholder="Ivan Strashimechkarov" />
+  </div>
+
+  <form>
+    <fieldset x-h-fieldset>
+      <div x-h-field-group>
+        <div x-h-field>
+          <label x-h-label.field for="visuallyDisabled">Invalid</label>
+          <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required />
+          <p x-h-field-error>The input cannot be empty</p>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <form>
+    <fieldset x-h-fieldset>
+      <div x-h-field-group>
+        <div x-h-field data-disabled="true">
+          <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
+          <input x-h-input id="visuallyDisabled" placeholder="Input still active" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <form>
+    <fieldset x-h-fieldset>
+      <div x-h-field-group>
+        <div x-h-field data-disabled="true">
+          <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
+          <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div x-h-input-group>
+    <input x-h-input.group placeholder="Search..." />
+    <div x-h-input-group-addon data-align="inline-start">
+      <i role="img" data-lucide="search"></i>
+    </div>
+    <div x-h-input-group-addon data-align="inline-end">12 results</div>
+  </div>
+
+  <div x-h-input-group>
+    <input x-h-input.group placeholder="Search..." />
+    <div x-h-input-group-addon data-align="inline-start">
+      <i role="img" data-lucide="search"></i>
+    </div>
+    <div x-h-input-group-addon data-align="inline-end">
+      <div x-h-tag-group>
+        <div x-h-tag>Ctrl</div>
+        <span>+</span>
+        <div x-h-tag>F</div>
+      </div>
+    </div>
+  </div>
+
+  <div x-h-input-group>
+    <input x-h-input.group placeholder="https://..." />
+    <div x-h-input-group-addon data-align="inline-start">
+      <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info"><i role="img" data-lucide="info"></i></button>
+      <div class="p-4" x-h-popover>This is a popover with some info.</div>
+    </div>
+    <div x-h-input-group-addon data-align="inline-end">
+      <button x-h-button.addon>Go</button>
+    </div>
+  </div>
+
+  <div x-h-input-group>
+    <input x-h-input.group placeholder="Searching..." disabled />
+    <div x-h-input-group-addon data-align="inline-end">
+      <span x-h-spinner></span>
+    </div>
+  </div>
+
+  <div x-h-input-number>
+    <input type="number" min="0" max="10" step="2" value="4" />
+  </div>
+
+  <div x-h-input-number>
+    <input type="number" min="0" max="10" step="2" value="12" aria-invalid="true" />
+  </div>
+
+  <textarea x-h-textarea placeholder="Comment..."></textarea>
+
+  <div x-h-input-group>
+    <textarea x-h-textarea.group placeholder="Message..."></textarea>
+    <div x-h-input-group-addon data-align="block-start" class="border-b">
+      <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make bold">
+        <i role="img" data-lucide="bold"></i>
+      </button>
+      <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make italic">
+        <i role="img" data-lucide="italic"></i>
+      </button>
+      <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
+        <i role="img" data-lucide="italic"></i>
+      </button>
+      <span x-h-separator data-orientation="vertical"></span>
+      <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
+        <i role="img" data-lucide="link"></i>
+      </button>
+    </div>
+    <div x-h-input-group-addon data-align="block-end" class="border-t">
+      <button id="attachFile" x-h-button.addon x-h-menu-trigger.dropdown data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Attach">
+        <i role="img" data-lucide="plus"></i>
+      </button>
+      <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
+        <li x-h-menu-item>List</li>
+        <li x-h-menu-item>Text snippet</li>
+        <li x-h-menu-item>Upload file</li>
+      </ul>
+      <span x-h-input-group-text class="ml-auto">0/300</span>
+      <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send">
+        <i role="img" data-lucide="arrow-up"></i>
+      </button>
+    </div>
+  </div>
+</div>

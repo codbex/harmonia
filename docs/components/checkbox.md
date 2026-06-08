@@ -19,17 +19,53 @@ x-h-checkbox
 <ClientOnly>
 <component-container data-class="flex items-center gap-3 justify-center">
 <span x-h-checkbox>
-  <input type="checkbox" id="terms" />
+  <input type="checkbox" id="unchecked" />
 </span>
-<label x-h-label for="terms">Accept terms</label>
+<label x-h-label for="unchecked">Unchecked</label>
 </component-container>
 </ClientOnly>
 
 ```html
 <div class="flex items-center gap-3">
   <span x-h-checkbox>
-    <input type="checkbox" id="terms" />
+    <input type="checkbox" id="unchecked" />
   </span>
-  <label x-h-label for="terms">Just accept</label>
+  <label x-h-label for="unchecked">Unchecked</label>
+</div>
+```
+
+<ClientOnly>
+<component-container data-class="flex items-center gap-3 justify-center">
+<span x-h-checkbox>
+  <input type="checkbox" id="checked" checked />
+</span>
+<label x-h-label for="checked">Checked</label>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="flex items-center gap-3">
+  <span x-h-checkbox>
+    <input type="checkbox" id="checked" checked />
+  </span>
+  <label x-h-label for="checked">Checked</label>
+</div>
+```
+
+<ClientOnly>
+<component-container data-class="flex items-center gap-3 justify-center">
+<span x-h-checkbox>
+  <input type="checkbox" id="checked" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
+</span>
+<label x-h-label for="checked">Indeterminate</label>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="flex items-center gap-3">
+  <span x-h-checkbox>
+    <input type="checkbox" id="checked" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
+  </span>
+  <label x-h-label for="checked">Indeterminate</label>
 </div>
 ```

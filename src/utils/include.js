@@ -50,7 +50,7 @@ export default function (Alpine) {
             throw response;
           })
           .then(async (content) => {
-            if (modifiers.includes('js')) {
+            if (el.getAttribute('data-js') === 'true' || modifiers.includes('js')) {
               const container = document.createElement('div');
               container.innerHTML = content;
 
@@ -73,6 +73,8 @@ export default function (Alpine) {
             }
             // Initialize the new elements with Alpine
             initTree();
+
+            el.dispatchEvent(new CustomEvent('fragment:loaded', { bubbles: false, detail: { url } }));
           })
           .catch((response) => {
             console.error(response);

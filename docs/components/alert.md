@@ -1,6 +1,6 @@
 # Alert
 
-Communicates important information to the user about a situation or task that requires attention. Alerts can be used to highlight status changes or show critical messages but they can also be used as notification popups.
+Communicates important information to the user about a situation or task that requires attention. Alerts can be used to highlight status changes or show critical messages.
 
 ## Usage
 
@@ -29,35 +29,11 @@ x-h-alert-actions
 
 #### x-h-alert
 
-| Modifier | Description                 |
-| -------- | --------------------------- |
-| floating | Adds a shadow to the alert. |
+| Modifier        | Description                                            |
+| --------------- | ------------------------------------------------------ |
+| <s>floating</s> | Deprecated. Will be removed in the next major version. |
 
 ## Examples
-
-<ClientOnly>
-<component-container data-icons="true">
-<div x-h-alert.floating>
-  <i role="img" data-lucide="files"></i>
-  <div x-h-alert-title>Floating</div>
-  <div x-h-alert-description>Usually used as a notification</div>
-  <div x-h-alert-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Close"><i role="img" data-lucide="x"></i></button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
-
-```html
-<div x-h-alert.floating>
-  <i role="img" data-lucide="files"></i>
-  <div x-h-alert-title>Floating</div>
-  <div x-h-alert-description>Usually used as a notification</div>
-  <div x-h-alert-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline"><i role="img" data-lucide="x"></i></button>
-  </div>
-</div>
-```
 
 <ClientOnly>
 <component-container data-icons="true">

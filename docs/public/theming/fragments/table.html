@@ -1,0 +1,430 @@
+<div class="vbox gap-4" x-data="{ users: generateUsers(), invoices: generateInvoices() }">
+  <div x-h-table-container.scroll data-border="true" style="max-height: 688px">
+    <table x-h-table data-borders="both">
+      <caption x-h-table-caption>
+        Fruits & Vegetables
+      </caption>
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Invoice Number</th>
+          <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+            <div class="flex items-center justify-between">Invoice Date<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+          </th>
+          <th x-h-table-head scope="col">Customer Name</th>
+          <th x-h-table-head scope="col">Due Date</th>
+          <th x-h-table-head scope="col">Amount Total</th>
+          <th x-h-table-head scope="col">Status</th>
+          <th x-h-table-head scope="col">Outstanding Balance</th>
+          <th x-h-table-head scope="col">Created By</th>
+          <th x-h-table-head scope="col">Last Sent</th>
+          <th x-h-table-head scope="col">Tax Amount</th>
+          <th x-h-table-head scope="col">Category</th>
+          <th x-h-table-head scope="col">Currency</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <template x-for="invoice in invoices">
+          <tr x-h-table-row data-hoverable="true" data-activable="true">
+            <th x-h-table-head x-text="invoice.invoiceNumber"></th>
+            <td x-h-table-cell x-text="invoice.invoiceDate"></td>
+            <td x-h-table-cell x-text="invoice.customerName"></td>
+            <td x-h-table-cell x-text="invoice.dueDate"></td>
+            <td x-h-table-cell x-text="invoice.amountTotal"></td>
+            <td x-h-table-cell x-text="invoice.status"></td>
+            <td x-h-table-cell x-text="invoice.outstandingBalance"></td>
+            <td x-h-table-cell x-text="invoice.createdBy"></td>
+            <td x-h-table-cell x-text="invoice.lastSent"></td>
+            <td x-h-table-cell x-text="invoice.taxAmount"></td>
+            <td x-h-table-cell x-text="invoice.category"></td>
+            <td x-h-table-cell x-text="invoice.currency"></td>
+          </tr>
+        </template>
+      </tbody>
+      <tfoot x-h-table-footer>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="row">Total Invoices</th>
+          <td x-h-table-cell colspan="11" x-text="invoices.length"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div x-h-table-container.scroll data-border="true" style="min-height: 220px; max-height: 600px">
+    <table x-h-table data-fixed="true" data-borders="both">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Email</th>
+          <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 truncate">First Name</div>
+              <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+            </div>
+          </th>
+          <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 truncate">Last Name</div>
+              <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+            </div>
+          </th>
+          <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 truncate">Registration Date</div>
+              <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+            </div>
+          </th>
+          <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 truncate">Status</div>
+              <i role="img" class="min-size-4 size-4" data-lucide="arrow-up-down"></i>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <template x-for="user in users">
+          <tr x-h-table-row data-hoverable="true" data-activable="true">
+            <th class="truncate" x-h-table-head x-text="user.email"></th>
+            <td class="truncate" x-h-table-cell x-text="user.first"></td>
+            <td class="truncate" x-h-table-cell x-text="user.last"></td>
+            <td class="truncate" x-h-table-cell x-text="user.registration"></td>
+            <td class="truncate" x-h-table-cell x-text="user.status"></td>
+          </tr>
+        </template>
+      </tbody>
+      <tfoot x-h-table-footer>
+        <tr x-h-table-row>
+          <th class="truncate" x-h-table-head scope="row">Total Users</th>
+          <td class="truncate" x-h-table-cell colspan="4" x-text="users.length"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="both">
+      <caption x-h-table-caption>
+        Fruits & Vegetables
+      </caption>
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Item</th>
+          <th x-h-table-head scope="col">Type</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-head>Cucumber</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Banana</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Asparagus</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Onion</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Apple</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="rows" data-fixed="true">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Item</th>
+          <th x-h-table-head scope="col">Type</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-head>Cucumber</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Banana</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Asparagus</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Onion</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Apple</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="columns" data-fixed="true">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Item</th>
+          <th x-h-table-head scope="col">Type</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-head>Cucumber</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Banana</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Asparagus</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Onion</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Apple</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div x-h-table-container>
+    <table x-h-table data-fixed="true">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Item</th>
+          <th x-h-table-head scope="col">Type</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-head>Cucumber</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Banana</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Asparagus</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Onion</td>
+          <td x-h-table-cell>Vegetable</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-head>Apple</td>
+          <td x-h-table-cell>Fruit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <table x-h-table data-borders="both" data-fixed="true">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Item</th>
+        <th x-h-table-head scope="col">Type</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-head>Cucumber</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Banana</td>
+        <td x-h-table-cell>Fruit</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Asparagus</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Onion</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Apple</td>
+        <td x-h-table-cell>Fruit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="both" data-fixed="true">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Header 1</th>
+          <th x-h-table-head scope="col">Header 2</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-cell>Normal cell</td>
+          <td x-h-table-cell>
+            <button x-h-table-cell-button>Cell button</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div x-h-table-container.scroll data-border="true">
+    <table x-h-table data-borders="both">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Input</th>
+          <th x-h-table-head scope="col">Dropdown</th>
+          <th x-h-table-head scope="col">Select</th>
+          <th x-h-table-head scope="col">Date</th>
+          <th x-h-table-head scope="col">Time</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-cell>
+            <input x-h-input.table placeholder="Name" />
+          </td>
+          <td x-h-table-cell>
+            <button x-h-table-cell-button x-h-menu-trigger.dropdown>Dropdown<svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg></button>
+            <ul x-h-menu aria-label="dropdown">
+              <li x-h-menu-item>Item 1</li>
+              <li x-h-menu-item>Item 2</li>
+              <li x-h-menu-item>Item 3</li>
+            </ul>
+          </td>
+          <td x-h-table-cell>
+            <div x-h-select.table>
+              <input x-h-select-input placeholder="Select" />
+              <div x-h-select-content>
+                <div x-h-select-option="'Option 1'" data-value="1"></div>
+                <div x-h-select-option="'Option 2'" data-value="2"></div>
+                <div x-h-select-option="'Option 3'" data-value="3"></div>
+              </div>
+            </div>
+          </td>
+          <td x-h-table-cell>
+            <div x-h-date-picker.table x-data="{ date: new Date().toISOString() }">
+              <input type="text" id="tableDate" />
+              <button x-h-date-picker-trigger aria-label="Choose date"></button>
+              <div x-h-calendar x-model="date"></div>
+            </div>
+          </td>
+          <td x-h-table-cell>
+            <div x-data="{ timeConfig: { is12Hour: true } }" x-h-time-picker.table="timeConfig">
+              <input type="text" id="tableTime" x-h-time-picker-input />
+              <div x-h-time-picker-popup></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script type="text/javascript">
+  function randomChoice(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function randomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function formatDate(date) {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "long" });
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  }
+
+  const names = ["Ivan Strashimechkarov", "Anna Petrova", "John Doe", "Maria Gonzalez", "Liam Smith", "Emma Johnson", "Noah Brown", "Olivia Davis", "William Wilson", "Sophia Moore"];
+
+  const categories = ["Consulting", "Software", "Design", "Training", "Marketing"];
+  const statuses = ["paid", "unpaid", "overdue", "partial"];
+
+  function generateUsers() {
+    const baseDate = new Date();
+    const users = [];
+    for (let i = 0; i < 25; i++) {
+      const regDate = new Date(baseDate.getTime());
+      regDate.setDate(regDate.getDate() + Math.floor(Math.random() * 240));
+
+      const name = randomChoice(names).split(" ");
+
+      const user = {
+        email: `${name[0].toLowerCase()}-${name[1].toLowerCase()}@email.com`,
+        first: name[0],
+        last: name[1],
+        registration: formatDate(regDate),
+        status: randomChoice(status),
+      };
+
+      users.push(user);
+    }
+    return users;
+  }
+
+  function generateInvoices() {
+    const baseDate = new Date();
+    const invoices = [];
+    for (let i = 0; i < 50; i++) {
+      const invoiceDate = new Date(baseDate.getTime());
+      invoiceDate.setDate(invoiceDate.getDate() + randomInt(0, 240));
+
+      const dueDate = new Date(invoiceDate.getTime());
+      dueDate.setDate(dueDate.getDate() + 20);
+
+      const amountTotal = parseFloat(randomFloat(500, 5000).toFixed(2));
+      const taxAmount = parseFloat((amountTotal * 0.1).toFixed(2));
+
+      const status = randomChoice(statuses);
+
+      let outstandingBalance;
+      if (status === "partial") {
+        outstandingBalance = parseFloat((amountTotal * randomFloat(0.1, 0.65)).toFixed(2));
+      } else if (status === "paid") {
+        outstandingBalance = 0.0;
+      } else {
+        outstandingBalance = amountTotal;
+      }
+
+      const invoice = {
+        invoiceNumber: `INV-${String(i + 1).padStart(2, "0")}`,
+        invoiceDate: formatDate(invoiceDate),
+        customerName: randomChoice(names),
+        dueDate: formatDate(dueDate),
+        amountTotal: amountTotal,
+        status: status,
+        outstandingBalance: outstandingBalance,
+        createdBy: "admin",
+        lastSent: formatDate(invoiceDate),
+        taxAmount: taxAmount,
+        category: randomChoice(categories),
+        currency: "EUR",
+      };
+
+      invoices.push(invoice);
+    }
+    return invoices;
+  }
+</script>

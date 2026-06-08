@@ -41,16 +41,15 @@ describe('h-sidebar-header', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-header', el);
     expect(el.classList.contains('vbox')).toBe(true);
-    expect(el.classList.contains('border-b')).toBe(true);
-    expect(el.classList.contains('h-12')).toBe(true);
+    expect(el.classList.contains('inset-shadow-[0_-1px_var(--border)]')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('sidebar-header');
   });
 
-  it('removes border-b when data-borderless=true', () => {
+  it('removes inset-shadow when data-borderless=true', () => {
     const el = document.createElement('div');
     el.dataset.borderless = 'true';
     mountDirective(sidebarPlugin, 'h-sidebar-header', el);
-    expect(el.classList.contains('border-b')).toBe(false);
+    expect(el.classList.contains('inset-shadow-[0_-1px_var(--border)]')).toBe(false);
   });
 });
 
@@ -176,15 +175,14 @@ describe('h-sidebar-footer', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-footer', el);
     expect(el.classList.contains('vbox')).toBe(true);
-    expect(el.classList.contains('border-t')).toBe(true);
-    expect(el.classList.contains('h-12')).toBe(true);
+    expect(el.classList.contains('inset-shadow-[0_1px_var(--border)]')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('sidebar-footer');
   });
 
-  it('removes border-t when data-borderless=true', () => {
+  it('removes inset-shadow when data-borderless=true', () => {
     const el = document.createElement('div');
     el.dataset.borderless = 'true';
     mountDirective(sidebarPlugin, 'h-sidebar-footer', el);
-    expect(el.classList.contains('border-t')).toBe(false);
+    expect(el.classList.contains('inset-shadow-[0_1px_var(--border)]')).toBe(false);
   });
 });

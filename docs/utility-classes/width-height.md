@@ -31,7 +31,10 @@ The width class names start with `w`.
 | w-4xl    | `width: var(--container-4xl); /* 56rem (896px) */`  | No          |
 | w-5xl    | `width: var(--container-5xl); /* 64rem (1024px) */` | No          |
 | w-6xl    | `width: var(--container-6xl); /* 72rem (1152px) */` | No          |
-| w-7xl    | `width: var(--container-7xl); /* 80rem (1280px) */` | No          |
+| w-7xl    | `width: var(--container-7xl); /* 80rem (1280px) */`  | No          |
+| w-8xl    | `width: var(--container-8xl); /* 90rem (1440px) */`  | No          |
+| w-9xl    | `width: var(--container-9xl); /* 96rem (1536px) */`  | No          |
+| w-10xl   | `width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
 The minimum width class names start with `min-w`.
 
@@ -51,7 +54,10 @@ The minimum width class names start with `min-w`.
 | min-w-4xl    | `min-width: var(--container-4xl); /* 56rem (896px) */`  | No          |
 | min-w-5xl    | `min-width: var(--container-5xl); /* 64rem (1024px) */` | No          |
 | min-w-6xl    | `min-width: var(--container-6xl); /* 72rem (1152px) */` | No          |
-| min-w-7xl    | `min-width: var(--container-7xl); /* 80rem (1280px) */` | No          |
+| min-w-7xl    | `min-width: var(--container-7xl); /* 80rem (1280px) */`  | No          |
+| min-w-8xl    | `min-width: var(--container-8xl); /* 90rem (1440px) */`  | No          |
+| min-w-9xl    | `min-width: var(--container-9xl); /* 96rem (1536px) */`  | No          |
+| min-w-10xl   | `min-width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
 The maximum width class names start with `min-w`.
 
@@ -72,7 +78,10 @@ The maximum width class names start with `min-w`.
 | max-w-4xl    | `max-width: var(--container-4xl); /* 56rem (896px) */`  | No          |
 | max-w-5xl    | `max-width: var(--container-5xl); /* 64rem (1024px) */` | No          |
 | max-w-6xl    | `max-width: var(--container-6xl); /* 72rem (1152px) */` | No          |
-| max-w-7xl    | `max-width: var(--container-7xl); /* 80rem (1280px) */` | No          |
+| max-w-7xl    | `max-width: var(--container-7xl); /* 80rem (1280px) */`  | No          |
+| max-w-8xl    | `max-width: var(--container-8xl); /* 90rem (1440px) */`  | No          |
+| max-w-9xl    | `max-width: var(--container-9xl); /* 96rem (1536px) */`  | No          |
+| max-w-10xl   | `max-width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
 The height class names start with `h`.
 

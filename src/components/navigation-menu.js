@@ -50,11 +50,11 @@ export default function (Alpine) {
     if (!el.hasAttribute('aria-label')) {
       throw new Error(`${original} must have an "aria-label" attribute`);
     }
-    el.classList.add('relative', 'z-10', 'flex', 'items-center');
+    el.classList.add('relative', 'flex', 'items-center');
     el.setAttribute('data-slot', 'nav');
   });
 
-  Alpine.directive('h-nav-list', (el, { original }, { Alpine }) => {
+  Alpine.directive('h-nav-list', (el, { original }, { cleanup, Alpine }) => {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be a ul element`);
     }
@@ -62,8 +62,24 @@ export default function (Alpine) {
     if (!nav) {
       throw new Error(`${original} must be inside a ${Alpine.prefixed('h-nav')} element`);
     }
-    el.classList.add('flex', 'flex-1', 'list-none', 'items-center', 'gap-1');
+    el.classList.add('flex', 'flex-1', 'list-none', 'items-center');
     el.setAttribute('data-slot', 'nav-list');
+
+    function applyGap() {
+      const variant = nav.getAttribute('data-variant');
+      if (variant === 'clear' || variant === 'underline') {
+        el.classList.remove('gap-1');
+      } else {
+        el.classList.add('gap-1');
+      }
+    }
+
+    applyGap();
+
+    const variantObserver = new MutationObserver(applyGap);
+    variantObserver.observe(nav, { attributes: true, attributeFilter: ['data-variant'] });
+
+    cleanup(() => variantObserver.disconnect());
   });
 
   Alpine.directive('h-nav-item', (el, { original }) => {

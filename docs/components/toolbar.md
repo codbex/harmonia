@@ -135,7 +135,7 @@ x-h-toolbar-separator
 </ClientOnly>
 
 ```html
-<div x-h-toolbar data-variant="transparent">
+<div x-h-toolbar data-variant="transparent" data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
   <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>

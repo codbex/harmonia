@@ -25,11 +25,10 @@ describe('h-checkbox', () => {
     expect(el.classList.contains('shrink-0')).toBe(true);
   });
 
-  it('adds input styling classes', () => {
+  it('adds focus ring class for input', () => {
     mountDirective(checkboxPlugin, 'h-checkbox', el);
-    expect(el.classList.contains('[&>input]:absolute')).toBe(true);
-    expect(el.classList.contains('[&>input]:size-full')).toBe(true);
-    expect(el.classList.contains('[&>input]:cursor-pointer')).toBe(true);
+    expect(el.classList.contains('[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+    expect(el.classList.contains('[&>input]:rounded-[0.438rem]')).toBe(true);
   });
 
   it('sets tabindex="-1"', () => {

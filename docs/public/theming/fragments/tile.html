@@ -1,0 +1,143 @@
+<div class="vbox gap-4">
+  <div x-h-tile>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Default variant</div>
+      <p x-h-tile-description>A simple tile with title, description and a single action.</p>
+    </div>
+    <div x-h-tile-actions>
+      <button x-h-button data-size="md" data-variant="outline">Action</button>
+    </div>
+  </div>
+
+  <div x-h-tile data-variant="outline">
+    <div x-h-tile-content>
+      <div x-h-tile-title>Outline variant</div>
+      <p x-h-tile-description>A simple tile with title, description and a single action.</p>
+    </div>
+    <div x-h-tile-actions>
+      <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
+        <i role="img" data-lucide="plus"></i>
+      </button>
+    </div>
+  </div>
+
+  <div x-h-tile data-variant="muted">
+    <div x-h-tile-content>
+      <div x-h-tile-title>Muted variant</div>
+      <p x-h-tile-description>A simple tile with title, description and a single action.</p>
+    </div>
+    <div x-h-tile-actions>
+      <button x-h-button data-size="md" data-variant="outline">Action</button>
+    </div>
+  </div>
+
+  <div x-h-tile data-variant="shadow">
+    <div x-h-tile-content>
+      <div x-h-tile-title>Shadow variant</div>
+      <p x-h-tile-description>A simple tile with title, description and a single action.</p>
+    </div>
+    <div x-h-tile-actions>
+      <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
+        <i role="img" data-lucide="plus"></i>
+      </button>
+    </div>
+  </div>
+
+  <a x-h-tile data-variant="outline" href="#variants">
+    <div x-h-tile-media>
+      <i role="img" data-lucide="link" class="size-5"></i>
+    </div>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Tile as link</div>
+    </div>
+    <div x-h-tile-actions>
+      <i role="img" data-lucide="chevron-right" class="size-4"></i>
+    </div>
+  </a>
+
+  <div x-h-tile data-variant="outline">
+    <div x-h-tile-media data-variant="icon">
+      <i role="img" data-lucide="cog" class="size-5"></i>
+    </div>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Account settings updated</div>
+      <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
+    </div>
+    <div x-h-tile-actions>
+      <button x-h-button data-size="md" data-variant="outline">Review</button>
+    </div>
+  </div>
+
+  <div x-h-tile data-variant="outline">
+    <div x-h-tile-media>
+      <button x-h-avatar aria-label="camera" class="size-10">
+        <i role="img" data-lucide="camera"></i>
+      </button>
+    </div>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Harmonia</div>
+      <p x-h-tile-description>UI component library for Alpine.js</p>
+    </div>
+    <div x-h-tile-actions>
+      <span x-h-switch>
+        <input type="checkbox" id="tileMediaSw" aria-label="tile action switch" checked />
+      </span>
+    </div>
+  </div>
+
+  <div x-h-tile data-variant="outline">
+    <div x-h-tile-media>
+      <span x-h-avatar class="size-10">
+        <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+        <div x-h-avatar-fallback>HM</div>
+      </span>
+    </div>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Account settings updated</div>
+      <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
+    </div>
+    <div x-h-tile-actions>
+      <button x-h-button data-size="md" data-variant="outline">Review</button>
+    </div>
+  </div>
+
+  <div x-h-tile data-variant="outline">
+    <div x-h-tile-media data-variant="image">
+      <img src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+    </div>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Harmonia</div>
+      <p x-h-tile-description>UI component library for Alpine.js</p>
+    </div>
+  </div>
+
+  <div x-h-tile-group class="flex">
+    <div x-h-tile data-variant="outline">
+      <div x-h-tile-header>
+        <img class="aspect-square w-full" src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      </div>
+      <div x-h-tile-content>
+        <div x-h-tile-title>Harmonia</div>
+        <p x-h-tile-description>UI component library for Alpine.js</p>
+      </div>
+    </div>
+    <div x-h-tile data-variant="outline">
+      <div x-h-tile-header>
+        <img class="aspect-square w-full" src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      </div>
+      <div x-h-tile-content>
+        <div x-h-tile-title>Harmonia</div>
+        <p x-h-tile-description>UI component library for Alpine.js</p>
+      </div>
+    </div>
+    <div x-h-tile data-variant="outline">
+      <div x-h-tile-header>
+        <img class="aspect-square w-full" src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+      </div>
+      <div x-h-tile-content>
+        <div x-h-tile-title>Harmonia</div>
+        <p x-h-tile-description>UI component library for Alpine.js</p>
+      </div>
+    </div>
+  </div>
+</div>

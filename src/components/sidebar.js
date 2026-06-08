@@ -30,8 +30,8 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-header', (el) => {
-    el.classList.add('vbox', 'gap-2', 'px-2', 'h-12', 'justify-center', 'border-b');
-    if (el.dataset.borderless && el.dataset.borderless === 'true') el.classList.remove('border-b');
+    el.classList.add('vbox', 'gap-2', 'p-2');
+    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_-1px_var(--border)]');
     el.setAttribute('data-slot', 'sidebar-header');
   });
 
@@ -260,7 +260,7 @@ export default function (Alpine) {
       'data-[active=true]:bg-sidebar-primary',
       'data-[active=true]:text-sidebar-primary-foreground',
       '[&>span]:truncate',
-      '[&>svg]:size-4',
+      "[&_svg:not([class*='size-'])]:size-4",
       '[&>svg]:shrink-0'
     );
 
@@ -438,8 +438,8 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-footer', (el) => {
-    el.classList.add('vbox', 'gap-2', 'px-2', 'h-12', 'justify-center', 'border-t');
-    if (el.dataset.borderless && el.dataset.borderless === 'true') el.classList.remove('border-t');
+    el.classList.add('vbox', 'gap-2', 'p-2');
+    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_1px_var(--border)]');
     el.setAttribute('data-slot', 'sidebar-footer');
   });
 }

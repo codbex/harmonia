@@ -1,0 +1,15 @@
+[data-slot="checkbox"] > input {
+  @apply absolute top-0 left-0 size-full cursor-pointer appearance-none border-0 bg-transparent outline-none focus-visible:border-ring focus-visible:ring-ring/50;
+}
+[data-slot="checkbox"]:has(input:indeterminate) {
+  @apply border-primary bg-primary;
+}
+[data-slot="checkbox"]:has(input:indeterminate)::after {
+  @apply pointer-events-none absolute top-1/2 left-1/2 h-0.5 w-3/4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-foreground;
+}
+[data-slot="checkbox"] + [data-slot="label"] {
+  @apply cursor-pointer;
+}
+span[data-slot="checkbox"] {
+  display: inline-block;
+}

@@ -55,5 +55,7 @@ x-h-input-number
 </ClientOnly>
 
 ```html
-<input x-h-input type="text" aria-invalid="true" />
+<div x-h-input-number>
+  <input type="number" min="0" max="10" step="2" value="12" aria-invalid="true" />
+</div>
 ```

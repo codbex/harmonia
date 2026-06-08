@@ -11,6 +11,14 @@ CSS utility classes to style text. It is recommended that you first look at the 
 | text-base     | Default body text size (1rem / 16px).                                               |
 | text-lg       | Large text (1.125rem / 18px).                                                       |
 | text-xl       | Extra large text (1.25rem / 20px).                                                  |
+| text-2xl      | 1.5rem / 24px.                                                                      |
+| text-3xl      | 1.875rem / 30px.                                                                    |
+| text-4xl      | 2.25rem / 36px.                                                                     |
+| text-5xl      | 3rem / 48px.                                                                        |
+| text-6xl      | 3.75rem / 60px.                                                                     |
+| text-7xl      | 4.5rem / 72px.                                                                      |
+| text-8xl      | 6rem / 96px.                                                                        |
+| text-9xl      | 8rem / 128px.                                                                       |
 | text-left     | Aligns text to the left edge of its container.                                      |
 | text-right    | Aligns text to the right edge of its container.                                     |
 | text-center   | Centers text horizontally within its container.                                     |
@@ -52,7 +60,7 @@ CSS utility classes to style text. It is recommended that you first look at the 
 <br />
 
 <ClientOnly>
-<component-container>
+<component-container data-class="vbox gap-2">
 <p class="text-xs">Extra small</p>
 <p class="text-sm">Small</p>
 <p class="text-base">Base</p>
@@ -61,6 +69,11 @@ CSS utility classes to style text. It is recommended that you first look at the 
 <p class="text-2xl">Extra large (x2)</p>
 <p class="text-3xl">Extra large (x3)</p>
 <p class="text-4xl">Extra large (x4)</p>
+<p class="text-5xl">Extra large (x5)</p>
+<p class="text-6xl">Extra large (x6)</p>
+<p class="text-7xl">Extra large (x7)</p>
+<p class="text-8xl">Extra large (x8)</p>
+<p class="text-9xl">Extra large (x9)</p>
 </component-container>
 </ClientOnly>
 
@@ -73,4 +86,9 @@ CSS utility classes to style text. It is recommended that you first look at the 
 <p class="text-2xl">Extra large (x2)</p>
 <p class="text-3xl">Extra large (x3)</p>
 <p class="text-4xl">Extra large (x4)</p>
+<p class="text-5xl">Extra large (x5)</p>
+<p class="text-6xl">Extra large (x6)</p>
+<p class="text-7xl">Extra large (x7)</p>
+<p class="text-8xl">Extra large (x8)</p>
+<p class="text-9xl">Extra large (x9)</p>
 ```

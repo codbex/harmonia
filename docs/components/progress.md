@@ -16,18 +16,37 @@ x-h-progress
 
 ### Attributes
 
-| Attribute | Type   | Required | Description                   |
-| --------- | ------ | -------- | ----------------------------- |
-| `self`    | number | true     | Sets the progress. Used as %. |
+| Attribute    | Type                                                         | Required | Description                   |
+| ------------ | ------------------------------------------------------------ | -------- | ----------------------------- |
+| `self`       | number                                                       | true     | Sets the progress. Used as %. |
+| data-variant | `positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color state          |
 
 ## Examples
 
 <ClientOnly>
-<component-container data-class="flex flex-col items-center">
+<component-container data-class="vbox gap-4">
+<p x-h-text.muted>Default/Primary</p>
 <div x-h-progress="40"></div>
+<p x-h-text.muted>Information</p>
+<div x-h-progress="40" data-variant="information"></div>
+<p x-h-text.muted>Warning</p>
+<div x-h-progress="40" data-variant="warning"></div>
+<p x-h-text.muted>Positive</p>
+<div x-h-progress="40" data-variant="positive"></div>
+<p x-h-text.muted>Negative</p>
+<div x-h-progress="40" data-variant="negative"></div>
 </component-container>
 </ClientOnly>
 
 ```html
+<p x-h-text.muted>Default/Primary</p>
 <div x-h-progress="40"></div>
+<p x-h-text.muted>Information</p>
+<div x-h-progress="40" data-variant="information"></div>
+<p x-h-text.muted>Warning</p>
+<div x-h-progress="40" data-variant="warning"></div>
+<p x-h-text.muted>Positive</p>
+<div x-h-progress="40" data-variant="positive"></div>
+<p x-h-text.muted>Negative</p>
+<div x-h-progress="40" data-variant="negative"></div>
 ```

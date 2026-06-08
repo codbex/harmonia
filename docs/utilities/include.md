@@ -28,11 +28,23 @@ x-h-include
 | --------- | ------ | -------- | ----------------------------------- |
 | `self`    | string | true     | Relative path to the HTML fragment. |
 
+### Attributes
+
+| Attribute | Type    | Required | Description                                                                                                                                     |
+| --------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-js   | boolean | false    | By default, the directive does not execute any JavaScript code.<br />If the fragment includes a script that should execute, set this to `true`. |
+
 ### Modifiers
 
-| Modifier | Description                                                                                                                                     |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| js       | By default, the directive does not execute any JavaScript code.<br />If the fragment includes a script that should execute, use this modifirer. |
+| Modifier  | Description           |
+| --------- | --------------------- |
+| <s>js</s> | Replaced by `data-js` |
+
+### Events
+
+| Event             | Bubbles | Detail    | Description                                                                                                    |
+| ----------------- | ------- | --------- | -------------------------------------------------------------------------------------------------------------- |
+| `fragment:loaded` | No      | `{ url }` | Dispatched on the element after the fragment is inserted into the DOM and Alpine has initialized the new tree. |
 
 ## Examples
 
@@ -44,4 +56,21 @@ x-h-include
 
 ```html
 <div x-h-include="'/harmonia/components/include/fragment.html'"></div>
+```
+
+### Reacting after load
+
+Because `fragment:loaded` does not bubble, attach the listener directly to the element:
+
+```html
+<div x-h-include="'/harmonia/components/include/fragment.html'" @fragment:loaded="onFragmentLoaded($event.detail.url)"></div>
+```
+
+Or in plain JavaScript:
+
+```js
+const el = document.querySelector('#my-include');
+el.addEventListener('fragment:loaded', (e) => {
+  console.log('Loaded:', e.detail.url);
+});
 ```

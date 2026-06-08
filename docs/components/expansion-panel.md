@@ -96,7 +96,7 @@ x-h-exp-panel-content
 
 ```html
 <div x-h-exp-panel>
-  <div x-h-exp-panel-item>
+  <div x-h-exp-panel-item="true">
     <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
     <div x-h-exp-panel-content>
       <div x-h-info-page>

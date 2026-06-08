@@ -18,7 +18,7 @@ export default function (Alpine) {
     }
     el.setAttribute('type', 'button');
     if (modifiers.includes('chevron')) {
-      el.classList.add('[&_svg]:transition-transform', 'motion-reduce:[&_svg]:transition-none', '[&[aria-expanded=true]>svg:not(:first-child):last-child]:rotate-180');
+      el.classList.add('[&>svg]:transition-transform', 'motion-reduce:[&>svg]:transition-none', '[&[aria-expanded=true]>svg:not(:first-child):last-child]:rotate-180');
     }
 
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'popover-trigger');

@@ -168,7 +168,7 @@ Hover over the menu item to trigger the popover.
 </ClientOnly>
 
 ```html
-<nav x-h-nav aria-label="Main navigation">
+<nav x-h-nav aria-label="Main navigation" data-open-on-hover="true">
   <ul x-h-nav-list>
     <li x-h-nav-item>
       <a x-h-nav-link href="#" data-active="true">Home</a>

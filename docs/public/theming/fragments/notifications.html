@@ -1,0 +1,202 @@
+<div class="vbox items-center gap-8">
+  <section x-h-notification-overlay>
+    <template id="basic">
+      <li x-h-notification.floating>
+        <div x-h-notification-title x-text="title"></div>
+      </li>
+    </template>
+    <template id="progress"> ... </template>
+  </section>
+
+  <li x-h-notification.floating data-variant="toast">
+    <div x-h-notification-title>Toast</div>
+  </li>
+
+  <li x-h-notification.floating class="hbox items-center">
+    <div x-h-notification-media>
+      <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+    </div>
+    <div x-h-notification-title>Notification</div>
+  </li>
+
+  <li x-h-notification.floating class="hbox">
+    <div x-h-notification-media>
+      <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+    </div>
+    <div class="vbox flex-1">
+      <h1 x-h-notification-title>Notification</h1>
+      <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+    </div>
+    <div x-h-notification-actions data-orientation="vertical">
+      <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+        <svg x-h-icon.close role="img" aria-label="close"></svg>
+      </button>
+    </div>
+  </li>
+
+  <li x-h-notification.floating class="hbox">
+    <div x-h-notification-media>
+      <span x-h-avatar>
+        <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+        <div x-h-avatar-fallback>HM</div>
+      </span>
+    </div>
+    <div class="vbox flex-1">
+      <h1 x-h-notification-title>Notification</h1>
+      <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+    </div>
+    <div x-h-notification-actions data-orientation="vertical">
+      <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+        <svg x-h-icon.close role="img" aria-label="close"></svg>
+      </button>
+    </div>
+  </li>
+
+  <li x-h-notification.floating class="hbox items-center">
+    <div x-h-notification-title>File deleted</div>
+    <div x-h-notification-actions data-orientation="horizontal" data-align="center">
+      <button x-h-button data-size="sm" data-variant="outline">Undo</button>
+      <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+        <svg x-h-icon.close role="img" aria-label="close"></svg>
+      </button>
+    </div>
+  </li>
+
+  <li x-h-notification.floating class="hbox">
+    <div x-h-notification-actions data-orientation="vertical">
+      <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
+        <svg x-h-icon.close role="img" aria-label="close"></svg>
+      </button>
+    </div>
+    <div class="vbox flex-1 gap-2">
+      <h1 x-h-notification-title>Generating project...</h1>
+      <div x-h-progress="40"></div>
+    </div>
+  </li>
+
+  <li x-h-notification.floating class="vbox gap-2">
+    <div x-h-notification-title class="hbox items-center gap-2">
+      <svg x-h-icon.import class="size-6" role="img" aria-label="import"></svg>
+      <span class="text-lg">Uploading in progress</span>
+    </div>
+    <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
+    <div x-h-progress="40"></div>
+    <div x-h-notification-actions data-orientation="horizontal">
+      <button x-h-button class="flex-1" data-variant="outline">Cancel upload</button>
+      <button x-h-button class="flex-1" data-variant="primary">Show all uploads</button>
+    </div>
+  </li>
+
+  <li x-h-notification.floating class="hbox">
+    <div x-h-notification-media class="justify-start">
+      <span x-h-avatar class="size-10">
+        <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+        <div x-h-avatar-fallback>HM</div>
+      </span>
+    </div>
+    <div class="vbox flex-1 gap-1">
+      <h1 x-h-notification-title>Harmonia Doe</h1>
+      <p x-h-notification-description>I just received the document. It looks good.</p>
+      <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+        <button x-h-button data-variant="primary" data-size="sm">
+          <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+          Reply
+        </button>
+      </div>
+    </div>
+    <div x-h-notification-actions data-orientation="vertical" class="justify-start">
+      <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+        <svg x-h-icon.close role="img" aria-label="close"></svg>
+      </button>
+    </div>
+  </li>
+
+  <li x-h-notification.floating class="hbox items-center">
+    <div x-h-notification-media>
+      <span x-h-avatar class="rounded-lg" data-variant="information">
+        <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+      </span>
+    </div>
+    <div x-h-notification-title>Information</div>
+  </li>
+
+  <li x-h-notification.floating class="hbox items-center">
+    <div x-h-notification-media>
+      <span x-h-avatar class="rounded-lg" data-variant="warning">
+        <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+      </span>
+    </div>
+    <div x-h-notification-title>Warning</div>
+  </li>
+
+  <li x-h-notification.floating class="hbox items-center">
+    <div x-h-notification-media>
+      <span x-h-avatar class="rounded-lg" data-variant="positive">
+        <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+      </span>
+    </div>
+    <div x-h-notification-title>Success</div>
+  </li>
+
+  <li x-h-notification.floating class="hbox items-center">
+    <div x-h-notification-media>
+      <span x-h-avatar class="rounded-lg" data-variant="negative">
+        <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+      </span>
+    </div>
+    <div x-h-notification-title>Error</div>
+  </li>
+
+  <ol x-h-notification-list class="min-w-md border">
+    <li x-h-notification class="hbox" data-unread="true">
+      <div x-h-notification-media class="justify-start">
+        <span x-h-avatar class="size-10">
+          <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+          <div x-h-avatar-fallback>HM</div>
+        </span>
+      </div>
+      <div class="vbox flex-1 gap-1">
+        <h1 x-h-notification-title>Harmonia Doe</h1>
+        <p x-h-notification-description>I just received the document. It looks good.</p>
+        <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+          <button x-h-button data-variant="primary" data-size="sm">
+            <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+            Reply
+          </button>
+        </div>
+      </div>
+      <div x-h-notification-actions data-orientation="vertical" class="justify-start">
+        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+          <svg x-h-icon.close role="img" aria-label="close"></svg>
+        </button>
+      </div>
+    </li>
+    <li x-h-notification class="hbox items-center">
+      <div x-h-notification-media class="w-10">
+        <span x-h-avatar class="rounded-lg" data-variant="negative">
+          <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+        </span>
+      </div>
+      <div class="vbox flex-1">
+        <h1 x-h-notification-title>Generation failed</h1>
+        <p x-h-notification-description>Failed to generate a monthly report. Check console log.</p>
+      </div>
+      <div x-h-notification-actions data-orientation="vertical">
+        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+          <svg x-h-icon.close role="img" aria-label="close"></svg>
+        </button>
+      </div>
+    </li>
+    <li x-h-notification class="hbox items-center">
+      <div x-h-notification-media class="w-10">
+        <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+      </div>
+      <div x-h-notification-title class="flex-1">Montly report generation started</div>
+      <div x-h-notification-actions data-orientation="vertical">
+        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
+          <svg x-h-icon.close role="img" aria-label="close"></svg>
+        </button>
+      </div>
+    </li>
+  </ol>
+</div>

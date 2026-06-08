@@ -38,9 +38,9 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 
 #### x-h-popover-trigger
 
-| Modifier | Description                                         |
-| -------- | --------------------------------------------------- |
-| chevron  | Rotates the icon inside the trigger at 180 degrees. |
+| Modifier | Description                                              |
+| -------- | -------------------------------------------------------- |
+| chevron  | Rotates the last icon inside the trigger at 180 degrees. |
 
 #### x-h-popover
 
