@@ -210,9 +210,7 @@ export default function (Alpine) {
       }
       if (timepicker._h_timepicker.is12Hour) {
         const { hour, minute, second, period } = getSelectedTime(value24h, true);
-        el.value = timepicker._h_timepicker.seconds
-          ? `${hour}:${minute}:${second ?? '00'} ${period}`
-          : `${hour}:${minute} ${period}`;
+        el.value = timepicker._h_timepicker.seconds ? `${hour}:${minute}:${second ?? '00'} ${period}` : `${hour}:${minute} ${period}`;
       } else {
         el.value = value24h;
       }

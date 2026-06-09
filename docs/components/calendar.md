@@ -45,8 +45,8 @@ Full ISO datetime strings (e.g. from `new Date().toISOString()`) are also accept
 
 ### Events
 
-| Event  | Description                                                                                                                                       |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Event  | Description                                                                                            |
+| ------ | ------------------------------------------------------------------------------------------------------ |
 | change | Triggered when the selected date changes. The selected `Date` object is passed in `event.detail.date`. |
 
 ### Config
