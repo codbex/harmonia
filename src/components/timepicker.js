@@ -10,33 +10,18 @@ const getSelectedTime = (rawTime, convertTo12) => {
   let second = null;
   let period = null;
   if (rawTime.length > 0) {
-    let timeParts = rawTime.split(':');
-    if (rawTime.toUpperCase().endsWith('AM')) {
-      period = dayPeriodLabels.am;
-    } else if (rawTime.toUpperCase().endsWith('PM')) {
-      period = dayPeriodLabels.pm;
-    }
-    if (period) {
-      timeParts[timeParts.length - 1] = timeParts[timeParts.length - 1].substring(0, timeParts[timeParts.length - 1].length - 3);
-    }
+    const timeParts = rawTime.split(':');
+    const h24 = parseInt(timeParts[0], 10);
     minute = timeParts[1];
-    if ((!period && timeParts.length === 3) || (period && timeParts.length === 4)) {
+    if (timeParts.length === 3) {
       second = timeParts[2];
     }
-    if (convertTo12 && period) {
-      hour = timeParts[0];
-    } else if (convertTo12 && !period) {
-      period = Number(timeParts[0]) >= 12 ? dayPeriodLabels.pm : dayPeriodLabels.am;
-      hour = Number(timeParts[0]) % 12 || 12;
-      if (hour < 10) hour = `0${hour}`;
-    } else if (!convertTo12 && period) {
-      if (period === dayPeriodLabels.pm) {
-        hour = Number(timeParts[0]) + 12;
-      } else {
-        hour = timeParts[0];
-      }
+    if (convertTo12) {
+      period = h24 >= 12 ? dayPeriodLabels.pm : dayPeriodLabels.am;
+      const h12 = h24 % 12 || 12;
+      hour = h12 < 10 ? `0${h12}` : h12.toString();
     } else {
-      hour = timeParts[0];
+      hour = h24 < 10 ? `0${h24}` : h24.toString();
     }
   }
   return { hour, minute, second, period };
@@ -59,7 +44,6 @@ export default function (Alpine) {
     el._h_timepicker = Alpine.reactive({
       id: undefined,
       controls: `htpc${uuidv4()}`,
-      model: undefined,
       expanded: false,
       is12Hour: false,
       locale: undefined,
@@ -75,6 +59,8 @@ export default function (Alpine) {
     });
     el._h_time = {
       changed: undefined,
+      model: undefined,
+      setDisplay: undefined,
       parts: {
         hour: null,
         minute: null,
@@ -169,16 +155,10 @@ export default function (Alpine) {
           if (config) {
             if (config['locale']) el._h_timepicker.locale = config.locale;
             el._h_timepicker.seconds = config['seconds'];
-            if (config['is12Hour'] !== undefined) {
-              el._h_timepicker.is12Hour = config.is12Hour;
-            } else {
-              el._h_timepicker.is12Hour = new Intl.DateTimeFormat(el._h_timepicker.locale, { hour: 'numeric' }).resolvedOptions().hour12;
-            }
+            el._h_timepicker.is12Hour = config['is12Hour'] === true;
           }
         });
       });
-    } else {
-      el._h_timepicker.is12Hour = new Intl.DateTimeFormat(el._h_timepicker.locale, { hour: 'numeric' }).resolvedOptions().hour12;
     }
 
     const handler = (event) => {
@@ -223,10 +203,29 @@ export default function (Alpine) {
         el.dispatchEvent(new Event('change'));
       });
     };
+    const updateDisplay = (value24h) => {
+      if (!value24h) {
+        el.value = '';
+        return;
+      }
+      if (timepicker._h_timepicker.is12Hour) {
+        const { hour, minute, second, period } = getSelectedTime(value24h, true);
+        el.value = timepicker._h_timepicker.seconds
+          ? `${hour}:${minute}:${second ?? '00'} ${period}`
+          : `${hour}:${minute} ${period}`;
+      } else {
+        el.value = value24h;
+      }
+    };
+    timepicker._h_time.setDisplay = updateDisplay;
+
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
-      timepicker._h_timepicker.model = el._x_model;
+      timepicker._h_time.model = el._x_model;
+      effect(() => {
+        updateDisplay(el._x_model.get());
+      });
     } else {
-      timepicker._h_timepicker.model = {
+      timepicker._h_time.model = {
         get() {
           return el.value;
         },
@@ -262,7 +261,7 @@ export default function (Alpine) {
     el.setAttribute('type', 'text');
     el.setAttribute('data-slot', 'time-picker-input');
 
-    const rawTime = timepicker._h_timepicker.model.get();
+    const rawTime = timepicker._h_time.model.get();
 
     if (rawTime) {
       const { hour, minute, second, period } = getSelectedTime(rawTime, timepicker._h_timepicker.is12Hour);
@@ -273,33 +272,22 @@ export default function (Alpine) {
         timepicker._h_timepicker.seconds = true;
       }
 
-      if (timepicker._h_timepicker.is12Hour) {
-        if (timepicker._h_timepicker.seconds) {
-          timepicker._h_timepicker.model.set(`${hour}:${minute}:${second ?? '00'} ${period}`);
-          timepicker._h_time.parts.second = second ?? '00';
-        } else {
-          timepicker._h_timepicker.model.set(`${hour}:${minute} ${period}`);
-        }
-        timepicker._h_time.parts.hour = hour;
-        timepicker._h_time.parts.minute = minute;
-        timepicker._h_time.parts.period = period;
-      } else {
-        if (timepicker._h_timepicker.seconds) {
-          timepicker._h_timepicker.model.set(`${hour}:${minute}:${second ?? '00'}`);
-          timepicker._h_time.parts.second = second ?? '00';
-        } else {
-          timepicker._h_timepicker.model.set(`${hour}:${minute}`);
-        }
-        timepicker._h_time.parts.hour = hour;
-        timepicker._h_time.parts.minute = minute;
+      timepicker._h_time.parts.hour = hour;
+      timepicker._h_time.parts.minute = minute;
+      if (timepicker._h_timepicker.seconds) {
+        timepicker._h_time.parts.second = second ?? '00';
       }
+      timepicker._h_time.parts.period = period;
+      updateDisplay(rawTime);
     }
 
+    const is12Hour = timepicker._h_timepicker.is12Hour;
+    const hasSeconds = timepicker._h_timepicker.seconds;
     let placeholder;
-    if (timepicker._h_timepicker.seconds) {
-      placeholder = timepicker._h_timepicker.is12Hour ? '--:--:-- --' : '--:--:--';
+    if (hasSeconds) {
+      placeholder = is12Hour ? '--:--:-- --' : '--:--:--';
     } else {
-      placeholder = timepicker._h_timepicker.is12Hour ? '--:-- --' : '--:--';
+      placeholder = is12Hour ? '--:-- --' : '--:--';
     }
     el.setAttribute('placeholder', placeholder);
 
@@ -369,25 +357,28 @@ export default function (Alpine) {
     ];
 
     const updateModel = () => {
-      let newValue;
-      if (timepicker._h_time.parts.hour !== null && timepicker._h_time.parts.minute !== null) {
-        if (timepicker._h_timepicker.seconds) {
-          if (timepicker._h_time.parts.seconds !== null) {
-            newValue = `${timepicker._h_time.parts.hour}:${timepicker._h_time.parts.minute}:${timepicker._h_time.parts.second}`;
-          } else return;
-        } else {
-          newValue = `${timepicker._h_time.parts.hour}:${timepicker._h_time.parts.minute}`;
-        }
-      } else return;
+      if (timepicker._h_time.parts.hour === null || timepicker._h_time.parts.minute === null) return;
+      if (timepicker._h_timepicker.is12Hour && timepicker._h_time.parts.period === null) return;
+      if (timepicker._h_timepicker.seconds && timepicker._h_time.parts.second === null) return;
+
+      let h24;
       if (timepicker._h_timepicker.is12Hour) {
-        if (timepicker._h_time.parts.period !== null) {
-          newValue += ` ${timepicker._h_time.parts.period}`;
-        } else return;
+        const h12 = parseInt(timepicker._h_time.parts.hour, 10);
+        if (timepicker._h_time.parts.period === dayPeriodLabels.am) {
+          h24 = h12 === 12 ? 0 : h12;
+        } else {
+          h24 = h12 === 12 ? 12 : h12 + 12;
+        }
+      } else {
+        h24 = parseInt(timepicker._h_time.parts.hour, 10);
       }
-      if (newValue) {
-        timepicker._h_timepicker.model.set(newValue);
-        timepicker._h_time.changed();
-      }
+      const h24Str = h24 < 10 ? `0${h24}` : h24.toString();
+
+      const newValue = timepicker._h_timepicker.seconds ? `${h24Str}:${timepicker._h_time.parts.minute}:${timepicker._h_time.parts.second}` : `${h24Str}:${timepicker._h_time.parts.minute}`;
+
+      timepicker._h_time.model.set(newValue);
+      timepicker._h_time.setDisplay?.(newValue);
+      timepicker._h_time.changed();
     };
 
     const getCurrentTime = () => {

@@ -105,11 +105,11 @@ describe('h-time-picker-input', () => {
       is12Hour: false,
       seconds: false,
       focusInput: undefined,
-      model: undefined,
       close: vi.fn(),
     };
     timepicker._h_time = {
       changed: undefined,
+      model: undefined,
       parts: { hour: null, minute: null, second: null, period: null },
     };
     const input = document.createElement('input');
@@ -179,11 +179,11 @@ describe('h-time-picker-popup', () => {
       expanded: false,
       is12Hour: false,
       seconds: false,
-      model: { get: vi.fn().mockReturnValue(''), set: vi.fn() },
       close: vi.fn(),
     };
     timepicker._h_time = {
       changed: vi.fn(),
+      model: { get: vi.fn().mockReturnValue(''), set: vi.fn() },
       parts: { hour: null, minute: null, second: null, period: null },
     };
     const popup = document.createElement('div');

@@ -37,11 +37,17 @@ x-h-calendar
 | data-aria-next-year  | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the next year button.      |
 | data-align           | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the calendar popover relative to the trigger.                 |
 
+### Model
+
+When using `x-model`, the calendar reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`). Set the bound variable to a `YYYY-MM-DD` string to pre-select a date, or to an empty string for no initial selection. On every selection the model is updated to the newly selected date in the same `YYYY-MM-DD` format.
+
+Full ISO datetime strings (e.g. from `new Date().toISOString()`) are also accepted as input, but initialising with `YYYY-MM-DD` is recommended to avoid timezone-related date drift.
+
 ### Events
 
-| Event  | Description                                                                                                          |
-| ------ | -------------------------------------------------------------------------------------------------------------------- |
-| change | Triggered when the value or model has changed. The date is passed in the `event.detail` object under the `date` key. |
+| Event  | Description                                                                                                                                       |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| change | Triggered when the selected date changes. The selected `Date` object is passed in `event.detail.date`. |
 
 ### Config
 
@@ -58,14 +64,13 @@ Example:
 </script>
 ```
 
-| Key        | Description                                                                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| locale     | The locale of the calendar as a BCP 47 language tag. If not provided, it's automatically set from the user preferences.                                     |
-| firstDay   | The start day of the week. `0` is Sunday.                                                                                                                   |
-| min        | The earliest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                              |
-| max        | The latest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                |
-| modelAsIso | The value saved in the model will be an ISO 8601 datetime string, regardless of locale and the format displayed in the input.                               |
-| options    | [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options) options. |
+| Key      | Description                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| locale   | The locale of the calendar as a BCP 47 language tag. If not provided, it's automatically set from the user preferences.                                     |
+| firstDay | The start day of the week. `0` is Sunday.                                                                                                                   |
+| min      | The earliest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                              |
+| max      | The latest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                |
+| options  | [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options) options. |
 
 ## Examples
 
@@ -85,14 +90,30 @@ Example:
 
 <ClientOnly>
 <component-container>
-<div x-data="{ caldate: new Date().toISOString() }">
+<div
+  x-data="{
+  caldate: '',
+  init() {
+    const d = new Date();
+    this.caldate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
   <div x-h-calendar="{ locale: 'en-US', firstDay: 1 }" x-model="caldate"></div>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
-<div x-data="{ caldate: new Date().toISOString() }">
+<div
+  x-data="{
+  caldate: '',
+  init() {
+    const d = new Date();
+    this.caldate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
   <div x-h-calendar="{ locale: 'en-US', firstDay: 1 }" x-model="caldate"></div>
 </div>
 ```

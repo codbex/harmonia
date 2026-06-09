@@ -59,6 +59,12 @@ x-h-time-picker-popup
 | -------- | ------------------------------------ |
 | table    | Use when the input is inside a table |
 
+### Model
+
+When using `x-model` on `x-h-time-picker-input`, the time picker reads and writes times as `HH:MM` strings in 24-hour format (e.g. `"13:30"`). With seconds enabled, the format is `HH:MM:SS` (e.g. `"13:30:45"`).
+
+The `is12Hour` option only affects the popup display — the model value is always in 24-hour format regardless of the display mode.
+
 ### Config
 
 You can pass a configuration object to the time picker as an expression or as a value.
@@ -81,7 +87,7 @@ Example:
 | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
 | locale   | string  | The locale of the time picker as a BCP 47 language tag. If not provided, it's automatically set from the user preferences. |
 | seconds  | boolean | Include seconds in the picker.                                                                                             |
-| is12Hour | boolean | Switches to a 12-hour mode. The day periods (meridiem) will always be displayed as `AM/PM` regardless of the locale.       |
+| is12Hour | boolean | Set to `true` to switch the popup to 12-hour display mode. The day periods (meridiem) are always displayed as `AM/PM`. Defaults to `false`. The model value remains in 24-hour format. |
 
 ## Examples
 

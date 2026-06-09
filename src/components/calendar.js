@@ -36,21 +36,75 @@ export default function (Alpine) {
 
     let locale = undefined;
     let formatter = undefined;
-    let modelAsIso = false;
+    let inputParser = null;
     let firstDay = 0;
     let minDate = undefined;
     let maxDate = undefined;
+
+    function toDateString(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function parseDateValue(value) {
+      const isoDate = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      if (isoDate) {
+        return new Date(parseInt(isoDate[1]), parseInt(isoDate[2]) - 1, parseInt(isoDate[3]));
+      }
+      return new Date(value);
+    }
+
+    function buildInputParser() {
+      const probe = new Date(2001, 2, 5);
+      const parts = formatter.formatToParts(probe);
+      let regexStr = '^';
+      const fieldOrder = [];
+      for (const part of parts) {
+        if (part.type === 'year') {
+          regexStr += '(\\d{2,4})';
+          fieldOrder.push('year');
+        } else if (part.type === 'month') {
+          if (/^\d/.test(part.value)) {
+            regexStr += '(\\d{1,2})';
+            fieldOrder.push('month');
+          } else {
+            inputParser = null;
+            return;
+          }
+        } else if (part.type === 'day') {
+          regexStr += '(\\d{1,2})';
+          fieldOrder.push('day');
+        } else if (part.type === 'literal') {
+          regexStr += part.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+      }
+      inputParser = fieldOrder.length === 3 ? { regex: new RegExp(regexStr + '$'), fieldOrder } : null;
+    }
+
+    function parseDisplayValue(value) {
+      const isoDate = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      if (isoDate) {
+        return new Date(parseInt(isoDate[1]), parseInt(isoDate[2]) - 1, parseInt(isoDate[3]));
+      }
+      if (inputParser) {
+        const match = inputParser.regex.exec(value);
+        if (match) {
+          const fields = {};
+          inputParser.fieldOrder.forEach((field, i) => {
+            fields[field] = parseInt(match[i + 1]);
+          });
+          const year = fields.year < 100 ? 2000 + fields.year : fields.year;
+          return new Date(year, fields.month - 1, fields.day);
+        }
+      }
+      return new Date(value);
+    }
 
     function modelChange(triggerInput = false) {
       Alpine.nextTick(() => {
         el.dispatchEvent(new CustomEvent('change', { detail: { date: selected } }));
       });
       if (el._x_model) {
-        if (modelAsIso) {
-          el._x_model.set(selected.toISOString());
-        } else {
-          el._x_model.set(formatter.format(selected));
-        }
+        el._x_model.set(toDateString(selected));
       }
       if (datepicker) {
         datepicker._h_datepicker.input.value = formatter.format(selected);
@@ -62,13 +116,14 @@ export default function (Alpine) {
     }
 
     const onInputChange = () => {
-      const newValue = new Date(datepicker._h_datepicker.input.value);
+      const newValue = parseDisplayValue(datepicker._h_datepicker.input.value);
       if (isNaN(newValue)) {
         console.error(`${original}: input value is not a valid date - ${datepicker._h_datepicker.input.value}`);
         datepicker._h_datepicker.input.setCustomValidity('Input value is not a valid date.');
         return;
-      } else if (selected.getTime() !== newValue.getTime()) {
+      } else if (!selected || !sameDay(selected, newValue)) {
         selected = newValue;
+        date = new Date(selected);
         modelChange();
         render();
       }
@@ -80,13 +135,14 @@ export default function (Alpine) {
     }
 
     function setFromModel() {
-      selected = new Date(el._x_model.get());
+      selected = parseDateValue(el._x_model.get());
       if (isNaN(selected)) {
         console.error(`${original}: input value is not a valid date - ${el._x_model.get()}`);
         if (datepicker) datepicker._h_datepicker.input.setCustomValidity('Input value is not a valid date.');
         else el.setAttribute('data-invalid', 'true');
-      } else if (datepicker) {
-        datepicker._h_datepicker.input.value = formatter.format(selected);
+      } else {
+        date = new Date(selected);
+        if (datepicker) datepicker._h_datepicker.input.value = formatter.format(selected);
       }
     }
 
@@ -172,7 +228,8 @@ export default function (Alpine) {
         },
       })
     );
-    previousYearBtn.addEventListener('click', () => {
+    previousYearBtn.addEventListener('click', (event) => {
+      if (datepicker) event.stopPropagation();
       date.setFullYear(date.getFullYear() - 1);
       render();
     });
@@ -192,7 +249,8 @@ export default function (Alpine) {
         },
       })
     );
-    previousMonthBtn.addEventListener('click', () => {
+    previousMonthBtn.addEventListener('click', (event) => {
+      if (datepicker) event.stopPropagation();
       date.setMonth(date.getMonth() - 1);
       render();
     });
@@ -218,7 +276,8 @@ export default function (Alpine) {
         },
       })
     );
-    nextMonthBtn.addEventListener('click', () => {
+    nextMonthBtn.addEventListener('click', (event) => {
+      if (datepicker) event.stopPropagation();
       date.setMonth(date.getMonth() + 1);
       render();
     });
@@ -238,7 +297,8 @@ export default function (Alpine) {
         },
       })
     );
-    nextYearBtn.addEventListener('click', () => {
+    nextYearBtn.addEventListener('click', (event) => {
+      if (datepicker) event.stopPropagation();
       date.setFullYear(date.getFullYear() + 1);
       render();
     });
@@ -488,7 +548,7 @@ export default function (Alpine) {
           if (config.firstDay) firstDay = config.firstDay;
           if (config.options) formatter = new Intl.DateTimeFormat(locale, config.options);
           else formatter = new Intl.DateTimeFormat(locale);
-          modelAsIso = config.modelAsIso === false;
+          buildInputParser();
           if (config.min) minDate = new Date(config.min);
           if (config.max) maxDate = new Date(config.max);
           weekdayNames = getWeekdayNames();
@@ -500,6 +560,7 @@ export default function (Alpine) {
       });
     } else {
       formatter = new Intl.DateTimeFormat();
+      buildInputParser();
       weekdayNames = getWeekdayNames();
       fullWeekdayNames = getFullWeekdayNames();
       setWeekdayHeaders();
@@ -566,7 +627,8 @@ export default function (Alpine) {
 
       effect(() => {
         evaluateModel((value) => {
-          if ((!selected && value) || (value && selected.getTime() !== new Date(value).getTime())) {
+          const parsed = value ? parseDateValue(value) : undefined;
+          if ((!selected && value) || (value && !sameDay(selected, parsed))) {
             setFromModel();
             render();
           } else if (!value) {

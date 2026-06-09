@@ -48,11 +48,38 @@ x-h-calendar
 
 See [Calendar](/components/calendar)
 
+### Model
+
+The date picker reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`), matching the value format of a native `<input type="date">`. The display format shown in the text input is separate and can be customised via the `options` key in the calendar config.
+
+### Display format
+
+By default the input displays the date using the user's locale. To customise it, pass [Intl.DateTimeFormat options](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options) via the `options` key on `x-h-calendar`. The model value always remains `YYYY-MM-DD` regardless of the display format.
+
+```html
+<div x-h-date-picker ...>
+  <input type="text" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-calendar="{ options: { day: '2-digit', month: '2-digit', year: 'numeric' } }" x-model="date"></div>
+</div>
+```
+
+Manual input typed by the user is parsed using the configured display format. For formats where the month appears as a word rather than a number, parsing falls back to the browser's native `Date` constructor.
+
 ## Examples
 
 <ClientOnly>
 <component-container>
-<div x-h-date-picker x-data="{ date: new Date().toISOString() }">
+<div
+  x-h-date-picker
+  x-data="{
+  date: '',
+  init() {
+    const d = new Date();
+    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
   <input type="text" id="date-input-1" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-calendar x-model="date"></div>
@@ -61,9 +88,56 @@ See [Calendar](/components/calendar)
 </ClientOnly>
 
 ```html
-<div x-h-date-picker x-data="{ date: new Date().toISOString() }">
+<div
+  x-h-date-picker
+  x-data="{
+  date: '',
+  init() {
+    const d = new Date();
+    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
   <input type="text" id="date-input-1" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-calendar x-model="date"></div>
+</div>
+```
+
+### With custom display format
+
+<ClientOnly>
+<component-container>
+<div
+  x-h-date-picker
+  x-data="{
+  date: '',
+  init() {
+    const d = new Date();
+    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
+  <input type="text" id="date-input-2" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-calendar="{ options: { day: '2-digit', month: 'long', year: 'numeric' } }" x-model="date"></div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div
+  x-h-date-picker
+  x-data="{
+  date: '',
+  init() {
+    const d = new Date();
+    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
+  <input type="text" id="date-input-2" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-calendar="{ options: { day: '2-digit', month: 'long', year: 'numeric' } }" x-model="date"></div>
 </div>
 ```
