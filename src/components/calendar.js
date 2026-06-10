@@ -37,6 +37,8 @@ export default function (Alpine) {
     let locale = undefined;
     let formatter = undefined;
     let inputParser = null;
+    let delimiter = undefined;
+    let dateOrder = undefined;
     let firstDay = 0;
     let minDate = undefined;
     let maxDate = undefined;
@@ -53,31 +55,44 @@ export default function (Alpine) {
       return new Date(value);
     }
 
+    const dateOrderMap = { Y: 'year', M: 'month', D: 'day' };
+
     function buildInputParser() {
       const probe = new Date(2001, 2, 5);
       const parts = formatter.formatToParts(probe);
-      let regexStr = '^';
-      const fieldOrder = [];
-      for (const part of parts) {
-        if (part.type === 'year') {
-          regexStr += '(\\d{2,4})';
-          fieldOrder.push('year');
-        } else if (part.type === 'month') {
-          if (/^\d/.test(part.value)) {
-            regexStr += '(\\d{1,2})';
-            fieldOrder.push('month');
-          } else {
-            inputParser = null;
-            return;
-          }
-        } else if (part.type === 'day') {
-          regexStr += '(\\d{1,2})';
-          fieldOrder.push('day');
-        } else if (part.type === 'literal') {
-          regexStr += part.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
+
+      const monthPart = parts.find((p) => p.type === 'month');
+      if (monthPart && !/^\d/.test(monthPart.value)) {
+        inputParser = null;
+        return;
       }
-      inputParser = fieldOrder.length === 3 ? { regex: new RegExp(regexStr + '$'), fieldOrder } : null;
+
+      const sep = delimiter !== undefined ? delimiter : (parts.find((p) => p.type === 'literal')?.value ?? '');
+      const fieldOrder = dateOrder ? [...dateOrder].map((c) => dateOrderMap[c]) : parts.filter((p) => p.type === 'year' || p.type === 'month' || p.type === 'day').map((p) => p.type);
+
+      if (fieldOrder.length !== 3 || fieldOrder.some((f) => f === undefined)) {
+        inputParser = null;
+        return;
+      }
+
+      const escapedSep = sep.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regexStr = '^' + fieldOrder.map((f) => (f === 'year' ? '(\\d{2,4})' : '(\\d{1,2})')).join(escapedSep) + '$';
+
+      inputParser = { regex: new RegExp(regexStr), fieldOrder };
+    }
+
+    function formatDate(date) {
+      if (delimiter === undefined && dateOrder === undefined) return formatter.format(date);
+
+      const parts = formatter.formatToParts(date);
+      const sep = delimiter !== undefined ? delimiter : (parts.find((p) => p.type === 'literal')?.value ?? '');
+      const fieldValues = {};
+      for (const p of parts) {
+        if (p.type === 'year' || p.type === 'month' || p.type === 'day') fieldValues[p.type] = p.value;
+      }
+      const order = dateOrder ? [...dateOrder].map((c) => dateOrderMap[c]) : parts.filter((p) => p.type === 'year' || p.type === 'month' || p.type === 'day').map((p) => p.type);
+
+      return order.map((f) => fieldValues[f]).join(sep);
     }
 
     function parseDisplayValue(value) {
@@ -107,7 +122,7 @@ export default function (Alpine) {
         el._x_model.set(toDateString(selected));
       }
       if (datepicker) {
-        datepicker._h_datepicker.input.value = formatter.format(selected);
+        datepicker._h_datepicker.input.value = formatDate(selected);
         datepicker._h_datepicker.input.setCustomValidity('');
         if (triggerInput) datepicker._h_datepicker.input.dispatchEvent(new Event('change', { bubbles: true }));
       } else {
@@ -142,7 +157,7 @@ export default function (Alpine) {
         else el.setAttribute('data-invalid', 'true');
       } else {
         date = new Date(selected);
-        if (datepicker) datepicker._h_datepicker.input.value = formatter.format(selected);
+        if (datepicker) datepicker._h_datepicker.input.value = formatDate(selected);
       }
     }
 
@@ -545,6 +560,8 @@ export default function (Alpine) {
       effect(() => {
         getConfig((config) => {
           if (config.locale) locale = config.locale;
+          if (config.delimiter !== undefined) delimiter = config.delimiter;
+          if (config.order !== undefined) dateOrder = config.order;
           if (config.firstDay) firstDay = config.firstDay;
           if (config.options) formatter = new Intl.DateTimeFormat(locale, config.options);
           else formatter = new Intl.DateTimeFormat(locale);

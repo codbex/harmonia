@@ -64,13 +64,15 @@ Example:
 </script>
 ```
 
-| Key      | Description                                                                                                                                                 |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| locale   | The locale of the calendar as a BCP 47 language tag. If not provided, it's automatically set from the user preferences.                                     |
-| firstDay | The start day of the week. `0` is Sunday.                                                                                                                   |
-| min      | The earliest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                              |
-| max      | The latest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                |
-| options  | [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options) options. |
+| Key       | Description                                                                                                                                                                                                          |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| locale    | The locale of the calendar as a BCP 47 language tag. If not provided, it's automatically set from the user preferences.                                                                                              |
+| firstDay  | The start day of the week. `0` is Sunday.                                                                                                                                                                            |
+| min       | The earliest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                                                                       |
+| max       | The latest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                                                                         |
+| options   | [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options) options.                                                          |
+| delimiter | Custom separator character between day, month, and year in the display format (e.g. `"-"`). Does not affect the model value.                                                                                         |
+| order     | Custom display order of the date parts as a three-character string of `Y` (year), `M` (month), `D` (day) (e.g. `"MDY"` for month-day-year). Defaults to the locale's natural order. Does not affect the model value. |
 
 ## Examples
 

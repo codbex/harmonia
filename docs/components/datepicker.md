@@ -120,7 +120,7 @@ Manual input typed by the user is parsed using the configured display format. Fo
 >
   <input type="text" id="date-input-2" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
-  <div x-h-calendar="{ options: { day: '2-digit', month: 'long', year: 'numeric' } }" x-model="date"></div>
+  <div x-h-calendar="{ options: { day: '2-digit', month: 'long', year: 'numeric' }, order: 'DMY' }" x-model="date"></div>
 </div>
 </component-container>
 </ClientOnly>
@@ -138,6 +138,6 @@ Manual input typed by the user is parsed using the configured display format. Fo
 >
   <input type="text" id="date-input-2" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
-  <div x-h-calendar="{ options: { day: '2-digit', month: 'long', year: 'numeric' } }" x-model="date"></div>
+  <div x-h-calendar="{ options: { day: '2-digit', month: 'long', year: 'numeric' }, order: 'DMY' }" x-model="date"></div>
 </div>
 ```
