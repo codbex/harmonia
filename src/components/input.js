@@ -37,9 +37,9 @@ export default function (Alpine) {
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
-      'invalid:!ring-negative/20',
-      'dark:invalid:!ring-negative/40',
-      'invalid:!border-negative'
+      'invalid:ring-negative/20!',
+      'dark:invalid:ring-negative/40!',
+      'invalid:border-negative!'
     );
     if (modifiers.includes('group')) {
       el.classList.add('h-full', 'flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
@@ -52,8 +52,8 @@ export default function (Alpine) {
         'focus-visible:inset-ring-2',
         'aria-invalid:inset-ring-negative/20',
         'dark:aria-invalid:inset-ring-negative/40',
-        'invalid:!inset-ring-negative/20',
-        'dark:invalid:!inset-ring-negative/40'
+        'invalid:inset-ring-negative/20!',
+        'dark:invalid:inset-ring-negative/40!'
       );
       el.setAttribute('data-slot', 'cell-input');
     } else {

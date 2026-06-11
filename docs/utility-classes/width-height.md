@@ -4,12 +4,15 @@
 
 The width class names start with `w`.
 
+Fractional and keyword width classes also support responsive prefixes: `sm:`, `md:`, `lg:`, and `xl:` (e.g. `sm:w-1/2`). Responsive variants do not support the `!` modifier.
+
 | Class    | Description                                           | `!` support |
 | -------- | ----------------------------------------------------- | ----------- |
 | w-auto   | Auto width.                                           | Yes         |
 | w-`4-12` | Width sizes 4 to 12.                                  | Yes         |
 | w-full   | 100% width.                                           | Yes         |
 | w-screen | Makes the width equal to the screen size.             | Yes         |
+| w-1/10   | 10% width.                                            | Yes         |
 | w-1/2    | 50% width.                                            | Yes         |
 | w-1/3    | 33% width.                                            | Yes         |
 | w-1/4    | 25% width.                                            | Yes         |
@@ -19,6 +22,7 @@ The width class names start with `w`.
 | w-3/4    | 75% width.                                            | Yes         |
 | w-3/5    | 60% width.                                            | Yes         |
 | w-4/5    | 80% width.                                            | Yes         |
+| w-9/10   | 90% width.                                            | Yes         |
 | w-3xs    | `width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | w-2xs    | `width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | w-xs     | `width: var(--container-xs); /* 20rem (320px) */`     | No          |
@@ -179,6 +183,10 @@ You may have to horizontally scroll the container to see the "End" label.
   <div class="bg-primary text-primary-foreground w-1/5">w-1/5</div>
   <div class="bg-primary text-primary-foreground w-4/5">w-4/5</div>
 </div>
+<div class="flex gap-2">
+  <div class="bg-primary text-primary-foreground w-1/10">w-1/10</div>
+  <div class="bg-primary text-primary-foreground w-9/10">w-9/10</div>
+</div>
 </component-container>
 </ClientOnly>
 
@@ -202,6 +210,10 @@ You may have to horizontally scroll the container to see the "End" label.
 <div class="flex gap-2">
   <div class="w-1/5 bg-primary text-primary-foreground">w-1/5</div>
   <div class="w-4/5 bg-primary text-primary-foreground">w-4/5</div>
+</div>
+<div class="flex gap-2">
+  <div class="w-1/10 bg-primary text-primary-foreground">w-1/10</div>
+  <div class="w-9/10 bg-primary text-primary-foreground">w-9/10</div>
 </div>
 ```
 

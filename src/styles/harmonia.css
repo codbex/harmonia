@@ -1,6 +1,10 @@
+:root,
+:host {
+  --leading-tight: 1.2;
+}
 @source inline("{m,p}{x,y,t,b,l,r,}-{0..12}{!,}");
 @source inline("{m,p}{l,r}-auto{!,}");
-@source inline("{sm:,md:,lg:,xl:}{m,p}{x,y}-{2..12}");
+@source inline("{sm:,md:,lg:,xl:}{m,p}{x,y,}-{0..12}");
 
 @source inline("flex");
 @source inline("flex-{col,row,col-reverse,row-reverse,wrap,0,1,auto,none}");
@@ -26,7 +30,8 @@
 @source inline("grid");
 @source inline("{sm:,md:,lg:,xl:,}grid-cols-{1..12}");
 
-@source inline("w-{auto,full,screen,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5}{!,}");
+@source inline("w-{auto,full,screen,1/10,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5,9/10}{!,}");
+@source inline("{sm:,md:,lg:,xl:}w-{full,1/10,1/2,1/3,1/4,1/5,2/3,2/5,3/4,3/5,4/5,9/10}");
 @source inline("min-{w,h}-0");
 @source inline("max-{w}-{screen,dvw}");
 @source inline("h-{auto,full,screen,1/2}{!,}");
@@ -99,10 +104,17 @@
 }
 @source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap}");
 @source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}{!,}");
+@source inline("{sm:,md:,lg:,xl:}text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}");
 @source inline("font-{extrabold,bold,semibold,medium,normal,light}{!,}");
 @source inline("font-{sans,serif,mono}{!,}");
 @source inline("leading-{none,normal,snug,relaxed}{!,}");
 @source inline("leading-{4..8}{!,}");
+.leading-tight {
+  line-height: var(--leading-tight);
+}
+.leading-tight\! {
+  line-height: var(--leading-tight) !important;
+}
 @source inline("italic");
 @source inline("uppercase");
 @source inline("lowercase");
@@ -123,7 +135,7 @@
 @source inline("inline-block");
 @source inline("inline-flex");
 @source inline("cursor-{pointer,text,crosshair,wait,not-allowed,grab,grabbing,none}");
-@source inline("{xs:,sm:,md:,lg:,xl:}{hidden,block}");
+@source inline("{sm:,md:,lg:,xl:}{hidden,block,flex}");
 @source inline("sr-only");
 @source inline("box-border");
 @source inline("border");
@@ -156,6 +168,7 @@
 @source inline("transition-{all,colors,opacity,transform,shadow,[opacity,scale]}");
 @source inline("motion-reduce:transition-none");
 @source inline("ease-{out,linear}");
+@source inline("fill-none");
 
 @source inline("bg-{primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 @source inline("fill-{current,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");

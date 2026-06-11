@@ -43,6 +43,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 | Class                       | Description                                     |
 | --------------------------- | ----------------------------------------------- |
+| fill-none                   | Removes fill (`fill: none`).                    |
 | fill-current                | Set current color as fill color.                |
 | fill-primary                | Set primary color as fill color.                |
 | fill-primary-foreground     | Set primary foreground color as fill color.     |

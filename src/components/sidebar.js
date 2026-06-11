@@ -86,7 +86,7 @@ export default function (Alpine) {
       'focus-visible:ring-2',
       '[&>svg]:size-4',
       '[&>svg]:shrink-0',
-      'group-data-[collapsed=true]/sidebar:!hidden'
+      'group-data-[collapsed=true]/sidebar:hidden!'
     );
     el.setAttribute('data-slot', 'sidebar-group-label');
 
@@ -169,7 +169,7 @@ export default function (Alpine) {
     if (!group) {
       throw new Error(`${original} must be placed inside a sidebar group`);
     }
-    el.classList.add('w-full', 'text-sm', 'data-[collapsed=true]:hidden', 'group-data-[collapsed=true]/sidebar:!block');
+    el.classList.add('w-full', 'text-sm', 'data-[collapsed=true]:hidden', 'group-data-[collapsed=true]/sidebar:block!');
     el.setAttribute('data-slot', 'sidebar-group-content');
 
     if (group._h_sidebar_group.collapsable) {
@@ -296,9 +296,9 @@ export default function (Alpine) {
         'data-[active=true]:font-medium',
         'aria-[expanded=true]:hover:bg-sidebar-secondary',
         'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
-        'group-data-[collapsed=true]/sidebar:!size-8',
-        'group-data-[collapsed=true]/sidebar:!p-2',
-        'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:!hidden'
+        'group-data-[collapsed=true]/sidebar:size-8!',
+        'group-data-[collapsed=true]/sidebar:p-2!',
+        'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:hidden!'
       );
     }
 
@@ -395,12 +395,12 @@ export default function (Alpine) {
     const skeleton = document.createElement('div');
     skeleton.classList.add('h-4', 'flex-1', 'bg-sidebar-secondary', 'animate-pulse', 'rounded-md');
     if (modifiers.includes('icon')) {
-      skeleton.classList.add('group-data-[collapsed=true]/sidebar:!hidden');
+      skeleton.classList.add('group-data-[collapsed=true]/sidebar:hidden!');
       const icon = document.createElement('div');
       icon.classList.add('size-4', 'rounded-md', 'bg-sidebar-secondary', 'animate-pulse', 'rounded-md');
       el.appendChild(icon);
     } else {
-      skeleton.classList.add('group-data-[collapsed=true]/sidebar:!w-4', 'group-data-[collapsed=true]/sidebar:!max-w-4');
+      skeleton.classList.add('group-data-[collapsed=true]/sidebar:w-4!', 'group-data-[collapsed=true]/sidebar:max-w-4!');
     }
     skeleton.style.maxWidth = `${Math.floor(Math.random() * 40) + 50}%`;
     el.appendChild(skeleton);
@@ -421,7 +421,7 @@ export default function (Alpine) {
     if (!menuItem) {
       throw new Error(`${original} must be placed inside a sidebar menu item`);
     }
-    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'pl-2.5', 'py-0.5', 'ml-3.5', 'data-[collapsed=true]:!hidden', 'group-data-[collapsed=true]/sidebar:!hidden');
+    el.classList.add('vbox', 'min-w-0', 'translate-x-px', 'gap-1', 'pl-2.5', 'py-0.5', 'ml-3.5', 'data-[collapsed=true]:hidden!', 'group-data-[collapsed=true]/sidebar:hidden!');
     if (el.getAttribute('data-line') !== 'false') {
       el.classList.add('border-sidebar-border', 'border-l');
     }

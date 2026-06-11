@@ -48,8 +48,8 @@ export default function (Alpine) {
         'has-[input:focus-visible]:inset-ring-2',
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
-        'has-[input:invalid]:!inset-ring-negative/20',
-        'dark:has-[input:invalid]:!inset-ring-negative/40'
+        'has-[input:invalid]:inset-ring-negative/20!',
+        'dark:has-[input:invalid]:inset-ring-negative/40!'
       );
       el.setAttribute('data-slot', 'cell-input-date');
     } else {
@@ -130,8 +130,8 @@ export default function (Alpine) {
         'focus-visible:inset-ring-2',
         '[input[aria-invalid=true]~&]:inset-ring-negative/20',
         'dark:[input[aria-invalid=true]~&]:inset-ring-negative/40',
-        '[input:invalid~&]:!inset-ring-negative/20',
-        'dark:[input:invalid~&]:!inset-ring-negative/40'
+        '[input:invalid~&]:inset-ring-negative/20!',
+        'dark:[input:invalid~&]:inset-ring-negative/40!'
       );
     } else {
       el.classList.add(

@@ -4,6 +4,8 @@ CSS utility classes to style text. It is recommended that you first look at the 
 
 ## Class names
 
+Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:` (e.g. `md:text-lg`). Responsive variants do not support the `!` modifier.
+
 | Class     | Description                                                            | `!` support |
 | --------- | ---------------------------------------------------------------------- | ----------- |
 | text-xs   | Extra small text (0.75rem / 12px).                                     | Yes         |
@@ -48,6 +50,7 @@ CSS utility classes to style text. It is recommended that you first look at the 
 | Class           | Description                                      | `!` support |
 | --------------- | ------------------------------------------------ | ----------- |
 | leading-none    | `line-height: 1` — no extra space between lines. | Yes         |
+| leading-tight   | `line-height: var(--leading-tight)` (1.2).       | Yes         |
 | leading-normal  | `line-height: var(--leading-normal)`             | Yes         |
 | leading-snug    | `line-height: var(--leading-snug)`               | Yes         |
 | leading-relaxed | `line-height: var(--leading-relaxed)`            | Yes         |
@@ -117,6 +120,11 @@ CSS utility classes to style text. It is recommended that you first look at the 
 </div>
 
 <div class="py-2">
+    <p class="font-medium text-muted-foreground">leading-tight</p>
+    <p class="leading-tight">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+
+<div class="py-2">
     <p class="font-medium text-muted-foreground">leading-snug</p>
     <p class="leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 </div>
@@ -145,6 +153,7 @@ CSS utility classes to style text. It is recommended that you first look at the 
 
 ```html
 <p class="leading-none">...</p>
+<p class="leading-tight">...</p>
 <p class="leading-snug">...</p>
 <p class="leading-relaxed">...</p>
 <p class="leading-4">...</p>

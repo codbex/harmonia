@@ -384,7 +384,7 @@ export default function (Alpine) {
       'data-[variant=negative]:hover:bg-negative/10',
       'data-[variant=negative]:focus:text-negative',
       'data-[variant=negative]:hover:text-negative',
-      'data-[variant=negative]:*:[svg]:!text-negative',
+      'data-[variant=negative]:*:[svg]:text-negative!',
       "[&_svg:not([class*='text-'])]:text-muted-foreground",
       'relative',
       'flex',
