@@ -24,6 +24,8 @@
 | flex-auto        | `flex: auto;`                    |
 | flex-none        | `flex: none;`                    |
 
+`flex-row-reverse` and `flex-col-reverse` also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:` (e.g. `md:flex-row-reverse`).
+
 ::: info Flex classes
 The `flex-*` classes must be combined with the `flex` class.
 :::

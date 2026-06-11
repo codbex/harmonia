@@ -8,6 +8,7 @@
 
 @source inline("flex");
 @source inline("flex-{col,row,col-reverse,row-reverse,wrap,0,1,auto,none}");
+@source inline("{sm:,md:,lg:,xl:}flex-{col-reverse,row-reverse}");
 @utility hbox {
   display: flex;
   flex-direction: row;
