@@ -8,14 +8,20 @@
 
 @source inline("flex");
 @source inline("flex-{col,row,col-reverse,row-reverse,wrap,0,1,auto,none}");
-.hbox:not(.hidden) {
-  @apply flex flex-row;
+@utility hbox {
+  display: flex;
+  flex-direction: row;
 }
 
-.vbox:not(.hidden) {
-  @apply flex flex-col;
+@utility vbox {
+  display: flex;
+  flex-direction: column;
 }
-
+.hbox.hidden,
+.vbox.hidden {
+  display: none;
+}
+@source inline("{sm:,md:,lg:,xl:}{vbox,hbox}");
 @source inline("justify-{start,center,end,between,around,evenly,stretch}");
 @source inline("justify-end-safe");
 @source inline("justify-items-{start,center,end,stretch}");
