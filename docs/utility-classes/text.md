@@ -63,6 +63,9 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 | Class               | Description                                                                                     |
 | ------------------- | ----------------------------------------------------------------------------------------------- |
 | italic              | Renders text in italic style.                                                                   |
+| underline           | Underlines the text (`text-decoration: underline`).                                             |
+| no-underline        | Removes text underline (`text-decoration: none`).                                               |
+| line-through        | Strikes through the text (`text-decoration: line-through`).                                     |
 | uppercase           | Transforms all characters to uppercase.                                                         |
 | lowercase           | Transforms all characters to lowercase.                                                         |
 | capitalize          | Capitalizes the first letter of each word.                                                      |

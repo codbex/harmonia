@@ -110,6 +110,9 @@
   width: auto;
   height: calc(var(--spacing) * 66);
 }
+@source inline("underline");
+@source inline("no-underline");
+@source inline("line-through");
 @source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap}");
 @source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}{!,}");
 @source inline("{sm:,md:,lg:,xl:}text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}");
