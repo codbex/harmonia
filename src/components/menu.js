@@ -379,6 +379,12 @@ export default function (Alpine) {
       'focus:text-secondary-foreground',
       'hover:bg-secondary-hover',
       'hover:text-secondary-foreground',
+      'data-[active=true]:text-primary',
+      'data-[active=true]:focus:bg-primary/10',
+      'data-[active=true]:hover:bg-primary/10',
+      'data-[active=true]:focus:text-primary',
+      'data-[active=true]:hover:text-primary',
+      'data-[active=true]:*:[svg]:text-primary!',
       'data-[variant=negative]:text-negative',
       'data-[variant=negative]:focus:bg-negative/10',
       'data-[variant=negative]:hover:bg-negative/10',
@@ -427,11 +433,25 @@ export default function (Alpine) {
     el.addEventListener('mouseenter', focusIn);
     el.addEventListener('focus', focusIn);
 
+    function syncActive() {
+      if (el.hasAttribute('data-active')) {
+        el.setAttribute('aria-current', 'page');
+      } else {
+        el.removeAttribute('aria-current');
+      }
+    }
+
+    syncActive();
+
+    const observer = new MutationObserver(syncActive);
+    observer.observe(el, { attributes: true, attributeFilter: ['data-active'] });
+
     cleanup(() => {
       el.removeEventListener('mouseenter', focusIn);
       el.removeEventListener('focus', focusIn);
       el.removeEventListener('blur', focusOut);
       el.removeEventListener('mouseleave', focusOut);
+      observer.disconnect();
     });
   });
 
