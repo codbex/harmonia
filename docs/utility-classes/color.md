@@ -62,24 +62,25 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Border colors
 
-| Class                         | Description                                       |
-| ----------------------------- | ------------------------------------------------- |
-| border-background             | Set background color as border color.             |
-| border-foreground             | Set foreground color as border color.             |
-| border-primary                | Set primary color as border color.                |
-| border-primary-foreground     | Set primary foreground color as border color.     |
-| border-secondary              | Set secondary color as border color.              |
-| border-secondary-foreground   | Set secondary foreground color as border color.   |
-| border-muted                  | Set muted color as border color.                  |
-| border-muted-foreground       | Set muted foreground color as border color.       |
-| border-negative               | Set negative color as border color.               |
-| border-negative-foreground    | Set negative foreground color as border color.    |
-| border-positive               | Set positive color as border color.               |
-| border-positive-foreground    | Set positive foreground color as border color.    |
-| border-warning                | Set warning color as border color.                |
-| border-warning-foreground     | Set warning foreground color as border color.     |
-| border-information            | Set information color as border color.            |
-| border-information-foreground | Set information foreground color as border color. |
+| Class                         | Description                                        |
+| ----------------------------- | -------------------------------------------------- |
+| border-background             | Set background color as border color.              |
+| border-foreground             | Set foreground color as border color.              |
+| border-primary                | Set primary color as border color.                 |
+| border-primary/50             | Set primary color as border color with 50 opacity. |
+| border-primary-foreground     | Set primary foreground color as border color.      |
+| border-secondary              | Set secondary color as border color.               |
+| border-secondary-foreground   | Set secondary foreground color as border color.    |
+| border-muted                  | Set muted color as border color.                   |
+| border-muted-foreground       | Set muted foreground color as border color.        |
+| border-negative               | Set negative color as border color.                |
+| border-negative-foreground    | Set negative foreground color as border color.     |
+| border-positive               | Set positive color as border color.                |
+| border-positive-foreground    | Set positive foreground color as border color.     |
+| border-warning                | Set warning color as border color.                 |
+| border-warning-foreground     | Set warning foreground color as border color.      |
+| border-information            | Set information color as border color.             |
+| border-information-foreground | Set information foreground color as border color.  |
 
 ## Examples
 

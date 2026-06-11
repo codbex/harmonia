@@ -32,6 +32,7 @@
 
 @source inline("gap-{x,y}-{1..12}");
 @source inline("gap-{1..12}{!,}");
+@source inline("{sm:,md:,lg:,xl:,}gap-{1..12}");
 
 @source inline("grid");
 @source inline("{sm:,md:,lg:,xl:,}grid-cols-{1..12}");
@@ -181,7 +182,7 @@
 /* prettier-ignore */
 @source inline("text-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 /* prettier-ignore */
-@source inline("border-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
+@source inline("border-{background,foreground,primary,primary/50,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
