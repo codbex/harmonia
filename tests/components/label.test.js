@@ -38,21 +38,33 @@ describe('h-label', () => {
     expect(el.getAttribute('data-slot')).toBe('label');
   });
 
-  it('sets data-slot="field-label" with field modifier', () => {
-    mountDirective(labelPlugin, 'h-label', el, { modifiers: ['field'] });
+  it('sets data-slot="field-label" inside a field element', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('data-slot', 'field');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    mountDirective(labelPlugin, 'h-label', el);
     expect(el.getAttribute('data-slot')).toBe('field-label');
   });
 
-  it('adds field-specific classes with field modifier', () => {
-    mountDirective(labelPlugin, 'h-label', el, { modifiers: ['field'] });
+  it('adds field-specific classes inside a field element', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('data-slot', 'field');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    mountDirective(labelPlugin, 'h-label', el);
     expect(el.classList.contains('group/field-label')).toBe(true);
     expect(el.classList.contains('peer/field-label')).toBe(true);
     expect(el.classList.contains('w-fit')).toBe(true);
     expect(el.classList.contains('leading-snug')).toBe(true);
   });
 
-  it('adds nested field wrapping classes with field modifier', () => {
-    mountDirective(labelPlugin, 'h-label', el, { modifiers: ['field'] });
+  it('adds nested field wrapping classes inside a field element', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('data-slot', 'field');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    mountDirective(labelPlugin, 'h-label', el);
     expect(el.classList.contains('has-[>[data-slot=field]]:w-full')).toBe(true);
     expect(el.classList.contains('has-[>[data-slot=field]]:flex-col')).toBe(true);
     expect(el.classList.contains('has-[>[data-slot=field]]:rounded-md')).toBe(true);
