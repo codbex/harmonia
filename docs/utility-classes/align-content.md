@@ -18,8 +18,6 @@ Aligns rows inside grids or wrapping flex layouts.
 
 ### Start
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 content-start gap-4 h-full">
@@ -45,8 +43,6 @@ Aligns rows inside grids or wrapping flex layouts.
 ```
 
 ### Center
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -74,8 +70,6 @@ Aligns rows inside grids or wrapping flex layouts.
 
 ### End
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 content-end gap-4 h-full">
@@ -101,8 +95,6 @@ Aligns rows inside grids or wrapping flex layouts.
 ```
 
 ### Between
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -130,8 +122,6 @@ Aligns rows inside grids or wrapping flex layouts.
 
 ### Around
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 content-around gap-4 h-full">
@@ -158,8 +148,6 @@ Aligns rows inside grids or wrapping flex layouts.
 
 ### Evenly
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 content-evenly gap-4 h-full">
@@ -185,8 +173,6 @@ Aligns rows inside grids or wrapping flex layouts.
 ```
 
 ### Stretch
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">

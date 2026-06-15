@@ -17,6 +17,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Components', link: '/components' },
+      { text: `v${version}`, link: `https://www.npmjs.com/package/@codbex/harmonia/v/${version}` },
     ],
 
     sidebar: [
@@ -69,6 +70,7 @@ export default defineConfig({
           { text: 'Sidebar', link: '/components/sidebar' },
           { text: 'Skeleton', link: '/components/skeleton' },
           { text: 'Spinner', link: '/components/spinner' },
+          { text: 'Step Indicator', link: '/components/step-indicator' },
           { text: 'Switch', link: '/components/switch' },
           { text: 'Table', link: '/components/table' },
           { text: 'Tabs', link: '/components/tabs' },

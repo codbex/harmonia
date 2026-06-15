@@ -69,8 +69,6 @@ x-h-split-panel
 
 ### Horizontal split (2 panels)
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 12rem">
 <div class="size-full" x-h-split data-orientation="horizontal" data-variant="handle" data-locked="false">
@@ -96,8 +94,6 @@ x-h-split-panel
 ```
 
 ### Vertical split (2 panels)
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 16rem">

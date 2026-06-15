@@ -86,8 +86,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Primary
 
-<br />
-
 <ClientOnly>
 <component-container>
 <p class="bg-primary text-primary-foreground p-4">Primary</p>
@@ -105,8 +103,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 ```
 
 ### Negative
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -126,8 +122,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Positive
 
-<br />
-
 <ClientOnly>
 <component-container>
 <p class="bg-positive text-positive-foreground p-4">Positive</p>
@@ -145,8 +139,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 ```
 
 ### Warning
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -166,8 +158,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Information
 
-<br />
-
 <ClientOnly>
 <component-container>
 <p class="bg-information text-information-foreground p-4">Information</p>
@@ -185,8 +175,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 ```
 
 ### Muted
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

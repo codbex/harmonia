@@ -31,8 +31,6 @@ x-h-info-page-content
 
 ### With inline SVG icon
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-info-page>
@@ -75,8 +73,6 @@ x-h-info-page-content
 
 ### With image
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-info-page>
@@ -110,8 +106,6 @@ x-h-info-page-content
 ```
 
 ### With border
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

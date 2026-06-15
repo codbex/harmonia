@@ -133,8 +133,6 @@ Some of the classes above can be used with the `!` prefix (for `!important`) in 
 
 ### Screen
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0 overflow-scroll">
 <div class="bg-primary text-primary-foreground flex justify-between w-screen">
@@ -157,8 +155,6 @@ You may have to horizontally scroll the container to see the "End" label.
 
 ### Full
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground w-full">Full width</div>
@@ -170,8 +166,6 @@ You may have to horizontally scroll the container to see the "End" label.
 ```
 
 ### Fractions
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-2">
@@ -231,8 +225,6 @@ You may have to horizontally scroll the container to see the "End" label.
 
 ### Sizes
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex flex-col gap-2 overflow-scroll">
 <div class="w-xs bg-primary text-primary-foreground">Extra small width</div>
@@ -255,8 +247,6 @@ You may have to horizontally scroll the container to see the "End" label.
 
 ### Full
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground h-full">
@@ -270,8 +260,6 @@ Full height
 ```
 
 ### Screen
-
-<br />
 
 <ClientOnly>
 <component-container data-class="p-0">
@@ -287,8 +275,6 @@ Full height
 ```
 
 ### Half
-
-<br />
 
 <ClientOnly>
 <component-container data-class="p-0 h-12">

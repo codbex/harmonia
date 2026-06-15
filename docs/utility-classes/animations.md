@@ -103,8 +103,6 @@ Be sure to account for this preference in your implementation, as excessive moti
 
 ### Translate
 
-<br />
-
 <ClientOnly>
 <component-container data-class="vbox items-center gap-4">
   <div class="border">

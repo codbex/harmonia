@@ -44,8 +44,6 @@ x-h-focus
 
 ### Show sheet and focus textarea
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-data="{ sheetVisible: false }">

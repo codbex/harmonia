@@ -59,8 +59,6 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 
 ### SVG image
 
-<br />
-
 <ClientOnly>
 <component-container data-class="!p-1 hbox justify-center">
 <svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
@@ -73,8 +71,6 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 
 ### SVG icon
 
-<br />
-
 <ClientOnly>
 <component-container>
 <svg x-h-icon class="size-8" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
@@ -86,8 +82,6 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 ```
 
 ### SVG icon with custom fill color
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex gap-3">
@@ -106,8 +100,6 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 ```
 
 ### Harmonia Icons
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/icons/grid.html" data-class="p-4"></component-container>

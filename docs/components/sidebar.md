@@ -94,8 +94,6 @@ x-h-sidebar-footer
 
 ### Sidebar header and footer
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
@@ -151,8 +149,6 @@ x-h-sidebar-footer
 ```
 
 ### Sidebar content
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0" data-style="height:16rem">
@@ -224,8 +220,6 @@ x-h-sidebar-footer
 
 ### Sidebar right side
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar.right class="float-right">
@@ -295,8 +289,6 @@ x-h-sidebar-footer
 ```
 
 ### Collapsed sidebar
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0" data-style="height:16rem">
@@ -412,8 +404,6 @@ x-h-sidebar-footer
 
 ### Sidebar skeleton
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div x-h-sidebar>
@@ -475,8 +465,6 @@ x-h-sidebar-footer
 ```
 
 ### Full example
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/sidebar/full.html" data-class="p-0">

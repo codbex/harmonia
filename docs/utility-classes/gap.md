@@ -16,8 +16,6 @@ The all-round `gap` class also supports responsive prefixes `sm:`, `md:`, `lg:`,
 
 ### Grid gap
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="grid grid-cols-4 gap-2">
@@ -47,8 +45,6 @@ The all-round `gap` class also supports responsive prefixes `sm:`, `md:`, `lg:`,
 ```
 
 ### Different horizontal and vertical grid gap
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -80,8 +76,6 @@ The all-round `gap` class also supports responsive prefixes `sm:`, `md:`, `lg:`,
 
 ### Flex gap
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="hbox gap-2">
@@ -103,8 +97,6 @@ The all-round `gap` class also supports responsive prefixes `sm:`, `md:`, `lg:`,
 ```
 
 ### Flex wrap gap
-
-<br />
 
 <ClientOnly>
 <component-container>

@@ -26,8 +26,6 @@ x-h-input-number
 
 ### Number Input
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-input-number>
@@ -43,8 +41,6 @@ x-h-input-number
 ```
 
 ### Invalid Number Input
-
-<br />
 
 <ClientOnly>
 <component-container>

@@ -80,8 +80,6 @@ x-h-select-separator
 
 ### With model
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/select/model.html">
 </component-container>
@@ -132,8 +130,6 @@ x-h-select-separator
 ```
 
 ### Clearable
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -218,8 +214,6 @@ The input automatically switches modes based on the model. If you want to select
 
 ### No model
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-select>
@@ -249,8 +243,6 @@ The input automatically switches modes based on the model. If you want to select
 ```
 
 ### With groups
-
-<br />
 
 <ClientOnly>
 <component-container>

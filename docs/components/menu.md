@@ -96,8 +96,6 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 ### Dropdown
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex flex-col items-start gap-4">
 <button x-h-button x-h-menu-trigger.dropdown>Dropdown</button>
@@ -147,8 +145,6 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 ```
 
 ### Contextmenu
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/menu/menu.html" data-class="border-dashed p-0" data-icons="true">

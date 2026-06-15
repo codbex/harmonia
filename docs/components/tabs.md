@@ -60,8 +60,6 @@ x-h-tabs-content
 
 ### Sizes
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
@@ -132,8 +130,6 @@ x-h-tabs-content
 
 ### Scrollable tab content
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal" style="height:10rem">
@@ -168,8 +164,6 @@ x-h-tabs-content
 
 ### Horizontal tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/horizontal.html" data-class="p-0">
 </component-container>
@@ -197,8 +191,6 @@ x-h-tabs-content
 ```
 
 ### Horizontal tabs with icon and close button
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/horizontal-button.html" data-class="p-0" data-icons="true">
@@ -245,8 +237,6 @@ x-h-tabs-content
 ```
 
 ### Horizontal tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
@@ -298,8 +288,6 @@ x-h-tabs-content
 
 ### Horizontal tabs with actions (end)
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
@@ -349,8 +337,6 @@ x-h-tabs-content
 ```
 
 ### Horizontal float tabs
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/horizontal-floating.html">
@@ -422,8 +408,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 
 ### Horizontal float tabs with icon and close button
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/horizontal-button-floating.html" data-icons="true">
 </component-container>
@@ -469,8 +453,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ```
 
 ### Horizontal float tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -522,8 +504,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 
 ### Horizontal float tabs with actions (end)
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-tabs data-orientation="horizontal">
@@ -574,8 +554,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 
 ### Vertical tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/vertical.html" data-class="p-0">
 </component-container>
@@ -603,8 +581,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ```
 
 ### Vertical tabs with icon and close button
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/vertical-button.html" data-class="p-0" data-icons="true">
@@ -651,8 +627,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ```
 
 ### Vertical tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
@@ -704,8 +678,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 
 ### Vertical tabs with actions (end)
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
@@ -756,8 +728,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 
 ### Vertical float tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/vertical-floating.html" data-icons="true">
 </component-container>
@@ -785,8 +755,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ```
 
 ### Vertical float tabs with icon and close button
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/vertical-button-floating.html">
@@ -833,8 +801,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ```
 
 ### Vertical float tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -885,8 +851,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ```
 
 ### Vertical float tabs with actions (end)
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

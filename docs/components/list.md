@@ -46,8 +46,6 @@ x-h-list-header
 
 ### Interactive
 
-<br />
-
 <ClientOnly>
 <component-container>
 <ul x-h-list>
@@ -67,8 +65,6 @@ x-h-list-header
 ```
 
 ### With header
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -90,8 +86,6 @@ x-h-list-header
 ```
 
 ### With icons and buttons
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

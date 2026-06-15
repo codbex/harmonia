@@ -43,8 +43,6 @@ x-h-exp-panel-content
 
 ### Default Panels
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0" data-style="height:28rem">
 <div x-h-exp-panel>
@@ -143,8 +141,6 @@ x-h-exp-panel-content
 
 ### Transparent Panels
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0" data-style="height:16rem">
 <div x-h-exp-panel data-variant="transparent">
@@ -174,8 +170,6 @@ x-h-exp-panel-content
 ```
 
 ### Floating Panels
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height:16rem">
@@ -207,8 +201,6 @@ x-h-exp-panel-content
 
 ### Transparent Floating Panels
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height:16rem">
 <div x-h-exp-panel data-variant="transparent" data-floating="true">
@@ -239,8 +231,6 @@ x-h-exp-panel-content
 
 ### Medium Panels
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0" data-style="height:10rem">
 <div x-h-exp-panel data-size="md">
@@ -270,8 +260,6 @@ x-h-exp-panel-content
 ```
 
 ### Small Panels
-
-<br />
 
 <ClientOnly>
 <component-container data-class="p-0" data-style="height:10rem">

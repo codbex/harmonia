@@ -34,8 +34,6 @@ x-h-textarea
 
 ### Without resize handle
 
-<br />
-
 <ClientOnly>
 <component-container>
 <textarea x-h-textarea class="resize-none"></textarea>

@@ -24,7 +24,7 @@ hero:
       target: _self
 
 features:
-  - title: 45+ Ready-to-Use Components
+  - title: 46+ Ready-to-Use Components
     details: A comprehensive collection of carefully crafted components for building complex user interfaces.
   - title: Lightweight by Design
     details: Built with simplicity in mind, leveraging native browser APIs and minimal overhead.

@@ -73,8 +73,6 @@ x-h-table-footer
 
 ### Table with scroll
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/table/full.html" data-class="p-0 border-0" data-icons="true">
 </component-container>
@@ -207,8 +205,6 @@ x-h-table-footer
 
 ### Table with caption
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-table-container data-border="true">
@@ -289,8 +285,6 @@ x-h-table-footer
 
 ### Table with row borders
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-table-container data-border="true">
@@ -364,8 +358,6 @@ x-h-table-footer
 ```
 
 ### Table with column borders
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -441,8 +433,6 @@ x-h-table-footer
 
 ### Table with no borders
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-table-container>
@@ -516,8 +506,6 @@ x-h-table-footer
 ```
 
 ### Table with inner borders and no container
-
-<br />
 
 <ClientOnly>
 <component-container>

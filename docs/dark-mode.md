@@ -14,8 +14,6 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 
 ### Light/Dark Select
 
-<br />
-
 <ClientOnly>
 <component-container src="/theming/select.html">
 </component-container>
@@ -45,8 +43,6 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 ```
 
 ### Light/Dark Switch
-
-<br />
 
 <ClientOnly>
 <component-container src="/theming/switch.html">

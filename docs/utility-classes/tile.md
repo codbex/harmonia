@@ -39,8 +39,6 @@ The width class names start with `tile`. They can be used for creating tile-like
 
 ### Double width
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex flex-col gap-3">
 <div class="bg-primary text-primary-foreground tile-double-sm">Small Double</div>
@@ -58,8 +56,6 @@ The width class names start with `tile`. They can be used for creating tile-like
 ```
 
 ### Auto width
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-3">

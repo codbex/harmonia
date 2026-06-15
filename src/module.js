@@ -32,6 +32,7 @@ import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
 import spinner from './components/spinner';
 import split from './components/split';
+import stepIndicator from './components/step-indicator';
 import _switch from './components/switch';
 import table from './components/table';
 import tabs from './components/tabs';
@@ -89,6 +90,7 @@ export {
   skeleton as Skeleton,
   spinner as Spinner,
   split as Split,
+  stepIndicator as StepIndicator,
   _switch as Switch,
   table as Table,
   tabs as Tabs,
@@ -139,6 +141,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(skeleton);
   registerPlugin(spinner);
   registerPlugin(split);
+  registerPlugin(stepIndicator);
   registerPlugin(_switch);
   registerPlugin(table);
   registerPlugin(tabs);

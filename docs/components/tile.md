@@ -40,8 +40,6 @@ x-h-tile-footer
 
 ### Variants
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col gap-4">
 <div x-h-tile>
@@ -138,8 +136,6 @@ x-h-tile-footer
 
 ### As link
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <a x-h-tile data-variant="outline" href="#variants">
@@ -171,8 +167,6 @@ x-h-tile-footer
 ```
 
 ### With image or icon
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col gap-4">
@@ -259,8 +253,6 @@ x-h-tile-footer
 ```
 
 ### In group
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

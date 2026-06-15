@@ -32,6 +32,7 @@ import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
 import spinner from './components/spinner';
 import split from './components/split';
+import stepIndicator from './components/step-indicator';
 import _switch from './components/switch';
 import table from './components/table';
 import tabs from './components/tabs';
@@ -93,6 +94,7 @@ function registerPlugins() {
   window.Alpine.plugin(skeleton);
   window.Alpine.plugin(spinner);
   window.Alpine.plugin(split);
+  window.Alpine.plugin(stepIndicator);
   window.Alpine.plugin(_switch);
   window.Alpine.plugin(table);
   window.Alpine.plugin(tabs);
