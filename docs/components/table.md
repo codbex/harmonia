@@ -648,8 +648,6 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
         <th x-h-table-head scope="col">Input</th>
         <th x-h-table-head scope="col">Dropdown</th>
         <th x-h-table-head scope="col">Select</th>
-        <th x-h-table-head scope="col">Date</th>
-        <th x-h-table-head scope="col">Time</th>
       </tr>
     </thead>
     <tbody x-h-table-body>
@@ -658,7 +656,10 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
           <input x-h-input.table placeholder="Name" />
         </td>
         <td x-h-table-cell>
-          <button x-h-table-cell-button x-h-menu-trigger.dropdown>Dropdown<svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg></button>
+          <button x-h-table-cell-button x-h-menu-trigger.dropdown>
+            <span>Dropdown</span>
+            <svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg>
+          </button>
           <ul x-h-menu aria-label="dropdown">
             <li x-h-menu-item>Item 1</li>
             <li x-h-menu-item>Item 2</li>
@@ -673,6 +674,73 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
               <div x-h-select-option="'Option 2'" data-value="2"></div>
               <div x-h-select-option="'Option 3'" data-value="3"></div>
             </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-table-container.scroll data-border="true">
+  <table x-h-table data-borders="both">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Input</th>
+        <th x-h-table-head scope="col">Dropdown</th>
+        <th x-h-table-head scope="col">Select</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-cell>
+          <input x-h-input.table placeholder="Name" />
+        </td>
+        <td x-h-table-cell>
+          <button x-h-table-cell-button x-h-menu-trigger.dropdown>
+            <span>Dropdown</span>
+            <svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg>
+          </button>
+          <ul x-h-menu aria-label="dropdown">
+            <li x-h-menu-item>Item 1</li>
+            <li x-h-menu-item>Item 2</li>
+            <li x-h-menu-item>Item 3</li>
+          </ul>
+        </td>
+        <td x-h-table-cell>
+          <div x-h-select.table>
+            <input x-h-select-input placeholder="Select" />
+            <div x-h-select-content>
+              <div x-h-select-option="'Option 1'" data-value="1"></div>
+              <div x-h-select-option="'Option 2'" data-value="2"></div>
+              <div x-h-select-option="'Option 3'" data-value="3"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+<ClientOnly>
+<component-container data-class="p-0 border-0">
+<div x-h-table-container.scroll data-border="true">
+  <table x-h-table data-borders="both">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Number</th>
+        <th x-h-table-head scope="col">Date</th>
+        <th x-h-table-head scope="col">Time</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-cell>
+          <div x-h-input-number.table>
+            <input type="number" min="0" max="10" step="2" value="4" />
           </div>
         </td>
         <td x-h-table-cell>
@@ -700,9 +768,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
   <table x-h-table data-borders="both">
     <thead x-h-table-header>
       <tr x-h-table-row>
-        <th x-h-table-head scope="col">Input</th>
-        <th x-h-table-head scope="col">Dropdown</th>
-        <th x-h-table-head scope="col">Select</th>
+        <th x-h-table-head scope="col">Number</th>
         <th x-h-table-head scope="col">Date</th>
         <th x-h-table-head scope="col">Time</th>
       </tr>
@@ -710,24 +776,8 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
     <tbody x-h-table-body>
       <tr x-h-table-row>
         <td x-h-table-cell>
-          <input x-h-input.table placeholder="Name" />
-        </td>
-        <td x-h-table-cell>
-          <button x-h-table-cell-button x-h-menu-trigger.dropdown>Dropdown<svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg></button>
-          <ul x-h-menu aria-label="dropdown">
-            <li x-h-menu-item>Item 1</li>
-            <li x-h-menu-item>Item 2</li>
-            <li x-h-menu-item>Item 3</li>
-          </ul>
-        </td>
-        <td x-h-table-cell>
-          <div x-h-select.table>
-            <input x-h-select-input placeholder="Select" />
-            <div x-h-select-content>
-              <div x-h-select-option="'Option 1'" data-value="1"></div>
-              <div x-h-select-option="'Option 2'" data-value="2"></div>
-              <div x-h-select-option="'Option 3'" data-value="3"></div>
-            </div>
+          <div x-h-input-number.table>
+            <input type="number" min="0" max="10" step="2" value="4" />
           </div>
         </td>
         <td x-h-table-cell>

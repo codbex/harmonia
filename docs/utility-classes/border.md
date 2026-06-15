@@ -183,17 +183,24 @@ Adds a border between child elements by applying a border to all children except
 
 ### Class names
 
-| Class             | Description                                                        |
-| ----------------- | ------------------------------------------------------------------ |
-| rounded-`size`    | Border radius on all 4 corners.                                    |
-| rounded-t-`size`  | Border radius on the top-left and top-right corners.               |
-| rounded-b-`size`  | Border radius on the bottom-left and bottom-right corners.         |
-| rounded-s-`size`  | Border radius on the start side (top-left and bottom-left in LTR). |
-| rounded-e-`size`  | Border radius on the end side (top-right and bottom-right in LTR). |
-| rounded-tl-`size` | Border radius on the top-left corner only.                         |
-| rounded-tr-`size` | Border radius on the top-right corner only.                        |
-| rounded-bl-`size` | Border radius on the bottom-left corner only.                      |
-| rounded-br-`size` | Border radius on the bottom-right corner only.                     |
+| Class               | Description                                                        |
+| ------------------- | ------------------------------------------------------------------ | ----------- |
+| Class               | Description                                                        | `!` support |
+| -----------------   | ------------------------------------------------------------------ | ----------- |
+| rounded-`size`      | Border radius on all 4 corners.                                    | No          |
+| rounded-none        | Removes border radius on all 4 corners.                            | Yes         |
+| max-sm:rounded-none | Removes border radius on viewports narrower than `sm`.             | No          |
+| max-md:rounded-none | Removes border radius on viewports narrower than `md`.             | No          |
+| max-lg:rounded-none | Removes border radius on viewports narrower than `lg`.             | No          |
+| max-xl:rounded-none | Removes border radius on viewports narrower than `xl`.             | No          |
+| rounded-t-`size`    | Border radius on the top-left and top-right corners.               | No          |
+| rounded-b-`size`    | Border radius on the bottom-left and bottom-right corners.         | No          |
+| rounded-s-`size`    | Border radius on the start side (top-left and bottom-left in LTR). | No          |
+| rounded-e-`size`    | Border radius on the end side (top-right and bottom-right in LTR). | No          |
+| rounded-tl-`size`   | Border radius on the top-left corner only.                         | No          |
+| rounded-tr-`size`   | Border radius on the top-right corner only.                        | No          |
+| rounded-bl-`size`   | Border radius on the bottom-left corner only.                      | No          |
+| rounded-br-`size`   | Border radius on the bottom-right corner only.                     | No          |
 
 Available sizes: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `none`, `full`.
 

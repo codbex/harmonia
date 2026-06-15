@@ -11,7 +11,13 @@ Fractional and keyword width classes also support responsive prefixes: `sm:`, `m
 | w-auto   | Auto width.                                           | Yes         |
 | w-`4-12` | Width sizes 4 to 12.                                  | Yes         |
 | w-full   | 100% width.                                           | Yes         |
+| w-min    | `width: min-content`                                  | Yes         |
+| w-max    | `width: max-content`                                  | Yes         |
+| w-fit    | `width: fit-content`                                  | Yes         |
 | w-screen | Makes the width equal to the screen size.             | Yes         |
+| w-dvw    | Dynamic viewport width (`100dvw`).                    | No          |
+| w-svw    | Small viewport width (`100svw`).                      | No          |
+| w-lvw    | Large viewport width (`100lvw`).                      | No          |
 | w-1/10   | 10% width.                                            | Yes         |
 | w-1/2    | 50% width.                                            | Yes         |
 | w-1/3    | 33% width.                                            | Yes         |
@@ -89,13 +95,19 @@ The maximum width class names start with `min-w`.
 
 The height class names start with `h`.
 
-| Class    | Description                               | `!` support |
-| -------- | ----------------------------------------- | ----------- |
-| h-auto   | Auto height.                              | Yes         |
-| h-`4-12` | Height sizes 4 to 12.                     | Yes         |
-| h-full   | 100% height.                              | Yes         |
-| h-screen | Makes the width equal to the screen size. | Yes         |
-| h-1/2    | 50% height.                               | Yes         |
+| Class    | Description                                | `!` support |
+| -------- | ------------------------------------------ | ----------- |
+| h-auto   | Auto height.                               | Yes         |
+| h-`4-12` | Height sizes 4 to 12.                      | Yes         |
+| h-full   | 100% height.                               | Yes         |
+| h-min    | `height: min-content`                      | Yes         |
+| h-max    | `height: max-content`                      | Yes         |
+| h-fit    | `height: fit-content`                      | Yes         |
+| h-screen | Makes the height equal to the screen size. | Yes         |
+| h-dvh    | Dynamic viewport height (`100dvh`).        | No          |
+| h-lvh    | Large viewport height (`100lvh`).          | No          |
+| h-svh    | Small viewport height (`100svh`).          | No          |
+| h-1/2    | 50% height.                                | Yes         |
 
 The minimum and maximum height class names start with `min-h` and `max-h`.
 

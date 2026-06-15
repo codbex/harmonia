@@ -14,39 +14,20 @@ Use labels to clearly describe form fields, controls, or interactive elements. E
 x-h-label
 ```
 
-### Modifiers
-
-| Modifier | Description                                  |
-| -------- | -------------------------------------------- |
-| field    | Apply when the label is inside a form field. |
-
 ## Examples
-
-<ClientOnly>
-<component-container data-class="flex flex-col gap-1">
-<label x-h-label for="labelExmpl-1">Name</label>
-<input x-h-input id="labelExmpl-1" placeholder="Ivan Strashimechkarov" />
-</component-container>
-</ClientOnly>
-
-<!-- prettier-ignore -->
-```html
-<label x-h-label for="labelExmpl-1">Name</label>
-<input x-h-input id="labelExmpl-1" placeholder="Ivan Strashimechkarov" />
-```
 
 <ClientOnly>
 <component-container>
 <div x-h-field>
-  <label x-h-label.field for="labelExmpl-2">Name</label>
-  <input x-h-input id="labelExmpl-2" name="name" placeholder="Ivan Strashimechkarov" />
+  <label x-h-label for="labelExmpl">Name</label>
+  <input x-h-input id="labelExmpl" name="name" placeholder="Ivan Strashimechkarov" />
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-field>
-  <label x-h-label.field for="labelExmpl-2">Name</label>
-  <input x-h-input id="labelExmpl-2" name="name" placeholder="Ivan Strashimechkarov" />
+  <label x-h-label for="labelExmpl">Name</label>
+  <input x-h-input id="labelExmpl" name="name" placeholder="Ivan Strashimechkarov" />
 </div>
 ```

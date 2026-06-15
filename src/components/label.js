@@ -1,11 +1,10 @@
 export default function (Alpine) {
-  Alpine.directive('h-label', (el, { modifiers }) => {
+  Alpine.directive('h-label', (el) => {
     el.classList.add(
       'flex',
       'items-center',
       'gap-2',
       'text-sm',
-      'leading-none',
       'font-medium',
       'select-none',
       'group-data-[disabled=true]:pointer-events-none',
@@ -13,13 +12,11 @@ export default function (Alpine) {
       'peer-disabled:cursor-not-allowed',
       'peer-disabled:opacity-50'
     );
-    if (modifiers[0] === 'field') {
+    if (el.parentElement.getAttribute('data-slot') === 'field') {
       el.classList.add(
         'group/field-label',
         'peer/field-label',
-        'flex',
         'w-fit',
-        'gap-2',
         'leading-snug',
         'group-data-[disabled=true]/field:opacity-50',
         'has-[>[data-slot=field]]:w-full',
@@ -29,6 +26,9 @@ export default function (Alpine) {
         '[&>*]:data-[slot=field]:p-4'
       );
       el.setAttribute('data-slot', 'field-label');
-    } else el.setAttribute('data-slot', 'label');
+    } else {
+      el.classList.add('leading-none');
+      el.setAttribute('data-slot', 'label');
+    }
   });
 }

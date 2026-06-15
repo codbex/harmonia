@@ -59,18 +59,18 @@ x-h-field-error
       <p x-h-field-description>Enter your card and billing information</p>
       <div x-h-field-group>
         <div x-h-field>
-          <label x-h-label.field for="formCardName">Name on Card</label>
+          <label x-h-label for="formCardName">Name on Card</label>
           <input x-h-input id="formCardName" placeholder="John Doe" required />
         </div>
         <div x-h-field>
-          <label x-h-label.field for="formCardNumber">Card Number</label>
+          <label x-h-label for="formCardNumber">Card Number</label>
           <input x-h-input type="text" id="formCardNumber" placeholder="2141 9614 2401 7895" required />
           <p x-h-field-error>Enter your 16-digit card number</p>
           <p x-h-field-description data-hide-on-error="true">This is just a demo. Do NOT enter your real card number.</p>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <div x-h-field>
-            <label x-h-label.field for="formCardMonth">Month</label>
+            <label x-h-label for="formCardMonth">Month</label>
             <div x-h-select>
               <input id="formCardMonth" x-h-select-input placeholder="MM" required />
               <div x-h-select-content>
@@ -90,7 +90,7 @@ x-h-field-error
             </div>
           </div>
           <div x-h-field>
-            <label x-h-label.field for="formCardYear">Year</label>
+            <label x-h-label for="formCardYear">Year</label>
             <div x-h-select>
               <input id="formCardYear" x-h-select-input placeholder="YYYY" required />
               <div
@@ -111,7 +111,7 @@ x-h-field-error
             </div>
           </div>
           <div x-h-field>
-            <label x-h-label.field for="formCVV">CVV</label>
+            <label x-h-label for="formCVV">CVV</label>
             <input x-h-input id="formCVV" placeholder="123" required />
           </div>
         </div>
@@ -124,7 +124,7 @@ x-h-field-error
       <div x-h-field-group>
         <div class="grid grid-cols-2 gap-4">
           <div x-h-field>
-            <label x-h-label.field for="delivery-dp">Date</label>
+            <label x-h-label for="delivery-dp">Date</label>
             <div x-h-date-picker>
               <input type="text" id="delivery-dp" required />
               <button x-h-date-picker-trigger aria-label="Choose date"></button>
@@ -132,7 +132,7 @@ x-h-field-error
             </div>
           </div>
           <div x-h-field>
-            <label x-h-label.field for="delivery-tp">Time</label>
+            <label x-h-label for="delivery-tp">Time</label>
             <div x-h-time-picker>
               <input type="text" id="delivery-tp" x-h-time-picker-input required />
               <div x-h-time-picker-popup></div>
@@ -150,14 +150,14 @@ x-h-field-error
           <span x-h-checkbox>
             <input type="checkbox" id="formShippingCheckbox" checked />
           </span>
-          <label x-h-label.field for="formShippingCheckbox" class="font-normal">Same as shipping address</label>
+          <label x-h-label for="formShippingCheckbox" class="font-normal">Same as shipping address</label>
         </div>
       </div>
     </fieldset>
     <fieldset x-h-fieldset>
       <div x-h-field-group>
         <div x-h-field>
-          <label x-h-label.field for="formComments">Comments</label>
+          <label x-h-label for="formComments">Comments</label>
           <textarea x-h-textarea id="formComments" placeholder="Add any additional comments" class="resize-none"></textarea>
         </div>
       </div>
@@ -181,8 +181,8 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field>
-        <label x-h-label.field for="visuallyDisabled">Invalid</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required/>
+        <label x-h-label for="errorMessage">Invalid</label>
+        <input x-h-input id="errorMessage" placeholder="Input invalid" required/>
         <p x-h-field-error>The input cannot be empty</p>
       </div>
     </div>
@@ -196,9 +196,45 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field>
-        <label x-h-label.field for="visuallyDisabled">Invalid</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input invalid" required />
+        <label x-h-label for="errorMessage">Invalid</label>
+        <input x-h-input id="errorMessage" placeholder="Input invalid" required />
         <p x-h-field-error>The input cannot be empty</p>
+      </div>
+    </div>
+  </fieldset>
+</form>
+```
+
+### Field with description and error message
+
+When you type something in the input below, the error message will dissapear and the description will be shown.
+
+<ClientOnly>
+<component-container>
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field>
+        <label x-h-label for="descError">Word</label>
+        <input x-h-input id="descError" placeholder="Something" required />
+        <p x-h-field-error>Must not be empty!</p>
+        <p x-h-field-description data-hide-on-error="true">This filed holds random text.</p>
+      </div>
+    </div>
+  </fieldset>
+</form>
+</component-container>
+</ClientOnly>
+
+```html
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field>
+        <label x-h-label for="descError">Word</label>
+        <input x-h-input id="descError" placeholder="Something" required />
+        <p x-h-field-error>Must not be empty!</p>
+        <p x-h-field-description data-hide-on-error="true">This filed holds random text.</p>
       </div>
     </div>
   </fieldset>
@@ -215,7 +251,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
+        <label x-h-label for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input still active" />
       </div>
     </div>
@@ -229,7 +265,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
+        <label x-h-label for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input still active" />
       </div>
     </div>
@@ -247,7 +283,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
+        <label x-h-label for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
       </div>
     </div>
@@ -261,7 +297,7 @@ When you type something in the input below, it will no longer be invalid and the
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label.field for="visuallyDisabled">Label Disabled</label>
+        <label x-h-label for="visuallyDisabled">Label Disabled</label>
         <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
       </div>
     </div>

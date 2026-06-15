@@ -378,6 +378,48 @@ x-h-tabs-content
 </div>
 ```
 
+### Horizontal float tabs that fit to size
+
+You can make the tab bar fit to the size of the tab list by adding the `w-max` class.
+
+<ClientOnly>
+<component-container>
+<div x-h-tabs data-orientation="horizontal" class="w-max">
+  <div x-h-tab-bar data-floating="true">
+    <div x-h-tab-list>
+      <button x-h-tab id="ht1" aria-controls="ht1c" aria-selected="true">Sign In</button>
+      <button x-h-tab id="ht2" aria-controls="ht2c">Sign Up</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="ht1c" aria-labelledby="ht1">
+    <div class="p-2">Sign In</div>
+  </div>
+  <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" hidden="true">
+    <div class="p-2">Sign Up</div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tabs data-orientation="horizontal" class="w-max">
+    <div x-h-tab-bar data-floating="true">
+      <div x-h-tab-list>
+        <button x-h-tab id="ht1" aria-controls="ht1c" aria-selected="true">Sign In</button>
+        <button x-h-tab id="ht2" aria-controls="ht2c">Sign Up</button>
+      </div>
+    </div>
+    <div x-h-tabs-content id="ht1c" aria-labelledby="ht1">
+      <div class="p-2">Sign In</div>
+    </div>
+    <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" hidden="true">
+      <div class="p-2">Sign Up</div>
+    </div>
+  </div>
+</div>
+```
+
 ### Horizontal float tabs with icon and close button
 
 <br />
