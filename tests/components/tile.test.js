@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import tilePlugin from '../../src/components/tile.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -10,6 +10,13 @@ describe('h-tile-group', () => {
     expect(el.classList.contains('gap-2')).toBe(true);
     expect(el.getAttribute('role')).toBe('list');
     expect(el.getAttribute('data-slot')).toBe('tile-group');
+  });
+
+  it('preserves an author-set role instead of forcing list', () => {
+    const el = document.createElement('div');
+    el.setAttribute('role', 'radiogroup');
+    mountDirective(tilePlugin, 'h-tile-group', el);
+    expect(el.getAttribute('role')).toBe('radiogroup');
   });
 });
 
@@ -54,6 +61,59 @@ describe('h-tile', () => {
     expect(el.classList.contains('border')).toBe(true);
     expect(el.classList.contains('bg-transparent')).toBe(true);
     expect(el.classList.contains('border-transparent')).toBe(true);
+  });
+
+  it('does not apply selectable classes on a non-label element', () => {
+    const el = document.createElement('div');
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(el.classList.contains('cursor-pointer')).toBe(false);
+    expect(el.classList.contains('has-[input:checked]:border-primary')).toBe(false);
+  });
+});
+
+describe('h-tile (selectable label)', () => {
+  it('applies selectable classes when mounted on a label', () => {
+    const el = document.createElement('label');
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(el.classList.contains('cursor-pointer')).toBe(true);
+    expect(el.classList.contains('has-[input:checked]:bg-secondary/20')).toBe(true);
+    expect(el.classList.contains('has-[input:checked]:border-primary')).toBe(true);
+    expect(el.classList.contains('has-[input:focus-visible]:ring-primary/50')).toBe(true);
+    expect(el.classList.contains('has-[input:disabled]:opacity-50')).toBe(true);
+    expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
+  });
+
+  it('forces the outline look on a label', () => {
+    const el = document.createElement('label');
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(el.classList.contains('border')).toBe(true);
+    expect(el.classList.contains('border-border')).toBe(true);
+  });
+
+  it('ignores data-variant on a label', () => {
+    const el = document.createElement('label');
+    el.setAttribute('data-variant', 'muted');
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(el.classList.contains('border-border')).toBe(true);
+    expect(el.classList.contains('bg-muted')).toBe(false);
+  });
+
+  it('warns when a selectable tile wraps extra interactive elements', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const el = document.createElement('label');
+    el.innerHTML = '<input type="checkbox" /><button>Action</button>';
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it('does not warn for a valid single-control selectable tile', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const el = document.createElement('label');
+    el.innerHTML = '<input type="checkbox" /><span>Label text</span>';
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });
 

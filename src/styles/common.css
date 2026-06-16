@@ -1,0 +1,8 @@
+[data-slot="radio"] + [data-slot$="label"],
+[data-slot="checkbox"] + [data-slot$="label"] {
+  @apply cursor-pointer;
+}
+span[data-slot="radio"],
+span[data-slot="checkbox"] {
+  display: inline-block;
+}

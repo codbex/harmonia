@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -43,27 +43,27 @@
   },
   "docDependencies": {
     "alpinejs": "^3.15.12",
-    "lucide": "^1.16.0",
+    "lucide": "^1.20.0",
     "culori": "^4.0.2",
     "@fontsource/open-sans": "^5.2.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/cli": "^4.3.0",
-    "@vitest/coverage-v8": "^4.1.7",
+    "@tailwindcss/cli": "^4.3.1",
+    "@vitest/coverage-v8": "^4.1.9",
     "alpinejs": "^3.15.12",
     "autoprefixer": "^10.5.0",
-    "esbuild": "^0.28.0",
-    "eslint": "^10.4.0",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
-    "happy-dom": "^20.9.0",
-    "prettier": "^3.8.3",
+    "happy-dom": "^20.10.4",
+    "prettier": "^3.8.4",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "prettier-plugin-tailwindcss": "^0.7.2",
-    "tailwindcss": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "tailwindcss": "^4.3.1",
     "vitepress": "^2.0.0-alpha.17",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.9"
   },
   "peerDependencies": {
     "alpinejs": "^3.15.12"

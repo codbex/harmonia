@@ -1,0 +1,3 @@
+[data-slot="radio"] > input {
+  @apply absolute top-0 left-0 size-full cursor-pointer appearance-none rounded-full border-0 bg-transparent outline-none focus-visible:border-ring focus-visible:ring-ring/50;
+}

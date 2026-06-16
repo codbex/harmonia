@@ -2,7 +2,9 @@
 @import "nouislider/dist/nouislider.min.css";
 @import "./slider.css";
 @import "./harmonia.css";
+@import "./common.css";
 @import "./checkbox.css";
+@import "./radio.css";
 @import "./breadcrumb.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 @source not "../../docs/";

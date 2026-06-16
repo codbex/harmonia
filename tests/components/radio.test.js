@@ -25,10 +25,10 @@ describe('h-radio', () => {
   it('applies input-related classes', () => {
     const el = document.createElement('span');
     mountDirective(radioPlugin, 'h-radio', el);
-    expect(el.classList.contains('[&>input]:absolute')).toBe(true);
-    expect(el.classList.contains('[&>input]:appearance-none')).toBe(true);
-    expect(el.classList.contains('[&>input]:cursor-pointer')).toBe(true);
-    expect(el.classList.contains('[&>input]:size-full')).toBe(true);
+    expect(el.classList.contains('[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+    expect(el.classList.contains('has-[input:checked]:before:visible')).toBe(true);
+    expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
+    expect(el.classList.contains('has-[input:disabled]:opacity-50')).toBe(true);
   });
 
   it('applies before pseudo-element classes', () => {

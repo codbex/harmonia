@@ -2,7 +2,7 @@ import { Check, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-checkbox', (el) => {
-    // Additional component styles in src/styles/checkbox.css
+    // Additional component styles in 'src/styles/checkbox.css' and in 'src/styles/common.css'
     el.classList.add(
       '[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]',
       '[&>input]:rounded-[0.438rem]',

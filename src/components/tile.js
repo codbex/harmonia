@@ -1,11 +1,11 @@
 export default function (Alpine) {
   Alpine.directive('h-tile-group', (el) => {
     el.classList.add('group/tile-group', 'gap-2');
-    el.setAttribute('role', 'list');
+    if (!el.hasAttribute('role')) el.setAttribute('role', 'list');
     el.setAttribute('data-slot', 'tile-group');
   });
 
-  Alpine.directive('h-tile', (el) => {
+  Alpine.directive('h-tile', (el, { original }) => {
     el.classList.add(
       'group/tile',
       'flex',
@@ -18,10 +18,6 @@ export default function (Alpine) {
       'rounded-lg',
       'transition-colors',
       'motion-reduce:transition-none',
-      '[a]:hover:bg-secondary-hover',
-      '[a]:hover:text-secondary-foreground',
-      '[a]:transition-colors',
-      '[a]:motion-reduce:transition-none',
       'duration-100',
       'flex-wrap',
       'outline-none',
@@ -31,18 +27,41 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'tile');
 
-    switch (el.getAttribute('data-variant')) {
-      case 'outline':
-        el.classList.add('border', 'border-border');
-        break;
-      case 'shadow':
-        el.classList.add('border', 'shadow-sm');
-        break;
-      case 'muted':
-        el.classList.add('bg-muted');
-        break;
-      default:
-        el.classList.add('border', 'bg-transparent', 'border-transparent');
+    if (el.tagName === 'LABEL') {
+      el.classList.add(
+        'cursor-pointer',
+        'border',
+        'border-border',
+        'has-[input:checked]:bg-secondary/20',
+        'has-[input:checked]:border-primary',
+        'has-[input:focus-visible]:ring-primary/50',
+        'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
+        'has-[input:disabled]:opacity-50',
+        'has-[input:disabled]:cursor-not-allowed'
+      );
+
+      if (el.querySelectorAll('button, a[href], input, select, textarea').length > 1) {
+        console.warn(`${original}: a selectable tile (label) must contain a single checkbox or radio and no other interactive elements (buttons, links, extra inputs).`);
+      }
+
+      return;
+    } else {
+      if (el.tagName === 'A') {
+        el.classList.add('hover:bg-secondary-hover', 'hover:text-secondary-foreground');
+      }
+      switch (el.getAttribute('data-variant')) {
+        case 'outline':
+          el.classList.add('border', 'border-border');
+          break;
+        case 'shadow':
+          el.classList.add('border', 'shadow-sm');
+          break;
+        case 'muted':
+          el.classList.add('bg-muted');
+          break;
+        default:
+          el.classList.add('border', 'bg-transparent', 'border-transparent');
+      }
     }
   });
 
