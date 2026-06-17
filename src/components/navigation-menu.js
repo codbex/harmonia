@@ -36,10 +36,10 @@ const navLinkVariants = {
 };
 
 const navTriggerVariants = {
-  default: [...navLinkVariants.default, 'data-[state=open]:bg-secondary-hover'],
-  clear: [...navLinkVariants.clear, 'data-[state=open]:text-primary'],
-  underline: [...navLinkVariants.underline, 'data-[state=open]:text-primary'],
-  outline: [...navLinkVariants.outline, 'data-[state=open]:border-border'],
+  default: [...navLinkVariants.default, 'data-[state=open]:bg-secondary-hover', 'group-has-[[data-active=true]]/nav-item:bg-secondary-hover'],
+  clear: [...navLinkVariants.clear, 'data-[state=open]:text-primary', 'group-has-[[data-active=true]]/nav-item:text-primary'],
+  underline: [...navLinkVariants.underline, 'data-[state=open]:text-primary', 'group-has-[[data-active=true]]/nav-item:text-primary'],
+  outline: [...navLinkVariants.outline, 'data-[state=open]:border-border', 'group-has-[[data-active=true]]/nav-item:border-border'],
 };
 
 export default function (Alpine) {
@@ -88,7 +88,7 @@ export default function (Alpine) {
     if (el.parentElement?.getAttribute('data-slot') !== 'nav-list') {
       throw new Error(`${original} must be a direct child of a x-h-nav-list element`);
     }
-    el.classList.add('relative');
+    el.classList.add('relative', 'group/nav-item');
     el.setAttribute('data-slot', 'nav-item');
   });
 

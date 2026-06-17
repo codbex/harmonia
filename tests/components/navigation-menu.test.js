@@ -202,6 +202,12 @@ describe('h-nav-item', () => {
     expect(li.classList.contains('relative')).toBe(true);
   });
 
+  it('adds group/nav-item class so the trigger can react to an active menu item', () => {
+    const { li } = createNavItemSetup();
+    mountDirective(navigationMenuPlugin, 'h-nav-item', li, { original: 'x-h-nav-item' });
+    expect(li.classList.contains('group/nav-item')).toBe(true);
+  });
+
   it('sets data-slot="nav-item"', () => {
     const { li } = createNavItemSetup();
     mountDirective(navigationMenuPlugin, 'h-nav-item', li, { original: 'x-h-nav-item' });
@@ -431,12 +437,14 @@ describe('h-nav-trigger variants', () => {
     mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
     expect(button.classList.contains('hover:bg-secondary-hover')).toBe(true);
     expect(button.classList.contains('data-[state=open]:bg-secondary-hover')).toBe(true);
+    expect(button.classList.contains('group-has-[[data-active=true]]/nav-item:bg-secondary-hover')).toBe(true);
   });
 
   it('clear variant applies open text-primary, no hover bg', () => {
     const { button } = createTriggerWithVariant('clear');
     mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
     expect(button.classList.contains('data-[state=open]:text-primary')).toBe(true);
+    expect(button.classList.contains('group-has-[[data-active=true]]/nav-item:text-primary')).toBe(true);
     expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
     expect(button.classList.contains('data-[state=open]:bg-secondary-hover')).toBe(false);
   });
@@ -446,6 +454,7 @@ describe('h-nav-trigger variants', () => {
     mountDirective(navigationMenuPlugin, 'h-nav-trigger', button, { original: 'x-h-nav-trigger' });
     expect(button.classList.contains('hover:underline')).toBe(true);
     expect(button.classList.contains('data-[state=open]:text-primary')).toBe(true);
+    expect(button.classList.contains('group-has-[[data-active=true]]/nav-item:text-primary')).toBe(true);
     expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
   });
 
@@ -455,6 +464,7 @@ describe('h-nav-trigger variants', () => {
     expect(button.classList.contains('border')).toBe(true);
     expect(button.classList.contains('hover:border-border')).toBe(true);
     expect(button.classList.contains('data-[state=open]:border-border')).toBe(true);
+    expect(button.classList.contains('group-has-[[data-active=true]]/nav-item:border-border')).toBe(true);
     expect(button.classList.contains('hover:bg-secondary-hover')).toBe(false);
   });
 

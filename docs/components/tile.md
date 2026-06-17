@@ -340,7 +340,7 @@ Use the [tile utility classes](/utility-classes/tile) to control the size of the
 
 ### Selectable
 
-A selectable tile is a `<label>` that wraps a single checkbox or radio. Clicking anywhere on the tile toggles the control, and the tile's text becomes the control's accessible name. The outline style is applied automatically, so `data-variant` is ignored on a selectable tile. Do not place buttons, links, or more than one input inside it.
+A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbox or radio. Clicking anywhere on the tile toggles the control, and the tile's text becomes the control's accessible name. The outline style is applied automatically, so `data-variant` is ignored on a selectable tile. Do not place buttons, links, or more than one input inside it.
 
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col gap-4">

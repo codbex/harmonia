@@ -241,6 +241,104 @@ When you type something in the input below, the error message will dissapear and
 </form>
 ```
 
+### Responsive field
+
+_You may need to resize the window to see it switching between horizintal and vertical._
+
+<ClientOnly>
+<component-container>
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field data-orientation="responsive">
+        <label x-h-label for="responsiveDemo">Word</label>
+        <input x-h-input id="responsiveDemo" placeholder="Something" />
+      </div>
+    </div>
+  </fieldset>
+</form>
+</component-container>
+</ClientOnly>
+
+```html
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field data-orientation="responsive">
+        <label x-h-label for="responsiveDemo">Word</label>
+        <input x-h-input id="responsiveDemo" placeholder="Something" />
+      </div>
+    </div>
+  </fieldset>
+</form>
+```
+
+### Horizontal field
+
+<ClientOnly>
+<component-container>
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field data-orientation="horizontal">
+        <label x-h-label for="horizontalDemo">Word</label>
+        <input x-h-input id="horizontalDemo" placeholder="Something" />
+      </div>
+    </div>
+  </fieldset>
+</form>
+</component-container>
+</ClientOnly>
+
+```html
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field data-orientation="horizontal">
+        <label x-h-label for="horizontalDemo">Word</label>
+        <input x-h-input id="horizontalDemo" placeholder="Something" />
+      </div>
+    </div>
+  </fieldset>
+</form>
+```
+
+### Horizontal field with description and error message
+
+In horizontal orientation the label stays beside the input, while the error and description are shown below the input. When you type something in the input below, the error message will disappear and the description will be shown.
+
+<ClientOnly>
+<component-container>
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field data-orientation="horizontal">
+        <label x-h-label for="horizontalDescError">Word</label>
+        <input x-h-input id="horizontalDescError" placeholder="Something" required />
+        <p x-h-field-error>Must not be empty!</p>
+        <p x-h-field-description data-hide-on-error="true">This field holds random text.</p>
+      </div>
+    </div>
+  </fieldset>
+</form>
+</component-container>
+</ClientOnly>
+
+```html
+<form>
+  <fieldset x-h-fieldset>
+    <div x-h-field-group>
+      <div x-h-field data-orientation="horizontal">
+        <label x-h-label for="horizontalDescError">Word</label>
+        <input x-h-input id="horizontalDescError" placeholder="Something" required />
+        <p x-h-field-error>Must not be empty!</p>
+        <p x-h-field-description data-hide-on-error="true">This field holds random text.</p>
+      </div>
+    </div>
+  </fieldset>
+</form>
+```
+
 ### Disabled field with enabled input
 
 <br/>

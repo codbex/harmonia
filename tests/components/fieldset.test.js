@@ -120,11 +120,30 @@ describe('h-field', () => {
     expect(el.classList.contains('items-center')).toBe(true);
   });
 
+  it('switches to a grid when a horizontal field has an error or description child', () => {
+    el.setAttribute('data-orientation', 'horizontal');
+    mountDirective(fieldsetPlugin, 'h-field', el);
+    expect(el.classList.contains('has-[>[data-slot=field-error]]:grid')).toBe(true);
+    expect(el.classList.contains('has-[>[data-slot=field-description]]:grid')).toBe(true);
+    expect(el.classList.contains('has-[>[data-slot=field-error]]:grid-cols-[auto_1fr]')).toBe(true);
+    expect(el.classList.contains('[&>[data-slot=field-error]]:col-start-2')).toBe(true);
+    expect(el.classList.contains('[&>[data-slot=field-description]]:col-start-2')).toBe(true);
+  });
+
   it('applies responsive layout when data-orientation="responsive"', () => {
     el.setAttribute('data-orientation', 'responsive');
     mountDirective(fieldsetPlugin, 'h-field', el);
     expect(el.classList.contains('vbox')).toBe(true);
     expect(el.classList.contains('@md/field-group:flex-row')).toBe(true);
+  });
+
+  it('switches to a grid at @md when a responsive field has an error or description child', () => {
+    el.setAttribute('data-orientation', 'responsive');
+    mountDirective(fieldsetPlugin, 'h-field', el);
+    expect(el.classList.contains('@md/field-group:has-[>[data-slot=field-error]]:grid')).toBe(true);
+    expect(el.classList.contains('@md/field-group:has-[>[data-slot=field-description]]:grid')).toBe(true);
+    expect(el.classList.contains('@md/field-group:[&>[data-slot=field-error]]:col-start-2')).toBe(true);
+    expect(el.classList.contains('@md/field-group:[&>[data-slot=field-description]]:col-start-2')).toBe(true);
   });
 });
 
