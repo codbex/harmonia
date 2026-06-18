@@ -139,7 +139,7 @@ Manual input typed by the user is parsed using the configured display format. Fo
   <input type="text" id="date-input-1" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-calendar="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
-</div>I'm now 
+</div>
 ```
 
 ### With custom display format

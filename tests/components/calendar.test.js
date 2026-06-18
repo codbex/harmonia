@@ -153,18 +153,99 @@ describe('h-calendar', () => {
       configurable: true,
     });
 
-    mountDirective(calendarPlugin, 'h-calendar', calEl, {
-      original: 'h-calendar',
-      expression: 'config',
-    }, {
-      evaluateLater: () => (cb) => cb({ locale: 'bg-BG' }),
-    });
+    mountDirective(
+      calendarPlugin,
+      'h-calendar',
+      calEl,
+      {
+        original: 'h-calendar',
+        expression: 'config',
+      },
+      {
+        evaluateLater: () => (cb) => cb({ locale: 'bg-BG' }),
+      }
+    );
 
     const consoleSpy = vi.spyOn(console, 'error');
     inputChangeHandler();
 
     expect(consoleSpy).not.toHaveBeenCalled();
     expect(modelSet).toHaveBeenCalledWith('2027-06-18');
+    consoleSpy.mockRestore();
+  });
+
+  it('does not error when a calendar day click fires a synthetic change event (ar-SA)', () => {
+    // Regression: dayClick -> modelChange(true) dispatches a synthetic change event on the input.
+    // Fix: onInputChange skips non-trusted events (isTrusted: false) so it never tries to
+    // parse the locale-formatted value that was just set by the code itself.
+    const wrapper = document.createElement('div');
+    let inputChangeHandler;
+    const input = {
+      addEventListener: vi.fn((event, handler) => {
+        if (event === 'change') inputChangeHandler = handler;
+      }),
+      value: '١٩\u200F/٦\u200F/٢٠٢٦',
+      setCustomValidity: vi.fn(),
+    };
+    wrapper._h_datepicker = { state: { expanded: false }, input, controls: 'ctrl-1' };
+    const calEl = document.createElement('div');
+    wrapper.appendChild(calEl);
+    document.body.appendChild(wrapper);
+    Object.defineProperty(calEl, '_x_model', { value: { get: () => '', set: vi.fn() }, configurable: true });
+
+    mountDirective(
+      calendarPlugin,
+      'h-calendar',
+      calEl,
+      { original: 'h-calendar', expression: 'config' },
+      {
+        evaluateLater: () => (cb) => cb({ locale: 'ar-SA' }),
+      }
+    );
+
+    const consoleSpy = vi.spyOn(console, 'error');
+    inputChangeHandler({ isTrusted: false });
+    expect(consoleSpy).not.toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
+  it('parses pasted Arabic-Indic date input (ar-SA "١٩\u200F/٦\u200F/٢٠٢٦")', () => {
+    // Regression: pasting a locale-formatted ar-SA date (Arabic-Indic digits + RTL marks) into the
+    // input was failing with "input value is not a valid date". Fix: buildInputParser strips
+    // invisible directional marks and builds a digit normalizer; parseDisplayValue applies both
+    // so that Arabic-Indic dates round-trip correctly to a Gregorian Date.
+    const wrapper = document.createElement('div');
+    let inputChangeHandler;
+    const input = {
+      addEventListener: vi.fn((event, handler) => {
+        if (event === 'change') inputChangeHandler = handler;
+      }),
+      value: '١٩\u200F/٦\u200F/٢٠٢٦',
+      setCustomValidity: vi.fn(),
+    };
+    wrapper._h_datepicker = { state: { expanded: false }, input, controls: 'ctrl-1' };
+    const calEl = document.createElement('div');
+    wrapper.appendChild(calEl);
+    document.body.appendChild(wrapper);
+
+    const modelSet = vi.fn();
+    Object.defineProperty(calEl, '_x_model', { value: { get: () => '', set: modelSet }, configurable: true });
+
+    mountDirective(
+      calendarPlugin,
+      'h-calendar',
+      calEl,
+      { original: 'h-calendar', expression: 'config' },
+      {
+        evaluateLater: () => (cb) => cb({ locale: 'ar-SA' }),
+      }
+    );
+
+    const consoleSpy = vi.spyOn(console, 'error');
+    inputChangeHandler({ isTrusted: true });
+
+    expect(consoleSpy).not.toHaveBeenCalled();
+    expect(modelSet).toHaveBeenCalledWith('2026-06-19');
     consoleSpy.mockRestore();
   });
 });

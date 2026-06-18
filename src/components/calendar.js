@@ -37,6 +37,7 @@ export default function (Alpine) {
     let locale = undefined;
     let formatter = undefined;
     let inputParser = null;
+    let digitNormalizer = null;
     let delimiter = undefined;
     let dateOrder = undefined;
     let firstDay = 0;
@@ -61,24 +62,53 @@ export default function (Alpine) {
       const probe = new Date(2001, 2, 5);
       const parts = formatter.formatToParts(probe);
 
+      // Non-Gregorian calendars (e.g. Solar Hijri for fa-IR) require calendar conversion —
+      // skip the parser and fall back to new Date(), which browsers handle better.
+      const { calendar: resolvedCalendar, locale: resolvedLocale } = formatter.resolvedOptions();
+      if (resolvedCalendar !== 'gregory' && resolvedCalendar !== 'iso8601') {
+        inputParser = null;
+        digitNormalizer = null;
+        return;
+      }
+
+      // Build a digit normalizer for locales that use non-ASCII numerals (e.g. Arabic-Indic for ar-SA).
+      const nf = new Intl.NumberFormat(resolvedLocale);
+      const sampleDigit = nf.format(1);
+      if (sampleDigit !== '1') {
+        const digitMap = {};
+        for (let i = 0; i <= 9; i++) digitMap[nf.format(i)] = String(i);
+        digitNormalizer = (str) => str.replace(/./gu, (c) => digitMap[c] ?? c);
+      } else {
+        digitNormalizer = null;
+      }
+
       const monthPart = parts.find((p) => p.type === 'month');
-      if (monthPart && !/^\d/.test(monthPart.value)) {
+      const normalizedMonth = monthPart ? (digitNormalizer ? digitNormalizer(monthPart.value) : monthPart.value) : null;
+      if (normalizedMonth && !/^\d/.test(normalizedMonth)) {
         inputParser = null;
         return;
       }
 
       if (dateOrder === undefined && delimiter === undefined) {
-        // Default: iterate all parts so locale prefix/suffix literals are included in the regex
+        // Default: iterate all parts so locale prefix/suffix literals are included in the regex.
+        // Strip invisible directional marks (e.g. U+200F RTL mark in ar-SA separators) and
+        // normalize non-breaking spaces so the regex matches user-typed input.
         let regexStr = '^';
         const fieldOrder = [];
         for (const part of parts) {
-          if (part.type === 'year') { regexStr += '(\\d{2,4})'; fieldOrder.push('year'); }
-          else if (part.type === 'month') { regexStr += '(\\d{1,2})'; fieldOrder.push('month'); }
-          else if (part.type === 'day') { regexStr += '(\\d{1,2})'; fieldOrder.push('day'); }
-          else if (part.type === 'literal') {
-            // Normalize non-breaking spaces (e.g. U+202F used by bg-BG ICU data) to regular space
-            // so the regex also accepts user-typed input where a regular space would be used instead.
-            regexStr += part.value.replace(/[  ]/g, ' ').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          if (part.type === 'year') {
+            regexStr += '(\\d{2,4})';
+            fieldOrder.push('year');
+          } else if (part.type === 'month') {
+            regexStr += '(\\d{1,2})';
+            fieldOrder.push('month');
+          } else if (part.type === 'day') {
+            regexStr += '(\\d{1,2})';
+            fieldOrder.push('day');
+          } else if (part.type === 'literal') {
+            // eslint-disable-next-line no-irregular-whitespace
+            const normalized = part.value.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069﻿]/g, '').replace(/[  ]/g, ' ');
+            if (normalized) regexStr += normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
           }
         }
         inputParser = fieldOrder.length === 3 ? { regex: new RegExp(regexStr + '$'), fieldOrder } : null;
@@ -120,7 +150,10 @@ export default function (Alpine) {
         return new Date(parseInt(isoDate[1]), parseInt(isoDate[2]) - 1, parseInt(isoDate[3]));
       }
       if (inputParser) {
-        const match = inputParser.regex.exec(value.replace(/ | /g, ' '));
+        let normalized = digitNormalizer ? digitNormalizer(value) : value;
+        // eslint-disable-next-line no-irregular-whitespace
+        normalized = normalized.replace(/[‎‏‪-‮⁦-⁩﻿]/g, '').replace(/[  ]/g, ' ');
+        const match = inputParser.regex.exec(normalized);
         if (match) {
           const fields = {};
           inputParser.fieldOrder.forEach((field, i) => {
@@ -149,7 +182,8 @@ export default function (Alpine) {
       }
     }
 
-    const onInputChange = () => {
+    const onInputChange = (event) => {
+      if (event && !event.isTrusted) return;
       const newValue = parseDisplayValue(datepicker._h_datepicker.input.value);
       if (isNaN(newValue)) {
         console.error(`${original}: input value is not a valid date - ${datepicker._h_datepicker.input.value}`);
