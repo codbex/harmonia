@@ -67,6 +67,25 @@ export default function (Alpine) {
         return;
       }
 
+      if (dateOrder === undefined && delimiter === undefined) {
+        // Default: iterate all parts so locale prefix/suffix literals are included in the regex
+        let regexStr = '^';
+        const fieldOrder = [];
+        for (const part of parts) {
+          if (part.type === 'year') { regexStr += '(\\d{2,4})'; fieldOrder.push('year'); }
+          else if (part.type === 'month') { regexStr += '(\\d{1,2})'; fieldOrder.push('month'); }
+          else if (part.type === 'day') { regexStr += '(\\d{1,2})'; fieldOrder.push('day'); }
+          else if (part.type === 'literal') {
+            // Normalize non-breaking spaces (e.g. U+202F used by bg-BG ICU data) to regular space
+            // so the regex also accepts user-typed input where a regular space would be used instead.
+            regexStr += part.value.replace(/[  ]/g, ' ').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          }
+        }
+        inputParser = fieldOrder.length === 3 ? { regex: new RegExp(regexStr + '$'), fieldOrder } : null;
+        return;
+      }
+
+      // Custom order or delimiter: formatDate strips locale prefix/suffix, so regex needs only fields + sep
       const sep = delimiter !== undefined ? delimiter : (parts.find((p) => p.type === 'literal')?.value ?? '');
       const fieldOrder = dateOrder ? [...dateOrder].map((c) => dateOrderMap[c]) : parts.filter((p) => p.type === 'year' || p.type === 'month' || p.type === 'day').map((p) => p.type);
 
@@ -101,7 +120,7 @@ export default function (Alpine) {
         return new Date(parseInt(isoDate[1]), parseInt(isoDate[2]) - 1, parseInt(isoDate[3]));
       }
       if (inputParser) {
-        const match = inputParser.regex.exec(value);
+        const match = inputParser.regex.exec(value.replace(/ | /g, ' '));
         if (match) {
           const fields = {};
           inputParser.fieldOrder.forEach((field, i) => {

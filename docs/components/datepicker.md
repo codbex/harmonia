@@ -104,6 +104,44 @@ Manual input typed by the user is parsed using the configured display format. Fo
 </div>
 ```
 
+### With locale
+
+<ClientOnly>
+<component-container>
+<div
+  x-h-date-picker
+  x-data="{
+  date: '',
+  init() {
+    const d = new Date();
+    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
+  <input type="text" id="date-input-1" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-calendar="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div
+  x-h-date-picker
+  x-data="{
+  date: '',
+  init() {
+    const d = new Date();
+    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}"
+>
+  <input type="text" id="date-input-1" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-calendar="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
+</div>I'm now 
+```
+
 ### With custom display format
 
 <ClientOnly>

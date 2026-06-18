@@ -125,4 +125,46 @@ describe('h-calendar', () => {
     expect(el.getAttribute('role')).toBe('dialog');
     expect(el.getAttribute('data-slot')).toBe('date-picker-calendar');
   });
+
+  it('parses manual input that includes a locale suffix (e.g. bg-BG "18.06.2027 г.")', () => {
+    // Regression test: buildInputParser must include trailing locale literals (like " г.") in its
+    // regex so that the value the formatter produces can be round-tripped back through the parser.
+    const wrapper = document.createElement('div');
+    let inputChangeHandler;
+    const input = {
+      addEventListener: vi.fn((event, handler) => {
+        if (event === 'change') inputChangeHandler = handler;
+      }),
+      value: '18.06.2027 г.',
+      setCustomValidity: vi.fn(),
+    };
+    wrapper._h_datepicker = {
+      state: { expanded: false },
+      input,
+      controls: 'ctrl-1',
+    };
+    const calEl = document.createElement('div');
+    wrapper.appendChild(calEl);
+    document.body.appendChild(wrapper);
+
+    const modelSet = vi.fn();
+    Object.defineProperty(calEl, '_x_model', {
+      value: { get: () => '', set: modelSet },
+      configurable: true,
+    });
+
+    mountDirective(calendarPlugin, 'h-calendar', calEl, {
+      original: 'h-calendar',
+      expression: 'config',
+    }, {
+      evaluateLater: () => (cb) => cb({ locale: 'bg-BG' }),
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error');
+    inputChangeHandler();
+
+    expect(consoleSpy).not.toHaveBeenCalled();
+    expect(modelSet).toHaveBeenCalledWith('2027-06-18');
+    consoleSpy.mockRestore();
+  });
 });
