@@ -51,11 +51,12 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 #### x-h-menu-item
 
-| Attribute     | Type       | Required | Description                                                                 |
-| ------------- | ---------- | -------- | --------------------------------------------------------------------------- |
-| data-variant  | `negative` | false    | Semantic color of the item.                                                 |
-| data-disabled | boolean    | false    | Disables the item.                                                          |
-| data-inset    | boolean    | false    | Adds padding to the item in order to align it with ones which have an icon. |
+| Attribute     | Type       | Required | Description                                                                                                         |
+| ------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| data-variant  | `negative` | false    | Semantic color of the item.                                                                                         |
+| data-disabled | boolean    | false    | Disables the item.                                                                                                  |
+| data-inset    | boolean    | false    | Adds padding to the item in order to align it with ones which have an icon.                                         |
+| data-active   | boolean    | false    | Marks the item as active. Sets `aria-current="page"` and applies active styling. Use only inside a navigation menu. |
 
 #### x-h-menu-sub
 
@@ -94,8 +95,6 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 ## Examples
 
 ### Dropdown
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col items-start gap-4">
@@ -146,8 +145,6 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 ```
 
 ### Contextmenu
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/menu/menu.html" data-class="border-dashed p-0" data-icons="true">

@@ -44,15 +44,13 @@ x-h-focus
 
 ### Show sheet and focus textarea
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-data="{ sheetVisible: false }">
   <div x-h-sheet-overlay="sheetVisible">
     <div x-h-sheet class="vbox gap-4 p-4" data-align="bottom">
       <div x-h-field>
-        <label x-h-label.field for="focusExample-2">Write comment</label>
+        <label x-h-label for="focusExample-2">Write comment</label>
         <textarea x-h-textarea id="focusExample-2" class="resize-none" placeholder="Comment..." x-h-focus="sheetVisible"></textarea>
       </div>
       <div class="hbox justify-end gap-2">
@@ -71,7 +69,7 @@ x-h-focus
   <div x-h-sheet-overlay="sheetVisible">
     <div x-h-sheet class="vbox gap-4 p-4" data-align="bottom">
       <div x-h-field>
-        <label x-h-label.field for="focusExample-2">Write comment</label>
+        <label x-h-label for="focusExample-2">Write comment</label>
         <textarea x-h-textarea id="focusExample-2" class="resize-none" placeholder="Comment..." x-h-focus="sheetVisible"></textarea>
       </div>
       <div class="hbox justify-end gap-2">

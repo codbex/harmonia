@@ -43,6 +43,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 | Class                       | Description                                     |
 | --------------------------- | ----------------------------------------------- |
+| fill-none                   | Removes fill (`fill: none`).                    |
 | fill-current                | Set current color as fill color.                |
 | fill-primary                | Set primary color as fill color.                |
 | fill-primary-foreground     | Set primary foreground color as fill color.     |
@@ -61,30 +62,29 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Border colors
 
-| Class                         | Description                                       |
-| ----------------------------- | ------------------------------------------------- |
-| border-background             | Set background color as border color.             |
-| border-foreground             | Set foreground color as border color.             |
-| border-primary                | Set primary color as border color.                |
-| border-primary-foreground     | Set primary foreground color as border color.     |
-| border-secondary              | Set secondary color as border color.              |
-| border-secondary-foreground   | Set secondary foreground color as border color.   |
-| border-muted                  | Set muted color as border color.                  |
-| border-muted-foreground       | Set muted foreground color as border color.       |
-| border-negative               | Set negative color as border color.               |
-| border-negative-foreground    | Set negative foreground color as border color.    |
-| border-positive               | Set positive color as border color.               |
-| border-positive-foreground    | Set positive foreground color as border color.    |
-| border-warning                | Set warning color as border color.                |
-| border-warning-foreground     | Set warning foreground color as border color.     |
-| border-information            | Set information color as border color.            |
-| border-information-foreground | Set information foreground color as border color. |
+| Class                         | Description                                        |
+| ----------------------------- | -------------------------------------------------- |
+| border-background             | Set background color as border color.              |
+| border-foreground             | Set foreground color as border color.              |
+| border-primary                | Set primary color as border color.                 |
+| border-primary/50             | Set primary color as border color with 50 opacity. |
+| border-primary-foreground     | Set primary foreground color as border color.      |
+| border-secondary              | Set secondary color as border color.               |
+| border-secondary-foreground   | Set secondary foreground color as border color.    |
+| border-muted                  | Set muted color as border color.                   |
+| border-muted-foreground       | Set muted foreground color as border color.        |
+| border-negative               | Set negative color as border color.                |
+| border-negative-foreground    | Set negative foreground color as border color.     |
+| border-positive               | Set positive color as border color.                |
+| border-positive-foreground    | Set positive foreground color as border color.     |
+| border-warning                | Set warning color as border color.                 |
+| border-warning-foreground     | Set warning foreground color as border color.      |
+| border-information            | Set information color as border color.             |
+| border-information-foreground | Set information foreground color as border color.  |
 
 ## Examples
 
 ### Primary
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -104,8 +104,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Negative
 
-<br />
-
 <ClientOnly>
 <component-container>
 <p class="bg-negative text-negative-foreground p-4">Negative</p>
@@ -123,8 +121,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 ```
 
 ### Positive
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -144,8 +140,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Warning
 
-<br />
-
 <ClientOnly>
 <component-container>
 <p class="bg-warning text-warning-foreground p-4">Warning</p>
@@ -164,8 +158,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Information
 
-<br />
-
 <ClientOnly>
 <component-container>
 <p class="bg-information text-information-foreground p-4">Information</p>
@@ -183,8 +175,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 ```
 
 ### Muted
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

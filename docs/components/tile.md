@@ -1,6 +1,6 @@
 # Tile
 
-A container that presents content, previews, or shortcuts in a compact, visually distinct format. Tiles can group related information, link to pages or modules, or provide an interactive preview.
+A container that presents content, previews, or shortcuts in a compact, visually distinct format. Tiles can group related information, link to pages or modules, act as selectable options that wrap a checkbox or radio, or provide an interactive preview.
 
 ## Usage
 
@@ -24,11 +24,19 @@ x-h-tile-footer
 
 ### Attributes
 
+::: info
+`x-h-tile-group` sets `role="list"` by default, but leaves any `role` you set in place. For a group of selectable tiles, set `role="group"` (checkboxes) or `role="radiogroup"` (radios) plus `aria-label`/`aria-labelledby` on the group.
+:::
+
 #### x-h-tile
 
-| Attribute    | Type                               | Required | Description                    |
-| ------------ | ---------------------------------- | -------- | ------------------------------ |
-| data-variant | `outline`<br/>`shadow`<br/>`muted` | false    | Changes the style of the tile. |
+| Attribute    | Type                               | Required | Description                                                         |
+| ------------ | ---------------------------------- | -------- | ------------------------------------------------------------------- |
+| data-variant | `outline`<br/>`shadow`<br/>`muted` | false    | Changes the style of the tile. Ignored when the tile is selectable. |
+
+::: info
+When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (see [Selectable](#selectable)): it wraps a single checkbox or radio, is styled with the outline look automatically (`data-variant` is ignored), and reacts to the nested input being checked, focused, or disabled.
+:::
 
 #### x-h-tile-media
 
@@ -39,8 +47,6 @@ x-h-tile-footer
 ## Examples
 
 ### Variants
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col gap-4">
@@ -138,8 +144,6 @@ x-h-tile-footer
 
 ### As link
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <a x-h-tile data-variant="outline" href="#variants">
@@ -171,8 +175,6 @@ x-h-tile-footer
 ```
 
 ### With image or icon
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col gap-4">
@@ -260,8 +262,6 @@ x-h-tile-footer
 
 ### In group
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-tile-group class="flex">
@@ -337,3 +337,121 @@ Use the [tile utility classes](/utility-classes/tile) to control the size of the
 <div x-h-tile data-variant="outline" class="tile-double-md">Double length medium size custom tile</div>
 </component-container>
 </ClientOnly>
+
+### Selectable
+
+A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbox or radio. Clicking anywhere on the tile toggles the control, and the tile's text becomes the control's accessible name. The outline style is applied automatically, so `data-variant` is ignored on a selectable tile. Do not place buttons, links, or more than one input inside it.
+
+<ClientOnly>
+<component-container data-icons="true" data-class="flex flex-col gap-4">
+<label x-h-tile>
+  <span x-h-checkbox>
+    <input type="checkbox" />
+  </span>
+  <div x-h-tile-content>
+    <div x-h-tile-title>Selectable</div>
+    <p x-h-tile-description>Click on the tile to check the checkbox</p>
+  </div>
+</label>
+</component-container>
+</ClientOnly>
+
+```html
+<label x-h-tile>
+  <span x-h-checkbox>
+    <input type="checkbox" />
+  </span>
+  <div x-h-tile-content>
+    <div x-h-tile-title>Selectable</div>
+    <p x-h-tile-description>Click on the tile to check the checkbox</p>
+  </div>
+</label>
+```
+
+#### Checkbox group
+
+Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the group `role="group"` and a name via `aria-label` or `aria-labelledby`; `x-h-tile-group` keeps any `role` you set.
+
+<ClientOnly>
+<component-container data-icons="true">
+<div x-h-tile-group role="group" aria-label="Notifications" class="flex flex-col gap-2">
+  <label x-h-tile>
+    <span x-h-checkbox><input type="checkbox" /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Email</div>
+      <p x-h-tile-description>News and product updates</p>
+    </div>
+  </label>
+  <label x-h-tile>
+    <span x-h-checkbox><input type="checkbox" /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>SMS</div>
+      <p x-h-tile-description>Account and security alerts</p>
+    </div>
+  </label>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tile-group role="group" aria-label="Notifications" class="flex flex-col gap-2">
+  <label x-h-tile>
+    <span x-h-checkbox><input type="checkbox" /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Email</div>
+      <p x-h-tile-description>News and product updates</p>
+    </div>
+  </label>
+  <label x-h-tile>
+    <span x-h-checkbox><input type="checkbox" /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>SMS</div>
+      <p x-h-tile-description>Account and security alerts</p>
+    </div>
+  </label>
+</div>
+```
+
+#### Radio group
+
+For a single choice, give the group `role="radiogroup"` and every radio the same `name`. Only one tile can be selected at a time.
+
+<ClientOnly>
+<component-container data-icons="true">
+<div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
+  <label x-h-tile>
+    <span x-h-radio><input type="radio" name="plan" value="starter" checked /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Starter</div>
+      <p x-h-tile-description>For individuals getting started</p>
+    </div>
+  </label>
+  <label x-h-tile>
+    <span x-h-radio><input type="radio" name="plan" value="pro" /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Pro</div>
+      <p x-h-tile-description>For growing teams</p>
+    </div>
+  </label>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
+  <label x-h-tile>
+    <span x-h-radio><input type="radio" name="plan" value="starter" checked /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Starter</div>
+      <p x-h-tile-description>For individuals getting started</p>
+    </div>
+  </label>
+  <label x-h-tile>
+    <span x-h-radio><input type="radio" name="plan" value="pro" /></span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Pro</div>
+      <p x-h-tile-description>For growing teams</p>
+    </div>
+  </label>
+</div>
+```

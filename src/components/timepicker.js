@@ -98,12 +98,12 @@ export default function (Alpine) {
         'has-[input:focus-visible]:inset-ring-2',
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
-        'has-[input:invalid]:!inset-ring-negative/20',
-        'dark:has-[input:invalid]:!inset-ring-negative/40',
+        'has-[input:invalid]:inset-ring-negative/20!',
+        'dark:has-[input:invalid]:inset-ring-negative/40!',
         'hover:bg-table-hover',
         'hover:text-table-hover-foreground',
-        'active:!bg-table-active',
-        'active:!text-table-active-foreground',
+        'active:bg-table-active!',
+        'active:text-table-active-foreground!',
         'has-[[aria-expanded=true]]:bg-transparent',
         'has-[[aria-expanded=true]]:text-foreground'
       );

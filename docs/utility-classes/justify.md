@@ -19,8 +19,6 @@ Distributes space between and around items along the main axis of a flex contain
 
 ### Start
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex justify-start gap-2">
@@ -40,8 +38,6 @@ Distributes space between and around items along the main axis of a flex contain
 ```
 
 ### Center
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -63,8 +59,6 @@ Distributes space between and around items along the main axis of a flex contain
 
 ### End
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex justify-end gap-2">
@@ -84,8 +78,6 @@ Distributes space between and around items along the main axis of a flex contain
 ```
 
 ### End safe
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -145,8 +137,6 @@ Distributes space between and around items along the main axis of a flex contain
 
 ### Between
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex justify-between">
@@ -167,8 +157,6 @@ Distributes space between and around items along the main axis of a flex contain
 
 ### Around
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex justify-around">
@@ -188,8 +176,6 @@ Distributes space between and around items along the main axis of a flex contain
 ```
 
 ### Evenly
-
-<br />
 
 <ClientOnly>
 <component-container>

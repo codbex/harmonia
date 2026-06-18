@@ -14,8 +14,6 @@ CSS utility classes for adjusting images.
 
 ### Contain
 
-<br />
-
 <ClientOnly>
 <component-container >
 <img class="object-contain border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg">
@@ -28,8 +26,6 @@ CSS utility classes for adjusting images.
 
 ### Cover
 
-<br />
-
 <ClientOnly>
 <component-container>
 <img class="object-cover border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg">
@@ -41,8 +37,6 @@ CSS utility classes for adjusting images.
 ```
 
 ### Fill
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-3">

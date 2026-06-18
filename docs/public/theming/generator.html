@@ -10,7 +10,7 @@
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
     <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
     <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
-    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" title="harmonia" />
     <link href="/harmonia/fonts.css" rel="stylesheet" />
     <style id="importStyles" type="text/css"></style>
   </head>
@@ -121,24 +121,24 @@
           <div x-h-exp-panel-item="true">
             <h3 x-h-exp-panel-trigger="'Colors'"></h3>
             <div x-h-exp-panel-content>
-              <div class="vbox gap-2 p-4" x-show="mode !== 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode !== 'dark'">
                 <template x-for="color in colors.light">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="color.name" x-text="color.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="color.name" x-text="color.name"></label>
                     <div class="hbox gap-2">
-                      <input class="aspect-square !w-auto" :id="color.name + 'Select'" :aria-label="'Select ' + color.name + ' color'" x-h-input type="color" :value="getHexColor(color.value)" @change="applyColSelect(event, color.varId)" />
+                      <input class="aspect-square w-auto!" :id="color.name + 'Select'" :aria-label="'Select ' + color.name + ' color'" x-h-input type="color" :value="getHexColor(color.value)" @change="applyColSelect(event, color.varId)" />
                       <input x-h-input :id="color.name" @input="applyVar(event, color.varId, true)" x-model="color.value" x-bind:data-col="color.value" />
                     </div>
                   </div>
                 </template>
               </div>
-              <div class="vbox gap-2 p-4" x-show="mode === 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode === 'dark'">
                 <template x-for="color in colors.dark">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="color.name + 'Dark'" x-text="color.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="color.name + 'Dark'" x-text="color.name"></label>
                     <div class="hbox gap-2">
                       <input
-                        class="aspect-square !w-auto"
+                        class="aspect-square w-auto!"
                         :id="color.name + 'SelectDark'"
                         :aria-label="'Select ' + color.name + ' color'"
                         x-h-input
@@ -157,18 +157,18 @@
           <div x-h-exp-panel-item>
             <h3 x-h-exp-panel-trigger="'Shadows'"></h3>
             <div x-h-exp-panel-content>
-              <div class="vbox gap-2 p-4" x-show="mode !== 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode !== 'dark'">
                 <template x-for="shadow in shadows.light">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="shadow.name" x-text="shadow.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="shadow.name" x-text="shadow.name"></label>
                     <input x-h-input :id="shadow.name" x-model="shadow.value" @input="applyVar(event, shadow.varId, false)" />
                   </div>
                 </template>
               </div>
-              <div class="vbox gap-2 p-4" x-show="mode === 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode === 'dark'">
                 <template x-for="shadow in shadows.dark">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="shadow.name + 'Dark'" x-text="shadow.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="shadow.name + 'Dark'" x-text="shadow.name"></label>
                     <input x-h-input :id="shadow.name + 'Dark'" x-model="shadow.value" @input="applyVar(event, shadow.varId, false)" />
                   </div>
                 </template>
@@ -179,18 +179,18 @@
           <div x-h-exp-panel-item>
             <h3 x-h-exp-panel-trigger="'Fonts'"></h3>
             <div x-h-exp-panel-content>
-              <div class="vbox gap-2 p-4" x-show="mode !== 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode !== 'dark'">
                 <template x-for="font in fonts.light">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="font.name" x-text="font.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="font.name" x-text="font.name"></label>
                     <input x-h-input :id="font.name" x-model="font.value" @input="applyVar(event, font.varId, false)" />
                   </div>
                 </template>
               </div>
-              <div class="vbox gap-2 p-4" x-show="mode === 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode === 'dark'">
                 <template x-for="font in fonts.dark">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="font.name + 'Dark'" x-text="font.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="font.name + 'Dark'" x-text="font.name"></label>
                     <input x-h-input :id="font.name + 'Dark'" x-model="font.value" @input="applyVar(event, font.varId, false)" />
                   </div>
                 </template>
@@ -201,18 +201,18 @@
           <div x-h-exp-panel-item>
             <h3 x-h-exp-panel-trigger="'Others'"></h3>
             <div x-h-exp-panel-content>
-              <div class="vbox gap-2 p-4" x-show="mode !== 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode !== 'dark'">
                 <template x-for="other in others.light">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="other.name" x-text="other.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="other.name" x-text="other.name"></label>
                     <input x-h-input :id="other.name" x-model="other.value" @input="applyVar(event, other.varId, false)" />
                   </div>
                 </template>
               </div>
-              <div class="vbox gap-2 p-4" x-show="mode === 'dark'">
+              <div class="vbox gap-3 p-3" x-show="mode === 'dark'">
                 <template x-for="other in others.dark">
-                  <div class="vbox gap-2">
-                    <label x-h-label.field :for="other.name + 'Dark'" x-text="other.name"></label>
+                  <div x-h-field>
+                    <label x-h-label :for="other.name + 'Dark'" x-text="other.name"></label>
                     <input x-h-input :id="other.name + 'Dark'" x-model="other.value" @input="applyVar(event, other.varId, false)" />
                   </div>
                 </template>
@@ -380,6 +380,10 @@
             {
               label: "Spinner",
               value: "spinner",
+            },
+            {
+              label: "Step Indicator",
+              value: "step-indicator",
             },
             {
               label: "Switch",
@@ -609,7 +613,7 @@
           importTheme(refs) {
             const importStyle = document.getElementById("importStyles");
             importStyle.textContent = refs.themeCssInput.value;
-            this.getThemeVars();
+            this.getThemeVars(true);
             this.showImport = false;
           },
           exportTheme() {
@@ -643,7 +647,7 @@
             this.themeStylesheet = themeCss;
             this.showExport = true;
           },
-          getThemeVars() {
+          getThemeVars(fromImport = false) {
             this.colors.light.length = 0;
             this.colors.dark.length = 0;
             this.shadows.light.length = 0;
@@ -653,36 +657,45 @@
             this.others.light.length = 0;
             this.others.dark.length = 0;
 
-            for (const sheet of document.styleSheets) {
-              for (const rule of sheet.cssRules) {
-                if (rule.selectorText === ":root, :host") {
-                  for (const name of rule.style) {
-                    if (name.startsWith("--")) {
-                      if (this.colorVars.includes(name)) {
-                        this.colors.light.push({
-                          varId: name,
-                          name: this.getVarLabel(name),
-                          value: rule.style.getPropertyValue(name).trim(),
-                        });
-                      } else if (this.shadowVars.includes(name)) {
-                        this.shadows.light.push({
-                          varId: name,
-                          name: this.getVarLabel(name),
-                          value: rule.style.getPropertyValue(name).trim(),
-                        });
-                      } else if (this.fontVars.includes(name)) {
-                        this.fonts.light.push({
-                          varId: name,
-                          name: this.getVarLabel(name),
-                          value: rule.style.getPropertyValue(name).trim(),
-                        });
-                      } else {
-                        this.others.light.push({
-                          varId: name,
-                          name: this.getVarLabel(name),
-                          value: rule.style.getPropertyValue(name).trim(),
-                        });
-                      }
+            let styleSheet;
+            if (fromImport) {
+              for (let i = 0; i < document.styleSheets.length; i++) {
+                if (document.styleSheets[i].ownerNode.id === "importStyles") styleSheet = document.styleSheets[i];
+              }
+            } else {
+              for (let i = 0; i < document.styleSheets.length; i++) {
+                if (document.styleSheets[i].title === "harmonia") styleSheet = document.styleSheets[i];
+              }
+            }
+
+            for (const rule of styleSheet.cssRules) {
+              if (rule.selectorText === ":root, :host") {
+                for (const name of rule.style) {
+                  if (name.startsWith("--")) {
+                    if (this.colorVars.includes(name)) {
+                      this.colors.light.push({
+                        varId: name,
+                        name: this.getVarLabel(name),
+                        value: rule.style.getPropertyValue(name).trim(),
+                      });
+                    } else if (this.shadowVars.includes(name)) {
+                      this.shadows.light.push({
+                        varId: name,
+                        name: this.getVarLabel(name),
+                        value: rule.style.getPropertyValue(name).trim(),
+                      });
+                    } else if (this.fontVars.includes(name)) {
+                      this.fonts.light.push({
+                        varId: name,
+                        name: this.getVarLabel(name),
+                        value: rule.style.getPropertyValue(name).trim(),
+                      });
+                    } else {
+                      this.others.light.push({
+                        varId: name,
+                        name: this.getVarLabel(name),
+                        value: rule.style.getPropertyValue(name).trim(),
+                      });
                     }
                   }
                 }

@@ -33,8 +33,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ### Grid
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="grid grid-cols-12 gap-1">
@@ -72,8 +70,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 ```
 
 ### Responsive grid
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -113,8 +109,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ### Justify items start
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="grid grid-cols-3 justify-items-start gap-4">
@@ -140,8 +134,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 ```
 
 ### Justify items center
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -169,8 +161,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ### Justify items end
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="grid grid-cols-3 justify-items-end gap-4">
@@ -196,8 +186,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 ```
 
 ### Justify items stretch
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -225,8 +213,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ### Place items start
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 place-items-start gap-4 h-full">
@@ -252,8 +238,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 ```
 
 ### Place items center
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -281,8 +265,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 
 ### Place items end
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-3 place-items-end gap-4 h-full">
@@ -308,8 +290,6 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
 ```
 
 ### Place items stretch
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">

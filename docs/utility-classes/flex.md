@@ -24,6 +24,8 @@
 | flex-auto        | `flex: auto;`                    |
 | flex-none        | `flex: none;`                    |
 
+`flex-row-reverse` and `flex-col-reverse` also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:` (e.g. `md:flex-row-reverse`).
+
 ::: info Flex classes
 The `flex-*` classes must be combined with the `flex` class.
 :::
@@ -31,8 +33,6 @@ The `flex-*` classes must be combined with the `flex` class.
 ## Examples
 
 ### Horizontal box
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -54,8 +54,6 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ### Vertical box
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="vbox gap-1">
@@ -75,8 +73,6 @@ The `flex-*` classes must be combined with the `flex` class.
 ```
 
 ### Horizontal flex
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -98,8 +94,6 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ### Reverse horizontal flex
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex flex-row-reverse gap-1">
@@ -119,8 +113,6 @@ The `flex-*` classes must be combined with the `flex` class.
 ```
 
 ### Vertical flex
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -142,8 +134,6 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ### Reverse vertical flex
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="flex flex-col-reverse h-full gap-1">
@@ -163,8 +153,6 @@ The `flex-*` classes must be combined with the `flex` class.
 ```
 
 ### Flex wrap
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -228,8 +216,6 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ### Flex 1
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex flex-row gap-1">
@@ -248,8 +234,6 @@ The `flex-*` classes must be combined with the `flex` class.
 
 ### Flex Auto
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="flex flex-row gap-1">
@@ -267,8 +251,6 @@ The `flex-*` classes must be combined with the `flex` class.
 ```
 
 ### Flex none
-
-<br />
 
 <ClientOnly>
 <component-container>

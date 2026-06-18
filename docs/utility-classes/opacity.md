@@ -16,8 +16,6 @@ Utilities for controlling the opacity of an element.
 
 ### Primary
 
-<br />
-
 <ClientOnly>
 <component-container data-class="hbox gap-2">
 <div class="tile-sm bg-primary p-4 text-primary-foreground opacity-0">0%</div>

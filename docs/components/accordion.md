@@ -55,8 +55,6 @@ x-h-accordion-content
 
 ### Show only one section at a time
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-accordion.single="itemId2">
@@ -98,8 +96,6 @@ x-h-accordion-content
 ```
 
 ### Default section
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -143,8 +139,6 @@ x-h-accordion-content
 
 ### Medium size
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-accordion data-size="md">
@@ -186,8 +180,6 @@ x-h-accordion-content
 ```
 
 ### Small size
-
-<br />
 
 <ClientOnly>
 <component-container>

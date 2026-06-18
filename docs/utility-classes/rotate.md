@@ -14,8 +14,6 @@ CSS utility classes to rotate elements.
 
 ### Text size
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex gap-3">
 <svg x-h-icon class="size-12 rotate-90" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>

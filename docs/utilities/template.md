@@ -29,8 +29,6 @@ x-h-template
 
 ### Tree with recursive rendering
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/template/tree.html">
 </component-container>

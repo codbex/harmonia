@@ -28,8 +28,6 @@ x-h-avatar-fallback
 
 ### Default
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex flex-col items-center">
 <span x-h-avatar>
@@ -47,8 +45,6 @@ x-h-avatar-fallback
 ```
 
 ### Big avatar
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col items-center">
@@ -88,8 +84,6 @@ You can change the avatar shape by using the `rounded-` classes.
 
 ### Text-only
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex flex-col items-center">
 <span x-h-avatar>HM</span>
@@ -101,8 +95,6 @@ You can change the avatar shape by using the `rounded-` classes.
 ```
 
 ### Icon-only
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col items-center">
@@ -119,8 +111,6 @@ You can change the avatar shape by using the `rounded-` classes.
 ```
 
 ### Variants
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="grid grid-cols-4 justify-items-center gap-4">

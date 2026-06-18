@@ -18,8 +18,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 
 ### Start
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-2 place-content-start gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
@@ -41,8 +39,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 ```
 
 ### Center
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -66,8 +62,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 
 ### End
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-2 place-content-end gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
@@ -89,8 +83,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 ```
 
 ### Between
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -114,8 +106,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 
 ### Around
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-2 place-content-around gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
@@ -138,8 +128,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 
 ### Evenly
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="grid grid-cols-2 place-content-evenly gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
@@ -161,8 +149,6 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 ```
 
 ### Stretch
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">

@@ -4,6 +4,8 @@ Adds a gap to flex and grid layout items.
 
 ## Class names
 
+The all-round `gap` class also supports responsive prefixes `sm:`, `md:`, `lg:`, and `xl:` (e.g. `md:gap-4`). Responsive variants do not support the `!` modifier.
+
 | Class        | Description                            | `!` support |
 | ------------ | -------------------------------------- | ----------- |
 | gap-`1-12`   | All-round gap size. From 1 to 12.      | Yes         |
@@ -13,8 +15,6 @@ Adds a gap to flex and grid layout items.
 ## Examples
 
 ### Grid gap
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -46,8 +46,6 @@ Adds a gap to flex and grid layout items.
 
 ### Different horizontal and vertical grid gap
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="grid grid-cols-4 gap-x-1 gap-y-4">
@@ -78,8 +76,6 @@ Adds a gap to flex and grid layout items.
 
 ### Flex gap
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="hbox gap-2">
@@ -101,8 +97,6 @@ Adds a gap to flex and grid layout items.
 ```
 
 ### Flex wrap gap
-
-<br />
 
 <ClientOnly>
 <component-container>

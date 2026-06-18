@@ -42,8 +42,6 @@ x-h-toolbar-separator
 
 ### Default
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-toolbar>
@@ -67,8 +65,6 @@ x-h-toolbar-separator
 ```
 
 ### Floating
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -94,8 +90,6 @@ x-h-toolbar-separator
 
 ### Transparent
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-toolbar data-variant="transparent">
@@ -119,8 +113,6 @@ x-h-toolbar-separator
 ```
 
 ### Floating Transparent
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -146,8 +138,6 @@ x-h-toolbar-separator
 
 ### Small
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-toolbar data-size="sm">
@@ -171,8 +161,6 @@ x-h-toolbar-separator
 ```
 
 ### Medium
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -198,8 +186,6 @@ x-h-toolbar-separator
 
 ### Footer
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div x-h-toolbar.footer>
@@ -219,8 +205,6 @@ x-h-toolbar-separator
 ```
 
 ### As page header (shellbar)
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

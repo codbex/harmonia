@@ -266,6 +266,13 @@ outline: deep
       <p class="text">Dynamic loader graphic signaling ongoing activity or processing.</p>
     </div>
   </a>
+  <a href="./components/step-indicator" class="card">
+    <svg-icon class="card-media" src="./images/step-indicator.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Step Indicator</h3>
+      <p class="text">Sequential progress tracker highlighting completed, active, and upcoming steps.</p>
+    </div>
+  </a>
   <a href="./components/switch" class="card">
     <svg-icon class="card-media" src="./images/switch.svg"></svg-icon>
     <div class="card-content">

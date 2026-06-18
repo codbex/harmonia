@@ -52,8 +52,6 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 
 ### Popover
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-button x-h-popover-trigger>Popover</button>
@@ -67,8 +65,6 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 ```
 
 ### Disable closing on inner click events
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -87,8 +83,6 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 ```
 
 ### Manually open and close the popover
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -129,8 +123,6 @@ In order to use the chevron modifier, the trigger label must be placed inside a 
 ```
 
 ### Alignment
-
-<br />
 
 <ClientOnly>
 <component-container>

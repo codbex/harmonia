@@ -18,19 +18,37 @@ export default function (Alpine) {
     el.classList.add('group/field', 'w-full', 'gap-3', 'has-[input:invalid]:text-negative', 'has-[textarea:invalid]:text-negative', 'has-[[aria-invalid=true]]:text-negative');
     switch (el.getAttribute('data-orientation')) {
       case 'horizontal':
-        el.classList.add('hbox', 'items-center', '[&>[data-slot=field-label]]:flex-auto', 'has-[>[data-slot=field-content]]:items-start', 'has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px');
+        el.classList.add(
+          'hbox',
+          'items-center',
+          '[&>[data-slot=field-label]]:flex-auto',
+          'has-[>[data-slot=field-content]]:items-start',
+          'has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
+          'has-[>[data-slot=field-error]]:grid',
+          'has-[>[data-slot=field-description]]:grid',
+          'has-[>[data-slot=field-error]]:grid-cols-[auto_1fr]',
+          'has-[>[data-slot=field-description]]:grid-cols-[auto_1fr]',
+          '[&>[data-slot=field-error]]:col-start-2',
+          '[&>[data-slot=field-description]]:col-start-2'
+        );
         break;
       case 'responsive':
         el.classList.add(
           'vbox',
-          '[&>*]:w-full',
+          '[&>*:not([data-slot=field-label])]:w-full',
           '[&>.sr-only]:w-auto',
           '@md/field-group:flex-row',
           '@md/field-group:items-center',
           '@md/field-group:[&>*]:w-auto',
           '@md/field-group:[&>[data-slot=field-label]]:flex-auto',
           '@md/field-group:has-[>[data-slot=field-content]]:items-start',
-          '@md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px'
+          '@md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
+          '@md/field-group:has-[>[data-slot=field-error]]:grid',
+          '@md/field-group:has-[>[data-slot=field-description]]:grid',
+          '@md/field-group:has-[>[data-slot=field-error]]:grid-cols-[auto_1fr]',
+          '@md/field-group:has-[>[data-slot=field-description]]:grid-cols-[auto_1fr]',
+          '@md/field-group:[&>[data-slot=field-error]]:col-start-2',
+          '@md/field-group:[&>[data-slot=field-description]]:col-start-2'
         );
         break;
       default:

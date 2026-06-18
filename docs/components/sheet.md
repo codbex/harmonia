@@ -33,8 +33,6 @@ x-h-sheet-overlay
 
 ### Sheet with Sidebar
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/sheet/with-sidebar.html">
 </component-container>
@@ -93,8 +91,6 @@ x-h-sheet-overlay
 ```
 
 ### Alignment
-
-<br />
 
 <ClientOnly>
 <component-container>

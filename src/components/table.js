@@ -57,8 +57,8 @@ export default function (Alpine) {
       'text-foreground',
       '[&[data-hoverable=true]:hover]:bg-table-hover',
       '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
-      '[&[data-activable=true]:active]:!bg-table-active',
-      '[&[data-activable=true]:active]:!text-table-active-foreground',
+      '[&[data-activable=true]:active]:bg-table-active!',
+      '[&[data-activable=true]:active]:text-table-active-foreground!',
       'h-10',
       'px-2',
       'text-left',
@@ -83,8 +83,8 @@ export default function (Alpine) {
       '[&>[role=checkbox]]:items-center',
       '[&[data-hoverable=true]:hover]:bg-table-hover',
       '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
-      '[&[data-activable=true]:active]:!bg-table-active',
-      '[&[data-activable=true]:active]:!text-table-active-foreground'
+      '[&[data-activable=true]:active]:bg-table-active!',
+      '[&[data-activable=true]:active]:text-table-active-foreground!'
     );
     el.setAttribute('data-slot', 'table-cell');
   });
@@ -116,8 +116,8 @@ export default function (Alpine) {
       'focus-visible:inset-ring-2',
       'hover:bg-table-hover',
       'hover:text-table-hover-foreground',
-      'active:!bg-table-active',
-      'active:!text-table-active-foreground',
+      'active:bg-table-active!',
+      'active:text-table-active-foreground!',
       '[&[data-state=open]>svg:not(:first-child):last-child]:rotate-180',
       '[&[data-state=open]>svg:only-child]:rotate-180'
     );
@@ -132,8 +132,8 @@ export default function (Alpine) {
       '[&_tr_th[data-slot|=table]]:bg-table-header',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:bg-table-hover',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:text-table-hover-foreground',
-      '[&_tr[data-activable=true]:active_th[data-slot|=table]]:!bg-table-active',
-      '[&_tr[data-activable=true]:active_th[data-slot|=table]]:!text-table-active-foreground'
+      '[&_tr[data-activable=true]:active_th[data-slot|=table]]:bg-table-active!',
+      '[&_tr[data-activable=true]:active_th[data-slot|=table]]:text-table-active-foreground!'
     );
     el.setAttribute('data-slot', 'table-body');
   });
@@ -142,8 +142,8 @@ export default function (Alpine) {
     el.classList.add(
       '[&[data-hoverable=true]:hover]:bg-table-hover',
       '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
-      '[&[data-activable=true]:active]:!bg-table-active',
-      '[&[data-activable=true]:active]:!text-table-active-foreground',
+      '[&[data-activable=true]:active]:bg-table-active!',
+      '[&[data-activable=true]:active]:text-table-active-foreground!',
       'data-[state=selected]:bg-table-active',
       'data-[state=selected]:text-table-active-foreground'
     );

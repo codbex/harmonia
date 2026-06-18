@@ -37,9 +37,9 @@ export default function (Alpine) {
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
-      'invalid:!ring-negative/20',
-      'dark:invalid:!ring-negative/40',
-      'invalid:!border-negative'
+      'invalid:ring-negative/20!',
+      'dark:invalid:ring-negative/40!',
+      'invalid:border-negative!'
     );
     if (modifiers.includes('group')) {
       el.classList.add('h-full', 'flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
@@ -52,8 +52,8 @@ export default function (Alpine) {
         'focus-visible:inset-ring-2',
         'aria-invalid:inset-ring-negative/20',
         'dark:aria-invalid:inset-ring-negative/40',
-        'invalid:!inset-ring-negative/20',
-        'dark:invalid:!inset-ring-negative/40'
+        'invalid:inset-ring-negative/20!',
+        'dark:invalid:inset-ring-negative/40!'
       );
       el.setAttribute('data-slot', 'cell-input');
     } else {
@@ -181,40 +181,58 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'label');
   });
 
-  Alpine.directive('h-input-number', (el, { original }, { cleanup }) => {
+  Alpine.directive('h-input-number', (el, { original, modifiers }, { cleanup }) => {
     el.classList.add(
       'overflow-hidden',
       'group/input-number',
       'border-input',
-      'bg-input-inner',
       'relative',
       'flex',
-      'w-full',
       'items-center',
-      'rounded-control',
-      'border',
-      'shadow-input',
       'transition-colors',
       'transition-shadow',
       'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
       'min-w-0',
-      'has-[input:focus-visible]:border-ring',
-      'has-[input:focus-visible]:ring-ring/50',
-      'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
-      'has-[input[aria-invalid=true]]:ring-negative/20',
-      'has-[input[aria-invalid=true]]:border-negative',
-      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-      'has-[input:invalid]:ring-negative/20',
-      'has-[input:invalid]:border-negative',
-      'dark:has-[input:invalid]:ring-negative/40',
       'has-[input:disabled]:pointer-events-none',
       'has-[input:disabled]:cursor-not-allowed',
       'has-[input:disabled]:opacity-50'
     );
+    if (modifiers.includes('table')) {
+      el.classList.add(
+        'size-full',
+        'h-10',
+        'has-[input:focus-visible]:inset-ring-ring/50',
+        'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
+        'has-[input[aria-invalid=true]]:inset-ring-negative/20',
+        'has-[input[aria-invalid=true]]:border-negative',
+        'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
+        'has-[input:invalid]:inset-ring-negative/20',
+        'has-[input:invalid]:border-negative',
+        'dark:has-[input:invalid]:inset-ring-negative/40'
+      );
+      el.setAttribute('data-slot', 'cell-input-number');
+    } else {
+      el.classList.add(
+        'w-full',
+        'rounded-control',
+        'border',
+        'bg-input-inner',
+        'shadow-input',
+        'has-[input:focus-visible]:border-ring',
+        'has-[input:focus-visible]:ring-ring/50',
+        'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
+        'has-[input[aria-invalid=true]]:ring-negative/20',
+        'has-[input[aria-invalid=true]]:border-negative',
+        'dark:has-[input[aria-invalid=true]]:ring-negative/40',
+        'has-[input:invalid]:ring-negative/20',
+        'has-[input:invalid]:border-negative',
+        'dark:has-[input:invalid]:ring-negative/40'
+      );
+      el.setAttribute('data-slot', 'input-number');
+    }
     el.setAttribute('role', 'group');
-    el.setAttribute('data-slot', 'input-number');
     const input = el.querySelector('input');
     if (!input || input.getAttribute('type') !== 'number') {
       throw new Error(`${original} must contain an input of type 'number'`);

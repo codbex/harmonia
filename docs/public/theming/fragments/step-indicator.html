@@ -1,0 +1,43 @@
+<div x-data="{ step: 2, total: 3 }" class="vbox w-full gap-6">
+  <div x-h-step-indicator="step">
+    <div x-h-step-indicator-item="1">
+      <button x-h-step-indicator-trigger>
+        <span x-h-step-indicator-marker>
+          <svg x-h-icon.circle-user role="img" aria-label="step account"></svg>
+        </span>
+        <span x-h-step-indicator-content>
+          <span x-h-step-indicator-title>Account</span>
+          <span x-h-step-indicator-description>Your details</span>
+        </span>
+      </button>
+      <div x-h-step-indicator-separator></div>
+    </div>
+    <div x-h-step-indicator-item="2">
+      <button x-h-step-indicator-trigger>
+        <span x-h-step-indicator-marker>
+          <i role="img" data-lucide="map-pin"></i>
+        </span>
+        <span x-h-step-indicator-content>
+          <span x-h-step-indicator-title>Address</span>
+          <span x-h-step-indicator-description>Shipping info</span>
+        </span>
+      </button>
+      <div x-h-step-indicator-separator></div>
+    </div>
+    <div x-h-step-indicator-item="3">
+      <button x-h-step-indicator-trigger>
+        <span x-h-step-indicator-marker>
+          <i role="img" data-lucide="banknote"></i>
+        </span>
+        <span x-h-step-indicator-content>
+          <span x-h-step-indicator-title>Payment</span>
+          <span x-h-step-indicator-description>Confirm order</span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="hbox justify-between gap-2">
+    <button x-h-button data-variant="outline" @click="step = Math.max(step - 1, 1)" :disabled="step === 1">Back</button>
+    <button x-h-button data-variant="primary" @click="step = Math.min(step + 1, total)" :disabled="step === total">Next</button>
+  </div>
+</div>

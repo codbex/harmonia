@@ -90,7 +90,7 @@ export default function (Alpine) {
       'px-4',
       'text-object-header-foreground',
       '[[data-floating=true]_&]:border',
-      '[[data-floating=true]_&]:!border-b',
+      '[[data-floating=true]_&]:border-b!',
       '[[data-floating=true]_&]:rounded-lg',
       '[[data-floating=true]_&]:shadow-xs',
       '[[data-size=md]_&]:h-10',

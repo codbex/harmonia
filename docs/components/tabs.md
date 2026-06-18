@@ -60,8 +60,6 @@ x-h-tabs-content
 
 ### Sizes
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
@@ -132,8 +130,6 @@ x-h-tabs-content
 
 ### Scrollable tab content
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal" style="height:10rem">
@@ -168,8 +164,6 @@ x-h-tabs-content
 
 ### Horizontal tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/horizontal.html" data-class="p-0">
 </component-container>
@@ -197,8 +191,6 @@ x-h-tabs-content
 ```
 
 ### Horizontal tabs with icon and close button
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/horizontal-button.html" data-class="p-0" data-icons="true">
@@ -245,8 +237,6 @@ x-h-tabs-content
 ```
 
 ### Horizontal tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
@@ -298,8 +288,6 @@ x-h-tabs-content
 
 ### Horizontal tabs with actions (end)
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
@@ -350,8 +338,6 @@ x-h-tabs-content
 
 ### Horizontal float tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/horizontal-floating.html">
 </component-container>
@@ -378,9 +364,49 @@ x-h-tabs-content
 </div>
 ```
 
-### Horizontal float tabs with icon and close button
+### Horizontal float tabs that fit to size
 
-<br />
+You can make the tab bar fit to the size of the tab list by adding the `w-max` class.
+
+<ClientOnly>
+<component-container>
+<div x-h-tabs data-orientation="horizontal" class="w-max">
+  <div x-h-tab-bar data-floating="true">
+    <div x-h-tab-list>
+      <button x-h-tab id="ht1" aria-controls="ht1c" aria-selected="true">Sign In</button>
+      <button x-h-tab id="ht2" aria-controls="ht2c">Sign Up</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="ht1c" aria-labelledby="ht1">
+    <div class="p-2">Sign In</div>
+  </div>
+  <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" hidden="true">
+    <div class="p-2">Sign Up</div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tabs data-orientation="horizontal" class="w-max">
+    <div x-h-tab-bar data-floating="true">
+      <div x-h-tab-list>
+        <button x-h-tab id="ht1" aria-controls="ht1c" aria-selected="true">Sign In</button>
+        <button x-h-tab id="ht2" aria-controls="ht2c">Sign Up</button>
+      </div>
+    </div>
+    <div x-h-tabs-content id="ht1c" aria-labelledby="ht1">
+      <div class="p-2">Sign In</div>
+    </div>
+    <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" hidden="true">
+      <div class="p-2">Sign Up</div>
+    </div>
+  </div>
+</div>
+```
+
+### Horizontal float tabs with icon and close button
 
 <ClientOnly>
 <component-container src="/components/tabs/horizontal-button-floating.html" data-icons="true">
@@ -427,8 +453,6 @@ x-h-tabs-content
 ```
 
 ### Horizontal float tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -480,8 +504,6 @@ x-h-tabs-content
 
 ### Horizontal float tabs with actions (end)
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-tabs data-orientation="horizontal">
@@ -532,8 +554,6 @@ x-h-tabs-content
 
 ### Vertical tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/vertical.html" data-class="p-0">
 </component-container>
@@ -561,8 +581,6 @@ x-h-tabs-content
 ```
 
 ### Vertical tabs with icon and close button
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/vertical-button.html" data-class="p-0" data-icons="true">
@@ -609,8 +627,6 @@ x-h-tabs-content
 ```
 
 ### Vertical tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
@@ -662,8 +678,6 @@ x-h-tabs-content
 
 ### Vertical tabs with actions (end)
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true" data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
@@ -714,8 +728,6 @@ x-h-tabs-content
 
 ### Vertical float tabs
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/tabs/vertical-floating.html" data-icons="true">
 </component-container>
@@ -743,8 +755,6 @@ x-h-tabs-content
 ```
 
 ### Vertical float tabs with icon and close button
-
-<br />
 
 <ClientOnly>
 <component-container src="/components/tabs/vertical-button-floating.html">
@@ -791,8 +801,6 @@ x-h-tabs-content
 ```
 
 ### Vertical float tabs with actions
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -843,8 +851,6 @@ x-h-tabs-content
 ```
 
 ### Vertical float tabs with actions (end)
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

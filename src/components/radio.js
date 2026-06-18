@@ -1,19 +1,8 @@
 export default function (Alpine) {
   Alpine.directive('h-radio', (el) => {
+    // Additional component styles in 'src/styles/radio.css' and in 'src/styles/common.css'
     el.classList.add(
-      '[&>input]:absolute',
-      '[&>input]:appearance-none',
-      '[&>input]:bg-transparent',
-      '[&>input]:border-0',
-      '[&>input]:cursor-pointer',
-      '[&>input]:focus-visible:border-ring',
       '[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      '[&>input]:focus-visible:ring-ring/50',
-      '[&>input]:left-0',
-      '[&>input]:outline-none',
-      '[&>input]:rounded-full',
-      '[&>input]:size-full',
-      '[&>input]:top-0',
       'aspect-square',
       'before:bg-clip-padding',
       'before:bg-primary',

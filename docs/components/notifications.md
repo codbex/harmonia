@@ -865,8 +865,6 @@ Notifications can contain actions and dynamic information. The following example
 
 ### Notification Position
 
-<br />
-
 <ClientOnly>
 <component-container src="/components/notifications/positions.html">
 </component-container>

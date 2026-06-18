@@ -371,10 +371,10 @@ export default function (Alpine) {
           'aria-[current=date]:bg-secondary',
           'hover:aria-[current=date]:bg-secondary-hover',
           'aria-[current=date]:text-secondary-foreground',
-          'aria-selected:!bg-primary-active',
-          'aria-selected:hover:!bg-primary-hover',
-          'aria-selected:focus:!bg-primary-hover',
-          'aria-selected:!text-primary-foreground',
+          'aria-selected:bg-primary-active!',
+          'aria-selected:hover:bg-primary-hover!',
+          'aria-selected:focus:bg-primary-hover!',
+          'aria-selected:text-primary-foreground!',
           'aria-disabled:pointer-events-none',
           'aria-disabled:opacity-50'
         );

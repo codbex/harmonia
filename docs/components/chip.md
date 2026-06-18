@@ -39,8 +39,6 @@ x-h-chip-close
 
 ### Text-Only
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-chip>Chip</button>
@@ -71,8 +69,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ### Icon & Text
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-chip>
@@ -90,8 +86,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 ```
 
 ### Icon, Text & Close Button
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -113,8 +107,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ### Outline Variant
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-chip data-variant="outline">
@@ -134,8 +126,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 ```
 
 ### Primary Variant
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -157,8 +147,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ### Information Variant
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-chip data-variant="information">
@@ -178,8 +166,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 ```
 
 ### Warning Variant
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -201,8 +187,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ### Positive Variant
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-chip data-variant="positive">
@@ -223,8 +207,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ### Negative Variant
 
-<br />
-
 <ClientOnly>
 <component-container>
 <button x-h-chip data-variant="negative">
@@ -244,8 +226,6 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 ```
 
 ### With Popover
-
-<br />
 
 <ClientOnly>
 <component-container>

@@ -153,9 +153,9 @@ export const setButtonClasses = (el) => {
     'aria-invalid:ring-negative/20',
     'dark:aria-invalid:ring-negative/40',
     'aria-invalid:border-negative',
-    'invalid:!ring-negative/20',
-    'dark:invalid:!ring-negative/40',
-    'invalid:!border-negative'
+    'invalid:ring-negative/20!',
+    'dark:invalid:ring-negative/40!',
+    'invalid:border-negative!'
   );
 };
 

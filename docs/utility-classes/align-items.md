@@ -16,8 +16,6 @@ Aligns items along the cross axis of a flex or grid container.
 
 ### Start
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="flex items-start gap-4 h-full">
@@ -37,8 +35,6 @@ Aligns items along the cross axis of a flex or grid container.
 ```
 
 ### Center
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">
@@ -60,8 +56,6 @@ Aligns items along the cross axis of a flex or grid container.
 
 ### End
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="flex items-end gap-4 h-full">
@@ -82,8 +76,6 @@ Aligns items along the cross axis of a flex or grid container.
 
 ### Baseline
 
-<br />
-
 <ClientOnly>
 <component-container data-style="height: 18rem">
 <div class="flex items-baseline gap-4 h-full">
@@ -103,8 +95,6 @@ Aligns items along the cross axis of a flex or grid container.
 ```
 
 ### Stretch
-
-<br />
 
 <ClientOnly>
 <component-container data-style="height: 18rem">

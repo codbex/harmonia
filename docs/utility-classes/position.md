@@ -16,8 +16,6 @@ Element positioning.
 
 ### Scrollable tab content
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal" style="height:22rem">

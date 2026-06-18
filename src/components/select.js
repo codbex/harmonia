@@ -37,8 +37,8 @@ export default function (Alpine) {
         'focus-visible:inset-ring-2',
         '[&>[data-slot="select-input"]]:hover:bg-table-hover',
         '[&>[data-slot="select-input"]]:hover:text-table-hover-foreground',
-        '[&>[data-slot="select-input"]]:active:!bg-table-active',
-        '[&>[data-slot="select-input"]]:active:!text-table-active-foreground'
+        '[&>[data-slot="select-input"]]:active:bg-table-active!',
+        '[&>[data-slot="select-input"]]:active:text-table-active-foreground!'
       );
       el.setAttribute('data-slot', 'cell-input-select');
     } else {

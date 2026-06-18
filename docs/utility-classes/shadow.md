@@ -4,14 +4,18 @@ Add a shadow to an element.
 
 ## Class names
 
-| Class       | Description         |
-| ----------- | ------------------- |
-| shadow-none | No shadow.          |
-| shadow-xs   | Extra small shadow. |
-| shadow-sm   | Small shadow.       |
-| shadow-md   | Medium shadow.      |
-| shadow-lg   | Large shadow.       |
-| shadow-xl   | Extra large shadow. |
+| Class              | Description                                | `!` support |
+| ------------------ | ------------------------------------------ | ----------- |
+| shadow-none        | No shadow.                                 | Yes         |
+| max-sm:shadow-none | No shadow on viewports narrower than `sm`. | No          |
+| max-md:shadow-none | No shadow on viewports narrower than `md`. | No          |
+| max-lg:shadow-none | No shadow on viewports narrower than `lg`. | No          |
+| max-xl:shadow-none | No shadow on viewports narrower than `xl`. | No          |
+| shadow-xs          | Extra small shadow.                        | No          |
+| shadow-sm          | Small shadow.                              | No          |
+| shadow-md          | Medium shadow.                             | No          |
+| shadow-lg          | Large shadow.                              | No          |
+| shadow-xl          | Extra large shadow.                        | No          |
 
 ## Examples
 

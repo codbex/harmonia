@@ -4,12 +4,21 @@
 
 The width class names start with `w`.
 
+Fractional and keyword width classes also support responsive prefixes: `sm:`, `md:`, `lg:`, and `xl:` (e.g. `sm:w-1/2`). Responsive variants do not support the `!` modifier.
+
 | Class    | Description                                           | `!` support |
 | -------- | ----------------------------------------------------- | ----------- |
 | w-auto   | Auto width.                                           | Yes         |
 | w-`4-12` | Width sizes 4 to 12.                                  | Yes         |
 | w-full   | 100% width.                                           | Yes         |
+| w-min    | `width: min-content`                                  | Yes         |
+| w-max    | `width: max-content`                                  | Yes         |
+| w-fit    | `width: fit-content`                                  | Yes         |
 | w-screen | Makes the width equal to the screen size.             | Yes         |
+| w-dvw    | Dynamic viewport width (`100dvw`).                    | No          |
+| w-svw    | Small viewport width (`100svw`).                      | No          |
+| w-lvw    | Large viewport width (`100lvw`).                      | No          |
+| w-1/10   | 10% width.                                            | Yes         |
 | w-1/2    | 50% width.                                            | Yes         |
 | w-1/3    | 33% width.                                            | Yes         |
 | w-1/4    | 25% width.                                            | Yes         |
@@ -19,6 +28,7 @@ The width class names start with `w`.
 | w-3/4    | 75% width.                                            | Yes         |
 | w-3/5    | 60% width.                                            | Yes         |
 | w-4/5    | 80% width.                                            | Yes         |
+| w-9/10   | 90% width.                                            | Yes         |
 | w-3xs    | `width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | w-2xs    | `width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | w-xs     | `width: var(--container-xs); /* 20rem (320px) */`     | No          |
@@ -85,13 +95,19 @@ The maximum width class names start with `min-w`.
 
 The height class names start with `h`.
 
-| Class    | Description                               | `!` support |
-| -------- | ----------------------------------------- | ----------- |
-| h-auto   | Auto height.                              | Yes         |
-| h-`4-12` | Height sizes 4 to 12.                     | Yes         |
-| h-full   | 100% height.                              | Yes         |
-| h-screen | Makes the width equal to the screen size. | Yes         |
-| h-1/2    | 50% height.                               | Yes         |
+| Class    | Description                                | `!` support |
+| -------- | ------------------------------------------ | ----------- |
+| h-auto   | Auto height.                               | Yes         |
+| h-`4-12` | Height sizes 4 to 12.                      | Yes         |
+| h-full   | 100% height.                               | Yes         |
+| h-min    | `height: min-content`                      | Yes         |
+| h-max    | `height: max-content`                      | Yes         |
+| h-fit    | `height: fit-content`                      | Yes         |
+| h-screen | Makes the height equal to the screen size. | Yes         |
+| h-dvh    | Dynamic viewport height (`100dvh`).        | No          |
+| h-lvh    | Large viewport height (`100lvh`).          | No          |
+| h-svh    | Small viewport height (`100svh`).          | No          |
+| h-1/2    | 50% height.                                | Yes         |
 
 The minimum and maximum height class names start with `min-h` and `max-h`.
 
@@ -117,8 +133,6 @@ Some of the classes above can be used with the `!` prefix (for `!important`) in 
 
 ### Screen
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0 overflow-scroll">
 <div class="bg-primary text-primary-foreground flex justify-between w-screen">
@@ -141,8 +155,6 @@ You may have to horizontally scroll the container to see the "End" label.
 
 ### Full
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground w-full">Full width</div>
@@ -154,8 +166,6 @@ You may have to horizontally scroll the container to see the "End" label.
 ```
 
 ### Fractions
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-2">
@@ -178,6 +188,10 @@ You may have to horizontally scroll the container to see the "End" label.
 <div class="flex gap-2">
   <div class="bg-primary text-primary-foreground w-1/5">w-1/5</div>
   <div class="bg-primary text-primary-foreground w-4/5">w-4/5</div>
+</div>
+<div class="flex gap-2">
+  <div class="bg-primary text-primary-foreground w-1/10">w-1/10</div>
+  <div class="bg-primary text-primary-foreground w-9/10">w-9/10</div>
 </div>
 </component-container>
 </ClientOnly>
@@ -203,11 +217,13 @@ You may have to horizontally scroll the container to see the "End" label.
   <div class="w-1/5 bg-primary text-primary-foreground">w-1/5</div>
   <div class="w-4/5 bg-primary text-primary-foreground">w-4/5</div>
 </div>
+<div class="flex gap-2">
+  <div class="w-1/10 bg-primary text-primary-foreground">w-1/10</div>
+  <div class="w-9/10 bg-primary text-primary-foreground">w-9/10</div>
+</div>
 ```
 
 ### Sizes
-
-<br />
 
 <ClientOnly>
 <component-container data-class="flex flex-col gap-2 overflow-scroll">
@@ -231,8 +247,6 @@ You may have to horizontally scroll the container to see the "End" label.
 
 ### Full
 
-<br />
-
 <ClientOnly>
 <component-container data-class="p-0">
 <div class="bg-primary text-primary-foreground h-full">
@@ -246,8 +260,6 @@ Full height
 ```
 
 ### Screen
-
-<br />
 
 <ClientOnly>
 <component-container data-class="p-0">
@@ -263,8 +275,6 @@ Full height
 ```
 
 ### Half
-
-<br />
 
 <ClientOnly>
 <component-container data-class="p-0 h-12">

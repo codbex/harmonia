@@ -31,8 +31,6 @@ x-h-input
 
 ### Text Input
 
-<br />
-
 <ClientOnly>
 <component-container data-class="flex flex-col gap-4">
 <input x-h-input type="text" placeholder="Search..." />
@@ -40,13 +38,13 @@ x-h-input
 </component-container>
 </ClientOnly>
 
+<!-- prettier-ignore -->
 ```html
-<input x-h-input type="text" placeholder="Search..." /> <input x-h-input data-size="sm" type="text" placeholder="Search..." />
+<input x-h-input type="text" placeholder="Search..." />
+<input x-h-input data-size="sm" type="text" placeholder="Search..." />
 ```
 
 ### Color Input
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -59,8 +57,6 @@ x-h-input
 ```
 
 ### Invalid Input
-
-<br />
 
 <ClientOnly>
 <component-container>

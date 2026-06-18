@@ -39,8 +39,6 @@ In order to achieve proper focus navigation, place the group addon after the inp
 
 ### Search bar
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-input-group>
@@ -64,8 +62,6 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ```
 
 ### Search bar with tags
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">
@@ -103,8 +99,6 @@ In order to achieve proper focus navigation, place the group addon after the inp
 
 ### Search bar with buttons and popover
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-input-group>
@@ -135,8 +129,6 @@ In order to achieve proper focus navigation, place the group addon after the inp
 
 ### Search bar with spinner
 
-<br />
-
 <ClientOnly>
 <component-container data-icons="true">
 <div x-h-input-group>
@@ -158,8 +150,6 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ```
 
 ### Textarea with top and bottom toolbars
-
-<br />
 
 <ClientOnly>
 <component-container data-icons="true">

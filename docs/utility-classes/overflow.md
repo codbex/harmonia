@@ -24,8 +24,6 @@ CSS utility classes set overflow behaviour.
 
 ### Scroll
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="tile-sm overflow-scroll">
@@ -41,8 +39,6 @@ CSS utility classes set overflow behaviour.
 ```
 
 ### Scroll (hidden scrollbars)
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -60,8 +56,6 @@ CSS utility classes set overflow behaviour.
 
 ### Scroll horizontally
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="tile-sm overflow-x-scroll overflow-y-hidden">
@@ -77,8 +71,6 @@ CSS utility classes set overflow behaviour.
 ```
 
 ### Scroll vertivally
-
-<br />
 
 <ClientOnly>
 <component-container>
@@ -96,8 +88,6 @@ CSS utility classes set overflow behaviour.
 
 ### No scroll
 
-<br />
-
 <ClientOnly>
 <component-container>
 <div class="tile-sm overflow-hidden">
@@ -113,8 +103,6 @@ CSS utility classes set overflow behaviour.
 ```
 
 ### Visible
-
-<br />
 
 <ClientOnly>
 <component-container>
