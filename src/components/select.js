@@ -509,6 +509,10 @@ export default function (Alpine) {
           select._select.model = '';
           removeLabel();
         }
+        // Single-select closes after a choice; multi-select stays open for further toggling.
+        if (!select._select.multiple) {
+          select._select.expanded = false;
+        }
       }
     };
 
