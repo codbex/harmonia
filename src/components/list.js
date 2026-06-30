@@ -143,9 +143,9 @@ export default function (Alpine) {
         'aria-selected:bg-primary',
         'aria-selected:text-primary-foreground',
         '[&[aria-selected=true]:hover]:bg-primary-hover',
-        '[&[aria-selected=true]:hover]:text-primary-hover-foreground',
+        '[&[aria-selected=true]:hover]:text-primary-foreground',
         '[&[aria-selected=true]:focus]:bg-primary-hover',
-        '[&[aria-selected=true]:focus]:text-primary-hover-foreground'
+        '[&[aria-selected=true]:focus]:text-primary-foreground'
       );
       el.setAttribute('tabindex', '0');
     }

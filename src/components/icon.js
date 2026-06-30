@@ -1,3 +1,4 @@
+import { classListStartsWith } from '../common/class-list';
 import { setSvgContent } from './../common/icons';
 
 export default function (Alpine) {
@@ -9,7 +10,9 @@ export default function (Alpine) {
     } else if (el.getAttribute('role') === 'img' && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
       throw new Error(`${original}: svg images with the role of img must have an "aria-label" or "aria-labelledby" attribute`);
     }
-    el.classList.add('fill-current');
+    if (!classListStartsWith(el.classList, 'fill-')) {
+      el.classList.add('fill-current');
+    }
     el.setAttribute('data-slot', 'icon');
     if (el.hasAttribute('data-link')) {
       fetch(el.getAttribute('data-link'))

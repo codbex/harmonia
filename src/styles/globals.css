@@ -6,6 +6,7 @@
 @import "./checkbox.css";
 @import "./radio.css";
 @import "./breadcrumb.css";
+@import "./calendar.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 @source not "../../docs/";
 

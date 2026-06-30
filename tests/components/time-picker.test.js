@@ -13,7 +13,7 @@ vi.mock('../../src/common/input-size.js', () => ({
   sizeObserver: vi.fn().mockReturnValue({ disconnect: vi.fn() }),
 }));
 
-import timepickerPlugin from '../../src/components/timepicker.js';
+import timepickerPlugin from '../../src/components/time-picker.js';
 import { mountDirective } from '../test-utils.js';
 
 describe('h-time-picker', () => {

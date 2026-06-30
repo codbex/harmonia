@@ -128,7 +128,7 @@ x-h-field-error
             <div x-h-date-picker>
               <input type="text" id="delivery-dp" required />
               <button x-h-date-picker-trigger aria-label="Choose date"></button>
-              <div x-h-calendar></div>
+              <div x-h-date-picker-popup></div>
             </div>
           </div>
           <div x-h-field>

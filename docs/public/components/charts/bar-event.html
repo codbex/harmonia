@@ -1,0 +1,4 @@
+<div class="vbox items-center gap-2" x-data="{ lastClicked: 'Click on a bar' }">
+  <span x-text="lastClicked"></span>
+  <div style="height: 18rem" x-h-chart-bar="{ labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }" @chart-click="lastClicked = $event.detail.label + ': ' + $event.detail.value"></div>
+</div>

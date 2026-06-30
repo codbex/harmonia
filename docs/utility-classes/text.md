@@ -49,7 +49,7 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 
 | Class           | Description                                      | `!` support |
 | --------------- | ------------------------------------------------ | ----------- |
-| leading-none    | `line-height: 1` — no extra space between lines. | Yes         |
+| leading-none    | `line-height: 1` - no extra space between lines. | Yes         |
 | leading-tight   | `line-height: var(--leading-tight)` (1.2).       | Yes         |
 | leading-normal  | `line-height: var(--leading-normal)`             | Yes         |
 | leading-snug    | `line-height: var(--leading-snug)`               | Yes         |
@@ -74,6 +74,8 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 | whitespace-nowrap   | Prevents text from wrapping, equivalent to `white-space: nowrap`.                               |
 | whitespace-pre      | Preserves whitespace and newlines; text does not wrap (`white-space: pre`).                     |
 | whitespace-pre-wrap | Preserves whitespace and newlines; text wraps normally (`white-space: pre-wrap`).               |
+| whitespace-pre-line | Collapses runs of whitespace but preserves newlines; text wraps (`white-space: pre-line`).      |
+| line-clamp-`1-6`    | Truncates text to the given number of lines (1 to 6) with an ellipsis.                          |
 
 ## Examples
 

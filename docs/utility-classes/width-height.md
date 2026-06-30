@@ -9,7 +9,7 @@ Fractional and keyword width classes also support responsive prefixes: `sm:`, `m
 | Class    | Description                                           | `!` support |
 | -------- | ----------------------------------------------------- | ----------- |
 | w-auto   | Auto width.                                           | Yes         |
-| w-`4-12` | Width sizes 4 to 12.                                  | Yes         |
+| w-`1-12` | Width sizes 1 to 12.                                  | Yes         |
 | w-full   | 100% width.                                           | Yes         |
 | w-min    | `width: min-content`                                  | Yes         |
 | w-max    | `width: max-content`                                  | Yes         |
@@ -51,7 +51,7 @@ The minimum width class names start with `min-w`.
 | Class        | Description                                               | `!` support |
 | ------------ | --------------------------------------------------------- | ----------- |
 | min-w-0      | Minimum width of 0 px.                                    | No          |
-| min-w-`4-12` | Minimum width sizes 4 to 12.                              | No          |
+| min-w-`1-12` | Minimum width sizes 1 to 12.                              | No          |
 | min-w-3xs    | `min-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | min-w-2xs    | `min-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | min-w-xs     | `min-width: var(--container-xs); /* 20rem (320px) */`     | No          |
@@ -75,7 +75,7 @@ The maximum width class names start with `min-w`.
 | ------------ | --------------------------------------------------------- | ----------- |
 | max-w-screen | Sets maximum width to the width of the screen.            | No          |
 | max-w-dvw    | Sets maximum width to the dynamic width of the screen.    | No          |
-| max-w-`4-12` | Maximum width sizes 4 to 12.                              | No          |
+| max-w-`1-12` | Maximum width sizes 1 to 12.                              | No          |
 | max-w-3xs    | `max-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | max-w-2xs    | `max-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | max-w-xs     | `max-width: var(--container-xs); /* 20rem (320px) */`     | No          |
@@ -98,7 +98,7 @@ The height class names start with `h`.
 | Class    | Description                                | `!` support |
 | -------- | ------------------------------------------ | ----------- |
 | h-auto   | Auto height.                               | Yes         |
-| h-`4-12` | Height sizes 4 to 12.                      | Yes         |
+| h-`1-12` | Height sizes 1 to 12.                      | Yes         |
 | h-full   | 100% height.                               | Yes         |
 | h-min    | `height: min-content`                      | Yes         |
 | h-max    | `height: max-content`                      | Yes         |
@@ -113,16 +113,16 @@ The minimum and maximum height class names start with `min-h` and `max-h`.
 
 | Class        | Description                   | `!` support |
 | ------------ | ----------------------------- | ----------- |
-| max-h-`4-12` | Maximum height sizes 4 to 12. | No          |
-| min-h-`4-12` | Minimum height sizes 4 to 12. | No          |
+| max-h-`1-12` | Maximum height sizes 1 to 12. | No          |
+| min-h-`1-12` | Minimum height sizes 1 to 12. | No          |
 
-In case both width and height have to be applied and they must be the same, the `size-*` class can be used with a range from 4 to 12.
+In case both width and height have to be applied and they must be the same, the `size-*` class can be used with a range from 1 to 12.
 
 | Class       | Description                                                     | `!` support |
 | ----------- | --------------------------------------------------------------- | ----------- |
 | size-full   | Full size container.                                            | Yes         |
 | size-fit    | Fit the container size to content.                              | Yes         |
-| size-`4-12` | Width and height sizes 4 to 12.                                 | Yes         |
+| size-`1-12` | Width and height sizes 1 to 12.                                 | Yes         |
 | min-size-4  | Minimum width and height of `var(--spacing)*4`. Used for icons. | No          |
 
 ::: info

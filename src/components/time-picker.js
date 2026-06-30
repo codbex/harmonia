@@ -1,31 +1,9 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, partsToValue24 } from '../common/time';
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Clock, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
-const dayPeriodLabels = { am: 'AM', pm: 'PM' };
-
-const getSelectedTime = (rawTime, convertTo12) => {
-  let hour = null;
-  let minute = null;
-  let second = null;
-  let period = null;
-  if (rawTime.length > 0) {
-    const timeParts = rawTime.split(':');
-    const h24 = parseInt(timeParts[0], 10);
-    minute = timeParts[1];
-    if (timeParts.length === 3) {
-      second = timeParts[2];
-    }
-    if (convertTo12) {
-      period = h24 >= 12 ? dayPeriodLabels.pm : dayPeriodLabels.am;
-      const h12 = h24 % 12 || 12;
-      hour = h12 < 10 ? `0${h12}` : h12.toString();
-    } else {
-      hour = h24 < 10 ? `0${h24}` : h24.toString();
-    }
-  }
-  return { hour, minute, second, period };
-};
 
 function scrollIntoCenter(container, element, behavior = 'instant') {
   const containerRect = container.getBoundingClientRect();
@@ -51,7 +29,7 @@ export default function (Alpine) {
       focusInput: undefined,
       close(focus = false) {
         el._h_timepicker.expanded = false;
-        top.removeEventListener('click', el._h_timepicker.close);
+        removeDismiss(el, 'click', el._h_timepicker.close);
         if (focus && this.focusInput) {
           this.focusInput();
         }
@@ -167,9 +145,9 @@ export default function (Alpine) {
       el.setAttribute('aria-expanded', el._h_timepicker.expanded);
       Alpine.nextTick(() => {
         if (el._h_timepicker.expanded) {
-          top.addEventListener('click', el._h_timepicker.close);
+          addDismiss(el, 'click', el._h_timepicker.close);
         } else {
-          top.removeEventListener('click', el._h_timepicker.close);
+          removeDismiss(el, 'click', el._h_timepicker.close);
         }
       });
     };
@@ -183,7 +161,7 @@ export default function (Alpine) {
       observer.disconnect();
       el.removeEventListener('click', handler);
       el.removeEventListener('keydown', handler);
-      top.removeEventListener('click', el._h_timepicker.close);
+      removeDismiss(el, 'click', el._h_timepicker.close);
     });
   });
 
@@ -204,16 +182,7 @@ export default function (Alpine) {
       });
     };
     const updateDisplay = (value24h) => {
-      if (!value24h) {
-        el.value = '';
-        return;
-      }
-      if (timepicker._h_timepicker.is12Hour) {
-        const { hour, minute, second, period } = getSelectedTime(value24h, true);
-        el.value = timepicker._h_timepicker.seconds ? `${hour}:${minute}:${second ?? '00'} ${period}` : `${hour}:${minute} ${period}`;
-      } else {
-        el.value = value24h;
-      }
+      el.value = formatTimeDisplay(value24h, { is12Hour: timepicker._h_timepicker.is12Hour, seconds: timepicker._h_timepicker.seconds });
     };
     timepicker._h_time.setDisplay = updateDisplay;
 
@@ -301,7 +270,7 @@ export default function (Alpine) {
     });
 
     cleanup(() => {
-      el.removeEventListener('keydown', preventInput);
+      el.removeEventListener('beforeinput', preventInput);
       el.removeEventListener('paste', preventInput);
     });
   });
@@ -359,20 +328,7 @@ export default function (Alpine) {
       if (timepicker._h_timepicker.is12Hour && timepicker._h_time.parts.period === null) return;
       if (timepicker._h_timepicker.seconds && timepicker._h_time.parts.second === null) return;
 
-      let h24;
-      if (timepicker._h_timepicker.is12Hour) {
-        const h12 = parseInt(timepicker._h_time.parts.hour, 10);
-        if (timepicker._h_time.parts.period === dayPeriodLabels.am) {
-          h24 = h12 === 12 ? 0 : h12;
-        } else {
-          h24 = h12 === 12 ? 12 : h12 + 12;
-        }
-      } else {
-        h24 = parseInt(timepicker._h_time.parts.hour, 10);
-      }
-      const h24Str = h24 < 10 ? `0${h24}` : h24.toString();
-
-      const newValue = timepicker._h_timepicker.seconds ? `${h24Str}:${timepicker._h_time.parts.minute}:${timepicker._h_time.parts.second}` : `${h24Str}:${timepicker._h_time.parts.minute}`;
+      const newValue = partsToValue24(timepicker._h_time.parts, { is12Hour: timepicker._h_timepicker.is12Hour, seconds: timepicker._h_timepicker.seconds });
 
       timepicker._h_time.model.set(newValue);
       timepicker._h_time.setDisplay?.(newValue);
@@ -832,12 +788,14 @@ export default function (Alpine) {
     el.addEventListener('transitionend', onTransitionEnd);
 
     cleanup(() => {
+      if (autoUpdateCleanup) autoUpdateCleanup();
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
       el.removeEventListener('transitionend', onTransitionEnd);
       okButton.removeEventListener('click', timepicker._h_timepicker.close);
       nowButton.removeEventListener('click', getCurrentTime);
       timeContainer.removeEventListener('click', setTime);
+      Alpine.destroyTree(footer);
     });
   });
 }

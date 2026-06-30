@@ -82,7 +82,50 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | border-information            | Set information color as border color.             |
 | border-information-foreground | Set information foreground color as border color.  |
 
+### Standard colors
+
+A subset of the standard color palette is available as `bg-` and `text-` utilities for general-purpose use. The chromatic colors are provided at the `500` step; `white` and `black` have no step.
+
+| Color  | Background class | Text class      |
+| ------ | ---------------- | --------------- |
+| White  | bg-white         | text-white      |
+| Black  | bg-black         | text-black      |
+| Red    | bg-red-500       | text-red-500    |
+| Orange | bg-orange-500    | text-orange-500 |
+| Yellow | bg-yellow-500    | text-yellow-500 |
+| Green  | bg-green-500     | text-green-500  |
+| Teal   | bg-teal-500      | text-teal-500   |
+| Blue   | bg-blue-500      | text-blue-500   |
+| Indigo | bg-indigo-500    | text-indigo-500 |
+| Purple | bg-purple-500    | text-purple-500 |
+| Pink   | bg-pink-500      | text-pink-500   |
+| Gray   | bg-gray-500      | text-gray-500   |
+
 ## Examples
+
+### Standard colors
+
+<ClientOnly>
+<component-container data-class="flex flex-wrap gap-2">
+<p class="bg-white text-black border p-4">white</p>
+<p class="bg-black text-white p-4">black</p>
+<p class="bg-red-500 text-white p-4">red-500</p>
+<p class="bg-orange-500 text-white p-4">orange-500</p>
+<p class="bg-yellow-500 text-black p-4">yellow-500</p>
+<p class="bg-green-500 text-white p-4">green-500</p>
+<p class="bg-teal-500 text-white p-4">teal-500</p>
+<p class="bg-blue-500 text-white p-4">blue-500</p>
+<p class="bg-indigo-500 text-white p-4">indigo-500</p>
+<p class="bg-purple-500 text-white p-4">purple-500</p>
+<p class="bg-pink-500 text-white p-4">pink-500</p>
+<p class="bg-gray-500 text-white p-4">gray-500</p>
+</component-container>
+</ClientOnly>
+
+```html
+<p class="bg-red-500 p-4 text-white">red-500</p>
+<p class="p-4 text-red-500">red-500</p>
+```
 
 ### Primary
 

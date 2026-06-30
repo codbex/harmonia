@@ -54,6 +54,9 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | circle-unknown | Unknown/Question mark icon in a circle |
 | circle-user    | User icon in a circle                  |
 | home           | Home icon                              |
+| star           | Filled star icon                       |
+| star-hollow    | Hollow/outline star icon               |
+| star-half      | Half-filled star icon                  |
 
 ## Examples
 
@@ -136,4 +139,7 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 <svg x-h-icon.circle-unknown role="img" aria-label="unknown"></svg>
 <svg x-h-icon.circle-user role="img" aria-label="user"></svg>
 <svg x-h-icon.home role="img" aria-label="home"></svg>
+<svg x-h-icon.star role="img" aria-label="star"></svg>
+<svg x-h-icon.star-hollow role="img" aria-label="star hollow"></svg>
+<svg x-h-icon.star-half role="img" aria-label="star half"></svg>
 ```

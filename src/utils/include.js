@@ -35,7 +35,7 @@ export default function (Alpine) {
     function destroyTree() {
       if (el.children.length) {
         for (let i = 0; i < el.children.length; i++) {
-          if (el.children[i].tagName !== 'SCRIPT') Alpine.initTree(el.children[i]);
+          if (el.children[i].tagName !== 'SCRIPT') Alpine.destroyTree(el.children[i]);
         }
       }
     }

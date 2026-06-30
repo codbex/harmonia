@@ -24,11 +24,12 @@ x-h-toolbar-separator
 
 #### x-h-toolbar
 
-| Attribute     | Type                          | Required | Description                                               |
-| ------------- | ----------------------------- | -------- | --------------------------------------------------------- |
-| data-variant  | `default`<br />`transparent`  | false    | Transparent background color. Does not remove the border. |
-| data-size     | `default`<br />`md`<br />`sm` | false    | Make the toolbar smaller.                                 |
-| data-floating | boolean                       | false    | Floating style toolbar.                                   |
+| Attribute       | Type                          | Required | Description                                               |
+| --------------- | ----------------------------- | -------- | --------------------------------------------------------- |
+| data-variant    | `default`<br />`transparent`  | false    | Transparent background color. Does not remove the border. |
+| data-size       | `default`<br />`md`<br />`sm` | false    | Make the toolbar smaller.                                 |
+| data-floating   | boolean                       | false    | Floating style toolbar.                                   |
+| data-borderless | boolean                       | false    | Removes toolbar borders.                                  |
 
 ### Modifiers
 
@@ -56,6 +57,30 @@ x-h-toolbar-separator
 
 ```html
 <div x-h-toolbar>
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+```
+
+### Borderless
+
+<ClientOnly>
+<component-container data-icons="true">
+<div x-h-toolbar data-borderless="true">
+  <span x-h-toolbar-title>Title</span>
+  <div x-h-toolbar-spacer></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <div x-h-toolbar-separator></div>
+  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-toolbar data-borderless="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
   <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>

@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-popover-trigger', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine, cleanup }) => {
@@ -38,6 +39,7 @@ export default function (Alpine) {
 
     const close = () => {
       el._h_popover.expanded = false;
+      removeDismiss(el, 'click', close);
       el.addEventListener('click', handler);
       setAttributes();
     };
@@ -47,7 +49,7 @@ export default function (Alpine) {
       setAttributes();
       Alpine.nextTick(() => {
         if (el._h_popover.auto && el._h_popover.expanded) {
-          top.addEventListener('click', close, { once: true });
+          addDismiss(el, 'click', close);
           el.removeEventListener('click', handler);
         }
       });
@@ -59,7 +61,7 @@ export default function (Alpine) {
 
       cleanup(() => {
         el.removeEventListener('click', handler);
-        top.removeEventListener('click', close);
+        removeDismiss(el, 'click', close);
       });
     } else {
       effect(() => {

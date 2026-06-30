@@ -209,6 +209,27 @@
     </button>
     <div x-h-tooltip x-text="tooltipLabel"></div>
   </div>
+  <div class="size-full">
+    <button x-h-button data-variant="transparent" class="vbox h-auto w-full items-center gap-2" x-h-tooltip-trigger @click="copyToClipboard('star')">
+      <svg x-h-icon.star class="size-8" role="img" aria-label="star"></svg>
+      <span>star</span>
+    </button>
+    <div x-h-tooltip x-text="tooltipLabel"></div>
+  </div>
+  <div class="size-full">
+    <button x-h-button data-variant="transparent" class="vbox h-auto w-full items-center gap-2" x-h-tooltip-trigger @click="copyToClipboard('star-hollow')">
+      <svg x-h-icon.star-hollow class="size-8" role="img" aria-label="star hollow"></svg>
+      <span>star-hollow</span>
+    </button>
+    <div x-h-tooltip x-text="tooltipLabel"></div>
+  </div>
+  <div class="size-full">
+    <button x-h-button data-variant="transparent" class="vbox h-auto w-full items-center gap-2" x-h-tooltip-trigger @click="copyToClipboard('star-half')">
+      <svg x-h-icon.star-half class="size-8" role="img" aria-label="star half"></svg>
+      <span>star-half</span>
+    </button>
+    <div x-h-tooltip x-text="tooltipLabel"></div>
+  </div>
 </div>
 <script>
   Alpine.data("IconGridController", () => ({

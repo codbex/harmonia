@@ -18,7 +18,7 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Enter` / `Space` - Activates the focused menu item.
 - `Esc` - Closes the menu or submenu and returns focus to the controlling element.
 - `Tab` - Closes the menu and submenus and sets focus to the next element.
-- `Character keys (A–Z)` - Moves focus to the next item whose label starts with the typed character.
+- `Character keys (A-Z)` - Moves focus to the next item whose label starts with the typed character.
 
 ## API Reference
 

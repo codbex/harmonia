@@ -221,6 +221,16 @@ export default function (Alpine) {
     cleanup(() => {
       lgBreakpointListener.remove();
       xlBreakpointListener.remove();
+      const store = Alpine.store('_h_notifications');
+      const index = store.listeners.indexOf(listener);
+      if (index !== -1) store.listeners.splice(index, 1);
+      [olTopLeft, olTopCenter, olTopRight, olBottomLeft, olBottomCenter, olBottomRight].forEach((ol) => {
+        while (ol.firstElementChild) {
+          const clone = ol.firstElementChild;
+          Alpine.destroyTree(clone);
+          clone.remove();
+        }
+      });
     });
   });
 

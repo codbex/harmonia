@@ -70,6 +70,19 @@ a.card {
   fill: var(--vp-c-text-1);
 }
 
+.VPFeature .icon svg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VPFeature .icon svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--vp-c-text-1);
+  transition: fill 0.25s;
+}
+
 .card-content {
   display: flex;
   flex-direction: column;

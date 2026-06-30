@@ -22,7 +22,7 @@ Top-level items follow standard Tab navigation. Once a dropdown is open, the ful
 - `Enter` / `Space` - Activates the focused menu item.
 - `Esc` - Closes the menu or submenu and returns focus to the trigger.
 - `Tab` - Closes the menu and moves focus to the next element.
-- `Character keys (A–Z)` - Moves focus to the next item whose label starts with the typed character.
+- `Character keys (A-Z)` - Moves focus to the next item whose label starts with the typed character.
 
 ## API Reference
 

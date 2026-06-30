@@ -63,7 +63,7 @@ x-h-time-picker-popup
 
 When using `x-model` on `x-h-time-picker-input`, the time picker reads and writes times as `HH:MM` strings in 24-hour format (e.g. `"13:30"`). With seconds enabled, the format is `HH:MM:SS` (e.g. `"13:30:45"`).
 
-The `is12Hour` option only affects the popup display — the model value is always in 24-hour format regardless of the display mode.
+The `is12Hour` option only affects the popup display - the model value is always in 24-hour format regardless of the display mode.
 
 ### Config
 

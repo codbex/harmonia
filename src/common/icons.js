@@ -28,6 +28,9 @@ export const CircleSuccess = 26;
 export const CircleUnknown = 27;
 export const CircleUser = 28;
 export const Home = 29;
+export const Star = 30;
+export const StarHollow = 31;
+export const StarHalf = 32;
 
 function setCalendarContent(svg) {
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -432,6 +435,32 @@ function setHomeContent(svg) {
   svg.appendChild(path);
 }
 
+function setStarContent(svg) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttributeNS(null, 'd', 'm8.002 1.1123-2.0371 4.8047-5.2148 0.44336 3.959 3.4297-1.1895 5.0977 4.4824-2.7031 4.4805 2.7031-1.1816-5.0977 3.9492-3.4277-5.2109-0.44922z');
+  svg.appendChild(path);
+}
+
+function setStarHollowContent(svg) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttributeNS(
+    null,
+    'd',
+    'm8.0039 1.1123-2.0371 4.8027-5.2168 0.44336 3.9609 3.4297-1.1895 5.0996 4.4824-2.7051 4.4805 2.7031-1.1816-5.0977 3.9473-3.4277-5.209-0.44922zm2e-3 3.3281 1.1445 2.6992 2.9277 0.25195-2.2187 1.9277 0.66406 2.8652-2.5195-1.5195-2.5176 1.5195 0.66797-2.8652-2.2246-1.9277 2.9297-0.24805z'
+  );
+  svg.appendChild(path);
+}
+
+function setStarHalfContent(svg) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttributeNS(
+    null,
+    'd',
+    'm8.0039 1.1123-2.0371 4.8027-5.2168 0.44336 3.9609 3.4297-1.1895 5.0996 4.4824-2.7051 4.4805 2.7031-1.1816-5.0977 3.9473-3.4277-5.209-0.44922zm2e-3 3.3281 1.1445 2.6992 2.9277 0.25195-2.2187 1.9277 0.66406 2.8652-2.5195-1.5195z'
+  );
+  svg.appendChild(path);
+}
+
 export function createSvg({ icon, classes = 'size-4', attrs } = {}) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttributeNS(null, 'width', '16');
@@ -537,6 +566,15 @@ export function createSvg({ icon, classes = 'size-4', attrs } = {}) {
     case Home:
       setHomeContent(svg);
       break;
+    case Star:
+      setStarContent(svg);
+      break;
+    case StarHollow:
+      setStarHollowContent(svg);
+      break;
+    case StarHalf:
+      setStarHalfContent(svg);
+      break;
     default:
       break;
   }
@@ -641,6 +679,15 @@ export function setSvgContent(svg, icon) {
       break;
     case 'home':
       setHomeContent(svg);
+      break;
+    case 'star':
+      setStarContent(svg);
+      break;
+    case 'star-hollow':
+      setStarHollowContent(svg);
+      break;
+    case 'star-half':
+      setStarHalfContent(svg);
       break;
     default:
       break;

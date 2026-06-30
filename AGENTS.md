@@ -1,0 +1,44 @@
+# AGENTS.md
+
+Harmonia is a modern UI component library for [Alpine.js](https://alpinejs.dev/), built with Tailwind CSS v4 and bundled with esbuild.
+
+## Commands
+
+- **Build library**: `npm run build` runs esbuild bundles, then the Tailwind CLI, then copies dist into the docs site. `npm run build:prod` skips the doc copy.
+- **Tailwind only**: `npm run tailwind` (one-shot) / `npm run tailwind:watch`.
+- **Tests**: `npm test` (vitest run), `npm run test:watch`, `npm run test:coverage`.
+- **Single test file**: `npx vitest run tests/components/accordion.test.js`. Single test by name: `npx vitest run -t "name substring"`.
+- **Lint / format**: `npm run lint` / `npm run lint:fix`; `npm run format` / `npm run format:check`.
+- **Docs** (VitePress): first run `npm run docs:install`, then **rebuild the library** (`npm run build`) so the freshly built dist is copied into the docs site, then `npm run docs:dev` (live) or `docs:build` + `docs:preview`.
+
+## Architecture
+
+- **Component = Alpine plugin.** Each file in `src/components/*.js` default-exports `function (Alpine) { ... }` registering one or more `Alpine.directive('h-<name>', ...)` directives. New components must be wired into **both** `src/index.js` (browser/CDN build, calls `Alpine.plugin(...)`) and `src/module.js` (ESM build: named `XxxComponent` export + a line in `registerComponents`). Forgetting one silently breaks that build target.
+- **Two build entry points / four bundles** (`scripts/build.cjs`): `src/index.js` → `harmonia.js` / `.min.js` (browser, `CDN:true`, auto-registers on the `alpine:init` event); `src/module.js` → `harmonia.esm.js` / `.min.js` (neutral platform, for consumers who register components manually).
+- **Parent/child directives communicate via `el._h_<name>` objects.** A component attaches state to its host element as e.g. `el._h_accordion` (often `Alpine.reactive({...})`); child directives locate the ancestor with `Alpine.findClosest(el.parentElement, p => Object.prototype.hasOwnProperty.call(p, '_h_accordion'))` and throw a descriptive `Error` when the required ancestor is missing. Follow this pattern for new compound components.
+- **Styling is class-driven from JS.** Directives push Tailwind utility classes via `el.classList.add(...)` and set `data-slot` / `data-size` attributes; arbitrary-variant selectors like `[[data-size=sm]_&]:h-8` let children adapt to an ancestor's size. There is little hand-written CSS; `src/styles/globals.css` defines the design tokens (oklch CSS vars for light + `.dark`, exposed to Tailwind v4 via `@theme inline`) and imports a few component CSS files.
+  - **Tailwind only scans `src/**`** (`@source`in`globals.css`, with `docs/`explicitly excluded). A utility class is in the shipped`dist/harmonia.css`only if it appears somewhere under`src/`. Two consequences: (1) classes composed dynamically (e.g. `` `bg-${token}` ``) need a literal safelist comment in a scanned file or they won't be generated; (2) docs examples can only use classes already present in `src/`, so for one-off needs like a fixed height, use an inline `style`instead of a class like`h-80` (which won't exist).
+- **Icons**: `src/common/icons.js` is an integer-indexed registry; build SVGs with `createSvg({ icon, classes, attrs })` rather than inlining markup. Other shared non-directive helpers live in `src/common/` (calendar math, class-list, input-size); cross-cutting utilities (`uuid`, `theme`, `breakpoint-listener`, `focus`, `template`, `include`) live in `src/utils/`. Note `focus`/`template`/`include` are themselves registered as Alpine plugins.
+
+## Testing
+
+- **happy-dom** environment; `tests/setup.js` patches `innerText`.
+- Directives are tested **without real Alpine**. `tests/test-utils.js` provides `mountDirective(plugin, 'h-name', el, bindings, ctxOverrides)` plus `createMockAlpine` / `createMockContext`, a minimal Proxy-based `reactive`/`effect` implementation. Use these helpers and assert on the DOM, attributes, and `el._h_*` state the directive produces. Mirror the `src/` layout under `tests/` (`tests/components`, `tests/common`, `tests/utils`).
+
+## Conventions
+
+- ESLint flat config (`eslint.config.js`): browser globals + `Alpine` readonly for `src`; unused vars allowed only with a `_` prefix; `console` limited to `warn`/`error`. Prettier enforces formatting (with organize-imports + tailwindcss plugins).
+- `SPLIT.md` documents the most intricate component (`src/components/split.js`); read it before touching split layout/drag/persistence logic.
+- **Never use an em dash or en dash** anywhere (prose, docs, code comments, commit messages, markdown tables, numeric ranges). Always use a plain hyphen (e.g. `0.2-0.9`) or reword.
+- **Use `rem`, not `px`** in styles, including inline styles set from JS; convert measured pixel values (`getBoundingClientRect`) to rem.
+- **Build DOM with `createElement` / `textContent`, never HTML strings.** No `innerHTML` or template-string markup, and components must not accept HTML from consumers.
+- **Theme color variables**: Harmonia semantic tokens are `var(--primary)`, `var(--negative)`, etc. with no `--color-` prefix (they are `@theme inline`, so the `--color-*` form is not emitted at runtime). The standard palette does carry the prefix: `var(--color-red-500)`, `var(--color-white)`. Prefer `bg-<token>` / `text-<token>` utilities; use the raw CSS var only for inline styles (e.g. the chart pie's `conic-gradient`).
+- **All components must be accessible** to users with disabilities: proper ARIA roles/states, keyboard operability, and accessible names (follow the existing pattern of setting a sensible default `aria-label` only when the author has not already set one).
+- **Every event listener added inside a directive must be removed in its `cleanup`** (the function passed to Alpine's `cleanup(() => ...)`). No listener may outlive the directive's lifecycle.
+- **No hardcoded user-facing titles/labels in components.** A default fallback string is fine, but there must always be a way for the consumer to override the text (e.g. `el.getAttribute('data-today-label') || 'Today'`).
+
+## Documentation
+
+- Component docs (`docs/**`) stay user-facing: describe what a component does and how to use it, not implementation internals (e.g. do not write "drawn with HTML/CSS, no SVG"). Small user-relevant behaviors (e.g. "adapts to light and dark mode automatically") are fine.
+- Live examples render inside a shadow-DOM `component-container`, so they can only use classes present in `src/` (see the Tailwind scanning note above). For one-off sizing like a fixed height, use an inline `style`.
+- VitePress compiles markdown through Vue, which hijacks the `@event` and `:attr` shorthands (and `{{ }}`) at build time, evaluating them in the page's Vue scope and stripping them before Alpine runs. In a live inline example use Alpine's long forms `x-on:event` and `x-bind:attr` so they reach Alpine intact (the `@`/`:` shorthands are fine in the shown ```html code block). For anything heavier (an `Alpine.data`component, scripts), put the markup in a`src`fragment under`docs/public/...`and reference it with`<component-container src="...">`; `src`content is fetched raw and never passes through Vue. Runtime fixes to`component-container`cannot recover`@`/`:` because Vue already removed them at build time.

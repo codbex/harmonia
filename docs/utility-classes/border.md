@@ -183,10 +183,8 @@ Adds a border between child elements by applying a border to all children except
 
 ### Class names
 
-| Class               | Description                                                        |
-| ------------------- | ------------------------------------------------------------------ | ----------- |
 | Class               | Description                                                        | `!` support |
-| -----------------   | ------------------------------------------------------------------ | ----------- |
+| ------------------- | ------------------------------------------------------------------ | ----------- |
 | rounded-`size`      | Border radius on all 4 corners.                                    | No          |
 | rounded-none        | Removes border radius on all 4 corners.                            | Yes         |
 | max-sm:rounded-none | Removes border radius on viewports narrower than `sm`.             | No          |

@@ -735,7 +735,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
           <div x-h-date-picker.table x-data="{ date: new Date().toISOString() }">
             <input type="text" id="tableDate" />
             <button x-h-date-picker-trigger aria-label="Choose date"></button>
-            <div x-h-calendar x-model="date"></div>
+            <div x-h-date-picker-popup x-model="date"></div>
           </div>
         </td>
         <td x-h-table-cell>
@@ -772,7 +772,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
           <div x-h-date-picker.table x-data="{ date: new Date().toISOString() }">
             <input type="text" id="tableDate" />
             <button x-h-date-picker-trigger aria-label="Choose date"></button>
-            <div x-h-calendar x-model="date"></div>
+            <div x-h-date-picker-popup x-model="date"></div>
           </div>
         </td>
         <td x-h-table-cell>
