@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronDown, Search, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
@@ -194,7 +195,7 @@ export default function (Alpine) {
 
     const close = (focusSelect = false) => {
       select._h_select.expanded = false;
-      top.removeEventListener('click', close);
+      removeDismiss(el, 'click', close);
       el.parentElement.removeEventListener('keydown', onKeyDown);
       options = null;
       if (focusSelect) fakeTrigger.focus();
@@ -316,10 +317,10 @@ export default function (Alpine) {
       }
       Alpine.nextTick(() => {
         if (select._h_select.expanded) {
-          top.addEventListener('click', close, { once: true });
+          addDismiss(el, 'click', close);
           el.parentElement.addEventListener('keydown', onKeyDown);
         } else {
-          top.removeEventListener('click', close);
+          removeDismiss(el, 'click', close);
           el.parentElement.removeEventListener('keydown', onKeyDown);
           options = null;
         }
@@ -370,7 +371,7 @@ export default function (Alpine) {
       fakeTrigger.removeEventListener('click', onClick);
       fakeTrigger.removeEventListener('keydown', onPress);
       el.parentElement.removeEventListener('keydown', onKeyDown);
-      top.removeEventListener('click', close);
+      removeDismiss(el, 'click', close);
       el.removeEventListener('change', onInputChange);
       observer.disconnect();
       if (labelObserver) {

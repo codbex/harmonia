@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Clock, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
@@ -67,7 +68,7 @@ export default function (Alpine) {
       focusInput: undefined,
       close(focus = false) {
         el._h_timepicker.expanded = false;
-        top.removeEventListener('click', el._h_timepicker.close);
+        removeDismiss(el, 'click', el._h_timepicker.close);
         if (focus && this.focusInput) {
           this.focusInput();
         }
@@ -187,9 +188,9 @@ export default function (Alpine) {
       el.setAttribute('aria-expanded', el._h_timepicker.expanded);
       Alpine.nextTick(() => {
         if (el._h_timepicker.expanded) {
-          top.addEventListener('click', el._h_timepicker.close);
+          addDismiss(el, 'click', el._h_timepicker.close);
         } else {
-          top.removeEventListener('click', el._h_timepicker.close);
+          removeDismiss(el, 'click', el._h_timepicker.close);
         }
       });
     };
@@ -203,7 +204,7 @@ export default function (Alpine) {
       observer.disconnect();
       el.removeEventListener('click', handler);
       el.removeEventListener('keydown', handler);
-      top.removeEventListener('click', el._h_timepicker.close);
+      removeDismiss(el, 'click', el._h_timepicker.close);
     });
   });
 

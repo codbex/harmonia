@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
@@ -119,8 +120,8 @@ export default function (Alpine) {
       } else {
         el.classList.add('scale-95', 'opacity-0');
       }
-      top.removeEventListener('contextmenu', onClick);
-      top.removeEventListener('click', onClick);
+      removeDismiss(el, 'contextmenu', onClick);
+      removeDismiss(el, 'click', onClick);
       el.removeEventListener('keydown', onKeyDown);
       if (isSubmenu) {
         if (closeParent) {
@@ -290,8 +291,8 @@ export default function (Alpine) {
                 listenForTrigger(false);
               }
               Alpine.nextTick(() => {
-                top.addEventListener('contextmenu', onClick);
-                top.addEventListener('click', onClick);
+                addDismiss(el, 'contextmenu', onClick);
+                addDismiss(el, 'click', onClick);
                 el.addEventListener('keydown', onKeyDown);
               });
             }
@@ -363,8 +364,8 @@ export default function (Alpine) {
     cleanup(() => {
       if (autoUpdateCleanup) autoUpdateCleanup();
       if (menuTrigger) listenForTrigger(false);
-      top.removeEventListener('click', onClick);
-      top.removeEventListener('contextmenu', onClick);
+      removeDismiss(el, 'click', onClick);
+      removeDismiss(el, 'contextmenu', onClick);
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('transitionend', onTransitionEnd);
     });

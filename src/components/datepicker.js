@@ -1,3 +1,4 @@
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Calendar, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
@@ -170,15 +171,16 @@ export default function (Alpine) {
 
     const close = () => {
       datepicker._h_datepicker.state.expanded = false;
+      removeDismiss(el, 'click', close);
     };
 
     const handler = () => {
       datepicker._h_datepicker.state.expanded = !datepicker._h_datepicker.state.expanded;
       Alpine.nextTick(() => {
         if (datepicker._h_datepicker.state.expanded) {
-          top.addEventListener('click', close, { once: true });
+          addDismiss(el, 'click', close);
         } else {
-          top.removeEventListener('click', close);
+          removeDismiss(el, 'click', close);
         }
       });
     };
@@ -187,7 +189,7 @@ export default function (Alpine) {
 
     cleanup(() => {
       el.removeEventListener('click', handler);
-      top.removeEventListener('click', close);
+      removeDismiss(el, 'click', close);
     });
   });
 }
