@@ -18,11 +18,14 @@ export default function (Alpine) {
     let slotEnd = '18:00';
     let slotStep = 60;
     let explicitSlots = null;
+    let fillEmptyDays = false;
     let multiple = false;
     let selected = [];
     let locale = undefined;
     let disabledDates = [];
     let disabledDays = [];
+    let minDate = null;
+    let maxDate = null;
 
     // Toolbar
     const toolbar = document.createElement('div');
@@ -109,14 +112,43 @@ export default function (Alpine) {
       return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
     }
 
+    function toMidnight(value) {
+      const d = new Date(value);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    // A day is out of range when it falls before the start day or after the end
+    // day. The two bounds are independent - either, both, or neither may be set.
+    function isDayOutOfRange(d) {
+      if (minDate && d < minDate) return true;
+      if (maxDate && d > maxDate) return true;
+      return false;
+    }
+
+    // Keep the 3-day window inside the configured bounds so the user can never
+    // page to days before the start day or after the end day.
+    function clampCurrentDate() {
+      if (minDate && currentDate < minDate) currentDate = new Date(minDate);
+      if (maxDate) {
+        const maxStart = addDays(maxDate, -2);
+        if (currentDate > maxStart) currentDate = maxStart;
+      }
+      // A range narrower than the 3-day window can push the start below the start
+      // day; anchor at minDate and let render disable the overflowing days.
+      if (minDate && currentDate < minDate) currentDate = new Date(minDate);
+    }
+
+    function updateNavState() {
+      prevBtn.disabled = !!minDate && currentDate <= minDate;
+      nextBtn.disabled = !!maxDate && addDays(currentDate, 2) >= maxDate;
+    }
+
     function slotKey(dateStr, start) {
       return `${dateStr}T${start}`;
     }
 
-    function getSlotsForDay(dateStr) {
-      if (explicitSlots) {
-        return explicitSlots.filter((s) => s.date === dateStr);
-      }
+    function generateDaySlots(dateStr) {
       const slots = [];
       const endMins = timeToMins(slotEnd);
       for (let m = timeToMins(slotStart); m < endMins; m += slotStep) {
@@ -124,6 +156,16 @@ export default function (Alpine) {
         slots.push({ date: dateStr, start, end: minsToTime(m + slotStep), available: true });
       }
       return slots;
+    }
+
+    function getSlotsForDay(dateStr) {
+      if (explicitSlots) {
+        const daySlots = explicitSlots.filter((s) => s.date === dateStr);
+        // Explicit slots override a day; days without any fall back to the
+        // generated start/end/step schedule only when `fillEmptyDays` is set.
+        if (daySlots.length || !fillEmptyDays) return daySlots;
+      }
+      return generateDaySlots(dateStr);
     }
 
     function isDayDisabled(dateStr, dayOfWeek) {
@@ -251,7 +293,7 @@ export default function (Alpine) {
         dateEl.classList.add('text-xs', 'text-muted-foreground');
         dateEl.textContent = dateFmt.format(day);
 
-        const dayDisabled = isDayDisabled(dateStr, day.getDay());
+        const dayDisabled = isDayDisabled(dateStr, day.getDay()) || isDayOutOfRange(day);
         if (today && !dayDisabled) nameEl.classList.add('text-primary');
 
         hdr.append(nameEl, dateEl);
@@ -318,20 +360,25 @@ export default function (Alpine) {
         col.appendChild(slotGrid);
         dayGrid.appendChild(col);
       });
+
+      updateNavState();
     }
 
     // Navigation: shift by 3 days
     prevBtn.addEventListener('click', () => {
       currentDate = addDays(currentDate, -3);
+      clampCurrentDate();
       render();
     });
     nextBtn.addEventListener('click', () => {
       currentDate = addDays(currentDate, 3);
+      clampCurrentDate();
       render();
     });
     todayBtn.addEventListener('click', () => {
       currentDate = new Date();
       currentDate.setHours(0, 0, 0, 0);
+      clampCurrentDate();
       render();
     });
 
@@ -360,6 +407,7 @@ export default function (Alpine) {
         const selectedDate = calWidget.getSelected();
         if (selectedDate) {
           currentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+          clampCurrentDate();
           render();
         }
         calState.expanded = false;
@@ -423,6 +471,7 @@ export default function (Alpine) {
       if (config.end !== undefined) slotEnd = config.end;
       if (config.step !== undefined) slotStep = Number(config.step);
       if (config.slots !== undefined) explicitSlots = config.slots.length ? config.slots : null;
+      if (config.fillEmptyDays !== undefined) fillEmptyDays = !!config.fillEmptyDays;
       if (config.multiple !== undefined) multiple = !!config.multiple;
       if (config.locale !== undefined) {
         locale = config.locale;
@@ -430,6 +479,18 @@ export default function (Alpine) {
       }
       if (config.disabledDates !== undefined) disabledDates = Array.isArray(config.disabledDates) ? config.disabledDates : [];
       if (config.disabledDays !== undefined) disabledDays = Array.isArray(config.disabledDays) ? config.disabledDays : [];
+      let boundsChanged = false;
+      if (config.minDate !== undefined) {
+        minDate = config.minDate ? toMidnight(config.minDate) : null;
+        boundsChanged = true;
+      }
+      if (config.maxDate !== undefined) {
+        maxDate = config.maxDate ? toMidnight(config.maxDate) : null;
+        boundsChanged = true;
+      }
+      // Mirror the bounds onto the calendar popover so out-of-range days can't be picked there either.
+      if (boundsChanged) calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
+      clampCurrentDate();
     }
 
     if (expression) {

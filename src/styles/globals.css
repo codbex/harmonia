@@ -281,6 +281,16 @@ body {
   --container-8xl: 90rem;
   --container-9xl: 96rem;
   --container-10xl: 100rem;
+
+  --animate-progress-loading: progress-loading 1.5s ease-in-out infinite;
+  @keyframes progress-loading {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(350%);
+    }
+  }
 }
 
 @layer base {

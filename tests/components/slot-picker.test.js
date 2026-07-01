@@ -240,6 +240,95 @@ describe('h-slot-picker', () => {
     expect(ctx.cleanup).toHaveBeenCalled();
   });
 
+  describe('fillEmptyDays', () => {
+    it('keeps days without explicit slots empty by default', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true }];
+      mount('config', withConfig({ date: FIXED_DATE, slots }));
+      // Only the one explicit slot on day 1; days 2 and 3 render nothing.
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(1);
+    });
+
+    it('fills days without explicit slots using the default start/end/step schedule', () => {
+      const slots = [
+        { date: FIXED_DATE, start: '09:00', end: '09:30', available: true },
+        { date: FIXED_DATE, start: '10:00', end: '10:30', available: true },
+      ];
+      mount('config', withConfig({ date: FIXED_DATE, slots, fillEmptyDays: true }));
+      // day 1: 2 explicit; days 2 and 3: default 08:00-18:00 / 60 min = 10 each.
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(22);
+    });
+
+    it('honors a custom default schedule for the filled days', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true }];
+      mount('config', withConfig({ date: FIXED_DATE, slots, fillEmptyDays: true, start: '08:00', end: '12:00', step: 30 }));
+      // day 1: 1 explicit; days 2 and 3: 08:00-12:00 / 30 min = 8 each.
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(17);
+    });
+
+    it('does not merge a day that has explicit slots with the default schedule', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true }];
+      mount('config', withConfig({ date: FIXED_DATE, slots, fillEmptyDays: true }));
+      // day 1 shows only its 1 explicit slot (not the 10 default), days 2 and 3: 10 each.
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(21);
+    });
+  });
+
+  describe('start and end day bounds', () => {
+    const prevBtn = () => el.querySelector('button[aria-label="Previous"]');
+    const nextBtn = () => el.querySelector('button[aria-label="Next"]');
+
+    it('leaves both nav buttons enabled when no bounds are set', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      expect(prevBtn().disabled).toBe(false);
+      expect(nextBtn().disabled).toBe(false);
+    });
+
+    it('disables the previous button at the start day', () => {
+      // Window starts on FIXED_DATE, which is the earliest allowed day.
+      mount('config', withConfig({ date: FIXED_DATE, minDate: FIXED_DATE }));
+      expect(prevBtn().disabled).toBe(true);
+      expect(nextBtn().disabled).toBe(false);
+    });
+
+    it('disables the next button when the end day is the last visible day', () => {
+      // FIXED_DATE window shows 22/23/24; end day 24 is the last visible day.
+      mount('config', withConfig({ date: FIXED_DATE, maxDate: '2026-06-24' }));
+      expect(nextBtn().disabled).toBe(true);
+      expect(prevBtn().disabled).toBe(false);
+    });
+
+    it('clamps the window forward so it never starts before the start day', () => {
+      mount('config', withConfig({ date: '2026-06-20', minDate: FIXED_DATE }));
+      // Window is pulled forward to begin on the start day (22nd).
+      expect(el.querySelector('h2').textContent).toContain('22');
+      expect(prevBtn().disabled).toBe(true);
+    });
+
+    it('clamps the window back so its last day never exceeds the end day', () => {
+      mount('config', withConfig({ date: '2026-06-30', maxDate: '2026-06-24' }));
+      // Window is pulled back so the last of the three days is the end day (24th).
+      expect(el.querySelector('h2').textContent).toContain('24');
+      expect(nextBtn().disabled).toBe(true);
+    });
+
+    it('marks days outside the bounds as unavailable when the range is narrower than the window', () => {
+      // Only FIXED_DATE is allowed; the other two days of the window fall outside.
+      mount('config', withConfig({ date: FIXED_DATE, minDate: FIXED_DATE, maxDate: FIXED_DATE }));
+      const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+      expect(headers[1].nextElementSibling.textContent.trim()).toBe('Not available');
+      expect(headers[2].nextElementSibling.textContent.trim()).toBe('Not available');
+      // Only the single in-range day renders slots (default 08:00-18:00 / 60 min).
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(10);
+    });
+
+    it('treats start and end days independently', () => {
+      mount('config', withConfig({ date: FIXED_DATE, minDate: '2026-06-01', maxDate: '2026-12-31' }));
+      // Neither edge is reached, so both buttons stay enabled.
+      expect(prevBtn().disabled).toBe(false);
+      expect(nextBtn().disabled).toBe(false);
+    });
+  });
+
   describe('accessibility', () => {
     it('exposes the picker as a labeled group', () => {
       mount('config', withConfig({ date: FIXED_DATE }));

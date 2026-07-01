@@ -358,7 +358,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <button x-h-nav-trigger>
-        <i role="img" data-lucide="library-big"></i>
+        <i x-h-lucide role="img" data-lucide="library-big"></i>
         <span>Products</span>
       </button>
       <ul x-h-menu>
@@ -376,7 +376,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <i role="img" data-lucide="gem"></i>
+        <i x-h-lucide role="img" data-lucide="gem"></i>
         Pricing
       </a>
     </li>
@@ -396,7 +396,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <button x-h-nav-trigger>
-        <i role="img" data-lucide="library-big"></i>
+        <i x-h-lucide role="img" data-lucide="library-big"></i>
         <span>Products</span>
       </button>
       <ul x-h-menu>
@@ -414,7 +414,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <i role="img" data-lucide="gem"></i>
+        <i x-h-lucide role="img" data-lucide="gem"></i>
         Pricing
       </a>
     </li>

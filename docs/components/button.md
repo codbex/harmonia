@@ -179,11 +179,11 @@ You can include an icon directly inside the button.
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button>
-  <i role="img" data-lucide="chevron-left"></i>
+  <i x-h-lucide role="img" data-lucide="chevron-left"></i>
   Left-aligned
 </button>
 <button x-h-button>
-  <i role="img" data-lucide="chevron-right"></i>
+  <i x-h-lucide role="img" data-lucide="chevron-right"></i>
   Right-aligned
 </button>
 <button x-h-button>
@@ -195,11 +195,11 @@ You can include an icon directly inside the button.
 
 ```html
 <button x-h-button>
-  <i role="img" data-lucide="chevron-left"></i>
+  <i x-h-lucide role="img" data-lucide="chevron-left"></i>
   Left-aligned
 </button>
 <button x-h-button>
-  <i role="img" data-lucide="chevron-right"></i>
+  <i x-h-lucide role="img" data-lucide="chevron-right"></i>
   Right-aligned
 </button>
 <button x-h-button>
@@ -241,14 +241,14 @@ You can include a spinner directly inside the button. The spinner will adjust it
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="icon" aria-label="Icon button">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 </component-container>
 </ClientOnly>
 
 ```html
 <button x-h-button data-size="icon" aria-label="Icon button">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 ```
 
@@ -259,22 +259,22 @@ You can include a spinner directly inside the button. The spinner will adjust it
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="sm">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
   Save
 </button>
 <button x-h-button data-size="icon-sm" aria-label="Icon button">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 </component-container>
 </ClientOnly>
 
 ```html
 <button x-h-button data-size="sm">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
   Save
 </button>
 <button x-h-button data-size="icon-sm" aria-label="Icon button">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 ```
 
@@ -283,21 +283,21 @@ You can include a spinner directly inside the button. The spinner will adjust it
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="md">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
   Save
 </button>
 <button x-h-button data-size="icon-md" aria-label="Icon button">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 </component-container>
 </ClientOnly>
 
 ```html
 <button x-h-button data-size="md">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
   Save
 </button>
 <button x-h-button data-size="icon-md" aria-label="Icon button">
-  <i role="img" data-lucide="save"></i>
+  <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 ```

@@ -44,7 +44,7 @@ x-h-pagination-ellipsis
   <ul x-h-pagination-content>
     <li x-h-pagination-item>
       <a x-h-pagination-link.previous href="#">
-        <i role="img" data-lucide="chevron-left"></i>
+        <i x-h-lucide role="img" data-lucide="chevron-left"></i>
         <span x-h-pagination-link-label>Previous</span>
       </a>
     </li>
@@ -63,7 +63,7 @@ x-h-pagination-ellipsis
     <li x-h-pagination-item>
       <a x-h-pagination-link.next href="#">
         <span x-h-pagination-link-label>Next</span>
-        <i role="img" data-lucide="chevron-right"></i>
+        <i x-h-lucide role="img" data-lucide="chevron-right"></i>
       </a>
     </li>
   </ul>
@@ -76,7 +76,7 @@ x-h-pagination-ellipsis
   <ul x-h-pagination-content>
     <li x-h-pagination-item>
       <a x-h-pagination-link.previous href="#">
-        <i role="img" data-lucide="chevron-left"></i>
+        <i x-h-lucide role="img" data-lucide="chevron-left"></i>
         <span x-h-pagination-link-label>Previous</span>
       </a>
     </li>
@@ -95,7 +95,7 @@ x-h-pagination-ellipsis
     <li x-h-pagination-item>
       <a x-h-pagination-link.next href="#">
         <span x-h-pagination-link-label>Next</span>
-        <i role="img" data-lucide="chevron-right"></i>
+        <i x-h-lucide role="img" data-lucide="chevron-right"></i>
       </a>
     </li>
   </ul>

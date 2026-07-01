@@ -18,6 +18,10 @@ Utility functions for retrieving and updating the color scheme.
 The `setColorScheme` function automatically persists the most recently selected color scheme to the browser’s local storage, ensuring the preference is retained and reapplied across page loads without requiring additional work.
 :::
 
+::: info Syncing across frames and tabs
+A color scheme change made in any frame is automatically applied to every embedded same-origin iframe that uses Harmonia, as well as to other browser tabs of the application, keeping the whole UI consistent.
+:::
+
 ### callbackFunction
 
 | Arguments | Description                                                   |

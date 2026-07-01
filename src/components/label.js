@@ -23,7 +23,7 @@ export default function (Alpine) {
         'has-[>[data-slot=field]]:flex-col',
         'has-[>[data-slot=field]]:rounded-md',
         'has-[>[data-slot=field]]:border',
-        '[&>*]:data-[slot=field]:p-4'
+        '[&>[data-slot=field]]:p-4'
       );
       el.setAttribute('data-slot', 'field-label');
     } else {

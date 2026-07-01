@@ -59,11 +59,10 @@ describe('h-dialog', () => {
 
   it('adds base positioning and layout classes', () => {
     mountDirective(dialogPlugin, 'h-dialog', el);
-    expect(el.classList.contains('relative')).toBe(true);
     expect(el.classList.contains('fixed')).toBe(true);
+    expect(el.classList.contains('position-center')).toBe(true);
     expect(el.classList.contains('z-50')).toBe(true);
-    expect(el.classList.contains('flex')).toBe(true);
-    expect(el.classList.contains('flex-col')).toBe(true);
+    expect(el.classList.contains('vbox')).toBe(true);
     expect(el.classList.contains('rounded-lg')).toBe(true);
     expect(el.classList.contains('border')).toBe(true);
     expect(el.classList.contains('shadow-xl')).toBe(true);

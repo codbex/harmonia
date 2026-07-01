@@ -64,31 +64,31 @@ x-h-tree-button
 <ul x-h-tree>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="positive">
-      <i role="img" data-lucide="folder"></i>
+      <i x-h-lucide role="img" data-lucide="folder"></i>
       <span>Folder 1</span>
     </button>
     <ul x-h-tree.sub data-border="true">
       <li x-h-tree-item>
         <button x-h-tree-button>
-          <i role="img" data-lucide="file-text"></i>
+          <i x-h-lucide role="img" data-lucide="file-text"></i>
           <span>File 1</span>
         </button>
       </li>
       <li x-h-tree-item.expanded="true">
         <button x-h-tree-button>
-          <i role="img" data-lucide="folder"></i>
+          <i x-h-lucide role="img" data-lucide="folder"></i>
           <span>Folder 2</span>
         </button>
         <ul x-h-tree.sub data-border="true">
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 2</span>
             </button>
           </li>
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 3</span>
             </button>
           </li>
@@ -98,31 +98,31 @@ x-h-tree-button
   </li>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="negative">
-      <i role="img" data-lucide="folder"></i>
+      <i x-h-lucide role="img" data-lucide="folder"></i>
       <span>Folder 3</span>
     </button>
     <ul x-h-tree.sub data-border="true">
       <li x-h-tree-item>
         <button x-h-tree-button>
-          <i role="img" data-lucide="file-text"></i>
+          <i x-h-lucide role="img" data-lucide="file-text"></i>
           <span>File 4</span>
         </button>
       </li>
       <li x-h-tree-item.expanded="true">
         <button x-h-tree-button>
-          <i role="img" data-lucide="folder"></i>
+          <i x-h-lucide role="img" data-lucide="folder"></i>
           <span>Folder 4</span>
         </button>
         <ul x-h-tree.sub data-border="true">
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 5</span>
             </button>
           </li>
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 6</span>
             </button>
           </li>
@@ -138,31 +138,31 @@ x-h-tree-button
 <ul x-h-tree>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="positive">
-      <i role="img" data-lucide="folder"></i>
+      <i x-h-lucide role="img" data-lucide="folder"></i>
       <span>Folder 1</span>
     </button>
     <ul x-h-tree.sub data-border="true">
       <li x-h-tree-item>
         <button x-h-tree-button>
-          <i role="img" data-lucide="file-text"></i>
+          <i x-h-lucide role="img" data-lucide="file-text"></i>
           <span>File 1</span>
         </button>
       </li>
       <li x-h-tree-item.expanded="true">
         <button x-h-tree-button>
-          <i role="img" data-lucide="folder"></i>
+          <i x-h-lucide role="img" data-lucide="folder"></i>
           <span>Folder 2</span>
         </button>
         <ul x-h-tree.sub data-border="true">
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 2</span>
             </button>
           </li>
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 3</span>
             </button>
           </li>
@@ -172,31 +172,31 @@ x-h-tree-button
   </li>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="negative">
-      <i role="img" data-lucide="folder"></i>
+      <i x-h-lucide role="img" data-lucide="folder"></i>
       <span>Folder 3</span>
     </button>
     <ul x-h-tree.sub data-border="true">
       <li x-h-tree-item>
         <button x-h-tree-button>
-          <i role="img" data-lucide="file-text"></i>
+          <i x-h-lucide role="img" data-lucide="file-text"></i>
           <span>File 4</span>
         </button>
       </li>
       <li x-h-tree-item.expanded="true">
         <button x-h-tree-button>
-          <i role="img" data-lucide="folder"></i>
+          <i x-h-lucide role="img" data-lucide="folder"></i>
           <span>Folder 4</span>
         </button>
         <ul x-h-tree.sub data-border="true">
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 5</span>
             </button>
           </li>
           <li x-h-tree-item>
             <button x-h-tree-button>
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>File 6</span>
             </button>
           </li>

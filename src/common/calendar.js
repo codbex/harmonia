@@ -1,5 +1,8 @@
+import { createDateFormatter } from '../utils/date-format';
 import uuidv4 from '../utils/uuid';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createSvg } from './icons';
+
+export { dateOrderMap } from '../utils/date-format';
 
 export function toDateString(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -22,8 +25,6 @@ export function isDisabled(d, minDate, maxDate) {
   if (maxDate && d > new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())) return true;
   return false;
 }
-
-export const dateOrderMap = { Y: 'year', M: 'month', D: 'day' };
 
 /**
  * Given a focused date and a navigation key, return the date the focus should
@@ -98,120 +99,12 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   let rangeSeparator = ' - ';
 
   let locale = undefined;
-  let formatter = undefined;
-  let inputParser = null;
-  let digitNormalizer = null;
   let delimiter = undefined;
   let dateOrder = undefined;
+  let dateFormatter = createDateFormatter();
   let firstDay = 0;
   let minDate = undefined;
   let maxDate = undefined;
-
-  function buildInputParser() {
-    const probe = new Date(2001, 2, 5);
-    const parts = formatter.formatToParts(probe);
-
-    // Non-Gregorian calendars (e.g. Solar Hijri for fa-IR) require calendar conversion -
-    // skip the parser and fall back to new Date(), which browsers handle better.
-    const { calendar: resolvedCalendar, locale: resolvedLocale } = formatter.resolvedOptions();
-    if (resolvedCalendar !== 'gregory' && resolvedCalendar !== 'iso8601') {
-      inputParser = null;
-      digitNormalizer = null;
-      return;
-    }
-
-    // Build a digit normalizer for locales that use non-ASCII numerals (e.g. Arabic-Indic for ar-SA).
-    const nf = new Intl.NumberFormat(resolvedLocale);
-    const sampleDigit = nf.format(1);
-    if (sampleDigit !== '1') {
-      const digitMap = {};
-      for (let i = 0; i <= 9; i++) digitMap[nf.format(i)] = String(i);
-      digitNormalizer = (str) => str.replace(/./gu, (c) => digitMap[c] ?? c);
-    } else {
-      digitNormalizer = null;
-    }
-
-    const monthPart = parts.find((p) => p.type === 'month');
-    const normalizedMonth = monthPart ? (digitNormalizer ? digitNormalizer(monthPart.value) : monthPart.value) : null;
-    if (normalizedMonth && !/^\d/.test(normalizedMonth)) {
-      inputParser = null;
-      return;
-    }
-
-    if (dateOrder === undefined && delimiter === undefined) {
-      // Default: iterate all parts so locale prefix/suffix literals are included in the regex.
-      // Strip invisible directional marks (e.g. U+200F RTL mark in ar-SA separators) and
-      // normalize non-breaking spaces so the regex matches user-typed input.
-      let regexStr = '^';
-      const fieldOrder = [];
-      for (const part of parts) {
-        if (part.type === 'year') {
-          regexStr += '(\\d{2,4})';
-          fieldOrder.push('year');
-        } else if (part.type === 'month') {
-          regexStr += '(\\d{1,2})';
-          fieldOrder.push('month');
-        } else if (part.type === 'day') {
-          regexStr += '(\\d{1,2})';
-          fieldOrder.push('day');
-        } else if (part.type === 'literal') {
-          const normalized = part.value.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '').replace(/[\u00A0\u202F]/g, ' ');
-          if (normalized) regexStr += normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-      }
-      inputParser = fieldOrder.length === 3 ? { regex: new RegExp(regexStr + '$'), fieldOrder } : null;
-      return;
-    }
-
-    // Custom order or delimiter: formatDate strips locale prefix/suffix, so regex needs only fields + sep
-    const sep = delimiter !== undefined ? delimiter : (parts.find((p) => p.type === 'literal')?.value ?? '');
-    const fieldOrder = dateOrder ? [...dateOrder].map((c) => dateOrderMap[c]) : parts.filter((p) => p.type === 'year' || p.type === 'month' || p.type === 'day').map((p) => p.type);
-
-    if (fieldOrder.length !== 3 || fieldOrder.some((f) => f === undefined)) {
-      inputParser = null;
-      return;
-    }
-
-    const escapedSep = sep.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regexStr = '^' + fieldOrder.map((f) => (f === 'year' ? '(\\d{2,4})' : '(\\d{1,2})')).join(escapedSep) + '$';
-
-    inputParser = { regex: new RegExp(regexStr), fieldOrder };
-  }
-
-  function formatDate(d) {
-    if (delimiter === undefined && dateOrder === undefined) return formatter.format(d);
-
-    const parts = formatter.formatToParts(d);
-    const sep = delimiter !== undefined ? delimiter : (parts.find((p) => p.type === 'literal')?.value ?? '');
-    const fieldValues = {};
-    for (const p of parts) {
-      if (p.type === 'year' || p.type === 'month' || p.type === 'day') fieldValues[p.type] = p.value;
-    }
-    const order = dateOrder ? [...dateOrder].map((c) => dateOrderMap[c]) : parts.filter((p) => p.type === 'year' || p.type === 'month' || p.type === 'day').map((p) => p.type);
-
-    return order.map((f) => fieldValues[f]).join(sep);
-  }
-
-  function parseDisplayValueInternal(value) {
-    const isoDate = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-    if (isoDate) {
-      return new Date(parseInt(isoDate[1]), parseInt(isoDate[2]) - 1, parseInt(isoDate[3]));
-    }
-    if (inputParser) {
-      let normalized = digitNormalizer ? digitNormalizer(value) : value;
-      normalized = normalized.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '').replace(/[\u00A0\u202F]/g, ' ');
-      const match = inputParser.regex.exec(normalized);
-      if (match) {
-        const fields = {};
-        inputParser.fieldOrder.forEach((field, i) => {
-          fields[field] = parseInt(match[i + 1]);
-        });
-        const year = fields.year < 100 ? 2000 + fields.year : fields.year;
-        return new Date(year, fields.month - 1, fields.day);
-      }
-    }
-    return new Date(value);
-  }
 
   function modelChange(triggerInput = false) {
     if (rangeMode) {
@@ -635,9 +528,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     if (config.delimiter !== undefined) delimiter = config.delimiter;
     if (config.order !== undefined) dateOrder = config.order;
     if (config.firstDay) firstDay = config.firstDay;
-    if (config.options) formatter = new Intl.DateTimeFormat(locale, config.options);
-    else formatter = new Intl.DateTimeFormat(locale);
-    buildInputParser();
+    dateFormatter = createDateFormatter({ locale, options: config.options, delimiter, order: dateOrder, rangeSeparator });
     if (config.min) minDate = new Date(config.min);
     if (config.max) maxDate = new Date(config.max);
     setWeekdayHeaders();
@@ -694,21 +585,12 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   }
 
   function formatSelectedDate() {
-    if (rangeMode) {
-      if (!rangeStart) return undefined;
-      return rangeEnd ? `${formatDate(rangeStart)}${rangeSeparator}${formatDate(rangeEnd)}` : formatDate(rangeStart);
-    }
-    return selected ? formatDate(selected) : undefined;
+    if (rangeMode) return dateFormatter.formatRange(rangeStart, rangeEnd);
+    return selected ? dateFormatter.format(selected) : undefined;
   }
 
   function parseDisplayValue(value) {
-    if (rangeMode) {
-      const parts = value.split(rangeSeparator);
-      const start = parseDisplayValueInternal((parts[0] ?? '').trim());
-      const end = parts.length > 1 ? parseDisplayValueInternal((parts[1] ?? '').trim()) : undefined;
-      return { start, end };
-    }
-    return parseDisplayValueInternal(value);
+    return rangeMode ? dateFormatter.parseRange(value) : dateFormatter.parse(value);
   }
 
   return {

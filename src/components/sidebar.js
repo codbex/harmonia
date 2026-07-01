@@ -3,8 +3,22 @@ import { ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-sidebar', (el, { modifiers }, { cleanup }) => {
     el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
-    if (modifiers.includes('right')) el.classList.add('border-l');
-    else el.classList.add('border-r');
+
+    function setBorder() {
+      if (el.getAttribute('data-borderless') === 'true') {
+        el.classList.remove('border-r', 'border-l');
+      } else {
+        if (modifiers.includes('right')) {
+          el.classList.add('border-l');
+          el.classList.remove('border-r');
+        } else {
+          el.classList.add('border-r');
+          el.classList.remove('border-l');
+        }
+      }
+    }
+
+    setBorder();
 
     el.setAttribute('data-slot', 'sidebar');
 
@@ -18,11 +32,14 @@ export default function (Alpine) {
 
     setFloating();
 
-    const observer = new MutationObserver(() => {
-      setFloating();
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-floating') setFloating();
+        else setBorder();
+      });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-floating'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-floating', 'data-borderless'] });
 
     cleanup(() => {
       observer.disconnect();
@@ -31,7 +48,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-sidebar-header', (el) => {
     el.classList.add('vbox', 'gap-2', 'p-2');
-    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_-1px_var(--border)]');
+    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_-1px_var(--sidebar-border)]');
     el.setAttribute('data-slot', 'sidebar-header');
   });
 
@@ -408,7 +425,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-separator', (el) => {
-    el.classList.add('bg-sidebar-border', 'w-auto', 'bg-border', 'shrink-0', 'h-px', 'w-full');
+    el.classList.add('bg-sidebar-border', 'shrink-0', 'h-px', 'w-full');
     el.setAttribute('data-slot', 'sidebar-separator');
     el.setAttribute('role', 'none');
   });
@@ -439,7 +456,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-sidebar-footer', (el) => {
     el.classList.add('vbox', 'gap-2', 'p-2');
-    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_1px_var(--border)]');
+    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_1px_var(--sidebar-border)]');
     el.setAttribute('data-slot', 'sidebar-footer');
   });
 }

@@ -34,17 +34,20 @@ Pass a configuration object as an Alpine expression.
 <div x-h-slot-picker="myConfig"></div>
 ```
 
-| Key           | Default     | Description                                                                                                               |
-| ------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
-| date          | today       | The starting date of the 3-day window. Accepts a `YYYY-MM-DD` string or a `Date` object.                                  |
-| start         | `'08:00'`   | The first time slot of the day as `HH:MM`. Used in shorthand mode (when `slots` is not provided).                         |
-| end           | `'18:00'`   | The exclusive end time as `HH:MM`. Used in shorthand mode.                                                                |
-| step          | `60`        | Duration of each slot in minutes. Used in shorthand mode.                                                                 |
-| slots         | -           | Explicit array of slot objects (see below). When provided, overrides `start`, `end`, and `step`.                          |
-| multiple      | `false`     | When `true`, multiple slots can be selected simultaneously.                                                               |
-| locale        | user locale | BCP 47 language tag for day names and the date display (e.g. `'en-US'`, `'de-DE'`).                                       |
-| disabledDates | `[]`        | Array of `'YYYY-MM-DD'` strings and/or `{ from, to }` range objects. Matching days show "Not available" instead of slots. |
-| disabledDays  | `[]`        | Array of weekday numbers to always disable (0 = Sunday, 6 = Saturday).                                                    |
+| Key           | Default     | Description                                                                                                                                                                                                               |
+| ------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date          | today       | The starting date of the 3-day window. Accepts a `YYYY-MM-DD` string or a `Date` object.                                                                                                                                  |
+| start         | `'08:00'`   | The first time slot of the day as `HH:MM`. Used in shorthand mode (when `slots` is not provided).                                                                                                                         |
+| end           | `'18:00'`   | The exclusive end time as `HH:MM`. Used in shorthand mode.                                                                                                                                                                |
+| step          | `60`        | Duration of each slot in minutes. Used in shorthand mode.                                                                                                                                                                 |
+| slots         | -           | Explicit array of slot objects (see below). When provided, it overrides `start`, `end`, and `step` on a per-day basis.                                                                                                    |
+| fillEmptyDays | `false`     | When `true`, days that have no entry in `slots` fall back to the generated `start`/`end`/`step` schedule instead of showing nothing. Use it to mix explicit per-day slots with a default schedule for the remaining days. |
+| multiple      | `false`     | When `true`, multiple slots can be selected simultaneously.                                                                                                                                                               |
+| locale        | user locale | BCP 47 language tag for day names and the date display (e.g. `'en-US'`, `'de-DE'`).                                                                                                                                       |
+| disabledDates | `[]`        | Array of `'YYYY-MM-DD'` strings and/or `{ from, to }` range objects. Matching days show "Not available" instead of slots.                                                                                                 |
+| disabledDays  | `[]`        | Array of weekday numbers to always disable (0 = Sunday, 6 = Saturday).                                                                                                                                                    |
+| minDate       | -           | Start day. When set, the user cannot page to any day before it. Accepts a `YYYY-MM-DD` string or a `Date`. Independent of `maxDate`.                                                                                      |
+| maxDate       | -           | End day. When set, the user cannot page to any day after it. Accepts a `YYYY-MM-DD` string or a `Date`. Independent of `minDate`.                                                                                         |
 
 #### Slot object (explicit mode)
 
@@ -218,6 +221,74 @@ The picker is a labeled `group` (default name "Time slot picker"; set an `aria-l
 ></div>
 ```
 
+### Default schedule with per-day overrides
+
+Provide `start`, `end`, and `step` for the default daily schedule, list `slots` only for the days you want to customize, and set `fillEmptyDays: true` so every other day still shows the default slots. A day that appears in `slots` shows only its explicit slots (it is not merged with the default schedule).
+
+<ClientOnly>
+<component-container data-class="p-0 overflow-visible">
+<div
+  x-h-slot-picker="config"
+  x-data="{
+    config: {},
+    selected: null,
+    init() {
+      const dateIn = (days) => {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().slice(0, 10);
+      };
+      this.config = {
+        date: dateIn(0),
+        start: '09:00',
+        end: '17:00',
+        step: 60,
+        fillEmptyDays: true,
+        slots: [
+          { date: dateIn(0), start: '10:00', end: '10:30', available: true },
+          { date: dateIn(0), start: '10:30', end: '11:00', available: true },
+          { date: dateIn(0), start: '11:00', end: '11:30', available: false },
+        ],
+      };
+    }
+  }"
+  x-model="selected"
+  class="rounded-md"
+></div>
+</component-container>
+</ClientOnly>
+
+```html
+<div
+  x-h-slot-picker="config"
+  x-data="{
+    config: {},
+    selected: null,
+    init() {
+      const dateIn = (days) => {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().slice(0, 10);
+      };
+      this.config = {
+        date: dateIn(0),
+        start: '09:00',
+        end: '17:00',
+        step: 60,
+        fillEmptyDays: true,
+        slots: [
+          { date: dateIn(0), start: '10:00', end: '10:30', available: true },
+          { date: dateIn(0), start: '10:30', end: '11:00', available: true },
+          { date: dateIn(0), start: '11:00', end: '11:30', available: false },
+        ],
+      };
+    }
+  }"
+  x-model="selected"
+  class="rounded-md"
+></div>
+```
+
 ### Disabled weekdays and date ranges
 
 Use `disabledDays` to block recurring days (e.g. weekends) and `disabledDates` for specific dates or ranges.
@@ -276,6 +347,66 @@ Use `disabledDays` to block recurring days (e.g. weekends) and `disabledDates` f
           dateIn(5),
           { from: dateIn(5), to: dateIn(10) },
         ],
+      };
+    }
+  }"
+  x-model="selected"
+  class="rounded-md"
+></div>
+```
+
+### Start and end day bounds
+
+Set `minDate` to a start day and/or `maxDate` to an end day to stop the user paging outside a window. The two options are independent, so you can set just one. The previous/next buttons disable at the edges, and jumping via the calendar is clamped so the visible range always stays within the bounds.
+
+<ClientOnly>
+<component-container data-class="p-0 overflow-visible">
+<div
+  x-h-slot-picker="config"
+  x-data="{
+    config: {},
+    selected: null,
+    init() {
+      const dateIn = (days) => {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().slice(0, 10);
+      };
+      this.config = {
+        date: dateIn(0),
+        start: '09:00',
+        end: '17:00',
+        step: 60,
+        minDate: dateIn(0),
+        maxDate: dateIn(10),
+      };
+    }
+  }"
+  x-model="selected"
+  class="rounded-md"
+></div>
+</component-container>
+</ClientOnly>
+
+```html
+<div
+  x-h-slot-picker="config"
+  x-data="{
+    config: {},
+    selected: null,
+    init() {
+      const dateIn = (days) => {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().slice(0, 10);
+      };
+      this.config = {
+        date: dateIn(0),
+        start: '09:00',
+        end: '17:00',
+        step: 60,
+        minDate: dateIn(0),
+        maxDate: dateIn(10),
       };
     }
   }"

@@ -41,7 +41,7 @@ describe('h-sidebar-header', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-header', el);
     expect(el.classList.contains('vbox')).toBe(true);
-    expect(el.classList.contains('inset-shadow-[0_-1px_var(--border)]')).toBe(true);
+    expect(el.classList.contains('inset-shadow-[0_-1px_var(--sidebar-border)]')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('sidebar-header');
   });
 
@@ -141,7 +141,7 @@ describe('h-sidebar-separator', () => {
   it('applies base classes and attributes', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-separator', el);
-    expect(el.classList.contains('bg-border')).toBe(true);
+    expect(el.classList.contains('bg-sidebar-border')).toBe(true);
     expect(el.classList.contains('shrink-0')).toBe(true);
     expect(el.classList.contains('h-px')).toBe(true);
     expect(el.getAttribute('role')).toBe('none');
@@ -175,7 +175,7 @@ describe('h-sidebar-footer', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-footer', el);
     expect(el.classList.contains('vbox')).toBe(true);
-    expect(el.classList.contains('inset-shadow-[0_1px_var(--border)]')).toBe(true);
+    expect(el.classList.contains('inset-shadow-[0_1px_var(--sidebar-border)]')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('sidebar-footer');
   });
 

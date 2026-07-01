@@ -20,8 +20,7 @@ export default function (Alpine) {
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      'transition-colors',
-      'transition-shadow',
+      'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       'overflow-hidden'
     );

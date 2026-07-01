@@ -24,7 +24,7 @@ describe('h-input', () => {
     expect(el.classList.contains('border-input')).toBe(true);
     expect(el.classList.contains('min-w-0')).toBe(true);
     expect(el.classList.contains('outline-none')).toBe(true);
-    expect(el.classList.contains('transition-colors')).toBe(true);
+    expect(el.classList.contains('transition-[color,box-shadow]')).toBe(true);
   });
 
   it('sets data-slot="input" by default', () => {

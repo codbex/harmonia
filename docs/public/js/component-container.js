@@ -16,10 +16,15 @@ class ComponentContainer extends HTMLElement {
   }
 
   classToggle() {
+    // The `dark` class must live on an element inside the shadow tree: the dark theme is
+    // driven by `.dark { ... }` / the `dark:` variant (`.dark`, `.dark *`), and a bare `.dark`
+    // selector in the shadow stylesheet cannot match the host (only `:host(...)` can). The
+    // host's `:host` rule pins the light tokens, so toggling the class on the host has no
+    // effect - it has to go on the container that wraps the example content.
     if (window.document.documentElement.classList.contains('dark')) {
-      this.classList.add('dark');
+      this.container.classList.add('dark');
     } else {
-      this.classList.remove('dark');
+      this.container.classList.remove('dark');
     }
   }
 
@@ -45,13 +50,8 @@ class ComponentContainer extends HTMLElement {
       }
 
       setTimeout(() => {
-        if (this.getAttribute('data-icons') === 'true') {
-          // Initialize icons inside the container
-          lucide.createIcons({
-            root: this.container,
-          });
-        }
-        // Initialize the new element with Alpine
+        // Initialize the new element with Alpine; Lucide icons render via the
+        // x-h-lucide directive as Alpine initializes them.
         Alpine.initTree(this.container);
       });
     } else {
@@ -97,11 +97,6 @@ class ComponentContainer extends HTMLElement {
     for (const oldScript of scripts) {
       await this.executeScript(oldScript);
     }
-
-    // Initialize icons inside the container
-    lucide.createIcons({
-      root: this.container,
-    });
 
     // Initialize the new element with Alpine
     Alpine.initTree(this.container);

@@ -23,6 +23,26 @@ build({
 });
 
 build({
+  entryPoints: [`src/lucide.js`],
+  outfile: `dist/harmonia-lucide.js`,
+  bundle: true,
+  minify: false,
+  sourcemap: false,
+  platform: 'browser',
+  define: { CDN: 'true' },
+});
+
+build({
+  entryPoints: [`src/lucide.js`],
+  outfile: `dist/harmonia-lucide.min.js`,
+  bundle: true,
+  minify: true,
+  sourcemap: true,
+  platform: 'browser',
+  define: { CDN: 'true' },
+});
+
+build({
   entryPoints: [`src/module.js`],
   outfile: `dist/harmonia.esm.js`,
   bundle: true,

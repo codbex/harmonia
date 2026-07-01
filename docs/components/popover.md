@@ -108,7 +108,7 @@ In order to use the chevron modifier, the trigger label must be placed inside a 
 <component-container data-icons="true">
 <button x-h-button x-h-popover-trigger.chevron>
   <span>Popover</span>
-  <i role="img" data-lucide="chevron-down"></i>
+  <i x-h-lucide role="img" data-lucide="chevron-down"></i>
 </button>
 <div class="p-4" x-h-popover>With chevron</div>
 </component-container>
@@ -117,7 +117,7 @@ In order to use the chevron modifier, the trigger label must be placed inside a 
 ```html
 <button x-h-button x-h-popover-trigger.chevron>
   <span>Popover</span>
-  <i role="img" data-lucide="chevron-down"></i>
+  <i x-h-lucide role="img" data-lucide="chevron-down"></i>
 </button>
 <div class="p-4" x-h-popover>With chevron</div>
 ```

@@ -124,13 +124,13 @@ describe('h-popover', () => {
     expect(ctx.cleanup).toHaveBeenCalled();
   });
 
-  it('replaces overflow-auto with overflow-none for no-scroll modifier', () => {
+  it('replaces overflow-auto with overflow-hidden for no-scroll modifier', () => {
     const { popoverEl } = createPopoverSetup();
     mountDirective(popoverPlugin, 'h-popover', popoverEl, {
       original: 'x-h-popover',
       modifiers: ['no-scroll'],
     });
     expect(popoverEl.classList.contains('overflow-auto')).toBe(false);
-    expect(popoverEl.classList.contains('overflow-none')).toBe(true);
+    expect(popoverEl.classList.contains('overflow-hidden')).toBe(true);
   });
 });

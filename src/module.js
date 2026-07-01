@@ -54,6 +54,8 @@ export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
+import lucide from './plugins/lucide';
+import dateFormat from './utils/date-format';
 import focus from './utils/focus';
 import include from './utils/include';
 import template from './utils/template';
@@ -70,6 +72,7 @@ export {
   chart as Chart,
   checkbox as Checkbox,
   chip as Chip,
+  dateFormat as DateFormat,
   datepicker as DatePicker,
   datetimePicker as DateTimePicker,
   dialog as Dialog,
@@ -83,6 +86,7 @@ export {
   input as Input,
   label as Label,
   list as List,
+  lucide as Lucide,
   menu as Menu,
   navigationMenu as NavigationMenu,
   notifications as Notifications,
@@ -126,6 +130,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(card);
   registerPlugin(chart);
   registerPlugin(checkbox);
+  registerPlugin(dateFormat);
   registerPlugin(datepicker);
   registerPlugin(datetimePicker);
   registerPlugin(dialog);

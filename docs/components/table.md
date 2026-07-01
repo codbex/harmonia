@@ -39,6 +39,12 @@ x-h-table-footer
 | data-borders | `rows`<br />`columns`<br />`both` | false    | Adds borders between rows, columns or both.        |
 | data-fixed   | boolean                           | false    | Fixed table layout. Incompatible with scroll mode. |
 
+#### x-h-table-header
+
+| Attribute     | Type    | Required | Description                      |
+| ------------- | ------- | -------- | -------------------------------- |
+| data-bordered | boolean | false    | Adds a border around the header. |
+
 #### x-h-table-row
 
 | Attribute      | Type       | Required | Description                       |
@@ -88,7 +94,7 @@ x-h-table-footer
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Invoice Number</th>
         <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
-          <div class="flex items-center justify-between">Invoice Date<i role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+          <div class="flex items-center justify-between gap-1">Invoice Date<i x-h-lucide role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
         </th>
         <th x-h-table-head scope="col">Customer Name</th>
         <th x-h-table-head scope="col">Due Date</th>
@@ -196,7 +202,6 @@ x-h-table-footer
     }
     return invoices;
   }
-  lucide.createIcons();
   Alpine.data('tableData', () => ({
     invoices: generateInvoices(),
   }));
@@ -474,6 +479,82 @@ x-h-table-footer
 <div x-h-table-container>
   <table x-h-table data-fixed="true">
     <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Item</th>
+        <th x-h-table-head scope="col">Type</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-head>Cucumber</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Banana</td>
+        <td x-h-table-cell>Fruit</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Asparagus</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Onion</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Apple</td>
+        <td x-h-table-cell>Fruit</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+### Table with bordered header
+
+Set `data-bordered="true"` on the header to outline the whole head row. Use it on its own, not together with the table's other border options.
+
+<ClientOnly>
+<component-container>
+<div x-h-table-container>
+  <table x-h-table data-fixed="true">
+    <thead x-h-table-header data-bordered="true">
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Item</th>
+        <th x-h-table-head scope="col">Type</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row>
+        <td x-h-table-head>Cucumber</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Banana</td>
+        <td x-h-table-cell>Fruit</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Asparagus</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Onion</td>
+        <td x-h-table-cell>Vegetable</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-head>Apple</td>
+        <td x-h-table-cell>Fruit</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-table-container>
+  <table x-h-table data-fixed="true">
+    <thead x-h-table-header data-bordered="true">
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Item</th>
         <th x-h-table-head scope="col">Type</th>

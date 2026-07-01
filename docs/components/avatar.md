@@ -99,14 +99,14 @@ You can change the avatar shape by using the `rounded-` classes.
 <ClientOnly>
 <component-container data-icons="true" data-class="flex flex-col items-center">
 <span x-h-avatar aria-label="camera">
-  <i role="img" data-lucide="camera"></i>
+  <i x-h-lucide role="img" data-lucide="camera"></i>
 </span>
 </component-container>
 </ClientOnly>
 
 ```html
 <span x-h-avatar aria-label="camera">
-  <i role="img" data-lucide="camera"></i>
+  <i x-h-lucide role="img" data-lucide="camera"></i>
 </span>
 ```
 

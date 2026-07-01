@@ -48,9 +48,9 @@ x-h-toolbar-separator
 <div x-h-toolbar>
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -59,9 +59,9 @@ x-h-toolbar-separator
 <div x-h-toolbar>
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -72,9 +72,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-borderless="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -83,9 +83,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-borderless="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -96,9 +96,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -107,9 +107,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -120,9 +120,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-variant="transparent">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -131,9 +131,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-variant="transparent">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -144,9 +144,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-variant="transparent" data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -155,9 +155,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-variant="transparent" data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -168,9 +168,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -179,9 +179,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -192,9 +192,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="md">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
@@ -203,9 +203,9 @@ x-h-toolbar-separator
 <div x-h-toolbar data-size="md">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="md" data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -243,11 +243,11 @@ x-h-toolbar-separator
   <div x-h-input-group style="max-width:50%">
     <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
     <div x-h-input-group-addon data-align="inline-start">
-      <i role="img" data-lucide="search"></i>
+      <i x-h-lucide role="img" data-lucide="search"></i>
     </div>
     <div x-h-input-group-addon data-align="inline-end">
       <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
-        <i role="img" data-lucide="x"></i>
+        <i x-h-lucide role="img" data-lucide="x"></i>
       </button>
     </div>
   </div>
@@ -287,11 +287,11 @@ x-h-toolbar-separator
   <div x-h-input-group style="max-width:50%">
     <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
     <div x-h-input-group-addon data-align="inline-start">
-      <i role="img" data-lucide="search"></i>
+      <i x-h-lucide role="img" data-lucide="search"></i>
     </div>
     <div x-h-input-group-addon data-align="inline-end">
       <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
-        <i role="img" data-lucide="x"></i>
+        <i x-h-lucide role="img" data-lucide="x"></i>
       </button>
     </div>
   </div>

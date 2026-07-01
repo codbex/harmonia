@@ -95,7 +95,7 @@ x-h-list-header
     List Item 1
     <div class="flex-1"></div>
     <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
     </button>
   </li>
   <li x-h-list-item>
@@ -117,7 +117,7 @@ x-h-list-header
     List Item 1
     <div class="flex-1"></div>
     <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
     </button>
   </li>
   <li x-h-list-item>

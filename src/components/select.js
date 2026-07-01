@@ -29,7 +29,7 @@ export default function (Alpine) {
       set: undefined,
       get: undefined,
     };
-    el.classList.add('cursor-pointer', 'outline-none', 'transition-colors', 'transition-shadow', 'motion-reduce:transition-none', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-50');
+    el.classList.add('cursor-pointer', 'outline-none', 'transition-[color,box-shadow]', 'motion-reduce:transition-none', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-50');
     if (modifiers.includes('table')) {
       el.classList.add(
         'h-10',

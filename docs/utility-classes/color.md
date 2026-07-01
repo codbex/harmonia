@@ -17,6 +17,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | bg-positive    | Set positive color as background color.    |
 | bg-warning     | Set warning color as background color.     |
 | bg-information | Set information color as background color. |
+| bg-sidebar     | Set sidebar color as background color.     |
 
 ### Text colors
 
@@ -38,6 +39,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | text-warning-foreground     | Set warning foreground color as text color.     |
 | text-information            | Set information color as text color.            |
 | text-information-foreground | Set information foreground color as text color. |
+| text-sidebar-foreground     | Set sidebar foreground color as text color.     |
 
 ### SVG/Icon fill colors
 
@@ -233,4 +235,16 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <p class="p-4 text-muted">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 <svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+```
+
+### Sidebar
+
+<ClientOnly>
+<component-container>
+<p class="bg-sidebar text-sidebar-foreground p-4">Sidebar</p>
+</component-container>
+</ClientOnly>
+
+```html
+<p class="bg-sidebar p-4 text-sidebar-foreground">Sidebar</p>
 ```

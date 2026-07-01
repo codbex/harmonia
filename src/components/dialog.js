@@ -72,18 +72,13 @@ export default function (Alpine) {
 
   Alpine.directive('h-dialog', (el) => {
     el.classList.add(
-      'relative',
       'bg-background',
       'fixed',
-      'top-[50%]',
-      'left-[50%]',
+      'position-center',
       'z-50',
-      'flex',
-      'flex-col',
+      'vbox',
       'w-full',
       'max-w-[calc(100%-2rem)]',
-      '-translate-x-1/2',
-      '-translate-y-1/2',
       'gap-4',
       'rounded-lg',
       'border',

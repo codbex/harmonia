@@ -29,10 +29,10 @@ x-h-badge-indicator
 <component-container data-icons="true" data-class="flex flex-col gap-4">
 <div x-h-badge>Badge</div>
 <div x-h-badge data-variant="primary">Primary</div>
-<div x-h-badge data-variant="positive"><i role="img" data-lucide="check"></i>Positive</div>
-<div x-h-badge data-variant="negative"><i role="img" data-lucide="x"></i>Negative</div>
-<div x-h-badge data-variant="warning"><i role="img" data-lucide="siren"></i>Warning</div>
-<div x-h-badge data-variant="information"><i role="img" data-lucide="info"></i>Information</div>
+<div x-h-badge data-variant="positive"><i x-h-lucide role="img" data-lucide="check"></i>Positive</div>
+<div x-h-badge data-variant="negative"><i x-h-lucide role="img" data-lucide="x"></i>Negative</div>
+<div x-h-badge data-variant="warning"><i x-h-lucide role="img" data-lucide="siren"></i>Warning</div>
+<div x-h-badge data-variant="information"><i x-h-lucide role="img" data-lucide="info"></i>Information</div>
 <div x-h-badge data-variant="outline">Outline</div>
 <a x-h-badge href="#">Link</a>
 </component-container>
@@ -41,10 +41,10 @@ x-h-badge-indicator
 ```html
 <div x-h-badge>Badge</div>
 <div x-h-badge data-variant="primary">Primary</div>
-<div x-h-badge data-variant="positive"><i role="img" data-lucide="check"></i>Positive</div>
-<div x-h-badge data-variant="negative"><i role="img" data-lucide="x"></i>Negative</div>
-<div x-h-badge data-variant="warning"><i role="img" data-lucide="siren"></i>Warning</div>
-<div x-h-badge data-variant="information"><i role="img" data-lucide="info"></i>Information</div>
+<div x-h-badge data-variant="positive"><i x-h-lucide role="img" data-lucide="check"></i>Positive</div>
+<div x-h-badge data-variant="negative"><i x-h-lucide role="img" data-lucide="x"></i>Negative</div>
+<div x-h-badge data-variant="warning"><i x-h-lucide role="img" data-lucide="siren"></i>Warning</div>
+<div x-h-badge data-variant="information"><i x-h-lucide role="img" data-lucide="info"></i>Information</div>
 <div x-h-badge data-variant="outline">Outline</div>
 <a x-h-badge href="#">Link</a>
 ```

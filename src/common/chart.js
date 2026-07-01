@@ -211,7 +211,7 @@ export function noData() {
  * first cell is the row header.
  */
 export function buildDataTable(caption, headers, rows) {
-  const table = make('table', ['sr-only'], { slot: 'chart-table' });
+  const table = make('table', ['sr-only', 'inline-block'], { slot: 'chart-table' });
   table.appendChild(make('caption', [], { text: caption }));
 
   const thead = make('thead');

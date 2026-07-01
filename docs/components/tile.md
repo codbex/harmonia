@@ -67,7 +67,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
   <div x-h-tile-actions>
     <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
   </div>
 </div>
@@ -89,7 +89,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
   <div x-h-tile-actions>
     <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
   </div>
 </div>
@@ -114,7 +114,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
   <div x-h-tile-actions>
     <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
   </div>
 </div>
@@ -136,7 +136,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
   <div x-h-tile-actions>
     <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
   </div>
 </div>
@@ -148,13 +148,13 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 <component-container data-icons="true">
 <a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
-    <i role="img" data-lucide="link" class="size-5"></i>
+    <i x-h-lucide role="img" data-lucide="link" class="size-5"></i>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Tile as link</div>
   </div>
   <div x-h-tile-actions>
-    <i role="img" data-lucide="chevron-right" class="size-4"></i>
+    <i x-h-lucide role="img" data-lucide="chevron-right" class="size-4"></i>
   </div>
 </a>
 </component-container>
@@ -163,13 +163,13 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ```html
 <a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
-    <i role="img" data-lucide="link" class="size-5"></i>
+    <i x-h-lucide role="img" data-lucide="link" class="size-5"></i>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Tile as link</div>
   </div>
   <div x-h-tile-actions>
-    <i role="img" data-lucide="chevron-right" class="size-4"></i>
+    <i x-h-lucide role="img" data-lucide="chevron-right" class="size-4"></i>
   </div>
 </a>
 ```
@@ -180,7 +180,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 <component-container data-icons="true" data-class="flex flex-col gap-4">
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="icon">
-    <i role="img" data-lucide="cog" class="size-5"></i>
+    <i x-h-lucide role="img" data-lucide="cog" class="size-5"></i>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Account settings updated</div>
@@ -222,7 +222,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ```html
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="icon">
-    <i role="img" data-lucide="cog" class="size-5"></i>
+    <i x-h-lucide role="img" data-lucide="cog" class="size-5"></i>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Account settings updated</div>

@@ -193,7 +193,13 @@ You can define multiple notification templates. Templates are not monitored for 
 
 - Lucide icons
 
-If you use Lucide icons, you must enable template icon replacement in the `createIcons` configuration object.
+The recommended way to render Lucide icons inside notifications is the [Lucide plugin](/plugins/lucide): add `x-h-lucide` to each icon placeholder and it renders automatically as each notification is shown, with no extra configuration.
+
+```html
+<i data-lucide="bell" x-h-lucide></i>
+```
+
+If you do not use the plugin, then you must enable template icon replacement in the `createIcons` configuration object, since the icons live inside a `<template>`.
 
 ```js
 lucide.createIcons({ inTemplates: true });
@@ -585,7 +591,7 @@ You can use the notification list anywhere but the most common place is usually 
   <h1 x-h-toolbar-title>Harmonia</h1>
   <div x-h-toolbar-spacer></div>
   <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
-    <i role="img" data-lucide="bell"></i>
+    <i x-h-lucide role="img" data-lucide="bell"></i>
   </button>
   <div x-h-popover data-innerclicks="true">
     <div x-h-toolbar data-size="md">
@@ -656,7 +662,7 @@ You can use the notification list anywhere but the most common place is usually 
   <h1 x-h-toolbar-title>Harmonia</h1>
   <div x-h-toolbar-spacer></div>
   <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
-    <i role="img" data-lucide="bell"></i>
+    <i x-h-lucide role="img" data-lucide="bell"></i>
   </button>
   <div x-h-popover data-innerclicks="true">
     <div x-h-toolbar data-size="md">

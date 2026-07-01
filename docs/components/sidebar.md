@@ -33,10 +33,11 @@ x-h-sidebar-footer
 
 #### x-h-sidebar
 
-| Attribute      | Type    | Required | Description                             |
-| -------------- | ------- | -------- | --------------------------------------- |
-| data-collapsed | boolean | false    | Collapses the sidebar to an icon width. |
-| data-floating  | boolean | false    | Adds border and shadow to the sidebar.  |
+| Attribute       | Type    | Required | Description                             |
+| --------------- | ------- | -------- | --------------------------------------- |
+| data-collapsed  | boolean | false    | Collapses the sidebar to an icon width. |
+| data-floating   | boolean | false    | Adds border and shadow to the sidebar.  |
+| data-borderless | boolean | false    | Removes the side border (left/right).   |
 
 #### x-h-sidebar-menu-button
 
@@ -100,7 +101,7 @@ x-h-sidebar-footer
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
       <span>Header popover</span>
-      <i role="img" data-lucide="chevron-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevron-down"></i>
     </button>
     <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
@@ -108,7 +109,7 @@ x-h-sidebar-footer
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
       <span>Footer popover</span>
-      <i role="img" data-lucide="chevrons-up-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
     </button>
     <ul x-h-menu aria-label="dropdown" data-align="top-start">
       <li x-h-menu-item>Set yourself as away</li>
@@ -127,7 +128,7 @@ x-h-sidebar-footer
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
       <span>Header popover</span>
-      <i role="img" data-lucide="chevron-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevron-down"></i>
     </button>
     <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
@@ -135,7 +136,7 @@ x-h-sidebar-footer
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
       <span>Footer popover</span>
-      <i role="img" data-lucide="chevrons-up-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
     </button>
     <ul x-h-menu aria-label="dropdown" data-align="top-start">
       <li x-h-menu-item>Set yourself as away</li>
@@ -160,20 +161,20 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
+              <i x-h-lucide role="img" data-lucide="house"></i>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="true">
-              <i role="img" data-lucide="blocks"></i>
+              <i x-h-lucide role="img" data-lucide="blocks"></i>
               <span>Extensions</span>
             </button>
           </li>
@@ -194,20 +195,20 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
+              <i x-h-lucide role="img" data-lucide="house"></i>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="true">
-              <i role="img" data-lucide="blocks"></i>
+              <i x-h-lucide role="img" data-lucide="blocks"></i>
               <span>Extensions</span>
             </button>
           </li>
@@ -230,20 +231,20 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
+              <i x-h-lucide role="img" data-lucide="house"></i>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="true">
-              <i role="img" data-lucide="blocks"></i>
+              <i x-h-lucide role="img" data-lucide="blocks"></i>
               <span>Extensions</span>
             </button>
           </li>
@@ -264,20 +265,20 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
+              <i x-h-lucide role="img" data-lucide="house"></i>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="true">
-              <i role="img" data-lucide="blocks"></i>
+              <i x-h-lucide role="img" data-lucide="blocks"></i>
               <span>Extensions</span>
             </button>
           </li>
@@ -295,9 +296,9 @@ x-h-sidebar-footer
 <div x-h-sidebar data-collapsed="true">
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-      <i role="img" data-lucide="menu"></i>
+      <i x-h-lucide role="img" data-lucide="menu"></i>
       <span>Header popover</span>
-      <i role="img" data-lucide="chevron-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevron-down"></i>
     </button>
     <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
@@ -308,20 +309,20 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
+              <i x-h-lucide role="img" data-lucide="house"></i>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="blocks"></i>
+              <i x-h-lucide role="img" data-lucide="blocks"></i>
               <span>Extensions</span>
             </button>
           </li>
@@ -331,9 +332,9 @@ x-h-sidebar-footer
   </div>
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
-      <i role="img" data-lucide="circle-user"></i>
+      <i x-h-lucide role="img" data-lucide="circle-user"></i>
       <span>Footer popover</span>
-      <i role="img" data-lucide="chevrons-up-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
     </button>
     <ul x-h-menu aria-label="dropdown" data-align="top-start">
       <li x-h-menu-item>Set yourself as away</li>
@@ -351,9 +352,9 @@ x-h-sidebar-footer
 <div x-h-sidebar data-collapsed="true">
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-      <i role="img" data-lucide="menu"></i>
+      <i x-h-lucide role="img" data-lucide="menu"></i>
       <span>Header popover</span>
-      <i role="img" data-lucide="chevron-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevron-down"></i>
     </button>
     <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
@@ -364,20 +365,20 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="house"></i>
+              <i x-h-lucide role="img" data-lucide="house"></i>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="file-text"></i>
+              <i x-h-lucide role="img" data-lucide="file-text"></i>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i role="img" data-lucide="blocks"></i>
+              <i x-h-lucide role="img" data-lucide="blocks"></i>
               <span>Extensions</span>
             </button>
           </li>
@@ -387,9 +388,9 @@ x-h-sidebar-footer
   </div>
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
-      <i role="img" data-lucide="circle-user"></i>
+      <i x-h-lucide role="img" data-lucide="circle-user"></i>
       <span>Footer popover</span>
-      <i role="img" data-lucide="chevrons-up-down"></i>
+      <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
     </button>
     <ul x-h-menu aria-label="dropdown" data-align="top-start">
       <li x-h-menu-item>Set yourself as away</li>
@@ -477,7 +478,7 @@ x-h-sidebar-footer
     <div x-h-sidebar-header>
       <button type="button" x-h-sidebar-menu-button x-h-popover-trigger.chevron>
         <span>Header popover</span>
-        <i role="img" data-lucide="chevron-down"></i>
+        <i x-h-lucide role="img" data-lucide="chevron-down"></i>
       </button>
       <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
     </div>
@@ -487,20 +488,20 @@ x-h-sidebar-footer
         <div x-h-sidebar-group-label>
           <span>General</span>
           <button x-h-sidebar-group-action aria-label="Add">
-            <i role="img" data-lucide="plus"></i>
+            <i x-h-lucide role="img" data-lucide="plus"></i>
           </button>
         </div>
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button type="button" x-h-sidebar-menu-button :data-active="active === 'dashboard'" @click="changeActive('dashboard')">
-                <i role="img" data-lucide="layout-dashboard"></i>
+                <i x-h-lucide role="img" data-lucide="layout-dashboard"></i>
                 <span>Dashboard</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'analytics'" @click="changeActive('analytics')">
-                <i role="img" data-lucide="chart-no-axes-combined"></i>
+                <i x-h-lucide role="img" data-lucide="chart-no-axes-combined"></i>
                 <span>Analytics</span>
               </a>
             </li>
@@ -514,18 +515,18 @@ x-h-sidebar-footer
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button type="button" x-h-sidebar-menu-button :data-active="active === 'files'" @click="changeActive('files')">
-                <i role="img" data-lucide="folder"></i>
+                <i x-h-lucide role="img" data-lucide="folder"></i>
                 <span>Files</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'docs'" @click="changeActive('docs')">
-                <i role="img" data-lucide="file-text"></i>
+                <i x-h-lucide role="img" data-lucide="file-text"></i>
                 <span>Documents</span>
               </a>
               <button type="button" x-h-sidebar-menu-action.autohide>
-                <i role="img" data-lucide="info"></i>
+                <i x-h-lucide role="img" data-lucide="info"></i>
                 <span class="sr-only">Info</span>
               </button>
             </li>
@@ -539,7 +540,7 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree'" @click="changeActive('tree')">
-              <i role="img" data-lucide="list-tree"></i>
+              <i x-h-lucide role="img" data-lucide="list-tree"></i>
               <span>Tree</span>
             </button>
             <ul x-h-sidebar-menu-sub>
@@ -576,7 +577,7 @@ x-h-sidebar-footer
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item.collapsed>
             <button type="button" x-h-sidebar-menu-button>
-              <i role="img" data-lucide="list-tree"></i>
+              <i x-h-lucide role="img" data-lucide="list-tree"></i>
               <span>Tree (Collapsable)</span>
             </button>
             <ul x-h-sidebar-menu-sub>
@@ -626,7 +627,7 @@ x-h-sidebar-footer
     <div x-h-sidebar-footer>
       <button type="button" x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
         <span>Footer popover</span>
-        <i role="img" data-lucide="chevrons-up-down"></i>
+        <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
       </button>
       <ul x-h-menu aria-label="dropdown" data-align="top-start">
         <li x-h-menu-item>Set yourself as away</li>

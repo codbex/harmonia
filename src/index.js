@@ -60,6 +60,8 @@ import include from './utils/include';
 
 import focus from './utils/focus';
 
+import dateFormat from './utils/date-format';
+
 import { version } from '../package.json';
 
 window.Harmonia = { getBreakpointListener, addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme, getSystemColorScheme, version };
@@ -120,6 +122,7 @@ function registerPlugins() {
   window.Alpine.plugin(focus);
   window.Alpine.plugin(template);
   window.Alpine.plugin(include);
+  window.Alpine.plugin(dateFormat);
 }
 
 if (window.Alpine) registerPlugins();

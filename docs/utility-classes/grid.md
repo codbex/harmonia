@@ -2,12 +2,12 @@
 
 ## Class names
 
-| Class            | Description                                     |
-| ---------------- | ----------------------------------------------- |
-| grid             | `display: grid;`                                |
-| grid-cols-`1-12` | Number of grid columns. From 1 to 12.           |
-| col-span-`1-12`  | Number of columns an item spans. From 1 to 12.  |
-| row-span-`1-12`  | Number of rows an item spans. From 1 to 12.     |
+| Class            | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| grid             | `display: grid;`                               |
+| grid-cols-`1-12` | Number of grid columns. From 1 to 12.          |
+| col-span-`1-12`  | Number of columns an item spans. From 1 to 12. |
+| row-span-`1-12`  | Number of rows an item spans. From 1 to 12.    |
 
 ::: info Responsive grid
 You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm`, `md`, `lg` and `xl` breakpoint prefixes to make the grid responsive.
@@ -229,10 +229,10 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 
 ```html
 <div class="grid grid-cols-4 gap-1">
-  <span class="bg-primary col-span-2 p-2 text-primary-foreground">col-span-2</span>
+  <span class="col-span-2 bg-primary p-2 text-primary-foreground">col-span-2</span>
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
-  <span class="bg-primary col-span-3 p-2 text-primary-foreground">col-span-3</span>
+  <span class="col-span-3 bg-primary p-2 text-primary-foreground">col-span-3</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
@@ -253,7 +253,7 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 
 ```html
 <div class="grid grid-cols-3 gap-1" style="height: 10rem">
-  <span class="bg-primary row-span-2 p-2 text-primary-foreground">row-span-2</span>
+  <span class="row-span-2 bg-primary p-2 text-primary-foreground">row-span-2</span>
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>

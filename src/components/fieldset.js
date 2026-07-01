@@ -90,7 +90,7 @@ export default function (Alpine) {
         '[[data-slot=field]_textarea:invalid~&]:hidden',
         '[[data-slot=field]_[aria-invalid=true]~&]:hidden',
         'group-has-[input:invalid]/field:hidden',
-        'group-has-[textarea:invalid)]/field:hidden',
+        'group-has-[textarea:invalid]/field:hidden',
         'group-has-[[aria-invalid=true]]/field:hidden'
       );
     }
@@ -103,7 +103,7 @@ export default function (Alpine) {
       '[[data-slot=field]_textarea:invalid~&]:block',
       '[[data-slot=field]_[aria-invalid=true]~&]:block',
       'group-has-[input:invalid]/field:block',
-      'group-has-[textarea:invalid)]/field:block',
+      'group-has-[textarea:invalid]/field:block',
       'group-has-[[aria-invalid=true]]/field:block',
       'text-negative',
       'text-sm',

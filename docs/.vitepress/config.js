@@ -108,11 +108,16 @@ export default defineConfig({
         text: 'Utilities',
         items: [
           { text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' },
+          { text: 'Date Format', link: '/utilities/date-format' },
           { text: 'Focus', link: '/utilities/focus' },
           { text: 'Include', link: '/utilities/include' },
           { text: 'Template', link: '/utilities/template' },
           { text: 'Theme', link: '/utilities/theme' },
         ],
+      },
+      {
+        text: 'Plugins',
+        items: [{ text: 'Lucide', link: '/plugins/lucide' }],
       },
       {
         text: 'Utility classes',
@@ -154,6 +159,7 @@ export default defineConfig({
     ['script', { src: `${basePath}lib/node_modules/lucide/dist/umd/lucide.min.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/alpinejs/dist/cdn.min.js`, defer: true, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.js`, type: 'text/javascript' }],
+    ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js`, type: 'text/javascript' }],
     ['link', { href: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.css`, rel: 'stylesheet' }],
     ['link', { href: `${basePath}fonts.css`, rel: 'stylesheet' }],
   ],
