@@ -44,7 +44,7 @@ x-h-toolbar-separator
 ### Default
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar>
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -68,7 +68,7 @@ x-h-toolbar-separator
 ### Borderless
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar data-borderless="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -92,7 +92,7 @@ x-h-toolbar-separator
 ### Floating
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -116,7 +116,7 @@ x-h-toolbar-separator
 ### Transparent
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar data-variant="transparent">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -140,7 +140,7 @@ x-h-toolbar-separator
 ### Floating Transparent
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar data-variant="transparent" data-floating="true">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -164,7 +164,7 @@ x-h-toolbar-separator
 ### Small
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar data-size="sm">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -188,7 +188,7 @@ x-h-toolbar-separator
 ### Medium
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-toolbar data-size="md">
   <span x-h-toolbar-title>Title</span>
   <div x-h-toolbar-spacer></div>
@@ -232,7 +232,7 @@ x-h-toolbar-separator
 ### As page header (shellbar)
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <header x-h-toolbar x-data="{ showClear: false, search: '' }">
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
   <span x-h-toolbar-branding>

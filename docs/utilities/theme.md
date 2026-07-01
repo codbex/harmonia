@@ -2,6 +2,10 @@
 
 Utility functions for retrieving and updating the color scheme.
 
+## Usage
+
+Use these functions to read or change the active color scheme from your own code, for example to build a light/dark toggle or to react when the scheme changes. `setColorScheme` persists the choice to local storage and syncs it across same-origin frames and tabs, so you do not need to manage persistence yourself.
+
 ## API Reference
 
 ### Functions

@@ -26,7 +26,7 @@ x-h-badge-indicator
 ### Badge
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col gap-4">
+<component-container  data-class="flex flex-col gap-4">
 <div x-h-badge>Badge</div>
 <div x-h-badge data-variant="primary">Primary</div>
 <div x-h-badge data-variant="positive"><i x-h-lucide role="img" data-lucide="check"></i>Positive</div>

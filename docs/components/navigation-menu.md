@@ -347,7 +347,7 @@ Hover and active states show a border outline instead of a filled background.
 ### With submenus and icons
 
 <ClientOnly>
-<component-container data-class="flex flex-col items-start" data-icons="true">
+<component-container data-class="flex flex-col items-start" >
 <nav x-h-nav aria-label="Main navigation">
   <ul x-h-nav-list>
     <li x-h-nav-item>

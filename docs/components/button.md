@@ -28,9 +28,9 @@ x-h-button
 | -------- | --------------------------------------------------- |
 | addon    | Used when the button is inside an input group addon |
 
-## Button Variants
+## Examples
 
-#### Default
+### Default
 
 <br />
 
@@ -44,7 +44,7 @@ x-h-button
 <button x-h-button>Default</button>
 ```
 
-#### Primary
+### Primary
 
 <br />
 
@@ -58,7 +58,7 @@ x-h-button
 <button x-h-button data-variant="primary">Primary</button>
 ```
 
-#### Positive
+### Positive
 
 <br />
 
@@ -72,7 +72,7 @@ x-h-button
 <button x-h-button data-variant="positive">Positive</button>
 ```
 
-#### Negative
+### Negative
 
 <br />
 
@@ -86,7 +86,7 @@ x-h-button
 <button x-h-button data-variant="negative">Negative</button>
 ```
 
-#### Warning
+### Warning
 
 <br />
 
@@ -100,7 +100,7 @@ x-h-button
 <button x-h-button data-variant="warning">Warning</button>
 ```
 
-#### Information
+### Information
 
 <br />
 
@@ -114,7 +114,7 @@ x-h-button
 <button x-h-button data-variant="information">Information</button>
 ```
 
-#### Outline
+### Outline
 
 <br />
 
@@ -128,7 +128,7 @@ x-h-button
 <button x-h-button data-variant="outline">Outline</button>
 ```
 
-#### Transparent
+### Transparent
 
 <br />
 
@@ -142,7 +142,7 @@ x-h-button
 <button x-h-button data-variant="transparent">Transparent</button>
 ```
 
-#### Link
+### Link
 
 <br />
 
@@ -156,7 +156,7 @@ x-h-button
 <a x-h-button data-variant="link" href="#">Link</a>
 ```
 
-## Toggle Button
+### Toggle button
 
 <ClientOnly>
 <component-container>
@@ -172,12 +172,12 @@ x-h-button
 </div>
 ```
 
-## Button with icons
+### Button with icons
 
 You can include an icon directly inside the button.
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
+<component-container  data-class="flex flex-col items-center gap-4">
 <button x-h-button>
   <i x-h-lucide role="img" data-lucide="chevron-left"></i>
   Left-aligned
@@ -208,7 +208,7 @@ You can include an icon directly inside the button.
 </button>
 ```
 
-## Button with spinner
+### Button with spinner
 
 You can include a spinner directly inside the button. The spinner will adjust its color based on the button variant.
 
@@ -236,10 +236,10 @@ You can include a spinner directly inside the button. The spinner will adjust it
 </button>
 ```
 
-## Icon button
+### Icon button
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
+<component-container  data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="icon" aria-label="Icon button">
   <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
@@ -252,12 +252,12 @@ You can include a spinner directly inside the button. The spinner will adjust it
 </button>
 ```
 
-## Button sizes
+### Button sizes
 
-### Small
+#### Small
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
+<component-container  data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="sm">
   <i x-h-lucide role="img" data-lucide="save"></i>
   Save
@@ -278,10 +278,10 @@ You can include a spinner directly inside the button. The spinner will adjust it
 </button>
 ```
 
-### Medium
+#### Medium
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col items-center gap-4">
+<component-container  data-class="flex flex-col items-center gap-4">
 <button x-h-button data-size="md">
   <i x-h-lucide role="img" data-lucide="save"></i>
   Save

@@ -76,8 +76,10 @@ export default function (Alpine) {
         'has-[input:focus-visible]:inset-ring-2',
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
-        'has-[input:invalid]:inset-ring-negative/20!',
-        'dark:has-[input:invalid]:inset-ring-negative/40!',
+        'has-[input:user-invalid]:inset-ring-negative/20!',
+        'dark:has-[input:user-invalid]:inset-ring-negative/40!',
+        '[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/20!',
+        'dark:[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/40!',
         'hover:bg-table-hover',
         'hover:text-table-hover-foreground',
         'active:bg-table-active!',
@@ -107,9 +109,12 @@ export default function (Alpine) {
         'has-[input[aria-invalid=true]]:ring-negative/20',
         'has-[input[aria-invalid=true]]:border-negative',
         'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-        'has-[input:invalid]:ring-negative/20',
-        'has-[input:invalid]:border-negative',
-        'dark:has-[input:invalid]:ring-negative/40'
+        'has-[input:user-invalid]:ring-negative/20',
+        'has-[input:user-invalid]:border-negative',
+        'dark:has-[input:user-invalid]:ring-negative/40',
+        '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
+        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
+        'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40'
       );
       el.setAttribute('data-slot', 'time-picker');
     }

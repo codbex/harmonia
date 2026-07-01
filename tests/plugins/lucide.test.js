@@ -57,6 +57,14 @@ describe('x-h-lucide directive', () => {
     expect(svg.hasAttribute('data-lucide')).toBe(false);
   });
 
+  it('does not copy the x-h-lucide directive attribute onto the svg', () => {
+    // Otherwise Alpine re-initializes the directive on the rendered clone,
+    // which has no data-lucide, producing a spurious "no icon name" error.
+    const { parent } = setup({ 'x-h-lucide': '', 'data-lucide': 'home' });
+    const svg = parent.querySelector('svg');
+    expect(svg.hasAttribute('x-h-lucide')).toBe(false);
+  });
+
   it('falls back to scoped createIcons when createElement is unavailable', () => {
     window.lucide = {
       createIcons({ root }) {

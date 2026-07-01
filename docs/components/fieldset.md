@@ -44,6 +44,25 @@ x-h-field-error
 | -------- | ------------------------------ |
 | label    | Makes the legend text smaller. |
 
+### Validation timing
+
+By default a control with a failing native constraint (for example a `required` empty input) only shows its invalid styling after the user has interacted with it (edited and blurred it) or attempted to submit the form, not on page load. Set `data-validate` to change when native-constraint errors appear:
+
+| Value         | Behavior                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| `interaction` | Default. Invalid styling appears only after user interaction or a submit attempt.           |
+| `immediate`   | Invalid styling appears immediately, including on page load, while the constraint is unmet. |
+
+`data-validate` is read from an ancestor, so put it on `x-h-fieldset`, `x-h-field`, or any wrapping element to control every control inside it:
+
+```html
+<fieldset x-h-fieldset data-validate="immediate">
+  <!-- every control inside validates on load -->
+</fieldset>
+```
+
+This affects only native constraint validation (`:invalid`). Setting `aria-invalid="true"` yourself always shows the invalid styling immediately, in either mode - use it for programmatic or server-side errors.
+
 ## Examples
 
 <ClientOnly>
@@ -178,7 +197,7 @@ When you type something in the input below, it will no longer be invalid and the
 <ClientOnly>
 <component-container>
 <form>
-  <fieldset x-h-fieldset>
+  <fieldset x-h-fieldset data-validate="immediate">
     <div x-h-field-group>
       <div x-h-field>
         <label x-h-label for="errorMessage">Invalid</label>
@@ -193,7 +212,7 @@ When you type something in the input below, it will no longer be invalid and the
 
 ```html
 <form>
-  <fieldset x-h-fieldset>
+  <fieldset x-h-fieldset data-validate="immediate">
     <div x-h-field-group>
       <div x-h-field>
         <label x-h-label for="errorMessage">Invalid</label>
@@ -212,7 +231,7 @@ When you type something in the input below, the error message will dissapear and
 <ClientOnly>
 <component-container>
 <form>
-  <fieldset x-h-fieldset>
+  <fieldset x-h-fieldset data-validate="immediate">
     <div x-h-field-group>
       <div x-h-field>
         <label x-h-label for="descError">Word</label>
@@ -228,7 +247,7 @@ When you type something in the input below, the error message will dissapear and
 
 ```html
 <form>
-  <fieldset x-h-fieldset>
+  <fieldset x-h-fieldset data-validate="immediate">
     <div x-h-field-group>
       <div x-h-field>
         <label x-h-label for="descError">Word</label>
@@ -310,7 +329,7 @@ In horizontal orientation the label stays beside the input, while the error and 
 <ClientOnly>
 <component-container>
 <form>
-  <fieldset x-h-fieldset>
+  <fieldset x-h-fieldset data-validate="immediate">
     <div x-h-field-group>
       <div x-h-field data-orientation="horizontal">
         <label x-h-label for="horizontalDescError">Word</label>
@@ -326,7 +345,7 @@ In horizontal orientation the label stays beside the input, while the error and 
 
 ```html
 <form>
-  <fieldset x-h-fieldset>
+  <fieldset x-h-fieldset data-validate="immediate">
     <div x-h-field-group>
       <div x-h-field data-orientation="horizontal">
         <label x-h-label for="horizontalDescError">Word</label>

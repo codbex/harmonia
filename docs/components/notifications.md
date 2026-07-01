@@ -585,7 +585,7 @@ The notification item has four inner components but they have no strict structur
 You can use the notification list anywhere but the most common place is usually inside a popover in a toolbar.
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <header x-h-toolbar>
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
   <h1 x-h-toolbar-title>Harmonia</h1>

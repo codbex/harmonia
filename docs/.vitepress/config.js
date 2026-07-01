@@ -53,6 +53,7 @@ export default defineConfig({
           { text: 'Fieldset', link: '/components/fieldset' },
           { text: 'Icon', link: '/components/icon' },
           { text: 'Info Page', link: '/components/info-page' },
+          { text: 'Inline Calendar', link: '/components/inline-calendar' },
           { text: 'Input', link: '/components/input' },
           { text: 'Input Group', link: '/components/input-group' },
           { text: 'Input Number', link: '/components/input-number' },

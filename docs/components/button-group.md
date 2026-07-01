@@ -21,10 +21,12 @@ x-h-button-group-separator
 | ---------------- | ---------------------------- | -------- | -------------------------------------------- |
 | data-orientation | `horizontal`<br />`vertical` | false    | Changes the orientation of the button group. |
 
-## Horizontal
+## Examples
+
+### Horizontal
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-wrap justify-evenly gap-4">
+<component-container  data-class="flex flex-wrap justify-evenly gap-4">
 <div x-h-button-group>
   <button x-h-button data-variant="outline">Action</button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Add button">
@@ -53,10 +55,10 @@ x-h-button-group-separator
 </div>
 ```
 
-## Vertical
+### Vertical
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex justify-evenly gap-4">
+<component-container  data-class="flex justify-evenly gap-4">
 <div x-h-button-group data-orientation="vertical">
   <button x-h-button data-variant="outline">Top</button>
   <button x-h-button data-variant="outline">Center</button>

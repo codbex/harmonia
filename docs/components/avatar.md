@@ -97,7 +97,7 @@ You can change the avatar shape by using the `rounded-` classes.
 ### Icon-only
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col items-center">
+<component-container  data-class="flex flex-col items-center">
 <span x-h-avatar aria-label="camera">
   <i x-h-lucide role="img" data-lucide="camera"></i>
 </span>
@@ -113,7 +113,7 @@ You can change the avatar shape by using the `rounded-` classes.
 ### Variants
 
 <ClientOnly>
-<component-container data-icons="true" data-class="grid grid-cols-4 justify-items-center gap-4">
+<component-container  data-class="grid grid-cols-4 justify-items-center gap-4">
 <span x-h-avatar data-variant="information">
   <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
 </span>

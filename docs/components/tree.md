@@ -53,14 +53,14 @@ x-h-tree-button
 | --------- | ------- | -------- | -------------------------------- |
 | expanded  | boolean | false    | Sets the default expanded state. |
 
-## Tree examples
+## Examples
 
-#### File browser
+### File browser
 
 <br />
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <ul x-h-tree>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="positive">

@@ -80,7 +80,7 @@ x-h-table-footer
 ### Table with scroll
 
 <ClientOnly>
-<component-container src="/components/table/full.html" data-class="p-0 border-0" data-icons="true">
+<component-container src="/components/table/full.html" data-class="p-0 border-0" >
 </component-container>
 </ClientOnly>
 

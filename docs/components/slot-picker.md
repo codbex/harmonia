@@ -8,9 +8,13 @@ Use the Slot Picker when users need to book or choose one or more time slots fro
 
 Navigate between days with the previous/next buttons (which move three days at a time) or jump straight to any date with the calendar button in the toolbar; the chosen date becomes the first of the three visible days, which avoids paging far ahead one step at a time.
 
+## Accessibility
+
+The picker is a labeled `group` (default name "Time slot picker"; set an `aria-label` attribute to override). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. Available slots are toggle `button`s with a day + time `aria-label` and `aria-pressed` reflecting selection; unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The calendar button opens a `dialog` containing a fully keyboard-navigable date grid; picking a date moves the visible range and returns focus to the button, and `Esc` closes it.
+
 ## API Reference
 
-### Component attribute
+### Component attribute(s)
 
 ```
 x-h-slot-picker
@@ -26,7 +30,7 @@ x-h-slot-picker
 | data-today-label       | string | false    | Overrides the label of the "Today" navigation button.                                 |
 | data-unavailable-label | string | false    | Overrides the "Not available" label shown for fully disabled days.                    |
 
-### Config
+### Configuration
 
 Pass a configuration object as an Alpine expression.
 
@@ -72,10 +76,6 @@ When used with `x-model`, the bound value follows the selection mode:
 | Event      | Description                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | slot-click | Dispatched on every slot click (including deselection). `event.detail.slot` contains `date`, `start`, `end`, `available`, and `selected` (the new state after the click). |
-
-### Accessibility
-
-The picker is a labeled `group` (default name "Time slot picker"; set an `aria-label` attribute to override). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. Available slots are toggle `button`s with a day + time `aria-label` and `aria-pressed` reflecting selection; unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The calendar button opens a `dialog` containing a fully keyboard-navigable date grid; picking a date moves the visible range and returns focus to the button, and `Esc` closes it.
 
 ## Examples
 

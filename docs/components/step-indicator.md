@@ -49,7 +49,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
 ### Default
 
 <ClientOnly>
-<component-container data-class="vbox gap-6" data-icons="true">
+<component-container data-class="vbox gap-6" >
 <div x-data="{ step: 2, total: 3 }" class="vbox gap-6 w-full">
   <div x-h-step-indicator="step">
     <div x-h-step-indicator-item="1">

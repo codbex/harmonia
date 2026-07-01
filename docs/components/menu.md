@@ -147,7 +147,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 ### Contextmenu
 
 <ClientOnly>
-<component-container src="/components/menu/menu.html" data-class="border-dashed p-0" data-icons="true">
+<component-container src="/components/menu/menu.html" data-class="border-dashed p-0" >
 </component-container>
 </ClientOnly>
 

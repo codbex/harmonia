@@ -105,7 +105,7 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 In order to use the chevron modifier, the trigger label must be placed inside a nested element (usually a `span`).
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <button x-h-button x-h-popover-trigger.chevron>
   <span>Popover</span>
   <i x-h-lucide role="img" data-lucide="chevron-down"></i>

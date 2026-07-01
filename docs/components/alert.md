@@ -36,7 +36,7 @@ x-h-alert-actions
 ## Examples
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-alert>
   <i x-h-lucide role="img" data-lucide="files"></i>
   <div x-h-alert-title>No description!</div>
@@ -58,7 +58,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-alert>
   <i x-h-lucide role="img" data-lucide="mail"></i>
   <div x-h-alert-title>Mail Sent</div>
@@ -76,7 +76,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-alert data-variant="information">
   <i x-h-lucide role="img" data-lucide="info"></i>
   <div x-h-alert-title>Information</div>
@@ -94,7 +94,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-alert data-variant="warning">
   <i x-h-lucide role="img" data-lucide="circle-alert"></i>
   <div x-h-alert-title>Warning</div>
@@ -112,7 +112,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-alert data-variant="negative">
   <i x-h-lucide role="img" data-lucide="circle-x"></i>
   <div x-h-alert-title>Negative</div>
@@ -130,7 +130,7 @@ x-h-alert-actions
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-alert data-variant="positive">
   <i x-h-lucide role="img" data-lucide="circle-check"></i>
   <div x-h-alert-title>Positive</div>

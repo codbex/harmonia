@@ -15,7 +15,16 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-field', (el) => {
-    el.classList.add('group/field', 'w-full', 'gap-3', 'has-[input:invalid]:text-negative', 'has-[textarea:invalid]:text-negative', 'has-[[aria-invalid=true]]:text-negative');
+    el.classList.add(
+      'group/field',
+      'w-full',
+      'gap-3',
+      'has-[[aria-invalid=true]]:text-negative',
+      'has-[input:user-invalid]:text-negative',
+      'has-[textarea:user-invalid]:text-negative',
+      '[[data-validate=immediate]_&:has(input:invalid)]:text-negative',
+      '[[data-validate=immediate]_&:has(textarea:invalid)]:text-negative'
+    );
     switch (el.getAttribute('data-orientation')) {
       case 'horizontal':
         el.classList.add(
@@ -86,12 +95,16 @@ export default function (Alpine) {
 
     if (el.getAttribute('data-hide-on-error') === 'true') {
       el.classList.add(
-        '[[data-slot=field]_input:invalid~&]:hidden',
-        '[[data-slot=field]_textarea:invalid~&]:hidden',
         '[[data-slot=field]_[aria-invalid=true]~&]:hidden',
-        'group-has-[input:invalid]/field:hidden',
-        'group-has-[textarea:invalid]/field:hidden',
-        'group-has-[[aria-invalid=true]]/field:hidden'
+        'group-has-[[aria-invalid=true]]/field:hidden',
+        '[[data-slot=field]_input:user-invalid~&]:hidden',
+        '[[data-slot=field]_textarea:user-invalid~&]:hidden',
+        'group-has-[input:user-invalid]/field:hidden',
+        'group-has-[textarea:user-invalid]/field:hidden',
+        '[[data-validate=immediate]_[data-slot=field]_input:invalid~&]:hidden',
+        '[[data-validate=immediate]_[data-slot=field]_textarea:invalid~&]:hidden',
+        '[[data-validate=immediate]_&]:group-has-[input:invalid]/field:hidden',
+        '[[data-validate=immediate]_&]:group-has-[textarea:invalid]/field:hidden'
       );
     }
   });
@@ -99,12 +112,16 @@ export default function (Alpine) {
   Alpine.directive('h-field-error', (el) => {
     el.classList.add(
       'hidden',
-      '[[data-slot=field]_input:invalid~&]:block',
-      '[[data-slot=field]_textarea:invalid~&]:block',
       '[[data-slot=field]_[aria-invalid=true]~&]:block',
-      'group-has-[input:invalid]/field:block',
-      'group-has-[textarea:invalid]/field:block',
       'group-has-[[aria-invalid=true]]/field:block',
+      '[[data-slot=field]_input:user-invalid~&]:block',
+      '[[data-slot=field]_textarea:user-invalid~&]:block',
+      'group-has-[input:user-invalid]/field:block',
+      'group-has-[textarea:user-invalid]/field:block',
+      '[[data-validate=immediate]_[data-slot=field]_input:invalid~&]:block',
+      '[[data-validate=immediate]_[data-slot=field]_textarea:invalid~&]:block',
+      '[[data-validate=immediate]_&]:group-has-[input:invalid]/field:block',
+      '[[data-validate=immediate]_&]:group-has-[textarea:invalid]/field:block',
       'text-negative',
       'text-sm',
       'leading-normal',

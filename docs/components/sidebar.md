@@ -13,6 +13,7 @@ Use sidebars for main application navigation or other persistent content that be
 ```
 x-h-sidebar
 x-h-sidebar-header
+x-h-sidebar-header-item
 x-h-sidebar-content
 x-h-sidebar-group
 x-h-sidebar-group-label
@@ -96,7 +97,7 @@ x-h-sidebar-footer
 ### Sidebar header and footer
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
+<component-container  data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
@@ -149,10 +150,123 @@ x-h-sidebar-footer
 </div>
 ```
 
+### Sidebar header item
+
+Use a header item for a non-interactive branding or title row at the top of the sidebar, such as a logo. It lays out an icon and a label, and when the sidebar is collapsed everything except the leading icon is hidden. It must not be a `button` or `a` element (it will throw). For an interactive header row use `x-h-sidebar-menu-button` instead.
+
+<ClientOnly>
+<component-container  data-class="p-0" data-style="height:16rem" src="/components/sidebar/header-item.html">
+</component-container>
+</ClientOnly>
+
+```html
+<div class="hbox size-full gap-2" x-data="{ collapsed: false }">
+  <div x-h-sidebar :data-collapsed="collapsed">
+    <div x-h-sidebar-header>
+      <div x-h-sidebar-header-item>
+        <i x-h-lucide role="img" class="size-6" data-lucide="box"></i>
+        <span>Harmonia</span>
+      </div>
+    </div>
+    <div x-h-sidebar-content></div>
+    <div x-h-sidebar-footer data-borderless="true">
+      <button x-h-sidebar-menu-button @click="collapsed = !collapsed">
+        <svg x-h-icon :data-icon="collapsed ? 'chevron-right' : 'chevron-left'" role="presentation"></svg>
+        <span x-text="collapsed ? 'Expand' : 'Collapse'"></span>
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+### Borderless Sidebar
+
+Set `data-borderless="true"` on the sidebar to drop its divider and let it blend into the page. Pairing it with a matching page background and a rounded, elevated content card produces an inset look where the sidebar reads as part of the canvas rather than a bordered panel.
+
+<ClientOnly>
+<component-container  data-class="p-0" data-style="height:16rem">
+<div class="hbox size-full bg-sidebar">
+  <div x-h-sidebar data-borderless="true">
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Application</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <i x-h-lucide role="img" data-lucide="house"></i>
+                <span>Home</span>
+                <span x-h-sidebar-menu-badge>11</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <i x-h-lucide role="img" data-lucide="file-text"></i>
+                <span>Documents</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="true">
+                <i x-h-lucide role="img" data-lucide="blocks"></i>
+                <span>Extensions</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 p-2">
+    <main class="size-full rounded-xl border bg-background p-4 shadow-sm">Content</main>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="hbox size-full bg-sidebar">
+  <div x-h-sidebar data-borderless="true">
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Application</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <i x-h-lucide role="img" data-lucide="house"></i>
+                <span>Home</span>
+                <span x-h-sidebar-menu-badge>11</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <i x-h-lucide role="img" data-lucide="file-text"></i>
+                <span>Documents</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="true">
+                <i x-h-lucide role="img" data-lucide="blocks"></i>
+                <span>Extensions</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 p-2">
+    <main class="size-full rounded-xl border bg-background p-4 shadow-sm">Content</main>
+  </div>
+</div>
+```
+
 ### Sidebar content
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
+<component-container  data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -222,7 +336,7 @@ x-h-sidebar-footer
 ### Sidebar right side
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
+<component-container  data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar.right class="float-right">
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -292,7 +406,7 @@ x-h-sidebar-footer
 ### Collapsed sidebar
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0" data-style="height:16rem">
+<component-container  data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar data-collapsed="true">
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>

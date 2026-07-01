@@ -14,6 +14,12 @@ Use skeletons to temporarily fill the space of content that is being fetched or 
 x-h-skeleton
 ```
 
+### Attributes
+
+| Attribute | Type                          | Required | Description                                                                   |
+| --------- | ----------------------------- | -------- | ----------------------------------------------------------------------------- |
+| data-size | `sm`<br />`md`<br />`default` | false    | Height of the skeleton. Works only when combined with the `control` modifier. |
+
 ### Modifiers
 
 | Modifier | Description                                             |
@@ -21,12 +27,6 @@ x-h-skeleton
 | control  | Takes the shape of a control (like inputs and buttons). |
 | card     | Takes the shape of a card or tile.                      |
 | avatar   | Takes the shape of an avatar component.                 |
-
-### Attributes
-
-| Attribute | Type                          | Required | Description                                                                   |
-| --------- | ----------------------------- | -------- | ----------------------------------------------------------------------------- |
-| data-size | `sm`<br />`md`<br />`default` | false    | Height of the skeleton. Works only when combined with the `control` modifier. |
 
 ## Examples
 

@@ -53,6 +53,37 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-header');
   });
 
+  Alpine.directive('h-sidebar-header-item', (el, { original }) => {
+    if (el.tagName === 'A' || el.tagName === 'BUTTON') {
+      throw new Error(`${original} is non-interactive (for logos and titles) and must not be set on a "button" or "a" element. Use x-h-sidebar-menu-button for an interactive item.`);
+    }
+
+    el.classList.add(
+      'hbox',
+      'w-full',
+      'items-center',
+      'gap-2',
+      'px-2',
+      'py-1',
+      'overflow-hidden',
+      'rounded-md',
+      'text-left',
+      'text-base',
+      'leading-none',
+      'font-semibold',
+      'align-middle',
+      '[&>span]:align-middle',
+      '[&>span]:truncate',
+      "[&_svg:not([class*='size-'])]:size-4",
+      '[&>svg]:shrink-0',
+      '[&>svg:not(:first-child):last-child]:ml-auto',
+      'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-4!',
+      'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:hidden!'
+    );
+
+    el.setAttribute('data-slot', 'sidebar-header-item');
+  });
+
   Alpine.directive('h-sidebar-content', (el) => {
     el.classList.add('vbox', 'min-h-0', 'flex-1', 'overflow-auto', 'scrollbar-none');
     el.setAttribute('data-slot', 'sidebar-content');

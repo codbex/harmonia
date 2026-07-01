@@ -6,9 +6,9 @@ An optional plugin that keeps [Lucide](https://lucide.dev) icons in sync with th
 This plugin is **not** part of the default Harmonia bundle. You opt in by loading it, and Lucide itself must be available as a global (`window.lucide`).
 :::
 
-## Installation
+## Usage
 
-Load Lucide and Harmonia first, then add the plugin.
+This plugin is opt-in, so you load it yourself. Load Lucide and Harmonia first, then add the plugin.
 
 ### CDN
 

@@ -88,7 +88,7 @@ x-h-list-header
 ### With icons and buttons
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <ul x-h-list>
   <li x-h-list-item>
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>

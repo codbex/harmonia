@@ -38,12 +38,6 @@ x-h-date-picker-popup
 | --------- | ------------------ | -------- | ------------------------------------ |
 | data-size | `sm`<br/>`default` | false    | Changes the size of the date picker. |
 
-### Modifiers
-
-| Modifier | Description                          |
-| -------- | ------------------------------------ |
-| table    | Use when the input is inside a table |
-
 #### x-h-date-picker-popup
 
 | Attribute            | Values                                                                                                                                                                        | Required | Description                                                          |
@@ -54,7 +48,13 @@ x-h-date-picker-popup
 | data-aria-next-month | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the next month button.     |
 | data-aria-next-year  | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the next year button.      |
 
-#### Config
+### Modifiers
+
+| Modifier | Description                          |
+| -------- | ------------------------------------ |
+| table    | Use when the input is inside a table |
+
+### Configuration
 
 You can pass a configuration object to the popup as an expression or as a value.
 
@@ -118,6 +118,10 @@ In range mode the model value is an object with `start` and `end` keys (each a `
   <div x-h-date-picker-popup="{ range: true }" x-model="range"></div>
 </div>
 ```
+
+### Validation timing
+
+By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
 ## Examples
 

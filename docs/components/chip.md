@@ -15,7 +15,9 @@ x-h-chip
 x-h-chip-close
 ```
 
-### `x-h-chip` Attributes
+### Attributes
+
+#### x-h-chip
 
 > Must be applied to a `<button>` element.
 
@@ -23,7 +25,7 @@ x-h-chip-close
 | ------------ | ------------------------------------------------------------------------------------------ | -------- | -------------- |
 | data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline` | false    | Semantic color |
 
-### `x-h-chip-close` Attributes
+#### x-h-chip-close
 
 > Must be applied to a `<span>` element.
 

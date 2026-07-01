@@ -2,7 +2,7 @@ import { classListStartsWith } from '../common/class-list';
 import { setSvgContent } from './../common/icons';
 
 export default function (Alpine) {
-  Alpine.directive('h-icon', (el, { original }) => {
+  Alpine.directive('h-icon', (el, { original }, { cleanup }) => {
     if (el.tagName.toLowerCase() !== 'svg') {
       throw new Error(`${original} works only on svg elements`);
     } else if (!el.hasAttribute('role')) {
@@ -31,8 +31,21 @@ export default function (Alpine) {
         .catch((response) => {
           console.error(response);
         });
-    } else if (el.hasAttribute('data-icon')) {
-      setSvgContent(el, el.getAttribute('data-icon'));
+    } else {
+      const renderIcon = () => {
+        if (!el.hasAttribute('data-icon')) return;
+        while (el.firstChild) el.removeChild(el.firstChild);
+        setSvgContent(el, el.getAttribute('data-icon'));
+      };
+
+      renderIcon();
+
+      const observer = new MutationObserver(renderIcon);
+      observer.observe(el, { attributes: true, attributeFilter: ['data-icon'] });
+
+      cleanup(() => {
+        observer.disconnect();
+      });
     }
   });
 }

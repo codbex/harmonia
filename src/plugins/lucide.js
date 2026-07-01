@@ -11,9 +11,13 @@ function pascal(name) {
     .replace(/(?:^|-)(\w)/g, (_, c) => c.toUpperCase());
 }
 
-function copyAttributes(from, to) {
+function copyAttributes(from, to, skip) {
   for (const attr of [...from.attributes]) {
     if (attr.name === 'data-lucide') continue;
+    // Never copy the directive attribute itself onto the rendered svg, or
+    // Alpine would re-initialize x-h-lucide on the clone (now missing
+    // data-lucide) and report a spurious "no icon name found" error.
+    if (skip && attr.name === skip) continue;
     if (attr.name === 'class') {
       const classes = attr.value.split(/\s+/).filter(Boolean);
       if (classes.length) to.classList.add(...classes);
@@ -26,7 +30,7 @@ function copyAttributes(from, to) {
 // Render a single Lucide icon for `el` and replace `el` with the resulting
 // <svg>, mirroring Lucide's native behavior so the svg becomes the direct child
 // of Harmonia components (their `[&>svg]` / `[&_svg]` selectors target it).
-function renderIcon(el, name) {
+function renderIcon(el, name, original) {
   if (!el.isConnected) return;
   const lucide = window.lucide;
   const node = (lucide.icons && lucide.icons[pascal(name)]) || lucide[pascal(name)];
@@ -40,7 +44,7 @@ function renderIcon(el, name) {
 
   if (node && typeof lucide.createElement === 'function') {
     const svg = lucide.createElement(node);
-    copyAttributes(el, svg);
+    copyAttributes(el, svg, original);
     el.replaceWith(svg);
     return;
   }
@@ -53,6 +57,9 @@ function renderIcon(el, name) {
     const holder = document.createElement('span');
     parent.insertBefore(holder, el);
     holder.appendChild(el);
+    // Drop the directive attribute so Lucide does not carry it onto the svg it
+    // generates, which would re-trigger x-h-lucide on the clone.
+    if (original) el.removeAttribute(original);
     el.setAttribute('data-lucide', name);
     lucide.createIcons({ root: holder });
     const svg = holder.firstElementChild;
@@ -77,6 +84,6 @@ export default function (Alpine) {
       return;
     }
 
-    renderIcon(el, String(name));
+    renderIcon(el, String(name), original);
   });
 }

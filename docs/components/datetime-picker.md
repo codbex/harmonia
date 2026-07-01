@@ -78,7 +78,7 @@ When using `x-model`, the picker reads and writes a single ISO date-time string 
 
 The time is always stored in 24-hour form regardless of the display format. The model is set only when both a date and a complete time have been chosen; until then it is an empty string.
 
-### Config
+### Configuration
 
 You can pass a configuration object to the popup as an expression or as a value. It accepts every [Date Picker](/components/date-picker) calendar key (`locale`, `firstDay`, `min`, `max`, `options`, `delimiter`, `order`) plus the time keys below.
 
@@ -86,6 +86,10 @@ You can pass a configuration object to the popup as an expression or as a value.
 | -------- | -------------------------------------------------------------------------------------------- |
 | is12Hour | When `true`, the time editor shows a 12-hour clock with an AM/PM segment.                    |
 | seconds  | When `true`, the time editor includes a seconds segment. Inferred from the model when unset. |
+
+### Validation timing
+
+By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
 ## Examples
 

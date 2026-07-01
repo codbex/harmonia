@@ -2,6 +2,10 @@
 
 The include directive makes it easy to fetch and insert an external HTML fragment inside an element. The request is restricted to the same domain, protocol and port as the application.
 
+## Usage
+
+Use `x-h-include` to compose a page from smaller same-origin HTML fragments, for example reusable headers, footers, or partial views loaded on demand. Point it at a relative path to the fragment; by default any script in the fragment is ignored, so set `data-js` only when you trust the source and need its scripts to run.
+
 ::: warning
 
 - Only use on trusted content and never on dynamic/user-provided content!<br />

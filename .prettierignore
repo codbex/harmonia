@@ -7,3 +7,6 @@ logo
 
 # Generated from icons/*.svg by scripts/generate-icons.cjs
 src/common/icon-data.js
+
+# Generated from docs/** by scripts/generate-agent-docs.cjs
+skills/

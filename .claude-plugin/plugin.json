@@ -1,0 +1,12 @@
+{
+  "name": "harmonia",
+  "description": "Usage docs for the Harmonia Alpine.js UI component library (@codbex/harmonia): how to add, wire, and style x-h-* components.",
+  "version": "2.0.0",
+  "author": {
+    "name": "codbex"
+  },
+  "homepage": "https://www.harmonia.codbex.com",
+  "repository": "https://github.com/codbex/harmonia",
+  "license": "MIT",
+  "keywords": ["alpinejs", "ui-components", "tailwindcss", "harmonia"]
+}

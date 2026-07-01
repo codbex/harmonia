@@ -27,6 +27,19 @@ describe('h-input', () => {
     expect(el.classList.contains('transition-[color,box-shadow]')).toBe(true);
   });
 
+  it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {
+    mountDirective(inputPlugin, 'h-input', el);
+    // deferred baseline (shows after interaction/submit)
+    expect(el.classList.contains('user-invalid:border-negative!')).toBe(true);
+    expect(el.classList.contains('user-invalid:ring-negative/20!')).toBe(true);
+    // immediate opt-in, gated by a data-validate="immediate" ancestor
+    expect(el.classList.contains('[[data-validate=immediate]_&:invalid]:border-negative!')).toBe(true);
+    // the bare :invalid (on-load) element class is gone
+    expect(el.classList.contains('invalid:border-negative!')).toBe(false);
+    // aria-invalid (explicit) styling is unchanged
+    expect(el.classList.contains('aria-invalid:border-negative')).toBe(true);
+  });
+
   it('sets data-slot="input" by default', () => {
     mountDirective(inputPlugin, 'h-input', el);
     expect(el.getAttribute('data-slot')).toBe('input');

@@ -27,8 +27,10 @@ const triggerTableClasses = [
   'focus-visible:inset-ring-2',
   '[input[aria-invalid=true]~&]:inset-ring-negative/20',
   'dark:[input[aria-invalid=true]~&]:inset-ring-negative/40',
-  '[input:invalid~&]:inset-ring-negative/20!',
-  'dark:[input:invalid~&]:inset-ring-negative/40!',
+  '[input:user-invalid~&]:inset-ring-negative/20!',
+  'dark:[input:user-invalid~&]:inset-ring-negative/40!',
+  '[[data-validate=immediate]_input:invalid~&]:inset-ring-negative/20!',
+  'dark:[[data-validate=immediate]_input:invalid~&]:inset-ring-negative/40!',
 ];
 
 const triggerStandaloneClasses = [
@@ -38,9 +40,12 @@ const triggerStandaloneClasses = [
   '[input[aria-invalid=true]~&]:ring-negative/20',
   '[input[aria-invalid=true]~&]:border-negative',
   'dark:[input[aria-invalid=true]~&]:ring-negative/40',
-  '[input:invalid~&]:ring-negative/20',
-  '[input:invalid~&]:border-negative',
-  'dark:[input:invalid~&]:ring-negative/40',
+  '[input:user-invalid~&]:ring-negative/20',
+  '[input:user-invalid~&]:border-negative',
+  'dark:[input:user-invalid~&]:ring-negative/40',
+  '[[data-validate=immediate]_input:invalid~&]:ring-negative/20',
+  '[[data-validate=immediate]_input:invalid~&]:border-negative',
+  'dark:[[data-validate=immediate]_input:invalid~&]:ring-negative/40',
 ];
 
 const popoverClasses = [

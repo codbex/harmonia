@@ -20,7 +20,7 @@ x-h-card-content
 x-h-card-footer
 ```
 
-## Exampes
+## Examples
 
 ### Action Card
 

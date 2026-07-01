@@ -49,7 +49,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ### Variants
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col gap-4">
+<component-container  data-class="flex flex-col gap-4">
 <div x-h-tile>
   <div x-h-tile-content>
     <div x-h-tile-title>Default variant</div>
@@ -145,7 +145,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ### As link
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
     <i x-h-lucide role="img" data-lucide="link" class="size-5"></i>
@@ -177,7 +177,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ### With image or icon
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col gap-4">
+<component-container  data-class="flex flex-col gap-4">
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="icon">
     <i x-h-lucide role="img" data-lucide="cog" class="size-5"></i>
@@ -263,7 +263,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ### In group
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tile-group class="flex">
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
@@ -333,7 +333,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 Use the [tile utility classes](/utility-classes/tile) to control the size of the tile.
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col gap-4">
+<component-container  data-class="flex flex-col gap-4">
 <div x-h-tile data-variant="outline" class="tile-double-md">Double length medium size custom tile</div>
 </component-container>
 </ClientOnly>
@@ -343,7 +343,7 @@ Use the [tile utility classes](/utility-classes/tile) to control the size of the
 A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbox or radio. Clicking anywhere on the tile toggles the control, and the tile's text becomes the control's accessible name. The outline style is applied automatically, so `data-variant` is ignored on a selectable tile. Do not place buttons, links, or more than one input inside it.
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-col gap-4">
+<component-container  data-class="flex flex-col gap-4">
 <label x-h-tile>
   <span x-h-checkbox>
     <input type="checkbox" />
@@ -373,7 +373,7 @@ A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbo
 Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the group `role="group"` and a name via `aria-label` or `aria-labelledby`; `x-h-tile-group` keeps any `role` you set.
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tile-group role="group" aria-label="Notifications" class="flex flex-col gap-2">
   <label x-h-tile>
     <span x-h-checkbox><input type="checkbox" /></span>
@@ -417,7 +417,7 @@ Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the
 For a single choice, give the group `role="radiogroup"` and every radio the same `name`. Only one tile can be selected at a time.
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
   <label x-h-tile>
     <span x-h-radio><input type="radio" name="plan" value="starter" checked /></span>

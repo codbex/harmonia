@@ -193,7 +193,7 @@ x-h-tabs-content
 ### Horizontal tabs with icon and close button
 
 <ClientOnly>
-<component-container src="/components/tabs/horizontal-button.html" data-class="p-0" data-icons="true">
+<component-container src="/components/tabs/horizontal-button.html" data-class="p-0" >
 </component-container>
 </ClientOnly>
 
@@ -239,7 +239,7 @@ x-h-tabs-content
 ### Horizontal tabs with actions
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0">
+<component-container  data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -289,7 +289,7 @@ x-h-tabs-content
 ### Horizontal tabs with actions (end)
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0">
+<component-container  data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -409,7 +409,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Horizontal float tabs with icon and close button
 
 <ClientOnly>
-<component-container src="/components/tabs/horizontal-button-floating.html" data-icons="true">
+<component-container src="/components/tabs/horizontal-button-floating.html" >
 </component-container>
 </ClientOnly>
 
@@ -455,7 +455,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Horizontal float tabs with actions
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -505,7 +505,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Horizontal float tabs with actions (end)
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -583,7 +583,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical tabs with icon and close button
 
 <ClientOnly>
-<component-container src="/components/tabs/vertical-button.html" data-class="p-0" data-icons="true">
+<component-container src="/components/tabs/vertical-button.html" data-class="p-0" >
 </component-container>
 </ClientOnly>
 
@@ -629,7 +629,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical tabs with actions
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0">
+<component-container  data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -679,7 +679,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical tabs with actions (end)
 
 <ClientOnly>
-<component-container data-icons="true" data-class="p-0">
+<component-container  data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -729,7 +729,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical float tabs
 
 <ClientOnly>
-<component-container src="/components/tabs/vertical-floating.html" data-icons="true">
+<component-container src="/components/tabs/vertical-floating.html" >
 </component-container>
 </ClientOnly>
 
@@ -803,7 +803,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical float tabs with actions
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -853,7 +853,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical float tabs with actions (end)
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container >
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>

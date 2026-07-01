@@ -79,6 +79,26 @@ describe('h-icon', () => {
     expect(el.children.length).toBe(0);
   });
 
+  it('replaces the svg content when data-icon changes', async () => {
+    // Baseline: a freshly rendered "search" icon, to compare child counts against.
+    const fresh = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    fresh.setAttribute('role', 'presentation');
+    fresh.setAttribute('data-icon', 'search');
+    document.body.appendChild(fresh);
+    mountDirective(iconPlugin, 'h-icon', fresh, { original: 'h-icon' });
+    const searchCount = fresh.children.length;
+
+    el.setAttribute('data-icon', 'calendar');
+    mountDirective(iconPlugin, 'h-icon', el, { original: 'h-icon' });
+    expect(el.children.length).toBeGreaterThan(0);
+
+    el.setAttribute('data-icon', 'search');
+    await new Promise((resolve) => setTimeout(resolve, 0)); // let the MutationObserver fire
+
+    // Content is replaced (equals a fresh render), not stacked on top of "calendar".
+    expect(el.children.length).toBe(searchCount);
+  });
+
   it('fetches icon when data-link attribute is present', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       status: 200,
