@@ -187,7 +187,7 @@ You can include an icon directly inside the button.
   Right-aligned
 </button>
 <button x-h-button>
-  <svg x-h-icon.search role="img" aria-label="search"></svg>
+  <svg x-h-icon data-icon="search" role="img" aria-label="search"></svg>
   Search
 </button>
 </component-container>
@@ -203,7 +203,7 @@ You can include an icon directly inside the button.
   Right-aligned
 </button>
 <button x-h-button>
-  <svg x-h-icon.search role="img" aria-label="search"></svg>
+  <svg x-h-icon data-icon="search" role="img" aria-label="search"></svg>
   Search
 </button>
 ```

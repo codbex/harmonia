@@ -1,5 +1,20 @@
 export const dayPeriodLabels = { am: 'AM', pm: 'PM' };
 
+// Zero-pad a number to two digits (e.g. 5 -> "05").
+export function pad2(n) {
+  return n < 10 ? `0${n}` : `${n}`;
+}
+
+// Convert a "HH:MM" string to minutes since midnight, and back.
+export function timeToMins(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+export function minsToTime(mins) {
+  return `${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`;
+}
+
 /**
  * Parse a 24-hour "HH:mm" / "HH:mm:ss" string into its parts. When
  * `convertTo12` is true the hour is converted to 12-hour form and a `period`
@@ -67,6 +82,5 @@ export function formatTimeDisplay(value24h, { is12Hour = false, seconds = false 
  */
 export function getSystemTime({ seconds = false } = {}) {
   const d = new Date();
-  const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
-  return seconds ? `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}` : `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return seconds ? `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}` : `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }

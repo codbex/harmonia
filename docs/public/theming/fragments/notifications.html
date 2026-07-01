@@ -14,14 +14,14 @@
 
   <li x-h-notification.floating class="hbox items-center">
     <div x-h-notification-media>
-      <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+      <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
     </div>
     <div x-h-notification-title>Notification</div>
   </li>
 
   <li x-h-notification.floating class="hbox">
     <div x-h-notification-media>
-      <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+      <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
     </div>
     <div class="vbox flex-1">
       <h1 x-h-notification-title>Notification</h1>
@@ -29,7 +29,7 @@
     </div>
     <div x-h-notification-actions data-orientation="vertical">
       <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-        <svg x-h-icon.close role="img" aria-label="close"></svg>
+        <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
       </button>
     </div>
   </li>
@@ -47,7 +47,7 @@
     </div>
     <div x-h-notification-actions data-orientation="vertical">
       <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-        <svg x-h-icon.close role="img" aria-label="close"></svg>
+        <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
       </button>
     </div>
   </li>
@@ -57,7 +57,7 @@
     <div x-h-notification-actions data-orientation="horizontal" data-align="center">
       <button x-h-button data-size="sm" data-variant="outline">Undo</button>
       <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-        <svg x-h-icon.close role="img" aria-label="close"></svg>
+        <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
       </button>
     </div>
   </li>
@@ -65,7 +65,7 @@
   <li x-h-notification.floating class="hbox">
     <div x-h-notification-actions data-orientation="vertical">
       <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
-        <svg x-h-icon.close role="img" aria-label="close"></svg>
+        <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
       </button>
     </div>
     <div class="vbox flex-1 gap-2">
@@ -76,7 +76,7 @@
 
   <li x-h-notification.floating class="vbox gap-2">
     <div x-h-notification-title class="hbox items-center gap-2">
-      <svg x-h-icon.import class="size-6" role="img" aria-label="import"></svg>
+      <svg x-h-icon data-icon="import" class="size-6" role="img" aria-label="import"></svg>
       <span class="text-lg">Uploading in progress</span>
     </div>
     <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
@@ -99,14 +99,14 @@
       <p x-h-notification-description>I just received the document. It looks good.</p>
       <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
         <button x-h-button data-variant="primary" data-size="sm">
-          <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+          <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
           Reply
         </button>
       </div>
     </div>
     <div x-h-notification-actions data-orientation="vertical" class="justify-start">
       <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-        <svg x-h-icon.close role="img" aria-label="close"></svg>
+        <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
       </button>
     </div>
   </li>
@@ -114,7 +114,7 @@
   <li x-h-notification.floating class="hbox items-center">
     <div x-h-notification-media>
       <span x-h-avatar class="rounded-lg" data-variant="information">
-        <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+        <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
       </span>
     </div>
     <div x-h-notification-title>Information</div>
@@ -123,7 +123,7 @@
   <li x-h-notification.floating class="hbox items-center">
     <div x-h-notification-media>
       <span x-h-avatar class="rounded-lg" data-variant="warning">
-        <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+        <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
       </span>
     </div>
     <div x-h-notification-title>Warning</div>
@@ -132,7 +132,7 @@
   <li x-h-notification.floating class="hbox items-center">
     <div x-h-notification-media>
       <span x-h-avatar class="rounded-lg" data-variant="positive">
-        <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+        <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
       </span>
     </div>
     <div x-h-notification-title>Success</div>
@@ -141,7 +141,7 @@
   <li x-h-notification.floating class="hbox items-center">
     <div x-h-notification-media>
       <span x-h-avatar class="rounded-lg" data-variant="negative">
-        <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+        <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
       </span>
     </div>
     <div x-h-notification-title>Error</div>
@@ -160,21 +160,21 @@
         <p x-h-notification-description>I just received the document. It looks good.</p>
         <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
           <button x-h-button data-variant="primary" data-size="sm">
-            <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+            <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
             Reply
           </button>
         </div>
       </div>
       <div x-h-notification-actions data-orientation="vertical" class="justify-start">
         <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-          <svg x-h-icon.close role="img" aria-label="close"></svg>
+          <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
         </button>
       </div>
     </li>
     <li x-h-notification class="hbox items-center">
       <div x-h-notification-media class="w-10">
         <span x-h-avatar class="rounded-lg" data-variant="negative">
-          <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+          <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
         </span>
       </div>
       <div class="vbox flex-1">
@@ -183,18 +183,18 @@
       </div>
       <div x-h-notification-actions data-orientation="vertical">
         <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-          <svg x-h-icon.close role="img" aria-label="close"></svg>
+          <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
         </button>
       </div>
     </li>
     <li x-h-notification class="hbox items-center">
       <div x-h-notification-media class="w-10">
-        <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+        <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
       </div>
       <div x-h-notification-title class="flex-1">Montly report generation started</div>
       <div x-h-notification-actions data-orientation="vertical">
         <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-          <svg x-h-icon.close role="img" aria-label="close"></svg>
+          <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
         </button>
       </div>
     </li>

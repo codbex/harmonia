@@ -1,6 +1,7 @@
+import { findAncestorState } from '../common/ancestor';
 import { createCalendarWidget, parseDateValue, toDateString } from '../common/calendar';
 import { eventInsidePicker, setupPopover, setupTrigger } from '../common/picker-popover';
-import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, getSystemTime, partsToValue24 } from '../common/time';
+import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, getSystemTime, pad2, partsToValue24 } from '../common/time';
 import uuidv4 from '../utils/uuid';
 import { sizeObserver } from './../common/input-size';
 
@@ -8,9 +9,8 @@ const segmentClasses = [
   'inline-flex',
   'items-center',
   'justify-center',
-  'min-w-6',
-  'px-1',
-  'py-0.5',
+  'min-w-8',
+  'h-full',
   'tabular-nums',
   'outline-none',
   'cursor-default',
@@ -31,9 +31,8 @@ const segmentClasses = [
 // digits works and mobile shows the number keyboard. The caret is hidden so they
 // still read as segments rather than free text fields.
 const numberSegmentClasses = [
-  'w-7',
-  'px-1',
-  'py-0.5',
+  'w-8',
+  'h-full',
   'text-center',
   'tabular-nums',
   'bg-transparent',
@@ -156,7 +155,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-datetime-picker-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
-    const picker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_datetimepicker'));
+    const picker = findAncestorState(Alpine, el, '_h_datetimepicker');
     if (!picker) {
       throw new Error(`${original} must be inside an datetime-picker element`);
     }
@@ -174,7 +173,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-datetime-picker-popup', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
-    const picker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_datetimepicker'));
+    const picker = findAncestorState(Alpine, el, '_h_datetimepicker');
     if (!picker) {
       console.warn(`${original}: must be used inside an x-h-datetime-picker element`);
       return;
@@ -222,12 +221,12 @@ export default function (Alpine) {
     const segGroup = document.createElement('div');
     segGroup.setAttribute('role', 'group');
     segGroup.setAttribute('aria-label', el.getAttribute('data-label-time') || 'Time');
-    segGroup.classList.add('overflow-hidden', 'inline-flex', 'items-center', 'text-sm', 'border', 'border-input', 'bg-input-inner', 'rounded-control', 'outline-none');
+    segGroup.classList.add('h-8', 'overflow-hidden', 'inline-flex', 'items-center', 'text-sm', 'border', 'border-input', 'bg-input-inner', 'rounded-control', 'outline-none');
     const nowButton = document.createElement('button');
     nowButton.setAttribute('type', 'button');
     nowButton.textContent = el.getAttribute('data-label-now') || 'Now';
     nowButton.setAttribute(Alpine.prefixed('h-button'), '');
-    nowButton.setAttribute('data-size', 'sm');
+    nowButton.setAttribute('data-size', 'md');
     Alpine.initTree(nowButton);
     timeRow.append(segGroup, nowButton);
     el.appendChild(timeRow);
@@ -237,10 +236,6 @@ export default function (Alpine) {
 
     function hourRange() {
       return is12Hour ? [1, 12] : [0, 23];
-    }
-
-    function pad(n) {
-      return n < 10 ? `0${n}` : `${n}`;
     }
 
     function makeNumberSegment(type, label) {
@@ -352,7 +347,7 @@ export default function (Alpine) {
         if (next > max) next = min;
         if (next < min) next = max;
       }
-      parts[type] = pad(next);
+      parts[type] = pad2(next);
     }
 
     function setExtreme(type, edge) {
@@ -361,7 +356,7 @@ export default function (Alpine) {
         return;
       }
       const [min, max] = type === 'hour' ? hourRange() : [0, 59];
-      parts[type] = pad(edge === 'min' ? min : max);
+      parts[type] = pad2(edge === 'min' ? min : max);
     }
 
     function focusSibling(seg, delta) {
@@ -383,7 +378,7 @@ export default function (Alpine) {
       }
       const advance = candidate.length >= 2 || value * 10 > max;
       if (advance && value < min) value = min;
-      parts[type] = pad(value);
+      parts[type] = pad2(value);
       typeBuffers[type] = advance ? '' : candidate;
       return advance;
     }

@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 import uuidv4 from '../utils/uuid';
 import { ChevronDown, createSvg } from './../common/icons';
 
@@ -64,7 +65,7 @@ export default function (Alpine) {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be a ul element`);
     }
-    const nav = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_nav'));
+    const nav = findAncestorState(Alpine, el, '_h_nav');
     if (!nav) {
       throw new Error(`${original} must be inside a ${Alpine.prefixed('h-nav')} element`);
     }
@@ -131,7 +132,7 @@ export default function (Alpine) {
     el.appendChild(chevron);
     el.setAttribute('data-slot', 'nav-trigger');
 
-    const nav = Alpine.findClosest(el.parentElement, (p) => Object.prototype.hasOwnProperty.call(p, '_h_nav'));
+    const nav = findAncestorState(Alpine, el, '_h_nav');
 
     function setTriggerVariant(variant) {
       for (const classes of Object.values(navTriggerVariants)) {
@@ -203,7 +204,7 @@ export default function (Alpine) {
       el.classList.add(...(navLinkVariants[variant] ?? navLinkVariants.default));
     }
 
-    const nav = Alpine.findClosest(el.parentElement, (p) => Object.prototype.hasOwnProperty.call(p, '_h_nav'));
+    const nav = findAncestorState(Alpine, el, '_h_nav');
     if (nav) {
       effect(() => setLinkVariant(nav._h_nav.variant));
     } else {

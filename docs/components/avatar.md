@@ -115,19 +115,19 @@ You can change the avatar shape by using the `rounded-` classes.
 <ClientOnly>
 <component-container data-icons="true" data-class="grid grid-cols-4 justify-items-center gap-4">
 <span x-h-avatar data-variant="information">
-  <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+  <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
 </span>
 
 <span x-h-avatar data-variant="warning">
-  <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+  <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
 </span>
 
 <span x-h-avatar data-variant="positive">
-  <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+  <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
 </span>
 
 <span x-h-avatar data-variant="negative">
-  <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+  <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
 </span>
 
 <span x-h-avatar data-variant="information">IN</span>
@@ -142,19 +142,19 @@ You can change the avatar shape by using the `rounded-` classes.
 
 ```html
 <span x-h-avatar data-variant="information">
-  <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+  <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
 </span>
 
 <span x-h-avatar data-variant="warning">
-  <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+  <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
 </span>
 
 <span x-h-avatar data-variant="positive">
-  <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+  <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
 </span>
 
 <span x-h-avatar data-variant="negative">
-  <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+  <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
 </span>
 
 <span x-h-avatar data-variant="information">IN</span>

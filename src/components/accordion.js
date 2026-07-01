@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 import uuidv4 from '../utils/uuid';
 import { ChevronDown, createSvg } from './../common/icons';
 export default function (Alpine) {
@@ -12,7 +13,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-accordion-item', (el, { original, expression, modifiers }, { Alpine }) => {
-    const accordion = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_accordion'));
+    const accordion = findAncestorState(Alpine, el, '_h_accordion');
 
     if (!accordion) {
       throw new Error(`${original} must be inside an accordion`);
@@ -47,9 +48,9 @@ export default function (Alpine) {
     if (el.tagName.length !== 2 && !el.tagName.startsWith('H')) {
       throw new Error(`${original} must be a header element`);
     }
-    const accordion = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_accordion'));
+    const accordion = findAncestorState(Alpine, el, '_h_accordion');
 
-    const accordionItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_accordionItem'));
+    const accordionItem = findAncestorState(Alpine, el, '_h_accordionItem');
 
     if (!accordionItem || !accordion) {
       throw new Error(`${original} must have an accordion and accordion item parent elements`);
@@ -137,7 +138,7 @@ export default function (Alpine) {
   Alpine.directive('h-accordion-content', (el, _, { effect, cleanup, Alpine }) => {
     el.classList.add('pb-0', 'overflow-hidden', 'text-sm', 'hidden', 'transition-[opacity,max-height,padding-bottom]', 'motion-reduce:transition-none', 'duration-200', 'ease-out', 'opacity-0');
     el.setAttribute('data-slot', 'accordion-content');
-    const parent = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_accordionItem'));
+    const parent = findAncestorState(Alpine, el, '_h_accordionItem');
     if (parent) {
       el.setAttribute('id', parent._h_accordionItem.controls);
       el.setAttribute('aria-labelledby', parent._h_accordionItem.id);

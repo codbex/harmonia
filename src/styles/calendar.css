@@ -5,6 +5,11 @@ td[data-range="middle"] {
   box-shadow: -0.25rem 0 0 color-mix(in oklab, var(--primary) 20%, transparent);
 }
 
+td[data-range="middle"][aria-current],
+td[data-range="middle"]:focus {
+  background-color: color-mix(in oklab, var(--primary) 30%, var(--color-background));
+}
+
 td[data-range="middle"]:has(+ td[data-range="end"]) {
   box-shadow:
     -0.25rem 0 0 color-mix(in oklab, var(--primary) 20%, transparent),

@@ -34,121 +34,80 @@ import {
 } from '../../src/common/icons.js';
 
 describe('icon constants', () => {
-  it('Calendar equals 0', () => {
-    expect(Calendar).toBe(0);
-  });
+  // Each constant is the kebab icon name, matching its icons/<name>.svg file and
+  // the x-h-icon data-icon="<name>" attribute. createSvg and setSvgContent both key off it.
+  const expectedNames = {
+    Calendar: 'calendar',
+    Check: 'check',
+    ChevronDown: 'chevron-down',
+    ChevronLeft: 'chevron-left',
+    ChevronRight: 'chevron-right',
+    ChevronsLeft: 'chevrons-left',
+    ChevronsRight: 'chevrons-right',
+    Clock: 'clock',
+    Search: 'search',
+    Ellipsis: 'ellipsis',
+    Minus: 'minus',
+    Plus: 'plus',
+    Close: 'close',
+    Bell: 'bell',
+    Trash: 'trash',
+    Mail: 'mail',
+    Send: 'send',
+    Export: 'export',
+    Import: 'import',
+    Edit: 'edit',
+    Menu: 'menu',
+    Reply: 'reply',
+    Refresh: 'refresh',
+    CircleInfo: 'circle-info',
+    CircleWarning: 'circle-warning',
+    CircleError: 'circle-error',
+    CircleSuccess: 'circle-success',
+    CircleUnknown: 'circle-unknown',
+    CircleUser: 'circle-user',
+  };
+  const constants = {
+    Calendar,
+    Check,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    ChevronsLeft,
+    ChevronsRight,
+    Clock,
+    Search,
+    Ellipsis,
+    Minus,
+    Plus,
+    Close,
+    Bell,
+    Trash,
+    Mail,
+    Send,
+    Export,
+    Import,
+    Edit,
+    Menu,
+    Reply,
+    Refresh,
+    CircleInfo,
+    CircleWarning,
+    CircleError,
+    CircleSuccess,
+    CircleUnknown,
+    CircleUser,
+  };
 
-  it('Check equals 1', () => {
-    expect(Check).toBe(1);
-  });
+  for (const [name, value] of Object.entries(expectedNames)) {
+    it(`${name} equals '${value}'`, () => {
+      expect(constants[name]).toBe(value);
+    });
 
-  it('ChevronDown equals 2', () => {
-    expect(ChevronDown).toBe(2);
-  });
-
-  it('ChevronLeft equals 3', () => {
-    expect(ChevronLeft).toBe(3);
-  });
-
-  it('ChevronRight equals 4', () => {
-    expect(ChevronRight).toBe(4);
-  });
-
-  it('ChevronsLeft equals 5', () => {
-    expect(ChevronsLeft).toBe(5);
-  });
-
-  it('ChevronsRight equals 6', () => {
-    expect(ChevronsRight).toBe(6);
-  });
-
-  it('Clock equals 7', () => {
-    expect(Clock).toBe(7);
-  });
-
-  it('Search equals 8', () => {
-    expect(Search).toBe(8);
-  });
-
-  it('Ellipsis equals 9', () => {
-    expect(Ellipsis).toBe(9);
-  });
-
-  it('Minus equals 10', () => {
-    expect(Minus).toBe(10);
-  });
-
-  it('Plus equals 11', () => {
-    expect(Plus).toBe(11);
-  });
-
-  it('Close equals 12', () => {
-    expect(Close).toBe(12);
-  });
-
-  it('Bell equals 13', () => {
-    expect(Bell).toBe(13);
-  });
-
-  it('Trash equals 14', () => {
-    expect(Trash).toBe(14);
-  });
-
-  it('Mail equals 15', () => {
-    expect(Mail).toBe(15);
-  });
-
-  it('Send equals 16', () => {
-    expect(Send).toBe(16);
-  });
-
-  it('Export equals 17', () => {
-    expect(Export).toBe(17);
-  });
-
-  it('Import equals 18', () => {
-    expect(Import).toBe(18);
-  });
-
-  it('Edit equals 19', () => {
-    expect(Edit).toBe(19);
-  });
-
-  it('Menu equals 20', () => {
-    expect(Menu).toBe(20);
-  });
-
-  it('Reply equals 21', () => {
-    expect(Reply).toBe(21);
-  });
-
-  it('Refresh equals 22', () => {
-    expect(Refresh).toBe(22);
-  });
-
-  it('CircleInfo equals 23', () => {
-    expect(CircleInfo).toBe(23);
-  });
-
-  it('CircleWarning equals 24', () => {
-    expect(CircleWarning).toBe(24);
-  });
-
-  it('CircleError equals 25', () => {
-    expect(CircleError).toBe(25);
-  });
-
-  it('CircleSuccess equals 26', () => {
-    expect(CircleSuccess).toBe(26);
-  });
-
-  it('CircleUnknown equals 27', () => {
-    expect(CircleUnknown).toBe(27);
-  });
-
-  it('CircleUser equals 28', () => {
-    expect(CircleUser).toBe(28);
-  });
+    it(`${name} resolves to a non-empty svg`, () => {
+      expect(createSvg({ icon: constants[name] }).children.length).toBeGreaterThan(0);
+    });
+  }
 });
 
 describe('createSvg', () => {

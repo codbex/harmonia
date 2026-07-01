@@ -89,6 +89,32 @@ describe('h-calendar', () => {
     expect(monthTitles.length).toBe(12);
   });
 
+  it('year view marks today only once, not on adjacent-month filler days', () => {
+    // Today is the 1st, so it also appears as a trailing filler day in the
+    // previous month's mini-month; only the owning month should highlight it.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 6, 1, 12, 0, 0));
+    try {
+      mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'year', date: '2026-07-01' }) });
+      const todayCells = el.querySelectorAll('[role="gridcell"].bg-primary');
+      expect(todayCells.length).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('year view renders every mini-month as complete rows (no ragged trailing week)', () => {
+    // Months that spill into a 6th week (e.g. May and Aug 2026) must still fill
+    // that row with trailing next-month days rather than cutting it off.
+    mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'year', date: '2026-01-01' }) });
+    const grids = el.querySelectorAll('[role="grid"]');
+    expect(grids.length).toBe(12);
+    grids.forEach((grid) => {
+      const cellCount = grid.querySelectorAll('[role="gridcell"]').length;
+      expect(cellCount % 7).toBe(0);
+    });
+  });
+
   it('renders event pills for events in month view', () => {
     const events = [{ id: '1', title: 'Team Sync', start: '2026-06-18T10:00:00', end: '2026-06-18T11:00:00', color: 'blue' }];
     mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2026-06-18', events }) });

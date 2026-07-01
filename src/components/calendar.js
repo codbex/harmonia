@@ -1,6 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { createCalendarWidget, nextFocusDate, parseDateValue, sameDay, toDateString } from '../common/calendar';
+import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, toDateString } from '../common/calendar';
 import { ChevronDown, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
+import { createDateTimeFormatCache } from '../common/intl';
 import uuidv4 from '../utils/uuid';
 
 export default function (Alpine) {
@@ -167,11 +168,11 @@ export default function (Alpine) {
     function showOverflowPopover(anchor, day, dayEvs) {
       overflowPopover.innerHTML = '';
       overflowTrigger = anchor;
-      overflowPopover.setAttribute('aria-label', new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(day));
+      overflowPopover.setAttribute('aria-label', dtf(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(day));
 
       const heading = document.createElement('div');
       heading.classList.add('text-xs', 'font-semibold', 'shrink-0', 'py-1', 'px-2');
-      heading.textContent = new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(day);
+      heading.textContent = dtf(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(day);
       overflowPopover.appendChild(heading);
 
       const list = document.createElement('div');
@@ -212,10 +213,10 @@ export default function (Alpine) {
 
     // === Helpers ===
 
-    function isTodayDate(d) {
-      const t = new Date();
-      return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
-    }
+    // Reused across all views; Intl formatters are memoized per locale+options.
+    const dtf = createDateTimeFormatCache();
+
+    const isTodayDate = isToday;
 
     function getWeekStart(d) {
       const copy = new Date(d);
@@ -226,20 +227,20 @@ export default function (Alpine) {
     }
 
     function getLocalizedWeekdayNames(style) {
-      const fmt = new Intl.DateTimeFormat(locale, { weekday: style });
+      const fmt = dtf(locale, { weekday: style });
       // Oct 4, 2020 is a Sunday; dayIdx 0-6 maps Sunday-Saturday
       return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2020, 9, 4 + ((firstDay + i) % 7))));
     }
 
     function formatPeriodLabel() {
       if (view === 'year') return String(focusDate.getFullYear());
-      if (view === 'month') return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(focusDate);
-      if (view === 'day') return new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(focusDate);
+      if (view === 'month') return dtf(locale, { month: 'long', year: 'numeric' }).format(focusDate);
+      if (view === 'day') return dtf(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(focusDate);
       // week
       const ws = getWeekStart(focusDate);
       const we = new Date(ws);
       we.setDate(ws.getDate() + 6);
-      const monthFmt = new Intl.DateTimeFormat(locale, { month: 'long' });
+      const monthFmt = dtf(locale, { month: 'long' });
       if (ws.getMonth() === we.getMonth()) {
         return `${monthFmt.format(ws)} ${ws.getDate()} - ${we.getDate()}, ${we.getFullYear()}`;
       }
@@ -301,7 +302,7 @@ export default function (Alpine) {
       if (ev.allDay) {
         parts.push('all day');
       } else {
-        const timeFmt = new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' });
+        const timeFmt = dtf(locale, { hour: 'numeric', minute: '2-digit' });
         parts.push(`${timeFmt.format(ev.startDate)} to ${timeFmt.format(ev.endDate)}`);
       }
       if (ev.status === 'unconfirmed') parts.push('unconfirmed');
@@ -482,7 +483,7 @@ export default function (Alpine) {
       const year = focusDate.getFullYear();
       const month = focusDate.getMonth();
       const gridStart = getWeekStart(new Date(year, month, 1));
-      const dayLabelFmt = new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const dayLabelFmt = dtf(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
       const dayCells = [];
 
       for (let r = 0; r < 6; r++) {
@@ -594,7 +595,7 @@ export default function (Alpine) {
       const dayHeaderGrid = document.createElement('div');
       dayHeaderGrid.classList.add('grid', 'flex-1');
       dayHeaderGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-      const shortDayFmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+      const shortDayFmt = dtf(locale, { weekday: 'short' });
       days.forEach((day) => {
         const hCell = document.createElement('div');
         hCell.classList.add('py-1', 'vbox', 'md:hbox', 'items-center', 'justify-center', 'gap-1', 'text-xs', 'border-r', 'last:border-r-0');
@@ -639,7 +640,7 @@ export default function (Alpine) {
       const gutter = document.createElement('div');
       gutter.classList.add('w-14', 'flex-none', 'border-r', 'select-none');
       gutter.style.height = `${HOURS * HOUR_H}px`;
-      const timeFmt = new Intl.DateTimeFormat(locale, { hour: 'numeric' });
+      const timeFmt = dtf(locale, { hour: 'numeric' });
       for (let h = 0; h < HOURS; h++) {
         const row = document.createElement('div');
         row.classList.add('relative', 'text-xs', 'text-muted-foreground', 'pr-2');
@@ -660,7 +661,7 @@ export default function (Alpine) {
       colsGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
       colsGrid.style.height = `${HOURS * HOUR_H}px`;
 
-      const colDayFmt = new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const colDayFmt = dtf(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
       days.forEach((day) => {
         const col = document.createElement('div');
         col.classList.add('border-r', 'last:border-r-0', 'relative');
@@ -755,7 +756,7 @@ export default function (Alpine) {
           if (durMins >= 45) {
             const timeEl = document.createElement('div');
             timeEl.classList.add('opacity-80', 'leading-tight');
-            timeEl.textContent = new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(ev.startDate);
+            timeEl.textContent = dtf(locale, { hour: 'numeric', minute: '2-digit' }).format(ev.startDate);
             evEl.appendChild(timeEl);
           }
 
@@ -830,7 +831,7 @@ export default function (Alpine) {
       wrap.classList.add('vbox', 'gap-1');
 
       const titleId = `hmm${uuidv4()}`;
-      const monthName = new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(year, month, 1));
+      const monthName = dtf(locale, { month: 'long' }).format(new Date(year, month, 1));
       const title = document.createElement('button');
       title.type = 'button';
       title.setAttribute('id', titleId);
@@ -858,19 +859,27 @@ export default function (Alpine) {
       daysGrid.classList.add('grid', 'grid-cols-7', 'text-xs', 'text-center', 'gap-0.5');
       daysGrid.setAttribute('role', 'grid');
       daysGrid.setAttribute('aria-labelledby', titleId);
-      const gridStart = getWeekStart(new Date(year, month, 1));
-      const dayLabelFmt = new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const firstOfMonth = new Date(year, month, 1);
+      const gridStart = getWeekStart(firstOfMonth);
+      const dayLabelFmt = dtf(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
       const miniCells = [];
       let miniFocus = new Date(year, month, 1);
 
-      for (let i = 0; i < 42; i++) {
+      // Render 5 rows, or a full 6th row (with trailing days) only when the month
+      // spills past the fifth week, so every mini-month is a complete grid.
+      const leadingDays = (firstOfMonth.getDay() - firstDay + 7) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const totalCells = leadingDays + daysInMonth > 35 ? 42 : 35;
+
+      for (let i = 0; i < totalCells; i++) {
         const d = new Date(gridStart);
         d.setDate(gridStart.getDate() + i);
-        if (i >= 35 && d.getMonth() !== month) break;
 
         const isCurrentMonth = d.getMonth() === month;
-        const isToday = isTodayDate(d);
+        // Only the owning month marks today; trailing/leading filler days from
+        // adjacent months are decorative and must not be highlighted.
+        const isToday = isCurrentMonth && isTodayDate(d);
         const hasEvents = isCurrentMonth && eventsForDay(d).length > 0;
 
         const cell = document.createElement('div');

@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { findAncestorState } from '../common/ancestor';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronDown, Search, createSvg } from './../common/icons';
@@ -81,7 +82,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be an input of type "text"`);
     }
 
-    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
+    const select = findAncestorState(Alpine, el, '_h_select');
     const label = (() => {
       const field = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'field');
       if (field) {
@@ -381,7 +382,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-select-content', (el, { original }, { effect, cleanup, Alpine }) => {
-    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
+    const select = findAncestorState(Alpine, el, '_h_select');
     if (!select) {
       throw new Error(`${original} must be inside a select element`);
     }
@@ -483,7 +484,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-select-search', (el, { original }, { effect, cleanup, Alpine }) => {
-    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
+    const select = findAncestorState(Alpine, el, '_h_select');
     if (!select) {
       throw new Error(`${original} must be inside an h-select element`);
     } else {
@@ -563,7 +564,7 @@ export default function (Alpine) {
     el.classList.add('text-muted-foreground', 'px-2', 'py-1.5', 'text-xs');
     el.setAttribute('data-slot', 'select-label');
 
-    const selectGroup = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_selectGroup'));
+    const selectGroup = findAncestorState(Alpine, el, '_h_selectGroup');
     if (selectGroup) {
       const id = `hsl${uuidv4()}`;
       el.setAttribute('id', id);
@@ -572,7 +573,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-select-option', (el, { original, expression }, { effect, evaluateLater, cleanup }) => {
-    const select = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_select'));
+    const select = findAncestorState(Alpine, el, '_h_select');
     if (!select) {
       throw new Error(`${original} must be inside an h-select element`);
     }

@@ -727,7 +727,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
         <td x-h-table-cell>
           <button x-h-table-cell-button x-h-menu-trigger.dropdown>
             <span>Dropdown</span>
-            <svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg>
+            <svg x-h-icon data-icon="chevron-down" role="img" aria-label="chevron down"></svg>
           </button>
           <ul x-h-menu aria-label="dropdown">
             <li x-h-menu-item>Item 1</li>
@@ -770,7 +770,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
         <td x-h-table-cell>
           <button x-h-table-cell-button x-h-menu-trigger.dropdown>
             <span>Dropdown</span>
-            <svg x-h-icon.chevron-down role="img" aria-label="chevron down"></svg>
+            <svg x-h-icon data-icon="chevron-down" role="img" aria-label="chevron down"></svg>
           </button>
           <ul x-h-menu aria-label="dropdown">
             <li x-h-menu-item>Item 1</li>

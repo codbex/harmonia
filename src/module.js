@@ -130,6 +130,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(card);
   registerPlugin(chart);
   registerPlugin(checkbox);
+  registerPlugin(chip);
   registerPlugin(dateFormat);
   registerPlugin(datepicker);
   registerPlugin(datetimePicker);

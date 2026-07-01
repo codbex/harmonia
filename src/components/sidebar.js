@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 import uuidv4 from '../utils/uuid';
 import { ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
@@ -82,7 +83,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-group-label', (el, { original }, { cleanup }) => {
-    const group = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_group'));
+    const group = findAncestorState(Alpine, el, '_h_sidebar_group');
     if (!group) {
       throw new Error(`${original} must be placed inside a sidebar group`);
     }
@@ -182,7 +183,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-group-content', (el, { original }, { effect }) => {
-    const group = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_group'));
+    const group = findAncestorState(Alpine, el, '_h_sidebar_group');
     if (!group) {
       throw new Error(`${original} must be placed inside a sidebar group`);
     }
@@ -253,7 +254,7 @@ export default function (Alpine) {
     } else if (el.tagName === 'BUTTON') {
       el.setAttribute('type', 'button');
     }
-    const menuItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_menu_item'));
+    const menuItem = findAncestorState(Alpine, el, '_h_sidebar_menu_item');
     el.classList.add(
       'flex',
       'w-full',
@@ -434,7 +435,7 @@ export default function (Alpine) {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be an ul element`);
     }
-    const menuItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_menu_item'));
+    const menuItem = findAncestorState(Alpine, el, '_h_sidebar_menu_item');
     if (!menuItem) {
       throw new Error(`${original} must be placed inside a sidebar menu item`);
     }

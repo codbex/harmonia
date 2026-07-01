@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 import { createCalendarWidget } from '../common/calendar';
 import { eventInsidePicker, setupPopover, setupTrigger } from '../common/picker-popover';
 import uuidv4 from '../utils/uuid';
@@ -102,7 +103,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-date-picker-trigger', (el, { original }, { effect, cleanup, Alpine }) => {
-    const datepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_datepicker'));
+    const datepicker = findAncestorState(Alpine, el, '_h_datepicker');
     if (!datepicker) {
       throw new Error(`${original} must be inside an date-picker element`);
     }
@@ -121,7 +122,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-date-picker-popup', (el, { original, expression }, { effect, evaluateLater, cleanup, Alpine }) => {
-    const datepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_datepicker'));
+    const datepicker = findAncestorState(Alpine, el, '_h_datepicker');
     if (!datepicker) {
       console.warn(`${original}: must be used inside an x-h-date-picker element`);
       return;

@@ -55,7 +55,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="1">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <svg x-h-icon.circle-user role="img" aria-label="step account"></svg>
+          <svg x-h-icon data-icon="circle-user" role="img" aria-label="step account"></svg>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Account</span>
@@ -102,7 +102,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="1">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <svg x-h-icon.circle-user role="img" aria-label="step account"></svg>
+          <svg x-h-icon data-icon="circle-user" role="img" aria-label="step account"></svg>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Account</span>

@@ -1,5 +1,8 @@
 const fs = require('fs');
 
+// Regenerate the icon data map from icons/*.svg before bundling.
+require('./generate-icons.cjs');
+
 fs.rmSync('dist', { recursive: true, force: true });
 
 build({

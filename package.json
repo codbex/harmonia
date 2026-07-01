@@ -27,6 +27,7 @@
   "scripts": {
     "build": "node ./scripts/build.cjs && npm run tailwind && node ./scripts/doc-build.cjs",
     "build:prod": "node ./scripts/build.cjs && npm run tailwind",
+    "icons:generate": "node ./scripts/generate-icons.cjs",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
     "tailwind:watch": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css -w",
     "test": "vitest run",

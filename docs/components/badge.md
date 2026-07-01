@@ -58,7 +58,7 @@ The badge indicator can be used on any element as long as it that element's posi
 <ClientOnly>
 <component-container>
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge">
-  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
   <span x-h-badge-indicator>121</span>
 </button>
 </component-container>
@@ -66,7 +66,7 @@ The badge indicator can be used on any element as long as it that element's posi
 
 ```html
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge">
-  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
   <span x-h-badge-indicator>121</span>
 </button>
 ```
@@ -76,7 +76,7 @@ The badge indicator can be used on any element as long as it that element's posi
 <ClientOnly>
 <component-container>
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot">
-  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
   <span x-h-badge-indicator data-dot="true"></span>
 </button>
 </component-container>
@@ -84,7 +84,7 @@ The badge indicator can be used on any element as long as it that element's posi
 
 ```html
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot">
-  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
   <span x-h-badge-indicator data-dot="true"></span>
 </button>
 ```
@@ -114,7 +114,7 @@ The badge indicator can be used on any element as long as it that element's posi
 <ClientOnly>
 <component-container>
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot ping">
-  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
   <span x-h-badge-indicator data-dot="true" data-ping="true"></span>
 </button>
 </component-container>
@@ -122,7 +122,7 @@ The badge indicator can be used on any element as long as it that element's posi
 
 ```html
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot ping">
-  <svg x-h-icon.bell role="img" aria-label="bell"></svg>
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
   <span x-h-badge-indicator data-dot="true" data-ping="true"></span>
 </button>
 ```

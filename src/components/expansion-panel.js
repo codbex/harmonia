@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 import { ChevronDown, createSvg } from '../common/icons';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
@@ -74,7 +75,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be a header element`);
     }
 
-    const expPanelItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_expPanelItem'));
+    const expPanelItem = findAncestorState(Alpine, el, '_h_expPanelItem');
 
     if (!expPanelItem) {
       throw new Error(`${original} must have an exp-panel-item parent element`);

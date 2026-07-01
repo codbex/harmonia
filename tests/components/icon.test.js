@@ -66,6 +66,19 @@ describe('h-icon', () => {
     expect(() => mountDirective(iconPlugin, 'h-icon', el, { original: 'h-icon' })).not.toThrow();
   });
 
+  it('renders a built-in icon from the data-icon attribute', () => {
+    el.setAttribute('data-icon', 'calendar');
+    mountDirective(iconPlugin, 'h-icon', el, { original: 'h-icon' });
+    expect(el.children.length).toBeGreaterThan(0);
+    expect(el.getAttribute('viewBox')).toBe('0 0 16 16');
+  });
+
+  it('renders nothing for an unknown data-icon value', () => {
+    el.setAttribute('data-icon', 'not-a-real-icon');
+    mountDirective(iconPlugin, 'h-icon', el, { original: 'h-icon' });
+    expect(el.children.length).toBe(0);
+  });
+
   it('fetches icon when data-link attribute is present', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       status: 200,

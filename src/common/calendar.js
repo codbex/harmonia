@@ -1,6 +1,7 @@
 import { createDateFormatter } from '../utils/date-format';
 import uuidv4 from '../utils/uuid';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createSvg } from './icons';
+import { createDateTimeFormatCache } from './intl';
 
 export { dateOrderMap } from '../utils/date-format';
 
@@ -18,6 +19,10 @@ export function parseDateValue(value) {
 
 export function sameDay(dateA, dateB) {
   return dateA && dateB && dateA.getFullYear() === dateB.getFullYear() && dateA.getMonth() === dateB.getMonth() && dateA.getDate() === dateB.getDate();
+}
+
+export function isToday(date) {
+  return sameDay(date, new Date());
 }
 
 export function isDisabled(d, minDate, maxDate) {
@@ -102,6 +107,8 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   let delimiter = undefined;
   let dateOrder = undefined;
   let dateFormatter = createDateFormatter();
+  // Memoized Intl.DateTimeFormat instances (keyed by locale+options), reused across renders.
+  const dtf = createDateTimeFormatCache();
   let firstDay = 0;
   let minDate = undefined;
   let maxDate = undefined;
@@ -167,7 +174,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   }
 
   function getWeekdayNames() {
-    const fmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+    const fmt = dtf(locale, { weekday: 'short' });
     return Array.from({ length: 7 }, (_, i) => {
       const weekday = (i + firstDay) % 7;
       return fmt.format(new Date(2020, 9, weekday + 4));
@@ -175,7 +182,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   }
 
   function getFullWeekdayNames() {
-    const fmt = new Intl.DateTimeFormat(locale, { weekday: 'long' });
+    const fmt = dtf(locale, { weekday: 'long' });
     return Array.from({ length: 7 }, (_, i) => {
       const weekday = (i + firstDay) % 7;
       return fmt.format(new Date(2020, 9, weekday + 4));
@@ -323,10 +330,10 @@ export function createCalendarWidget(directiveName, el, callbacks) {
         'aria-[current=date]:bg-secondary',
         'hover:aria-[current=date]:bg-secondary-hover',
         'aria-[current=date]:text-secondary-foreground',
-        'aria-selected:bg-primary-active!',
-        'aria-selected:hover:bg-primary-hover!',
-        'aria-selected:focus:bg-primary-hover!',
-        'aria-selected:text-primary-foreground!',
+        'aria-selected:not-data-[range=middle]:bg-primary-active!',
+        'aria-selected:not-data-[range=middle]:hover:bg-primary-hover!',
+        'aria-selected:not-data-[range=middle]:focus:bg-primary-hover!',
+        'aria-selected:not-data-[range=middle]:text-primary-foreground!',
         'data-[range=start]:rounded-r-none',
         'data-[range=end]:rounded-l-none',
         'aria-disabled:pointer-events-none',
@@ -409,7 +416,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     let lastPrevMonthDay = prevEndDay.getDate();
     let startDay = (start.getDay() - firstDay + 7) % 7;
 
-    headerLabel.innerText = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(start);
+    headerLabel.innerText = dtf(locale, { month: 'long', year: 'numeric' }).format(start);
 
     let cellIndex = 0;
 

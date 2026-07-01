@@ -231,7 +231,7 @@ The notification item has four inner components but they have no strict structur
 <component-container data-class="vbox items-start">
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
-    <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+    <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
   </div>
   <div x-h-notification-title>Notification</div>
 </li>
@@ -241,7 +241,7 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
-    <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+    <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
   </div>
   <div x-h-notification-title>Notification</div>
 </li>
@@ -253,7 +253,7 @@ The notification item has four inner components but they have no strict structur
 <component-container data-class="vbox items-start">
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media>
-    <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+    <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
   </div>
   <div class="vbox flex-1">
     <h1 x-h-notification-title>Notification</h1>
@@ -261,7 +261,7 @@ The notification item has four inner components but they have no strict structur
   </div>
   <div x-h-notification-actions data-orientation="vertical">
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -271,7 +271,7 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media>
-    <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+    <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
   </div>
   <div class="vbox flex-1">
     <h1 x-h-notification-title>Notification</h1>
@@ -279,7 +279,7 @@ The notification item has four inner components but they have no strict structur
   </div>
   <div x-h-notification-actions data-orientation="vertical">
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -302,7 +302,7 @@ The notification item has four inner components but they have no strict structur
   </div>
   <div x-h-notification-actions data-orientation="vertical">
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -323,7 +323,7 @@ The notification item has four inner components but they have no strict structur
   </div>
   <div x-h-notification-actions data-orientation="vertical">
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -348,7 +348,7 @@ The notification item has four inner components but they have no strict structur
   <div x-h-notification-actions data-orientation="horizontal" data-align="center">
     <button x-h-button data-size="sm" data-variant="outline">Undo</button>
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -361,7 +361,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-actions data-orientation="vertical">
     <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
   <div class="vbox flex-1 gap-2">
@@ -376,7 +376,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-actions data-orientation="vertical">
     <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
   <div class="vbox flex-1 gap-2">
@@ -392,7 +392,7 @@ The notification item has four inner components but they have no strict structur
 <component-container data-class="vbox items-start">
 <li x-h-notification.floating class="vbox gap-2">
   <div x-h-notification-title class="hbox items-center gap-2">
-    <svg x-h-icon.import class="size-6" role="img" aria-label="import"></svg>
+    <svg x-h-icon data-icon="import" class="size-6" role="img" aria-label="import"></svg>
     <span class="text-lg">Uploading in progress</span>
   </div>
   <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
@@ -408,7 +408,7 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="vbox gap-2">
   <div x-h-notification-title class="hbox items-center gap-2">
-    <svg x-h-icon.import class="size-6" role="img" aria-label="import"></svg>
+    <svg x-h-icon data-icon="import" class="size-6" role="img" aria-label="import"></svg>
     <span class="text-lg">Uploading in progress</span>
   </div>
   <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
@@ -436,14 +436,14 @@ The notification item has four inner components but they have no strict structur
     <p x-h-notification-description>I just received the document. It looks good.</p>
     <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
       <button x-h-button data-variant="primary" data-size="sm">
-        <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+        <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
         Reply
       </button>
     </div>
   </div>
   <div x-h-notification-actions data-orientation="vertical" class="justify-start">
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -463,14 +463,14 @@ The notification item has four inner components but they have no strict structur
     <p x-h-notification-description>I just received the document. It looks good.</p>
     <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
       <button x-h-button data-variant="primary" data-size="sm">
-        <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+        <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
         Reply
       </button>
     </div>
   </div>
   <div x-h-notification-actions data-orientation="vertical" class="justify-start">
     <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon.close role="img" aria-label="close"></svg>
+      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
     </button>
   </div>
 </li>
@@ -483,7 +483,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="information">
-      <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+      <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
     </span>
   </div>
   <div x-h-notification-title>Information</div>
@@ -495,7 +495,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="information">
-      <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+      <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
     </span>
   </div>
   <div x-h-notification-title>Information</div>
@@ -509,7 +509,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="warning">
-      <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+      <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
     </span>
   </div>
   <div x-h-notification-title>Warning</div>
@@ -521,7 +521,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="warning">
-      <svg x-h-icon.circle-warning role="img" aria-label="warning"></svg>
+      <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
     </span>
   </div>
   <div x-h-notification-title>Warning</div>
@@ -535,7 +535,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="positive">
-      <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+      <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
     </span>
   </div>
   <div x-h-notification-title>Success</div>
@@ -547,7 +547,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="positive">
-      <svg x-h-icon.circle-success role="img" aria-label="success"></svg>
+      <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
     </span>
   </div>
   <div x-h-notification-title>Success</div>
@@ -561,7 +561,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="negative">
-      <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+      <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
     </span>
   </div>
   <div x-h-notification-title>Error</div>
@@ -573,7 +573,7 @@ The notification item has four inner components but they have no strict structur
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
     <span x-h-avatar class="rounded-lg" data-variant="negative">
-      <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+      <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
     </span>
   </div>
   <div x-h-notification-title>Error</div>
@@ -597,7 +597,7 @@ You can use the notification list anywhere but the most common place is usually 
     <div x-h-toolbar data-size="md">
       <span x-h-toolbar-title>Notifications (3)</span>
       <div x-h-toolbar-spacer></div>
-      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon.trash role="img" aria-label="trash"></svg>Clear</button>
+      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon data-icon="trash" role="img" aria-label="trash"></svg>Clear</button>
     </div>
     <ol x-h-notification-list class="min-w-md">
       <li x-h-notification class="hbox" data-unread="true">
@@ -612,21 +612,21 @@ You can use the notification list anywhere but the most common place is usually 
           <p x-h-notification-description>I just received the document. It looks good.</p>
           <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
             <button x-h-button data-variant="primary" data-size="sm">
-              <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+              <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
               Reply
             </button>
           </div>
         </div>
         <div x-h-notification-actions data-orientation="vertical" class="justify-start">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon.close role="img" aria-label="close"></svg>
+            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
           </button>
         </div>
       </li>
       <li x-h-notification class="hbox items-center">
         <div x-h-notification-media class="w-10">
           <span x-h-avatar class="rounded-lg" data-variant="negative">
-            <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+            <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
           </span>
         </div>
         <div class="vbox flex-1">
@@ -635,18 +635,18 @@ You can use the notification list anywhere but the most common place is usually 
         </div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon.close role="img" aria-label="close"></svg>
+            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
           </button>
         </div>
       </li>
       <li x-h-notification class="hbox items-center">
         <div x-h-notification-media class="w-10">
-          <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+          <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
         </div>
         <div x-h-notification-title class="flex-1">Montly report generation started</div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon.close role="img" aria-label="close"></svg>
+            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
           </button>
         </div>
       </li>
@@ -668,7 +668,7 @@ You can use the notification list anywhere but the most common place is usually 
     <div x-h-toolbar data-size="md">
       <span x-h-toolbar-title>Notifications (3)</span>
       <div x-h-toolbar-spacer></div>
-      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon.trash role="img" aria-label="trash"></svg>Clear</button>
+      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon data-icon="trash" role="img" aria-label="trash"></svg>Clear</button>
     </div>
     <ol x-h-notification-list class="min-w-md">
       <li x-h-notification class="hbox" data-unread="true">
@@ -683,21 +683,21 @@ You can use the notification list anywhere but the most common place is usually 
           <p x-h-notification-description>I just received the document. It looks good.</p>
           <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
             <button x-h-button data-variant="primary" data-size="sm">
-              <svg x-h-icon.reply role="img" aria-label="reply"></svg>
+              <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
               Reply
             </button>
           </div>
         </div>
         <div x-h-notification-actions data-orientation="vertical" class="justify-start">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon.close role="img" aria-label="close"></svg>
+            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
           </button>
         </div>
       </li>
       <li x-h-notification class="hbox items-center">
         <div x-h-notification-media class="w-10">
           <span x-h-avatar class="rounded-lg" data-variant="negative">
-            <svg x-h-icon.circle-error role="img" aria-label="error"></svg>
+            <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
           </span>
         </div>
         <div class="vbox flex-1">
@@ -706,18 +706,18 @@ You can use the notification list anywhere but the most common place is usually 
         </div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon.close role="img" aria-label="close"></svg>
+            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
           </button>
         </div>
       </li>
       <li x-h-notification class="hbox items-center">
         <div x-h-notification-media class="w-10">
-          <svg x-h-icon.circle-info class="size-6" role="img" aria-label="info"></svg>
+          <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
         </div>
         <div x-h-notification-title class="flex-1">Montly report generation started</div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon.close role="img" aria-label="close"></svg>
+            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
           </button>
         </div>
       </li>
@@ -777,14 +777,14 @@ Notifications can contain actions and dynamic information. The following example
         <template x-if="progress >= 100">
           <div x-h-notification-media>
             <span x-h-avatar class="size-9" data-variant="information">
-              <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+              <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
             </span>
           </div>
         </template>
         <template x-if="progress < 100">
           <div x-h-notification-actions data-orientation="vertical">
             <button x-h-button x-h-notification-close class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
-              <svg x-h-icon.close role="img" aria-label="close"></svg>
+              <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
             </button>
           </div>
         </template>

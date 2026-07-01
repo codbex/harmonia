@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { findAncestorState } from '../common/ancestor';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, partsToValue24 } from '../common/time';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
@@ -168,7 +169,7 @@ export default function (Alpine) {
     if (el.tagName !== 'INPUT') {
       throw new Error(`${original} must be a readonly input of type "text"`);
     }
-    const timepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_timepicker'));
+    const timepicker = findAncestorState(Alpine, el, '_h_timepicker');
     if (!timepicker) {
       throw new Error(`${original} must be inside a time-picker element`);
     }
@@ -275,7 +276,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-time-picker-popup', (el, _, { effect, cleanup, Alpine }) => {
-    const timepicker = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_timepicker'));
+    const timepicker = findAncestorState(Alpine, el, '_h_timepicker');
     el.classList.add(
       'overflow-hidden',
       'outline-none',

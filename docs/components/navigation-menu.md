@@ -352,7 +352,7 @@ Hover and active states show a border outline instead of a filled background.
   <ul x-h-nav-list>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <svg x-h-icon.home role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
         Home
       </a>
     </li>
@@ -390,7 +390,7 @@ Hover and active states show a border outline instead of a filled background.
   <ul x-h-nav-list>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <svg x-h-icon.home role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
         Home
       </a>
     </li>

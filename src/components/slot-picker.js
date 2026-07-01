@@ -1,6 +1,8 @@
-import { createCalendarWidget } from '../common/calendar';
+import { createCalendarWidget, isToday, toDateString } from '../common/calendar';
 import { Calendar, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
+import { createDateTimeFormatCache } from '../common/intl';
 import { eventInsidePicker, setupPopover } from '../common/picker-popover';
+import { minsToTime, timeToMins } from '../common/time';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 
@@ -92,24 +94,6 @@ export default function (Alpine) {
       const d = new Date(date);
       d.setDate(d.getDate() + n);
       return d;
-    }
-
-    function toDateStr(d) {
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function timeToMins(t) {
-      const [h, m] = t.split(':').map(Number);
-      return h * 60 + m;
-    }
-
-    function minsToTime(mins) {
-      return `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
-    }
-
-    function isToday(d) {
-      const t = new Date();
-      return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
     }
 
     function toMidnight(value) {
@@ -253,22 +237,24 @@ export default function (Alpine) {
 
     // Render
 
+    const dtf = createDateTimeFormatCache();
+
     function render() {
       const days = Array.from({ length: 3 }, (_, i) => addDays(currentDate, i));
 
       // Heading
-      const shortFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' });
-      const longFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+      const shortFmt = dtf(locale, { day: 'numeric', month: 'short' });
+      const longFmt = dtf(locale, { day: 'numeric', month: 'short', year: 'numeric' });
       periodLabel.textContent = `${shortFmt.format(days[0])} - ${longFmt.format(days[2])}`;
 
       dayGrid.innerHTML = '';
       cellByKey.clear();
 
-      const dayNameFmt = new Intl.DateTimeFormat(locale, { weekday: 'long' });
-      const dateFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' });
+      const dayNameFmt = dtf(locale, { weekday: 'long' });
+      const dateFmt = dtf(locale, { day: 'numeric', month: 'long' });
 
       days.forEach((day) => {
-        const dateStr = toDateStr(day);
+        const dateStr = toDateString(day);
         const today = isToday(day);
         const dayLabel = `${dayNameFmt.format(day)}, ${dateFmt.format(day)}`;
 
