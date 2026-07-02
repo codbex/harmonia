@@ -60,7 +60,7 @@ outline: deep
     <svg-icon class="card-media" src="./images/calendar.svg"></svg-icon>
     <div class="card-content">
       <h3>Calendar</h3>
-      <p class="text">Interactive monthly calendar for browsing and selecting dates.</p>
+      <p class="text">Full event calendar with month, week, day, and year views.</p>
     </div>
   </a>
   <a href="./components/card" class="card">
@@ -84,11 +84,18 @@ outline: deep
       <p class="text">Compact, interactive element representing a filter or selection, with an optional dismiss button.</p>
     </div>
   </a>
-  <a href="./components/datepicker" class="card">
+  <a href="./components/date-picker" class="card">
     <svg-icon class="card-media" src="./images/datepicker.svg"></svg-icon>
     <div class="card-content">
       <h3>Date Picker</h3>
       <p class="text">User-friendly control for picking dates from a calendar.</p>
+    </div>
+  </a>
+  <a href="./components/datetime-picker" class="card">
+    <svg-icon class="card-media" src="./images/datetime-picker.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Date Time Picker</h3>
+      <p class="text">Combined control for selecting a date and time together within a single popover.</p>
     </div>
   </a>
   <a href="./components/dialog" class="card">
@@ -112,6 +119,13 @@ outline: deep
       <p class="text">Structural grouping element for associating related form controls with a legend.</p>
     </div>
   </a>
+  <a href="./components/file-upload" class="card">
+    <svg-icon class="card-media" src="./images/file-upload.svg"></svg-icon>
+    <div class="card-content">
+      <h3>File Upload</h3>
+      <p class="text">Input for choosing one or more files, showing the selected files as tags inside the field.</p>
+    </div>
+  </a>
   <a href="./components/icon" class="card">
     <svg-icon class="card-media" src="./images/icon.svg"></svg-icon>
     <div class="card-content">
@@ -124,6 +138,13 @@ outline: deep
     <div class="card-content">
       <h3>Info Page</h3>
       <p class="text">Structured layout for presenting help content or informational panels.</p>
+    </div>
+  </a>
+  <a href="./components/inline-calendar" class="card">
+    <svg-icon class="card-media" src="./images/calendar.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Inline Calendar</h3>
+      <p class="text">Compact monthly calendar for selecting a single date or a date range.</p>
     </div>
   </a>
   <a href="./components/input" class="card">
@@ -224,6 +245,13 @@ outline: deep
       <p class="text">Slider control for selecting a numeric value by dragging a thumb along a track.</p>
     </div>
   </a>
+  <a href="./components/rating" class="card">
+    <svg-icon class="card-media" src="./images/rating.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Rating</h3>
+      <p class="text">Star-based control for viewing and setting a subjective score, with half-star precision.</p>
+    </div>
+  </a>
   <a href="./components/select" class="card">
     <svg-icon class="card-media" src="./images/select.svg"></svg-icon>
     <div class="card-content">
@@ -257,6 +285,13 @@ outline: deep
     <div class="card-content">
       <h3>Skeleton</h3>
       <p class="text">Placeholder loading state that improves perceived performance during content fetches.</p>
+    </div>
+  </a>
+  <a href="./components/slot-picker" class="card">
+    <svg-icon class="card-media" src="./images/slot-picker.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Slot Picker</h3>
+      <p class="text">Inline calendar showing consecutive days with a grid of selectable time slots.</p>
     </div>
   </a>
   <a href="./components/spinner" class="card">
@@ -322,7 +357,7 @@ outline: deep
       <p class="text">Clickable or informational block combining an image, title, and supporting content.</p>
     </div>
   </a>
-  <a href="./components/timepicker" class="card">
+  <a href="./components/time-picker" class="card">
     <svg-icon class="card-media" src="./images/timepicker.svg"></svg-icon>
     <div class="card-content">
       <h3>Time Picker</h3>

@@ -10,6 +10,7 @@
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
     <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
     <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.min.js"></script>
     <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" title="harmonia" />
     <link href="/harmonia/fonts.css" rel="stylesheet" />
     <style id="importStyles" type="text/css"></style>
@@ -28,10 +29,10 @@
           <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown.chevron>
             <svg x-h-icon class="size-5" data-link="/harmonia/logo/harmonia-circle.svg" role="presentation"></svg>
             <span>Harmonia</span>
-            <i role="img" data-lucide="chevron-down"></i>
+            <i x-h-lucide role="img" data-lucide="chevron-down"></i>
           </button>
           <ul x-h-menu aria-label="dropdown" data-align="top-end">
-            <li x-h-menu-item @click="showAbout = true"><i role="img" data-lucide="info"></i>About</li>
+            <li x-h-menu-item @click="showAbout = true"><i x-h-lucide role="img" data-lucide="info"></i>About</li>
           </ul>
         </div>
 
@@ -48,30 +49,40 @@
               </ul>
             </div>
           </div>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-group-label>Charts</div>
+            <div x-h-sidebar-group-content>
+              <ul x-h-sidebar-menu>
+                <template x-for="chartSection in chartSections" :key="chartSection.value">
+                  <li x-h-sidebar-menu-item>
+                    <button type="button" x-h-sidebar-menu-button :data-active="active.value === chartSection.value" @click="changeActive(chartSection)" x-text="chartSection.label"></button>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="vbox flex-1" style="order: 2">
         <div x-h-toolbar>
           <button x-show="isNarrow" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar sheet open button" @click="showSidebar = true">
-            <i role="img" data-lucide="menu"></i>
+            <i x-h-lucide role="img" data-lucide="menu"></i>
           </button>
           <span x-h-toolbar-title :class="!isNarrow && 'pl-2'" x-text="active.label"></span>
           <div x-h-toolbar-spacer></div>
           <div x-show="isNarrow" x-h-toolbar-separator></div>
           <button x-show="isNarrow" x-h-button data-variant="transparent" data-size="icon" aria-label="variables sheet open button" @click="showVars = true">
-            <i role="img" data-lucide="panel-right-open"></i>
+            <i x-h-lucide role="img" data-lucide="panel-right-open"></i>
           </button>
         </div>
 
         <template x-for="previewSection in previewSections" :key="previewSection.value">
-          <div
-            class="h-full overflow-scroll p-4"
-            x-h-include="`/harmonia/theming/fragments/${previewSection.value}.html`"
-            :data-js="previewSection.scripts"
-            x-show="active.value === previewSection.value"
-            @fragment:loaded="initIcons($event.target)"
-          ></div>
+          <div class="h-full overflow-scroll p-4" x-h-include="`/harmonia/theming/fragments/${previewSection.value}.html`" :data-js="previewSection.scripts" x-show="active.value === previewSection.value"></div>
+        </template>
+
+        <template x-for="chartSection in chartSections" :key="chartSection.value">
+          <div class="h-full overflow-scroll p-4" x-h-include="`/harmonia/theming/fragments/${chartSection.value}.html`" x-show="active.value === chartSection.value"></div>
         </template>
       </div>
 
@@ -80,7 +91,7 @@
           <div x-h-dialog-header>
             <h2 x-h-dialog-title>Harmonia</h2>
             <button x-h-dialog-close aria-label="about button" @click="showAbout = false">
-              <i role="img" data-lucide="x"></i>
+              <i x-h-lucide role="img" data-lucide="x"></i>
             </button>
             <p x-h-dialog-description x-text="getVersion()"></p>
           </div>
@@ -99,22 +110,22 @@
     <div x-data="themeController" class="vbox h-full border-l" :style="{ width: isNarrow ? '19rem' : '21rem' }">
       <div x-h-toolbar>
         <button x-h-button data-variant="transparent" x-h-menu-trigger.dropdown>
-          <i x-show="mode === 'auto'" role="img" data-lucide="sun-moon"></i>
+          <i x-h-lucide x-show="mode === 'auto'" role="img" data-lucide="sun-moon"></i>
           <span x-show="mode === 'auto'">Auto</span>
-          <i x-show="mode === 'light'" role="img" data-lucide="sun"></i>
+          <i x-h-lucide x-show="mode === 'light'" role="img" data-lucide="sun"></i>
           <span x-show="mode === 'light'">Light</span>
-          <i x-show="mode === 'dark'" role="img" data-lucide="moon"></i>
+          <i x-h-lucide x-show="mode === 'dark'" role="img" data-lucide="moon"></i>
           <span x-show="mode === 'dark'">Dark</span>
         </button>
         <ul x-h-menu>
-          <li x-h-menu-item @click="themeChange('auto')"><i role="img" data-lucide="sun-moon"></i>Auto</li>
-          <li x-h-menu-item @click="themeChange('light')"><i role="img" data-lucide="sun"></i>Light</li>
-          <li x-h-menu-item @click="themeChange('dark')"><i role="img" data-lucide="moon"></i>Dark</li>
+          <li x-h-menu-item @click="themeChange('auto')"><i x-h-lucide role="img" data-lucide="sun-moon"></i>Auto</li>
+          <li x-h-menu-item @click="themeChange('light')"><i x-h-lucide role="img" data-lucide="sun"></i>Light</li>
+          <li x-h-menu-item @click="themeChange('dark')"><i x-h-lucide role="img" data-lucide="moon"></i>Dark</li>
         </ul>
         <div x-h-toolbar-spacer></div>
-        <button x-h-button data-variant="transparent" @click="showImportDialog()"><i role="img" data-lucide="upload"></i>Import</button>
+        <button x-h-button data-variant="transparent" @click="showImportDialog()"><i x-h-lucide role="img" data-lucide="upload"></i>Import</button>
         <div x-h-toolbar-separator></div>
-        <button x-h-button data-variant="transparent" @click="exportTheme()"><i role="img" data-lucide="download"></i>Export</button>
+        <button x-h-button data-variant="transparent" @click="exportTheme()"><i x-h-lucide role="img" data-lucide="download"></i>Export</button>
       </div>
       <div class="relative flex-1">
         <div x-h-exp-panel data-size="md">
@@ -227,12 +238,12 @@
           <div x-h-dialog-header>
             <h2 x-h-dialog-title>Theme CSS Variables</h2>
             <button x-h-dialog-close aria-label="close button" @click="showExport = false">
-              <i role="img" data-lucide="x"></i>
+              <i x-h-lucide role="img" data-lucide="x"></i>
             </button>
           </div>
           <p class="overflow-scroll" x-h-text.code x-text="themeStylesheet"></p>
           <div x-h-dialog-footer>
-            <button x-h-button data-variant="primary" @click="copy($refs.copyBtn)"><i role="img" data-lucide="copy"></i><span x-ref="copyBtn">Copy</span></button>
+            <button x-h-button data-variant="primary" @click="copy($refs.copyBtn)"><i x-h-lucide role="img" data-lucide="copy"></i><span x-ref="copyBtn">Copy</span></button>
           </div>
         </div>
       </div>
@@ -242,7 +253,7 @@
           <div x-h-dialog-header>
             <h2 x-h-dialog-title>Import CSS Variables</h2>
             <button x-h-dialog-close aria-label="close button" @click="showImport = false">
-              <i role="img" data-lucide="x"></i>
+              <i x-h-lucide role="img" data-lucide="x"></i>
             </button>
             <p x-h-dialog-description>This will override the existing theme!</p>
           </div>
@@ -255,8 +266,6 @@
     </div>
 
     <script>
-      lucide.createIcons({ inTemplates: true });
-
       document.addEventListener("alpine:init", () => {
         Alpine.data("breakpointController", () => ({
           isNarrow: false,
@@ -322,6 +331,10 @@
               value: "fieldset",
             },
             {
+              label: "File Upload",
+              value: "file-upload",
+            },
+            {
               label: "Info Page",
               value: "info-page",
             },
@@ -358,6 +371,10 @@
               value: "range",
             },
             {
+              label: "Rating",
+              value: "rating",
+            },
+            {
               label: "Select",
               value: "select",
             },
@@ -378,8 +395,16 @@
               value: "skeleton",
             },
             {
+              label: "Slot Picker",
+              value: "slot-picker",
+            },
+            {
               label: "Spinner",
               value: "spinner",
+            },
+            {
+              label: "Split",
+              value: "split",
             },
             {
               label: "Step Indicator",
@@ -427,12 +452,31 @@
               value: "shadows",
             },
           ],
+          chartSections: [
+            {
+              label: "Bar",
+              value: "chart-bar",
+            },
+            {
+              label: "Line",
+              value: "chart-line",
+            },
+            {
+              label: "Scatter",
+              value: "chart-scatter",
+            },
+            {
+              label: "Pie",
+              value: "chart-pie",
+            },
+            {
+              label: "Doughnut",
+              value: "chart-doughnut",
+            },
+          ],
           active: {},
           changeActive(previewSection) {
             this.active = previewSection;
-          },
-          initIcons(elem) {
-            lucide.createIcons({ root: elem });
           },
           init() {
             this.active = this.previewSections[0];

@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 import { Close, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-chip', (el, { original }, { cleanup }) => {
@@ -124,7 +125,7 @@ export default function (Alpine) {
     if (el.tagName !== 'SPAN') {
       throw new Error(`${original} must be a span element`);
     }
-    const chip = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_chip'));
+    const chip = findAncestorState(Alpine, el, '_h_chip');
     el.classList.add(
       'cursor-pointer',
       'inline-flex',

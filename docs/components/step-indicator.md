@@ -49,13 +49,13 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
 ### Default
 
 <ClientOnly>
-<component-container data-class="vbox gap-6" data-icons="true">
+<component-container data-class="vbox gap-6" >
 <div x-data="{ step: 2, total: 3 }" class="vbox gap-6 w-full">
   <div x-h-step-indicator="step">
     <div x-h-step-indicator-item="1">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <svg x-h-icon.circle-user role="img" aria-label="step account"></svg>
+          <svg x-h-icon data-icon="circle-user" role="img" aria-label="step account"></svg>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Account</span>
@@ -67,7 +67,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="2">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <i role="img" data-lucide="map-pin"></i>
+          <i x-h-lucide role="img" data-lucide="map-pin"></i>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Address</span>
@@ -79,7 +79,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="3">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <i role="img" data-lucide="banknote"></i>
+          <i x-h-lucide role="img" data-lucide="banknote"></i>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Payment</span>
@@ -102,7 +102,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="1">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <svg x-h-icon.circle-user role="img" aria-label="step account"></svg>
+          <svg x-h-icon data-icon="circle-user" role="img" aria-label="step account"></svg>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Account</span>
@@ -114,7 +114,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="2">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <i role="img" data-lucide="map-pin"></i>
+          <i x-h-lucide role="img" data-lucide="map-pin"></i>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Address</span>
@@ -126,7 +126,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="3">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <i role="img" data-lucide="banknote"></i>
+          <i x-h-lucide role="img" data-lucide="banknote"></i>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Payment</span>

@@ -52,7 +52,7 @@ x-h-exp-panel-content
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 1</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -66,7 +66,7 @@ x-h-exp-panel-content
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 2</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -80,7 +80,7 @@ x-h-exp-panel-content
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 3</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -100,7 +100,7 @@ x-h-exp-panel-content
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 1</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -114,7 +114,7 @@ x-h-exp-panel-content
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 2</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -128,7 +128,7 @@ x-h-exp-panel-content
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 3</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -304,7 +304,7 @@ It can be used both inline and in a component object.
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 1</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -326,7 +326,7 @@ It can be used both inline and in a component object.
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 1</div>
           <div x-h-info-page-description>Just an empty panel</div>
@@ -347,7 +347,7 @@ It can be used both inline and in a component object.
       <div x-h-info-page>
         <div x-h-info-page-header>
           <div x-h-info-page-media.icon>
-            <svg x-h-icon.circle-info role="img" aria-label="information"></svg>
+            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
           </div>
           <div x-h-info-page-title>Panel 1</div>
           <div x-h-info-page-description>Just an empty panel</div>

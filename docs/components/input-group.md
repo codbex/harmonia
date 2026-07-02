@@ -40,11 +40,11 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <i role="img" data-lucide="search"></i>
+    <i x-h-lucide role="img" data-lucide="search"></i>
   </div>
   <div x-h-input-group-addon data-align="inline-end">12 results</div>
 </div>
@@ -55,7 +55,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <i role="img" data-lucide="search"></i>
+    <i x-h-lucide role="img" data-lucide="search"></i>
   </div>
   <div x-h-input-group-addon data-align="inline-end">12 results</div>
 </div>
@@ -64,11 +64,11 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar with tags
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <i role="img" data-lucide="search"></i>
+    <i x-h-lucide role="img" data-lucide="search"></i>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
     <div x-h-tag-group>
@@ -85,7 +85,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <i role="img" data-lucide="search"></i>
+    <i x-h-lucide role="img" data-lucide="search"></i>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
     <div x-h-tag-group>
@@ -100,11 +100,11 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar with buttons and popover
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info"><i role="img" data-lucide="info"></i></button>
+    <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info"><i x-h-lucide role="img" data-lucide="info"></i></button>
     <div class="p-4" x-h-popover>This is a popover with some info.</div>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
@@ -118,7 +118,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info"><i role="img" data-lucide="info"></i></button>
+    <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info"><i x-h-lucide role="img" data-lucide="info"></i></button>
     <div class="p-4" x-h-popover>This is a popover with some info.</div>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
@@ -130,7 +130,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar with spinner
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="Searching..." disabled />
   <div x-h-input-group-addon data-align="inline-end">
@@ -152,27 +152,27 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Textarea with top and bottom toolbars
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-input-group>
   <textarea x-h-textarea.group placeholder="Message..."></textarea>
   <div x-h-input-group-addon data-align="block-start" class="border-b">
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make bold">
-      <i role="img" data-lucide="bold"></i>
+      <i x-h-lucide role="img" data-lucide="bold"></i>
     </button>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make italic">
-      <i role="img" data-lucide="italic"></i>
+      <i x-h-lucide role="img" data-lucide="italic"></i>
     </button>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
-      <i role="img" data-lucide="italic"></i>
+      <i x-h-lucide role="img" data-lucide="italic"></i>
     </button>
     <span x-h-separator data-orientation="vertical"></span>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
-      <i role="img" data-lucide="link"></i>
+      <i x-h-lucide role="img" data-lucide="link"></i>
     </button>
   </div>
   <div x-h-input-group-addon data-align="block-end" class="border-t">
     <button id="attachFile" x-h-button.addon x-h-menu-trigger.dropdown data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Attach">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
     <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
       <li x-h-menu-item>List</li>
@@ -181,7 +181,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
     </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>
     <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send">
-      <i role="img" data-lucide="arrow-up"></i>
+      <i x-h-lucide role="img" data-lucide="arrow-up"></i>
     </button>
   </div>
 </div>
@@ -193,22 +193,22 @@ In order to achieve proper focus navigation, place the group addon after the inp
   <textarea x-h-textarea.group placeholder="Message..."></textarea>
   <div x-h-input-group-addon data-align="block-start" class="border-b">
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make bold">
-      <i role="img" data-lucide="bold"></i>
+      <i x-h-lucide role="img" data-lucide="bold"></i>
     </button>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make italic">
-      <i role="img" data-lucide="italic"></i>
+      <i x-h-lucide role="img" data-lucide="italic"></i>
     </button>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
-      <i role="img" data-lucide="italic"></i>
+      <i x-h-lucide role="img" data-lucide="italic"></i>
     </button>
     <span x-h-separator data-orientation="vertical"></span>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
-      <i role="img" data-lucide="link"></i>
+      <i x-h-lucide role="img" data-lucide="link"></i>
     </button>
   </div>
   <div x-h-input-group-addon data-align="block-end" class="border-t">
     <button id="attachFile" x-h-button.addon x-h-menu-trigger.dropdown data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Attach">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
     <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
       <li x-h-menu-item>List</li>
@@ -217,7 +217,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
     </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>
     <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send">
-      <i role="img" data-lucide="arrow-up"></i>
+      <i x-h-lucide role="img" data-lucide="arrow-up"></i>
     </button>
   </div>
 </div>

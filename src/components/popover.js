@@ -1,21 +1,22 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-popover-trigger', (el, { expression, modifiers }, { effect, evaluate, evaluateLater, Alpine, cleanup }) => {
+    // The trigger is fully MANUAL only when the author both binds a variable AND
+    // wires their own click handler: they then drive open/close entirely through
+    // that variable. In every other case the directive handles opening and
+    // closing AUTOMATICALLY (toggle on trigger click, dismiss on outside click);
+    // and when a variable is bound it is kept in sync two-way, so setting it
+    // shows/hides the popover and an automatic open/close writes back to it.
+    const hasClickHandler = [...el.attributes].some((a) => a.name === '@click' || a.name.startsWith('@click.') || a.name === 'x-on:click' || a.name.startsWith('x-on:click.'));
+
     el._h_popover = Alpine.reactive({
       id: undefined,
       controls: `hpc${uuidv4()}`,
-      auto: expression ? false : true,
+      auto: !(expression && hasClickHandler),
       expanded: expression ? evaluate(expression) : false,
     });
-    if (expression) {
-      const getExpanded = evaluateLater(expression);
-      effect(() => {
-        getExpanded((expanded) => {
-          el._h_popover.expanded = expanded;
-        });
-      });
-    }
     el.setAttribute('type', 'button');
     if (modifiers.includes('chevron')) {
       el.classList.add('[&>svg]:transition-transform', 'motion-reduce:[&>svg]:transition-none', '[&[aria-expanded=true]>svg:not(:first-child):last-child]:rotate-180');
@@ -36,34 +37,52 @@ export default function (Alpine) {
       el.setAttribute('aria-expanded', el._h_popover.expanded);
     };
 
-    const close = () => {
-      el._h_popover.expanded = false;
-      el.addEventListener('click', handler);
-      setAttributes();
-    };
-
-    const handler = () => {
-      el._h_popover.expanded = !el._h_popover.expanded;
-      setAttributes();
-      Alpine.nextTick(() => {
-        if (el._h_popover.auto && el._h_popover.expanded) {
-          top.addEventListener('click', close, { once: true });
-          el.removeEventListener('click', handler);
-        }
+    // Reflect external changes to the bound variable into the popover state and
+    // aria. Runs in both manual and automatic modes.
+    if (expression) {
+      const getExpanded = evaluateLater(expression);
+      effect(() => {
+        getExpanded((expanded) => {
+          el._h_popover.expanded = expanded;
+          setAttributes();
+        });
       });
-    };
+    }
+
     setAttributes();
 
     if (el._h_popover.auto) {
-      el.addEventListener('click', handler);
+      // Update the state (and aria), and mirror it back to the bound variable
+      // when there is one, so automatic open/close stays two-way.
+      const setExpanded = (value) => {
+        el._h_popover.expanded = value;
+        setAttributes();
+        if (expression) evaluate(`${expression} = ${value}`);
+      };
+
+      const open = () => setExpanded(true);
+      const close = () => setExpanded(false);
+
+      // Swap the trigger-toggle and outside-dismiss listeners off the CURRENT
+      // expanded state rather than off the click handlers, so the listeners
+      // re-sync even when the popover is opened or closed through the bound
+      // variable (for example a button elsewhere setting it to false).
+      effect(() => {
+        const expanded = el._h_popover.expanded;
+        Alpine.nextTick(() => {
+          if (expanded) {
+            el.removeEventListener('click', open);
+            addDismiss(el, 'click', close);
+          } else {
+            removeDismiss(el, 'click', close);
+            el.addEventListener('click', open);
+          }
+        });
+      });
 
       cleanup(() => {
-        el.removeEventListener('click', handler);
-        top.removeEventListener('click', close);
-      });
-    } else {
-      effect(() => {
-        setAttributes();
+        el.removeEventListener('click', open);
+        removeDismiss(el, 'click', close);
       });
     }
   });
@@ -110,7 +129,7 @@ export default function (Alpine) {
     let noScroll = modifiers.includes('no-scroll');
     if (noScroll) {
       el.classList.remove('overflow-auto');
-      el.classList.add('overflow-none');
+      el.classList.add('overflow-hidden');
     }
 
     const stopPropagation = (event) => {
@@ -133,8 +152,10 @@ export default function (Alpine) {
           !noScroll
             ? size({
                 apply({ availableWidth, availableHeight, elements }) {
+                  const maxW = el.getAttribute('data-max-w');
+                  const available = `${Math.max(0, availableWidth) - 4}px`;
                   Object.assign(elements.floating.style, {
-                    maxWidth: `${Math.max(0, availableWidth) - 4}px`,
+                    maxWidth: maxW ? `min(${available}, calc(var(--container-${maxW}) - 4px))` : available,
                     maxHeight: `${Math.max(0, availableHeight) - 4}px`,
                   });
                 },

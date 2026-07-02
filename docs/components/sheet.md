@@ -50,20 +50,20 @@ x-h-sheet-overlay
               <ul x-h-sidebar-menu>
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
-                    <i role="img" data-lucide="house"></i>
+                    <i x-h-lucide role="img" data-lucide="house"></i>
                     <span>Home</span>
                     <span x-h-sidebar-menu-badge>11</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
-                    <i role="img" data-lucide="file-text"></i>
+                    <i x-h-lucide role="img" data-lucide="file-text"></i>
                     <span>Documents</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
-                    <i role="img" data-lucide="blocks"></i>
+                    <i x-h-lucide role="img" data-lucide="blocks"></i>
                     <span>Extensions</span>
                   </button>
                 </li>
@@ -79,7 +79,6 @@ x-h-sheet-overlay
 </div>
 
 <script>
-  lucide.createIcons();
   Alpine.data('SheetController', () => ({
     isOpen: false,
     side: 'left',

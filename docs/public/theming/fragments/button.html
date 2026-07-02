@@ -20,15 +20,15 @@
   <button x-h-button :data-toggled="toggled" @click="toggled = !toggled">Toggle</button>
 
   <button x-h-button>
-    <i role="img" data-lucide="chevron-left"></i>
+    <i x-h-lucide role="img" data-lucide="chevron-left"></i>
     Left-aligned
   </button>
   <button x-h-button>
-    <i role="img" data-lucide="chevron-right"></i>
+    <i x-h-lucide role="img" data-lucide="chevron-right"></i>
     Right-aligned
   </button>
   <button x-h-button>
-    <svg x-h-icon.search role="img" aria-label="search"></svg>
+    <svg x-h-icon data-icon="search" role="img" aria-label="search"></svg>
     Search
   </button>
 
@@ -42,34 +42,34 @@
   </button>
 
   <button x-h-button data-size="icon" aria-label="Icon button">
-    <i role="img" data-lucide="save"></i>
+    <i x-h-lucide role="img" data-lucide="save"></i>
   </button>
 
   <div>
     <button x-h-button data-size="sm">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
       Save
     </button>
 
     <button x-h-button data-size="icon-sm" aria-label="Icon button">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
     </button>
   </div>
 
   <div>
     <button x-h-button data-size="md">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
       Save
     </button>
     <button x-h-button data-size="icon-md" aria-label="Icon button">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
     </button>
   </div>
 
   <div x-h-button-group>
     <button x-h-button data-variant="outline">Action</button>
     <button x-h-button data-size="icon" data-variant="outline" aria-label="Add button">
-      <i role="img" data-lucide="plus"></i>
+      <i x-h-lucide role="img" data-lucide="plus"></i>
     </button>
   </div>
   <div x-h-button-group>
@@ -86,13 +86,13 @@
     </div>
     <div x-h-button-group data-orientation="vertical">
       <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom in">
-        <i role="img" data-lucide="zoom-in"></i>
+        <i x-h-lucide role="img" data-lucide="zoom-in"></i>
       </button>
       <button x-h-button data-size="icon" data-variant="outline" aria-label="Fit to screen">
-        <i role="img" data-lucide="fullscreen"></i>
+        <i x-h-lucide role="img" data-lucide="fullscreen"></i>
       </button>
       <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom out">
-        <i role="img" data-lucide="zoom-out"></i>
+        <i x-h-lucide role="img" data-lucide="zoom-out"></i>
       </button>
     </div>
   </div>

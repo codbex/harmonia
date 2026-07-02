@@ -22,7 +22,7 @@ Top-level items follow standard Tab navigation. Once a dropdown is open, the ful
 - `Enter` / `Space` - Activates the focused menu item.
 - `Esc` - Closes the menu or submenu and returns focus to the trigger.
 - `Tab` - Closes the menu and moves focus to the next element.
-- `Character keys (A–Z)` - Moves focus to the next item whose label starts with the typed character.
+- `Character keys (A-Z)` - Moves focus to the next item whose label starts with the typed character.
 
 ## API Reference
 
@@ -347,18 +347,18 @@ Hover and active states show a border outline instead of a filled background.
 ### With submenus and icons
 
 <ClientOnly>
-<component-container data-class="flex flex-col items-start" data-icons="true">
+<component-container data-class="flex flex-col items-start" >
 <nav x-h-nav aria-label="Main navigation">
   <ul x-h-nav-list>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <svg x-h-icon.home role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
         Home
       </a>
     </li>
     <li x-h-nav-item>
       <button x-h-nav-trigger>
-        <i role="img" data-lucide="library-big"></i>
+        <i x-h-lucide role="img" data-lucide="library-big"></i>
         <span>Products</span>
       </button>
       <ul x-h-menu>
@@ -376,7 +376,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <i role="img" data-lucide="gem"></i>
+        <i x-h-lucide role="img" data-lucide="gem"></i>
         Pricing
       </a>
     </li>
@@ -390,13 +390,13 @@ Hover and active states show a border outline instead of a filled background.
   <ul x-h-nav-list>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <svg x-h-icon.home role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
         Home
       </a>
     </li>
     <li x-h-nav-item>
       <button x-h-nav-trigger>
-        <i role="img" data-lucide="library-big"></i>
+        <i x-h-lucide role="img" data-lucide="library-big"></i>
         <span>Products</span>
       </button>
       <ul x-h-menu>
@@ -414,7 +414,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <i role="img" data-lucide="gem"></i>
+        <i x-h-lucide role="img" data-lucide="gem"></i>
         Pricing
       </a>
     </li>

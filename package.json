@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "1.24.1",
+  "version": "2.0.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -22,11 +22,14 @@
     }
   ],
   "files": [
-    "dist/"
+    "dist/",
+    "skills/"
   ],
   "scripts": {
-    "build": "node ./scripts/build.cjs && npm run tailwind && node ./scripts/doc-build.cjs",
-    "build:prod": "node ./scripts/build.cjs && npm run tailwind",
+    "build": "node ./scripts/build.cjs && npm run tailwind && npm run agent-docs:generate && node ./scripts/doc-build.cjs",
+    "build:prod": "node ./scripts/build.cjs && npm run tailwind && npm run agent-docs:generate",
+    "icons:generate": "node ./scripts/generate-icons.cjs",
+    "agent-docs:generate": "node ./scripts/generate-agent-docs.cjs",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
     "tailwind:watch": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css -w",
     "test": "vitest run",

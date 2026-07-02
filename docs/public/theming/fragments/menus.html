@@ -23,12 +23,12 @@
   <div x-h-menu-trigger class="flex w-full items-center justify-center border border-dashed p-12">Right click for context menu</div>
   <ul x-h-menu aria-label="context menu" x-data="{ checkbox: { autosave: true }, radioItems: [{ label: 'Radio 1', value: 'r1' }, { label: 'Radio 2', value: 'r2' }], radioSelected: 'r1' }">
     <li x-h-menu-item>
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
       <span>Save</span>
       <span x-h-menu-item-secondary>Ctrl+S</span>
     </li>
     <li x-h-menu-item data-variant="negative">
-      <i role="img" data-lucide="trash"></i>
+      <i x-h-lucide role="img" data-lucide="trash"></i>
       <span>Delete</span>
       <span x-h-menu-item-secondary>Del</span>
     </li>
@@ -65,13 +65,13 @@
     <ul x-h-nav-list>
       <li x-h-nav-item>
         <button x-h-nav-link data-active="true">
-          <svg x-h-icon.home role="img" aria-label="home"></svg>
+          <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
           Home
         </button>
       </li>
       <li x-h-nav-item>
         <button x-h-nav-trigger>
-          <i role="img" data-lucide="library-big"></i>
+          <i x-h-lucide role="img" data-lucide="library-big"></i>
           Products
         </button>
         <ul x-h-menu>
@@ -82,7 +82,7 @@
       </li>
       <li x-h-nav-item>
         <button x-h-nav-trigger>
-          <i role="img" data-lucide="lightbulb"></i>
+          <i x-h-lucide role="img" data-lucide="lightbulb"></i>
           Solutions
         </button>
         <ul x-h-menu>
@@ -97,7 +97,7 @@
       </li>
       <li x-h-nav-item>
         <a x-h-nav-link href="#">
-          <i role="img" data-lucide="book"></i>
+          <i x-h-lucide role="img" data-lucide="book"></i>
           Docs
         </a>
       </li>
@@ -108,7 +108,7 @@
     <ul x-h-nav-list>
       <li x-h-nav-item>
         <button x-h-nav-link data-active="true">
-          <svg x-h-icon.home role="img" aria-label="home"></svg>
+          <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
           Home
         </button>
       </li>
@@ -131,7 +131,7 @@
     <ul x-h-nav-list>
       <li x-h-nav-item>
         <button x-h-nav-link data-active="true">
-          <svg x-h-icon.home role="img" aria-label="home"></svg>
+          <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
           Home
         </button>
       </li>
@@ -153,7 +153,7 @@
     <ul x-h-nav-list>
       <li x-h-nav-item>
         <button x-h-nav-link data-active="true">
-          <svg x-h-icon.home role="img" aria-label="home"></svg>
+          <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
           Home
         </button>
       </li>

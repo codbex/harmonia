@@ -88,14 +88,14 @@ x-h-list-header
 ### With icons and buttons
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <ul x-h-list>
   <li x-h-list-item>
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
     List Item 1
     <div class="flex-1"></div>
     <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
     </button>
   </li>
   <li x-h-list-item>
@@ -117,7 +117,7 @@ x-h-list-header
     List Item 1
     <div class="flex-1"></div>
     <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
-      <i role="img" data-lucide="save"></i>
+      <i x-h-lucide role="img" data-lucide="save"></i>
     </button>
   </li>
   <li x-h-list-item>

@@ -10,14 +10,14 @@
         <template x-if="progress >= 100">
           <div x-h-notification-media>
             <span x-h-avatar class="size-9" data-variant="information">
-              <svg x-h-icon.circle-info role="img" aria-label="info"></svg>
+              <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
             </span>
           </div>
         </template>
         <template x-if="progress < 100">
           <div x-h-notification-actions data-orientation="vertical">
             <button x-h-button x-h-notification-close class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
-              <svg x-h-icon.close role="img" aria-label="close"></svg>
+              <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
             </button>
           </div>
         </template>

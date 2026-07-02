@@ -41,7 +41,7 @@ describe('h-sidebar-header', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-header', el);
     expect(el.classList.contains('vbox')).toBe(true);
-    expect(el.classList.contains('inset-shadow-[0_-1px_var(--border)]')).toBe(true);
+    expect(el.classList.contains('inset-shadow-[0_-1px_var(--sidebar-border)]')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('sidebar-header');
   });
 
@@ -50,6 +50,23 @@ describe('h-sidebar-header', () => {
     el.dataset.borderless = 'true';
     mountDirective(sidebarPlugin, 'h-sidebar-header', el);
     expect(el.classList.contains('inset-shadow-[0_-1px_var(--border)]')).toBe(false);
+  });
+});
+
+describe('h-sidebar-header-item', () => {
+  it('applies base classes and data-slot on a non-interactive element', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    expect(el.classList.contains('hbox')).toBe(true);
+    expect(el.classList.contains('font-semibold')).toBe(true);
+    expect(el.getAttribute('data-slot')).toBe('sidebar-header-item');
+  });
+
+  it('throws when set on a button or an anchor element', () => {
+    const button = document.createElement('button');
+    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-header-item', button, { original: 'x-h-sidebar-header-item' })).toThrow();
+    const anchor = document.createElement('a');
+    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-header-item', anchor, { original: 'x-h-sidebar-header-item' })).toThrow();
   });
 });
 
@@ -141,7 +158,7 @@ describe('h-sidebar-separator', () => {
   it('applies base classes and attributes', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-separator', el);
-    expect(el.classList.contains('bg-border')).toBe(true);
+    expect(el.classList.contains('bg-sidebar-border')).toBe(true);
     expect(el.classList.contains('shrink-0')).toBe(true);
     expect(el.classList.contains('h-px')).toBe(true);
     expect(el.getAttribute('role')).toBe('none');
@@ -175,7 +192,7 @@ describe('h-sidebar-footer', () => {
     const el = document.createElement('div');
     mountDirective(sidebarPlugin, 'h-sidebar-footer', el);
     expect(el.classList.contains('vbox')).toBe(true);
-    expect(el.classList.contains('inset-shadow-[0_1px_var(--border)]')).toBe(true);
+    expect(el.classList.contains('inset-shadow-[0_1px_var(--sidebar-border)]')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('sidebar-footer');
   });
 

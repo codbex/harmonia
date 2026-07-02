@@ -16,7 +16,7 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Enter` / `Space` - Selects the focused option. If the list is closed, opens it.
 - `Esc` - Closes the list without changing the current selection.
 - `Tab` - Closes the list and moves focus to the next focusable element.
-- `Character keys (A–Z)` - Moves focus to the next option whose label starts with the typed character.
+- `Character keys (A-Z)` - Moves focus to the next option whose label starts with the typed character.
 
 ## API Reference
 

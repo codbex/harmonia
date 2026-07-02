@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 export default function (Alpine) {
   Alpine.directive('h-step-indicator', (el, { expression }) => {
     if (!el.hasAttribute('data-orientation')) {
@@ -11,7 +12,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-step-indicator-item', (el, { original, expression }, { effect, evaluateLater, Alpine }) => {
-    const root = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_step_indicator'));
+    const root = findAncestorState(Alpine, el, '_h_step_indicator');
 
     if (!root) {
       throw new Error(`${original} must be inside a step indicator`);
@@ -49,8 +50,8 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-step-indicator-trigger', (el, { original }, { effect, evaluate, Alpine, cleanup }) => {
-    const root = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_step_indicator'));
-    const item = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_step_indicator_item'));
+    const root = findAncestorState(Alpine, el, '_h_step_indicator');
+    const item = findAncestorState(Alpine, el, '_h_step_indicator_item');
 
     if (!root || !item) {
       throw new Error(`${original} must be inside a step indicator item`);
@@ -96,7 +97,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-step-indicator-marker', (el, { original }, { Alpine }) => {
-    const item = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_step_indicator_item'));
+    const item = findAncestorState(Alpine, el, '_h_step_indicator_item');
 
     if (!item) {
       throw new Error(`${original} must be inside a step indicator item`);
@@ -147,7 +148,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-step-indicator-separator', (el, { original }, { Alpine }) => {
-    const item = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_step_indicator_item'));
+    const item = findAncestorState(Alpine, el, '_h_step_indicator_item');
 
     if (!item) {
       throw new Error(`${original} must be inside a step indicator item`);

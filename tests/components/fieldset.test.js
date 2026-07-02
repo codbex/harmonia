@@ -75,7 +75,7 @@ describe('h-field-group', () => {
     mountDirective(fieldsetPlugin, 'h-field-group', el);
     expect(el.classList.contains('vbox')).toBe(true);
     expect(el.classList.contains('w-full')).toBe(true);
-    expect(el.classList.contains('gap-7')).toBe(true);
+    expect(el.classList.contains('gap-4')).toBe(true);
   });
 
   it('sets data-slot="field-group"', () => {
@@ -145,6 +145,14 @@ describe('h-field', () => {
     expect(el.classList.contains('@md/field-group:[&>[data-slot=field-error]]:col-start-2')).toBe(true);
     expect(el.classList.contains('@md/field-group:[&>[data-slot=field-description]]:col-start-2')).toBe(true);
   });
+
+  it('defers native-constraint text-negative to :user-invalid with an immediate opt-in', () => {
+    mountDirective(fieldsetPlugin, 'h-field', el);
+    expect(el.classList.contains('has-[input:user-invalid]:text-negative')).toBe(true);
+    expect(el.classList.contains('[[data-validate=immediate]_&:has(input:invalid)]:text-negative')).toBe(true);
+    expect(el.classList.contains('has-[input:invalid]:text-negative')).toBe(false);
+    expect(el.classList.contains('has-[[aria-invalid=true]]:text-negative')).toBe(true);
+  });
 });
 
 describe('h-field-content', () => {
@@ -206,10 +214,13 @@ describe('h-field-description', () => {
     expect(el.getAttribute('data-slot')).toBe('field-description');
   });
 
-  it('adds hide-on-error classes when data-hide-on-error="true"', () => {
+  it('adds deferred + immediate hide-on-error classes when data-hide-on-error="true"', () => {
     el.setAttribute('data-hide-on-error', 'true');
     mountDirective(fieldsetPlugin, 'h-field-description', el);
-    expect(el.classList.contains('group-has-[input:invalid]/field:hidden')).toBe(true);
+    expect(el.classList.contains('group-has-[input:user-invalid]/field:hidden')).toBe(true);
+    expect(el.classList.contains('[[data-validate=immediate]_&]:group-has-[input:invalid]/field:hidden')).toBe(true);
+    expect(el.classList.contains('group-has-[input:invalid]/field:hidden')).toBe(false);
+    expect(el.classList.contains('group-has-[[aria-invalid=true]]/field:hidden')).toBe(true);
   });
 });
 
@@ -232,9 +243,15 @@ describe('h-field-error', () => {
     expect(el.getAttribute('data-slot')).toBe('field-error');
   });
 
-  it('adds block classes for invalid states', () => {
+  it('adds deferred + immediate block classes for invalid states', () => {
     mountDirective(fieldsetPlugin, 'h-field-error', el);
-    expect(el.classList.contains('group-has-[input:invalid]/field:block')).toBe(true);
+    // deferred (default) shows the error after interaction/submit
+    expect(el.classList.contains('group-has-[input:user-invalid]/field:block')).toBe(true);
+    // immediate opt-in, gated by a data-validate="immediate" ancestor
+    expect(el.classList.contains('[[data-validate=immediate]_&]:group-has-[input:invalid]/field:block')).toBe(true);
+    // the bare on-load :invalid variant is gone
+    expect(el.classList.contains('group-has-[input:invalid]/field:block')).toBe(false);
+    // aria-invalid (explicit) is unchanged
     expect(el.classList.contains('group-has-[[aria-invalid=true]]/field:block')).toBe(true);
   });
 });

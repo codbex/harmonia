@@ -59,6 +59,10 @@ export default function (Alpine) {
       '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
       '[&[data-activable=true]:active]:bg-table-active!',
       '[&[data-activable=true]:active]:text-table-active-foreground!',
+      '[[data-slot=table-header][data-bordered=true]_&]:border-t',
+      '[[data-slot=table-header][data-bordered=true]_&]:border-b',
+      '[[data-slot=table-header][data-bordered=true]_&:first-child]:border-l',
+      '[[data-slot=table-header][data-bordered=true]_&:last-child]:border-r',
       'h-10',
       'px-2',
       'text-left',
@@ -100,8 +104,7 @@ export default function (Alpine) {
       'justify-between',
       'outline-none',
       'gap-2',
-      'transition-colors',
-      'transition-shadow',
+      'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       '[&_svg]:pointer-events-none',
       '[&_svg]:opacity-70',
@@ -127,8 +130,8 @@ export default function (Alpine) {
 
   Alpine.directive('h-table-body', (el) => {
     el.classList.add(
-      '[&_tr:last-child_td[data-slot|=table]]:border-b-0',
-      '[&_tr:last-child_th[data-slot|=table]]:border-b-0',
+      '[&_tr:last-of-type_td[data-slot|=table]]:border-b-0',
+      '[&_tr:last-of-type_th[data-slot|=table]]:border-b-0',
       '[&_tr_th[data-slot|=table]]:bg-table-header',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:bg-table-hover',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:text-table-hover-foreground',

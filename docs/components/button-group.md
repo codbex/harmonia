@@ -21,14 +21,16 @@ x-h-button-group-separator
 | ---------------- | ---------------------------- | -------- | -------------------------------------------- |
 | data-orientation | `horizontal`<br />`vertical` | false    | Changes the orientation of the button group. |
 
-## Horizontal
+## Examples
+
+### Horizontal
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex flex-wrap justify-evenly gap-4">
+<component-container data-class="flex flex-wrap justify-evenly gap-4">
 <div x-h-button-group>
   <button x-h-button data-variant="outline">Action</button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Add button">
-    <i role="img" data-lucide="plus"></i>
+    <i x-h-lucide role="img" data-lucide="plus"></i>
   </button>
 </div>
 <div x-h-button-group>
@@ -43,7 +45,7 @@ x-h-button-group-separator
 <div x-h-button-group>
   <button x-h-button data-variant="outline">Action</button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Add button">
-    <i role="img" data-lucide="plus"></i>
+    <i x-h-lucide role="img" data-lucide="plus"></i>
   </button>
 </div>
 <div x-h-button-group>
@@ -53,10 +55,10 @@ x-h-button-group-separator
 </div>
 ```
 
-## Vertical
+### Vertical
 
 <ClientOnly>
-<component-container data-icons="true" data-class="flex justify-evenly gap-4">
+<component-container data-class="flex justify-evenly gap-4">
 <div x-h-button-group data-orientation="vertical">
   <button x-h-button data-variant="outline">Top</button>
   <button x-h-button data-variant="outline">Center</button>
@@ -64,13 +66,13 @@ x-h-button-group-separator
 </div>
 <div x-h-button-group data-orientation="vertical">
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom in">
-    <i role="img" data-lucide="zoom-in"></i>
+    <i x-h-lucide role="img" data-lucide="zoom-in"></i>
   </button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Fit to screen">
-    <i role="img" data-lucide="fullscreen"></i>
+    <i x-h-lucide role="img" data-lucide="fullscreen"></i>
   </button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom out">
-    <i role="img" data-lucide="zoom-out"></i>
+    <i x-h-lucide role="img" data-lucide="zoom-out"></i>
   </button>
 </div>
 </component-container>
@@ -84,13 +86,13 @@ x-h-button-group-separator
 </div>
 <div x-h-button-group data-orientation="vertical">
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom in">
-    <i role="img" data-lucide="zoom-in"></i>
+    <i x-h-lucide role="img" data-lucide="zoom-in"></i>
   </button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Fit to screen">
-    <i role="img" data-lucide="fullscreen"></i>
+    <i x-h-lucide role="img" data-lucide="fullscreen"></i>
   </button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom out">
-    <i role="img" data-lucide="zoom-out"></i>
+    <i x-h-lucide role="img" data-lucide="zoom-out"></i>
   </button>
 </div>
 ```

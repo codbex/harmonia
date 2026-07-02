@@ -2,7 +2,7 @@
   <div x-h-date-picker x-data="{ date: new Date().toISOString() }">
     <input type="text" id="date-input-1" />
     <button x-h-date-picker-trigger aria-label="Choose date"></button>
-    <div x-h-calendar x-model="date"></div>
+    <div x-h-date-picker-popup x-model="date"></div>
   </div>
 
   <div x-data="{ time: new Date().toTimeString().slice(0, 8), timeConfig: { seconds: true, is12Hour: false } }" x-h-time-picker="timeConfig">

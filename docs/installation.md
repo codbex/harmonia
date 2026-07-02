@@ -2,8 +2,8 @@
 
 You can include **Harmonia** in your project in two ways:
 
-- **Using a `<script>` tag** – quick and easy for adding Harmonia to an existing HTML page.
-- **Importing as a module** – ideal for modern JavaScript workflows with bundlers like Vite, Webpack, or Rollup.
+- **Using a `<script>` tag** - quick and easy for adding Harmonia to an existing HTML page.
+- **Importing as a module** - ideal for modern JavaScript workflows with bundlers like Vite, Webpack, or Rollup.
 
 ::: info
 As a prerequsite, you must have Alpine.js already installed.

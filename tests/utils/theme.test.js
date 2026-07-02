@@ -168,3 +168,64 @@ describe('addColorSchemeListener / removeColorSchemeListener', () => {
     removeColorSchemeListener(cb2);
   });
 });
+
+describe('storage event sync', () => {
+  // Simulate another same-origin document (iframe or tab) writing the saved scheme.
+  function dispatchStorage(key, newValue) {
+    let event;
+    if (typeof StorageEvent === 'function') {
+      event = new StorageEvent('storage', { key, newValue });
+    } else {
+      event = new Event('storage');
+      Object.assign(event, { key, newValue });
+    }
+    window.dispatchEvent(event);
+  }
+
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.classList.remove('dark');
+    window.matchMedia = createMatchMediaMock(false);
+  });
+
+  it('adds the dark class when another document switches to "dark"', () => {
+    dispatchStorage(colorSchemeKey, 'dark');
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+  });
+
+  it('removes the dark class when another document switches to "light"', () => {
+    document.documentElement.classList.add('dark');
+    dispatchStorage(colorSchemeKey, 'light');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+  });
+
+  it('notifies registered listeners on a storage change', () => {
+    const cb = vi.fn();
+    addColorSchemeListener(cb);
+    dispatchStorage(colorSchemeKey, 'dark');
+    expect(cb).toHaveBeenCalledWith('dark');
+    removeColorSchemeListener(cb);
+  });
+
+  it('does not re-persist to localStorage (no feedback loop)', () => {
+    dispatchStorage(colorSchemeKey, 'dark');
+    expect(localStorage.getItem(colorSchemeKey)).toBeNull();
+  });
+
+  it('ignores storage events for unrelated keys', () => {
+    const cb = vi.fn();
+    addColorSchemeListener(cb);
+    dispatchStorage('some.other.key', 'dark');
+    expect(cb).not.toHaveBeenCalled();
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    removeColorSchemeListener(cb);
+  });
+
+  it('ignores storage events with a null newValue (e.g. localStorage cleared)', () => {
+    const cb = vi.fn();
+    addColorSchemeListener(cb);
+    dispatchStorage(colorSchemeKey, null);
+    expect(cb).not.toHaveBeenCalled();
+    removeColorSchemeListener(cb);
+  });
+});

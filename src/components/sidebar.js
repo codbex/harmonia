@@ -1,10 +1,25 @@
+import { findAncestorState } from '../common/ancestor';
 import uuidv4 from '../utils/uuid';
 import { ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-sidebar', (el, { modifiers }, { cleanup }) => {
     el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
-    if (modifiers.includes('right')) el.classList.add('border-l');
-    else el.classList.add('border-r');
+
+    function setBorder() {
+      if (el.getAttribute('data-borderless') === 'true') {
+        el.classList.remove('border-r', 'border-l');
+      } else {
+        if (modifiers.includes('right')) {
+          el.classList.add('border-l');
+          el.classList.remove('border-r');
+        } else {
+          el.classList.add('border-r');
+          el.classList.remove('border-l');
+        }
+      }
+    }
+
+    setBorder();
 
     el.setAttribute('data-slot', 'sidebar');
 
@@ -18,11 +33,14 @@ export default function (Alpine) {
 
     setFloating();
 
-    const observer = new MutationObserver(() => {
-      setFloating();
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-floating') setFloating();
+        else setBorder();
+      });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-floating'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-floating', 'data-borderless'] });
 
     cleanup(() => {
       observer.disconnect();
@@ -31,8 +49,39 @@ export default function (Alpine) {
 
   Alpine.directive('h-sidebar-header', (el) => {
     el.classList.add('vbox', 'gap-2', 'p-2');
-    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_-1px_var(--border)]');
+    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_-1px_var(--sidebar-border)]');
     el.setAttribute('data-slot', 'sidebar-header');
+  });
+
+  Alpine.directive('h-sidebar-header-item', (el, { original }) => {
+    if (el.tagName === 'A' || el.tagName === 'BUTTON') {
+      throw new Error(`${original} is non-interactive (for logos and titles) and must not be set on a "button" or "a" element. Use x-h-sidebar-menu-button for an interactive item.`);
+    }
+
+    el.classList.add(
+      'hbox',
+      'w-full',
+      'items-center',
+      'gap-2',
+      'px-2',
+      'py-1',
+      'overflow-hidden',
+      'rounded-md',
+      'text-left',
+      'text-base',
+      'leading-none',
+      'font-semibold',
+      'align-middle',
+      '[&>span]:align-middle',
+      '[&>span]:truncate',
+      "[&_svg:not([class*='size-'])]:size-4",
+      '[&>svg]:shrink-0',
+      '[&>svg:not(:first-child):last-child]:ml-auto',
+      'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-4!',
+      'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu])]:hidden!'
+    );
+
+    el.setAttribute('data-slot', 'sidebar-header-item');
   });
 
   Alpine.directive('h-sidebar-content', (el) => {
@@ -65,7 +114,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-group-label', (el, { original }, { cleanup }) => {
-    const group = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_group'));
+    const group = findAncestorState(Alpine, el, '_h_sidebar_group');
     if (!group) {
       throw new Error(`${original} must be placed inside a sidebar group`);
     }
@@ -165,7 +214,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-group-content', (el, { original }, { effect }) => {
-    const group = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_group'));
+    const group = findAncestorState(Alpine, el, '_h_sidebar_group');
     if (!group) {
       throw new Error(`${original} must be placed inside a sidebar group`);
     }
@@ -236,7 +285,7 @@ export default function (Alpine) {
     } else if (el.tagName === 'BUTTON') {
       el.setAttribute('type', 'button');
     }
-    const menuItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_menu_item'));
+    const menuItem = findAncestorState(Alpine, el, '_h_sidebar_menu_item');
     el.classList.add(
       'flex',
       'w-full',
@@ -408,7 +457,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sidebar-separator', (el) => {
-    el.classList.add('bg-sidebar-border', 'w-auto', 'bg-border', 'shrink-0', 'h-px', 'w-full');
+    el.classList.add('bg-sidebar-border', 'shrink-0', 'h-px', 'w-full');
     el.setAttribute('data-slot', 'sidebar-separator');
     el.setAttribute('role', 'none');
   });
@@ -417,7 +466,7 @@ export default function (Alpine) {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be an ul element`);
     }
-    const menuItem = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sidebar_menu_item'));
+    const menuItem = findAncestorState(Alpine, el, '_h_sidebar_menu_item');
     if (!menuItem) {
       throw new Error(`${original} must be placed inside a sidebar menu item`);
     }
@@ -439,7 +488,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-sidebar-footer', (el) => {
     el.classList.add('vbox', 'gap-2', 'p-2');
-    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_1px_var(--border)]');
+    if (el.getAttribute('data-borderless') !== 'true') el.classList.add('inset-shadow-[0_1px_var(--sidebar-border)]');
     el.setAttribute('data-slot', 'sidebar-footer');
   });
 }

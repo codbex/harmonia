@@ -36,12 +36,12 @@ x-h-alert-actions
 ## Examples
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-alert>
-  <i role="img" data-lucide="files"></i>
+  <i x-h-lucide role="img" data-lucide="files"></i>
   <div x-h-alert-title>No description!</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i x-h-lucide role="img" data-lucide="x"></i></button>
   </div>
 </div>
 </component-container>
@@ -49,18 +49,18 @@ x-h-alert-actions
 
 ```html
 <div x-h-alert>
-  <i role="img" data-lucide="files"></i>
+  <i x-h-lucide role="img" data-lucide="files"></i>
   <div x-h-alert-title>No description!</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i x-h-lucide role="img" data-lucide="x"></i></button>
   </div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-alert>
-  <i role="img" data-lucide="mail"></i>
+  <i x-h-lucide role="img" data-lucide="mail"></i>
   <div x-h-alert-title>Mail Sent</div>
   <div x-h-alert-description>Your mail has been sent</div>
 </div>
@@ -69,16 +69,16 @@ x-h-alert-actions
 
 ```html
 <div x-h-alert>
-  <i role="img" data-lucide="mail"></i>
+  <i x-h-lucide role="img" data-lucide="mail"></i>
   <div x-h-alert-title>Mail Sent</div>
   <div x-h-alert-description>Your mail has been sent</div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-alert data-variant="information">
-  <i role="img" data-lucide="info"></i>
+  <i x-h-lucide role="img" data-lucide="info"></i>
   <div x-h-alert-title>Information</div>
   <div x-h-alert-description>Information variant description</div>
 </div>
@@ -87,16 +87,16 @@ x-h-alert-actions
 
 ```html
 <div x-h-alert data-variant="information">
-  <i role="img" data-lucide="info"></i>
+  <i x-h-lucide role="img" data-lucide="info"></i>
   <div x-h-alert-title>Information</div>
   <div x-h-alert-description>Information variant description</div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-alert data-variant="warning">
-  <i role="img" data-lucide="circle-alert"></i>
+  <i x-h-lucide role="img" data-lucide="circle-alert"></i>
   <div x-h-alert-title>Warning</div>
   <div x-h-alert-description>Warning variant description</div>
 </div>
@@ -105,16 +105,16 @@ x-h-alert-actions
 
 ```html
 <div x-h-alert data-variant="warning">
-  <i role="img" data-lucide="circle-alert"></i>
+  <i x-h-lucide role="img" data-lucide="circle-alert"></i>
   <div x-h-alert-title>Warning</div>
   <div x-h-alert-description>Warning variant description</div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-alert data-variant="negative">
-  <i role="img" data-lucide="circle-x"></i>
+  <i x-h-lucide role="img" data-lucide="circle-x"></i>
   <div x-h-alert-title>Negative</div>
   <div x-h-alert-description>Negative variant description</div>
 </div>
@@ -123,16 +123,16 @@ x-h-alert-actions
 
 ```html
 <div x-h-alert data-variant="negative">
-  <i role="img" data-lucide="circle-x"></i>
+  <i x-h-lucide role="img" data-lucide="circle-x"></i>
   <div x-h-alert-title>Negative</div>
   <div x-h-alert-description>Negative variant description</div>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-alert data-variant="positive">
-  <i role="img" data-lucide="circle-check"></i>
+  <i x-h-lucide role="img" data-lucide="circle-check"></i>
   <div x-h-alert-title>Positive</div>
   <div x-h-alert-description>Positive variant description</div>
 </div>
@@ -141,7 +141,7 @@ x-h-alert-actions
 
 ```html
 <div x-h-alert data-variant="positive">
-  <i role="img" data-lucide="circle-check"></i>
+  <i x-h-lucide role="img" data-lucide="circle-check"></i>
   <div x-h-alert-title>Positive</div>
   <div x-h-alert-description>Positive variant description</div>
 </div>

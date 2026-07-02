@@ -18,7 +18,7 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Enter` / `Space` - Activates the focused menu item.
 - `Esc` - Closes the menu or submenu and returns focus to the controlling element.
 - `Tab` - Closes the menu and submenus and sets focus to the next element.
-- `Character keys (A–Z)` - Moves focus to the next item whose label starts with the typed character.
+- `Character keys (A-Z)` - Moves focus to the next item whose label starts with the typed character.
 
 ## API Reference
 
@@ -147,7 +147,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 ### Contextmenu
 
 <ClientOnly>
-<component-container src="/components/menu/menu.html" data-class="border-dashed p-0" data-icons="true">
+<component-container src="/components/menu/menu.html" data-class="border-dashed p-0" >
 </component-container>
 </ClientOnly>
 
@@ -155,12 +155,12 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 <div x-h-menu-trigger class="flex items-center justify-center p-12">Right click for context menu</div>
 <ul x-h-menu aria-label="context menu" x-data="{ checkbox: { autosave: true }, radioItems: [{ label: 'Radio 1', value: 'r1' }, { label: 'Radio 2', value: 'r2' }], radioSelected: 'r1' }">
   <li x-h-menu-item>
-    <i role="img" data-lucide="save"></i>
+    <i x-h-lucide role="img" data-lucide="save"></i>
     <span>Save</span>
     <span x-h-menu-item-secondary>Ctrl+S</span>
   </li>
   <li x-h-menu-item data-variant="negative">
-    <i role="img" data-lucide="trash"></i>
+    <i x-h-lucide role="img" data-lucide="trash"></i>
     <span>Delete</span>
     <span x-h-menu-item-secondary>Del</span>
   </li>

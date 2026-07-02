@@ -6,6 +6,35 @@
 
 Harmonia is a modern UI Component Library for Alpine.js
 
+## For coding agents
+
+Harmonia ships an agent-readable skill so coding agents (Claude Code and others) know how to use every component. After `npm install @codbex/harmonia`, it lives at `node_modules/@codbex/harmonia/skills/harmonia/` (a `SKILL.md` router plus one reference file per component, and an `llms.txt` index).
+
+**Claude Code plugin (recommended).** Install it so the skill is discovered automatically:
+
+```
+/plugin marketplace add codbex/harmonia
+/plugin install harmonia@harmonia
+```
+
+**Manual (any agent that reads `.claude/skills`).**
+
+Expose the shipped skill in your project.
+
+On Linux/macOS/BSD:
+
+```sh
+ln -s node_modules/@codbex/harmonia/skills/harmonia .claude/skills/harmonia
+```
+
+On Windows:
+
+```sh
+cp -r node_modules/@codbex/harmonia/skills/harmonia .claude/skills/harmonia
+```
+
+Either way, point your agent at `skills/harmonia/SKILL.md` to start.
+
 ## Build steps
 
 1. Install dependencies

@@ -18,8 +18,7 @@ export default function (Alpine) {
       '[&::-webkit-color-swatch-wrapper]:rounded-0',
       '[&::-webkit-color-swatch-wrapper]:p-0',
       'text-base',
-      'transition-colors',
-      'transition-shadow',
+      'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       'outline-none',
       'file:inline-flex',
@@ -37,9 +36,12 @@ export default function (Alpine) {
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
-      'invalid:ring-negative/20!',
-      'dark:invalid:ring-negative/40!',
-      'invalid:border-negative!'
+      'user-invalid:ring-negative/20!',
+      'dark:user-invalid:ring-negative/40!',
+      'user-invalid:border-negative!',
+      '[[data-validate=immediate]_&:invalid]:ring-negative/20!',
+      'dark:[[data-validate=immediate]_&:invalid]:ring-negative/40!',
+      '[[data-validate=immediate]_&:invalid]:border-negative!'
     );
     if (modifiers.includes('group')) {
       el.classList.add('h-full', 'flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
@@ -52,8 +54,10 @@ export default function (Alpine) {
         'focus-visible:inset-ring-2',
         'aria-invalid:inset-ring-negative/20',
         'dark:aria-invalid:inset-ring-negative/40',
-        'invalid:inset-ring-negative/20!',
-        'dark:invalid:inset-ring-negative/40!'
+        'user-invalid:inset-ring-negative/20!',
+        'dark:user-invalid:inset-ring-negative/40!',
+        '[[data-validate=immediate]_&:invalid]:inset-ring-negative/20!',
+        'dark:[[data-validate=immediate]_&:invalid]:inset-ring-negative/40!'
       );
       el.setAttribute('data-slot', 'cell-input');
     } else {
@@ -80,8 +84,7 @@ export default function (Alpine) {
       'rounded-control',
       'border',
       'shadow-input',
-      'transition-colors',
-      'transition-shadow',
+      'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       'outline-none',
       'min-w-0',
@@ -189,8 +192,7 @@ export default function (Alpine) {
       'relative',
       'flex',
       'items-center',
-      'transition-colors',
-      'transition-shadow',
+      'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
@@ -208,9 +210,12 @@ export default function (Alpine) {
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'has-[input[aria-invalid=true]]:border-negative',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
-        'has-[input:invalid]:inset-ring-negative/20',
-        'has-[input:invalid]:border-negative',
-        'dark:has-[input:invalid]:inset-ring-negative/40'
+        'has-[input:user-invalid]:inset-ring-negative/20',
+        'has-[input:user-invalid]:border-negative',
+        'dark:has-[input:user-invalid]:inset-ring-negative/40',
+        '[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/20',
+        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
+        'dark:[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/40'
       );
       el.setAttribute('data-slot', 'cell-input-number');
     } else {
@@ -226,9 +231,12 @@ export default function (Alpine) {
         'has-[input[aria-invalid=true]]:ring-negative/20',
         'has-[input[aria-invalid=true]]:border-negative',
         'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-        'has-[input:invalid]:ring-negative/20',
-        'has-[input:invalid]:border-negative',
-        'dark:has-[input:invalid]:ring-negative/40'
+        'has-[input:user-invalid]:ring-negative/20',
+        'has-[input:user-invalid]:border-negative',
+        'dark:has-[input:user-invalid]:ring-negative/40',
+        '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
+        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
+        'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40'
       );
       el.setAttribute('data-slot', 'input-number');
     }
@@ -277,7 +285,8 @@ export default function (Alpine) {
       'border-l',
       'border-input',
       '[input[aria-invalid=true]~&]:border-negative',
-      '[input:invalid~&]:border-negative',
+      '[input:user-invalid~&]:border-negative',
+      '[[data-validate=immediate]_input:invalid~&]:border-negative',
       'h-full',
       'aspect-square',
       'transition-colors',
@@ -328,7 +337,8 @@ export default function (Alpine) {
       'border-l',
       'border-input',
       '[input[aria-invalid=true]~&]:border-negative',
-      '[input:invalid~&]:border-negative',
+      '[input:user-invalid~&]:border-negative',
+      '[[data-validate=immediate]_input:invalid~&]:border-negative',
       'h-full',
       'aspect-square',
       'transition-all',

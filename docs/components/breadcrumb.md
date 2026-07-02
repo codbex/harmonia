@@ -33,7 +33,7 @@ x-h-breadcrumb-page
 <nav x-h-breadcrumb>
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon.home role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
     </li>
     <li x-h-breadcrumb-item>
       <a x-h-breadcrumb-link href="#">Components</a>
@@ -70,7 +70,7 @@ x-h-breadcrumb-page
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
       <button x-h-breadcrumb-link>
-        <svg x-h-icon.home role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
         <span>Home</span>
       </button>
     </li>
@@ -90,7 +90,7 @@ x-h-breadcrumb-page
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
       <button x-h-breadcrumb-link>
-        <svg x-h-icon.home role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
         <span>Home</span>
       </button>
     </li>
@@ -131,15 +131,15 @@ x-h-breadcrumb-page
 ### In a Toolbar
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i role="img" data-lucide="panel-left"></i></button>
+  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
   <div x-h-toolbar-separator></div>
   <nav x-h-breadcrumb>
     <ol x-h-breadcrumb-list>
       <li x-h-breadcrumb-item>
         <button x-h-breadcrumb-link>
-          <i role="img" data-lucide="home"></i>
+          <i x-h-lucide role="img" data-lucide="home"></i>
           <span>Home</span>
         </button>
       </li>
@@ -152,22 +152,22 @@ x-h-breadcrumb-page
     </ol>
   </nav>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i role="img" data-lucide="panel-left"></i></button>
+  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
   <div x-h-toolbar-separator></div>
   <nav x-h-breadcrumb>
     <ol x-h-breadcrumb-list>
       <li x-h-breadcrumb-item>
         <button x-h-breadcrumb-link>
-          <i role="img" data-lucide="home"></i>
+          <i x-h-lucide role="img" data-lucide="home"></i>
           <span>Home</span>
         </button>
       </li>
@@ -180,21 +180,21 @@ x-h-breadcrumb-page
     </ol>
   </nav>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i role="img" data-lucide="panel-left"></i></button>
+  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
   <nav x-h-breadcrumb data-variant="outline">
     <ol x-h-breadcrumb-list>
       <li x-h-breadcrumb-item>
         <button x-h-breadcrumb-link>
-          <i role="img" data-lucide="home"></i>
+          <i x-h-lucide role="img" data-lucide="home"></i>
           <span>Home</span>
         </button>
       </li>
@@ -207,21 +207,21 @@ x-h-breadcrumb-page
     </ol>
   </nav>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 </component-container>
 </ClientOnly>
 
 ```html
 <div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i role="img" data-lucide="panel-left"></i></button>
+  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
   <nav x-h-breadcrumb data-variant="outline">
     <ol x-h-breadcrumb-list>
       <li x-h-breadcrumb-item>
         <button x-h-breadcrumb-link>
-          <i role="img" data-lucide="home"></i>
+          <i x-h-lucide role="img" data-lucide="home"></i>
           <span>Home</span>
         </button>
       </li>
@@ -234,9 +234,9 @@ x-h-breadcrumb-page
     </ol>
   </nav>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
 
@@ -301,7 +301,7 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="scroll">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon.home role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
     </li>
     <li x-h-breadcrumb-item>
       <a x-h-breadcrumb-link href="#">Page 1</a>
@@ -336,7 +336,7 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="scroll" data-variant="outline">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon.home role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
     </li>
     <li x-h-breadcrumb-item>
       <a x-h-breadcrumb-link href="#">Page 1</a>
@@ -382,11 +382,11 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="nowrap">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon.home role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
     </li>
     <li x-h-breadcrumb-item>
       <button x-h-breadcrumb-link x-h-menu-trigger.dropdown>
-        <svg x-h-icon.ellipsis role="img" aria-label="ellipsis"></svg>
+        <svg x-h-icon data-icon="ellipsis" role="img" aria-label="ellipsis"></svg>
         <span class="sr-only">Breadcrumb overflow menu</span>
       </button>
       <ul x-h-menu>
@@ -428,11 +428,11 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="nowrap">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon.home role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
     </li>
     <li x-h-breadcrumb-item>
       <button x-h-breadcrumb-link x-h-menu-trigger.dropdown>
-        <svg x-h-icon.ellipsis role="img" aria-label="ellipsis"></svg>
+        <svg x-h-icon data-icon="ellipsis" role="img" aria-label="ellipsis"></svg>
         <span class="sr-only">Breadcrumb overflow menu</span>
       </button>
       <ul x-h-menu>

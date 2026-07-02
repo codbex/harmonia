@@ -55,4 +55,13 @@ describe('h-textarea', () => {
     expect(el.classList.contains('disabled:cursor-not-allowed')).toBe(true);
     expect(el.classList.contains('disabled:opacity-50')).toBe(true);
   });
+
+  it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {
+    const el = document.createElement('textarea');
+    mountDirective(textareaPlugin, 'h-textarea', el, { modifiers: [] });
+    expect(el.classList.contains('user-invalid:border-negative!')).toBe(true);
+    expect(el.classList.contains('[[data-validate=immediate]_&:invalid]:border-negative!')).toBe(true);
+    expect(el.classList.contains('invalid:border-negative!')).toBe(false);
+    expect(el.classList.contains('aria-invalid:border-negative')).toBe(true);
+  });
 });

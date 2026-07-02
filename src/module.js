@@ -6,12 +6,15 @@ import breadcrumb from './components/breadcrumb';
 import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
+import chart from './components/chart';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
-import datepicker from './components/datepicker';
+import datepicker from './components/date-picker';
+import datetimePicker from './components/datetime-picker';
 import dialog from './components/dialog';
 import expansionPanel from './components/expansion-panel';
 import fieldset from './components/fieldset';
+import fileUpload from './components/file-upload';
 import icon from './components/icon';
 import infoPage from './components/info-page';
 import input from './components/input';
@@ -25,11 +28,13 @@ import popover from './components/popover';
 import progress from './components/progress';
 import radio from './components/radio';
 import range from './components/range';
+import rating from './components/rating';
 import select from './components/select';
 import separator from './components/separator';
 import sheet from './components/sheet';
 import sidebar from './components/sidebar';
 import skeleton from './components/skeleton';
+import slotPicker from './components/slot-picker';
 import spinner from './components/spinner';
 import split from './components/split';
 import stepIndicator from './components/step-indicator';
@@ -40,7 +45,7 @@ import tag from './components/tag';
 import text from './components/text';
 import textarea from './components/textarea';
 import tile from './components/tile';
-import timepicker from './components/timepicker';
+import timepicker from './components/time-picker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 import tree from './components/tree';
@@ -49,6 +54,8 @@ export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
+import lucide from './plugins/lucide';
+import dateFormat from './utils/date-format';
 import focus from './utils/focus';
 import include from './utils/include';
 import template from './utils/template';
@@ -62,12 +69,16 @@ export {
   button as Button,
   calendar as Calendar,
   card as Card,
+  chart as Chart,
   checkbox as Checkbox,
   chip as Chip,
+  dateFormat as DateFormat,
   datepicker as DatePicker,
+  datetimePicker as DateTimePicker,
   dialog as Dialog,
   expansionPanel as ExpansionPanel,
   fieldset as Fieldset,
+  fileUpload as FileUpload,
   focus as Focus,
   icon as Icon,
   include as Include,
@@ -75,6 +86,7 @@ export {
   input as Input,
   label as Label,
   list as List,
+  lucide as Lucide,
   menu as Menu,
   navigationMenu as NavigationMenu,
   notifications as Notifications,
@@ -83,11 +95,13 @@ export {
   progress as Progress,
   radio as Radio,
   range as Range,
+  rating as Rating,
   select as Select,
   separator as Separator,
   sheet as Sheet,
   sidebar as Sidebar,
   skeleton as Skeleton,
+  slotPicker as SlotPicker,
   spinner as Spinner,
   split as Split,
   stepIndicator as StepIndicator,
@@ -114,11 +128,16 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(button);
   registerPlugin(calendar);
   registerPlugin(card);
+  registerPlugin(chart);
   registerPlugin(checkbox);
+  registerPlugin(chip);
+  registerPlugin(dateFormat);
   registerPlugin(datepicker);
+  registerPlugin(datetimePicker);
   registerPlugin(dialog);
   registerPlugin(expansionPanel);
   registerPlugin(fieldset);
+  registerPlugin(fileUpload);
   registerPlugin(focus);
   registerPlugin(icon);
   registerPlugin(include);
@@ -134,12 +153,14 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(progress);
   registerPlugin(radio);
   registerPlugin(range);
+  registerPlugin(rating);
   registerPlugin(select);
   registerPlugin(separator);
   registerPlugin(sheet);
   registerPlugin(sidebar);
   registerPlugin(skeleton);
   registerPlugin(spinner);
+  registerPlugin(slotPicker);
   registerPlugin(split);
   registerPlugin(stepIndicator);
   registerPlugin(_switch);

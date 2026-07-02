@@ -17,6 +17,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | bg-positive    | Set positive color as background color.    |
 | bg-warning     | Set warning color as background color.     |
 | bg-information | Set information color as background color. |
+| bg-sidebar     | Set sidebar color as background color.     |
 
 ### Text colors
 
@@ -38,6 +39,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | text-warning-foreground     | Set warning foreground color as text color.     |
 | text-information            | Set information color as text color.            |
 | text-information-foreground | Set information foreground color as text color. |
+| text-sidebar-foreground     | Set sidebar foreground color as text color.     |
 
 ### SVG/Icon fill colors
 
@@ -82,7 +84,50 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | border-information            | Set information color as border color.             |
 | border-information-foreground | Set information foreground color as border color.  |
 
+### Standard colors
+
+A subset of the standard color palette is available as `bg-` and `text-` utilities for general-purpose use. The chromatic colors are provided at the `500` step; `white` and `black` have no step.
+
+| Color  | Background class | Text class      |
+| ------ | ---------------- | --------------- |
+| White  | bg-white         | text-white      |
+| Black  | bg-black         | text-black      |
+| Red    | bg-red-500       | text-red-500    |
+| Orange | bg-orange-500    | text-orange-500 |
+| Yellow | bg-yellow-500    | text-yellow-500 |
+| Green  | bg-green-500     | text-green-500  |
+| Teal   | bg-teal-500      | text-teal-500   |
+| Blue   | bg-blue-500      | text-blue-500   |
+| Indigo | bg-indigo-500    | text-indigo-500 |
+| Purple | bg-purple-500    | text-purple-500 |
+| Pink   | bg-pink-500      | text-pink-500   |
+| Gray   | bg-gray-500      | text-gray-500   |
+
 ## Examples
+
+### Standard colors
+
+<ClientOnly>
+<component-container data-class="flex flex-wrap gap-2">
+<p class="bg-white text-black border p-4">white</p>
+<p class="bg-black text-white p-4">black</p>
+<p class="bg-red-500 text-white p-4">red-500</p>
+<p class="bg-orange-500 text-white p-4">orange-500</p>
+<p class="bg-yellow-500 text-black p-4">yellow-500</p>
+<p class="bg-green-500 text-white p-4">green-500</p>
+<p class="bg-teal-500 text-white p-4">teal-500</p>
+<p class="bg-blue-500 text-white p-4">blue-500</p>
+<p class="bg-indigo-500 text-white p-4">indigo-500</p>
+<p class="bg-purple-500 text-white p-4">purple-500</p>
+<p class="bg-pink-500 text-white p-4">pink-500</p>
+<p class="bg-gray-500 text-white p-4">gray-500</p>
+</component-container>
+</ClientOnly>
+
+```html
+<p class="bg-red-500 p-4 text-white">red-500</p>
+<p class="p-4 text-red-500">red-500</p>
+```
 
 ### Primary
 
@@ -177,7 +222,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 ### Muted
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <p class="bg-muted text-muted-foreground p-4">Muted</p>
 <p class="p-4 text-muted">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
@@ -190,4 +235,16 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 <p class="p-4 text-muted">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 <svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
+```
+
+### Sidebar
+
+<ClientOnly>
+<component-container>
+<p class="bg-sidebar text-sidebar-foreground p-4">Sidebar</p>
+</component-container>
+</ClientOnly>
+
+```html
+<p class="bg-sidebar p-4 text-sidebar-foreground">Sidebar</p>
 ```

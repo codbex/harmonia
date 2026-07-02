@@ -32,11 +32,11 @@ x-h-info-page-content
 ### With inline SVG icon
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-info-page>
   <div x-h-info-page-header>
     <div x-h-info-page-media.icon>
-      <i role="img" data-lucide="folder"></i>
+      <i x-h-lucide role="img" data-lucide="folder"></i>
     </div>
     <div x-h-info-page-title>No Projects Yet</div>
     <div x-h-info-page-description>You haven't created any projects yet. Get started by creating your first project.</div>
@@ -47,7 +47,7 @@ x-h-info-page-content
       <button x-h-button data-variant="outline">Import Project</button>
     </div>
   </div>
-  <a href="#" x-h-button data-size="sm" data-variant="link">Learn More<i role="img" data-lucide="arrow-up-right"></i></a>
+  <a href="#" x-h-button data-size="sm" data-variant="link">Learn More<i x-h-lucide role="img" data-lucide="arrow-up-right"></i></a>
 </div>
 </component-container>
 </ClientOnly>
@@ -56,7 +56,7 @@ x-h-info-page-content
 <div x-h-info-page>
   <div x-h-info-page-header>
     <div x-h-info-page-media.icon>
-      <i role="img" data-lucide="folder"></i>
+      <i x-h-lucide role="img" data-lucide="folder"></i>
     </div>
     <div x-h-info-page-title>No Projects Yet</div>
     <div x-h-info-page-description>You haven't created any projects yet. Get started by creating your first project.</div>
@@ -67,7 +67,7 @@ x-h-info-page-content
       <button x-h-button data-variant="outline">Import Project</button>
     </div>
   </div>
-  <a href="#" x-h-button data-size="sm" data-variant="link">Learn More<i role="img" data-lucide="arrow-up-right"></i></a>
+  <a href="#" x-h-button data-size="sm" data-variant="link">Learn More<i x-h-lucide role="img" data-lucide="arrow-up-right"></i></a>
 </div>
 ```
 
@@ -108,11 +108,11 @@ x-h-info-page-content
 ### With border
 
 <ClientOnly>
-<component-container data-icons="true">
+<component-container>
 <div x-h-info-page class="border">
   <div x-h-info-page-header>
     <div x-h-info-page-media>
-      <i role="img" data-lucide="upload"></i>
+      <i x-h-lucide role="img" data-lucide="upload"></i>
     </div>
     <div x-h-info-page-title>Upload file(s)</div>
     <div x-h-info-page-description>Drag & drop your file(s) or use the button below</div>
@@ -128,7 +128,7 @@ x-h-info-page-content
 <div x-h-info-page class="border">
   <div x-h-info-page-header>
     <div x-h-info-page-media>
-      <i role="img" data-lucide="upload"></i>
+      <i x-h-lucide role="img" data-lucide="upload"></i>
     </div>
     <div x-h-info-page-title>Upload file(s)</div>
     <div x-h-info-page-description>Drag & drop your file(s) or use the button below</div>

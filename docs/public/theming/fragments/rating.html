@@ -1,0 +1,20 @@
+<div class="vbox items-start gap-4">
+  <div x-data="{ score: 2.5 }" class="flex items-center gap-3">
+    <div x-h-rating x-model="score"></div>
+    <span x-text="score"></span>
+  </div>
+
+  <div x-data="{ score: 3 }">
+    <div x-h-rating x-model="score" data-precision="full"></div>
+  </div>
+
+  <div x-data="{ score: 4 }">
+    <div x-h-rating x-model="score" data-color="red"></div>
+  </div>
+
+  <div x-h-rating data-readonly data-value="4.5" data-label="Average rating"></div>
+
+  <div x-data="{ score: 7 }">
+    <div x-h-rating x-model="score" data-max="10" data-size="lg"></div>
+  </div>
+</div>

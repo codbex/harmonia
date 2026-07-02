@@ -47,7 +47,7 @@ Panel sizes are stored as absolute pixel values (`panel.size`). The engine runs 
 - A panel is **added or removed** (structural change; declared sizes must be re-assigned).
 - `resetInit()` is called by a panel's **show handler** (panels being re-shown need their `restoreFraction` applied).
 
-It does **not** reset when a panel is hidden. The redistribution loop in step 4–5 already handles the remaining visible panels without needing a full re-init, and resetting would cause the init block to load stale `localStorage` sizes.
+It does **not** reset when a panel is hidden. The redistribution loop in step 4-5 already handles the remaining visible panels without needing a full re-init, and resetting would cause the init block to load stale `localStorage` sizes.
 
 ### Init block paths
 

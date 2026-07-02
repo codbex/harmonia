@@ -1,5 +1,8 @@
 const fs = require('fs');
 
+// Regenerate the icon data map from icons/*.svg before bundling.
+require('./generate-icons.cjs');
+
 fs.rmSync('dist', { recursive: true, force: true });
 
 build({
@@ -15,6 +18,26 @@ build({
 build({
   entryPoints: [`src/index.js`],
   outfile: `dist/harmonia.min.js`,
+  bundle: true,
+  minify: true,
+  sourcemap: true,
+  platform: 'browser',
+  define: { CDN: 'true' },
+});
+
+build({
+  entryPoints: [`src/lucide.js`],
+  outfile: `dist/harmonia-lucide.js`,
+  bundle: true,
+  minify: false,
+  sourcemap: false,
+  platform: 'browser',
+  define: { CDN: 'true' },
+});
+
+build({
+  entryPoints: [`src/lucide.js`],
+  outfile: `dist/harmonia-lucide.min.js`,
   bundle: true,
   minify: true,
   sourcemap: true,

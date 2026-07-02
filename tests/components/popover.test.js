@@ -66,6 +66,44 @@ describe('h-popover-trigger', () => {
     expect(el._h_popover.expanded).toBe(false);
     expect(el.getAttribute('aria-expanded')).toBe('false');
   });
+
+  it('is automatic when there is no expression', () => {
+    const el = document.createElement('button');
+    mountDirective(popoverPlugin, 'h-popover-trigger', el, { modifiers: [], expression: '' });
+    expect(el._h_popover.auto).toBe(true);
+  });
+
+  it('stays automatic (two-way) when a variable is bound but no click handler is set', () => {
+    const el = document.createElement('button');
+    mountDirective(popoverPlugin, 'h-popover-trigger', el, { modifiers: [], expression: 'open' });
+    expect(el._h_popover.auto).toBe(true);
+  });
+
+  it('is manual only when a variable is bound AND a click handler is present', () => {
+    const el = document.createElement('button');
+    el.setAttribute('@click', 'open = !open');
+    mountDirective(popoverPlugin, 'h-popover-trigger', el, { modifiers: [], expression: 'open' });
+    expect(el._h_popover.auto).toBe(false);
+  });
+
+  it('detects x-on:click (and modifiers) as a manual click handler', () => {
+    const longform = document.createElement('button');
+    longform.setAttribute('x-on:click', 'open = !open');
+    mountDirective(popoverPlugin, 'h-popover-trigger', longform, { modifiers: [], expression: 'open' });
+    expect(longform._h_popover.auto).toBe(false);
+
+    const withModifier = document.createElement('button');
+    withModifier.setAttribute('@click.stop', 'open = !open');
+    mountDirective(popoverPlugin, 'h-popover-trigger', withModifier, { modifiers: [], expression: 'open' });
+    expect(withModifier._h_popover.auto).toBe(false);
+  });
+
+  it('remains automatic when a click handler is present but no variable is bound', () => {
+    const el = document.createElement('button');
+    el.setAttribute('@click', 'doSomething()');
+    mountDirective(popoverPlugin, 'h-popover-trigger', el, { modifiers: [], expression: '' });
+    expect(el._h_popover.auto).toBe(true);
+  });
 });
 
 describe('h-popover', () => {
@@ -124,13 +162,13 @@ describe('h-popover', () => {
     expect(ctx.cleanup).toHaveBeenCalled();
   });
 
-  it('replaces overflow-auto with overflow-none for no-scroll modifier', () => {
+  it('replaces overflow-auto with overflow-hidden for no-scroll modifier', () => {
     const { popoverEl } = createPopoverSetup();
     mountDirective(popoverPlugin, 'h-popover', popoverEl, {
       original: 'x-h-popover',
       modifiers: ['no-scroll'],
     });
     expect(popoverEl.classList.contains('overflow-auto')).toBe(false);
-    expect(popoverEl.classList.contains('overflow-none')).toBe(true);
+    expect(popoverEl.classList.contains('overflow-hidden')).toBe(true);
   });
 });

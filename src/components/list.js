@@ -19,9 +19,12 @@ export default function (Alpine) {
       'aria-invalid:ring-negative/20',
       'dark:aria-invalid:ring-negative/40',
       'aria-invalid:border-negative',
-      'invalid:ring-negative/20!',
-      'dark:invalid:ring-negative/40!',
-      'invalid:border-negative!',
+      'user-invalid:ring-negative/20!',
+      'dark:user-invalid:ring-negative/40!',
+      'user-invalid:border-negative!',
+      '[[data-validate=immediate]_&:invalid]:ring-negative/20!',
+      'dark:[[data-validate=immediate]_&:invalid]:ring-negative/40!',
+      '[[data-validate=immediate]_&:invalid]:border-negative!',
       '[&>ul:first-child>*:first-child]:rounded-t-control',
       '[&>ul:last-child>*:last-child]:rounded-b-control'
     );
@@ -143,9 +146,9 @@ export default function (Alpine) {
         'aria-selected:bg-primary',
         'aria-selected:text-primary-foreground',
         '[&[aria-selected=true]:hover]:bg-primary-hover',
-        '[&[aria-selected=true]:hover]:text-primary-hover-foreground',
+        '[&[aria-selected=true]:hover]:text-primary-foreground',
         '[&[aria-selected=true]:focus]:bg-primary-hover',
-        '[&[aria-selected=true]:focus]:text-primary-hover-foreground'
+        '[&[aria-selected=true]:focus]:text-primary-foreground'
       );
       el.setAttribute('tabindex', '0');
     }

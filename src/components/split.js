@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 export default function (Alpine) {
   Alpine.directive('h-split', (el, _, { cleanup, Alpine }) => {
     const panels = [];
@@ -312,7 +313,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-split-panel', (el, { original }, { effect, cleanup, Alpine }) => {
-    const split = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_split'));
+    const split = findAncestorState(Alpine, el, '_h_split');
     if (!split) {
       throw new Error(`${original} must be inside an split element`);
     }

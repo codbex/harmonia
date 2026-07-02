@@ -1,3 +1,4 @@
+import { findAncestorState } from '../common/ancestor';
 export default function (Alpine) {
   Alpine.directive('h-sheet-overlay', (el, { expression }, { effect, evaluate, evaluateLater, cleanup }) => {
     el._h_sheet_overlay = {
@@ -57,7 +58,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-sheet', (el, { original }, { effect, cleanup }) => {
-    const overlay = Alpine.findClosest(el.parentElement, (parent) => Object.prototype.hasOwnProperty.call(parent, '_h_sheet_overlay'));
+    const overlay = findAncestorState(Alpine, el, '_h_sheet_overlay');
     if (!overlay) {
       throw new Error(`${original} must be placed inside a sheet overlay`);
     }

@@ -2,13 +2,15 @@
 
 ## Class names
 
-| Class            | Description                           |
-| ---------------- | ------------------------------------- |
-| grid             | `display: grid;`                      |
-| grid-cols-`1-12` | Number of grid columns. From 1 to 12. |
+| Class            | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| grid             | `display: grid;`                               |
+| grid-cols-`1-12` | Number of grid columns. From 1 to 12.          |
+| col-span-`1-12`  | Number of columns an item spans. From 1 to 12. |
+| row-span-`1-12`  | Number of rows an item spans. From 1 to 12.    |
 
 ::: info Responsive grid
-You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and `xl` breakpoint prefixes to make the grid responsive.
+You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm`, `md`, `lg` and `xl` breakpoint prefixes to make the grid responsive.
 :::
 
 ### Justify grid items
@@ -208,6 +210,54 @@ You can combine the `grid-cols-*` classes with the standard `sm`, `md`, `lg` and
   <span class="bg-primary p-2 text-primary-foreground">4</span>
   <span class="bg-primary p-2 text-primary-foreground">5</span>
   <span class="bg-primary p-2 text-primary-foreground">6</span>
+</div>
+```
+
+### Column span
+
+<ClientOnly>
+<component-container>
+<div class="grid grid-cols-4 gap-1">
+  <span class="bg-primary text-primary-foreground p-2 col-span-2">col-span-2</span>
+  <span class="bg-primary text-primary-foreground p-2">1</span>
+  <span class="bg-primary text-primary-foreground p-2">2</span>
+  <span class="bg-primary text-primary-foreground p-2 col-span-3">col-span-3</span>
+  <span class="bg-primary text-primary-foreground p-2">3</span>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="grid grid-cols-4 gap-1">
+  <span class="col-span-2 bg-primary p-2 text-primary-foreground">col-span-2</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="col-span-3 bg-primary p-2 text-primary-foreground">col-span-3</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+</div>
+```
+
+### Row span
+
+<ClientOnly>
+<component-container>
+<div class="grid grid-cols-3 gap-1" style="height: 10rem">
+  <span class="bg-primary text-primary-foreground p-2 row-span-2">row-span-2</span>
+  <span class="bg-primary text-primary-foreground p-2">1</span>
+  <span class="bg-primary text-primary-foreground p-2">2</span>
+  <span class="bg-primary text-primary-foreground p-2">3</span>
+  <span class="bg-primary text-primary-foreground p-2">4</span>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div class="grid grid-cols-3 gap-1" style="height: 10rem">
+  <span class="row-span-2 bg-primary p-2 text-primary-foreground">row-span-2</span>
+  <span class="bg-primary p-2 text-primary-foreground">1</span>
+  <span class="bg-primary p-2 text-primary-foreground">2</span>
+  <span class="bg-primary p-2 text-primary-foreground">3</span>
+  <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
 

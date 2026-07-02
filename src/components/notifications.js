@@ -83,7 +83,7 @@ export default function (Alpine) {
       }
       notificationTemplates[template.getAttribute('id')] = template;
     });
-    el.classList.add('fixed', 'w', 'inset-0', 'z-60', 'pointer-events-none', 'grid', 'grid-rows-2', 'grid-cols-1', 'lg:grid-cols-2', 'xl:grid-cols-3');
+    el.classList.add('fixed', 'inset-0', 'z-60', 'pointer-events-none', 'grid', 'grid-rows-2', 'grid-cols-1', 'lg:grid-cols-2', 'xl:grid-cols-3');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('aria-live', 'polite');
     el.setAttribute('aria-atomic', 'false');
@@ -221,6 +221,16 @@ export default function (Alpine) {
     cleanup(() => {
       lgBreakpointListener.remove();
       xlBreakpointListener.remove();
+      const store = Alpine.store('_h_notifications');
+      const index = store.listeners.indexOf(listener);
+      if (index !== -1) store.listeners.splice(index, 1);
+      [olTopLeft, olTopCenter, olTopRight, olBottomLeft, olBottomCenter, olBottomRight].forEach((ol) => {
+        while (ol.firstElementChild) {
+          const clone = ol.firstElementChild;
+          Alpine.destroyTree(clone);
+          clone.remove();
+        }
+      });
     });
   });
 

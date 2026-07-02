@@ -1,7 +1,8 @@
+import { classListStartsWith } from '../common/class-list';
 import { setSvgContent } from './../common/icons';
 
 export default function (Alpine) {
-  Alpine.directive('h-icon', (el, { original, modifiers }) => {
+  Alpine.directive('h-icon', (el, { original }, { cleanup }) => {
     if (el.tagName.toLowerCase() !== 'svg') {
       throw new Error(`${original} works only on svg elements`);
     } else if (!el.hasAttribute('role')) {
@@ -9,7 +10,9 @@ export default function (Alpine) {
     } else if (el.getAttribute('role') === 'img' && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
       throw new Error(`${original}: svg images with the role of img must have an "aria-label" or "aria-labelledby" attribute`);
     }
-    el.classList.add('fill-current');
+    if (!classListStartsWith(el.classList, 'fill-')) {
+      el.classList.add('fill-current');
+    }
     el.setAttribute('data-slot', 'icon');
     if (el.hasAttribute('data-link')) {
       fetch(el.getAttribute('data-link'))
@@ -28,8 +31,21 @@ export default function (Alpine) {
         .catch((response) => {
           console.error(response);
         });
-    } else if (modifiers[0]) {
-      setSvgContent(el, modifiers[0]);
+    } else {
+      const renderIcon = () => {
+        if (!el.hasAttribute('data-icon')) return;
+        while (el.firstChild) el.removeChild(el.firstChild);
+        setSvgContent(el, el.getAttribute('data-icon'));
+      };
+
+      renderIcon();
+
+      const observer = new MutationObserver(renderIcon);
+      observer.observe(el, { attributes: true, attributeFilter: ['data-icon'] });
+
+      cleanup(() => {
+        observer.disconnect();
+      });
     }
   });
 }

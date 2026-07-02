@@ -4,7 +4,7 @@ A single-selection list component with support for grouped options, functionally
 
 ## Usage
 
-Use listboxes when users need to select a single option from a clearly defined set of choices. Options should be grouped logically if applicable, and provide descriptive labels to support accessibility.
+Use listboxes when users need to select a single option from a clearly defined set of choices. Options should be grouped logically if applicable, and provide descriptive labels to support accessibility. For a non-interactive, display-only collection, use the [List](/components/list) component instead.
 
 ## Keyboard Handling
 
@@ -15,10 +15,6 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `End` - Moves focus to the last item in the listbox.
 - `Enter` / `Space` - Selects the focused item.
 
-## Related components
-
-[List](/components/list)
-
 ## API Reference
 
 ### Component attribute(s)
@@ -26,6 +22,10 @@ The user can use the following keyboard shortcuts in order to navigate through t
 ```
 x-h-listbox
 ```
+
+### Validation timing
+
+By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
 ## Examples
 
