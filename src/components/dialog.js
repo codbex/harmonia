@@ -96,7 +96,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-dialog-header', (el) => {
-    el.classList.add('grid', 'grid-cols-[1fr_auto]', 'place-items-start', 'gap-2', 'text-center', 'sm:text-left');
+    el.classList.add('grid', 'grid-cols-[minmax(0,1fr)_auto]', 'place-items-start', 'gap-2', 'text-center', 'sm:text-left');
     el.setAttribute('data-slot', 'dialog-header');
   });
 

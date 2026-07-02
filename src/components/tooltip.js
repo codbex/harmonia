@@ -2,22 +2,22 @@ import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-tooltip-trigger', (el, _, { Alpine, cleanup }) => {
-    el._tooltip = Alpine.reactive({
+    el._h_tooltip = Alpine.reactive({
       id: undefined,
       controls: `htp${uuidv4()}`,
       shown: false,
     });
 
     if (el.hasAttribute('id')) {
-      el._tooltip.id = el.getAttribute('id');
+      el._h_tooltip.id = el.getAttribute('id');
     } else {
-      el._tooltip.id = `htt${uuidv4()}`;
-      el.setAttribute('id', el._tooltip.id);
+      el._h_tooltip.id = `htt${uuidv4()}`;
+      el.setAttribute('id', el._h_tooltip.id);
     }
-    el.setAttribute('aria-describedby', el._tooltip.controls);
+    if (!el.hasAttribute('aria-describedby')) el.setAttribute('aria-describedby', el._h_tooltip.controls);
 
     const handler = (event) => {
-      el._tooltip.shown = event.type === 'pointerenter';
+      el._h_tooltip.shown = event.type === 'pointerenter';
     };
 
     el.addEventListener('pointerenter', handler);
@@ -32,7 +32,7 @@ export default function (Alpine) {
   Alpine.directive('h-tooltip', (el, { original }, { effect, cleanup }) => {
     const tooltip = (() => {
       let sibling = el.previousElementSibling;
-      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_tooltip')) {
+      while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_h_tooltip')) {
         sibling = sibling.previousElementSibling;
       }
       return sibling;
@@ -57,10 +57,11 @@ export default function (Alpine) {
       'duration-100',
       'ease-out',
       'opacity-0',
-      'scale-95'
+      'scale-95',
+      'hidden'
     );
     el.setAttribute('data-slot', 'tooltip');
-    el.setAttribute('id', tooltip._tooltip.controls);
+    el.setAttribute('id', tooltip._h_tooltip.controls);
 
     const arrowEl = document.createElement('span');
     arrowEl.classList.add('absolute', 'bg-foreground', 'size-2.5', 'rotate-45');
@@ -86,7 +87,7 @@ export default function (Alpine) {
     }
 
     effect(() => {
-      if (tooltip._tooltip.shown) {
+      if (tooltip._h_tooltip.shown) {
         el.classList.remove('hidden');
         updatePosition();
       } else {

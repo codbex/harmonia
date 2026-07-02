@@ -6,9 +6,31 @@ This list is generated from `src/styles/harmonia.css` (the Tailwind safelist), s
 
 ## Modifiers
 
-- **Responsive prefixes:** `lg:` `max-lg:` `max-md:` `max-sm:` `max-xl:` `md:` `sm:` `xl:` - allowed only on responsive-enabled classes.
-- **Important:** append `!` (for example `w-full!`) on classes that support it.
-- **Negative:** some spacing and translate classes accept a leading `-` (for example `-translate-x-4`).
+- **Negative:** the negated forms that ship are listed explicitly in the sections below with the `-` already shown (for example `-translate-x-4`). No other class accepts a leading `-`.
+
+### Important (`!`)
+
+Append `!` to raise the specificity so the class wins (for example `w-full!`, `p-4!`). The `!` suffix is available on exactly these classes and no others:
+
+```
+font-bold font-extrabold font-light font-medium font-mono font-normal font-sans font-semibold font-serif gap-1 gap-10 gap-11 gap-12 gap-2 gap-3 gap-4 gap-5 gap-6 gap-7 gap-8 gap-9 h-1 h-1/2 h-10 h-11 h-12 h-2 h-3 h-4 h-5 h-6 h-7 h-8 h-9 h-auto h-fit h-full h-max h-min h-screen leading-4 leading-5 leading-6 leading-7 leading-8 leading-none leading-normal leading-relaxed leading-snug leading-tight m-0 m-1 m-10 m-11 m-12 m-2 m-3 m-4 m-5 m-6 m-7 m-8 m-9 mb-0 mb-1 mb-10 mb-11 mb-12 mb-2 mb-3 mb-4 mb-5 mb-6 mb-7 mb-8 mb-9 ml-0 ml-1 ml-10 ml-11 ml-12 ml-2 ml-3 ml-4 ml-5 ml-6 ml-7 ml-8 ml-9 ml-auto mr-0 mr-1 mr-10 mr-11 mr-12 mr-2 mr-3 mr-4 mr-5 mr-6 mr-7 mr-8 mr-9 mr-auto mt-0 mt-1 mt-10 mt-11 mt-12 mt-2 mt-3 mt-4 mt-5 mt-6 mt-7 mt-8 mt-9 mx-0 mx-1 mx-10 mx-11 mx-12 mx-2 mx-3 mx-4 mx-5 mx-6 mx-7 mx-8 mx-9 my-0 my-1 my-10 my-11 my-12 my-2 my-3 my-4 my-5 my-6 my-7 my-8 my-9 p-0 p-1 p-10 p-11 p-12 p-2 p-3 p-4 p-5 p-6 p-7 p-8 p-9 pb-0 pb-1 pb-10 pb-11 pb-12 pb-2 pb-3 pb-4 pb-5 pb-6 pb-7 pb-8 pb-9 pl-0 pl-1 pl-10 pl-11 pl-12 pl-2 pl-3 pl-4 pl-5 pl-6 pl-7 pl-8 pl-9 pl-auto pr-0 pr-1 pr-10 pr-11 pr-12 pr-2 pr-3 pr-4 pr-5 pr-6 pr-7 pr-8 pr-9 pr-auto pt-0 pt-1 pt-10 pt-11 pt-12 pt-2 pt-3 pt-4 pt-5 pt-6 pt-7 pt-8 pt-9 px-0 px-1 px-10 px-11 px-12 px-2 px-3 px-4 px-5 px-6 px-7 px-8 px-9 py-0 py-1 py-10 py-11 py-12 py-2 py-3 py-4 py-5 py-6 py-7 py-8 py-9 size-1 size-10 size-11 size-12 size-2 size-3 size-4 size-5 size-6 size-7 size-8 size-9 size-fit size-full text-2xl text-3xl text-4xl text-5xl text-6xl text-7xl text-8xl text-9xl text-base text-lg text-sm text-xl text-xs w-1 w-1/10 w-1/2 w-1/3 w-1/4 w-1/5 w-10 w-11 w-12 w-2 w-2/3 w-2/5 w-3 w-3/4 w-3/5 w-4 w-4/5 w-5 w-6 w-7 w-8 w-9 w-9/10 w-auto w-fit w-full w-max w-min w-screen
+```
+
+### Responsive prefixes
+
+A breakpoint prefix works ONLY on the classes listed under it - prefixing any other class does nothing. Write it before the class (for example `md:grid-cols-3`, `lg:w-1/2`, `max-md:rounded-none`). Responsive variants are available for exactly these classes and no others.
+
+`sm:` `md:` `lg:` `xl:` apply at that breakpoint and up (min-width):
+
+```
+block col-span-1 col-span-10 col-span-11 col-span-12 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 flex flex-col-reverse flex-row-reverse gap-1 gap-10 gap-11 gap-12 gap-2 gap-3 gap-4 gap-5 gap-6 gap-7 gap-8 gap-9 grid-cols-1 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 hbox hidden m-0 m-1 m-10 m-11 m-12 m-2 m-3 m-4 m-5 m-6 m-7 m-8 m-9 mx-0 mx-1 mx-10 mx-11 mx-12 mx-2 mx-3 mx-4 mx-5 mx-6 mx-7 mx-8 mx-9 my-0 my-1 my-10 my-11 my-12 my-2 my-3 my-4 my-5 my-6 my-7 my-8 my-9 p-0 p-1 p-10 p-11 p-12 p-2 p-3 p-4 p-5 p-6 p-7 p-8 p-9 px-0 px-1 px-10 px-11 px-12 px-2 px-3 px-4 px-5 px-6 px-7 px-8 px-9 py-0 py-1 py-10 py-11 py-12 py-2 py-3 py-4 py-5 py-6 py-7 py-8 py-9 text-2xl text-3xl text-4xl text-5xl text-6xl text-7xl text-8xl text-9xl text-base text-lg text-sm text-xl text-xs vbox w-1/10 w-1/2 w-1/3 w-1/4 w-1/5 w-2/3 w-2/5 w-3/4 w-3/5 w-4/5 w-9/10 w-full
+```
+
+`max-sm:` `max-md:` `max-lg:` `max-xl:` apply up to that breakpoint (max-width):
+
+```
+rounded-none shadow-none
+```
 
 ## Harmonia-specific utilities
 

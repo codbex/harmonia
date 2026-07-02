@@ -60,7 +60,7 @@ x-h-tree-button
 <br />
 
 <ClientOnly>
-<component-container >
+<component-container>
 <ul x-h-tree>
   <li x-h-tree-item.expanded="true">
     <button x-h-tree-button data-indicator="positive">

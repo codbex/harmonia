@@ -15,7 +15,7 @@ CSS utility classes for adjusting images.
 ### Contain
 
 <ClientOnly>
-<component-container >
+<component-container>
 <img class="object-contain border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg">
 </component-container>
 </ClientOnly>

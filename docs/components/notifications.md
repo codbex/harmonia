@@ -585,7 +585,7 @@ The notification item has four inner components but they have no strict structur
 You can use the notification list anywhere but the most common place is usually inside a popover in a toolbar.
 
 <ClientOnly>
-<component-container >
+<component-container>
 <header x-h-toolbar>
   <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
   <h1 x-h-toolbar-title>Harmonia</h1>
@@ -593,13 +593,13 @@ You can use the notification list anywhere but the most common place is usually 
   <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
     <i x-h-lucide role="img" data-lucide="bell"></i>
   </button>
-  <div x-h-popover data-innerclicks="true">
+  <div x-h-popover data-innerclicks="true" class="w-full" data-max-w="lg">
     <div x-h-toolbar data-size="md">
       <span x-h-toolbar-title>Notifications (3)</span>
       <div x-h-toolbar-spacer></div>
       <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon data-icon="trash" role="img" aria-label="trash"></svg>Clear</button>
     </div>
-    <ol x-h-notification-list class="min-w-md">
+    <ol x-h-notification-list>
       <li x-h-notification class="hbox" data-unread="true">
         <div x-h-notification-media class="justify-start">
           <span x-h-avatar class="size-10">
@@ -643,7 +643,7 @@ You can use the notification list anywhere but the most common place is usually 
         <div x-h-notification-media class="w-10">
           <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
         </div>
-        <div x-h-notification-title class="flex-1">Montly report generation started</div>
+        <div x-h-notification-title class="flex-1">Monthly report generation started</div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
             <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
@@ -714,7 +714,7 @@ You can use the notification list anywhere but the most common place is usually 
         <div x-h-notification-media class="w-10">
           <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
         </div>
-        <div x-h-notification-title class="flex-1">Montly report generation started</div>
+        <div x-h-notification-title class="flex-1">Monthly report generation started</div>
         <div x-h-notification-actions data-orientation="vertical">
           <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
             <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
@@ -765,7 +765,7 @@ The `$notifications` magic can be used both from inline HTML and from inside a c
 Notifications can contain actions and dynamic information. The following example simulates a generation progress notification.
 
 <ClientOnly>
-<component-container  src="/components/notifications/notify-progress.html">
+<component-container src="/components/notifications/notify-progress.html">
 </component-container>
 </ClientOnly>
 

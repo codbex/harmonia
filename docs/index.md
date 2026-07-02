@@ -29,7 +29,7 @@ hero:
 
 features:
   - icon: <svg-icon class="feature-icon" src="./icons/components.svg"></svg-icon>
-    title: 58+ Production-Ready Components
+    title: 60+ Production-Ready Components
     details: From buttons, inputs, and dialogs to calendars, data tables, and charts, Harmonia ships a comprehensive toolkit for building rich interfaces, so you never have to stitch together mismatched third-party widgets.
     link: /components
     linkText: Browse all components
@@ -65,14 +65,17 @@ features:
     details: Harmonia leans on native browser APIs, semantic HTML, and modern web standards with minimal overhead, keeping your pages fast and your markup clean.
 ---
 
-<!--
-<div class="content">
-	<section>
-		<div class="container flex">
-			<div class="text">
-				<h2>Slate Dashboard</h2>
-			</div>
-      <img src="/images/accordion.svg" alt="Screenshot" class="screenshot" />
-		</div>
-	</section>
-</div> -->
+<div class="templates">
+  <h2 class="templates-title">Templates</h2>
+  <p class="templates-intro">Complete, real-world interfaces built entirely with Harmonia components. Preview a template inline, or open it in a new tab to explore and inspect it.</p>
+
+  <div class="template-list">
+    <article class="template-card">
+      <header class="template-card-header">
+        <h3>Slate Dashboard</h3>
+        <a class="template-open" href="/harmonia/templates/slate-dashboard.html" target="_blank" rel="noopener noreferrer">Open in new tab</a>
+      </header>
+      <iframe class="template-frame" src="/harmonia/templates/slate-dashboard.html" title="Slate Dashboard template" loading="lazy"></iframe>
+    </article>
+  </div>
+</div>

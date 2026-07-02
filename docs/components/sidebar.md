@@ -97,7 +97,7 @@ x-h-sidebar-footer
 ### Sidebar header and footer
 
 <ClientOnly>
-<component-container  data-class="p-0" data-style="height:16rem">
+<component-container data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
@@ -155,7 +155,7 @@ x-h-sidebar-footer
 Use a header item for a non-interactive branding or title row at the top of the sidebar, such as a logo. It lays out an icon and a label, and when the sidebar is collapsed everything except the leading icon is hidden. It must not be a `button` or `a` element (it will throw). For an interactive header row use `x-h-sidebar-menu-button` instead.
 
 <ClientOnly>
-<component-container  data-class="p-0" data-style="height:16rem" src="/components/sidebar/header-item.html">
+<component-container data-class="p-0" data-style="height:16rem" src="/components/sidebar/header-item.html">
 </component-container>
 </ClientOnly>
 
@@ -184,7 +184,7 @@ Use a header item for a non-interactive branding or title row at the top of the 
 Set `data-borderless="true"` on the sidebar to drop its divider and let it blend into the page. Pairing it with a matching page background and a rounded, elevated content card produces an inset look where the sidebar reads as part of the canvas rather than a bordered panel.
 
 <ClientOnly>
-<component-container  data-class="p-0" data-style="height:16rem">
+<component-container data-class="p-0" data-style="height:16rem">
 <div class="hbox size-full bg-sidebar">
   <div x-h-sidebar data-borderless="true">
     <div x-h-sidebar-content>
@@ -266,7 +266,7 @@ Set `data-borderless="true"` on the sidebar to drop its divider and let it blend
 ### Sidebar content
 
 <ClientOnly>
-<component-container  data-class="p-0" data-style="height:16rem">
+<component-container data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar>
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -336,7 +336,7 @@ Set `data-borderless="true"` on the sidebar to drop its divider and let it blend
 ### Sidebar right side
 
 <ClientOnly>
-<component-container  data-class="p-0" data-style="height:16rem">
+<component-container data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar.right class="float-right">
   <div x-h-sidebar-content>
     <div x-h-sidebar-group>
@@ -406,7 +406,7 @@ Set `data-borderless="true"` on the sidebar to drop its divider and let it blend
 ### Collapsed sidebar
 
 <ClientOnly>
-<component-container  data-class="p-0" data-style="height:16rem">
+<component-container data-class="p-0" data-style="height:16rem">
 <div x-h-sidebar data-collapsed="true">
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>

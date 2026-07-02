@@ -130,8 +130,8 @@ export default function (Alpine) {
 
   Alpine.directive('h-table-body', (el) => {
     el.classList.add(
-      '[&_tr:last-child_td[data-slot|=table]]:border-b-0',
-      '[&_tr:last-child_th[data-slot|=table]]:border-b-0',
+      '[&_tr:last-of-type_td[data-slot|=table]]:border-b-0',
+      '[&_tr:last-of-type_th[data-slot|=table]]:border-b-0',
       '[&_tr_th[data-slot|=table]]:bg-table-header',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:bg-table-hover',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:text-table-hover-foreground',

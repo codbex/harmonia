@@ -75,7 +75,7 @@ describe('h-field-group', () => {
     mountDirective(fieldsetPlugin, 'h-field-group', el);
     expect(el.classList.contains('vbox')).toBe(true);
     expect(el.classList.contains('w-full')).toBe(true);
-    expect(el.classList.contains('gap-7')).toBe(true);
+    expect(el.classList.contains('gap-4')).toBe(true);
   });
 
   it('sets data-slot="field-group"', () => {

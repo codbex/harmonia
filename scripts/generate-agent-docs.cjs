@@ -448,19 +448,9 @@ function splitOptions(inner) {
   return out;
 }
 
-// Resolve one brace group's options. Two groups are collapsed to a single empty
-// option (so the base class is emitted once, not multiplied): the important
-// group `{!,}` and any pure variant-prefix group (every option ends with `:`,
-// e.g. `{sm:,md:,lg:,xl:}`); the prefixes are recorded instead. Numeric ranges
-// like `0..12` expand to each number.
-function resolveOptions(options, prefixes) {
-  const set = new Set(options);
-  if (set.size === 2 && set.has('!') && set.has('')) return [''];
-  const nonEmpty = options.filter((o) => o !== '');
-  if (nonEmpty.length && nonEmpty.every((o) => o.endsWith(':'))) {
-    nonEmpty.forEach((o) => prefixes.add(o));
-    return [''];
-  }
+// Expand a brace group's options, turning numeric ranges like `0..12` into each
+// number and leaving everything else literal.
+function expandRange(options) {
   const out = [];
   for (const o of options) {
     const range = /^(\d+)\.\.(\d+)$/.exec(o);
@@ -473,9 +463,17 @@ function resolveOptions(options, prefixes) {
   return out;
 }
 
-// Expand a Tailwind `@source inline(...)` brace pattern into concrete classes.
-function expandBraces(pattern, prefixes) {
-  const tokens = [];
+// Expand a Tailwind `@source inline(...)` pattern into `{ prefixSet, baseClasses,
+// important }`. A pure variant-prefix group (every non-empty option ends with `:`,
+// e.g. `{sm:,md:,lg:,xl:}` or `{max-sm:,...}`) is pulled OUT as `prefixSet` rather
+// than folded into the class strings, and the `{!,}` important group collapses to
+// the base class while flagging `important`. The remaining groups form the
+// `baseClasses` those modifiers apply to, so callers can report exactly which
+// classes are responsive-enabled or `!`-enabled instead of losing that association.
+function expandPattern(pattern) {
+  const groups = [];
+  let prefixSet = null;
+  let important = false;
   let i = 0;
   while (i < pattern.length) {
     if (pattern[i] === '{') {
@@ -485,7 +483,17 @@ function expandBraces(pattern, prefixes) {
         inner += pattern[j];
         j++;
       }
-      tokens.push(resolveOptions(splitOptions(inner), prefixes));
+      const options = splitOptions(inner);
+      const nonEmpty = options.filter((o) => o !== '');
+      if (nonEmpty.length && nonEmpty.every((o) => o.endsWith(':'))) {
+        prefixSet = nonEmpty;
+        groups.push(['']);
+      } else if (options.length === 2 && options.includes('!') && options.includes('')) {
+        important = true;
+        groups.push(['']);
+      } else {
+        groups.push(expandRange(options));
+      }
       i = j + 1;
     } else {
       let lit = '';
@@ -493,46 +501,61 @@ function expandBraces(pattern, prefixes) {
         lit += pattern[i];
         i++;
       }
-      tokens.push([lit]);
+      groups.push([lit]);
     }
   }
-  let result = [''];
-  for (const opts of tokens) {
+  let baseClasses = [''];
+  for (const opts of groups) {
     const next = [];
-    for (const prefix of result) for (const o of opts) next.push(prefix + o);
-    result = next;
+    for (const prefix of baseClasses) for (const o of opts) next.push(prefix + o);
+    baseClasses = next;
   }
-  return result;
+  return { prefixSet, baseClasses, important };
 }
 
 // Parse harmonia.css into the available class names: `tailwind` (from
 // `@source inline`), `custom` (Harmonia-only, from `@utility` and `.class`
-// rules), and the variant `prefixes` seen.
+// rules), and `prefixGroups` (each variant-prefix family mapped to the exact set
+// of classes it may be applied to, so the reference can say which classes are
+// responsive-enabled rather than leaving it vague).
 function parseUtilityCss(cssText) {
   const tailwind = new Set();
   const custom = new Set();
-  const prefixes = new Set();
+  const prefixGroups = new Map(); // key: prefixes joined -> { prefixes: string[], classes: Set }
+  const important = new Set(); // classes that accept a trailing `!`
 
   let m;
   const sourceRe = /@source\s+inline\(\s*"([^"]*)"\s*\)/g;
   while ((m = sourceRe.exec(cssText))) {
-    for (const cls of expandBraces(m[1], prefixes)) if (cls) tailwind.add(cls);
+    const { prefixSet, baseClasses, important: isImportant } = expandPattern(m[1]);
+    for (const cls of baseClasses) if (cls) tailwind.add(cls);
+    if (prefixSet) {
+      const key = prefixSet.join(' ');
+      if (!prefixGroups.has(key)) prefixGroups.set(key, { prefixes: prefixSet, classes: new Set() });
+      const group = prefixGroups.get(key);
+      for (const cls of baseClasses) if (cls) group.classes.add(cls);
+    }
+    if (isImportant) for (const cls of baseClasses) if (cls) important.add(cls);
   }
 
   const utilRe = /@utility\s+([A-Za-z0-9_-]+)/g;
   while ((m = utilRe.exec(cssText))) custom.add(m[1]);
 
   for (const line of cssText.split('\n')) {
-    const mm = /^\.([A-Za-z0-9_-]+)/.exec(line.trim());
+    const trimmed = line.trim();
+    const mm = /^\.([A-Za-z0-9_-]+)/.exec(trimmed);
     if (mm) custom.add(mm[1]);
+    // A `.class\!` rule (e.g. `.leading-tight\!`) declares an important variant.
+    const im = /^\.([A-Za-z0-9_-]+)\\!/.exec(trimmed);
+    if (im) important.add(im[1]);
   }
 
   for (const c of custom) tailwind.delete(c);
-  return { tailwind, custom, prefixes };
+  return { tailwind, custom, prefixGroups, important };
 }
 
 function renderUtilityClasses(cssText) {
-  const { tailwind, custom, prefixes } = parseUtilityCss(cssText);
+  const { tailwind, custom, prefixGroups, important } = parseUtilityCss(cssText);
   const out = [];
   out.push('# Utility classes');
   out.push('');
@@ -544,15 +567,38 @@ function renderUtilityClasses(cssText) {
   out.push('');
   out.push('## Modifiers');
   out.push('');
-  out.push(
-    `- **Responsive prefixes:** ${[...prefixes]
-      .sort()
-      .map((p) => `\`${p}\``)
-      .join(' ')} - allowed only on responsive-enabled classes.`
-  );
-  out.push('- **Important:** append `!` (for example `w-full!`) on classes that support it.');
-  out.push('- **Negative:** some spacing and translate classes accept a leading `-` (for example `-translate-x-4`).');
+  out.push('- **Negative:** the negated forms that ship are listed explicitly in the sections below with the `-` already shown (for example `-translate-x-4`). No other class accepts a leading `-`.');
   out.push('');
+  out.push('### Important (`!`)');
+  out.push('');
+  out.push('Append `!` to raise the specificity so the class wins (for example `w-full!`, `p-4!`). The `!` suffix is available on exactly these classes and no others:');
+  out.push('');
+  out.push('```');
+  out.push([...important].sort().join(' '));
+  out.push('```');
+  out.push('');
+  out.push('### Responsive prefixes');
+  out.push('');
+  out.push(
+    'A breakpoint prefix works ONLY on the classes listed under it - prefixing any other class does nothing. Write it before the class (for example `md:grid-cols-3`, `lg:w-1/2`, `max-md:rounded-none`). Responsive variants are available for exactly these classes and no others.'
+  );
+  out.push('');
+  // Min-width families (sm:/md:/...) before max-width families (max-sm:/...).
+  const groups = [...prefixGroups.values()].sort((a, b) => {
+    const am = a.prefixes[0].startsWith('max-') ? 1 : 0;
+    const bm = b.prefixes[0].startsWith('max-') ? 1 : 0;
+    return am - bm || a.prefixes[0].localeCompare(b.prefixes[0]);
+  });
+  for (const group of groups) {
+    const label = group.prefixes.map((p) => `\`${p}\``).join(' ');
+    const kind = group.prefixes[0].startsWith('max-') ? 'apply up to that breakpoint (max-width)' : 'apply at that breakpoint and up (min-width)';
+    out.push(`${label} ${kind}:`);
+    out.push('');
+    out.push('```');
+    out.push([...group.classes].sort().join(' '));
+    out.push('```');
+    out.push('');
+  }
   out.push('## Harmonia-specific utilities');
   out.push('');
   out.push('Unique to Harmonia (not Tailwind):');

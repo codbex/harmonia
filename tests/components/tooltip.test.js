@@ -17,32 +17,32 @@ import tooltipPlugin from '../../src/components/tooltip.js';
 import { mountDirective } from '../test-utils.js';
 
 describe('h-tooltip-trigger', () => {
-  it('initializes _tooltip reactive state', () => {
+  it('initializes _h_tooltip reactive state', () => {
     const el = document.createElement('button');
     mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
-    expect(el._tooltip).toBeDefined();
-    expect(el._tooltip.shown).toBe(false);
-    expect(el._tooltip.controls).toMatch(/^htp/);
+    expect(el._h_tooltip).toBeDefined();
+    expect(el._h_tooltip.shown).toBe(false);
+    expect(el._h_tooltip.controls).toMatch(/^htp/);
   });
 
   it('sets aria-describedby to controls value', () => {
     const el = document.createElement('button');
     mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
-    expect(el.getAttribute('aria-describedby')).toBe(el._tooltip.controls);
+    expect(el.getAttribute('aria-describedby')).toBe(el._h_tooltip.controls);
   });
 
-  it('assigns existing id to _tooltip.id', () => {
+  it('assigns existing id to _h_tooltip.id', () => {
     const el = document.createElement('button');
     el.setAttribute('id', 'my-trigger');
     mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
-    expect(el._tooltip.id).toBe('my-trigger');
+    expect(el._h_tooltip.id).toBe('my-trigger');
   });
 
   it('generates id if not present', () => {
     const el = document.createElement('button');
     mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
-    expect(el._tooltip.id).toMatch(/^htt/);
-    expect(el.getAttribute('id')).toBe(el._tooltip.id);
+    expect(el._h_tooltip.id).toMatch(/^htt/);
+    expect(el.getAttribute('id')).toBe(el._h_tooltip.id);
   });
 
   it('calls cleanup', () => {
@@ -56,7 +56,7 @@ describe('h-tooltip', () => {
   function createTooltipSetup() {
     const container = document.createElement('div');
     const trigger = document.createElement('button');
-    trigger._tooltip = {
+    trigger._h_tooltip = {
       id: 'trigger-id',
       controls: 'htp-test-id',
       shown: false,
@@ -83,7 +83,7 @@ describe('h-tooltip', () => {
     const { tooltipEl, trigger } = createTooltipSetup();
     mountDirective(tooltipPlugin, 'h-tooltip', tooltipEl, { original: 'x-h-tooltip' });
     expect(tooltipEl.getAttribute('data-slot')).toBe('tooltip');
-    expect(tooltipEl.getAttribute('id')).toBe(trigger._tooltip.controls);
+    expect(tooltipEl.getAttribute('id')).toBe(trigger._h_tooltip.controls);
   });
 
   it('appends an arrow element', () => {

@@ -131,7 +131,7 @@ x-h-breadcrumb-page
 ### In a Toolbar
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-toolbar data-variant="transparent">
   <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
   <div x-h-toolbar-separator></div>
@@ -187,7 +187,7 @@ x-h-breadcrumb-page
 ```
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-toolbar data-variant="transparent">
   <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
   <nav x-h-breadcrumb data-variant="outline">

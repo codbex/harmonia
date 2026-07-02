@@ -97,6 +97,15 @@ describe('h-dialog-header', () => {
     mountDirective(dialogPlugin, 'h-dialog-header', el);
     expect(el.getAttribute('data-slot')).toBe('dialog-header');
   });
+
+  it('uses a shrinkable minmax(0,1fr) track so the close button stays in bounds', () => {
+    // Same fix as the card header: a plain 1fr track will not shrink below its
+    // title's min-content, pushing the trailing close button out on a narrow
+    // dialog. minmax(0,1fr) lets the title column shrink instead.
+    mountDirective(dialogPlugin, 'h-dialog-header', el);
+    expect(el.classList.contains('grid-cols-[minmax(0,1fr)_auto]')).toBe(true);
+    expect(el.classList.contains('grid-cols-[1fr_auto]')).toBe(false);
+  });
 });
 
 describe('h-dialog-title', () => {

@@ -110,6 +110,19 @@ describe('h-table-body', () => {
     mountDirective(tablePlugin, 'h-table-body', el);
     expect(el.getAttribute('data-slot')).toBe('table-body');
   });
+
+  it('drops the last row border via last-of-type, not last-child', () => {
+    // last-of-type targets the last <tr> even when a trailing non-<tr> sibling
+    // (e.g. an Alpine x-for/x-if <template>) is the actual last child, which
+    // would otherwise leave the last row bordered and collide with the
+    // container border. See the customers example in the dashboard template.
+    const el = document.createElement('tbody');
+    mountDirective(tablePlugin, 'h-table-body', el);
+    expect(el.classList.contains('[&_tr:last-of-type_td[data-slot|=table]]:border-b-0')).toBe(true);
+    expect(el.classList.contains('[&_tr:last-of-type_th[data-slot|=table]]:border-b-0')).toBe(true);
+    expect(el.classList.contains('[&_tr:last-child_td[data-slot|=table]]:border-b-0')).toBe(false);
+    expect(el.classList.contains('[&_tr:last-child_th[data-slot|=table]]:border-b-0')).toBe(false);
+  });
 });
 
 describe('h-table-row', () => {

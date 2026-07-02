@@ -17,16 +17,17 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 
 #### x-h-popover-trigger
 
-| Attribute | Type    | Required | Description                                                                                                    |
-| --------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------- |
-| `self`    | boolean | false    | Boolean value, used to show and hide the popover programmatically. Disables the auto open/close functionality. |
+| Attribute | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                           |
+| --------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `self`    | boolean | false    | Optional boolean variable bound to the open state. On its own it stays in sync two-way: the popover still opens and closes automatically (toggle on trigger click, dismiss on outside click), and you can also show or hide it by setting the variable. Add your own `@click` handler on the trigger to take full manual control instead (see below). |
 
 #### x-h-popover
 
-| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the popover body relative to the trigger.                                                                                                                                  |
-| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the popover from closing when there is a click inside it.<br />This is not a dynamic attribute. Its value is read on initialization and it is not monitored for changes. |
+| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the popover body relative to the trigger.                                                                                                                                                                                                                        |
+| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the popover from closing when there is a click inside it.<br />This is not a dynamic attribute. Its value is read on initialization and it is not monitored for changes.                                                                                       |
+| data-max-w       | `3xs`<br/>`2xs`<br/>`xs`<br/>`sm`<br/>`md`<br/>`lg`<br/>`xl`<br/>`2xl`<br/>`3xl`<br/>`4xl`<br/>`5xl`<br/>`6xl`<br/>`7xl`<br/>`8xl`<br/>`9xl`<br/>`10xl`                       | false    | Sets the popover's maximum width to the matching container size (for example `md` sets `max-width: var(--container-md)`). The popover still sizes to its content. This only limits how wide it can get. Without it, the maximum is the width available in the viewport. |
 
 ### Modifiers
 
@@ -49,7 +50,7 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 <div class="w-64 p-4" x-h-popover>Popover content</div>
 ```
 
-More examples in the docs site: Disable closing on inner click events, Manually open and close the popover, Chevron, Alignment.
+More examples in the docs site: Constrained width, Disable closing on inner click events, Bind the open state (two-way), Manually open and close the popover, Chevron, Alignment.
 
 ## Notes
 

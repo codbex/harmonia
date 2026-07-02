@@ -10,7 +10,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-field-group', (el) => {
-    el.classList.add('group/field-group', '@container/field-group', 'vbox', 'w-full', 'gap-7', 'data-[slot=checkbox-group]:gap-3', '[&>[data-slot=field-group]]:gap-4');
+    el.classList.add('group/field-group', '@container/field-group', 'vbox', 'w-full', 'gap-4', 'data-[slot=checkbox-group]:gap-3', '[&>[data-slot=field-group]]:gap-4');
     el.setAttribute('data-slot', 'field-group');
   });
 

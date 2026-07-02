@@ -9,6 +9,7 @@
 @import "./calendar.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 @source not "../../docs/";
+@source not "../../tests/";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

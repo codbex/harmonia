@@ -239,7 +239,7 @@ x-h-tabs-content
 ### Horizontal tabs with actions
 
 <ClientOnly>
-<component-container  data-class="p-0">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -289,7 +289,7 @@ x-h-tabs-content
 ### Horizontal tabs with actions (end)
 
 <ClientOnly>
-<component-container  data-class="p-0">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -370,8 +370,26 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 
 <ClientOnly>
 <component-container>
-<div x-h-tabs data-orientation="horizontal" class="w-max">
-  <div x-h-tab-bar data-floating="true">
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar data-floating="true" class="w-max">
+    <div x-h-tab-list>
+      <button x-h-tab id="htfts1" aria-controls="htfts1c" aria-selected="true">Sign In</button>
+      <button x-h-tab id="htfts2" aria-controls="htfts2c">Sign Up</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="htfts1c" aria-labelledby="htfts1">
+    <div class="p-2">Sign In</div>
+  </div>
+  <div x-h-tabs-content id="htfts2c" aria-labelledby="htfts2" hidden="true">
+    <div class="p-2">Sign Up</div>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar data-floating="true" class="w-max">
     <div x-h-tab-list>
       <button x-h-tab id="ht1" aria-controls="ht1c" aria-selected="true">Sign In</button>
       <button x-h-tab id="ht2" aria-controls="ht2c">Sign Up</button>
@@ -382,26 +400,6 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
   </div>
   <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" hidden="true">
     <div class="p-2">Sign Up</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
-
-```html
-<div x-h-tabs data-orientation="horizontal">
-  <div x-h-tabs data-orientation="horizontal" class="w-max">
-    <div x-h-tab-bar data-floating="true">
-      <div x-h-tab-list>
-        <button x-h-tab id="ht1" aria-controls="ht1c" aria-selected="true">Sign In</button>
-        <button x-h-tab id="ht2" aria-controls="ht2c">Sign Up</button>
-      </div>
-    </div>
-    <div x-h-tabs-content id="ht1c" aria-labelledby="ht1">
-      <div class="p-2">Sign In</div>
-    </div>
-    <div x-h-tabs-content id="ht2c" aria-labelledby="ht2" hidden="true">
-      <div class="p-2">Sign Up</div>
-    </div>
   </div>
 </div>
 ```
@@ -455,7 +453,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Horizontal float tabs with actions
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -505,7 +503,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Horizontal float tabs with actions (end)
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -629,7 +627,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical tabs with actions
 
 <ClientOnly>
-<component-container  data-class="p-0">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -679,7 +677,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical tabs with actions (end)
 
 <ClientOnly>
-<component-container  data-class="p-0">
+<component-container data-class="p-0">
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
@@ -803,7 +801,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical float tabs with actions
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
@@ -853,7 +851,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 ### Vertical float tabs with actions (end)
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>

@@ -52,6 +52,15 @@ describe('h-card-header', () => {
     mountDirective(cardPlugin, 'h-card-header', el);
     expect(el.getAttribute('data-slot')).toBe('card-header');
   });
+
+  it('uses a shrinkable minmax(0,1fr) track for the action grid', () => {
+    // A plain 1fr track is minmax(auto,1fr), whose min-content floor stops the
+    // title column from shrinking and pushes the card-action out of bounds on a
+    // narrow card. minmax(0,1fr) lets it shrink so the action stays inside.
+    mountDirective(cardPlugin, 'h-card-header', el);
+    expect(el.classList.contains('has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]')).toBe(true);
+    expect(el.classList.contains('has-data-[slot=card-action]:grid-cols-[1fr_auto]')).toBe(false);
+  });
 });
 
 describe('h-card-title', () => {

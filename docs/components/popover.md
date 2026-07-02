@@ -23,16 +23,17 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 
 #### x-h-popover-trigger
 
-| Attribute | Type    | Required | Description                                                                                                    |
-| --------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------- |
-| `self`    | boolean | false    | Boolean value, used to show and hide the popover programmatically. Disables the auto open/close functionality. |
+| Attribute | Type    | Required | Description                                                                                                                                                                                                                                                                                                                                           |
+| --------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `self`    | boolean | false    | Optional boolean variable bound to the open state. On its own it stays in sync two-way: the popover still opens and closes automatically (toggle on trigger click, dismiss on outside click), and you can also show or hide it by setting the variable. Add your own `@click` handler on the trigger to take full manual control instead (see below). |
 
 #### x-h-popover
 
-| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the popover body relative to the trigger.                                                                                                                                  |
-| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the popover from closing when there is a click inside it.<br />This is not a dynamic attribute. Its value is read on initialization and it is not monitored for changes. |
+| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the popover body relative to the trigger.                                                                                                                                                                                                                        |
+| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the popover from closing when there is a click inside it.<br />This is not a dynamic attribute. Its value is read on initialization and it is not monitored for changes.                                                                                       |
+| data-max-w       | `3xs`<br/>`2xs`<br/>`xs`<br/>`sm`<br/>`md`<br/>`lg`<br/>`xl`<br/>`2xl`<br/>`3xl`<br/>`4xl`<br/>`5xl`<br/>`6xl`<br/>`7xl`<br/>`8xl`<br/>`9xl`<br/>`10xl`                       | false    | Sets the popover's maximum width to the matching container size (for example `md` sets `max-width: var(--container-md)`). The popover still sizes to its content. This only limits how wide it can get. Without it, the maximum is the width available in the viewport. |
 
 ### Modifiers
 
@@ -64,6 +65,22 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 <div class="w-64 p-4" x-h-popover>Popover content</div>
 ```
 
+### Constrained width
+
+The popover sizes to its content, up to a maximum width. That maximum defaults to the width available in the viewport. Set `data-max-w` to a container size to cap it smaller (here `sm`), so long content wraps instead of stretching the popover wider.
+
+<ClientOnly>
+<component-container>
+<button x-h-button x-h-popover-trigger>Popover</button>
+<div class="p-4" x-h-popover data-max-w="sm">Long content wraps once the popover reaches the small container width instead of getting any wider.</div>
+</component-container>
+</ClientOnly>
+
+```html
+<button x-h-button x-h-popover-trigger>Popover</button>
+<div class="p-4" x-h-popover data-max-w="sm">Long content wraps once the popover reaches the small container width instead of getting any wider.</div>
+```
+
 ### Disable closing on inner click events
 
 <ClientOnly>
@@ -82,7 +99,35 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 </div>
 ```
 
+### Bind the open state (two-way)
+
+Bind a variable to the trigger to read or control the open state while keeping the automatic behavior. The popover still toggles on click and dismisses on an outside click, and setting the variable elsewhere shows or hides it. This is useful to close the popover from a button inside it (for example a "confirm" action) while other inner controls leave it open.
+
+<ClientOnly>
+<component-container>
+<div x-data="{ open: false }">
+  <button x-h-button x-h-popover-trigger="open">Popover</button>
+  <div class="w-64 vbox gap-2 p-4" x-h-popover data-innerclicks="true">
+    <span>Clicking confirm closes the popover.</span>
+    <button x-h-button data-variant="primary" data-size="sm" x-on:click="open = false">Confirm</button>
+  </div>
+</div>
+</component-container>
+</ClientOnly>
+
+```html
+<div x-data="{ open: false }">
+  <button x-h-button x-h-popover-trigger="open">Popover</button>
+  <div class="vbox w-64 gap-2 p-4" x-h-popover data-innerclicks="true">
+    <span>Clicking confirm closes the popover.</span>
+    <button x-h-button data-variant="primary" data-size="sm" @click="open = false">Confirm</button>
+  </div>
+</div>
+```
+
 ### Manually open and close the popover
+
+Add your own `@click` handler on the trigger, alongside the bound variable, to take full manual control. The directive then leaves open/close entirely to you, so the automatic outside-click dismiss is disabled.
 
 <ClientOnly>
 <component-container>
@@ -105,7 +150,7 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 In order to use the chevron modifier, the trigger label must be placed inside a nested element (usually a `span`).
 
 <ClientOnly>
-<component-container >
+<component-container>
 <button x-h-button x-h-popover-trigger.chevron>
   <span>Popover</span>
   <i x-h-lucide role="img" data-lucide="chevron-down"></i>

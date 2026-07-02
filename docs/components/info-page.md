@@ -32,7 +32,7 @@ x-h-info-page-content
 ### With inline SVG icon
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-info-page>
   <div x-h-info-page-header>
     <div x-h-info-page-media.icon>
@@ -108,7 +108,7 @@ x-h-info-page-content
 ### With border
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-info-page class="border">
   <div x-h-info-page-header>
     <div x-h-info-page-media>

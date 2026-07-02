@@ -222,7 +222,7 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 ### Muted
 
 <ClientOnly>
-<component-container >
+<component-container>
 <p class="bg-muted text-muted-foreground p-4">Muted</p>
 <p class="p-4 text-muted">Muted</p>
 <svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>

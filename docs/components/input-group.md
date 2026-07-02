@@ -40,7 +40,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -64,7 +64,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar with tags
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -100,7 +100,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar with buttons and popover
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
   <div x-h-input-group-addon data-align="inline-start">
@@ -130,7 +130,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Search bar with spinner
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-input-group>
   <input x-h-input.group placeholder="Searching..." disabled />
   <div x-h-input-group-addon data-align="inline-end">
@@ -152,7 +152,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 ### Textarea with top and bottom toolbars
 
 <ClientOnly>
-<component-container >
+<component-container>
 <div x-h-input-group>
   <textarea x-h-textarea.group placeholder="Message..."></textarea>
   <div x-h-input-group-addon data-align="block-start" class="border-b">
