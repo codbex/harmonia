@@ -694,6 +694,39 @@ function transform(inputs) {
 // I/O wrapper
 // ---------------------------------------------------------------------------
 
+// Map a code-snippet file extension to its markdown fence language.
+const FENCE_LANG = { html: 'html', js: 'js', mjs: 'js', cjs: 'js', ts: 'ts', css: 'css', json: 'json' };
+
+// VitePress imports example code with a `<<< @/path` snippet line so the live
+// demo and the shown code share one source file. The generator does not run
+// through VitePress, so expand those lines into an equivalent fenced block
+// (reading the referenced file) before parsing, keeping transform() pure.
+function expandSnippets(text, mdPath) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  let inFence = false;
+  const out = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) inFence = !inFence;
+    const m = !inFence && line.match(/^\s*<<<\s+(\S+)/);
+    if (!m) {
+      out.push(line);
+      continue;
+    }
+    // Strip an optional region (#name) and line-highlight/lang ({...}) suffix.
+    const token = m[1].replace(/[#{].*$/, '');
+    const rel = token.startsWith('@/') ? token.slice(2) : token.replace(/^\//, '');
+    const file = token.startsWith('@/') || token.startsWith('/') ? path.join(DOCS_DIR, rel) : path.join(path.dirname(mdPath), token);
+    if (!fs.existsSync(file)) {
+      throw new Error(`generate-agent-docs: snippet not found: ${token} (referenced by ${path.relative(ROOT, mdPath)})`);
+    }
+    const lang = FENCE_LANG[path.extname(file).slice(1)] || '';
+    out.push('```' + lang);
+    out.push(fs.readFileSync(file, 'utf8').replace(/\n+$/, ''));
+    out.push('```');
+  }
+  return out.join('\n');
+}
+
 function readInputs() {
   const inputs = [];
   for (const src of SOURCES) {
@@ -704,12 +737,13 @@ function readInputs() {
       .filter((f) => f.endsWith('.md'))
       .sort();
     for (const file of files) {
+      const mdPath = path.join(dir, file);
       inputs.push({
         category: src.dir,
         label: src.label,
         requireDirectives: src.requireDirectives,
         slug: file.replace(/\.md$/, ''),
-        text: fs.readFileSync(path.join(dir, file), 'utf8'),
+        text: expandSnippets(fs.readFileSync(mdPath, 'utf8'), mdPath),
       });
     }
   }

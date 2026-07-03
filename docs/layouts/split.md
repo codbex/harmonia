@@ -157,38 +157,7 @@ In the following example, the left and right panels will hide if the screen is l
 </component-container>
 </ClientOnly>
 
-```html
-<div x-data="ResponsiveSplitController" class="size-full">
-  <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border">
-    <div x-h-split-panel :data-hidden="panelVisiblility.left">
-      <div class="overflow-auto">Left panel</div>
-    </div>
-    <div x-h-split-panel>
-      <div class="overflow-auto">Center panel</div>
-    </div>
-    <div x-h-split-panel :data-hidden="panelVisiblility.right">
-      <div class="overflow-auto">Right panel</div>
-    </div>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('ResponsiveSplitController', () => ({
-      panelVisiblility: {
-        left: true,
-        right: true,
-      },
-      init() {
-        const breakpointListener = Harmonia.getBreakpointListener((matches) => {
-          this.panelVisiblility.left = matches;
-          this.panelVisiblility.right = matches;
-        }, 1024);
-      },
-    }));
-  });
-</script>
-```
+<<< @/public/components/layout/layout.html
 
 ### Dynamically add/remove panels
 
@@ -199,48 +168,7 @@ You can use the `x-for` directive to add or remove panels dynamically.
 </component-container>
 </ClientOnly>
 
-```html
-<div x-data="DynamicSplitController" class="vbox size-full">
-  <div x-h-toolbar>
-    <button x-h-button data-variant="primary" @click="add()">Add</button>
-    <div x-h-toolbar-spacer></div>
-    <button x-h-button data-variant="negative" @click="remove()">Remove</button>
-  </div>
-  <div x-h-split data-orientation="vertical" data-variant="border">
-    <template x-for="panel in panels" x-bind:key="panel.id">
-      <div x-h-split-panel>
-        <div class="overflow-auto" x-text="panel.name"></div>
-      </div>
-    </template>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('DynamicSplitController', () => ({
-      panels: [
-        {
-          name: 'Panel 1',
-          id: 1,
-        },
-        {
-          name: 'Panel 2',
-          id: 2,
-        },
-      ],
-      add() {
-        this.panels.push({
-          name: `Panel ${this.panels.length + 1}`,
-          id: this.panels.length + 1,
-        });
-      },
-      remove() {
-        this.panels.pop();
-      },
-    }));
-  });
-</script>
-```
+<<< @/public/components/layout/dynamic.html
 
 ### Dynamically create layout
 
@@ -251,56 +179,4 @@ You can use the [Template](/utilities/template) directive to create layouts dyna
 </component-container>
 </ClientOnly>
 
-```html
-<div x-data="RecursiveSplitController" class="vbox size-full">
-  <div x-h-split data-orientation="horizontal" data-variant="border">
-    <template x-for="panel in panels" :key="panel.id">
-      <template x-h-template="$refs.panelTemplate" x-data="{ panel: panel }"></template>
-    </template>
-    <template x-ref="panelTemplate">
-      <div x-h-split-panel>
-        <template x-if="panel.children">
-          <div x-h-split data-orientation="vertical" data-variant="border">
-            <template x-for="childPanel in panel.children" :key="childPanel.id">
-              <template x-h-template="$refs.panelTemplate" x-data="{ panel: childPanel }"></template>
-            </template>
-          </div>
-        </template>
-        <template x-if="!panel.children">
-          <div class="overflow-auto" x-text="panel.name"></div>
-        </template>
-      </div>
-    </template>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('RecursiveSplitController', () => ({
-      panels: [
-        {
-          name: 'Left',
-          id: 1,
-        },
-        {
-          id: 2,
-          children: [
-            {
-              name: 'Top',
-              id: 'top',
-            },
-            {
-              name: 'Bottom',
-              id: 'bottom',
-            },
-          ],
-        },
-        {
-          name: 'Right',
-          id: 3,
-        },
-      ],
-    }));
-  });
-</script>
-```
+<<< @/public/components/layout/dynamic-recursive.html

@@ -475,29 +475,4 @@ Sizes are only applied when the `outline` variant is set.
 <component-container src="/components/breadcrumb/dynamic.html"></component-container>
 </ClientOnly>
 
-```html
-<div
-  x-data="{
-  crumbs: [
-    { label: 'Home', href: '#home' },
-    { label: 'Components', href: '#components' },
-    { label: 'Breadcrumb', href: '#breadcrumb' }
-  ]
-}"
->
-  <nav x-h-breadcrumb>
-    <ol x-h-breadcrumb-list>
-      <template x-for="(item, index) in crumbs" :key="item.href">
-        <li x-h-breadcrumb-item>
-          <template x-if="index < crumbs.length - 1">
-            <a x-h-breadcrumb-link :href="item.href" x-text="item.label"></a>
-          </template>
-          <template x-if="index === crumbs.length - 1">
-            <span x-h-breadcrumb-page x-text="item.label"></span>
-          </template>
-        </li>
-      </template>
-    </ol>
-  </nav>
-</div>
-```
+<<< @/public/components/breadcrumb/dynamic.html

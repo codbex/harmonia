@@ -70,12 +70,12 @@ features:
   <p class="templates-intro">Complete, real-world interfaces built entirely with Harmonia components. Preview a template inline, or open it in a new tab to explore and inspect it.</p>
 
   <div class="template-list">
-    <article class="template-card">
-      <header class="template-card-header">
-        <h3>Slate Dashboard</h3>
-        <a class="template-open" href="/harmonia/templates/slate-dashboard.html" target="_blank" rel="noopener noreferrer">Open in new tab</a>
-      </header>
-      <iframe class="template-frame" src="/harmonia/templates/slate-dashboard.html" title="Slate Dashboard template" loading="lazy"></iframe>
-    </article>
+
+<TemplateShowcase title="Slate Dashboard" src="/harmonia/templates/slate-dashboard.html">
+
+<<< @/public/templates/slate-dashboard.html
+
+</TemplateShowcase>
+
   </div>
 </div>

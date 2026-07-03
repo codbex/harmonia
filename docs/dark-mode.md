@@ -21,28 +21,7 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 </component-container>
 </ClientOnly>
 
-```html
-<div class="hbox items-center justify-center" x-data="themeSelect">
-  <div x-h-select>
-    <input x-h-select-input placeholder="Select" x-model="mode" @change="themeChange()" />
-    <div x-h-select-content>
-      <div x-h-select-option="'Auto'" data-value="auto"></div>
-      <div x-h-select-option="'Light'" data-value="light"></div>
-      <div x-h-select-option="'Dark'" data-value="dark"></div>
-    </div>
-  </div>
-</div>
-<script>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('themeSelect', () => ({
-      mode: Harmonia.getColorScheme(),
-      themeChange() {
-        Harmonia.setColorScheme(this.mode);
-      },
-    }));
-  });
-</script>
-```
+<<< @/public/theming/select.html
 
 ### Light/Dark Switch
 
@@ -51,36 +30,7 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
 </component-container>
 </ClientOnly>
 
-```html
-<div class="hbox items-center justify-center" x-data="themeSwitch">
-  <div class="flex items-center gap-2 pr-2">
-    <div x-h-switch>
-      <input type="checkbox" id="modeSw" x-model="darkMode" @change="toggleLightDark()" />
-    </div>
-    <label x-h-label for="modeSw">Dark Mode</label>
-  </div>
-</div>
-<script>
-  document.addEventListener('alpine:init', () => {
-    function isDarkMode() {
-      const colorScheme = Harmonia.getColorScheme();
-      if (colorScheme === 'dark') {
-        return true;
-      } else if (colorScheme === 'light') {
-        return false;
-      } else {
-        return Harmonia.getSystemColorScheme() === 'dark';
-      }
-    }
-    Alpine.data('themeSwitch', () => ({
-      darkMode: isDarkMode(),
-      toggleLightDark() {
-        Harmonia.setColorScheme(this.darkMode ? 'dark' : 'light');
-      },
-    }));
-  });
-</script>
-```
+<<< @/public/theming/switch.html
 
 ### Sync across frames
 
@@ -91,29 +41,4 @@ Changing the color scheme in one frame is automatically applied to every embedde
 </component-container>
 </ClientOnly>
 
-```html
-<div class="vbox gap-4" x-data="themeSync">
-  <div x-h-select>
-    <input x-h-select-input placeholder="Select" x-model="mode" @change="themeChange()" />
-    <div x-h-select-content>
-      <div x-h-select-option="'Auto'" data-value="auto"></div>
-      <div x-h-select-option="'Light'" data-value="light"></div>
-      <div x-h-select-option="'Dark'" data-value="dark"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-    <iframe src="frame.html" title="Embedded frame A"></iframe>
-    <iframe src="frame.html" title="Embedded frame B"></iframe>
-  </div>
-</div>
-<script>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('themeSync', () => ({
-      mode: Harmonia.getColorScheme(),
-      themeChange() {
-        Harmonia.setColorScheme(this.mode);
-      },
-    }));
-  });
-</script>
-```
+<<< @/public/theming/sync.html

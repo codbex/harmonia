@@ -118,9 +118,8 @@ h6:has(+ component-container) {
 
 /* Home page "Templates" section: previews of full example pages in iframes. */
 .templates {
-  max-width: 1152px;
   margin: 0 auto;
-  padding: 3rem 24px 5rem;
+  padding: 3rem 0;
 }
 
 .templates-title {
@@ -163,6 +162,41 @@ h6:has(+ component-container) {
   line-height: 1.4;
 }
 
+.template-card-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.template-toggle {
+  display: inline-flex;
+  padding: 0.2rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+
+.template-toggle button {
+  padding: 0.188rem 0.85rem;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+  background: transparent;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.template-toggle button:hover {
+  color: var(--vp-c-text-1);
+}
+
+.template-toggle button.active {
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
 .template-open {
   display: inline-flex;
   align-items: center;
@@ -195,15 +229,38 @@ h6:has(+ component-container) {
 .template-frame {
   display: block;
   width: 100%;
-  height: 640px;
+  height: 648px;
   border: 0;
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
   border-radius: 12px;
 }
 
+.template-code {
+  height: 648px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Make the build-time highlighted code block fill the fixed-height panel. */
+.template-code [class*="language-"] {
+  height: 100%;
+  margin: 0 !important;
+  border-radius: 12px;
+}
+
+.template-code [class*="language-"] pre {
+  height: 100%;
+}
+
 @media (max-width: 640px) {
-  .template-frame {
+  .template-frame,
+  .template-code {
     height: 520px;
+  }
+
+  .template-card-header {
+    flex-wrap: wrap;
   }
 }

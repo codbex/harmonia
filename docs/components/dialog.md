@@ -27,34 +27,4 @@ x-h-dialog-footer
 </component-container>
 </ClientOnly>
 
-```html
-<div x-data="{ showDialog: false }">
-  <button x-h-button @click="showDialog = !showDialog">Show</button>
-
-  <div x-h-dialog-overlay :data-open="showDialog">
-    <div x-h-dialog>
-      <div x-h-dialog-header>
-        <h2 x-h-dialog-title>Edit profile</h2>
-        <p x-h-dialog-description>Make changes to your profile and click save.</p>
-        <button x-h-dialog-close aria-label="Icon button" @click="showDialog = false">
-          <i x-h-lucide role="img" data-lucide="x"></i>
-        </button>
-      </div>
-      <div class="grid gap-4">
-        <div class="grid gap-3">
-          <label x-h-label for="name-1">Name</label>
-          <input x-h-input id="name-1" name="name" value="Olivia Davis" />
-        </div>
-        <div class="grid gap-3">
-          <label x-h-label for="username-1">Username</label>
-          <input x-h-input id="username-1" name="username" value="@olivia-davis" />
-        </div>
-      </div>
-      <div x-h-dialog-footer>
-        <button x-h-button data-variant="outline" @click="showDialog = false">Cancel</button>
-        <button x-h-button data-variant="primary" @click="showDialog = false">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-```
+<<< @/public/components/dialog/dialog.html
