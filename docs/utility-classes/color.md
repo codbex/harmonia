@@ -107,38 +107,28 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 
 ### Standard colors
 
-<ClientOnly>
-<component-container data-class="flex flex-wrap gap-2">
-<p class="bg-white text-black border p-4">white</p>
-<p class="bg-black text-white p-4">black</p>
-<p class="bg-red-500 text-white p-4">red-500</p>
-<p class="bg-orange-500 text-white p-4">orange-500</p>
-<p class="bg-yellow-500 text-black p-4">yellow-500</p>
-<p class="bg-green-500 text-white p-4">green-500</p>
-<p class="bg-teal-500 text-white p-4">teal-500</p>
-<p class="bg-blue-500 text-white p-4">blue-500</p>
-<p class="bg-indigo-500 text-white p-4">indigo-500</p>
-<p class="bg-purple-500 text-white p-4">purple-500</p>
-<p class="bg-pink-500 text-white p-4">pink-500</p>
-<p class="bg-gray-500 text-white p-4">gray-500</p>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-wrap gap-2">
 
 ```html
+<p class="border bg-white p-4 text-black">white</p>
+<p class="bg-black p-4 text-white">black</p>
 <p class="bg-red-500 p-4 text-white">red-500</p>
-<p class="p-4 text-red-500">red-500</p>
+<p class="bg-orange-500 p-4 text-white">orange-500</p>
+<p class="bg-yellow-500 p-4 text-black">yellow-500</p>
+<p class="bg-green-500 p-4 text-white">green-500</p>
+<p class="bg-teal-500 p-4 text-white">teal-500</p>
+<p class="bg-blue-500 p-4 text-white">blue-500</p>
+<p class="bg-indigo-500 p-4 text-white">indigo-500</p>
+<p class="bg-purple-500 p-4 text-white">purple-500</p>
+<p class="bg-pink-500 p-4 text-white">pink-500</p>
+<p class="bg-gray-500 p-4 text-white">gray-500</p>
 ```
+
+</LiveExample>
 
 ### Primary
 
-<ClientOnly>
-<component-container>
-<p class="bg-primary text-primary-foreground p-4">Primary</p>
-<p class="text-primary p-4">Primary</p>
-<svg x-h-icon class="size-8 bg-primary fill-primary-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-primary" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-primary p-4 text-primary-foreground">Primary</p>
@@ -147,16 +137,11 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <svg x-h-icon class="size-8 fill-primary" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Negative
 
-<ClientOnly>
-<component-container>
-<p class="bg-negative text-negative-foreground p-4">Negative</p>
-<p class="text-negative p-4">Negative</p>
-<svg x-h-icon class="size-8 bg-negative fill-negative-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-negative" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-negative p-4 text-negative-foreground">Negative</p>
@@ -165,16 +150,11 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <svg x-h-icon class="size-8 fill-negative" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Positive
 
-<ClientOnly>
-<component-container>
-<p class="bg-positive text-positive-foreground p-4">Positive</p>
-<p class="text-positive p-4">Positive</p>
-<svg x-h-icon class="size-8 bg-positive fill-positive-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-positive" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-positive p-4 text-positive-foreground">Positive</p>
@@ -183,16 +163,11 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <svg x-h-icon class="size-8 fill-positive" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Warning
 
-<ClientOnly>
-<component-container>
-<p class="bg-warning text-warning-foreground p-4">Warning</p>
-<p class="text-warning p-4">Warning</p>
-<svg x-h-icon class="size-8 bg-warning fill-warning-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-warning" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-warning p-4 text-warning-foreground">Warning</p>
@@ -201,16 +176,11 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <svg x-h-icon class="size-8 fill-warning" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Information
 
-<ClientOnly>
-<component-container>
-<p class="bg-information text-information-foreground p-4">Information</p>
-<p class="text-information p-4">Information</p>
-<svg x-h-icon class="size-8 bg-information fill-information-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-information" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-information p-4 text-information-foreground">Information</p>
@@ -219,16 +189,11 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <svg x-h-icon class="size-8 fill-information" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Muted
 
-<ClientOnly>
-<component-container>
-<p class="bg-muted text-muted-foreground p-4">Muted</p>
-<p class="p-4 text-muted">Muted</p>
-<svg x-h-icon class="size-8 bg-muted fill-muted-foreground" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-muted p-4 text-muted-foreground">Muted</p>
@@ -237,14 +202,14 @@ A subset of the standard color palette is available as `bg-` and `text-` utiliti
 <svg x-h-icon class="size-8 fill-muted" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Sidebar
 
-<ClientOnly>
-<component-container>
-<p class="bg-sidebar text-sidebar-foreground p-4">Sidebar</p>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p class="bg-sidebar p-4 text-sidebar-foreground">Sidebar</p>
 ```
+
+</LiveExample>

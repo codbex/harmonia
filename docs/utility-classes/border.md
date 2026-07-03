@@ -24,17 +24,7 @@ Classes for adding a border or border radius to an element.
 
 #### Border Side
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 gap-5 md:grid-cols-5">
-  <div class="border text-center">Border</div>
-  <div class="border-l text-center">Left</div>
-  <div class="border-t text-center">Top</div>
-  <div class="border-b text-center">Bottom</div>
-  <div class="border-r text-center">Right</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 gap-5 md:grid-cols-5">
@@ -45,21 +35,12 @@ Classes for adding a border or border radius to an element.
   <div class="border-r text-center">Right</div>
 </div>
 ```
+
+</LiveExample>
 
 #### Border Size
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 gap-5 md:grid-cols-6">
-  <div class="border text-center">border</div>
-  <div class="border-2 text-center">border-2</div>
-  <div class="border-4 text-center">border-4</div>
-  <div class="border-6 text-center">border-6</div>
-  <div class="border-8 text-center">border-8</div>
-  <div class="border-12 text-center">border-12</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 gap-5 md:grid-cols-6">
@@ -71,6 +52,8 @@ Classes for adding a border or border radius to an element.
   <div class="border-12 text-center">border-12</div>
 </div>
 ```
+
+</LiveExample>
 
 ## Divide
 
@@ -95,15 +78,7 @@ Adds a border between child elements by applying a border to all children except
 
 #### Divide X
 
-<ClientOnly>
-<component-container>
-<div class="flex divide-x">
-  <div class="px-4 text-center">First</div>
-  <div class="px-4 text-center">Second</div>
-  <div class="px-4 text-center">Third</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex divide-x">
@@ -112,18 +87,12 @@ Adds a border between child elements by applying a border to all children except
   <div class="px-4 text-center">Third</div>
 </div>
 ```
+
+</LiveExample>
 
 #### Divide Y
 
-<ClientOnly>
-<component-container>
-<div class="flex flex-col divide-y">
-  <div class="py-2 text-center">First</div>
-  <div class="py-2 text-center">Second</div>
-  <div class="py-2 text-center">Third</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex flex-col divide-y">
@@ -132,30 +101,12 @@ Adds a border between child elements by applying a border to all children except
   <div class="py-2 text-center">Third</div>
 </div>
 ```
+
+</LiveExample>
 
 #### Divide Style
 
-<ClientOnly>
-<component-container>
-<div class="hbox gap-4">
-  <div class="vbox divide-y divide-solid">
-    <div class="px-4">Solid</div>
-    <div class="px-4">Solid</div>
-    <div class="px-4">Solid</div>
-  </div>
-  <div class="vbox divide-y-2 divide-dashed">
-    <div class="px-4">Dashed</div>
-    <div class="px-4">Dashed</div>
-    <div class="px-4">Dashed</div>
-  </div>
-  <div class="vbox divide-y-2 divide-dotted">
-    <div class="px-4">Dotted</div>
-    <div class="px-4">Dotted</div>
-    <div class="px-4">Dotted</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="hbox gap-4">
@@ -176,6 +127,8 @@ Adds a border between child elements by applying a border to all children except
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ---
 
@@ -206,22 +159,7 @@ Available sizes: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `none`, `ful
 
 #### Border Radius Size
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 gap-5 md:grid-cols-5">
-  <div class="border rounded-none p-3 text-center text-sm">none</div>
-  <div class="border rounded-xs p-3 text-center text-sm">xs</div>
-  <div class="border rounded-sm p-3 text-center text-sm">sm</div>
-  <div class="border rounded-md p-3 text-center text-sm">md</div>
-  <div class="border rounded-lg p-3 text-center text-sm">lg</div>
-  <div class="border rounded-xl p-3 text-center text-sm">xl</div>
-  <div class="border rounded-2xl p-3 text-center text-sm">2xl</div>
-  <div class="border rounded-3xl p-3 text-center text-sm">3xl</div>
-  <div class="border rounded-4xl p-3 text-center text-sm">4xl</div>
-  <div class="border rounded-full p-3 text-center text-sm">full</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 gap-5 md:grid-cols-5">
@@ -238,23 +176,11 @@ Available sizes: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `none`, `ful
 </div>
 ```
 
+</LiveExample>
+
 #### Border Radius Side
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-2 gap-5 md:grid-cols-4">
-  <div class="border rounded-xl p-3 text-center text-sm">rounded-xl</div>
-  <div class="border rounded-t-xl p-3 text-center text-sm">rounded-t-xl</div>
-  <div class="border rounded-b-xl p-3 text-center text-sm">rounded-b-xl</div>
-  <div class="border rounded-s-xl p-3 text-center text-sm">rounded-s-xl</div>
-  <div class="border rounded-e-xl p-3 text-center text-sm">rounded-e-xl</div>
-  <div class="border rounded-tl-xl p-3 text-center text-sm">rounded-tl-xl</div>
-  <div class="border rounded-tr-xl p-3 text-center text-sm">rounded-tr-xl</div>
-  <div class="border rounded-bl-xl p-3 text-center text-sm">rounded-bl-xl</div>
-  <div class="border rounded-br-xl p-3 text-center text-sm">rounded-br-xl</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-2 gap-5 md:grid-cols-4">
@@ -269,3 +195,5 @@ Available sizes: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `none`, `ful
   <div class="rounded-br-xl border p-3 text-center text-sm">rounded-br-xl</div>
 </div>
 ```
+
+</LiveExample>

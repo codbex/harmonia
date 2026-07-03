@@ -98,18 +98,7 @@ In range mode the model value is an object with `start` and `end` keys (each a `
 { start: '2025-06-09', end: '2025-06-16' }
 ```
 
-<ClientOnly>
-<component-container>
-<div
-  x-h-date-picker
-  x-data="{ range: { start: '', end: '' } }"
->
-  <input type="text" id="date-input-range" />
-  <button x-h-date-picker-trigger aria-label="Choose date range"></button>
-  <div x-h-date-picker-popup="{ range: true }" x-model="range"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-date-picker x-data="{ range: { start: '', end: '' } }">
@@ -119,30 +108,15 @@ In range mode the model value is an object with `start` and `end` keys (each a `
 </div>
 ```
 
+</LiveExample>
+
 ### Validation timing
 
 By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div
-  x-h-date-picker
-  x-data="{
-  date: '',
-  init() {
-    const d = new Date();
-    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-}"
->
-  <input type="text" id="date-input-1" />
-  <button x-h-date-picker-trigger aria-label="Choose date"></button>
-  <div x-h-date-picker-popup x-model="date"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -160,27 +134,12 @@ By default this control shows native-constraint errors (for example `required`) 
   <div x-h-date-picker-popup x-model="date"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### With locale
 
-<ClientOnly>
-<component-container>
-<div
-  x-h-date-picker
-  x-data="{
-  date: '',
-  init() {
-    const d = new Date();
-    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-}"
->
-  <input type="text" id="date-input-1" />
-  <button x-h-date-picker-trigger aria-label="Choose date"></button>
-  <div x-h-date-picker-popup="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -198,27 +157,12 @@ By default this control shows native-constraint errors (for example `required`) 
   <div x-h-date-picker-popup="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### With custom display format
 
-<ClientOnly>
-<component-container>
-<div
-  x-h-date-picker
-  x-data="{
-  date: '',
-  init() {
-    const d = new Date();
-    this.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-}"
->
-  <input type="text" id="date-input-2" />
-  <button x-h-date-picker-trigger aria-label="Choose date"></button>
-  <div x-h-date-picker-popup="{ options: { day: '2-digit', month: 'long', year: 'numeric' }, order: 'DMY' }" x-model="date"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -236,3 +180,5 @@ By default this control shows native-constraint errors (for example `required`) 
   <div x-h-date-picker-popup="{ options: { day: '2-digit', month: 'long', year: 'numeric' }, order: 'DMY' }" x-model="date"></div>
 </div>
 ```
+
+</LiveExample>

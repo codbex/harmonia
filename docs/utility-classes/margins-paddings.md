@@ -42,13 +42,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ### All-Round Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary m-4">m-4</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -56,13 +50,9 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary m-8">m-8</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -70,13 +60,9 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary m-12">m-12</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -84,15 +70,11 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
+</LiveExample>
+
 ### Left Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary ml-8">ml-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -100,15 +82,11 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
+</LiveExample>
+
 ### Right Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary mr-8">mr-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -116,15 +94,11 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
+</LiveExample>
+
 ### Double-Sided Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary mx-8">mx-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -132,15 +106,11 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
+</LiveExample>
+
 ### Top Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary mt-8">mt-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -148,15 +118,11 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
+</LiveExample>
+
 ### Bottom Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary mb-8">mb-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -164,17 +130,13 @@ Many components already have margins and paddings set, so you may have to add `!
 </div>
 ```
 
+</LiveExample>
+
 ### Responsive Margin
 
 Responsive left and right margin based on the screen size.
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary mx-0 sm:mx-2 md:mx-4 lg:mx-8 xl:mx-12">Responsive</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -182,15 +144,11 @@ Responsive left and right margin based on the screen size.
 </div>
 ```
 
+</LiveExample>
+
 ### Top & Bottom Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary">
-  <div class="bg-secondary text-secondary my-8">my-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary">
@@ -198,17 +156,11 @@ Responsive left and right margin based on the screen size.
 </div>
 ```
 
+</LiveExample>
+
 ### Left Auto Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary flex">
-  <div class="bg-secondary text-secondary px-2">Left content</div>
-  <div class="bg-secondary text-secondary ml-auto">ml-auto</div>
-  <div class="bg-secondary text-secondary px-2">Right content</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="flex bg-primary">
@@ -218,17 +170,11 @@ Responsive left and right margin based on the screen size.
 </div>
 ```
 
+</LiveExample>
+
 ### Right Auto Margin
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary flex">
-  <div class="bg-secondary text-secondary px-2">Left content</div>
-  <div class="bg-secondary text-secondary mr-auto">ml-auto</div>
-  <div class="bg-secondary text-secondary px-2">Right content</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="flex bg-primary">
@@ -238,17 +184,13 @@ Responsive left and right margin based on the screen size.
 </div>
 ```
 
+</LiveExample>
+
 ## Padding examples
 
 ### All-Round Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary p-4">
-  <div class="bg-secondary text-secondary">p-4</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary p-4">
@@ -256,13 +198,9 @@ Responsive left and right margin based on the screen size.
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary p-8">
-  <div class="bg-secondary text-secondary">p-8</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary p-8">
@@ -270,130 +208,100 @@ Responsive left and right margin based on the screen size.
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary p-12">
-  <div class="bg-secondary text-secondary">p-12</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary p-12">
   <div class="bg-secondary text-secondary">p-12</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Left Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary pl-8">
-  <div class="bg-secondary text-secondary">pl-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary pl-8">
   <div class="bg-secondary text-secondary">pl-8</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Right Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary pr-8">
-  <div class="bg-secondary text-secondary">pr-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary pr-8">
   <div class="bg-secondary text-secondary">pr-8</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Double-Sided Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary px-8">
-  <div class="bg-secondary text-secondary">px-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary px-8">
   <div class="bg-secondary text-secondary">px-8</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Responsive Margin
 
 Responsive left and right padding based on the screen size.
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary px-0 sm:px-2 md:px-4 lg:px-8 xl:px-12">
-  <div class="bg-secondary text-secondary">Responsive</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary px-0 sm:px-2 md:px-4 lg:px-8 xl:px-12">
   <div class="bg-secondary text-secondary">Responsive</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Top Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary pt-8">
-  <div class="bg-secondary text-secondary">pt-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary pt-8">
   <div class="bg-secondary text-secondary">pt-8</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Bottom Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary pb-8">
-  <div class="bg-secondary text-secondary">pb-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary pb-8">
   <div class="bg-secondary text-secondary">pb-8</div>
 </div>
 ```
+
+</LiveExample>
 
 ### Top & Bottom Padding
 
-<ClientOnly>
-<component-container data-class="p-0 flex flex-col items-stretch">
-<div class="bg-primary py-8">
-  <div class="bg-secondary text-secondary">py-8</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 flex flex-col items-stretch">
 
 ```html
 <div class="bg-primary py-8">
   <div class="bg-secondary text-secondary">py-8</div>
 </div>
 ```
+
+</LiveExample>

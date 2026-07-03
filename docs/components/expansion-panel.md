@@ -43,54 +43,7 @@ x-h-exp-panel-content
 
 ### Default Panels
 
-<ClientOnly>
-<component-container data-class="p-0" data-style="height:28rem">
-<div x-h-exp-panel>
-  <div x-h-exp-panel-item="true">
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>
-      <div x-h-info-page>
-        <div x-h-info-page-header>
-          <div x-h-info-page-media.icon>
-            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-          </div>
-          <div x-h-info-page-title>Panel 1</div>
-          <div x-h-info-page-description>Just an empty panel</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 2'"></h3>
-    <div x-h-exp-panel-content>
-      <div x-h-info-page>
-        <div x-h-info-page-header>
-          <div x-h-info-page-media.icon>
-            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-          </div>
-          <div x-h-info-page-title>Panel 2</div>
-          <div x-h-info-page-description>Just an empty panel</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 3'"></h3>
-    <div x-h-exp-panel-content>
-      <div x-h-info-page>
-        <div x-h-info-page-header>
-          <div x-h-info-page-media.icon>
-            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-          </div>
-          <div x-h-info-page-title>Panel 3</div>
-          <div x-h-info-page-description>Just an empty panel</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0" data-style="height:28rem">
 
 ```html
 <div x-h-exp-panel>
@@ -138,23 +91,12 @@ x-h-exp-panel-content
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Transparent Panels
 
-<ClientOnly>
-<component-container data-class="p-0" data-style="height:16rem">
-<div x-h-exp-panel data-variant="transparent">
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 2'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0" data-style="height:16rem">
 
 ```html
 <div x-h-exp-panel data-variant="transparent">
@@ -168,23 +110,12 @@ x-h-exp-panel-content
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Floating Panels
 
-<ClientOnly>
-<component-container data-style="height:16rem">
-<div x-h-exp-panel data-floating="true">
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 2'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height:16rem">
 
 ```html
 <div x-h-exp-panel data-floating="true">
@@ -198,23 +129,12 @@ x-h-exp-panel-content
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Transparent Floating Panels
 
-<ClientOnly>
-<component-container data-style="height:16rem">
-<div x-h-exp-panel data-variant="transparent" data-floating="true">
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 2'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height:16rem">
 
 ```html
 <div x-h-exp-panel data-variant="transparent" data-floating="true">
@@ -228,23 +148,12 @@ x-h-exp-panel-content
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Medium Panels
 
-<ClientOnly>
-<component-container data-class="p-0" data-style="height:10rem">
-<div x-h-exp-panel data-size="md">
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 2'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0" data-style="height:10rem">
 
 ```html
 <div x-h-exp-panel data-size="md">
@@ -258,23 +167,12 @@ x-h-exp-panel-content
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Small Panels
 
-<ClientOnly>
-<component-container data-class="p-0" data-style="height:10rem">
-<div x-h-exp-panel data-size="sm">
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-  <div x-h-exp-panel-item>
-    <h3 x-h-exp-panel-trigger="'Panel 2'"></h3>
-    <div x-h-exp-panel-content>Panel content</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0" data-style="height:10rem">
 
 ```html
 <div x-h-exp-panel data-size="sm">
@@ -288,6 +186,8 @@ x-h-exp-panel-content
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Two-Way Binding And Watching For Changes
 
@@ -295,28 +195,9 @@ In cases where the expanded state must be monitored and/or persisted, the `$watc
 
 It can be used both inline and in a component object.
 
-<ClientOnly>
-<component-container data-class="p-0" data-style="height:16rem">
-<div x-h-exp-panel x-data="{ panelOneOpen: true }">
-  <div x-h-exp-panel-item="panelOneOpen" x-init="$watch('panelOneOpen', (value, oldValue) => console.log('Old value:', value, 'New value', oldValue))">
-    <h3 x-h-exp-panel-trigger="'Panel 1'"></h3>
-    <div x-h-exp-panel-content>
-      <div x-h-info-page>
-        <div x-h-info-page-header>
-          <div x-h-info-page-media.icon>
-            <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-          </div>
-          <div x-h-info-page-title>Panel 1</div>
-          <div x-h-info-page-description>Just an empty panel</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
-
 - #### Inline
+
+<LiveExample data-class="p-0" data-style="height:16rem">
 
 ```html
 <div x-h-exp-panel x-data="{ panelOneOpen: true }">
@@ -337,7 +218,11 @@ It can be used both inline and in a component object.
 </div>
 ```
 
+</LiveExample>
+
 - #### Component Object
+
+<LiveExample data-class="p-0" data-style="height:16rem">
 
 ```html
 <div x-h-exp-panel x-data="twoWayPanel">
@@ -367,3 +252,5 @@ It can be used both inline and in a component object.
   }));
 </script>
 ```
+
+</LiveExample>

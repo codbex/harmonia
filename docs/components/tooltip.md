@@ -21,19 +21,7 @@ The `x-h-tooltip` element must be placed somewhere AFTER the `x-h-tooltip-trigge
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex items-center">
-<button x-h-button x-h-tooltip-trigger>Button</button>
-<div x-h-tooltip>
-  Buttons are clickable
-  <div x-h-tag-group>
-    <div x-h-tag>Ctrl</div>
-    <span>+</span>
-    <div x-h-tag>B</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex items-center">
 
 ```html
 <button x-h-button x-h-tooltip-trigger>Button</button>
@@ -46,3 +34,5 @@ The `x-h-tooltip` element must be placed somewhere AFTER the `x-h-tooltip-trigge
   </div>
 </div>
 ```
+
+</LiveExample>

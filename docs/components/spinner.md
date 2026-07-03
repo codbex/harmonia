@@ -16,16 +16,12 @@ x-h-spinner
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-center gap-4">
-<span x-h-spinner></span>
-<span x-h-spinner class="size-8"></span>
-<span x-h-spinner class="size-12"></span>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-center gap-4">
 
 ```html
 <span x-h-spinner></span>
 <span x-h-spinner class="size-8"></span>
 <span x-h-spinner class="size-12"></span>
 ```
+
+</LiveExample>

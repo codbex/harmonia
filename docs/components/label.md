@@ -16,14 +16,7 @@ x-h-label
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div x-h-field>
-  <label x-h-label for="labelExmpl">Name</label>
-  <input x-h-input id="labelExmpl" name="name" placeholder="Ivan Strashimechkarov" />
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-field>
@@ -31,3 +24,5 @@ x-h-label
   <input x-h-input id="labelExmpl" name="name" placeholder="Ivan Strashimechkarov" />
 </div>
 ```
+
+</LiveExample>

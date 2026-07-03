@@ -14,21 +14,7 @@ Apply a backdrop-blur filter to an element.
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="vbox gap-4">
-  <div class="tile-sm bg-contain" style="background-image: url('/harmonia/logo/harmonia.svg')">
-    <div class="vbox size-full items-center justify-center font-bold backdrop-blur-xs">Blur XS</div>
-  </div>
-  <div class="tile-sm bg-contain" style="background-image: url('/harmonia/logo/harmonia.svg')">
-    <div class="vbox size-full items-center justify-center font-bold backdrop-blur-sm">Blur SM</div>
-  </div>
-  <div class="tile-sm bg-contain" style="background-image: url('/harmonia/logo/harmonia.svg')">
-    <div class="vbox size-full items-center justify-center font-bold backdrop-blur-md">Blur MD</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="vbox gap-4">
@@ -43,3 +29,5 @@ Apply a backdrop-blur filter to an element.
   </div>
 </div>
 ```
+
+</LiveExample>

@@ -42,22 +42,7 @@ When `tooltip` is enabled, hovering and clicking slices emit bubbling `CustomEve
 
 ### Basic
 
-<ClientOnly>
-<component-container>
-<div
-  class="aspect-square h-full"
-  style="max-height: 20rem"
-  x-h-chart-doughnut="{
-    slices: [
-      { label: 'Direct', value: 40 },
-      { label: 'Referral', value: 25 },
-      { label: 'Social', value: 20 },
-      { label: 'Other', value: 15 }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -73,26 +58,12 @@ When `tooltip` is enabled, hovering and clicking slices emit bubbling `CustomEve
   }"
 ></div>
 ```
+
+</LiveExample>
 
 ### Thinner ring
 
-<ClientOnly>
-<component-container>
-<div
-  class="aspect-square h-full"
-  style="max-height: 20rem"
-  x-h-chart-doughnut="{
-    cutout: 0.8,
-    slices: [
-      { label: 'Direct', value: 40 },
-      { label: 'Referral', value: 25 },
-      { label: 'Social', value: 20 },
-      { label: 'Other', value: 15 }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -109,3 +80,5 @@ When `tooltip` is enabled, hovering and clicking slices emit bubbling `CustomEve
   }"
 ></div>
 ```
+
+</LiveExample>

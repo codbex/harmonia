@@ -155,6 +155,12 @@ export default defineConfig({
   },
   head: [
     ['link', { rel: 'icon', href: `${basePath}favicon.ico` }],
+    // Mirror VitePress's stored appearance into Harmonia's color-scheme key BEFORE
+    // harmonia.js runs, so Harmonia's own init applies the same scheme instead of
+    // re-deriving it from the system and clobbering what VitePress set. VitePress is
+    // the single source of truth for the docs; the runtime watcher in the theme keeps
+    // the two in sync after toggles (and the shared key propagates to template iframes).
+    ['script', {}, "try{var a=localStorage.getItem('vitepress-theme-appearance');if(a==='dark'||a==='light'||a==='auto')localStorage.setItem('codbex.harmonia.colorMode',a);}catch(e){}"],
     ['script', { src: `${basePath}js/component-container.js`, type: 'module' }],
     ['script', { src: `${basePath}js/svg-icon.js`, type: 'module' }],
     ['script', { src: `${basePath}lib/node_modules/lucide/dist/umd/lucide.min.js`, type: 'text/javascript' }],

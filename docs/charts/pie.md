@@ -63,22 +63,7 @@ Clicking or tapping a data point pins its tooltip open (useful on touchscreens, 
 
 ### Basic
 
-<ClientOnly>
-<component-container>
-<div
-  class="aspect-square h-full"
-  style="max-height: 20rem"
-  x-h-chart-pie="{
-    slices: [
-      { label: 'Direct', value: 40 },
-      { label: 'Referral', value: 25 },
-      { label: 'Social', value: 20 },
-      { label: 'Other', value: 15 }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -94,26 +79,12 @@ Clicking or tapping a data point pins its tooltip open (useful on touchscreens, 
   }"
 ></div>
 ```
+
+</LiveExample>
 
 ### Labels outside the slices
 
-<ClientOnly>
-<component-container>
-<div
-  class="aspect-square h-full"
-  style="max-height: 20rem"
-  x-h-chart-pie="{
-    labelPosition: 'outside',
-    slices: [
-      { label: 'Direct', value: 40 },
-      { label: 'Referral', value: 25 },
-      { label: 'Social', value: 20 },
-      { label: 'Other', value: 15 }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -130,3 +101,5 @@ Clicking or tapping a data point pins its tooltip open (useful on touchscreens, 
   }"
 ></div>
 ```
+
+</LiveExample>

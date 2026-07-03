@@ -38,38 +38,7 @@ x-h-pagination-ellipsis
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-center">
-<nav x-h-pagination>
-  <ul x-h-pagination-content>
-    <li x-h-pagination-item>
-      <a x-h-pagination-link.previous href="#">
-        <i x-h-lucide role="img" data-lucide="chevron-left"></i>
-        <span x-h-pagination-link-label>Previous</span>
-      </a>
-    </li>
-    <li x-h-pagination-item>
-      <a x-h-pagination-link="false" href="#">1</a>
-    </li>
-    <li x-h-pagination-item>
-      <a x-h-pagination-link="true" href="#">2</a>
-    </li>
-    <li x-h-pagination-item>
-      <a x-h-pagination-link="false" href="#">3</a>
-    </li>
-    <li x-h-pagination-item>
-      <span x-h-pagination-ellipsis></span>
-    </li>
-    <li x-h-pagination-item>
-      <a x-h-pagination-link.next href="#">
-        <span x-h-pagination-link-label>Next</span>
-        <i x-h-lucide role="img" data-lucide="chevron-right"></i>
-      </a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-center">
 
 ```html
 <nav x-h-pagination>
@@ -101,3 +70,5 @@ x-h-pagination-ellipsis
   </ul>
 </nav>
 ```
+
+</LiveExample>

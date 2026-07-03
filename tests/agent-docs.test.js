@@ -39,6 +39,18 @@ describe('agent docs (skills/harmonia)', () => {
     expect(committed).toEqual(generated);
   });
 
+  it('does not leak VitePress-only example wrappers into references', () => {
+    // <LiveExample> / <IconGallery> / <TemplateShowcase> are docs-site Vue
+    // components; they must be stripped from the transcribed sections (they used
+    // to leak through API Reference subsections that wrap an example).
+    for (const [rel, content] of Object.entries(files)) {
+      if (!rel.startsWith('references/')) continue;
+      for (const tag of ['LiveExample', 'IconGallery', 'TemplateShowcase']) {
+        expect(content, `skills/harmonia/${rel} leaks <${tag}>`).not.toContain(tag);
+      }
+    }
+  });
+
   it('generates a reference for every component', () => {
     // chart.js is documented under docs/charts/*, split.js under docs/layouts/split.
     const KNOWN_ELSEWHERE = new Set(['chart', 'split']);

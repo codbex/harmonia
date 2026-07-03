@@ -27,10 +27,22 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 ## Example
 
 ```html
-<nav x-h-breadcrumb data-variant="outline">...</nav>
+<nav x-h-breadcrumb>
+  <ol x-h-breadcrumb-list>
+    <li x-h-breadcrumb-item>
+      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
+    </li>
+    <li x-h-breadcrumb-item>
+      <a x-h-breadcrumb-link href="#">Components</a>
+    </li>
+    <li x-h-breadcrumb-item>
+      <span x-h-breadcrumb-page>Breadcrumb</span>
+    </li>
+  </ol>
+</nav>
 ```
 
-More examples in the docs site: Examples, Links as buttons, In a Toolbar, Sizes, Scroll Overflow, Popover Overflow With `nowrap`, Dynamic items with `x-for`.
+More examples in the docs site: Links as buttons, Outline Variant, In a Toolbar, Sizes, Scroll Overflow, Popover Overflow With `nowrap`, Dynamic items with `x-for`.
 
 ## Notes
 

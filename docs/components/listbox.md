@@ -29,24 +29,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div x-h-listbox>
-  <ul x-h-list>
-    <li x-h-list-header>Group 1</li>
-    <li x-h-list-item>List Item 1</li>
-    <li x-h-list-item>List Item 2</li>
-    <li x-h-list-item>List Item 3</li>
-  </ul>
-  <ul x-h-list>
-    <li x-h-list-header>Group 2</li>
-    <li x-h-list-item>List Item 1</li>
-    <li x-h-list-item>List Item 2</li>
-    <li x-h-list-item>List Item 3</li>
-  </ul>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-listbox>
@@ -64,3 +47,5 @@ By default this control shows native-constraint errors (for example `required`) 
   </ul>
 </div>
 ```
+
+</LiveExample>

@@ -42,73 +42,73 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
   </template>
 </div>
 <script>
-  Alpine.data("app", () => ({
+  Alpine.data('app', () => ({
     tree: [
       {
-        id: "docs",
-        label: "Documents",
+        id: 'docs',
+        label: 'Documents',
         children: [
           {
-            id: "harmonia",
-            label: "Harmonia.pdf",
+            id: 'harmonia',
+            label: 'Harmonia.pdf',
           },
           {
-            id: "alpine",
-            label: "alpine.pdf",
+            id: 'alpine',
+            label: 'alpine.pdf',
           },
           {
-            id: "tailwind",
-            label: "tailwind.pdf",
+            id: 'tailwind',
+            label: 'tailwind.pdf',
           },
         ],
       },
       {
-        id: "photos",
-        label: "Photos",
+        id: 'photos',
+        label: 'Photos',
         children: [
           {
-            id: "holiday",
-            label: "Holiday",
+            id: 'holiday',
+            label: 'Holiday',
             children: [
               {
-                id: "p1",
-                label: "Photo 1.jpg",
+                id: 'p1',
+                label: 'Photo 1.jpg',
               },
               {
-                id: "p2",
-                label: "Photo 2.jpg",
+                id: 'p2',
+                label: 'Photo 2.jpg',
               },
               {
-                id: "p3",
-                label: "Photo 3.jpg",
+                id: 'p3',
+                label: 'Photo 3.jpg',
               },
             ],
           },
           {
-            id: "img1",
-            label: "Image 1.jpg",
+            id: 'img1',
+            label: 'Image 1.jpg',
           },
           {
-            id: "img2",
-            label: "Image 2.jpg",
+            id: 'img2',
+            label: 'Image 2.jpg',
           },
           {
-            id: "img3",
-            label: "Image 3.jpg",
+            id: 'img3',
+            label: 'Image 3.jpg',
           },
           {
-            id: "img4",
-            label: "Image 4.jpg",
+            id: 'img4',
+            label: 'Image 4.jpg',
           },
         ],
       },
       {
-        id: "hjs",
-        label: "harmonia.js",
+        id: 'hjs',
+        label: 'harmonia.js',
       },
       {
-        id: "hcss",
-        label: "harmonia.css",
+        id: 'hcss',
+        label: 'harmonia.css',
       },
     ],
   }));

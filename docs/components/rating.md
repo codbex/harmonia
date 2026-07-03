@@ -57,14 +57,7 @@ Bind a number with `x-model`. The value updates on selection (click, drag, or ke
 
 ### Default (half-star)
 
-<ClientOnly>
-<component-container>
-<div x-data="{ score: 2.5 }" class="flex items-center gap-3">
-  <div x-h-rating x-model="score"></div>
-  <span x-text="score"></span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ score: 2.5 }" class="flex items-center gap-3">
@@ -72,63 +65,51 @@ Bind a number with `x-model`. The value updates on selection (click, drag, or ke
   <span x-text="score"></span>
 </div>
 ```
+
+</LiveExample>
 
 ### Whole stars
 
-<ClientOnly>
-<component-container>
-<div x-data="{ score: 3 }">
-  <div x-h-rating x-model="score" data-precision="full"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ score: 3 }">
   <div x-h-rating x-model="score" data-precision="full"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### Custom color
 
-<ClientOnly>
-<component-container>
-<div x-data="{ score: 4 }">
-  <div x-h-rating x-model="score" data-color="red"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ score: 4 }">
   <div x-h-rating x-model="score" data-color="red"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### Read-only
 
-<ClientOnly>
-<component-container>
-<div x-h-rating data-readonly data-value="4.5" data-max="5" data-label="Average rating"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
-<div x-h-rating data-readonly data-value="4.5" data-label="Average rating"></div>
+<div x-h-rating data-readonly data-value="4.5" data-max="5" data-label="Average rating"></div>
 ```
+
+</LiveExample>
 
 ### Larger, ten stars
 
-<ClientOnly>
-<component-container>
-<div x-data="{ score: 7 }">
-  <div x-h-rating x-model="score" data-max="10" data-size="lg"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ score: 7 }">
   <div x-h-rating x-model="score" data-max="10" data-size="lg"></div>
 </div>
 ```
+
+</LiveExample>

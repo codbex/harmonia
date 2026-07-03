@@ -52,15 +52,13 @@ x-h-include
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-  <div x-h-include="'/harmonia/components/include/fragment.html'"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-include="'/harmonia/components/include/fragment.html'"></div>
 ```
+
+</LiveExample>
 
 ### Reacting after load
 

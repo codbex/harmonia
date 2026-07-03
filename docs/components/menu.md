@@ -96,30 +96,7 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 ### Dropdown
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start gap-4">
-<button x-h-button x-h-menu-trigger.dropdown>Dropdown</button>
-<ul x-h-menu>
-  <div x-h-menu-label>Profile</div>
-  <li x-h-menu-item>Set yourself as away</li>
-  <li x-h-menu-sub>
-    <span>Pause notifications</span>
-    <ul x-h-menu.sub>
-      <li x-h-menu-item>15 minutes</li>
-      <li x-h-menu-item>30 minutes</li>
-      <li x-h-menu-item>1 hour</li>
-      <li x-h-menu-item>2 hours</li>
-      <li x-h-menu-item>4 hours</li>
-      <li x-h-menu-item>1 day</li>
-    </ul>
-  </li>
-  <div x-h-menu-label>Team</div>
-  <li x-h-menu-item>Invite users</li>
-  <div x-h-menu-separator></div>
-  <li x-h-menu-item data-variant="negative">Log out</li>
-</ul>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start gap-4">
 
 ```html
 <button x-h-button x-h-menu-trigger.dropdown>Dropdown</button>
@@ -144,11 +121,53 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 </ul>
 ```
 
+</LiveExample>
+
 ### Contextmenu
 
-<ClientOnly>
-<component-container src="/components/menu/menu.html" data-class="border-dashed p-0" >
-</component-container>
-</ClientOnly>
+<LiveExample data-class="border-dashed p-0">
 
-<<< @/public/components/menu/menu.html
+```html
+<div x-h-menu-trigger class="flex items-center justify-center p-12">Right click for context menu</div>
+<ul x-h-menu aria-label="context menu" x-data="{ checkbox: { autosave: true }, radioItems: [{ label: 'Radio 1', value: 'r1' }, { label: 'Radio 2', value: 'r2' }], radioSelected: 'r1' }">
+  <li x-h-menu-item>
+    <i x-h-lucide role="img" data-lucide="save"></i>
+    <span>Save</span>
+    <span x-h-menu-item-secondary>Ctrl+S</span>
+  </li>
+  <li x-h-menu-item data-variant="negative">
+    <i x-h-lucide role="img" data-lucide="trash"></i>
+    <span>Delete</span>
+    <span x-h-menu-item-secondary>Del</span>
+  </li>
+  <div x-h-menu-separator></div>
+  <div x-h-menu-label data-inset="false">Other items</div>
+  <li x-h-menu-item data-inset="true">Menu Item 1</li>
+  <li x-h-menu-sub data-inset="true">
+    <span>Submenu</span>
+    <ul x-h-menu.sub>
+      <li x-h-menu-item>Subitem 1</li>
+      <li x-h-menu-item>Subitem 2</li>
+      <li x-h-menu-item>Subitem 3</li>
+      <li x-h-menu-sub>
+        <span>Sub-submenu</span>
+        <ul x-h-menu.sub>
+          <li x-h-menu-item>Subitem 1</li>
+          <li x-h-menu-item>Subitem 2</li>
+          <li x-h-menu-item>Subitem 3</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <div x-h-menu-separator></div>
+  <div x-h-menu-label data-inset="true">Checkbox Items</div>
+  <div x-h-menu-checkbox-item x-model="checkbox.autosave">Auto-Save</div>
+  <div x-h-menu-separator></div>
+  <div x-h-menu-label data-inset="true">Radio Items</div>
+  <template x-for="radio in radioItems">
+    <li x-h-menu-radio-item="radio.value" name="rg1" x-model="radioSelected" x-text="radio.label"></li>
+  </template>
+</ul>
+```
+
+</LiveExample>

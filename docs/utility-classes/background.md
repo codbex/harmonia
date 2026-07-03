@@ -22,96 +22,82 @@ CSS utility classes for controlling the size and repeat behavior of background i
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="bg-contain bg-no-repeat border tile-auto-sm" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-auto-sm border bg-contain bg-no-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
 
+</LiveExample>
+
 #### Cover
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="tile-auto-sm border bg-cover" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-auto-sm border bg-cover" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
+
+</LiveExample>
 
 #### Auto
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="bg-auto bg-no-repeat border tile-auto-sm" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
-<div class="tile-sm border bg-auto bg-no-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
+<div class="tile-auto-sm border bg-auto bg-no-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
+
+</LiveExample>
 
 ### Background Repeat
 
 #### Repeat
 
-<ClientOnly>
-<component-container>
-<div class="tile-auto-md border bg-auto bg-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-auto-md border bg-auto bg-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
+
+</LiveExample>
 
 #### Repeat X
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="tile-auto-md border bg-auto bg-repeat-x" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-auto-md border bg-auto bg-repeat-x" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
+
+</LiveExample>
 
 #### Repeat Y
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="bg-auto bg-repeat-y border size-full aspect-square" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
-<div class="size-full border bg-auto bg-repeat-y" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
+<div class="aspect-square size-full border bg-auto bg-repeat-y" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
+
+</LiveExample>
 
 #### No Repeat
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="tile-auto-sm border bg-auto bg-no-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-auto-sm border bg-auto bg-no-repeat" style="background-image: url('/harmonia/logo/harmonia-square.jpg');"></div>
 ```
+
+</LiveExample>

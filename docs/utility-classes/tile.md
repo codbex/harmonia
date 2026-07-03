@@ -21,14 +21,7 @@ The width class names start with `tile`. They can be used for creating tile-like
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-3">
-<div class="bg-primary text-primary-foreground tile-sm">Small</div>
-<div class="bg-primary text-primary-foreground tile-md">Medium</div>
-<div class="bg-primary text-primary-foreground tile-lg">Large</div>
-<div class="bg-primary text-primary-foreground tile-xl">Extra Large</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-3">
 
 ```html
 <div class="tile-sm bg-primary text-primary-foreground">Small</div>
@@ -37,16 +30,11 @@ The width class names start with `tile`. They can be used for creating tile-like
 <div class="tile-xl bg-primary text-primary-foreground">Extra Large</div>
 ```
 
+</LiveExample>
+
 ### Double width
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-3">
-<div class="bg-primary text-primary-foreground tile-double-sm">Small Double</div>
-<div class="bg-primary text-primary-foreground tile-double-md">Medium Double</div>
-<div class="bg-primary text-primary-foreground tile-double-lg">Large Double</div>
-<div class="bg-primary text-primary-foreground tile-double-xl">Extra Large Double</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-3">
 
 ```html
 <div class="tile-double-sm bg-primary text-primary-foreground">Small Double</div>
@@ -55,16 +43,11 @@ The width class names start with `tile`. They can be used for creating tile-like
 <div class="tile-double-xl bg-primary text-primary-foreground">Extra Large Double</div>
 ```
 
+</LiveExample>
+
 ### Auto width
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-3">
-<div class="bg-primary text-primary-foreground tile-auto-sm">Small Auto</div>
-<div class="bg-primary text-primary-foreground tile-auto-md">Medium Auto</div>
-<div class="bg-primary text-primary-foreground tile-auto-lg">Large Auto</div>
-<div class="bg-primary text-primary-foreground tile-auto-xl">Extra Large Auto</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-3">
 
 ```html
 <div class="tile-auto-sm bg-primary text-primary-foreground">Small Auto</div>
@@ -72,3 +55,5 @@ The width class names start with `tile`. They can be used for creating tile-like
 <div class="tile-auto-lg bg-primary text-primary-foreground">Large Auto</div>
 <div class="tile-auto-xl bg-primary text-primary-foreground">Extra Large Auto</div>
 ```
+
+</LiveExample>

@@ -133,14 +133,7 @@ Some of the classes above can be used with the `!` prefix (for `!important`) in 
 
 ### Screen
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-scroll">
-<div class="bg-primary text-primary-foreground flex justify-between w-screen">
-  <span>Start</span>
-  <span>End</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 overflow-scroll">
 
 ```html
 <div class="flex w-screen justify-between bg-primary text-primary-foreground">
@@ -149,52 +142,25 @@ Some of the classes above can be used with the `!` prefix (for `!important`) in 
 </div>
 ```
 
+</LiveExample>
+
 ::: tip
 You may have to horizontally scroll the container to see the "End" label.
 :::
 
 ### Full
 
-<ClientOnly>
-<component-container data-class="p-0">
-<div class="bg-primary text-primary-foreground w-full">Full width</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0">
 
 ```html
 <div class="w-full bg-primary text-primary-foreground">Full width</div>
 ```
 
+</LiveExample>
+
 ### Fractions
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-2">
-<div class="flex gap-2">
-  <div class="bg-primary text-primary-foreground w-1/2">w-1/2</div>
-  <div class="bg-primary text-primary-foreground w-1/2">w-1/2</div>
-</div>
-<div class="flex gap-2">
-  <div class="bg-primary text-primary-foreground w-2/5">w-2/5</div>
-  <div class="bg-primary text-primary-foreground w-3/5">w-3/5</div>
-</div>
-<div class="flex gap-2">
-  <div class="bg-primary text-primary-foreground w-1/3">w-1/3</div>
-  <div class="bg-primary text-primary-foreground w-2/3">w-2/3</div>
-</div>
-<div class="flex gap-2">
-  <div class="bg-primary text-primary-foreground w-1/4">w-1/4</div>
-  <div class="bg-primary text-primary-foreground w-3/4">w-3/4</div>
-</div>
-<div class="flex gap-2">
-  <div class="bg-primary text-primary-foreground w-1/5">w-1/5</div>
-  <div class="bg-primary text-primary-foreground w-4/5">w-4/5</div>
-</div>
-<div class="flex gap-2">
-  <div class="bg-primary text-primary-foreground w-1/10">w-1/10</div>
-  <div class="bg-primary text-primary-foreground w-9/10">w-9/10</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-2">
 
 ```html
 <div class="flex gap-2">
@@ -223,17 +189,11 @@ You may have to horizontally scroll the container to see the "End" label.
 </div>
 ```
 
+</LiveExample>
+
 ### Sizes
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-2 overflow-scroll">
-<div class="w-xs bg-primary text-primary-foreground">Extra small width</div>
-<div class="w-sm bg-primary text-primary-foreground">Small width</div>
-<div class="w-md bg-primary text-primary-foreground">Medium width</div>
-<div class="w-lg bg-primary text-primary-foreground">Large width</div>
-<div class="w-xl bg-primary text-primary-foreground">Extra large width</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-2 overflow-scroll">
 
 ```html
 <div class="w-xs bg-primary text-primary-foreground">Extra small width</div>
@@ -242,70 +202,60 @@ You may have to horizontally scroll the container to see the "End" label.
 <div class="w-lg bg-primary text-primary-foreground">Large width</div>
 <div class="w-xl bg-primary text-primary-foreground">Extra large width</div>
 ```
+
+</LiveExample>
 
 ## Height examples
 
 ### Full
 
-<ClientOnly>
-<component-container data-class="p-0">
-<div class="bg-primary text-primary-foreground h-full">
-Full height
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0">
 
 ```html
 <div class="h-full bg-primary text-primary-foreground">Full height</div>
 ```
 
+</LiveExample>
+
 ### Screen
 
-<ClientOnly>
-<component-container data-class="p-0">
-<div class="bg-primary text-primary-foreground flex justify-between h-screen">
-<span>Start</span>
-<span>End</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0">
 
 ```html
-<div class="h-screen bg-primary text-primary-foreground">Matches screen height</div>
+<div class="flex h-screen justify-between bg-primary text-primary-foreground">
+  <span>Start</span>
+  <span>End</span>
+</div>
 ```
+
+</LiveExample>
 
 ### Half
 
-<ClientOnly>
-<component-container data-class="p-0 h-12">
-<div class="bg-primary text-primary-foreground h-1/2">50% height</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 h-12">
 
 ```html
 <div class="h-1/2 bg-primary text-primary-foreground">50% height</div>
 ```
 
+</LiveExample>
+
 ## Size examples
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="bg-primary text-primary-foreground size-8 text-xs">Size 8</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="size-8 bg-primary text-xs text-primary-foreground">Size 8</div>
 ```
 
-<ClientOnly>
-<component-container>
-<div class="bg-primary text-primary-foreground size-12">Size 12</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div class="size-12 bg-primary text-primary-foreground">Size 12</div>
 ```
+
+</LiveExample>

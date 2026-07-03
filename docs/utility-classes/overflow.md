@@ -24,13 +24,7 @@ CSS utility classes set overflow behaviour.
 
 ### Scroll
 
-<ClientOnly>
-<component-container>
-<div class="tile-sm overflow-scroll">
-  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-sm overflow-scroll">
@@ -38,15 +32,11 @@ CSS utility classes set overflow behaviour.
 </div>
 ```
 
+</LiveExample>
+
 ### Scroll (hidden scrollbars)
 
-<ClientOnly>
-<component-container>
-<div class="tile-sm overflow-scroll scrollbar-none">
-  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-sm scrollbar-none overflow-scroll">
@@ -54,66 +44,52 @@ CSS utility classes set overflow behaviour.
 </div>
 ```
 
+</LiveExample>
+
 ### Scroll horizontally
 
-<ClientOnly>
-<component-container>
-<div class="tile-sm overflow-x-scroll overflow-y-hidden">
-  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-sm overflow-x-scroll overflow-y-hidden">
-  <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
+
+</LiveExample>
 
 ### Scroll vertivally
 
-<ClientOnly>
-<component-container>
-<div class="tile-sm overflow-y-scroll overflow-x-hidden">
-  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-sm overflow-x-hidden overflow-y-scroll">
-  <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
+
+</LiveExample>
 
 ### No scroll
 
-<ClientOnly>
-<component-container>
-<div class="tile-sm overflow-hidden">
-  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-sm overflow-hidden">
-  <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
+
+</LiveExample>
 
 ### Visible
 
-<ClientOnly>
-<component-container>
-<div class="tile-sm overflow-visible">
-  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="tile-sm overflow-visible">
-  <svg x-h-icon class="" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+  <svg x-h-icon class="tile-lg" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
 </div>
 ```
+
+</LiveExample>

@@ -14,36 +14,30 @@ CSS utility classes for adjusting images.
 
 ### Contain
 
-<ClientOnly>
-<component-container>
-<img class="object-contain border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
-<img class="border border-dashed object-contain" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
+<img class="border border-dashed object-contain" style="width:100%;height:100px" role="presentation" src="/harmonia/logo/harmonia-square.jpg" />
 ```
+
+</LiveExample>
 
 ### Cover
 
-<ClientOnly>
-<component-container>
-<img class="object-cover border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
-<img class="border border-dashed object-cover" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
+<img class="border border-dashed object-cover" style="width:100%;height:100px" role="presentation" src="/harmonia/logo/harmonia-square.jpg" />
 ```
+
+</LiveExample>
 
 ### Fill
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-3">
-<img class="object-fill border border-dashed" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg">
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-3">
 
 ```html
-<img class="border border-dashed object-fill" style="width:100%;height:100px" role="presentation" src="/logo/harmonia-square.jpg" />
+<img class="border border-dashed object-fill" style="width:100%;height:100px" role="presentation" src="/harmonia/logo/harmonia-square.jpg" />
 ```
+
+</LiveExample>

@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/cli": "^4.3.1",
+    "@tailwindcss/cli": "^4.3.2",
     "@vitest/coverage-v8": "^4.1.9",
     "alpinejs": "^3.15.12",
     "autoprefixer": "^10.5.0",

@@ -30,32 +30,24 @@ x-h-input-number
 
 ### Number Input
 
-<ClientOnly>
-<component-container>
-<div x-h-input-number>
-  <input type="number" min="0" max="10" step="2" value="4" />
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-input-number>
   <input type="number" min="0" max="10" step="2" value="4" />
 </div>
 ```
+
+</LiveExample>
 
 ### Invalid Number Input
 
-<ClientOnly>
-<component-container>
-<div x-h-input-number>
-  <input type="number" min="0" max="10" step="2" value="12" aria-invalid="true" />
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-input-number>
   <input type="number" min="0" max="10" step="2" value="12" aria-invalid="true" />
 </div>
 ```
+
+</LiveExample>

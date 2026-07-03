@@ -57,7 +57,7 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 ## Example
 
 ```html
-<div x-h-tabs data-orientation="horizontal" style="height:22rem">
+<div x-h-tabs data-orientation="horizontal" style="height:10rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <button id="stce" x-h-tab aria-controls="stcec" aria-selected="true">Tab 1</button>
@@ -65,7 +65,7 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
   </div>
   <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
     <div class="position-fit absolute overflow-auto">
-      <img src="/logo/harmonia.svg" alt="@harmonia" width="240px" />
+      <img src="/harmonia/logo/harmonia.svg" alt="@harmonia" width="240px" />
     </div>
   </div>
 </div>

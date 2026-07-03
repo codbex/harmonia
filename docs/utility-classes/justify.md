@@ -19,15 +19,7 @@ Distributes space between and around items along the main axis of a flex contain
 
 ### Start
 
-<ClientOnly>
-<component-container>
-<div class="flex justify-start gap-2">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex justify-start gap-2">
@@ -36,18 +28,12 @@ Distributes space between and around items along the main axis of a flex contain
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Center
 
-<ClientOnly>
-<component-container>
-<div class="flex justify-center gap-2">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex justify-center gap-2">
@@ -56,18 +42,12 @@ Distributes space between and around items along the main axis of a flex contain
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>
 
 ### End
 
-<ClientOnly>
-<component-container>
-<div class="flex justify-end gap-2">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex justify-end gap-2">
@@ -76,37 +56,12 @@ Distributes space between and around items along the main axis of a flex contain
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>
 
 ### End safe
 
-<ClientOnly>
-<component-container>
-<div class="vbox gap-2">
-  <label x-h-label>End</label>
-  <div class="flex justify-end gap-2 overflow-hidden">
-    <span class="bg-primary text-primary-foreground py-2 px-12">1</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">2</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">3</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">4</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">5</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">6</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">7</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">8</span>
-  </div>
-  <label x-h-label>End safe</label>
-  <div class="flex justify-end-safe gap-2 overflow-hidden">
-    <span class="bg-primary text-primary-foreground py-2 px-12">1</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">2</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">3</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">4</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">5</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">6</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">7</span>
-    <span class="bg-primary text-primary-foreground py-2 px-12">8</span>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="vbox gap-2">
@@ -134,18 +89,12 @@ Distributes space between and around items along the main axis of a flex contain
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Between
 
-<ClientOnly>
-<component-container>
-<div class="flex justify-between">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex justify-between">
@@ -154,18 +103,12 @@ Distributes space between and around items along the main axis of a flex contain
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Around
 
-<ClientOnly>
-<component-container>
-<div class="flex justify-around">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex justify-around">
@@ -174,18 +117,12 @@ Distributes space between and around items along the main axis of a flex contain
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Evenly
 
-<ClientOnly>
-<component-container>
-<div class="flex justify-evenly">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex justify-evenly">
@@ -194,3 +131,5 @@ Distributes space between and around items along the main axis of a flex contain
   <span class="bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>

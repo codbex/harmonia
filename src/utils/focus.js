@@ -3,7 +3,7 @@ export default function (Alpine) {
     const getValue = evaluateLater(expression);
     effect(() => {
       getValue((val) => {
-        if (val) el.focus();
+        if (val) requestAnimationFrame(() => el.focus());
       });
     });
   });

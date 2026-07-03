@@ -21,18 +21,7 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 <br />
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<div class="cursor-pointer bg-primary text-primary-foreground">Pointer</div>
-<div class="cursor-text bg-primary text-primary-foreground">Text</div>
-<div class="cursor-crosshair bg-primary text-primary-foreground">Crosshair</div>
-<div class="cursor-wait bg-primary text-primary-foreground">Wait</div>
-<div class="cursor-not-allowed bg-primary text-primary-foreground">Not-allowed</div>
-<div class="cursor-grab bg-primary text-primary-foreground">Grab</div>
-<div class="cursor-grabbing bg-primary text-primary-foreground">Grabbing</div>
-<div class="cursor-none bg-primary text-primary-foreground">None</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 ```html
 <div class="cursor-pointer bg-primary text-primary-foreground">Pointer</div>
@@ -44,3 +33,5 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 <div class="cursor-grabbing bg-primary text-primary-foreground">Grabbing</div>
 <div class="cursor-none bg-primary text-primary-foreground">None</div>
 ```
+
+</LiveExample>

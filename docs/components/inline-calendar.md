@@ -86,37 +86,19 @@ Example:
 
 ### Change event
 
-<ClientOnly>
-<component-container data-class="p-0">
-<div x-data>
-  <div x-h-calendar-inline @change="console.log('Selected:', $event.detail.date)"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0">
 
 ```html
 <div x-data>
   <div x-h-calendar-inline @change="console.log('Selected:', $event.detail.date)"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### Locale and first day config
 
-<ClientOnly>
-<component-container data-class="p-0">
-<div
-  x-data="{
-  caldate: '',
-  init() {
-    const d = new Date();
-    this.caldate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-}"
->
-  <div x-h-calendar-inline="{ locale: 'en-US', firstDay: 1 }" x-model="caldate"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0">
 
 ```html
 <div
@@ -131,6 +113,8 @@ Example:
   <div x-h-calendar-inline="{ locale: 'en-US', firstDay: 1 }" x-model="caldate"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### Range selection {#range-selection-inline}
 
@@ -142,16 +126,12 @@ In range mode the `x-model` value is an object with `start` and `end` keys (each
 { start: '2025-06-09', end: '2025-06-16' }
 ```
 
-<ClientOnly>
-<component-container data-class="p-0">
-<div x-data="{ dateRange: { start: '', end: '' } }">
-  <div x-h-calendar-inline="{ range: true, firstDay: 1 }" x-model="dateRange"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0">
 
 ```html
 <div x-data="{ dateRange: { start: '', end: '' } }">
   <div x-h-calendar-inline="{ range: true, firstDay: 1 }" x-model="dateRange"></div>
 </div>
 ```
+
+</LiveExample>

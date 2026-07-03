@@ -116,6 +116,23 @@ h6:has(+ component-container) {
   margin-bottom: 24px !important;
 }
 
+/* Live example: one code block is both the shown source and the running demo. */
+.live-example-preview:empty {
+  display: none;
+}
+
+/* Match the spacing a standalone <component-container> + code block would have. */
+.live-example-preview > component-container {
+  display: block;
+  margin: 16px 0;
+}
+
+/* Icon gallery: interactive preview generated from the code block below it. */
+.icon-gallery-preview > component-container {
+  display: block;
+  margin: 16px 0;
+}
+
 /* Home page "Templates" section: previews of full example pages in iframes. */
 .templates {
   margin: 0 auto;
@@ -195,6 +212,7 @@ h6:has(+ component-container) {
   color: var(--vp-c-text-1);
   background: var(--vp-c-bg);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--vp-c-divider);
 }
 
 .template-open {

@@ -21,17 +21,7 @@ Add a shadow to an element.
 
 <br />
 
-<ClientOnly>
-<component-container>
-<div class="vbox gap-12">
-  <div class="flex-auto rounded-md p-4 shadow-xs">Shadow XS</div>
-  <div class="flex-auto rounded-md p-4 shadow-sm">Shadow SM</div>
-  <div class="flex-auto rounded-md p-4 shadow-md">Shadow MD</div>
-  <div class="flex-auto rounded-md p-4 shadow-lg">Shadow LG</div>
-  <div class="flex-auto rounded-md p-4 shadow-xl">Shadow XL</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="vbox gap-12">
@@ -42,3 +32,5 @@ Add a shadow to an element.
   <div class="flex-auto rounded-md p-4 shadow-xl">Shadow XL</div>
 </div>
 ```
+
+</LiveExample>

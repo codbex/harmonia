@@ -211,32 +211,19 @@ The notification item has four inner components but they have no strict structur
 
 - #### Toast-like notification
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating data-variant="toast">
-  <div x-h-notification-title>Toast</div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating data-variant="toast">
   <div x-h-notification-title>Toast</div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Basic notification with icon
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox items-center">
-  <div x-h-notification-media>
-    <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
-  </div>
-  <div x-h-notification-title>Notification</div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox items-center">
@@ -246,27 +233,12 @@ The notification item has four inner components but they have no strict structur
   <div x-h-notification-title>Notification</div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Closable notification with icon, title and description
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox">
-  <div x-h-notification-media>
-    <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
-  </div>
-  <div class="vbox flex-1">
-    <h1 x-h-notification-title>Notification</h1>
-    <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-  </div>
-  <div x-h-notification-actions data-orientation="vertical">
-    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-    </button>
-  </div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox">
@@ -284,36 +256,18 @@ The notification item has four inner components but they have no strict structur
   </div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Closable notification with avatar, title and description
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox">
-  <div x-h-notification-media>
-    <span x-h-avatar>
-      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
-      <div x-h-avatar-fallback>HM</div>
-    </span>
-  </div>
-  <div class="vbox flex-1">
-    <h1 x-h-notification-title>Notification</h1>
-    <p x-h-notification-description>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-  </div>
-  <div x-h-notification-actions data-orientation="vertical">
-    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-    </button>
-  </div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media>
     <span x-h-avatar>
-      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -328,49 +282,27 @@ The notification item has four inner components but they have no strict structur
   </div>
 </li>
 ```
+
+</LiveExample>
 
 - #### File deleted notification with undo button
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox items-center">
-  <div x-h-notification-title>File deleted</div>
-  <div x-h-notification-actions data-orientation="horizontal" data-align="center">
-    <button x-h-button data-size="sm" data-variant="outline">Undo</button>
-  </div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-title>File deleted</div>
   <div x-h-notification-actions data-orientation="horizontal" data-align="center">
     <button x-h-button data-size="sm" data-variant="outline">Undo</button>
-    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-    </button>
   </div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Progress notification with cancel button
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox">
-  <div x-h-notification-actions data-orientation="vertical">
-    <button x-h-button class="rounded-full" data-size="icon" data-variant="outline" aria-label="cancel">
-      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-    </button>
-  </div>
-  <div class="vbox flex-1 gap-2">
-    <h1 x-h-notification-title>Generating project...</h1>
-    <div x-h-progress="40"></div>
-  </div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox">
@@ -385,25 +317,12 @@ The notification item has four inner components but they have no strict structur
   </div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Upload notification with actions
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="vbox gap-2">
-  <div x-h-notification-title class="hbox items-center gap-2">
-    <svg x-h-icon data-icon="import" class="size-6" role="img" aria-label="import"></svg>
-    <span class="text-lg">Uploading in progress</span>
-  </div>
-  <p x-h-notification-description>Please wait while your file is being uploaded.<br />This may take a moment.</p>
-  <div x-h-progress="40"></div>
-  <div x-h-notification-actions data-orientation="horizontal">
-    <button x-h-button class="flex-1" data-variant="outline">Cancel upload</button>
-    <button x-h-button class="flex-1" data-variant="primary">Show all uploads</button>
-  </div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="vbox gap-2">
@@ -419,42 +338,18 @@ The notification item has four inner components but they have no strict structur
   </div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Chat notification with avatar and reply button
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox">
-  <div x-h-notification-media class="justify-start">
-    <span x-h-avatar class="size-10">
-      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
-      <div x-h-avatar-fallback>HM</div>
-    </span>
-  </div>
-  <div class="vbox flex-1 gap-1">
-    <h1 x-h-notification-title>Harmonia Doe</h1>
-    <p x-h-notification-description>I just received the document. It looks good.</p>
-    <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
-      <button x-h-button data-variant="primary" data-size="sm">
-        <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
-        Reply
-      </button>
-    </div>
-  </div>
-  <div x-h-notification-actions data-orientation="vertical" class="justify-start">
-    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-      <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-    </button>
-  </div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media class="justify-start">
     <span x-h-avatar class="size-10">
-      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -475,21 +370,12 @@ The notification item has four inner components but they have no strict structur
   </div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Information variant notification
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox items-center">
-  <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="information">
-      <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
-    </span>
-  </div>
-  <div x-h-notification-title>Information</div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox items-center">
@@ -501,21 +387,12 @@ The notification item has four inner components but they have no strict structur
   <div x-h-notification-title>Information</div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Warning variant notification
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox items-center">
-  <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="warning">
-      <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
-    </span>
-  </div>
-  <div x-h-notification-title>Warning</div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox items-center">
@@ -527,21 +404,12 @@ The notification item has four inner components but they have no strict structur
   <div x-h-notification-title>Warning</div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Success variant notification
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox items-center">
-  <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="positive">
-      <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
-    </span>
-  </div>
-  <div x-h-notification-title>Success</div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox items-center">
@@ -553,21 +421,12 @@ The notification item has four inner components but they have no strict structur
   <div x-h-notification-title>Success</div>
 </li>
 ```
+
+</LiveExample>
 
 - #### Error variant notification
 
-<ClientOnly>
-<component-container data-class="vbox items-start">
-<li x-h-notification.floating class="hbox items-center">
-  <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="negative">
-      <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
-    </span>
-  </div>
-  <div x-h-notification-title>Error</div>
-</li>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-start">
 
 ```html
 <li x-h-notification.floating class="hbox items-center">
@@ -579,15 +438,18 @@ The notification item has four inner components but they have no strict structur
   <div x-h-notification-title>Error</div>
 </li>
 ```
+
+</LiveExample>
 
 ### Notification Popover List
 
 You can use the notification list anywhere but the most common place is usually inside a popover in a toolbar.
 
-<ClientOnly>
-<component-container>
+<LiveExample>
+
+```html
 <header x-h-toolbar>
-  <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
+  <img x-h-toolbar-image src="/harmonia/logo/harmonia.svg" alt="@harmonia" />
   <h1 x-h-toolbar-title>Harmonia</h1>
   <div x-h-toolbar-spacer></div>
   <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
@@ -603,78 +465,7 @@ You can use the notification list anywhere but the most common place is usually 
       <li x-h-notification class="hbox" data-unread="true">
         <div x-h-notification-media class="justify-start">
           <span x-h-avatar class="size-10">
-            <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
-            <div x-h-avatar-fallback>HM</div>
-          </span>
-        </div>
-        <div class="vbox flex-1 gap-1">
-          <h1 x-h-notification-title>Harmonia Doe</h1>
-          <p x-h-notification-description>I just received the document. It looks good.</p>
-          <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
-            <button x-h-button data-variant="primary" data-size="sm">
-              <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
-              Reply
-            </button>
-          </div>
-        </div>
-        <div x-h-notification-actions data-orientation="vertical" class="justify-start">
-          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-          </button>
-        </div>
-      </li>
-      <li x-h-notification class="hbox items-center">
-        <div x-h-notification-media class="w-10">
-          <span x-h-avatar class="rounded-lg" data-variant="negative">
-            <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
-          </span>
-        </div>
-        <div class="vbox flex-1">
-          <h1 x-h-notification-title>Generation failed</h1>
-          <p x-h-notification-description>Failed to generate a monthly report. Check console log.</p>
-        </div>
-        <div x-h-notification-actions data-orientation="vertical">
-          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-          </button>
-        </div>
-      </li>
-      <li x-h-notification class="hbox items-center">
-        <div x-h-notification-media class="w-10">
-          <svg x-h-icon data-icon="circle-info" class="size-6" role="img" aria-label="info"></svg>
-        </div>
-        <div x-h-notification-title class="flex-1">Monthly report generation started</div>
-        <div x-h-notification-actions data-orientation="vertical">
-          <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="close notification">
-            <svg x-h-icon data-icon="close" role="img" aria-label="close"></svg>
-          </button>
-        </div>
-      </li>
-    </ol>
-  </div>
-</header>
-</component-container>
-</ClientOnly>
-
-```html
-<header x-h-toolbar>
-  <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
-  <h1 x-h-toolbar-title>Harmonia</h1>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button x-h-popover-trigger data-variant="transparent" data-size="icon" aria-label="Notifications">
-    <i x-h-lucide role="img" data-lucide="bell"></i>
-  </button>
-  <div x-h-popover data-innerclicks="true">
-    <div x-h-toolbar data-size="md">
-      <span x-h-toolbar-title>Notifications (3)</span>
-      <div x-h-toolbar-spacer></div>
-      <button x-h-button data-size="md" data-variant="transparent"><svg x-h-icon data-icon="trash" role="img" aria-label="trash"></svg>Clear</button>
-    </div>
-    <ol x-h-notification-list class="min-w-md">
-      <li x-h-notification class="hbox" data-unread="true">
-        <div x-h-notification-media class="justify-start">
-          <span x-h-avatar class="size-10">
-            <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+            <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
             <div x-h-avatar-fallback>HM</div>
           </span>
         </div>
@@ -725,23 +516,26 @@ You can use the notification list anywhere but the most common place is usually 
   </div>
 </header>
 ```
+
+</LiveExample>
 
 ### Add a notification
 
 The `$notifications` magic can be used both from inline HTML and from inside a component object.
 
-<ClientOnly>
-<component-container src="/components/notifications/notify.html">
-</component-container>
-</ClientOnly>
+**Inline**
 
-- Inline
+<LiveExample>
 
 ```html
 <button x-h-button @click="$notifications.add({ template: 'basic', data: { title: 'You have been notified.' } })">Notify</button>
 ```
 
-- Component Object
+</LiveExample>
+
+**Component Object**
+
+<LiveExample>
 
 ```html
 <button x-h-button @click="notify()">Notify</button>
@@ -760,14 +554,13 @@ The `$notifications` magic can be used both from inline HTML and from inside a c
 </script>
 ```
 
+</LiveExample>
+
 ### Notification with progress
 
 Notifications can contain actions and dynamic information. The following example simulates a generation progress notification.
 
-<ClientOnly>
-<component-container src="/components/notifications/notify-progress.html">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="notifyProgress">
@@ -869,12 +662,11 @@ Notifications can contain actions and dynamic information. The following example
 </script>
 ```
 
+</LiveExample>
+
 ### Notification Position
 
-<ClientOnly>
-<component-container src="/components/notifications/positions.html">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="size-full" x-data="notifyPosition">
@@ -903,3 +695,5 @@ Notifications can contain actions and dynamic information. The following example
   }));
 </script>
 ```
+
+</LiveExample>

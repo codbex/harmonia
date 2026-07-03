@@ -38,19 +38,7 @@ There is no `x-model`. The native `<input type="file">` is the source of truth: 
 
 ### Single file
 
-<ClientOnly>
-<component-container>
-<div x-h-input-group x-h-file-upload>
-  <input type="file" />
-  <div x-h-input-group-addon data-align="inline-start">
-    <div x-h-tag-group></div>
-  </div>
-  <div x-h-input-group-addon data-align="inline-end">
-    <button type="button" x-h-button.addon>Browse</button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-input-group x-h-file-upload>
@@ -63,22 +51,12 @@ There is no `x-model`. The native `<input type="file">` is the source of truth: 
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Multiple files with a custom placeholder
 
-<ClientOnly>
-<component-container>
-<div x-h-input-group x-h-file-upload data-placeholder="Select images...">
-  <input type="file" multiple accept="image/*" />
-  <div x-h-input-group-addon data-align="inline-start">
-    <div x-h-tag-group></div>
-  </div>
-  <div x-h-input-group-addon data-align="inline-end">
-    <button type="button" x-h-button.addon>Browse</button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-input-group x-h-file-upload data-placeholder="Select images...">
@@ -91,14 +69,18 @@ There is no `x-model`. The native `<input type="file">` is the source of truth: 
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Reacting to selection
 
 Listen to the native `change` event on the file input to react to the chosen files.
 
+<LiveExample>
+
 ```html
 <div x-h-input-group x-h-file-upload x-data>
-  <input type="file" multiple x-on:change="console.log([...$event.target.files].map((f) => f.name))" />
+  <input type="file" multiple @change="console.log([...$event.target.files].map((f) => f.name))" />
   <div x-h-input-group-addon data-align="inline-start">
     <div x-h-tag-group></div>
   </div>
@@ -107,3 +89,5 @@ Listen to the native `change` event on the file input to react to the chosen fil
   </div>
 </div>
 ```
+
+</LiveExample>

@@ -45,32 +45,17 @@ When `tooltip` is enabled, hovering and clicking bars emit bubbling `CustomEvent
 
 ### Basic
 
-<ClientOnly>
-<component-container>
-<div style="height: 20rem" x-h-chart-bar="{ labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div style="height: 20rem" x-h-chart-bar="{ labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
 ```
+
+</LiveExample>
 
 ### Grouped
 
-<ClientOnly>
-<component-container>
-<div
-  style="height: 20rem"
-  x-h-chart-bar="{
-    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-    series: [
-      { name: 'Revenue', data: [12, 19, 7, 15] },
-      { name: 'Cost', data: [8, 11, 5, 9] }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -84,24 +69,12 @@ When `tooltip` is enabled, hovering and clicking bars emit bubbling `CustomEvent
   }"
 ></div>
 ```
+
+</LiveExample>
 
 ### Stacked
 
-<ClientOnly>
-<component-container>
-<div
-  style="height: 20rem"
-  x-h-chart-bar="{
-    stacked: true,
-    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-    series: [
-      { name: 'Revenue', data: [12, 19, 7, 15] },
-      { name: 'Cost', data: [8, 11, 5, 9] }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -116,36 +89,38 @@ When `tooltip` is enabled, hovering and clicking bars emit bubbling `CustomEvent
   }"
 ></div>
 ```
+
+</LiveExample>
 
 ### Horizontal
 
-<ClientOnly>
-<component-container>
-<div style="height: 20rem" x-h-chart-bar="{ orientation: 'horizontal', labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div style="height: 20rem" x-h-chart-bar="{ orientation: 'horizontal', labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
 ```
+
+</LiveExample>
 
 ### Value labels
 
-<ClientOnly>
-<component-container>
-<div style="height: 20rem" x-h-chart-bar="{ dataLabels: true, labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div style="height: 20rem" x-h-chart-bar="{ dataLabels: true, labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
 ```
 
+</LiveExample>
+
 ### Handling events
 
-<ClientOnly>
-<component-container src="/components/charts/bar-event.html">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
-<<< @/public/components/charts/bar-event.html
+```html
+<div class="vbox items-center gap-2" x-data="{ lastClicked: 'Click on a bar' }">
+  <span x-text="lastClicked"></span>
+  <div style="height: 18rem" x-h-chart-bar="{ labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }" @chart-click="lastClicked = $event.detail.label + ': ' + $event.detail.value"></div>
+</div>
+```
+
+</LiveExample>

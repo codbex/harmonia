@@ -25,18 +25,7 @@ x-h-badge-indicator
 
 ### Badge
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<div x-h-badge>Badge</div>
-<div x-h-badge data-variant="primary">Primary</div>
-<div x-h-badge data-variant="positive"><i x-h-lucide role="img" data-lucide="check"></i>Positive</div>
-<div x-h-badge data-variant="negative"><i x-h-lucide role="img" data-lucide="x"></i>Negative</div>
-<div x-h-badge data-variant="warning"><i x-h-lucide role="img" data-lucide="siren"></i>Warning</div>
-<div x-h-badge data-variant="information"><i x-h-lucide role="img" data-lucide="info"></i>Information</div>
-<div x-h-badge data-variant="outline">Outline</div>
-<a x-h-badge href="#">Link</a>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 ```html
 <div x-h-badge>Badge</div>
@@ -48,6 +37,8 @@ x-h-badge-indicator
 <div x-h-badge data-variant="outline">Outline</div>
 <a x-h-badge href="#">Link</a>
 ```
+
+</LiveExample>
 
 ### Badge Indicator
 
@@ -55,14 +46,7 @@ The badge indicator can be used on any element as long as it that element's posi
 
 - Button badge with text
 
-<ClientOnly>
-<component-container>
-<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge">
-  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
-  <span x-h-badge-indicator>121</span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge">
@@ -70,17 +54,12 @@ The badge indicator can be used on any element as long as it that element's posi
   <span x-h-badge-indicator>121</span>
 </button>
 ```
+
+</LiveExample>
 
 - Button badge as dot
 
-<ClientOnly>
-<component-container>
-<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot">
-  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
-  <span x-h-badge-indicator data-dot="true"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot">
@@ -88,37 +67,26 @@ The badge indicator can be used on any element as long as it that element's posi
   <span x-h-badge-indicator data-dot="true"></span>
 </button>
 ```
+
+</LiveExample>
 
 - Avatar with badge
 
-<ClientOnly>
-<component-container>
-<span x-h-avatar class="relative">
-  <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
-  <div x-h-avatar-fallback>HM</div>
-  <span x-h-badge-indicator data-dot="true"></span>
-</span>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <span x-h-avatar class="relative">
-  <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+  <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
   <div x-h-avatar-fallback>HM</div>
   <span x-h-badge-indicator data-dot="true"></span>
 </span>
 ```
+
+</LiveExample>
 
 - Dot badge with ping animation
 
-<ClientOnly>
-<component-container>
-<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot ping">
-  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
-  <span x-h-badge-indicator data-dot="true" data-ping="true"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with badge dot ping">
@@ -126,17 +94,12 @@ The badge indicator can be used on any element as long as it that element's posi
   <span x-h-badge-indicator data-dot="true" data-ping="true"></span>
 </button>
 ```
+
+</LiveExample>
 
 - Negative variant badge indicator
 
-<ClientOnly>
-<component-container>
-<button class="relative" x-h-button data-variant="outline">
-  Tasks
-  <span x-h-badge-indicator data-variant="negative">4</span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button class="relative" x-h-button data-variant="outline">
@@ -144,3 +107,5 @@ The badge indicator can be used on any element as long as it that element's posi
   <span x-h-badge-indicator data-variant="negative">4</span>
 </button>
 ```
+
+</LiveExample>

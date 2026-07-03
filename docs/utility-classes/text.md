@@ -81,23 +81,7 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 
 ### Text size
 
-<ClientOnly>
-<component-container data-class="vbox gap-2">
-<p class="text-xs">Extra small</p>
-<p class="text-sm">Small</p>
-<p class="text-base">Base</p>
-<p class="text-lg">Large</p>
-<p class="text-xl">Extra large</p>
-<p class="text-2xl">Extra large (x2)</p>
-<p class="text-3xl">Extra large (x3)</p>
-<p class="text-4xl">Extra large (x4)</p>
-<p class="text-5xl">Extra large (x5)</p>
-<p class="text-6xl">Extra large (x6)</p>
-<p class="text-7xl">Extra large (x7)</p>
-<p class="text-8xl">Extra large (x8)</p>
-<p class="text-9xl">Extra large (x9)</p>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox gap-2">
 
 ```html
 <p class="text-xs">Extra small</p>
@@ -114,54 +98,69 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 <p class="text-8xl">Extra large (x8)</p>
 <p class="text-9xl">Extra large (x9)</p>
 ```
+
+</LiveExample>
 
 ### Line Height
 
-<ClientOnly>
-<component-container data-class="vbox gap-2 divide-y">
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-none</p>
-    <p class="leading-none">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-tight</p>
-    <p class="leading-tight">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-snug</p>
-    <p class="leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-relaxed</p>
-    <p class="leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-4</p>
-    <p class="leading-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-6</p>
-    <p class="leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-
-<div class="py-2">
-    <p class="font-medium text-muted-foreground">leading-8</p>
-    <p class="leading-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox gap-2 divide-y">
 
 ```html
-<p class="leading-none">...</p>
-<p class="leading-tight">...</p>
-<p class="leading-snug">...</p>
-<p class="leading-relaxed">...</p>
-<p class="leading-4">...</p>
-<p class="leading-6">...</p>
-<p class="leading-8">...</p>
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-none</p>
+  <p class="leading-none">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
+
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-tight</p>
+  <p class="leading-tight">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
+
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-snug</p>
+  <p class="leading-snug">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
+
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-relaxed</p>
+  <p class="leading-relaxed">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
+
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-4</p>
+  <p class="leading-4">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
+
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-6</p>
+  <p class="leading-6">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
+
+<div class="py-2">
+  <p class="font-medium text-muted-foreground">leading-8</p>
+  <p class="leading-8">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
 ```
+
+</LiveExample>

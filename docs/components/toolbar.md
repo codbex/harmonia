@@ -43,17 +43,7 @@ x-h-toolbar-separator
 
 ### Default
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar>
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar>
@@ -64,20 +54,12 @@ x-h-toolbar-separator
   <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Borderless
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-borderless="true">
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-borderless="true">
@@ -88,20 +70,12 @@ x-h-toolbar-separator
   <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Floating
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-floating="true">
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-floating="true">
@@ -112,20 +86,12 @@ x-h-toolbar-separator
   <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Transparent
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-variant="transparent">
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-variant="transparent">
@@ -136,20 +102,12 @@ x-h-toolbar-separator
   <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Floating Transparent
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-variant="transparent" data-floating="true">
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-variant="transparent" data-floating="true">
@@ -160,20 +118,12 @@ x-h-toolbar-separator
   <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Small
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-size="sm">
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-size="sm">
@@ -184,20 +134,12 @@ x-h-toolbar-separator
   <button x-h-button data-size="sm" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Medium
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-size="md">
-  <span x-h-toolbar-title>Title</span>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-size="md">
@@ -208,18 +150,12 @@ x-h-toolbar-separator
   <button x-h-button data-size="md" data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Footer
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar.footer>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-size="md" data-variant="primary">Apply</button>
-  <button x-h-button data-size="md" data-variant="transparent">Cancel</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar.footer>
@@ -228,69 +164,28 @@ x-h-toolbar-separator
   <button x-h-button data-size="md" data-variant="transparent">Cancel</button>
 </div>
 ```
+
+</LiveExample>
 
 ### As page header (shellbar)
 
-<ClientOnly>
-<component-container>
-<header x-h-toolbar x-data="{ showClear: false, search: '' }">
-  <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
-  <span x-h-toolbar-branding>
-    <h1 x-h-toolbar-title>Harmonia</h1>
-    <h2 x-h-toolbar-subtitle>by codbex</h2>
-  </span>
-  <div x-h-toolbar-spacer></div>
-  <div x-h-input-group style="max-width:50%">
-    <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
-    <div x-h-input-group-addon data-align="inline-start">
-      <i x-h-lucide role="img" data-lucide="search"></i>
-    </div>
-    <div x-h-input-group-addon data-align="inline-end">
-      <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
-        <i x-h-lucide role="img" data-lucide="x"></i>
-      </button>
-    </div>
-  </div>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-avatar x-h-menu-trigger.dropdown class="bg-secondary text-secondary-foreground">U</button>
-  <ul x-h-menu aria-label="user dropdown" data-align="bottom-end">
-    <div x-h-menu-label>Profile</div>
-    <li x-h-menu-item>Set yourself as away</li>
-    <li x-h-menu-sub id="pnsm">
-      Pause notifications
-      <ul x-h-menu.sub aria-labelledby="pnsm">
-        <li x-h-menu-item>15 minutes</li>
-        <li x-h-menu-item>30 minutes</li>
-        <li x-h-menu-item>1 hour</li>
-        <li x-h-menu-item>2 hours</li>
-        <li x-h-menu-item>4 hours</li>
-        <li x-h-menu-item>1 day</li>
-      </ul>
-    </li>
-    <div x-h-menu-label>Team</div>
-    <li x-h-menu-item>Invite users</li>
-    <div x-h-menu-separator></div>
-    <li x-h-menu-item data-variant="negative">Log out</li>
-  </ul>
-</header>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <header x-h-toolbar x-data="{ showClear: false, search: '' }">
-  <img x-h-toolbar-image src="/logo/harmonia.svg" alt="@harmonia" />
+  <img x-h-toolbar-image src="/harmonia/logo/harmonia.svg" alt="@harmonia" />
   <span x-h-toolbar-branding>
     <h1 x-h-toolbar-title>Harmonia</h1>
     <h2 x-h-toolbar-subtitle>by codbex</h2>
   </span>
   <div x-h-toolbar-spacer></div>
   <div x-h-input-group style="max-width:50%">
-    <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
+    <input x-h-input.group placeholder="Search..." x-model="search" @keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
     <div x-h-input-group-addon data-align="inline-start">
       <i x-h-lucide role="img" data-lucide="search"></i>
     </div>
     <div x-h-input-group-addon data-align="inline-end">
-      <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
+      <button x-h-button.addon aria-label="clear" x-show="showClear" @click="showClear = false; search=''">
         <i x-h-lucide role="img" data-lucide="x"></i>
       </button>
     </div>
@@ -318,3 +213,5 @@ x-h-toolbar-separator
   </ul>
 </header>
 ```
+
+</LiveExample>

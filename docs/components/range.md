@@ -20,22 +20,7 @@ Please refer to the [noUiSlider documentation](https://refreshless.com/nouislide
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div class="mb-8" x-h-range="config" x-data="{
-    range: [20, 80],
-    config: {
-      orientation: 'horizontal',
-      start: [3, 6],
-      connect: true,
-      range: { min: 1, max: 8 },
-      step: 1,
-      tooltips: true,
-      pips: { mode: 'steps' },
-    },
-  }" auto-hide-tips="true" x-model="range"></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 6rem">
 
 ```html
 <div x-h-range="config" x-data="rangeData" auto-hide-tips="true" x-model="range"></div>
@@ -54,3 +39,5 @@ Please refer to the [noUiSlider documentation](https://refreshless.com/nouislide
   }));
 </script>
 ```
+
+</LiveExample>

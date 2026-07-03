@@ -41,7 +41,7 @@ Binds through Alpine `x-model`. See the Example for the expected value shape.
 ## Example
 
 ```html
-<div x-h-rating data-readonly data-value="4.5" data-label="Average rating"></div>
+<div x-h-rating data-readonly data-value="4.5" data-max="5" data-label="Average rating"></div>
 ```
 
 More examples in the docs site: Default (half-star), Whole stars, Custom color, Larger, ten stars.

@@ -31,7 +31,7 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 <div x-h-info-page>
   <div x-h-info-page-header>
     <div x-h-info-page-media>
-      <img src="/logo/harmonia.svg" alt="@harmonia" width="256px" />
+      <img src="/harmonia/logo/harmonia.svg" alt="@harmonia" width="256px" />
     </div>
     <div x-h-info-page-title>Harmonia</div>
     <div x-h-info-page-description>UI component library for Alpine.js</div>

@@ -53,31 +53,56 @@ Be sure to account for this preference in your implementation, as excessive moti
 
 :::
 
-<ClientOnly>
-<component-container src="/utility-classes/animations/scale.html" data-class="tile-auto-sm">
-</component-container>
-</ClientOnly>
+<LiveExample data-class="tile-auto-sm">
 
-<<< @/public/utility-classes/animations/scale.html
+```html
+<div class="vbox gap-4" x-data="ScaleController">
+  <button x-h-button @click="toggle()" x-text="isShown ? 'Hide' : 'Show'"></button>
+  <div x-h-alert class="hidden scale-95 opacity-0 transition-[opacity,scale] duration-200 ease-out motion-reduce:transition-none" x-ref="alert">
+    <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+    <div x-h-alert-title>Alert</div>
+  </div>
+</div>
+<script>
+  Alpine.data('ScaleController', () => ({
+    isShown: false,
+    toggle() {
+      this.isShown = !this.isShown;
+      // Use differnet logic when the user has disabled animations/enabled reduced motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (this.isShown) {
+          this.$refs.alert.classList.remove('hidden', 'scale-95', 'opacity-0');
+        } else {
+          this.$refs.alert.classList.add('hidden', 'scale-95', 'opacity-0');
+        }
+      } else if (this.isShown) {
+        this.$refs.alert.classList.remove('hidden');
+        Alpine.nextTick(() => {
+          // Reading 'offsetHeight' forces the browser to apply pending styles first.
+          // This guarantees that the animation will always happen.
+          this.$refs.alert.offsetHeight;
+          this.$refs.alert.classList.remove('scale-95', 'opacity-0');
+        });
+      } else {
+        this.$refs.alert.addEventListener(
+          'transitionend',
+          () => {
+            this.$refs.alert.classList.add('hidden');
+          },
+          { once: true }
+        );
+        this.$refs.alert.classList.add('scale-95', 'opacity-0');
+      }
+    },
+  }));
+</script>
+```
+
+</LiveExample>
 
 ### Translate
 
-<ClientOnly>
-<component-container data-class="vbox items-center gap-4">
-  <div class="border">
-    <svg x-h-icon class="size-12 -translate-x-4" data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
-  </div>
-  <div class="border">
-    <svg x-h-icon class="size-12 translate-x-4" data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
-  </div>
-  <div class="border">
-    <svg x-h-icon class="size-12 -translate-y-4" data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
-  </div>
-  <div class="border">
-    <svg x-h-icon class="size-12 translate-y-4" data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
-  </div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-center gap-4">
 
 ```html
 <div class="border">
@@ -93,3 +118,5 @@ Be sure to account for this preference in your implementation, as excessive moti
   <svg x-h-icon class="size-12 translate-y-4" data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
 </div>
 ```
+
+</LiveExample>

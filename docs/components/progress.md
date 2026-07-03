@@ -25,20 +25,7 @@ x-h-progress
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="vbox gap-4">
-<p x-h-text.muted>Default/Primary</p>
-<div x-h-progress="40"></div>
-<p x-h-text.muted>Information</p>
-<div x-h-progress="40" data-variant="information"></div>
-<p x-h-text.muted>Warning</p>
-<div x-h-progress="40" data-variant="warning"></div>
-<p x-h-text.muted>Positive</p>
-<div x-h-progress="40" data-variant="positive"></div>
-<p x-h-text.muted>Negative</p>
-<div x-h-progress="40" data-variant="negative"></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox gap-4">
 
 ```html
 <p x-h-text.muted>Default/Primary</p>
@@ -52,31 +39,23 @@ x-h-progress
 <p x-h-text.muted>Negative</p>
 <div x-h-progress="40" data-variant="negative"></div>
 ```
+
+</LiveExample>
 
 ### Circle
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-6">
-<div x-h-progress="40" data-type="circle" style="width:6rem"></div>
-<div x-h-progress="70" data-type="circle" data-variant="positive" style="width:6rem"></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex items-center gap-6">
 
 ```html
 <div x-h-progress="40" data-type="circle" style="width:6rem"></div>
 <div x-h-progress="70" data-type="circle" data-variant="positive" style="width:6rem"></div>
 ```
+
+</LiveExample>
 
 ### Circle with text
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-6">
-<div class="relative">
-  <div x-h-progress="40" data-type="circle" style="width:5rem"></div>
-  <span class="position-center absolute text-lg font-medium">40%</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex items-center gap-6">
 
 ```html
 <div class="relative">
@@ -84,19 +63,18 @@ x-h-progress
   <span class="position-center absolute text-lg font-medium">40%</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Loading
 
 Set `data-loading` to show an indefinite animation when the completion amount is unknown. The line sweeps left to right; the circle spins.
 
-<ClientOnly>
-<component-container data-class="vbox gap-6">
-<div x-h-progress="0" data-loading="true"></div>
-<div x-h-progress="0" data-type="circle" data-loading="true" style="width:6rem"></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox gap-6">
 
 ```html
 <div x-h-progress="0" data-loading="true"></div>
 <div x-h-progress="0" data-type="circle" data-loading="true" style="width:6rem"></div>
 ```
+
+</LiveExample>

@@ -30,14 +30,7 @@ x-h-date-format
 
 ### Format a bound date
 
-<ClientOnly>
-<component-container>
-<div x-data="{ date: '2026-06-19' }" class="vbox gap-2">
-  <input x-h-input type="date" x-model="date" />
-  <p>Formatted: <time x-h-date-format="date" data-locale="en-GB"></time></p>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ date: '2026-06-19' }" class="vbox gap-2">
@@ -45,67 +38,59 @@ x-h-date-format
   <p>Formatted: <time x-h-date-format="date" data-locale="en-GB"></time></p>
 </div>
 ```
+
+</LiveExample>
 
 ### Reformat existing content in place
 
 With no expression, the element's current text is used as the source value.
 
-<ClientOnly>
-<component-container>
-<time x-h-date-format data-locale="fr-FR">2026-06-19</time>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <time x-h-date-format data-locale="fr-FR">2026-06-19</time>
 ```
+
+</LiveExample>
 
 ### Custom order and delimiter
 
-<ClientOnly>
-<component-container>
-<span x-h-date-format="'2026-06-19'" data-order="DMY" data-delimiter="<"></span>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
-<span x-h-date-format="'2026-06-19'" data-order="YMD" data-delimiter="-"></span>
+<span x-h-date-format="'2026-06-19'" data-order="DMY" data-delimiter="<"></span>
 ```
+
+</LiveExample>
 
 ### Intl options
 
-<ClientOnly>
-<component-container>
-<span x-h-date-format="'2026-06-19'" data-options='{ "dateStyle": "long" }'></span>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <span x-h-date-format="'2026-06-19'" data-options='{ "dateStyle": "long" }'></span>
 ```
+
+</LiveExample>
 
 ### Full ISO date-time string
 
 Any value the `Date` constructor understands is accepted, including a full ISO 8601 timestamp. Pair it with `data-options` to show the time as well as the date.
 
-<ClientOnly>
-<component-container>
-<p>Meeting: <time x-h-date-format="'2026-06-19T14:30:00'" data-locale="en-GB" data-options='{ "dateStyle": "long", "timeStyle": "short" }'></time></p>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <p>Meeting: <time x-h-date-format="'2026-06-19T14:30:00'" data-locale="en-GB" data-options='{ "dateStyle": "long", "timeStyle": "short" }'></time></p>
 ```
+
+</LiveExample>
 
 ### Format a range
 
-<ClientOnly>
-<component-container>
-<span x-h-date-format="{ start: '2026-06-01', end: '2026-06-07' }" data-range="true" data-locale="en-US"></span>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <span x-h-date-format="{ start: '2026-06-01', end: '2026-06-07' }" data-range="true" data-locale="en-US"></span>
 ```
+
+</LiveExample>

@@ -18,18 +18,7 @@ Aligns rows inside grids or wrapping flex layouts.
 
 ### Start
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-start gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-start gap-4">
@@ -42,20 +31,11 @@ Aligns rows inside grids or wrapping flex layouts.
 </div>
 ```
 
+</LiveExample>
+
 ### Center
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-center gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-center gap-4">
@@ -68,20 +48,11 @@ Aligns rows inside grids or wrapping flex layouts.
 </div>
 ```
 
+</LiveExample>
+
 ### End
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-end gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-end gap-4">
@@ -94,20 +65,11 @@ Aligns rows inside grids or wrapping flex layouts.
 </div>
 ```
 
+</LiveExample>
+
 ### Between
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-between gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-between gap-4">
@@ -120,20 +82,11 @@ Aligns rows inside grids or wrapping flex layouts.
 </div>
 ```
 
+</LiveExample>
+
 ### Around
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-around gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-around gap-4">
@@ -146,20 +99,11 @@ Aligns rows inside grids or wrapping flex layouts.
 </div>
 ```
 
+</LiveExample>
+
 ### Evenly
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-evenly gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-evenly gap-4">
@@ -172,20 +116,11 @@ Aligns rows inside grids or wrapping flex layouts.
 </div>
 ```
 
+</LiveExample>
+
 ### Stretch
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 content-stretch gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-3 content-stretch gap-4">
@@ -197,3 +132,5 @@ Aligns rows inside grids or wrapping flex layouts.
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>

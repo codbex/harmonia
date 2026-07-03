@@ -22,14 +22,7 @@ x-h-switch
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-3 justify-center">
-<span x-h-switch>
-  <input type="checkbox" id="sw" />
-</span>
-<label x-h-label for="sw">Just switch</label>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex items-center gap-3">
@@ -40,14 +33,9 @@ x-h-switch
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-3 justify-center">
-<span x-h-switch data-size="sm">
-  <input type="checkbox" id="sws" />
-</span>
-<label x-h-label for="sws">Just switch</label>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div class="flex items-center gap-3">
@@ -57,3 +45,5 @@ x-h-switch
   <label x-h-label for="sws">Just switch</label>
 </div>
 ```
+
+</LiveExample>

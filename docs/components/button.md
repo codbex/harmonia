@@ -34,137 +34,113 @@ x-h-button
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button>Default</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button>Default</button>
 ```
+
+</LiveExample>
 
 ### Primary
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="primary">Primary</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="primary">Primary</button>
 ```
+
+</LiveExample>
 
 ### Positive
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="positive">Positive</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="positive">Positive</button>
 ```
+
+</LiveExample>
 
 ### Negative
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="negative">Negative</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="negative">Negative</button>
 ```
+
+</LiveExample>
 
 ### Warning
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="warning">Warning</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="warning">Warning</button>
 ```
+
+</LiveExample>
 
 ### Information
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="information">Information</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="information">Information</button>
 ```
+
+</LiveExample>
 
 ### Outline
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="outline">Outline</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="outline">Outline</button>
 ```
+
+</LiveExample>
 
 ### Transparent
 
 <br />
 
-<ClientOnly>
-<component-container>
-<button x-h-button data-variant="transparent">Transparent</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button data-variant="transparent">Transparent</button>
 ```
+
+</LiveExample>
 
 ### Link
 
 <br />
 
-<ClientOnly>
-<component-container>
-<a x-h-button data-variant="link" href="#">Link</a>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <a x-h-button data-variant="link" href="#">Link</a>
 ```
 
+</LiveExample>
+
 ### Toggle button
 
-<ClientOnly>
-<component-container>
-<div x-data="{ toggled: true }">
-  <button x-h-button x-bind:data-toggled="toggled" x-on:click="toggled = !toggled">Toggle</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ toggled: true }">
@@ -172,26 +148,13 @@ x-h-button
 </div>
 ```
 
+</LiveExample>
+
 ### Button with icons
 
 You can include an icon directly inside the button.
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-center gap-4">
-<button x-h-button>
-  <i x-h-lucide role="img" data-lucide="chevron-left"></i>
-  Left-aligned
-</button>
-<button x-h-button>
-  <i x-h-lucide role="img" data-lucide="chevron-right"></i>
-  Right-aligned
-</button>
-<button x-h-button>
-  <svg x-h-icon data-icon="search" role="img" aria-label="search"></svg>
-  Search
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-center gap-4">
 
 ```html
 <button x-h-button>
@@ -207,23 +170,14 @@ You can include an icon directly inside the button.
   Search
 </button>
 ```
+
+</LiveExample>
 
 ### Button with spinner
 
 You can include a spinner directly inside the button. The spinner will adjust its color based on the button variant.
 
-<ClientOnly>
-<component-container data-class="flex gap-2">
-<button x-h-button>
-  <span x-h-spinner></span>
-  <span>Saving...</span>
-</button>
-<button x-h-button data-variant="primary">
-  <span x-h-spinner></span>
-  <span>Saving...</span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex gap-2">
 
 ```html
 <button x-h-button>
@@ -235,38 +189,26 @@ You can include a spinner directly inside the button. The spinner will adjust it
   <span>Saving...</span>
 </button>
 ```
+
+</LiveExample>
 
 ### Icon button
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-center gap-4">
-<button x-h-button data-size="icon" aria-label="Icon button">
-  <i x-h-lucide role="img" data-lucide="save"></i>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-center gap-4">
 
 ```html
 <button x-h-button data-size="icon" aria-label="Icon button">
   <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 ```
+
+</LiveExample>
 
 ### Button sizes
 
 #### Small
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-center gap-4">
-<button x-h-button data-size="sm">
-  <i x-h-lucide role="img" data-lucide="save"></i>
-  Save
-</button>
-<button x-h-button data-size="icon-sm" aria-label="Icon button">
-  <i x-h-lucide role="img" data-lucide="save"></i>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-center gap-4">
 
 ```html
 <button x-h-button data-size="sm">
@@ -277,20 +219,12 @@ You can include a spinner directly inside the button. The spinner will adjust it
   <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 ```
+
+</LiveExample>
 
 #### Medium
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-center gap-4">
-<button x-h-button data-size="md">
-  <i x-h-lucide role="img" data-lucide="save"></i>
-  Save
-</button>
-<button x-h-button data-size="icon-md" aria-label="Icon button">
-  <i x-h-lucide role="img" data-lucide="save"></i>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-center gap-4">
 
 ```html
 <button x-h-button data-size="md">
@@ -301,3 +235,5 @@ You can include a spinner directly inside the button. The spinner will adjust it
   <i x-h-lucide role="img" data-lucide="save"></i>
 </button>
 ```
+
+</LiveExample>

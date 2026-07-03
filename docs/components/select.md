@@ -80,29 +80,57 @@ x-h-select-separator
 
 ### With model
 
-<ClientOnly>
-<component-container src="/components/select/model.html">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
-<<< @/public/components/select/model.html
-
-### Clearable
-
-<ClientOnly>
-<component-container>
-<div x-data="{ selected: 'opt-1' }">
-  <div x-h-select data-clearable="true">
-    <input x-h-select-input placeholder="Select" x-model="selected" />
+```html
+<div x-data="selectData">
+  <div x-h-select>
+    <input x-h-select-input :placeholder="placeholder" x-model="selected" />
     <div x-h-select-content>
-      <div x-h-select-option="'Option 1'" data-value="opt-1"></div>
-      <div x-h-select-option="'Option 2'" data-value="opt-2"></div>
-      <div x-h-select-option="'Option 3'" data-value="opt-3"></div>
+      <div x-h-select-search></div>
+      <div x-h-select-group>
+        <div x-h-select-label>Fruits</div>
+        <template x-for="option in items">
+          <div x-h-select-option="option.label" :data-value="option.value"></div>
+        </template>
+      </div>
     </div>
   </div>
 </div>
-</component-container>
-</ClientOnly>
+<script>
+  Alpine.data('selectData', () => ({
+    getOriginalItems() {
+      return [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+        { label: 'Blueberry', value: 'blueberry' },
+        { label: 'Grapes', value: 'grapes' },
+        { label: 'Pineapple', value: 'pineapple' },
+        { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
+      ];
+    },
+    selected: 'banana',
+    placeholder: 'Select',
+    items: [],
+    addFromSearch(event) {
+      let nItems = this.getOriginalItems();
+      nItems.forEach((element) => {
+        element.label = `${event.target.value}${element.label}`;
+      });
+      this.items = nItems;
+    },
+    init() {
+      this.items = this.getOriginalItems();
+    },
+  }));
+</script>
+```
+
+</LiveExample>
+
+### Clearable
+
+<LiveExample>
 
 ```html
 <div x-data="{ selected: 'opt-1' }">
@@ -116,34 +144,64 @@ x-h-select-separator
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Multiple
 
 The input automatically switches modes based on the model. If you want to select multiple items, pass an array as the model.
 
-<ClientOnly>
-<component-container src="/components/select/multiple.html">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
-<<< @/public/components/select/multiple.html
+```html
+<div x-data="selectMultipleData">
+  <div x-h-select>
+    <input x-h-select-input :placeholder="placeholder" x-model="selected" />
+    <div x-h-select-content>
+      <div x-h-select-search></div>
+      <div x-h-select-group>
+        <div x-h-select-label>Fruits</div>
+        <template x-for="option in items">
+          <div x-h-select-option="option.label" :data-value="option.value"></div>
+        </template>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  Alpine.data('selectMultipleData', () => ({
+    getOriginalItems() {
+      return [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+        { label: 'Blueberry', value: 'blueberry' },
+        { label: 'Grapes', value: 'grapes' },
+        { label: 'Pineapple', value: 'pineapple' },
+        { label: 'Jamaican tangelo', value: 'jamaicanTangelo' },
+      ];
+    },
+    selected: ['apple', 'banana'],
+    placeholder: 'Select',
+    items: [],
+    addFromSearch(event) {
+      let nItems = this.getOriginalItems();
+      nItems.forEach((element) => {
+        element.label = `${event.target.value}${element.label}`;
+      });
+      this.items = nItems;
+    },
+    init() {
+      this.items = this.getOriginalItems();
+    },
+  }));
+</script>
+```
+
+</LiveExample>
 
 ### No model
 
-<ClientOnly>
-<component-container>
-<div x-h-select>
-  <input x-h-select-input placeholder="Select" />
-  <div x-h-select-content>
-    <div x-h-select-option="'Option 1'" data-value="1"></div>
-    <div x-h-select-option="'Option 2'" data-value="2"></div>
-    <div x-h-select-option="'Option 3'" data-value="3"></div>
-    <div x-h-select-option="'Option 4'" data-value="4" data-disabled="true"></div>
-    <div x-h-select-option="'Option 5'" data-value="5"></div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-select>
@@ -157,30 +215,12 @@ The input automatically switches modes based on the model. If you want to select
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### With groups
 
-<ClientOnly>
-<component-container>
-<div x-h-select>
-  <input x-h-select-input placeholder="Select" />
-  <div x-h-select-content>
-    <div x-h-select-group>
-      <div x-h-select-label>First two options</div>
-      <div x-h-select-option="'Option 1'" data-value="1"></div>
-      <div x-h-select-option="'Option 2'" data-value="2"></div>
-    </div>
-    <div x-h-select-group>
-      <div x-h-select-label>The rest</div>
-      <div x-h-select-option="'Option 3'" data-value="3"></div>
-      <div x-h-select-option="'Option 4'" data-value="4"></div>
-      <div x-h-select-separator></div>
-      <div x-h-select-option="'Option 5'" data-value="5"></div>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-select>
@@ -201,3 +241,5 @@ The input automatically switches modes based on the model. If you want to select
   </div>
 </div>
 ```
+
+</LiveExample>

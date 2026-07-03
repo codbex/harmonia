@@ -81,23 +81,7 @@ When used with `x-model`, the bound value follows the selection mode:
 
 ### Basic (single select)
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-visible">
-<div
-  x-h-slot-picker="config"
-  x-data="{
-    config: {},
-    selected: null,
-    init() {
-      const today = new Date().toISOString().slice(0, 10);
-      this.config = { date: today, start: '09:00', end: '17:00', step: 60 };
-    }
-  }"
-  x-model="selected"
-  class="rounded-md"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 overflow-visible">
 
 ```html
 <div
@@ -114,26 +98,12 @@ When used with `x-model`, the bound value follows the selection mode:
   class="rounded-md"
 ></div>
 ```
+
+</LiveExample>
 
 ### Multi-select with 30-minute slots
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-visible">
-<div
-  x-h-slot-picker="config"
-  x-data="{
-    config: {},
-    selected: [],
-    init() {
-      const today = new Date().toISOString().slice(0, 10);
-      this.config = { date: today, start: '08:00', end: '12:00', step: 30, multiple: true };
-    }
-  }"
-  x-model="selected"
-  class="rounded-md"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 overflow-visible">
 
 ```html
 <div
@@ -151,10 +121,13 @@ When used with `x-model`, the bound value follows the selection mode:
 ></div>
 ```
 
+</LiveExample>
+
 ### Explicit slots with availability and icon badges
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-visible">
+<LiveExample data-class="p-0 overflow-visible">
+
+```html
 <div
   x-h-slot-picker="config"
   x-data="{
@@ -189,74 +162,15 @@ When used with `x-model`, the bound value follows the selection mode:
   x-model="selected"
   class="rounded-md"
 ></div>
-</component-container>
-</ClientOnly>
-
-```html
-<div
-  x-h-slot-picker="config"
-  x-data="{
-    config: {},
-    selected: null,
-    init() {
-      const dateIn = (days) => {
-        const d = new Date();
-        d.setDate(d.getDate() + days);
-        return d.toISOString().slice(0, 10);
-      };
-      this.config = {
-        date: dateIn(0),
-        multiple: true,
-        slots: [
-          { date: dateIn(0), start: '09:00', end: '09:30', available: true },
-          { date: dateIn(0), start: '09:30', end: '10:00', available: false },
-          { date: dateIn(0), start: '10:00', end: '10:30', available: true, icon: { url: '/path/to/icon.svg', alt: '' } },
-          // ...
-        ],
-      };
-    }
-  }"
-  x-model="selected"
-  class="rounded-md"
-></div>
 ```
+
+</LiveExample>
 
 ### Default schedule with per-day overrides
 
 Provide `start`, `end`, and `step` for the default daily schedule, list `slots` only for the days you want to customize, and set `fillEmptyDays: true` so every other day still shows the default slots. A day that appears in `slots` shows only its explicit slots (it is not merged with the default schedule).
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-visible">
-<div
-  x-h-slot-picker="config"
-  x-data="{
-    config: {},
-    selected: null,
-    init() {
-      const dateIn = (days) => {
-        const d = new Date();
-        d.setDate(d.getDate() + days);
-        return d.toISOString().slice(0, 10);
-      };
-      this.config = {
-        date: dateIn(0),
-        start: '09:00',
-        end: '17:00',
-        step: 60,
-        fillEmptyDays: true,
-        slots: [
-          { date: dateIn(0), start: '10:00', end: '10:30', available: true },
-          { date: dateIn(0), start: '10:30', end: '11:00', available: true },
-          { date: dateIn(0), start: '11:00', end: '11:30', available: false },
-        ],
-      };
-    }
-  }"
-  x-model="selected"
-  class="rounded-md"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 overflow-visible">
 
 ```html
 <div
@@ -288,42 +202,14 @@ Provide `start`, `end`, and `step` for the default daily schedule, list `slots` 
   class="rounded-md"
 ></div>
 ```
+
+</LiveExample>
 
 ### Disabled weekdays and date ranges
 
 Use `disabledDays` to block recurring days (e.g. weekends) and `disabledDates` for specific dates or ranges.
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-visible">
-<div
-  x-h-slot-picker="config"
-  x-data="{
-    config: {},
-    selected: null,
-    init() {
-      const dateIn = (days) => {
-        const d = new Date();
-        d.setDate(d.getDate() + days);
-        return d.toISOString().slice(0, 10);
-      };
-      this.config = {
-        date: dateIn(0),
-        start: '09:00',
-        end: '17:00',
-        step: 60,
-        disabledDays: [0, 6],
-        disabledDates: [
-          dateIn(5),
-          { from: dateIn(5), to: dateIn(10) },
-        ],
-      };
-    }
-  }"
-  x-model="selected"
-  class="rounded-md"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 overflow-visible">
 
 ```html
 <div
@@ -354,39 +240,14 @@ Use `disabledDays` to block recurring days (e.g. weekends) and `disabledDates` f
   class="rounded-md"
 ></div>
 ```
+
+</LiveExample>
 
 ### Start and end day bounds
 
 Set `minDate` to a start day and/or `maxDate` to an end day to stop the user paging outside a window. The two options are independent, so you can set just one. The previous/next buttons disable at the edges, and jumping via the calendar is clamped so the visible range always stays within the bounds.
 
-<ClientOnly>
-<component-container data-class="p-0 overflow-visible">
-<div
-  x-h-slot-picker="config"
-  x-data="{
-    config: {},
-    selected: null,
-    init() {
-      const dateIn = (days) => {
-        const d = new Date();
-        d.setDate(d.getDate() + days);
-        return d.toISOString().slice(0, 10);
-      };
-      this.config = {
-        date: dateIn(0),
-        start: '09:00',
-        end: '17:00',
-        step: 60,
-        minDate: dateIn(0),
-        maxDate: dateIn(10),
-      };
-    }
-  }"
-  x-model="selected"
-  class="rounded-md"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="p-0 overflow-visible">
 
 ```html
 <div
@@ -414,3 +275,5 @@ Set `minDate` to a start day and/or `maxDate` to an end day to stop the user pag
   class="rounded-md"
 ></div>
 ```
+
+</LiveExample>

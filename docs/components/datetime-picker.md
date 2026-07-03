@@ -93,15 +93,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div x-h-datetime-picker x-data="{ dt: '' }">
-  <input type="text" id="datetime-input-1" />
-  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
-  <div x-h-datetime-picker-popup x-model="dt"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-datetime-picker x-data="{ dt: '' }">
@@ -110,18 +102,12 @@ By default this control shows native-constraint errors (for example `required`) 
   <div x-h-datetime-picker-popup x-model="dt"></div>
 </div>
 ```
+
+</LiveExample>
 
 ### 12-hour with seconds
 
-<ClientOnly>
-<component-container>
-<div x-h-datetime-picker x-data="{ dt: '' }">
-  <input type="text" id="datetime-input-2" />
-  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
-  <div x-h-datetime-picker-popup="{ is12Hour: true, seconds: true }" x-model="dt"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-datetime-picker x-data="{ dt: '' }">
@@ -130,3 +116,5 @@ By default this control shows native-constraint errors (for example `required`) 
   <div x-h-datetime-picker-popup="{ is12Hour: true, seconds: true }" x-model="dt"></div>
 </div>
 ```
+
+</LiveExample>

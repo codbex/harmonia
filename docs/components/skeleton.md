@@ -30,16 +30,7 @@ x-h-skeleton
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div class="flex flex-col gap-2">
-  <div x-h-skeleton.avatar></div>
-  <div x-h-skeleton.card class="tile-sm"></div>
-  <div x-h-skeleton.control class="w-1/2"></div>
-  <div x-h-skeleton class="h-12 w-full"></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex flex-col gap-2">
@@ -49,3 +40,5 @@ x-h-skeleton
   <div x-h-skeleton class="h-12 w-full"></div>
 </div>
 ```
+
+</LiveExample>

@@ -26,15 +26,7 @@ x-h-list-header
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<ul x-h-list>
-  <li x-h-list-item>List Item 1</li>
-  <li x-h-list-item>List Item 2</li>
-  <li x-h-list-item>List Item 3</li>
-</ul>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <ul x-h-list>
@@ -43,18 +35,12 @@ x-h-list-header
   <li x-h-list-item>List Item 3</li>
 </ul>
 ```
+
+</LiveExample>
 
 ### Interactive
 
-<ClientOnly>
-<component-container>
-<ul x-h-list>
-  <li x-h-list-item.interactive>List Item 1</li>
-  <li x-h-list-item.interactive>List Item 2</li>
-  <li x-h-list-item.interactive aria-selected="true">List Item 3</li>
-</ul>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <ul x-h-list>
@@ -63,52 +49,27 @@ x-h-list-header
   <li x-h-list-item.interactive aria-selected="true">List Item 3</li>
 </ul>
 ```
+
+</LiveExample>
 
 ### With header
 
-<ClientOnly>
-<component-container>
-<ul x-h-list>
-<li x-h-list-header>Group 1</li>
-  <li x-h-list-item>List Item 1</li>
-  <li x-h-list-item>List Item 2</li>
-  <li x-h-list-item>List Item 3</li>
-</ul>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <ul x-h-list>
+  <li x-h-list-header>Group 1</li>
   <li x-h-list-item>List Item 1</li>
   <li x-h-list-item>List Item 2</li>
   <li x-h-list-item>List Item 3</li>
 </ul>
 ```
+
+</LiveExample>
 
 ### With icons and buttons
 
-<ClientOnly>
-<component-container>
-<ul x-h-list>
-  <li x-h-list-item>
-    <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-    List Item 1
-    <div class="flex-1"></div>
-    <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
-      <i x-h-lucide role="img" data-lucide="save"></i>
-    </button>
-  </li>
-  <li x-h-list-item>
-    <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-    List Item 2
-  </li>
-  <li x-h-list-item aria-selected="true">
-    <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-    List Item 3
-  </li>
-</ul>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <ul x-h-list>
@@ -130,3 +91,5 @@ x-h-list-header
   </li>
 </ul>
 ```
+
+</LiveExample>

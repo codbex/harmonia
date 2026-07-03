@@ -43,32 +43,17 @@ When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEve
 
 ### Basic
 
-<ClientOnly>
-<component-container>
-<div style="height: 20rem" x-h-chart-scatter="{ labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [{ name: 'Visitors', data: [120, 200, 150, 280, 240] }] }"></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div style="height: 20rem" x-h-chart-scatter="{ labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [{ name: 'Visitors', data: [120, 200, 150, 280, 240] }] }"></div>
 ```
+
+</LiveExample>
 
 ### Multiple series
 
-<ClientOnly>
-<component-container>
-<div
-  style="height: 20rem"
-  x-h-chart-scatter="{
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-    series: [
-      { name: 'Visitors', data: [120, 200, 150, 280, 240] },
-      { name: 'Signups', data: [40, 60, 55, 90, 80] }
-    ]
-  }"
-></div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div
@@ -82,3 +67,5 @@ When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEve
   }"
 ></div>
 ```
+
+</LiveExample>

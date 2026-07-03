@@ -22,27 +22,7 @@ x-h-separator
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div class="flex flex-col gap-3">
-  <div class="flex gap-4 h-6 items-center">
-    <p x-h-text>Text</p>
-    <div x-h-separator data-orientation="vertical"></div>
-    <p x-h-text>Text</p>
-    <div x-h-separator data-orientation="vertical"></div>
-    <p x-h-text>Text</p>
-  </div>
-  <div x-h-separator data-orientation="horizontal"></div>
-  <div class="flex gap-4 h-6 items-center">
-    <p x-h-text>Text</p>
-    <div x-h-separator data-orientation="vertical"></div>
-    <p x-h-text>Text</p>
-    <div x-h-separator data-orientation="vertical"></div>
-    <p x-h-text>Text</p>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex flex-col gap-3">
@@ -63,3 +43,5 @@ x-h-separator
   </div>
 </div>
 ```
+
+</LiveExample>

@@ -82,19 +82,6 @@ In range mode the model value is an object with `start` and `end` keys (each a `
 { start: '2025-06-09', end: '2025-06-16' }
 ```
 
-<ClientOnly>
-<component-container>
-<div
-  x-h-date-picker
-  x-data="{ range: { start: '', end: '' } }"
->
-  <input type="text" id="date-input-range" />
-  <button x-h-date-picker-trigger aria-label="Choose date range"></button>
-  <div x-h-date-picker-popup="{ range: true }" x-model="range"></div>
-</div>
-</component-container>
-</ClientOnly>
-
 ```html
 <div x-h-date-picker x-data="{ range: { start: '', end: '' } }">
   <input type="text" id="date-input-range" />

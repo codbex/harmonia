@@ -15,7 +15,7 @@ This structure makes it simple to switch between themes dynamically and keep the
 
 ### Example
 
-```
+```css
 :root,
 :host {
   --background: oklch(1 0 0);
@@ -36,7 +36,7 @@ Harmonia ships with a **default set of theme variables** in the base CSS file. T
 
 For example, if you only want to change your **primary brand color**, your custom theme CSS can be as simple as:
 
-```
+```css
 :root,
 :host {
   --primary: oklch(...);

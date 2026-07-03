@@ -60,40 +60,7 @@ x-h-nav-link
 
 ### Basic
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start">
-<nav x-h-nav aria-label="Main navigation">
-  <ul x-h-nav-list>
-    <li x-h-nav-item>
-      <button x-h-nav-link data-active="true">Home</button>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Products</button>
-      <ul x-h-menu>
-        <li x-h-menu-item>Product A</li>
-        <li x-h-menu-item>Product B</li>
-        <li x-h-menu-item>Product C</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Solutions</button>
-      <ul x-h-menu>
-        <div x-h-menu-label>Enterprise</div>
-        <li x-h-menu-item>Analytics</li>
-        <li x-h-menu-item>Automation</li>
-        <div x-h-menu-separator></div>
-        <div x-h-menu-label>Small Business</div>
-        <li x-h-menu-item>Starter Plan</li>
-        <li x-h-menu-item>Growth Plan</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">Docs</a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start">
 
 ```html
 <nav x-h-nav aria-label="Main navigation">
@@ -127,45 +94,14 @@ x-h-nav-link
   </ul>
 </nav>
 ```
+
+</LiveExample>
 
 ### Show Menu On Hover
 
 Hover over the menu item to trigger the popover.
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start">
-<nav x-h-nav aria-label="Main navigation" data-open-on-hover="true">
-  <ul x-h-nav-list>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#" data-active="true">Home</a>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Products</button>
-      <ul x-h-menu>
-        <li x-h-menu-item>Product A</li>
-        <li x-h-menu-item>Product B</li>
-        <li x-h-menu-item>Product C</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Solutions</button>
-      <ul x-h-menu>
-        <div x-h-menu-label>Enterprise</div>
-        <li x-h-menu-item>Analytics</li>
-        <li x-h-menu-item>Automation</li>
-        <div x-h-menu-separator></div>
-        <div x-h-menu-label>Small Business</div>
-        <li x-h-menu-item>Starter Plan</li>
-        <li x-h-menu-item>Growth Plan</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">Docs</a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start">
 
 ```html
 <nav x-h-nav aria-label="Main navigation" data-open-on-hover="true">
@@ -199,33 +135,14 @@ Hover over the menu item to trigger the popover.
   </ul>
 </nav>
 ```
+
+</LiveExample>
 
 ### Clear
 
 No hover background. The active item is highlighted in the primary color.
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start">
-<nav x-h-nav aria-label="Clear navigation" data-variant="clear">
-  <ul x-h-nav-list>
-    <li x-h-nav-item>
-      <button x-h-nav-link data-active="true">Home</button>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Products</button>
-      <ul x-h-menu>
-        <li x-h-menu-item>Product A</li>
-        <li x-h-menu-item>Product B</li>
-        <li x-h-menu-item>Product C</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">Docs</a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start">
 
 ```html
 <nav x-h-nav aria-label="Clear navigation" data-variant="clear">
@@ -247,33 +164,14 @@ No hover background. The active item is highlighted in the primary color.
   </ul>
 </nav>
 ```
+
+</LiveExample>
 
 ### Underline
 
 Same as `clear` but items show a text underline on hover.
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start">
-<nav x-h-nav aria-label="Underline navigation" data-variant="underline">
-  <ul x-h-nav-list>
-    <li x-h-nav-item>
-      <button x-h-nav-link data-active="true">Home</button>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Products</button>
-      <ul x-h-menu>
-        <li x-h-menu-item>Product A</li>
-        <li x-h-menu-item>Product B</li>
-        <li x-h-menu-item>Product C</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">Docs</a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start">
 
 ```html
 <nav x-h-nav aria-label="Underline navigation" data-variant="underline">
@@ -295,33 +193,14 @@ Same as `clear` but items show a text underline on hover.
   </ul>
 </nav>
 ```
+
+</LiveExample>
 
 ### Outline
 
 Hover and active states show a border outline instead of a filled background.
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start">
-<nav x-h-nav aria-label="Outline navigation" data-variant="outline">
-  <ul x-h-nav-list>
-    <li x-h-nav-item>
-      <button x-h-nav-link data-active="true">Home</button>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>Products</button>
-      <ul x-h-menu>
-        <li x-h-menu-item>Product A</li>
-        <li x-h-menu-item>Product B</li>
-        <li x-h-menu-item>Product C</li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">Docs</a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start">
 
 ```html
 <nav x-h-nav aria-label="Outline navigation" data-variant="outline">
@@ -343,47 +222,12 @@ Hover and active states show a border outline instead of a filled background.
   </ul>
 </nav>
 ```
+
+</LiveExample>
 
 ### With submenus and icons
 
-<ClientOnly>
-<component-container data-class="flex flex-col items-start" >
-<nav x-h-nav aria-label="Main navigation">
-  <ul x-h-nav-list>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">
-        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
-        Home
-      </a>
-    </li>
-    <li x-h-nav-item>
-      <button x-h-nav-trigger>
-        <i x-h-lucide role="img" data-lucide="library-big"></i>
-        <span>Products</span>
-      </button>
-      <ul x-h-menu>
-        <li x-h-menu-item>Product A</li>
-        <li x-h-menu-item>Product B</li>
-        <li x-h-menu-sub>
-          <span>More</span>
-          <ul x-h-menu.sub>
-            <li x-h-menu-item>Product C</li>
-            <li x-h-menu-item>Product D</li>
-            <li x-h-menu-item>Product E</li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li x-h-nav-item>
-      <a x-h-nav-link href="#">
-        <i x-h-lucide role="img" data-lucide="gem"></i>
-        Pricing
-      </a>
-    </li>
-  </ul>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col items-start">
 
 ```html
 <nav x-h-nav aria-label="Main navigation">
@@ -421,3 +265,5 @@ Hover and active states show a border outline instead of a filled background.
   </ul>
 </nav>
 ```
+
+</LiveExample>

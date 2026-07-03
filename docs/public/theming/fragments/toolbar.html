@@ -45,12 +45,12 @@
     </span>
     <div x-h-toolbar-spacer></div>
     <div x-h-input-group style="max-width: 50%">
-      <input x-h-input.group placeholder="Search..." x-model="search" x-on:keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
+      <input x-h-input.group placeholder="Search..." x-model="search" @keyup="(event) => { showClear = event.originalTarget.value !== '' }" />
       <div x-h-input-group-addon data-align="inline-start">
         <i x-h-lucide role="img" data-lucide="search"></i>
       </div>
       <div x-h-input-group-addon data-align="inline-end">
-        <button x-h-button.addon aria-label="clear" x-show="showClear" x-on:click="showClear = false; search=''">
+        <button x-h-button.addon aria-label="clear" x-show="showClear" @click="showClear = false; search=''">
           <i x-h-lucide role="img" data-lucide="x"></i>
         </button>
       </div>

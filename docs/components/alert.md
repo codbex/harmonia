@@ -35,17 +35,7 @@ x-h-alert-actions
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div x-h-alert>
-  <i x-h-lucide role="img" data-lucide="files"></i>
-  <div x-h-alert-title>No description!</div>
-  <div x-h-alert-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i x-h-lucide role="img" data-lucide="x"></i></button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-alert>
@@ -57,15 +47,9 @@ x-h-alert-actions
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-h-alert>
-  <i x-h-lucide role="img" data-lucide="mail"></i>
-  <div x-h-alert-title>Mail Sent</div>
-  <div x-h-alert-description>Your mail has been sent</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-h-alert>
@@ -75,15 +59,9 @@ x-h-alert-actions
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-h-alert data-variant="information">
-  <i x-h-lucide role="img" data-lucide="info"></i>
-  <div x-h-alert-title>Information</div>
-  <div x-h-alert-description>Information variant description</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-h-alert data-variant="information">
@@ -93,15 +71,9 @@ x-h-alert-actions
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-h-alert data-variant="warning">
-  <i x-h-lucide role="img" data-lucide="circle-alert"></i>
-  <div x-h-alert-title>Warning</div>
-  <div x-h-alert-description>Warning variant description</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-h-alert data-variant="warning">
@@ -111,15 +83,9 @@ x-h-alert-actions
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-h-alert data-variant="negative">
-  <i x-h-lucide role="img" data-lucide="circle-x"></i>
-  <div x-h-alert-title>Negative</div>
-  <div x-h-alert-description>Negative variant description</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-h-alert data-variant="negative">
@@ -129,15 +95,9 @@ x-h-alert-actions
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-h-alert data-variant="positive">
-  <i x-h-lucide role="img" data-lucide="circle-check"></i>
-  <div x-h-alert-title>Positive</div>
-  <div x-h-alert-description>Positive variant description</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-h-alert data-variant="positive">
@@ -146,3 +106,5 @@ x-h-alert-actions
   <div x-h-alert-description>Positive variant description</div>
 </div>
 ```
+
+</LiveExample>

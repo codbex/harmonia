@@ -26,24 +26,20 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<textarea x-h-textarea placeholder="Comment..."></textarea>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 ```html
 <textarea x-h-textarea placeholder="Comment..."></textarea>
 ```
+
+</LiveExample>
 
 ### Without resize handle
 
-<ClientOnly>
-<component-container>
-<textarea x-h-textarea class="resize-none"></textarea>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <textarea x-h-textarea class="resize-none"></textarea>
 ```
+
+</LiveExample>

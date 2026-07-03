@@ -41,44 +41,31 @@ x-h-chip-close
 
 ### Text-Only
 
-<ClientOnly>
-<component-container>
-<button x-h-chip>Chip</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip>Chip</button>
 ```
+
+</LiveExample>
 
 ### Truncate Text
 
 To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` element.
 
-<ClientOnly>
-<component-container>
-<button x-h-chip style="max-width:4rem">
-  <span>Truncate text</span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip style="max-width:4rem">
   <span>Truncate text</span>
 </button>
 ```
+
+</LiveExample>
 
 ### Icon & Text
 
-<ClientOnly>
-<component-container>
-<button x-h-chip>
-  <svg x-h-icon data-icon="mail" role="img" aria-label="mail"></svg>
-  <span>Chip</span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip>
@@ -86,18 +73,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span>Chip</span>
 </button>
 ```
+
+</LiveExample>
 
 ### Icon, Text & Close Button
 
-<ClientOnly>
-<component-container>
-<button x-h-chip>
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip>
@@ -106,18 +87,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### Outline Variant
 
-<ClientOnly>
-<component-container>
-<button x-h-chip data-variant="outline">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip data-variant="outline">
@@ -126,18 +101,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### Primary Variant
 
-<ClientOnly>
-<component-container>
-<button x-h-chip data-variant="primary">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip data-variant="primary">
@@ -146,18 +115,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### Information Variant
 
-<ClientOnly>
-<component-container>
-<button x-h-chip data-variant="information">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip data-variant="information">
@@ -166,18 +129,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### Warning Variant
 
-<ClientOnly>
-<component-container>
-<button x-h-chip data-variant="warning">
-  <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip data-variant="warning">
@@ -186,18 +143,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### Positive Variant
 
-<ClientOnly>
-<component-container>
-<button x-h-chip data-variant="positive">
-  <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip data-variant="positive">
@@ -206,18 +157,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### Negative Variant
 
-<ClientOnly>
-<component-container>
-<button x-h-chip data-variant="negative">
-  <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
-  <span>Chip</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip data-variant="negative">
@@ -226,20 +171,12 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
 ```
+
+</LiveExample>
 
 ### With Popover
 
-<ClientOnly>
-<component-container>
-<button x-h-chip x-h-popover-trigger data-variant="information">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
-  <span class="text-muted-foreground">Chip:</span>
-  <span>Enabled</span>
-  <span x-h-chip-close aria-label="remove chip"></span>
-</button>
-<div class="w-64 p-4" x-h-popover>Chip Popover</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-chip x-h-popover-trigger data-variant="information">
@@ -250,3 +187,5 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 </button>
 <div class="w-64 p-4" x-h-popover>Chip Popover</div>
 ```
+
+</LiveExample>

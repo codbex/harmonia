@@ -35,24 +35,7 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 
 ### Grid
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-12 gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-  <span class="bg-primary text-primary-foreground p-2">7</span>
-  <span class="bg-primary text-primary-foreground p-2">8</span>
-  <span class="bg-primary text-primary-foreground p-2">9</span>
-  <span class="bg-primary text-primary-foreground p-2">10</span>
-  <span class="bg-primary text-primary-foreground p-2">11</span>
-  <span class="bg-primary text-primary-foreground p-2">12</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-12 gap-1">
@@ -71,26 +54,11 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 </div>
 ```
 
+</LiveExample>
+
 ### Responsive grid
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-  <span class="bg-primary text-primary-foreground p-2">7</span>
-  <span class="bg-primary text-primary-foreground p-2">8</span>
-  <span class="bg-primary text-primary-foreground p-2">9</span>
-  <span class="bg-primary text-primary-foreground p-2">10</span>
-  <span class="bg-primary text-primary-foreground p-2">11</span>
-  <span class="bg-primary text-primary-foreground p-2">12</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 xl:grid-cols-12">
@@ -109,20 +77,11 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 </div>
 ```
 
+</LiveExample>
+
 ### Justify items start
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 justify-items-start gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 justify-items-start gap-4">
@@ -134,21 +93,12 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Justify items center
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 justify-items-center gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 justify-items-center gap-4">
@@ -160,21 +110,12 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Justify items end
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 justify-items-end gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 justify-items-end gap-4">
@@ -186,21 +127,12 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Justify items stretch
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 justify-items-stretch gap-4">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 justify-items-stretch gap-4">
@@ -213,19 +145,11 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 </div>
 ```
 
+</LiveExample>
+
 ### Column span
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-4 gap-1">
-  <span class="bg-primary text-primary-foreground p-2 col-span-2">col-span-2</span>
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2 col-span-3">col-span-3</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-4 gap-1">
@@ -237,19 +161,11 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 </div>
 ```
 
+</LiveExample>
+
 ### Row span
 
-<ClientOnly>
-<component-container>
-<div class="grid grid-cols-3 gap-1" style="height: 10rem">
-  <span class="bg-primary text-primary-foreground p-2 row-span-2">row-span-2</span>
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="grid grid-cols-3 gap-1" style="height: 10rem">
@@ -261,23 +177,14 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
 </div>
 ```
 
+</LiveExample>
+
 ### Place items start
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 place-items-start gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-3 justify-items-start gap-4">
+<div class="grid h-full grid-cols-3 place-items-start gap-4">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
@@ -286,24 +193,15 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Place items center
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 place-items-center gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-3 justify-items-center gap-4">
+<div class="grid h-full grid-cols-3 place-items-center gap-4">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
@@ -312,24 +210,15 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Place items end
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 place-items-end gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-3 justify-items-end gap-4">
+<div class="grid h-full grid-cols-3 place-items-end gap-4">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
@@ -338,24 +227,15 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Place items stretch
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-3 place-items-stretch gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-  <span class="bg-primary text-primary-foreground p-2">5</span>
-  <span class="bg-primary text-primary-foreground p-2">6</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-3 justify-items-stretch gap-4">
+<div class="grid h-full grid-cols-3 place-items-stretch gap-4">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
@@ -364,3 +244,5 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">6</span>
 </div>
 ```
+
+</LiveExample>

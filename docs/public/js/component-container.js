@@ -28,10 +28,21 @@ class ComponentContainer extends HTMLElement {
     }
   }
 
-  async connectedCallback() {
+  connectedCallback() {
     this.classToggle();
     this.observer.observe(window.document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    const url = this.getAttribute('src');
+
+    // This element is internal: markup is handed to its `_code` property (see
+    // LiveExample.vue / IconGallery.vue), never authored inline. Authoring
+    // <component-container> with inline children in a doc does not work - VitePress
+    // compiles the page through Vue, which hijacks Alpine's `@`/`:` shorthands (and
+    // `{{ }}`) in the children before Alpine runs. `v-pre` would prevent that, but
+    // Vue strips it at compile time so it cannot be detected here. Fail loudly
+    // rather than silently render a broken demo.
+    if (this._code == null && this.childElementCount > 0) {
+      throw new Error('component-container does not accept inline markup - use <LiveExample> (which wraps an html code fence), or a component that sets its `_code` property.');
+    }
+
     const customClass = this.getAttribute('data-class');
     if (!customClass || (!customClass.startsWith('p-') && !customClass.includes(' p-'))) {
       this.container.classList.add('p-6');
@@ -43,31 +54,12 @@ class ComponentContainer extends HTMLElement {
     const inlineStyle = this.getAttribute('data-style');
     if (inlineStyle) this.container.setAttribute('style', inlineStyle);
 
-    if (!url) {
-      // Move all child nodes into wrapper
-      while (this.firstChild) {
-        this.container.appendChild(this.firstChild);
-      }
-
-      setTimeout(() => {
-        // Initialize the new element with Alpine; Lucide icons render via the
-        // x-h-lucide directive as Alpine initializes them.
-        Alpine.initTree(this.container);
-      });
-    } else {
-      try {
-        const response = await fetch(`/harmonia/${url}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const htmlText = await response.text();
-
-        await this.render(htmlText);
-      } catch (err) {
-        console.error('dynamic-fragment failed:', err);
-      }
+    if (this._code != null) {
+      // Alpine is loaded deferred, so wait until it exists before rendering - this
+      // element may connect earlier during hydration.
+      const render = () => this.render(this._code);
+      if (window.Alpine) render();
+      else document.addEventListener('alpine:init', () => setTimeout(render), { once: true });
     }
   }
 
@@ -77,7 +69,7 @@ class ComponentContainer extends HTMLElement {
   }
 
   async render(htmlText) {
-    // Parse fetched HTML
+    // Parse the provided markup
     const template = document.createElement('template');
     template.innerHTML = htmlText;
 

@@ -66,38 +66,27 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 
 ### SVG image
 
-<ClientOnly>
-<component-container data-class="!p-1 hbox justify-center">
-<svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="!p-1 hbox justify-center">
 
 ```html
 <svg x-h-icon data-link="/harmonia/logo/harmonia.svg" role="img" aria-label="Harmonia logo"></svg>
 ```
+
+</LiveExample>
 
 ### SVG icon
 
-<ClientOnly>
-<component-container>
-<svg x-h-icon class="size-8" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <svg x-h-icon class="size-8" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
+
+</LiveExample>
 
 ### SVG icon with custom fill color
 
-<ClientOnly>
-<component-container data-class="flex gap-3">
-<svg x-h-icon class="size-8 fill-positive" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-negative" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-warning" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-<svg x-h-icon class="size-8 fill-information" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex gap-3">
 
 ```html
 <svg x-h-icon class="size-8 fill-positive" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
@@ -106,11 +95,13 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 <svg x-h-icon class="size-8 fill-information" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
 ```
 
+</LiveExample>
+
 ### Harmonia Icons
 
-<ClientOnly>
-<component-container src="/components/icons/grid.html" data-class="p-4"></component-container>
-</ClientOnly>
+The icons below ship with Harmonia. Reference one by its name with `data-icon`, or click an icon in the preview to copy its markup.
+
+<IconGallery>
 
 ```html
 <svg x-h-icon data-icon="calendar" role="img" aria-label="calendar"></svg>
@@ -147,3 +138,5 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 <svg x-h-icon data-icon="star-hollow" role="img" aria-label="star hollow"></svg>
 <svg x-h-icon data-icon="star-half" role="img" aria-label="star half"></svg>
 ```
+
+</IconGallery>

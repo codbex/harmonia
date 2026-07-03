@@ -33,35 +33,64 @@ x-h-sheet-overlay
 
 ### Sheet with Sidebar
 
-<ClientOnly>
-<component-container src="/components/sheet/with-sidebar.html">
-</component-container>
-</ClientOnly>
+<LiveExample>
 
-<<< @/public/components/sheet/with-sidebar.html
-
-### Alignment
-
-<ClientOnly>
-<component-container>
-<div x-data="{ isOpen: false, side: 'left' }">
+```html
+<div x-data="SheetController">
   <div x-h-sheet-overlay="isOpen">
-    <div x-h-sheet x-bind:data-align="side">
-      <div class="flex flex-col gap-2 p-2">
-        <button x-h-button x-on:click="side = 'top'">Top</button>
-        <button x-h-button x-on:click="side = 'right'">Right</button>
-        <button x-h-button x-on:click="side = 'bottom'">Bottom</button>
-        <button x-h-button x-on:click="side = 'left'">Left</button>
-        <button x-h-button x-on:click="isOpen = false">Close</button>
+    <div x-h-sheet :data-align="side">
+      <div x-h-sidebar>
+        <div x-h-sidebar-content>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-group-label>Application</div>
+            <div x-h-sidebar-group-content>
+              <ul x-h-sidebar-menu>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                    <i x-h-lucide role="img" data-lucide="house"></i>
+                    <span>Home</span>
+                    <span x-h-sidebar-menu-badge>11</span>
+                  </button>
+                </li>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                    <i x-h-lucide role="img" data-lucide="file-text"></i>
+                    <span>Documents</span>
+                  </button>
+                </li>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                    <i x-h-lucide role="img" data-lucide="blocks"></i>
+                    <span>Extensions</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-<button x-h-button x-on:click="isOpen = true">Open</button>
-
+  <button x-h-button @click="openSheet()">Open Sheet</button>
 </div>
-</component-container>
-</ClientOnly>
+
+<script type="text/javascript">
+  Alpine.data('SheetController', () => ({
+    isOpen: false,
+    side: 'left',
+    openSheet() {
+      this.isOpen = true;
+    },
+  }));
+</script>
+```
+
+</LiveExample>
+
+### Alignment
+
+<LiveExample>
 
 ```html
 <div x-data="{ isOpen: false, side: 'left' }">
@@ -80,3 +109,5 @@ x-h-sheet-overlay
   <button x-h-button @click="isOpen = true">Open</button>
 </div>
 ```
+
+</LiveExample>

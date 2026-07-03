@@ -4,9 +4,9 @@
 // The docs/ tree is the source of truth for components: this script transcribes
 // each directive-bearing doc into an agent-optimized reference file, builds the
 // SKILL.md router (with a generated component index) and an llms.txt index.
-// It strips VitePress-only markup (<ClientOnly>, <component-container>,
-// frontmatter) and keeps the ```html example blocks, which are already written
-// in the exact syntax a consumer types.
+// It strips VitePress-only markup (the <LiveExample> / <IconGallery> /
+// <TemplateShowcase> example wrappers, internal links) and keeps the ```html
+// example blocks, which are already written in the exact syntax a consumer types.
 //
 // The utility-class reference (references/utility-classes.md) is generated from
 // src/styles/harmonia.css - the authoritative Tailwind safelist - so agents get
@@ -94,6 +94,28 @@ function stripInternalLinks(md) {
   return md.replace(/\[([^\]]+)\]\((\/|\.\/|\.\.\/|#)[^)]*\)/g, '$1');
 }
 
+// Runnable examples in the docs are wrapped in Vue components (<LiveExample>,
+// <IconGallery>, <TemplateShowcase>) that exist only in the VitePress site. When a
+// wrapper sits inside a section we transcribe verbatim (e.g. an API Reference
+// subsection), drop the wrapper's own tag lines but keep the fenced example they
+// contain. Fence-aware, so a wrapper name shown inside a code block is left intact.
+const WRAPPER_TAG = /^<\/?(?:LiveExample|IconGallery|TemplateShowcase)(?:\s[^>]*)?\/?>$/;
+function stripComponentWrappers(md) {
+  const lines = md.split('\n');
+  let inFence = false;
+  const out = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) {
+      inFence = !inFence;
+      out.push(line);
+      continue;
+    }
+    if (!inFence && WRAPPER_TAG.test(line.trim())) continue;
+    out.push(line);
+  }
+  return out.join('\n');
+}
+
 function extractTitleAndDescription(lines, mask) {
   const ti = findHeading(lines, mask, { level: 1 });
   const title = ti >= 0 ? headingAt(lines, mask, ti).text : null;
@@ -156,7 +178,7 @@ function extractApi(lines, mask) {
     i = end - 1;
   }
 
-  return { directives, apiDetails: stripInternalLinks(parts.join('\n\n')) };
+  return { directives, apiDetails: stripComponentWrappers(stripInternalLinks(parts.join('\n\n'))) };
 }
 
 // Collects every ```html block in the doc (fence-aware), each tagged with the

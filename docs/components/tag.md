@@ -17,16 +17,7 @@ x-h-tag-group
 
 ## Examples
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-3 justify-center">
-<div x-h-tag-group>
-  <div x-h-tag>⌘</div>
-  <div x-h-tag>⇧</div>
-  <div x-h-tag>⌥</div>
-  <div x-h-tag>⌃</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex items-center gap-3 justify-center">
 
 ```html
 <div x-h-tag-group>
@@ -37,15 +28,9 @@ x-h-tag-group
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-3 justify-center">
-<div x-h-tag-group>
-  <div x-h-tag>Ctrl</div>
-  <span>+</span>
-  <div x-h-tag>B</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="flex items-center gap-3 justify-center">
 
 ```html
 <div x-h-tag-group>
@@ -55,15 +40,9 @@ x-h-tag-group
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-3 justify-center">
-<div x-h-tag-group>
-  <div x-h-tag>Historical</div>
-  <div x-h-tag>Adventure</div>
-  <div x-h-tag>Psychological</div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="flex items-center gap-3 justify-center">
 
 ```html
 <div x-h-tag-group>
@@ -73,14 +52,9 @@ x-h-tag-group
 </div>
 ```
 
-<ClientOnly>
-<component-container data-class="flex items-center gap-3 justify-center">
-<button x-h-button data-variant="outline">
-  Cancel
-  <div x-h-tag>Esc</div>
-</button>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample data-class="flex items-center gap-3 justify-center">
 
 ```html
 <button x-h-button data-variant="outline">
@@ -88,3 +62,5 @@ x-h-tag-group
   <div x-h-tag>Esc</div>
 </button>
 ```
+
+</LiveExample>

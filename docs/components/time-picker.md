@@ -95,14 +95,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ## Examples
 
-<ClientOnly>
-<component-container>
-<div x-data="{ timeConfig: { seconds: true, is12Hour: true } }" x-h-time-picker="timeConfig">
-  <input type="text" id="tpi-1" x-h-time-picker-input />
-  <div x-h-time-picker-popup></div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ timeConfig: { seconds: true, is12Hour: true } }" x-h-time-picker="timeConfig">
@@ -111,14 +104,9 @@ By default this control shows native-constraint errors (for example `required`) 
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-data="{ time: '13:33' }" x-h-time-picker>
-  <input type="text" id="tpi-2" x-model="time" x-h-time-picker-input />
-  <div x-h-time-picker-popup></div>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-data="{ time: '13:33' }" x-h-time-picker>
@@ -126,3 +114,5 @@ By default this control shows native-constraint errors (for example `required`) 
   <div x-h-time-picker-popup></div>
 </div>
 ```
+
+</LiveExample>

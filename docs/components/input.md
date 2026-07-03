@@ -35,12 +35,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Text Input
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<input x-h-input type="text" placeholder="Search..." />
-<input x-h-input data-size="sm" type="text" placeholder="Search..." />
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 <!-- prettier-ignore -->
 ```html
@@ -48,26 +43,24 @@ By default this control shows native-constraint errors (for example `required`) 
 <input x-h-input data-size="sm" type="text" placeholder="Search..." />
 ```
 
+</LiveExample>
+
 ### Color Input
 
-<ClientOnly>
-<component-container>
-<input x-h-input type="color" value="#26a269" />
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <input x-h-input type="color" value="#26a269" />
 ```
+
+</LiveExample>
 
 ### Invalid Input
 
-<ClientOnly>
-<component-container>
-<input x-h-input type="text" aria-invalid="true" />
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <input x-h-input type="text" aria-invalid="true" />
 ```
+
+</LiveExample>

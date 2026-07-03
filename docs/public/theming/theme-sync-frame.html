@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" class="size-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theme sync - frame</title>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="size-full bg-background p-4 text-foreground">
+    <div class="vbox gap-2">
+      <h2 class="text-base font-semibold">Embedded frame</h2>
+      <p class="text-sm text-muted-foreground">Current scheme: <span id="scheme" class="font-medium">-</span></p>
+      <div class="flex gap-2">
+        <button class="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground" onclick="Harmonia.setColorScheme('light')">Light</button>
+        <button class="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground" onclick="Harmonia.setColorScheme('dark')">Dark</button>
+        <button class="rounded-md border px-3 py-1.5 text-sm" onclick="Harmonia.setColorScheme('auto')">Auto</button>
+      </div>
+    </div>
+
+    <script>
+      const schemeEl = document.getElementById("scheme");
+      const render = (scheme) => {
+        schemeEl.textContent = scheme;
+      };
+      render(document.documentElement.classList.contains("dark") ? "dark" : "light");
+      Harmonia.addColorSchemeListener(render);
+    </script>
+  </body>
+</html>

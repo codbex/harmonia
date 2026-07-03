@@ -48,53 +48,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
 
 ### Default
 
-<ClientOnly>
-<component-container data-class="vbox gap-6" >
-<div x-data="{ step: 2, total: 3 }" class="vbox gap-6 w-full">
-  <div x-h-step-indicator="step">
-    <div x-h-step-indicator-item="1">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>
-          <svg x-h-icon data-icon="circle-user" role="img" aria-label="step account"></svg>
-        </span>
-        <span x-h-step-indicator-content>
-          <span x-h-step-indicator-title>Account</span>
-          <span x-h-step-indicator-description>Your details</span>
-        </span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="2">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>
-          <i x-h-lucide role="img" data-lucide="map-pin"></i>
-        </span>
-        <span x-h-step-indicator-content>
-          <span x-h-step-indicator-title>Address</span>
-          <span x-h-step-indicator-description>Shipping info</span>
-        </span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="3">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>
-          <i x-h-lucide role="img" data-lucide="banknote"></i>
-        </span>
-        <span x-h-step-indicator-content>
-          <span x-h-step-indicator-title>Payment</span>
-          <span x-h-step-indicator-description>Confirm order</span>
-        </span>
-      </button>
-    </div>
-  </div>
-  <div class="hbox justify-between gap-2">
-    <button x-h-button data-variant="outline" x-on:click="step = Math.max(step - 1, 1)" x-bind:disabled="step === 1">Back</button>
-    <button x-h-button data-variant="primary" x-on:click="step = Math.min(step + 1, total)" x-bind:disabled="step === total">Next</button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox gap-6">
 
 ```html
 <div x-data="{ step: 2, total: 3 }" class="vbox w-full gap-6">
@@ -142,39 +96,11 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
 </div>
 ```
 
+</LiveExample>
+
 ### Markers only
 
-<ClientOnly>
-<component-container>
-<div x-data="{ step: 2 }" class="w-full">
-  <div x-h-step-indicator="step">
-    <div x-h-step-indicator-item="1">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>1</span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="2">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>2</span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="3">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>3</span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="4">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>4</span>
-      </button>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="vbox items-stretch">
 
 ```html
 <div x-data="{ step: 2 }">
@@ -205,46 +131,12 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Vertical
 
-<ClientOnly>
-<component-container>
-<div x-data="{ step: 2 }">
-  <div x-h-step-indicator="step" data-orientation="vertical">
-    <div x-h-step-indicator-item="1">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>1</span>
-        <span x-h-step-indicator-content>
-          <span x-h-step-indicator-title>Account</span>
-          <span x-h-step-indicator-description>Your details</span>
-        </span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="2">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>2</span>
-        <span x-h-step-indicator-content>
-          <span x-h-step-indicator-title>Address</span>
-          <span x-h-step-indicator-description>Shipping info</span>
-        </span>
-      </button>
-      <div x-h-step-indicator-separator></div>
-    </div>
-    <div x-h-step-indicator-item="3">
-      <button x-h-step-indicator-trigger>
-        <span x-h-step-indicator-marker>3</span>
-        <span x-h-step-indicator-content>
-          <span x-h-step-indicator-title>Payment</span>
-          <span x-h-step-indicator-description>Confirm order</span>
-        </span>
-      </button>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ step: 2 }">
@@ -281,3 +173,5 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
   </div>
 </div>
 ```
+
+</LiveExample>

@@ -53,44 +53,31 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 
 ### Popover
 
-<ClientOnly>
-<component-container>
-<button x-h-button x-h-popover-trigger>Popover</button>
-<div class="w-64 p-4" x-h-popover>Popover content</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button x-h-popover-trigger>Popover</button>
 <div class="w-64 p-4" x-h-popover>Popover content</div>
 ```
+
+</LiveExample>
 
 ### Constrained width
 
 The popover sizes to its content, up to a maximum width. That maximum defaults to the width available in the viewport. Set `data-max-w` to a container size to cap it smaller (here `sm`), so long content wraps instead of stretching the popover wider.
 
-<ClientOnly>
-<component-container>
-<button x-h-button x-h-popover-trigger>Popover</button>
-<div class="p-4" x-h-popover data-max-w="sm">Long content wraps once the popover reaches the small container width instead of getting any wider.</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button x-h-popover-trigger>Popover</button>
 <div class="p-4" x-h-popover data-max-w="sm">Long content wraps once the popover reaches the small container width instead of getting any wider.</div>
 ```
+
+</LiveExample>
 
 ### Disable closing on inner click events
 
-<ClientOnly>
-<component-container>
-<button x-h-button x-h-popover-trigger>Popover</button>
-<div class="w-64 p-4" x-h-popover data-innerclicks="true">
-  <button x-h-button data-variant="primary">Click</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button x-h-popover-trigger>Popover</button>
@@ -98,22 +85,14 @@ The popover sizes to its content, up to a maximum width. That maximum defaults t
   <button x-h-button data-variant="primary">Click</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Bind the open state (two-way)
 
 Bind a variable to the trigger to read or control the open state while keeping the automatic behavior. The popover still toggles on click and dismisses on an outside click, and setting the variable elsewhere shows or hides it. This is useful to close the popover from a button inside it (for example a "confirm" action) while other inner controls leave it open.
 
-<ClientOnly>
-<component-container>
-<div x-data="{ open: false }">
-  <button x-h-button x-h-popover-trigger="open">Popover</button>
-  <div class="w-64 vbox gap-2 p-4" x-h-popover data-innerclicks="true">
-    <span>Clicking confirm closes the popover.</span>
-    <button x-h-button data-variant="primary" data-size="sm" x-on:click="open = false">Confirm</button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ open: false }">
@@ -125,18 +104,13 @@ Bind a variable to the trigger to read or control the open state while keeping t
 </div>
 ```
 
+</LiveExample>
+
 ### Manually open and close the popover
 
 Add your own `@click` handler on the trigger, alongside the bound variable, to take full manual control. The directive then leaves open/close entirely to you, so the automatic outside-click dismiss is disabled.
 
-<ClientOnly>
-<component-container>
-<div x-data="{ open: false }">
-  <button x-h-button x-h-popover-trigger="open" x-on:click="open = !open">Popover</button>
-  <div class="w-64 p-4" x-h-popover>Popover content</div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-data="{ open: false }">
@@ -145,19 +119,13 @@ Add your own `@click` handler on the trigger, alongside the bound variable, to t
 </div>
 ```
 
+</LiveExample>
+
 ### Chevron
 
 In order to use the chevron modifier, the trigger label must be placed inside a nested element (usually a `span`).
 
-<ClientOnly>
-<component-container>
-<button x-h-button x-h-popover-trigger.chevron>
-  <span>Popover</span>
-  <i x-h-lucide role="img" data-lucide="chevron-down"></i>
-</button>
-<div class="p-4" x-h-popover>With chevron</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <button x-h-button x-h-popover-trigger.chevron>
@@ -166,49 +134,12 @@ In order to use the chevron modifier, the trigger label must be placed inside a 
 </button>
 <div class="p-4" x-h-popover>With chevron</div>
 ```
+
+</LiveExample>
 
 ### Alignment
 
-<ClientOnly>
-<component-container>
-<div class="flex flex-col" style="gap: 4rem">
-  <div class="flex items-center justify-between gap-4">
-    <button x-h-button x-h-popover-trigger>Bottom start</button>
-    <div class="w-64 p-4" x-h-popover data-align="bottom-start">Bottom start content</div>
-    <button x-h-button x-h-popover-trigger>Bottom</button>
-    <div class="w-64 p-4" x-h-popover data-align="bottom">Bottom center content</div>
-    <button x-h-button x-h-popover-trigger>Bottom end</button>
-    <div class="w-64 p-4" x-h-popover data-align="bottom-end">Bottom end content</div>
-  </div>
-  <div class="flex items-center justify-between gap-4">
-    <button x-h-button x-h-popover-trigger>Right start</button>
-    <div class="w-64 p-4" x-h-popover data-align="right-start">Right start content</div>
-    <button x-h-button x-h-popover-trigger>Left start</button>
-    <div class="w-64 p-4" x-h-popover data-align="left-start">Left start content</div>
-  </div>
-  <div class="flex items-center justify-between gap-4">
-    <button x-h-button x-h-popover-trigger>Right</button>
-    <div class="w-64 p-4" x-h-popover data-align="right">Right center content</div>
-    <button x-h-button x-h-popover-trigger>Left</button>
-    <div class="w-64 p-4" x-h-popover data-align="left">Left center content</div>
-  </div>
-  <div class="flex items-center justify-between gap-4">
-    <button x-h-button x-h-popover-trigger>Right end</button>
-    <div class="w-64 p-4" x-h-popover data-align="right-end">Right end content</div>
-    <button x-h-button x-h-popover-trigger>Left end</button>
-    <div class="w-64 p-4" x-h-popover data-align="left-end">Left end content</div>
-  </div>
-  <div class="flex items-center justify-between gap-4">
-    <button x-h-button x-h-popover-trigger>Top start</button>
-    <div class="w-64 p-4" x-h-popover data-align="top-start">Top start content</div>
-    <button x-h-button x-h-popover-trigger>Top</button>
-    <div class="w-64 p-4" x-h-popover data-align="top">Top center content</div>
-    <button x-h-button x-h-popover-trigger>Top end</button>
-    <div class="w-64 p-4" x-h-popover data-align="top-end">Top end content</div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div class="flex flex-col" style="gap: 4rem">
@@ -248,3 +179,5 @@ In order to use the chevron modifier, the trigger label must be placed inside a 
   </div>
 </div>
 ```
+
+</LiveExample>

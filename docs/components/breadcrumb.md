@@ -28,8 +28,9 @@ x-h-breadcrumb-page
 
 ## Examples
 
-<ClientOnly>
-<component-container>
+<LiveExample>
+
+```html
 <nav x-h-breadcrumb>
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
@@ -43,47 +44,13 @@ x-h-breadcrumb-page
     </li>
   </ol>
 </nav>
-</component-container>
-</ClientOnly>
-
-```html
-<nav x-h-breadcrumb>
-  <ol x-h-breadcrumb-list>
-    <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#">Home</a>
-    </li>
-    <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#">Components</a>
-    </li>
-    <li x-h-breadcrumb-item>
-      <span x-h-breadcrumb-page>Breadcrumb</span>
-    </li>
-  </ol>
-</nav>
 ```
+
+</LiveExample>
 
 ### Links as buttons
 
-<ClientOnly>
-<component-container>
-<nav x-h-breadcrumb>
-  <ol x-h-breadcrumb-list>
-    <li x-h-breadcrumb-item>
-      <button x-h-breadcrumb-link>
-        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
-        <span>Home</span>
-      </button>
-    </li>
-    <li x-h-breadcrumb-item>
-      <button x-h-breadcrumb-link>Components</button>
-    </li>
-    <li x-h-breadcrumb-item>
-      <span x-h-breadcrumb-page>Breadcrumb</span>
-    </li>
-  </ol>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <nav x-h-breadcrumb>
@@ -104,10 +71,13 @@ x-h-breadcrumb-page
 </nav>
 ```
 
+</LiveExample>
+
 ### Outline Variant
 
-<ClientOnly>
-<component-container>
+<LiveExample>
+
+```html
 <nav x-h-breadcrumb data-variant="outline">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
@@ -121,43 +91,13 @@ x-h-breadcrumb-page
     </li>
   </ol>
 </nav>
-</component-container>
-</ClientOnly>
-
-```html
-<nav x-h-breadcrumb data-variant="outline">...</nav>
 ```
+
+</LiveExample>
 
 ### In a Toolbar
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
-  <div x-h-toolbar-separator></div>
-  <nav x-h-breadcrumb>
-    <ol x-h-breadcrumb-list>
-      <li x-h-breadcrumb-item>
-        <button x-h-breadcrumb-link>
-          <i x-h-lucide role="img" data-lucide="home"></i>
-          <span>Home</span>
-        </button>
-      </li>
-      <li x-h-breadcrumb-item>
-        <button x-h-breadcrumb-link>Components</button>
-      </li>
-      <li x-h-breadcrumb-item>
-        <span x-h-breadcrumb-page>Breadcrumb</span>
-      </li>
-    </ol>
-  </nav>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-variant="transparent">
@@ -186,33 +126,9 @@ x-h-breadcrumb-page
 </div>
 ```
 
-<ClientOnly>
-<component-container>
-<div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
-  <nav x-h-breadcrumb data-variant="outline">
-    <ol x-h-breadcrumb-list>
-      <li x-h-breadcrumb-item>
-        <button x-h-breadcrumb-link>
-          <i x-h-lucide role="img" data-lucide="home"></i>
-          <span>Home</span>
-        </button>
-      </li>
-      <li x-h-breadcrumb-item>
-        <button x-h-breadcrumb-link>Components</button>
-      </li>
-      <li x-h-breadcrumb-item>
-        <span x-h-breadcrumb-page>Breadcrumb</span>
-      </li>
-    </ol>
-  </nav>
-  <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
-  <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
-</div>
-</component-container>
-</ClientOnly>
+</LiveExample>
+
+<LiveExample>
 
 ```html
 <div x-h-toolbar data-variant="transparent">
@@ -239,13 +155,16 @@ x-h-breadcrumb-page
   <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
 </div>
 ```
+
+</LiveExample>
 
 ### Sizes
 
 Sizes are only applied when the `outline` variant is set.
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-3">
+<LiveExample data-class="flex flex-col gap-3">
+
+```html
 <nav x-h-breadcrumb data-variant="outline">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
@@ -285,19 +204,15 @@ Sizes are only applied when the `outline` variant is set.
     </li>
   </ol>
 </nav>
-</component-container>
-</ClientOnly>
-
-```html
-<nav x-h-breadcrumb data-variant="outline">...</nav>
-<nav x-h-breadcrumb data-variant="outline" data-size="md">...</nav>
-<nav x-h-breadcrumb data-variant="outline" data-size="sm">...</nav>
 ```
+
+</LiveExample>
 
 ### Scroll Overflow
 
-<ClientOnly>
-<component-container>
+<LiveExample>
+
+```html
 <nav x-h-breadcrumb data-overflow="scroll">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
@@ -367,62 +282,13 @@ Sizes are only applied when the `outline` variant is set.
     </li>
   </ol>
 </nav>
-</component-container>
-</ClientOnly>
-
-```html
-<nav x-h-breadcrumb data-overflow="scroll">...</nav>
-<nav x-h-breadcrumb data-overflow="scroll" data-variant="outline">...</nav>
 ```
+
+</LiveExample>
 
 ### Popover Overflow With `nowrap`
 
-<ClientOnly>
-<component-container>
-<nav x-h-breadcrumb data-overflow="nowrap">
-  <ol x-h-breadcrumb-list>
-    <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
-    </li>
-    <li x-h-breadcrumb-item>
-      <button x-h-breadcrumb-link x-h-menu-trigger.dropdown>
-        <svg x-h-icon data-icon="ellipsis" role="img" aria-label="ellipsis"></svg>
-        <span class="sr-only">Breadcrumb overflow menu</span>
-      </button>
-      <ul x-h-menu>
-        <li x-h-menu-item>
-          <a href="#">Page 1</a>
-        </li>
-        <li x-h-menu-item>
-          <a href="#">Page 2</a>
-        </li>
-        <li x-h-menu-item>
-          <a href="#">Page 3</a>
-        </li>
-        <li x-h-menu-item>
-          <a href="#">Page 4</a>
-        </li>
-        <li x-h-menu-item>
-          <a href="#">Page 5</a>
-        </li>
-      </ul>
-    </li>
-    <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#">Page 6</a>
-    </li>
-    <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#">Page 7</a>
-    </li>
-    <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#">Page 8</a>
-    </li>
-    <li x-h-breadcrumb-item>
-      <span x-h-breadcrumb-page>Breadcrumb</span>
-    </li>
-  </ol>
-</nav>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <nav x-h-breadcrumb data-overflow="nowrap">
@@ -469,10 +335,37 @@ Sizes are only applied when the `outline` variant is set.
 </nav>
 ```
 
+</LiveExample>
+
 ### Dynamic items with `x-for`
 
-<ClientOnly>
-<component-container src="/components/breadcrumb/dynamic.html"></component-container>
-</ClientOnly>
+<LiveExample>
 
-<<< @/public/components/breadcrumb/dynamic.html
+```html
+<div
+  x-data="{
+  crumbs: [
+    { label: 'Home', href: '#home' },
+    { label: 'Components', href: '#components' },
+    { label: 'Breadcrumb', href: '#breadcrumb' }
+  ]
+}"
+>
+  <nav x-h-breadcrumb>
+    <ol x-h-breadcrumb-list>
+      <template x-for="(item, index) in crumbs" :key="item.href">
+        <li x-h-breadcrumb-item>
+          <template x-if="index < crumbs.length - 1">
+            <a x-h-breadcrumb-link :href="item.href" x-text="item.label"></a>
+          </template>
+          <template x-if="index === crumbs.length - 1">
+            <span x-h-breadcrumb-page x-text="item.label"></span>
+          </template>
+        </li>
+      </template>
+    </ol>
+  </nav>
+</div>
+```
+
+</LiveExample>

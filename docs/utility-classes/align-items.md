@@ -16,15 +16,7 @@ Aligns items along the cross axis of a flex or grid container.
 
 ### Start
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="flex items-start gap-4 h-full">
-  <span class="bg-primary text-primary-foreground flex-1 p-2">1</span>
-  <span class="bg-primary text-primary-foreground flex-1 px-2 pt-2 pb-12">2</span>
-  <span class="bg-primary text-primary-foreground flex-1 p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="flex h-full items-start gap-4">
@@ -34,17 +26,11 @@ Aligns items along the cross axis of a flex or grid container.
 </div>
 ```
 
+</LiveExample>
+
 ### Center
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="flex items-center gap-4 h-full">
-  <span class="bg-primary text-primary-foreground flex-1 p-2">1</span>
-  <span class="bg-primary text-primary-foreground flex-1 px-2 pt-2 pb-12">2</span>
-  <span class="bg-primary text-primary-foreground flex-1 p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="flex h-full items-center gap-4">
@@ -54,17 +40,11 @@ Aligns items along the cross axis of a flex or grid container.
 </div>
 ```
 
+</LiveExample>
+
 ### End
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="flex items-end gap-4 h-full">
-  <span class="bg-primary text-primary-foreground flex-1 p-2">1</span>
-  <span class="bg-primary text-primary-foreground flex-1 px-2 pt-2 pb-12">2</span>
-  <span class="bg-primary text-primary-foreground flex-1 p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="flex h-full items-end gap-4">
@@ -74,17 +54,11 @@ Aligns items along the cross axis of a flex or grid container.
 </div>
 ```
 
+</LiveExample>
+
 ### Baseline
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="flex items-baseline gap-4 h-full">
-  <span class="bg-primary text-primary-foreground flex-1 p-2">1</span>
-  <span class="bg-primary text-primary-foreground flex-1 px-2 pt-2 pb-12">2</span>
-  <span class="bg-primary text-primary-foreground flex-1 p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="flex h-full items-baseline gap-4">
@@ -94,17 +68,11 @@ Aligns items along the cross axis of a flex or grid container.
 </div>
 ```
 
+</LiveExample>
+
 ### Stretch
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="flex items-stretch gap-4 h-full">
-  <span class="bg-primary text-primary-foreground flex-1 p-2">1</span>
-  <span class="bg-primary text-primary-foreground flex-1 px-2 pt-2 pb-12">2</span>
-  <span class="bg-primary text-primary-foreground flex-1 p-2">3</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="flex h-full items-stretch gap-4">
@@ -113,3 +81,5 @@ Aligns items along the cross axis of a flex or grid container.
   <span class="flex-1 bg-primary p-2 text-primary-foreground">3</span>
 </div>
 ```
+
+</LiveExample>

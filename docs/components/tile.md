@@ -48,53 +48,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 
 ### Variants
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<div x-h-tile>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Default variant</div>
-    <p x-h-tile-description>A simple tile with title, description and a single action.</p>
-  </div>
-  <div x-h-tile-actions>
-    <button x-h-button data-size="md" data-variant="outline">Action</button>
-  </div>
-</div>
-
-<div x-h-tile data-variant="outline">
-  <div x-h-tile-content>
-    <div x-h-tile-title>Outline variant</div>
-    <p x-h-tile-description>A simple tile with title, description and a single action.</p>
-  </div>
-  <div x-h-tile-actions>
-    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i x-h-lucide role="img" data-lucide="plus"></i>
-    </button>
-  </div>
-</div>
-
-<div x-h-tile data-variant="muted">
-  <div x-h-tile-content>
-    <div x-h-tile-title>Muted variant</div>
-    <p x-h-tile-description>A simple tile with title, description and a single action.</p>
-  </div>
-  <div x-h-tile-actions>
-    <button x-h-button data-size="md" data-variant="outline">Action</button>
-  </div>
-</div>
-
-<div x-h-tile data-variant="shadow">
-  <div x-h-tile-content>
-    <div x-h-tile-title>Shadow variant</div>
-    <p x-h-tile-description>A simple tile with title, description and a single action.</p>
-  </div>
-  <div x-h-tile-actions>
-    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i x-h-lucide role="img" data-lucide="plus"></i>
-    </button>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 ```html
 <div x-h-tile>
@@ -141,24 +95,12 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### As link
 
-<ClientOnly>
-<component-container>
-<a x-h-tile data-variant="outline" href="#variants">
-  <div x-h-tile-media>
-    <i x-h-lucide role="img" data-lucide="link" class="size-5"></i>
-  </div>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Tile as link</div>
-  </div>
-  <div x-h-tile-actions>
-    <i x-h-lucide role="img" data-lucide="chevron-right" class="size-4"></i>
-  </div>
-</a>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <a x-h-tile data-variant="outline" href="#variants">
@@ -173,51 +115,12 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
 </a>
 ```
+
+</LiveExample>
 
 ### With image or icon
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<div x-h-tile data-variant="outline">
-  <div x-h-tile-media data-variant="icon">
-    <i x-h-lucide role="img" data-lucide="cog" class="size-5"></i>
-  </div>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Account settings updated</div>
-    <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
-  </div>
-  <div x-h-tile-actions>
-    <button x-h-button data-size="md" data-variant="outline">Review</button>
-  </div>
-</div>
-
-<div x-h-tile data-variant="outline">
-  <div x-h-tile-media>
-    <span x-h-avatar class="size-10">
-      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
-      <div x-h-avatar-fallback>HM</div>
-    </span>
-  </div>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Account settings updated</div>
-    <p x-h-tile-description>Some automatic updates have been applied to your settings</p>
-  </div>
-  <div x-h-tile-actions>
-    <button x-h-button data-size="md" data-variant="outline">Review</button>
-  </div>
-</div>
-
-<div x-h-tile data-variant="outline">
-  <div x-h-tile-media data-variant="image">
-    <img src="/logo/harmonia-square.svg" alt="@harmonia" />
-  </div>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Harmonia</div>
-    <p x-h-tile-description>UI component library for Alpine.js</p>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 ```html
 <div x-h-tile data-variant="outline">
@@ -236,7 +139,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media>
     <span x-h-avatar class="size-10">
-      <img x-h-avatar-image src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
     </span>
   </div>
@@ -251,7 +154,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="image">
-    <img src="/logo/harmonia-square.svg" alt="@harmonia" />
+    <img src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Harmonia</div>
@@ -259,48 +162,18 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### In group
 
-<ClientOnly>
-<component-container>
-<div x-h-tile-group class="flex">
-  <div x-h-tile data-variant="outline">
-    <div x-h-tile-header>
-      <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
-    </div>
-    <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia</div>
-      <p x-h-tile-description>UI component library for Alpine.js</p>
-    </div>
-  </div>
-  <div x-h-tile data-variant="outline">
-    <div x-h-tile-header>
-      <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
-    </div>
-    <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia</div>
-      <p x-h-tile-description>UI component library for Alpine.js</p>
-    </div>
-  </div>
-  <div x-h-tile data-variant="outline">
-    <div x-h-tile-header>
-      <img class="w-full aspect-square" src="/logo/harmonia-square.svg" alt="@harmonia" />
-    </div>
-    <div x-h-tile-content>
-      <div x-h-tile-title>Harmonia</div>
-      <p x-h-tile-description>UI component library for Alpine.js</p>
-    </div>
-  </div>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-tile-group class="flex">
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
-      <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img class="aspect-square w-full" src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
       <div x-h-tile-title>Harmonia</div>
@@ -309,7 +182,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
-      <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img class="aspect-square w-full" src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
       <div x-h-tile-title>Harmonia</div>
@@ -318,7 +191,7 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
   <div x-h-tile data-variant="outline">
     <div x-h-tile-header>
-      <img class="aspect-square w-full" src="/logo/harmonia-square.svg" alt="@harmonia" />
+      <img class="aspect-square w-full" src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
     </div>
     <div x-h-tile-content>
       <div x-h-tile-title>Harmonia</div>
@@ -327,34 +200,26 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
   </div>
 </div>
 ```
+
+</LiveExample>
 
 ### Sizes
 
 Use the [tile utility classes](/utility-classes/tile) to control the size of the tile.
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
+<LiveExample data-class="flex flex-col gap-4">
+
+```html
 <div x-h-tile data-variant="outline" class="tile-double-md">Double length medium size custom tile</div>
-</component-container>
-</ClientOnly>
+```
+
+</LiveExample>
 
 ### Selectable
 
 A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbox or radio. Clicking anywhere on the tile toggles the control, and the tile's text becomes the control's accessible name. The outline style is applied automatically, so `data-variant` is ignored on a selectable tile. Do not place buttons, links, or more than one input inside it.
 
-<ClientOnly>
-<component-container data-class="flex flex-col gap-4">
-<label x-h-tile>
-  <span x-h-checkbox>
-    <input type="checkbox" />
-  </span>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Selectable</div>
-    <p x-h-tile-description>Click on the tile to check the checkbox</p>
-  </div>
-</label>
-</component-container>
-</ClientOnly>
+<LiveExample data-class="flex flex-col gap-4">
 
 ```html
 <label x-h-tile>
@@ -367,31 +232,14 @@ A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbo
   </div>
 </label>
 ```
+
+</LiveExample>
 
 #### Checkbox group
 
 Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the group `role="group"` and a name via `aria-label` or `aria-labelledby`; `x-h-tile-group` keeps any `role` you set.
 
-<ClientOnly>
-<component-container>
-<div x-h-tile-group role="group" aria-label="Notifications" class="flex flex-col gap-2">
-  <label x-h-tile>
-    <span x-h-checkbox><input type="checkbox" /></span>
-    <div x-h-tile-content>
-      <div x-h-tile-title>Email</div>
-      <p x-h-tile-description>News and product updates</p>
-    </div>
-  </label>
-  <label x-h-tile>
-    <span x-h-checkbox><input type="checkbox" /></span>
-    <div x-h-tile-content>
-      <div x-h-tile-title>SMS</div>
-      <p x-h-tile-description>Account and security alerts</p>
-    </div>
-  </label>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-tile-group role="group" aria-label="Notifications" class="flex flex-col gap-2">
@@ -411,31 +259,14 @@ Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the
   </label>
 </div>
 ```
+
+</LiveExample>
 
 #### Radio group
 
 For a single choice, give the group `role="radiogroup"` and every radio the same `name`. Only one tile can be selected at a time.
 
-<ClientOnly>
-<component-container>
-<div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
-  <label x-h-tile>
-    <span x-h-radio><input type="radio" name="plan" value="starter" checked /></span>
-    <div x-h-tile-content>
-      <div x-h-tile-title>Starter</div>
-      <p x-h-tile-description>For individuals getting started</p>
-    </div>
-  </label>
-  <label x-h-tile>
-    <span x-h-radio><input type="radio" name="plan" value="pro" /></span>
-    <div x-h-tile-content>
-      <div x-h-tile-title>Pro</div>
-      <p x-h-tile-description>For growing teams</p>
-    </div>
-  </label>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample>
 
 ```html
 <div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
@@ -455,3 +286,5 @@ For a single choice, give the group `role="radiogroup"` and every radio the same
   </label>
 </div>
 ```
+
+</LiveExample>

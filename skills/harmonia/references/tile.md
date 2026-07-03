@@ -45,18 +45,10 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 ## Example
 
 ```html
-<label x-h-tile>
-  <span x-h-checkbox>
-    <input type="checkbox" />
-  </span>
-  <div x-h-tile-content>
-    <div x-h-tile-title>Selectable</div>
-    <p x-h-tile-description>Click on the tile to check the checkbox</p>
-  </div>
-</label>
+<div x-h-tile data-variant="outline" class="tile-double-md">Double length medium size custom tile</div>
 ```
 
-More examples in the docs site: Variants, As link, With image or icon, In group, Checkbox group, Radio group.
+More examples in the docs site: Variants, As link, With image or icon, In group, Selectable, Checkbox group, Radio group.
 
 ## Notes
 

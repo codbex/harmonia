@@ -18,129 +18,85 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 
 ### Start
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-start gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-2 place-content-start gap-4">
+<div class="grid h-full grid-cols-2 place-content-start gap-4" style="grid-template-columns: repeat(2,2rem);">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
   <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Center
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-center gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-2 place-content-center gap-4">
+<div class="grid h-full grid-cols-2 place-content-center gap-4" style="grid-template-columns: repeat(2,2rem);">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
   <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
+
+</LiveExample>
 
 ### End
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-end gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-2 place-content-end gap-4">
+<div class="grid h-full grid-cols-2 place-content-end gap-4" style="grid-template-columns: repeat(2,2rem);">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
   <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Between
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-between gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-2 place-content-between gap-4">
+<div class="grid h-full grid-cols-2 place-content-between gap-4" style="grid-template-columns: repeat(2,2rem);">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
   <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Around
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-around gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-2 place-content-around gap-4">
+<div class="grid h-full grid-cols-2 place-content-around gap-4" style="grid-template-columns: repeat(2,2rem);">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
   <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
+
+</LiveExample>
 
 ### Evenly
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-evenly gap-4 h-full" style="grid-template-columns: repeat(2,2rem);">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
-<div class="grid h-full grid-cols-2 place-content-evenly gap-4">
+<div class="grid h-full grid-cols-2 place-content-evenly gap-4" style="grid-template-columns: repeat(2,2rem);">
   <span class="bg-primary p-2 text-primary-foreground">1</span>
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
@@ -148,18 +104,11 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
 </div>
 ```
 
+</LiveExample>
+
 ### Stretch
 
-<ClientOnly>
-<component-container data-style="height: 18rem">
-<div class="grid grid-cols-2 place-content-stretch gap-4 h-full">
-  <span class="bg-primary text-primary-foreground p-2">1</span>
-  <span class="bg-primary text-primary-foreground p-2">2</span>
-  <span class="bg-primary text-primary-foreground p-2">3</span>
-  <span class="bg-primary text-primary-foreground p-2">4</span>
-</div>
-</component-container>
-</ClientOnly>
+<LiveExample data-style="height: 18rem">
 
 ```html
 <div class="grid h-full grid-cols-2 place-content-stretch gap-4">
@@ -169,3 +118,5 @@ Justifies and aligns content at the same time. Applies to both flex and grid lay
   <span class="bg-primary p-2 text-primary-foreground">4</span>
 </div>
 ```
+
+</LiveExample>
