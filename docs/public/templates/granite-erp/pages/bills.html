@@ -1,0 +1,91 @@
+<div x-data="pageBills" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-center gap-2">
+    <div class="hbox flex-wrap gap-2">
+      <template x-for="option in statuses" :key="option">
+        <button x-h-chip :data-variant="status === option ? 'primary' : 'outline'" @click="status = option" x-text="option"></button>
+      </template>
+    </div>
+    <div class="hbox flex-1 justify-end">
+      <div x-h-select style="max-width: 13rem">
+        <input x-h-select-input aria-label="Filter by vendor" placeholder="All vendors" x-model="vendor" />
+        <div x-h-select-content>
+          <div x-h-select-option="'All vendors'" data-value="all"></div>
+          <template x-for="name in vendorNames" :key="name">
+            <div x-h-select-option="name" :data-value="name"></div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="rows">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Bill</th>
+          <th x-h-table-head scope="col">Vendor</th>
+          <th x-h-table-head scope="col">Category</th>
+          <th x-h-table-head scope="col">Due</th>
+          <th x-h-table-head scope="col">Status</th>
+          <th x-h-table-head scope="col" class="text-right">Amount</th>
+          <th x-h-table-head scope="col" class="text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <template x-for="bill in list" :key="bill.id">
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell class="font-medium" x-text="bill.id"></td>
+            <td x-h-table-cell x-text="bill.vendor"></td>
+            <td x-h-table-cell>
+              <div x-h-tag x-text="bill.category"></div>
+            </td>
+            <td x-h-table-cell :class="bill.status === 'Overdue' && 'text-negative'" x-text="$store.erp.date(bill.due)"></td>
+            <td x-h-table-cell>
+              <span x-h-badge :data-variant="$store.erp.statusVariant(bill.status)" x-text="bill.status"></span>
+            </td>
+            <td x-h-table-cell class="text-right" x-text="$store.erp.money(bill.amount)"></td>
+            <td x-h-table-cell class="text-right">
+              <template x-if="bill.status !== 'Paid'">
+                <button x-h-button data-variant="outline" data-size="sm" @click="payTarget = bill">
+                  <i x-h-lucide role="img" data-lucide="banknote"></i>
+                  Pay
+                </button>
+              </template>
+              <template x-if="bill.status === 'Paid'">
+                <span class="text-sm text-muted-foreground">Settled</span>
+              </template>
+            </td>
+          </tr>
+        </template>
+        <template x-if="!list.length">
+          <tr x-h-table-row>
+            <td x-h-table-cell colspan="7" class="text-center text-muted-foreground">No bills match your filters.</td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <div x-h-alert data-variant="information" x-show="$store.erp.overdueBillCount">
+    <i x-h-lucide role="img" data-lucide="circle-alert"></i>
+    <div x-h-alert-title x-text="$store.erp.overdueBillCount + (($store.erp.overdueBillCount === 1) ? ' bill is overdue' : ' bills are overdue')"></div>
+    <div x-h-alert-description>Paying an overdue bill immediately updates the dashboard and the reports page.</div>
+  </div>
+
+  <!-- Pay confirmation dialog -->
+  <div x-h-dialog-overlay :data-open="!!payTarget" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Pay bill</h2>
+        <p x-h-dialog-description x-text="payTarget ? 'Schedule payment of ' + $store.erp.money(payTarget.amount) + ' to ' + payTarget.vendor + ' for ' + payTarget.id + '?' : ''"></p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="payTarget = null">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="payTarget = null">Cancel</button>
+        <button x-h-button data-variant="primary" @click="confirmPay()">Confirm payment</button>
+      </div>
+    </div>
+  </div>
+</div>

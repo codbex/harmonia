@@ -1,0 +1,126 @@
+<div x-data="pageVendors" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-center gap-2">
+    <div x-h-input-group class="w-full md:w-1/3">
+      <input x-h-input.group placeholder="Search vendors..." aria-label="Search vendors" x-model="search" />
+      <div x-h-input-group-addon data-align="inline-start">
+        <i x-h-lucide role="img" data-lucide="search"></i>
+      </div>
+    </div>
+    <div class="hbox flex-1 justify-end">
+      <button x-h-button data-variant="primary" @click="openAdd()">
+        <i x-h-lucide role="img" data-lucide="plus"></i>
+        Add vendor
+      </button>
+    </div>
+  </div>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="rows">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Vendor</th>
+          <th x-h-table-head scope="col">Category</th>
+          <th x-h-table-head scope="col">Contact</th>
+          <th x-h-table-head scope="col">Rating</th>
+          <th x-h-table-head scope="col" class="text-right">Active</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <template x-for="vendor in list" :key="vendor.id">
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell>
+              <div class="vbox min-w-0">
+                <span class="truncate font-medium" x-text="vendor.name"></span>
+                <span class="truncate text-sm text-muted-foreground" x-text="vendor.city"></span>
+              </div>
+            </td>
+            <td x-h-table-cell>
+              <div x-h-tag x-text="vendor.category"></div>
+            </td>
+            <td x-h-table-cell>
+              <div class="vbox min-w-0">
+                <span class="truncate" x-text="vendor.contact"></span>
+                <span class="truncate text-sm text-muted-foreground" x-text="vendor.email"></span>
+              </div>
+            </td>
+            <td x-h-table-cell>
+              <div x-h-rating data-readonly="true" :data-value="vendor.rating" data-size="sm" :data-label="'Rating for ' + vendor.name"></div>
+            </td>
+            <td x-h-table-cell class="text-right">
+              <div class="flex justify-end">
+                <span x-h-switch>
+                  <input type="checkbox" :checked="vendor.active" :aria-label="'Toggle ' + vendor.name" @change="$store.erp.toggleVendor(vendor.id)" />
+                </span>
+              </div>
+            </td>
+          </tr>
+        </template>
+        <template x-if="!list.length">
+          <tr x-h-table-row>
+            <td x-h-table-cell colspan="5" class="text-center text-muted-foreground">No vendors match your search.</td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add-vendor dialog -->
+  <div x-h-dialog-overlay :data-open="showAdd" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Add vendor</h2>
+        <p x-h-dialog-description>New vendors become available for purchase orders and bills.</p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="showAdd = false">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="add-vendor-form" x-ref="newVendorForm" @submit.prevent="newVendorValid && submitAdd()" @input="newVendorValid = $el.checkValidity()" @change="newVendorValid = $el.checkValidity()">
+        <fieldset x-h-fieldset>
+          <div x-h-field-group class="gap-4!">
+            <div x-h-field>
+              <label x-h-label for="nv-name">Name</label>
+              <input x-h-input id="nv-name" x-h-focus="showAdd" placeholder="Vendor name" required x-model="newVendor.name" />
+              <p x-h-field-error>Name is required.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nv-category">Category</label>
+              <div x-h-select>
+                <input x-h-select-input id="nv-category" placeholder="Select category" required x-model="newVendor.category" />
+                <div x-h-select-content>
+                  <div x-h-select-option="'Logistics'" data-value="Logistics"></div>
+                  <div x-h-select-option="'Software'" data-value="Software"></div>
+                  <div x-h-select-option="'Raw materials'" data-value="Raw materials"></div>
+                  <div x-h-select-option="'Utilities'" data-value="Utilities"></div>
+                  <div x-h-select-option="'Office'" data-value="Office"></div>
+                  <div x-h-select-option="'Marketing'" data-value="Marketing"></div>
+                  <div x-h-select-option="'Facilities'" data-value="Facilities"></div>
+                </div>
+              </div>
+              <p x-h-field-error>Choose a category.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nv-contact">Contact person</label>
+              <input x-h-input id="nv-contact" placeholder="Full name" required x-model="newVendor.contact" />
+              <p x-h-field-error>Contact person is required.</p>
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div x-h-field>
+                <label x-h-label for="nv-email">Billing email</label>
+                <input x-h-input id="nv-email" type="email" placeholder="billing@vendor.example" required x-model="newVendor.email" />
+                <p x-h-field-error>Enter a valid email address.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="nv-city">City</label>
+                <input x-h-input id="nv-city" placeholder="City" x-model="newVendor.city" />
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="showAdd = false">Cancel</button>
+        <button x-h-button data-variant="primary" type="submit" form="add-vendor-form" :disabled="!newVendorValid">Add vendor</button>
+      </div>
+    </div>
+  </div>
+</div>

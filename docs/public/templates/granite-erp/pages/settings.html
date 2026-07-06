@@ -1,0 +1,211 @@
+<div x-data="pageSettings" class="vbox items-center gap-4 p-4">
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Company profile</h3>
+    <p x-h-text.muted>Shown on invoices and other outgoing documents.</p>
+
+    <div x-h-card class="mt-4 w-full">
+      <div x-h-card-content>
+        <fieldset x-h-fieldset>
+          <div x-h-field-group class="gap-4!">
+            <div x-h-field>
+              <label x-h-label for="st-name">Company name</label>
+              <input x-h-input id="st-name" x-model="$store.erp.settings.company.name" />
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div x-h-field>
+                <label x-h-label for="st-email">Billing email</label>
+                <input x-h-input id="st-email" type="email" x-model="$store.erp.settings.company.email" />
+              </div>
+              <div x-h-field>
+                <label x-h-label for="st-taxid">Tax ID</label>
+                <input x-h-input id="st-taxid" x-model="$store.erp.settings.company.taxId" />
+              </div>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="st-address">Address</label>
+              <input x-h-input id="st-address" x-model="$store.erp.settings.company.address" />
+            </div>
+            <div x-h-field>
+              <label x-h-label for="st-about">About</label>
+              <textarea x-h-textarea id="st-about" rows="3" x-model="$store.erp.settings.company.about"></textarea>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div x-h-card-footer class="hbox justify-end">
+        <button x-h-button data-variant="primary" @click="save()">Save changes</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Preferences</h3>
+    <p x-h-text.muted>Formatting defaults applied across every page.</p>
+
+    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+      <ul x-h-list>
+        <li x-h-list-item class="gap-3 px-4 py-3">
+          <div class="vbox flex-1">
+            <p class="text-base font-medium">Currency</p>
+            <p x-h-text.muted>Changes how every amount in the workspace is displayed.</p>
+          </div>
+          <div x-h-select class="flex-1" style="max-width: 11rem">
+            <input x-h-select-input aria-label="Currency" x-model="$store.erp.settings.currency" />
+            <div x-h-select-content>
+              <div x-h-select-option="'USD - US Dollar'" data-value="usd"></div>
+              <div x-h-select-option="'EUR - Euro'" data-value="eur"></div>
+              <div x-h-select-option="'GBP - British Pound'" data-value="gbp"></div>
+            </div>
+          </div>
+        </li>
+        <li x-h-list-item class="gap-3 px-4 py-3">
+          <div class="vbox flex-1">
+            <p class="text-base font-medium">Date format</p>
+            <p x-h-text.muted>Applied to due dates, uploads, and activity entries.</p>
+          </div>
+          <div class="vbox gap-2">
+            <div class="hbox items-center gap-2">
+              <span x-h-radio>
+                <input type="radio" name="dateFormat" id="df-mdy" value="mdy" x-model="$store.erp.settings.dateFormat" />
+              </span>
+              <label class="text-base" for="df-mdy">Jul 3, 2026</label>
+            </div>
+            <div class="hbox items-center gap-2">
+              <span x-h-radio>
+                <input type="radio" name="dateFormat" id="df-dmy" value="dmy" x-model="$store.erp.settings.dateFormat" />
+              </span>
+              <label class="text-base" for="df-dmy">3 Jul 2026</label>
+            </div>
+            <div class="hbox items-center gap-2">
+              <span x-h-radio>
+                <input type="radio" name="dateFormat" id="df-iso" value="iso" x-model="$store.erp.settings.dateFormat" />
+              </span>
+              <label class="text-base" for="df-iso">2026-07-03</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Appearance</h3>
+
+    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+      <ul x-h-list>
+        <li x-h-list-item class="gap-3 px-4 py-3">
+          <div class="vbox w-full">
+            <p class="text-base font-medium">Theme</p>
+            <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
+          </div>
+          <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+            <i x-h-lucide x-show="$store.erp.settings.theme === 'light'" role="img" data-lucide="sun"></i>
+            <span x-show="$store.erp.settings.theme === 'light'">Light</span>
+            <i x-h-lucide x-show="$store.erp.settings.theme === 'dark'" role="img" data-lucide="moon"></i>
+            <span x-show="$store.erp.settings.theme === 'dark'">Dark</span>
+            <i x-h-lucide x-show="$store.erp.settings.theme === 'auto'" role="img" data-lucide="sun-moon"></i>
+            <span x-show="$store.erp.settings.theme === 'auto'">Auto</span>
+            <i x-h-lucide role="img" data-lucide="chevron-down"></i>
+          </button>
+          <ul x-h-menu data-align="bottom-end" aria-label="Theme">
+            <li x-h-menu-item @click="$store.erp.setTheme('light')">
+              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <span>Light</span>
+              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'light'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.erp.setTheme('dark')">
+              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <span>Dark</span>
+              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'dark'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.erp.setTheme('auto')">
+              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <span>Auto</span>
+              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'auto'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Notifications</h3>
+
+    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+      <ul x-h-list>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
+          <label class="w-full text-base font-medium" for="sw-invoice-emails">Invoice emails</label>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-invoice-emails" x-model="$store.erp.settings.notifications.invoiceEmails" />
+          </span>
+        </li>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <svg x-h-icon data-icon="bell" class="size-5" role="presentation"></svg>
+          <div class="vbox w-full">
+            <label class="text-base font-medium" for="sw-approval-alerts">Approval alerts</label>
+            <p x-h-text.muted>Get notified when a request needs your decision.</p>
+          </div>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-approval-alerts" x-model="$store.erp.settings.notifications.approvalAlerts" />
+          </span>
+        </li>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <svg x-h-icon data-icon="calendar" class="size-5" role="presentation"></svg>
+          <label class="w-full text-base font-medium" for="sw-weekly-digest">Weekly digest</label>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-weekly-digest" x-model="$store.erp.settings.notifications.weeklyDigest" />
+          </span>
+        </li>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <i x-h-lucide role="img" data-lucide="package-open" class="size-5"></i>
+          <div class="vbox w-full">
+            <label class="text-base font-medium" for="sw-low-stock">Low stock alerts</label>
+            <p x-h-text.muted>Warn when an item drops below its reorder level.</p>
+          </div>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-low-stock" x-model="$store.erp.settings.notifications.lowStockAlerts" />
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2 pb-4">
+    <h3 x-h-text.h5>Danger zone</h3>
+
+    <div x-h-tile data-variant="shadow" class="mt-4">
+      <div x-h-tile-content>
+        <div x-h-tile-title>Reset demo data</div>
+        <p x-h-tile-description>Restores every invoice, bill, message, and approval to its initial state. Anything you changed in this session will be lost.</p>
+      </div>
+      <div x-h-tile-actions>
+        <button x-h-button data-variant="negative" @click="showReset = true">Reset workspace</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reset confirmation dialog -->
+  <div x-h-dialog-overlay :data-open="showReset" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Reset workspace</h2>
+        <p x-h-dialog-description>All demo data will be restored to its initial state, including settings and the theme preference. Continue?</p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="showReset = false">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="showReset = false">Cancel</button>
+        <button x-h-button data-variant="negative" @click="confirmReset()">Reset everything</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div x-data="pageApprovals" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-center gap-2">
+    <button x-h-chip :data-variant="filter === 'Pending' ? 'primary' : 'outline'" @click="filter = 'Pending'">
+      Pending
+      <span x-show="$store.erp.pendingApprovals.length" x-text="'(' + $store.erp.pendingApprovals.length + ')'"></span>
+    </button>
+    <button x-h-chip :data-variant="filter === 'Resolved' ? 'primary' : 'outline'" @click="filter = 'Resolved'">Resolved</button>
+    <button x-h-chip :data-variant="filter === 'All' ? 'primary' : 'outline'" @click="filter = 'All'">All</button>
+    <div class="flex-1"></div>
+    <span class="text-sm text-muted-foreground">Approving or rejecting updates the dashboard, sidebar badges, and activity feed.</span>
+  </div>
+
+  <template x-for="approval in list" :key="approval.id">
+    <div x-h-card class="py-5!">
+      <div x-h-card-header class="px-4!">
+        <div x-h-card-title class="hbox items-center gap-3">
+          <span x-h-avatar x-text="approval.initials"></span>
+          <div class="vbox min-w-0">
+            <span class="truncate" x-text="approval.title"></span>
+            <span class="text-sm font-normal text-muted-foreground" x-text="approval.requester + ', submitted ' + $store.erp.date(approval.submitted)"></span>
+          </div>
+        </div>
+        <div x-h-card-action class="hbox flex-wrap items-center gap-2">
+          <div x-h-tag x-text="approval.type"></div>
+          <span class="font-medium" x-text="approval.amount ? $store.erp.money(approval.amount) : 'No amount'"></span>
+          <span x-show="approval.status !== 'Pending'" x-h-badge :data-variant="$store.erp.statusVariant(approval.status)" x-text="approval.status"></span>
+          <template x-if="approval.status === 'Pending'">
+            <div class="hbox gap-2">
+              <button x-h-button data-variant="outline" data-size="sm" @click="$store.erp.reject(approval.id)">
+                <i x-h-lucide role="img" data-lucide="x"></i>
+                Reject
+              </button>
+              <button x-h-button data-variant="primary" data-size="sm" @click="$store.erp.approve(approval.id)">
+                <i x-h-lucide role="img" data-lucide="check"></i>
+                Approve
+              </button>
+            </div>
+          </template>
+          <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="(expandedId === approval.id ? 'Collapse ' : 'Expand ') + approval.id" :aria-expanded="expandedId === approval.id" @click="toggle(approval.id)">
+            <i x-h-lucide role="img" :data-lucide="expandedId === approval.id ? 'chevron-up' : 'chevron-down'"></i>
+          </button>
+        </div>
+      </div>
+      <div x-h-card-content x-show="expandedId === approval.id" class="vbox gap-4">
+        <p x-text="approval.note"></p>
+        <div x-h-step-indicator="approval.currentStep">
+          <template x-for="(step, index) in approval.steps" :key="step">
+            <div x-h-step-indicator-item="index + 1">
+              <button x-h-step-indicator-trigger data-non-interactive="true">
+                <span x-h-step-indicator-marker x-text="index + 1"></span>
+              </button>
+              <div x-h-step-indicator-content>
+                <div x-h-step-indicator-title x-text="step"></div>
+              </div>
+              <template x-if="index < approval.steps.length - 1">
+                <div x-h-step-indicator-separator></div>
+              </template>
+            </div>
+          </template>
+        </div>
+        <p class="text-sm text-muted-foreground" x-text="'Reference: ' + approval.id + ', linked to ' + approval.linkedTo + '.'"></p>
+      </div>
+    </div>
+  </template>
+
+  <template x-if="!list.length">
+    <div x-h-info-page class="py-12">
+      <div x-h-info-page-header>
+        <div x-h-info-page-media.icon>
+          <svg x-h-icon data-icon="check" role="presentation"></svg>
+        </div>
+        <div x-h-info-page-title>All caught up</div>
+        <div x-h-info-page-description>There are no requests waiting for your approval.</div>
+      </div>
+      <div x-h-info-page-content>
+        <button x-h-button data-variant="outline" @click="filter = 'All'">Show resolved requests</button>
+      </div>
+    </div>
+  </template>
+</div>

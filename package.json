@@ -48,7 +48,8 @@
     "alpinejs": "^3.15.12",
     "lucide": "^1.20.0",
     "culori": "^4.0.2",
-    "@fontsource/open-sans": "^5.2.7"
+    "@fontsource/open-sans": "^5.2.7",
+    "pinecone-router": "^7.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

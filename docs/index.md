@@ -71,9 +71,77 @@ features:
 
   <div class="template-list">
 
-<TemplateShowcase title="Slate Dashboard" src="/harmonia/templates/slate-dashboard.html">
+<TemplateShowcase title="Slate Dashboard" src="/harmonia/templates/slate-dashboard.html" desc="A single-file analytics dashboard with KPI cards, charts, data tables, and a responsive sidebar.">
 
 <<< @/public/templates/slate-dashboard.html
+
+</TemplateShowcase>
+
+<TemplateShowcase title="Granite ERP" src="/harmonia/templates/granite-erp/index.html" desc="A multi-page ERP app split across one shell, two scripts, and thirteen page fragments, routed client-side with Pinecone Router.">
+
+**index.html**
+
+<<< @/public/templates/granite-erp/index.html
+
+**js/app.js**
+
+<<< @/public/templates/granite-erp/js/app.js
+
+**js/data.js**
+
+<<< @/public/templates/granite-erp/js/data.js
+
+**pages/dashboard.html**
+
+<<< @/public/templates/granite-erp/pages/dashboard.html
+
+**pages/inbox.html**
+
+<<< @/public/templates/granite-erp/pages/inbox.html
+
+**pages/approvals.html**
+
+<<< @/public/templates/granite-erp/pages/approvals.html
+
+**pages/invoices.html**
+
+<<< @/public/templates/granite-erp/pages/invoices.html
+
+**pages/invoice-detail.html**
+
+<<< @/public/templates/granite-erp/pages/invoice-detail.html
+
+**pages/bills.html**
+
+<<< @/public/templates/granite-erp/pages/bills.html
+
+**pages/customers.html**
+
+<<< @/public/templates/granite-erp/pages/customers.html
+
+**pages/vendors.html**
+
+<<< @/public/templates/granite-erp/pages/vendors.html
+
+**pages/inventory.html**
+
+<<< @/public/templates/granite-erp/pages/inventory.html
+
+**pages/documents.html**
+
+<<< @/public/templates/granite-erp/pages/documents.html
+
+**pages/reports.html**
+
+<<< @/public/templates/granite-erp/pages/reports.html
+
+**pages/settings.html**
+
+<<< @/public/templates/granite-erp/pages/settings.html
+
+**pages/not-found.html**
+
+<<< @/public/templates/granite-erp/pages/not-found.html
 
 </TemplateShowcase>
 

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en" class="size-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Granite ERP | Harmonia</title>
+    <!-- Pinecone Router must be evaluated before Alpine starts. -->
+    <script src="/harmonia/lib/node_modules/pinecone-router/dist/router.min.js"></script>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js"></script>
+    <script src="/harmonia/templates/granite-erp/js/data.js"></script>
+    <script src="/harmonia/templates/granite-erp/js/app.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="hbox size-full bg-sidebar" x-data="AppShell" @pinecone:start.document="onRouteStart" @pinecone:end.document="onRouteEnd" @pinecone:fetch-error.document="onFetchError">
+    <div x-h-sheet-overlay="showSidebarSheet">
+      <div x-h-sheet data-align="left" x-ref="sidebarSheet"></div>
+    </div>
+
+    <div x-h-sidebar data-borderless="true" x-ref="sidebar" style="order: 1">
+      <div x-h-sidebar-header data-borderless="true">
+        <div x-h-sidebar-header-item>
+          <span x-h-avatar class="rounded-lg" data-variant="primary">
+            <i x-h-lucide role="img" data-lucide="mountain"></i>
+          </span>
+          <div class="vbox">
+            <span>Granite ERP</span>
+            <span class="text-sm font-normal">Granite Industrial Ltd</span>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-sidebar-content>
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Overview</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="path === '/'" @click="go('/')">
+                  <i x-h-lucide role="img" data-lucide="layout-dashboard"></i>
+                  <span>Dashboard</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/inbox')" @click="go('/inbox')">
+                  <i x-h-lucide role="img" data-lucide="inbox"></i>
+                  <span>Inbox</span>
+                  <span x-h-sidebar-menu-badge x-show="$store.erp.unreadCount" x-text="$store.erp.unreadCount"></span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/approvals')" @click="go('/approvals')">
+                  <i x-h-lucide role="img" data-lucide="stamp"></i>
+                  <span>Approvals</span>
+                  <span x-h-sidebar-menu-badge x-show="$store.erp.pendingApprovals.length" x-text="$store.erp.pendingApprovals.length"></span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Finance</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/invoices')" @click="go('/invoices')">
+                  <i x-h-lucide role="img" data-lucide="receipt-text"></i>
+                  <span>Invoices</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/bills')" @click="go('/bills')">
+                  <i x-h-lucide role="img" data-lucide="wallet"></i>
+                  <span>Bills</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Partners</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/customers')" @click="go('/customers')">
+                  <i x-h-lucide role="img" data-lucide="users"></i>
+                  <span>Customers</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/vendors')" @click="go('/vendors')">
+                  <i x-h-lucide role="img" data-lucide="truck"></i>
+                  <span>Vendors</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Operations</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/inventory')" @click="go('/inventory')">
+                  <i x-h-lucide role="img" data-lucide="boxes"></i>
+                  <span>Inventory</span>
+                  <span x-h-sidebar-menu-badge x-show="$store.erp.lowStockItems.length" x-text="$store.erp.lowStockItems.length"></span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/documents')" @click="go('/documents')">
+                  <i x-h-lucide role="img" data-lucide="folder-open"></i>
+                  <span>Documents</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Insights</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/reports')" @click="go('/reports')">
+                  <i x-h-lucide role="img" data-lucide="chart-line"></i>
+                  <span>Reports</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-sidebar-footer data-borderless="true">
+        <button x-h-sidebar-menu-button :data-active="isActive('/settings')" @click="go('/settings')">
+          <i x-h-lucide role="img" data-lucide="settings"></i>
+          <span>Settings</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-hidden" :class="isSmallScreen || 'p-2'" style="order: 2">
+      <main class="vbox size-full overflow-hidden bg-background" :class="isSmallScreen || 'rounded-xl border shadow-sm'">
+        <div x-h-toolbar data-variant="transparent">
+          <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="Open navigation" @click="showSidebarSheet = true">
+            <i x-h-lucide role="img" data-lucide="menu"></i>
+          </button>
+          <nav x-h-breadcrumb data-overflow="scroll" :data-variant="isSmallScreen ? 'outline' : 'default'">
+            <ol x-h-breadcrumb-list>
+              <li x-h-breadcrumb-item>
+                <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+                <a x-h-breadcrumb-link href="/">Granite</a>
+              </li>
+              <template x-for="crumb in crumbs" :key="crumb.label">
+                <li x-h-breadcrumb-item>
+                  <template x-if="crumb.path">
+                    <a x-h-breadcrumb-link :href="crumb.path" x-text="crumb.label"></a>
+                  </template>
+                  <template x-if="!crumb.path">
+                    <span x-h-breadcrumb-page x-text="crumb.label"></span>
+                  </template>
+                </li>
+              </template>
+            </ol>
+          </nav>
+          <div x-h-toolbar-spacer></div>
+          <div class="hidden w-3xs md:block">
+            <div x-h-input-group>
+              <input x-h-input.group placeholder="Search invoices..." aria-label="Search invoices" x-model="searchQuery" @keydown.enter="globalSearch()" />
+              <div x-h-input-group-addon data-align="inline-start">
+                <i x-h-lucide role="img" data-lucide="search"></i>
+              </div>
+            </div>
+          </div>
+          <button x-h-button data-variant="transparent" data-size="icon" class="relative" aria-label="Notifications" x-h-popover-trigger="notificationListShown">
+            <svg x-h-icon data-icon="bell" role="presentation"></svg>
+            <span x-show="$store.erp.notifications.length" x-h-badge-indicator x-text="$store.erp.notifications.length"></span>
+          </button>
+          <div x-h-popover data-innerclicks="true" class="w-full" data-max-w="lg">
+            <div x-h-toolbar data-size="md">
+              <span x-h-toolbar-title x-text="'Notifications (' + $store.erp.notifications.length + ')'"></span>
+              <div x-h-toolbar-spacer></div>
+              <button x-h-button data-size="md" data-variant="transparent" :disabled="!$store.erp.notifications.length" @click="clearNotifications()"><svg x-h-icon data-icon="trash" role="presentation"></svg>Clear</button>
+            </div>
+            <ol x-h-notification-list>
+              <template x-for="n in $store.erp.notifications" :key="n.id">
+                <li x-h-notification class="hbox" :class="{ 'items-center': !n.action }" :data-unread="n.unread">
+                  <div x-h-notification-media :class="n.media.kind === 'text' ? 'justify-start' : 'w-10'">
+                    <template x-if="n.media.kind === 'text'">
+                      <span x-h-avatar class="size-10" x-text="n.media.text"></span>
+                    </template>
+                    <template x-if="n.media.kind === 'badge'">
+                      <span x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
+                        <svg x-h-icon :data-icon="n.media.icon" role="presentation"></svg>
+                      </span>
+                    </template>
+                    <template x-if="n.media.kind === 'icon'">
+                      <svg x-h-icon :data-icon="n.media.icon" class="size-6" :class="n.media.tone" role="presentation"></svg>
+                    </template>
+                  </div>
+                  <div class="vbox flex-1 gap-1">
+                    <h1 x-h-notification-title x-text="n.title"></h1>
+                    <template x-if="n.description">
+                      <p x-h-notification-description x-text="n.description"></p>
+                    </template>
+                    <template x-if="n.action">
+                      <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+                        <button x-h-button data-variant="primary" data-size="sm" x-text="n.action.label" @click="go(n.action.path)"></button>
+                      </div>
+                    </template>
+                  </div>
+                  <div x-h-notification-actions data-orientation="vertical" :class="{ 'justify-start': n.action }">
+                    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Remove notification" @click="removeNotification(n.id)">
+                      <svg x-h-icon data-icon="close" role="presentation"></svg>
+                    </button>
+                  </div>
+                </li>
+              </template>
+              <template x-if="!$store.erp.notifications.length">
+                <li x-h-info-page>
+                  <div x-h-info-page-header>
+                    <div x-h-info-page-media.icon>
+                      <svg x-h-icon class="size-4" data-icon="check" role="presentation"></svg>
+                    </div>
+                    <div x-h-info-page-title>You're all caught up</div>
+                  </div>
+                </li>
+              </template>
+            </ol>
+          </div>
+          <button x-h-button data-variant="transparent" data-size="icon" aria-label="User menu" x-h-menu-trigger.dropdown>
+            <span x-h-avatar>AS</span>
+          </button>
+          <ul x-h-menu aria-label="User menu" data-align="bottom-end">
+            <div x-h-menu-label>
+              <div class="vbox">
+                <span>Ava Stone</span>
+                <span class="font-normal text-muted-foreground">ava@granite.example</span>
+              </div>
+            </div>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item @click="go('/settings')">
+              <i x-h-lucide role="img" data-lucide="user"></i>
+              <span>Profile and preferences</span>
+            </li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item @click="$store.erp.setTheme('light')">
+              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <span>Light</span>
+              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'light'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.erp.setTheme('dark')">
+              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <span>Dark</span>
+              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'dark'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.erp.setTheme('auto')">
+              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <span>Auto</span>
+              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'auto'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item data-variant="negative" @click="$store.erp.toast('Signed out', 'This is where the demo ends; reload the page to sign back in.', 'information')">
+              <i x-h-lucide role="img" data-lucide="log-out"></i>
+              <span>Sign out</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="relative">
+          <div class="absolute top-0 left-0 w-full" x-show="routeLoading" style="display: none; z-index: 20">
+            <div x-h-progress="0" data-loading="true" aria-label="Loading page"></div>
+          </div>
+        </div>
+
+        <div class="flex-1 overflow-auto" x-ref="pageScroll">
+          <!-- Pages own their padding; the outlet is full height so full-bleed pages like the inbox can fill it. -->
+          <div id="page-outlet" class="h-full"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast overlay: the single x-h-notification-overlay for the whole app.
+         The erp store renders toasts through the "toast" template below. -->
+    <section x-h-notification-overlay>
+      <template id="toast">
+        <li x-h-notification.floating class="hbox" :class="{ 'items-center': !description }">
+          <div x-h-notification-media class="w-10">
+            <span x-h-avatar class="rounded-lg" :data-variant="variant">
+              <svg x-h-icon :data-icon="icon" role="presentation"></svg>
+            </span>
+          </div>
+          <div class="vbox flex-1 gap-1">
+            <h1 x-h-notification-title x-text="title"></h1>
+            <template x-if="description">
+              <p x-h-notification-description x-text="description"></p>
+            </template>
+          </div>
+          <div x-h-notification-actions data-orientation="vertical" :class="{ 'justify-start': description }">
+            <button x-h-button x-h-notification-close data-variant="transparent" data-size="icon-sm" aria-label="Dismiss notification">
+              <svg x-h-icon data-icon="close" role="presentation"></svg>
+            </button>
+          </div>
+        </li>
+      </template>
+    </section>
+
+    <!-- Routes: every page is a separate fragment fetched on demand and
+         rendered into #page-outlet (see targetID in js/app.js). -->
+    <template x-route="/" x-template="/harmonia/templates/granite-erp/pages/dashboard.html"></template>
+    <template x-route="/inbox" x-template="/harmonia/templates/granite-erp/pages/inbox.html"></template>
+    <template x-route="/approvals" x-template="/harmonia/templates/granite-erp/pages/approvals.html"></template>
+    <template x-route="/invoices" x-template="/harmonia/templates/granite-erp/pages/invoices.html"></template>
+    <template x-route="/invoices/:id" x-template="/harmonia/templates/granite-erp/pages/invoice-detail.html"></template>
+    <template x-route="/bills" x-template="/harmonia/templates/granite-erp/pages/bills.html"></template>
+    <template x-route="/customers" x-template="/harmonia/templates/granite-erp/pages/customers.html"></template>
+    <template x-route="/vendors" x-template="/harmonia/templates/granite-erp/pages/vendors.html"></template>
+    <template x-route="/inventory" x-template="/harmonia/templates/granite-erp/pages/inventory.html"></template>
+    <template x-route="/documents" x-template="/harmonia/templates/granite-erp/pages/documents.html"></template>
+    <template x-route="/reports" x-template="/harmonia/templates/granite-erp/pages/reports.html"></template>
+    <template x-route="/settings" x-template="/harmonia/templates/granite-erp/pages/settings.html"></template>
+    <template x-route="notfound" x-handler="notFound" x-template="/harmonia/templates/granite-erp/pages/not-found.html"></template>
+  </body>
+</html>

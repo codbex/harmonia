@@ -1,0 +1,186 @@
+<div x-data="pageInvoices" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-center gap-2">
+    <div x-h-input-group class="w-full md:w-1/3">
+      <input x-h-input.group placeholder="Search by number or customer..." aria-label="Search invoices" x-model="search" @input="page = 1" />
+      <div x-h-input-group-addon data-align="inline-start">
+        <i x-h-lucide role="img" data-lucide="search"></i>
+      </div>
+    </div>
+    <div class="hbox flex-1 flex-wrap items-center justify-between gap-2">
+      <div class="hbox flex-wrap gap-2">
+        <template x-for="option in statuses" :key="option">
+          <button x-h-chip :data-variant="status === option ? 'primary' : 'outline'" @click="status = option; page = 1" x-text="option"></button>
+        </template>
+      </div>
+      <button x-h-button data-variant="primary" @click="openNew()">
+        <i x-h-lucide role="img" data-lucide="plus"></i>
+        New invoice
+      </button>
+    </div>
+  </div>
+
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="rows">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col" :aria-sort="ariaSort('id')">
+            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('id')">
+              Invoice
+              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'id' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+            </button>
+          </th>
+          <th x-h-table-head scope="col" :aria-sort="ariaSort('customer')">
+            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('customer')">
+              Customer
+              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'customer' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+            </button>
+          </th>
+          <th x-h-table-head scope="col" :aria-sort="ariaSort('issued')">
+            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('issued')">
+              Issued
+              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'issued' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+            </button>
+          </th>
+          <th x-h-table-head scope="col" :aria-sort="ariaSort('due')">
+            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('due')">
+              Due
+              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'due' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+            </button>
+          </th>
+          <th x-h-table-head scope="col">Status</th>
+          <th x-h-table-head scope="col" class="text-right" :aria-sort="ariaSort('amount')">
+            <button class="hbox w-full cursor-pointer items-center justify-end gap-1" @click="sortBy('amount')">
+              Amount
+              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'amount' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+            </button>
+          </th>
+          <th x-h-table-head scope="col" class="w-12"><span class="sr-only">Open</span></th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <template x-for="invoice in paged" :key="invoice.id">
+          <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="$event.target.closest('a, button') || $router.navigate('/invoices/' + invoice.id)">
+            <td x-h-table-cell class="font-medium" x-text="invoice.id"></td>
+            <td x-h-table-cell x-text="invoice.customer"></td>
+            <td x-h-table-cell x-text="$store.erp.date(invoice.issued)"></td>
+            <td x-h-table-cell :class="invoice.status === 'Overdue' && 'text-negative'" x-text="$store.erp.date(invoice.due)"></td>
+            <td x-h-table-cell>
+              <span x-h-badge :data-variant="$store.erp.statusVariant(invoice.status)" x-text="invoice.status"></span>
+            </td>
+            <td x-h-table-cell class="text-right" x-text="$store.erp.money(invoice.amount)"></td>
+            <td x-h-table-cell class="text-right">
+              <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links.
+                   No stopPropagation here: the router's click listener lives on the body,
+                   so stopping the event would turn this into a full page load. -->
+              <a x-h-button data-variant="transparent" data-size="icon-sm" :href="'/invoices/' + invoice.id" :aria-label="'Open ' + invoice.id">
+                <i x-h-lucide role="img" data-lucide="arrow-right"></i>
+              </a>
+            </td>
+          </tr>
+        </template>
+        <template x-if="!paged.length">
+          <tr x-h-table-row>
+            <td x-h-table-cell colspan="7" class="text-center text-muted-foreground">No invoices match your filters.</td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="hbox flex-wrap items-center justify-between gap-2">
+    <span class="text-sm text-muted-foreground" x-text="sorted.length + ' of ' + $store.erp.invoices.length + ' invoices'"></span>
+    <nav x-h-pagination class="w-fit">
+      <ul x-h-pagination-content>
+        <li x-h-pagination-item>
+          <a x-h-pagination-link.previous href="#" @click.prevent="page = Math.max(1, page - 1)">
+            <i x-h-lucide role="img" data-lucide="chevron-left"></i>
+            <span x-h-pagination-link-label>Previous</span>
+          </a>
+        </li>
+        <template x-for="p in pageCount" :key="p">
+          <li x-h-pagination-item>
+            <a x-h-pagination-link="page === p" href="#" @click.prevent="page = p" x-text="p"></a>
+          </li>
+        </template>
+        <li x-h-pagination-item>
+          <a x-h-pagination-link.next href="#" @click.prevent="page = Math.min(pageCount, page + 1)">
+            <span x-h-pagination-link-label>Next</span>
+            <i x-h-lucide role="img" data-lucide="chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- New invoice sheet -->
+  <div x-h-sheet-overlay="showNew">
+    <div x-h-sheet data-align="right">
+      <div class="vbox size-full w-sm gap-4 overflow-auto p-4" style="max-width: 100%">
+        <div class="hbox items-center justify-between gap-2">
+          <div class="vbox">
+            <h3 x-h-text.h5>New invoice</h3>
+            <p x-h-text.muted>Drafts can be sent later from the invoice page.</p>
+          </div>
+          <button x-h-button data-variant="transparent" data-size="icon" aria-label="Close new invoice panel" @click="showNew = false">
+            <i x-h-lucide role="img" data-lucide="x"></i>
+          </button>
+        </div>
+        <form id="new-invoice-form" x-ref="newInvoiceForm" @submit.prevent="newInvoiceValid && submitNew(true)" @input="newInvoiceValid = $el.checkValidity()" @change="newInvoiceValid = $el.checkValidity()">
+          <fieldset x-h-fieldset>
+            <div x-h-field-group class="gap-4!">
+              <div x-h-field>
+                <label x-h-label for="ni-customer">Customer</label>
+                <div x-h-select>
+                  <input x-h-select-input id="ni-customer" placeholder="Select customer" required x-model="newInvoice.customer" />
+                  <div x-h-select-content>
+                    <template x-for="customer in $store.erp.customers" :key="customer.id">
+                      <div x-h-select-option="customer.name" :data-value="customer.name"></div>
+                    </template>
+                  </div>
+                </div>
+                <p x-h-field-error>Choose a customer.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="ni-due">Due date</label>
+                <div x-h-date-picker>
+                  <input type="text" id="ni-due" required />
+                  <button x-h-date-picker-trigger aria-label="Choose due date"></button>
+                  <div x-h-date-picker-popup="{ min: '2026-07-03' }" x-model="newInvoice.due"></div>
+                </div>
+                <p x-h-field-error>Pick a due date.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="ni-description">Line item</label>
+                <input x-h-input id="ni-description" placeholder="What is being invoiced?" required x-model="newInvoice.description" />
+                <p x-h-field-error>Describe the line item.</p>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div x-h-field>
+                  <label x-h-label for="ni-qty">Quantity</label>
+                  <div x-h-input-number>
+                    <input type="number" id="ni-qty" min="1" step="1" required x-model="newInvoice.qty" />
+                  </div>
+                </div>
+                <div x-h-field>
+                  <label x-h-label for="ni-price">Unit price</label>
+                  <div x-h-input-number>
+                    <input type="number" id="ni-price" min="0" step="0.01" required placeholder="0.00" x-model="newInvoice.unitPrice" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div class="hbox items-center justify-between border-t pt-3">
+          <span class="text-sm text-muted-foreground">Total including 10% tax</span>
+          <span class="font-medium" x-text="$store.erp.money(newInvoiceTotal)"></span>
+        </div>
+        <div class="hbox justify-end gap-2">
+          <button x-h-button data-variant="outline" @click="showNew = false">Cancel</button>
+          <button x-h-button data-variant="outline" :disabled="!newInvoiceValid" @click="submitNew(false)">Save draft</button>
+          <button x-h-button data-variant="primary" type="submit" form="new-invoice-form" :disabled="!newInvoiceValid">Create and send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

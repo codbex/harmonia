@@ -1,0 +1,135 @@
+<div x-data="pageInventory" class="size-full">
+  <!-- Below the lg breakpoint the data-hidden bindings turn the split into a
+       master-detail flow: the stock table and the warehouse tree take turns. -->
+  <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border" data-key="granite-erp-inventory-split">
+    <div x-h-split-panel data-size="25%" data-min="15%" :data-hidden="isCompact && !treeOpen">
+      <div class="vbox size-full min-w-0">
+        <div x-h-toolbar data-size="md">
+          <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to stock list" @click="treeOpen = false">
+            <i x-h-lucide role="img" data-lucide="arrow-left"></i>
+          </button>
+          <div x-h-toolbar-title>Warehouses</div>
+        </div>
+        <div class="flex-1 overflow-auto p-2">
+          <ul x-h-tree>
+            <li x-h-tree-item>
+              <button x-h-tree-button @click="pick(null)">
+                <i x-h-lucide role="img" data-lucide="warehouse"></i>
+                <span>All warehouses</span>
+              </button>
+            </li>
+            <template x-for="node in tree" :key="node.name">
+              <li x-h-tree-item.expanded="true">
+                <button x-h-tree-button :data-indicator="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'negative' : 'positive'" @click="pick(node.name)">
+                  <i x-h-lucide role="img" data-lucide="warehouse"></i>
+                  <span x-text="node.name"></span>
+                </button>
+                <ul x-h-tree.sub data-border="true">
+                  <template x-for="categoryName in node.categories" :key="categoryName">
+                    <li x-h-tree-item>
+                      <button x-h-tree-button @click="pick(node.name, categoryName)">
+                        <i x-h-lucide role="img" data-lucide="box"></i>
+                        <span x-text="categoryName"></span>
+                      </button>
+                    </li>
+                  </template>
+                </ul>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div x-h-split-panel data-min="40%" :data-hidden="isCompact && treeOpen">
+      <div class="vbox size-full min-w-0">
+        <div x-h-toolbar data-size="md">
+          <div x-h-toolbar-title>Stock levels</div>
+          <span class="text-sm text-nowrap text-muted-foreground" x-text="list.length + (list.length === 1 ? ' item' : ' items')"></span>
+          <div x-h-toolbar-spacer></div>
+          <button x-show="warehouse" x-h-chip data-variant="outline" @click="pick(null)">
+            <span x-text="filterLabel"></span>
+            <span x-h-chip-close aria-label="Clear warehouse filter"></span>
+          </button>
+          <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Filter by warehouse" @click="treeOpen = true">
+            <i x-h-lucide role="img" data-lucide="list-tree"></i>
+          </button>
+        </div>
+        <div x-h-table-container.scroll class="flex-1">
+          <table x-h-table data-borders="rows">
+            <thead x-h-table-header>
+              <tr x-h-table-row>
+                <th x-h-table-head scope="col">SKU</th>
+                <th x-h-table-head scope="col">Item</th>
+                <th x-h-table-head scope="col">Stock</th>
+                <th x-h-table-head scope="col">Status</th>
+                <th x-h-table-head scope="col" class="text-right">Unit price</th>
+                <th x-h-table-head scope="col" class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody x-h-table-body>
+              <template x-for="item in list" :key="item.sku">
+                <tr x-h-table-row data-hoverable="true">
+                  <td x-h-table-cell class="font-medium" x-text="item.sku"></td>
+                  <td x-h-table-cell>
+                    <div class="vbox min-w-0">
+                      <span class="truncate" x-text="item.name"></span>
+                      <span class="truncate text-sm text-muted-foreground" x-text="item.warehouse + ' / ' + item.category"></span>
+                    </div>
+                  </td>
+                  <td x-h-table-cell>
+                    <div class="hbox items-center gap-2">
+                      <div x-h-progress="stockPercent(item)" :data-variant="stockVariant(item)" class="flex-1" style="min-width: 5rem" :aria-label="'Stock level for ' + item.name"></div>
+                      <span class="text-sm text-nowrap text-muted-foreground" x-text="item.stock + ' pcs'"></span>
+                    </div>
+                  </td>
+                  <td x-h-table-cell>
+                    <span x-h-badge :data-variant="item.stock <= item.reorderLevel ? 'negative' : 'positive'" x-text="item.stock <= item.reorderLevel ? 'Low stock' : 'In stock'"></span>
+                  </td>
+                  <td x-h-table-cell class="text-right" x-text="$store.erp.money(item.unitPrice)"></td>
+                  <td x-h-table-cell class="text-right">
+                    <button x-h-button data-variant="outline" data-size="sm" @click="askRestock(item)">
+                      <i x-h-lucide role="img" data-lucide="package-plus"></i>
+                      Restock
+                    </button>
+                  </td>
+                </tr>
+              </template>
+              <template x-if="!list.length">
+                <tr x-h-table-row>
+                  <td x-h-table-cell colspan="6" class="text-center text-muted-foreground">No items in this warehouse or category.</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restock dialog -->
+  <div x-h-dialog-overlay :data-open="!!restockTarget" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Restock item</h2>
+        <p
+          x-h-dialog-description
+          x-text="restockTarget ? 'Order more ' + restockTarget.name + ' for the ' + restockTarget.warehouse + ' warehouse. Current stock: ' + restockTarget.stock + ' pcs, reorder level: ' + restockTarget.reorderLevel + ' pcs.' : ''"
+        ></p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="restockTarget = null">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <div x-h-field>
+        <label x-h-label for="restock-qty">Quantity to add</label>
+        <div x-h-input-number>
+          <input type="number" id="restock-qty" min="1" step="1" x-model="restockQty" />
+        </div>
+      </div>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="restockTarget = null">Cancel</button>
+        <button x-h-button data-variant="primary" :disabled="!Number(restockQty)" @click="confirmRestock()">Order restock</button>
+      </div>
+    </div>
+  </div>
+</div>

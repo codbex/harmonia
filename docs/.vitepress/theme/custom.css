@@ -179,6 +179,20 @@ h6:has(+ component-container) {
   line-height: 1.4;
 }
 
+.template-card-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.template-card .template-card-desc {
+  margin: 0;
+  font-size: 0.813rem;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+}
+
 .template-card-actions {
   display: flex;
   gap: 0.75rem;
@@ -255,10 +269,52 @@ h6:has(+ component-container) {
 }
 
 .template-code {
+  display: flex;
+  flex-direction: column;
   height: 648px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 12px;
   overflow: hidden;
+}
+
+/* File switcher shown when the slot labels its code blocks with `**name**` paragraphs. */
+.template-files {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+}
+
+.template-files button {
+  padding: 0.125rem 0.625rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  color: var(--vp-c-text-2);
+  background: transparent;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.template-files button:hover {
+  color: var(--vp-c-text-1);
+}
+
+.template-files button.active {
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  border-color: var(--vp-c-divider);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.template-code-blocks {
+  flex: 1;
+  min-height: 0;
 }
 
 /* Make the build-time highlighted code block fill the fixed-height panel. */
@@ -266,6 +322,10 @@ h6:has(+ component-container) {
   height: 100%;
   margin: 0 !important;
   border-radius: 12px;
+}
+
+.template-code.has-files [class*="language-"] {
+  border-radius: 0;
 }
 
 .template-code [class*="language-"] pre {

@@ -1,0 +1,92 @@
+<div x-data="pageInbox" class="size-full">
+  <!-- Below the lg breakpoint the data-hidden bindings turn the split into a
+       master-detail flow: the list and the reading pane take turns. -->
+  <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border" data-key="granite-erp-inbox-split">
+    <div x-h-split-panel data-size="35%" data-min="20%" :data-hidden="isCompact && !!selectedId">
+      <div class="vbox size-full min-w-0">
+        <div x-h-toolbar data-size="md">
+          <button x-h-chip :data-variant="filter === 'all' ? 'primary' : 'outline'" @click="filter = 'all'">All</button>
+          <button x-h-chip :data-variant="filter === 'unread' ? 'primary' : 'outline'" @click="filter = 'unread'">
+            Unread
+            <span x-show="$store.erp.unreadCount" x-text="'(' + $store.erp.unreadCount + ')'"></span>
+          </button>
+          <div x-h-toolbar-spacer></div>
+          <button x-h-button data-variant="transparent" data-size="icon" aria-label="Mark all as read" :disabled="!$store.erp.unreadCount" @click="$store.erp.markAllRead()">
+            <i x-h-lucide role="img" data-lucide="mail-check"></i>
+          </button>
+        </div>
+        <ul x-h-list class="flex-1 overflow-auto">
+          <template x-for="message in list" :key="message.id">
+            <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" :class="selectedId === message.id && 'bg-muted'" @click="open(message.id)">
+              <span x-h-avatar x-text="message.initials"></span>
+              <div class="vbox min-w-0 flex-1">
+                <div class="hbox items-baseline justify-between gap-2">
+                  <span class="truncate" :class="message.unread ? 'font-semibold' : 'font-medium'" x-text="message.from"></span>
+                  <span class="text-sm text-nowrap text-muted-foreground" x-text="message.date.slice(5, 10)"></span>
+                </div>
+                <span class="truncate text-sm" :class="message.unread && 'font-medium'" x-text="message.subject"></span>
+                <span class="truncate text-sm text-muted-foreground" x-text="message.preview"></span>
+              </div>
+              <span x-show="message.unread" x-h-badge data-variant="primary" aria-label="Unread">New</span>
+            </li>
+          </template>
+          <template x-if="!list.length">
+            <li x-h-info-page class="py-6">
+              <div x-h-info-page-header>
+                <div x-h-info-page-media.icon>
+                  <svg x-h-icon class="size-4" data-icon="check" role="presentation"></svg>
+                </div>
+                <div x-h-info-page-title>No unread messages</div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <div x-h-split-panel data-min="40%" :data-hidden="isCompact && !selectedId">
+      <template x-if="selected">
+        <div class="vbox size-full min-w-0">
+          <div class="hbox items-start gap-3 border-b" :class="isCompact ? 'p-2' : 'p-4'">
+            <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to message list" @click="selectedId = null">
+              <i x-h-lucide role="img" data-lucide="arrow-left"></i>
+            </button>
+            <span x-h-avatar x-text="selected.initials"></span>
+            <div class="vbox min-w-0 flex-1">
+              <span class="text-lg font-semibold" x-text="selected.subject"></span>
+              <div class="text-sm text-muted-foreground" x-text="selected.from + ', ' + selected.date"></div>
+            </div>
+            <div class="hbox gap-2">
+              <button x-h-button data-variant="outline" data-size="sm" @click="$store.erp.toast('Reply sent', 'Your reply to ' + selected.from + ' is on its way.', 'positive')">
+                <i x-h-lucide role="img" data-lucide="reply"></i>
+                Reply
+              </button>
+              <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Archive message" @click="archive(selected.id)">
+                <i x-h-lucide role="img" data-lucide="archive"></i>
+              </button>
+            </div>
+          </div>
+          <div class="vbox flex-1 gap-3 overflow-auto p-4">
+            <template x-for="paragraph in selected.body">
+              <p x-text="paragraph"></p>
+            </template>
+          </div>
+          <div class="border-t p-4 text-sm text-muted-foreground">This is demo content; replies and archiving only affect this browser session.</div>
+        </div>
+      </template>
+      <template x-if="!selected">
+        <div class="hbox size-full items-center justify-center p-4">
+          <div x-h-info-page>
+            <div x-h-info-page-header>
+              <div x-h-info-page-media.icon>
+                <i x-h-lucide role="img" data-lucide="inbox"></i>
+              </div>
+              <div x-h-info-page-title>Select a message</div>
+              <div x-h-info-page-description>Choose a message from the list to read it here.</div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>

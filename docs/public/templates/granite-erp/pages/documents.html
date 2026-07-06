@@ -1,0 +1,104 @@
+<div x-data="pageDocuments" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-center gap-2">
+    <div class="w-full md:w-1/2">
+      <div x-h-input-group x-h-file-upload data-placeholder="Upload documents...">
+        <input type="file" multiple aria-label="Upload documents" @change="upload($event)" />
+        <div x-h-input-group-addon data-align="inline-start">
+          <div x-h-tag-group></div>
+        </div>
+        <div x-h-input-group-addon data-align="inline-end">
+          <button type="button" x-h-button.addon>Browse</button>
+        </div>
+      </div>
+    </div>
+    <div class="hbox flex-1 justify-end">
+      <button x-h-button data-variant="outline" :disabled="scanning" @click="scan()">
+        <i x-h-lucide role="img" data-lucide="scan-search"></i>
+        <span x-text="scanning ? 'Scanning...' : 'Scan library'"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="hbox flex-wrap gap-2">
+    <button x-h-chip :data-variant="type === 'all' ? 'primary' : 'outline'" @click="type = 'all'">All types</button>
+    <template x-for="option in types" :key="option">
+      <button x-h-chip :data-variant="type === option ? 'primary' : 'outline'" @click="type = option" x-text="option"></button>
+    </template>
+  </div>
+
+  <template x-if="scanning">
+    <div class="vbox gap-2" aria-label="Scanning documents">
+      <div x-h-skeleton class="h-10 w-full"></div>
+      <div x-h-skeleton class="h-10 w-full"></div>
+      <div x-h-skeleton class="h-10 w-9/10"></div>
+      <div x-h-skeleton class="h-10 w-3/4"></div>
+    </div>
+  </template>
+
+  <template x-if="!scanning">
+    <div x-h-table-container data-border="true">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Document</th>
+            <th x-h-table-head scope="col">Type</th>
+            <th x-h-table-head scope="col">Linked to</th>
+            <th x-h-table-head scope="col" class="text-right">Size</th>
+            <th x-h-table-head scope="col" class="text-right">Uploaded</th>
+            <th x-h-table-head scope="col" class="w-12"><span class="sr-only">Delete</span></th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <template x-for="doc in list" :key="doc.id">
+            <tr x-h-table-row data-hoverable="true">
+              <td x-h-table-cell>
+                <div class="hbox min-w-0 items-center gap-3">
+                  <i x-h-lucide role="img" :data-lucide="typeIcon(doc.type)" class="text-muted-foreground"></i>
+                  <div class="vbox min-w-0">
+                    <span class="truncate font-medium" x-text="doc.name"></span>
+                    <div class="hbox gap-1">
+                      <template x-for="tag in doc.tags" :key="tag">
+                        <div x-h-tag x-text="tag"></div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td x-h-table-cell x-text="doc.type"></td>
+              <td x-h-table-cell x-text="doc.linkedTo"></td>
+              <td x-h-table-cell class="text-right" x-text="doc.size"></td>
+              <td x-h-table-cell class="text-right" x-text="$store.erp.date(doc.uploaded)"></td>
+              <td x-h-table-cell class="text-right">
+                <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Delete ' + doc.name" @click="removeTarget = doc">
+                  <svg x-h-icon data-icon="trash" role="presentation"></svg>
+                </button>
+              </td>
+            </tr>
+          </template>
+          <template x-if="!list.length">
+            <tr x-h-table-row>
+              <td x-h-table-cell colspan="6" class="text-center text-muted-foreground">No documents of this type.</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </template>
+
+  <!-- Delete confirmation dialog -->
+  <div x-h-dialog-overlay :data-open="!!removeTarget" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Delete document</h2>
+        <p x-h-dialog-description x-text="removeTarget ? 'Remove ' + removeTarget.name + ' from the library? This cannot be undone.' : ''"></p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="removeTarget = null">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="removeTarget = null">Cancel</button>
+        <button x-h-button data-variant="negative" @click="confirmRemove()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

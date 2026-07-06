@@ -1,0 +1,107 @@
+<div x-data="pageDashboard" class="vbox gap-4 p-4">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <template x-for="kpi in kpis" :key="kpi.label">
+      <div x-h-card>
+        <div x-h-card-header>
+          <div x-h-card-description x-text="kpi.label"></div>
+          <div x-h-card-title class="text-2xl" x-text="kpi.value"></div>
+          <div x-h-card-action>
+            <span x-h-avatar class="rounded-lg" data-variant="primary">
+              <i x-h-lucide role="img" :data-lucide="kpi.icon"></i>
+            </span>
+          </div>
+        </div>
+        <div class="flex-1" aria-hidden="true"></div>
+        <div x-h-card-footer class="text-sm text-muted-foreground" x-text="kpi.hint"></div>
+      </div>
+    </template>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div x-h-card class="lg:col-span-2">
+      <div x-h-card-header>
+        <div x-h-card-title>Revenue and expenses</div>
+        <div x-h-card-description>Monthly totals in thousands of dollars</div>
+        <div x-h-card-action>
+          <div x-h-select data-size="sm" style="width: 9rem">
+            <input x-h-select-input aria-label="Chart period" x-model="period" />
+            <div x-h-select-content>
+              <div x-h-select-option="'Last 6 months'" data-value="6m"></div>
+              <div x-h-select-option="'Last 12 months'" data-value="12m"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div x-h-card-content>
+        <div style="height: 18rem" x-h-chart-line="revenueChart" aria-label="Monthly revenue and expenses"></div>
+      </div>
+    </div>
+    <div x-h-card>
+      <div x-h-card-header>
+        <div x-h-card-title>Spend by category</div>
+        <div x-h-card-description>Share of vendor bills this quarter</div>
+      </div>
+      <div x-h-card-content class="hbox items-center justify-center">
+        <div class="aspect-square w-full" style="max-height: 18rem" x-h-chart-doughnut="spendChart" aria-label="Spend by category"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div x-h-card class="lg:col-span-2">
+      <div x-h-card-header>
+        <div x-h-card-title>Recent invoices</div>
+        <div x-h-card-description>The five most recent invoices</div>
+        <div x-h-card-action>
+          <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+          <a x-h-button data-variant="outline" data-size="sm" href="/invoices">View all</a>
+        </div>
+      </div>
+      <div x-h-card-content>
+        <div x-h-table-container>
+          <table x-h-table>
+            <thead x-h-table-header>
+              <tr x-h-table-row>
+                <th x-h-table-head scope="col">Invoice</th>
+                <th x-h-table-head scope="col">Customer</th>
+                <th x-h-table-head scope="col">Status</th>
+                <th x-h-table-head scope="col" class="text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody x-h-table-body>
+              <template x-for="invoice in recentInvoices" :key="invoice.id">
+                <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="$router.navigate('/invoices/' + invoice.id)">
+                  <td x-h-table-cell class="font-medium" x-text="invoice.id"></td>
+                  <td x-h-table-cell x-text="invoice.customer"></td>
+                  <td x-h-table-cell>
+                    <span x-h-badge :data-variant="$store.erp.statusVariant(invoice.status)" x-text="invoice.status"></span>
+                  </td>
+                  <td x-h-table-cell class="text-right" x-text="$store.erp.money(invoice.amount)"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div x-h-card>
+      <div x-h-card-header>
+        <div x-h-card-title>Activity</div>
+        <div x-h-card-description>What happened across the workspace</div>
+      </div>
+      <div x-h-card-content>
+        <ul x-h-list>
+          <template x-for="entry in $store.erp.activity.slice(0, 6)" :key="entry.id">
+            <li x-h-list-item class="items-start gap-3 py-2">
+              <i x-h-lucide role="img" :data-lucide="entry.icon" class="text-muted-foreground"></i>
+              <div class="vbox min-w-0 flex-1">
+                <span class="text-sm" x-text="entry.text"></span>
+                <span class="text-sm text-muted-foreground" x-text="entry.time"></span>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

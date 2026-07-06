@@ -1,0 +1,73 @@
+<div x-data="pageReports" class="vbox gap-4 p-4">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <template x-for="stat in stats" :key="stat.label">
+      <div x-h-card>
+        <div x-h-card-header>
+          <div x-h-card-description x-text="stat.label"></div>
+          <div x-h-card-title class="text-2xl" x-text="stat.value"></div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div x-h-card>
+    <div x-h-card-content>
+      <div x-h-tabs data-orientation="horizontal">
+        <div class="hbox flex-wrap items-center justify-between gap-2">
+          <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
+            <div x-h-tab-list>
+              <button id="rp-tab-revenue" x-h-tab aria-controls="rp-panel-revenue" :aria-selected="tab === 'revenue'" @click="tab = 'revenue'">
+                <i x-h-lucide role="img" data-lucide="chart-column"></i>
+                Revenue
+              </button>
+              <button id="rp-tab-cashflow" x-h-tab aria-controls="rp-panel-cashflow" :aria-selected="tab === 'cashflow'" @click="tab = 'cashflow'">
+                <i x-h-lucide role="img" data-lucide="chart-line"></i>
+                Cash flow
+              </button>
+              <button id="rp-tab-receivables" x-h-tab aria-controls="rp-panel-receivables" :aria-selected="tab === 'receivables'" @click="tab = 'receivables'">
+                <i x-h-lucide role="img" data-lucide="chart-pie"></i>
+                Receivables
+              </button>
+            </div>
+          </div>
+          <div class="hbox items-center gap-2">
+            <div x-h-select data-size="sm" style="width: 9rem" x-show="tab === 'revenue'">
+              <input x-h-select-input aria-label="Report range" x-model="range" />
+              <div x-h-select-content>
+                <div x-h-select-option="'Last 6 months'" data-value="6m"></div>
+                <div x-h-select-option="'Last 12 months'" data-value="12m"></div>
+              </div>
+            </div>
+            <button x-h-button data-variant="outline" data-size="sm" @click="exportReport()">
+              <i x-h-lucide role="img" data-lucide="download"></i>
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4" x-h-tabs-content id="rp-panel-revenue" aria-labelledby="rp-tab-revenue" :hidden="tab !== 'revenue'">
+          <div style="height: 20rem" x-h-chart-bar="revenueChart" aria-label="Revenue and expenses by month"></div>
+        </div>
+        <div class="pt-4" x-h-tabs-content id="rp-panel-cashflow" aria-labelledby="rp-tab-cashflow" :hidden="tab !== 'cashflow'">
+          <div style="height: 20rem" x-h-chart-line="cashflowChart" aria-label="Cash in and cash out by month"></div>
+        </div>
+        <div class="pt-4" x-h-tabs-content id="rp-panel-receivables" aria-labelledby="rp-tab-receivables" :hidden="tab !== 'receivables'">
+          <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div class="vbox gap-2">
+              <span class="font-medium">Invoice aging</span>
+              <span class="text-sm text-muted-foreground">Share of outstanding receivables by lateness</span>
+              <div class="hbox items-center justify-center">
+                <div class="aspect-square w-full" style="max-height: 18rem" x-h-chart-doughnut="agingChart" aria-label="Invoice aging buckets"></div>
+              </div>
+            </div>
+            <div class="vbox gap-2">
+              <span class="font-medium">Days to pay</span>
+              <span class="text-sm text-muted-foreground">How quickly recent invoices were settled</span>
+              <div style="height: 18rem" x-h-chart-scatter="daysToPayChart" aria-label="Days to pay per invoice"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

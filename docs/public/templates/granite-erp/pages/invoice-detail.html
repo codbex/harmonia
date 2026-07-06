@@ -1,0 +1,199 @@
+<div x-data="pageInvoiceDetail" class="vbox gap-4 p-4">
+  <template x-if="invoice">
+    <div class="vbox gap-4">
+      <div class="hbox flex-wrap items-center gap-3">
+        <div class="vbox">
+          <div class="hbox items-center gap-3">
+            <h3 x-h-text.h4 x-text="invoice.id"></h3>
+            <span x-h-badge :data-variant="$store.erp.statusVariant(invoice.status)" x-text="invoice.status"></span>
+          </div>
+          <p x-h-text.muted x-text="'Issued ' + $store.erp.date(invoice.issued) + ', due ' + $store.erp.date(invoice.due)"></p>
+        </div>
+        <div class="hbox flex-1 flex-wrap items-center justify-end gap-2">
+          <template x-if="invoice.status === 'Draft'">
+            <button x-h-button data-variant="primary" @click="$store.erp.setInvoiceStatus(invoice.id, 'Sent')">
+              <i x-h-lucide role="img" data-lucide="send"></i>
+              Send invoice
+            </button>
+          </template>
+          <template x-if="invoice.status === 'Sent' || invoice.status === 'Overdue'">
+            <div class="hbox gap-2">
+              <button x-h-button data-variant="outline" @click="$store.erp.remindInvoice(invoice.id)">
+                <i x-h-lucide role="img" data-lucide="bell-ring"></i>
+                Send reminder
+              </button>
+              <button x-h-button data-variant="primary" @click="$store.erp.setInvoiceStatus(invoice.id, 'Paid')">
+                <i x-h-lucide role="img" data-lucide="circle-check"></i>
+                Mark as paid
+              </button>
+            </div>
+          </template>
+          <button x-h-button data-variant="outline" data-size="icon" aria-label="More invoice actions" x-h-menu-trigger.dropdown>
+            <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+          </button>
+          <ul x-h-menu aria-label="More invoice actions" data-align="bottom-end">
+            <li x-h-menu-item @click="$store.erp.toast('Download started', invoice.id + '.pdf is being prepared.', 'information')">
+              <i x-h-lucide role="img" data-lucide="download"></i>
+              <span>Download PDF</span>
+            </li>
+            <li x-h-menu-item @click="$store.erp.toast('Invoice duplicated', 'A copy of ' + invoice.id + ' was saved as a draft.', 'information')">
+              <i x-h-lucide role="img" data-lucide="copy"></i>
+              <span>Duplicate</span>
+            </li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item data-variant="negative" @click="$store.erp.toast('Not available', 'Voiding invoices is disabled in this demo.', 'warning')">
+              <i x-h-lucide role="img" data-lucide="ban"></i>
+              <span>Void invoice</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div x-h-card>
+        <div x-h-card-content>
+          <div x-h-step-indicator="lifecycleStep" aria-label="Invoice lifecycle">
+            <div x-h-step-indicator-item="1">
+              <button x-h-step-indicator-trigger data-non-interactive="true">
+                <span x-h-step-indicator-marker>1</span>
+              </button>
+              <div x-h-step-indicator-content>
+                <div x-h-step-indicator-title>Draft</div>
+                <div x-h-step-indicator-description x-text="'Created ' + $store.erp.date(invoice.issued)"></div>
+              </div>
+              <div x-h-step-indicator-separator></div>
+            </div>
+            <div x-h-step-indicator-item="2">
+              <button x-h-step-indicator-trigger data-non-interactive="true">
+                <span x-h-step-indicator-marker>2</span>
+              </button>
+              <div x-h-step-indicator-content>
+                <div x-h-step-indicator-title>Sent</div>
+                <div x-h-step-indicator-description x-text="invoice.status === 'Draft' ? 'Not sent yet' : 'Due ' + $store.erp.date(invoice.due)"></div>
+              </div>
+              <div x-h-step-indicator-separator></div>
+            </div>
+            <div x-h-step-indicator-item="3">
+              <button x-h-step-indicator-trigger data-non-interactive="true">
+                <span x-h-step-indicator-marker>3</span>
+              </button>
+              <div x-h-step-indicator-content>
+                <div x-h-step-indicator-title>Paid</div>
+                <div x-h-step-indicator-description x-text="invoice.status === 'Paid' ? 'Payment received' : 'Awaiting payment'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div x-h-card class="lg:col-span-2">
+          <div x-h-card-header>
+            <div x-h-card-title>Line items</div>
+          </div>
+          <div x-h-card-content>
+            <div x-h-table-container>
+              <table x-h-table>
+                <thead x-h-table-header>
+                  <tr x-h-table-row>
+                    <th x-h-table-head scope="col">Description</th>
+                    <th x-h-table-head scope="col" class="text-right">Qty</th>
+                    <th x-h-table-head scope="col" class="text-right">Unit price</th>
+                    <th x-h-table-head scope="col" class="text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody x-h-table-body>
+                  <template x-for="item in invoice.items" :key="item.description">
+                    <tr x-h-table-row>
+                      <td x-h-table-cell x-text="item.description"></td>
+                      <td x-h-table-cell class="text-right" x-text="item.qty"></td>
+                      <td x-h-table-cell class="text-right" x-text="$store.erp.money(item.unitPrice)"></td>
+                      <td x-h-table-cell class="text-right" x-text="$store.erp.money(item.qty * item.unitPrice)"></td>
+                    </tr>
+                  </template>
+                </tbody>
+                <tfoot x-h-table-footer>
+                  <tr x-h-table-row>
+                    <td x-h-table-cell colspan="3" class="text-right text-muted-foreground">Subtotal</td>
+                    <td x-h-table-cell class="text-right" x-text="$store.erp.money(subtotal)"></td>
+                  </tr>
+                  <tr x-h-table-row>
+                    <td x-h-table-cell colspan="3" class="text-right text-muted-foreground">Tax (10%)</td>
+                    <td x-h-table-cell class="text-right" x-text="$store.erp.money(tax)"></td>
+                  </tr>
+                  <tr x-h-table-row>
+                    <td x-h-table-cell colspan="3" class="text-right font-medium">Total</td>
+                    <td x-h-table-cell class="text-right font-medium" x-text="$store.erp.money(invoice.amount)"></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="vbox gap-4">
+          <div x-h-card>
+            <div x-h-card-header>
+              <div x-h-card-title>Customer</div>
+            </div>
+            <div x-h-card-content class="vbox gap-3">
+              <div class="hbox items-center gap-3">
+                <span x-h-avatar x-text="customer ? customer.initials : '?'"></span>
+                <div class="vbox min-w-0">
+                  <span class="truncate font-medium" x-text="invoice.customer"></span>
+                  <span class="truncate text-sm text-muted-foreground" x-text="customer ? customer.contact : 'No contact on file'"></span>
+                </div>
+              </div>
+              <template x-if="customer">
+                <div class="vbox gap-1 text-sm">
+                  <span x-text="customer.email"></span>
+                  <span class="text-muted-foreground" x-text="customer.city + ', ' + customer.country"></span>
+                  <div class="pt-1">
+                    <div x-h-tag x-text="customer.segment"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+            <div x-h-card-footer>
+              <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+              <a x-h-button data-variant="outline" data-size="sm" href="/customers">All customers</a>
+            </div>
+          </div>
+
+          <div x-h-card>
+            <div x-h-card-header>
+              <div x-h-card-title>Activity</div>
+            </div>
+            <div x-h-card-content>
+              <ul x-h-list>
+                <template x-for="(entry, index) in invoice.activity" :key="index">
+                  <li x-h-list-item class="items-start gap-3 py-2">
+                    <i x-h-lucide role="img" data-lucide="history" class="text-muted-foreground"></i>
+                    <div class="vbox min-w-0 flex-1">
+                      <span class="text-sm" x-text="entry.text"></span>
+                      <span class="text-sm text-muted-foreground" x-text="$store.erp.date(entry.date)"></span>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template x-if="!invoice">
+    <div x-h-info-page class="py-12">
+      <div x-h-info-page-header>
+        <div x-h-info-page-media.icon>
+          <i x-h-lucide role="img" data-lucide="file-question-mark"></i>
+        </div>
+        <div x-h-info-page-title>Invoice not found</div>
+        <div x-h-info-page-description x-text="'There is no invoice with the number ' + $params.id + ' in this workspace.'"></div>
+      </div>
+      <div x-h-info-page-content>
+        <button x-h-button data-variant="primary" @click="$router.navigate('/invoices')">Back to invoices</button>
+      </div>
+    </div>
+  </template>
+</div>

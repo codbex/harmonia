@@ -2,8 +2,9 @@
 <html lang="en" class="size-full">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
+    <title>Slate Dashboard | Harmonia</title>
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
     <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
     <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
@@ -564,7 +565,7 @@
             <div x-h-field-group class="gap-4!">
               <div x-h-field>
                 <label x-h-label for="nc-name">Name</label>
-                <input x-h-input id="nc-name" x-model="newCustomer.name" placeholder="Jane Doe" required />
+                <input x-h-input x-h-focus="showAddCustomer" id="nc-name" x-model="newCustomer.name" placeholder="Jane Doe" required />
                 <p x-h-field-error>Name is required.</p>
               </div>
               <div x-h-field>
