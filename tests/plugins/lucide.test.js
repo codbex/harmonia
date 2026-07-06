@@ -57,6 +57,26 @@ describe('x-h-lucide directive', () => {
     expect(svg.hasAttribute('data-lucide')).toBe(false);
   });
 
+  it('adds the identifying lucide classes so icons match native Lucide output', () => {
+    // The real UMD createElement (unlike createIcons/replaceElement) does not add
+    // these classes, so the directive must add them itself. Use a stub that mirrors
+    // that by returning a bare svg with no classes.
+    window.lucide = {
+      icons: { Home: ['svg', {}, []] },
+      createElement: () => document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+    };
+    const { parent } = setup({ 'data-lucide': 'home' });
+    const svg = parent.querySelector('svg');
+    expect(svg.classList.contains('lucide')).toBe(true);
+    expect(svg.classList.contains('lucide-home')).toBe(true);
+  });
+
+  it('normalizes a multi-word icon name to a kebab-case lucide-<name> class', () => {
+    const { parent } = setup({ 'data-lucide': 'arrow-up-right' });
+    const svg = parent.querySelector('svg');
+    expect(svg.classList.contains('lucide-arrow-up-right')).toBe(true);
+  });
+
   it('does not copy the x-h-lucide directive attribute onto the svg', () => {
     // Otherwise Alpine re-initializes the directive on the rendered clone,
     // which has no data-lucide, producing a spurious "no icon name" error.

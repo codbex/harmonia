@@ -11,6 +11,14 @@ function pascal(name) {
     .replace(/(?:^|-)(\w)/g, (_, c) => c.toUpperCase());
 }
 
+function kebab(name) {
+  return String(name)
+    .trim()
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/[\s_]+/g, '-')
+    .toLowerCase();
+}
+
 function copyAttributes(from, to, skip) {
   for (const attr of [...from.attributes]) {
     if (attr.name === 'data-lucide') continue;
@@ -44,6 +52,10 @@ function renderIcon(el, name, original) {
 
   if (node && typeof lucide.createElement === 'function') {
     const svg = lucide.createElement(node);
+    // lucide.createElement only merges the default svg attributes; unlike
+    // createIcons/replaceElement it does not add Lucide's identifying classes.
+    // Add them so these icons match native Lucide output (`lucide lucide-<name>`).
+    svg.classList.add('lucide', `lucide-${kebab(name)}`);
     copyAttributes(el, svg, original);
     el.replaceWith(svg);
     return;

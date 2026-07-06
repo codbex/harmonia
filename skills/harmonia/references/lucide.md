@@ -27,10 +27,10 @@ The placeholder's other attributes (`class`, `role`, `aria-*`, sizing, etc.) are
 ## Example
 
 ```html
-<i data-lucide="home" x-h-lucide></i> <i data-lucide="settings" x-h-lucide class="size-5 text-primary" role="img" aria-label="Settings"></i>
+<i x-h-lucide="'arrow-up-right'"></i>
 ```
 
-More examples in the docs site: CDN, Name from the expression, Inside dynamic content.
+More examples in the docs site: CDN, Drop-in for existing markup, Inside dynamic content.
 
 ## Notes
 

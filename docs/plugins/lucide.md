@@ -57,8 +57,10 @@ The placeholder's other attributes (`class`, `role`, `aria-*`, sizing, etc.) are
 
 Add `x-h-lucide` to any existing Lucide placeholder; the `data-lucide` name is reused.
 
+<!-- prettier-ignore -->
 ```html
-<i data-lucide="home" x-h-lucide></i> <i data-lucide="settings" x-h-lucide class="size-5 text-primary" role="img" aria-label="Settings"></i>
+<i data-lucide="home" x-h-lucide></i>
+<i data-lucide="settings" x-h-lucide class="size-5 text-primary" role="img" aria-label="Settings"></i>
 ```
 
 ### Name from the expression
