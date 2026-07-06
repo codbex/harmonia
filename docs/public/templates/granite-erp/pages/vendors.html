@@ -47,11 +47,9 @@
               <div x-h-rating data-readonly="true" :data-value="vendor.rating" data-size="sm" :data-label="'Rating for ' + vendor.name"></div>
             </td>
             <td x-h-table-cell class="text-right">
-              <div class="flex justify-end">
-                <span x-h-switch>
-                  <input type="checkbox" :checked="vendor.active" :aria-label="'Toggle ' + vendor.name" @change="$store.erp.toggleVendor(vendor.id)" />
-                </span>
-              </div>
+              <span x-h-switch>
+                <input type="checkbox" :checked="vendor.active" :aria-label="'Toggle ' + vendor.name" @change="$store.erp.toggleVendor(vendor.id)" />
+              </span>
             </td>
           </tr>
         </template>

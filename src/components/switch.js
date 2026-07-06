@@ -46,6 +46,7 @@ export default function (Alpine) {
       'transition-colors',
       'motion-reduce:transition-none'
     );
+    if (el.tagName === 'SPAN') el.classList.add('inline-block');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'switch');
   });

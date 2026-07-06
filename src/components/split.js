@@ -238,8 +238,9 @@ export default function (Alpine) {
 
     // Refresh gutter elements after add/remove or hide/show
     const refreshGutters = () => {
-      const lastPanelIndex = panels.length - 1;
-      panels.forEach((p, i) => p.setGutter(i === lastPanelIndex));
+      const visible = panels.filter((p) => !p.hidden);
+      const lastVisible = visible[visible.length - 1];
+      panels.forEach((p) => p.setGutter(p === lastVisible));
     };
 
     el._h_split = {
@@ -472,6 +473,13 @@ export default function (Alpine) {
 
       setGutter(last) {
         if (this.hidden || gutterless || last) {
+          // Cancel any pending deferred insertion so a stale rAF can't re-add the gutter
+          // after removal (e.g. a panel is added, scheduling its insert, then a sibling is
+          // hidden in the same frame making this the last visible panel before the insert fires).
+          if (layoutFrame) {
+            cancelAnimationFrame(layoutFrame);
+            layoutFrame = null;
+          }
           gutter.remove();
         } else {
           // Defer insertion so this rAF fires before the layout rAF. Both are scheduled
