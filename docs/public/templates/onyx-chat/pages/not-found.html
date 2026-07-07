@@ -1,0 +1,16 @@
+<div class="vbox size-full items-center justify-center p-4">
+  <div x-h-info-page>
+    <div x-h-info-page-header>
+      <div x-h-info-page-media.icon>
+        <i x-h-lucide role="img" data-lucide="compass"></i>
+      </div>
+      <div x-h-info-page-title>Page not found</div>
+      <div x-h-info-page-description x-text="'Nothing lives at ' + $router.context.path + '. It may have been moved, or the address was mistyped.'"></div>
+    </div>
+    <div x-h-info-page-content class="hbox gap-2">
+      <button x-h-button data-variant="primary" @click="go('/')">Go to chat</button>
+      <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+      <a x-h-button data-variant="outline" href="/channels">Browse channels</a>
+    </div>
+  </div>
+</div>

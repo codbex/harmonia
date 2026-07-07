@@ -1,0 +1,278 @@
+<div x-data="pageChat" class="size-full">
+  <!-- Shared by "/", "/channels/:id", and "/dms/:id". Below the lg breakpoint
+       the data-hidden bindings turn the split into a master-detail flow: the
+       conversation and the details panel take turns. -->
+  <div x-h-split class="size-full" data-orientation="horizontal" data-variant="border" data-key="onyx-chat-details-split">
+    <div x-h-split-panel data-min="40%" :data-hidden="isCompact && detailsOpen">
+      <div class="vbox size-full min-w-0">
+        <div x-h-toolbar data-size="md" data-variant="transparent">
+          <template x-if="conversation && !isDm">
+            <span x-h-toolbar-title x-text="'#' + conversation.name">Title</span>
+          </template>
+          <template x-if="conversation && !isDm">
+            <span class="truncate px-2 text-sm text-muted-foreground" x-text="conversation.topic"></span>
+          </template>
+          <template x-if="conversation && isDm">
+            <div class="hbox min-w-0 flex-1 items-center gap-2">
+              <div x-h-avatar class="relative size-6 rounded-control text-xs" :data-color="partner?.color">
+                <span x-text="partner?.initials"></span>
+                <span x-h-badge-indicator data-dot="true" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'"></span>
+              </div>
+              <span class="font-semibold text-nowrap" x-text="partner?.name"></span>
+              <span class="truncate text-sm text-muted-foreground" x-text="partner?.title"></span>
+            </div>
+          </template>
+          <div x-h-toolbar-spacer></div>
+          <button x-show="conversation" x-h-button data-variant="transparent" data-size="icon-md" :data-toggled="detailsOpen" aria-label="Toggle conversation details" @click="detailsOpen = !detailsOpen">
+            <i x-h-lucide role="img" data-lucide="info"></i>
+          </button>
+        </div>
+
+        <div class="vbox flex-1 overflow-auto" x-ref="timeline" role="log" aria-label="Messages">
+          <template x-if="conversation">
+            <div class="vbox pb-2">
+              <template x-for="item in timeline" :key="item.id">
+                <div>
+                  <template x-if="item.kind === 'day'">
+                    <div class="hbox items-center gap-3 px-4 py-2">
+                      <div x-h-separator data-orientation="horizontal" class="flex-1"></div>
+                      <span class="text-xs text-nowrap text-muted-foreground" x-text="item.label"></span>
+                      <div x-h-separator data-orientation="horizontal" class="flex-1"></div>
+                    </div>
+                  </template>
+                  <template x-if="item.kind === 'message'">
+                    <!-- The "group" marker plus the group-hover / group-focus-within
+                         utilities reveal the floating action cluster on hover and
+                         whenever one of its (always focusable) buttons has focus. -->
+                    <div class="group relative hbox items-start gap-3 px-4 hover:bg-muted" :class="item.compact ? 'py-1' : 'pt-3 pb-1'">
+                      <template x-if="!item.compact">
+                        <div x-h-avatar class="size-8 flex-none rounded-control text-xs" :data-color="$store.chat.userById(item.message.userId)?.color" x-text="$store.chat.userById(item.message.userId)?.initials || '?'"></div>
+                      </template>
+                      <template x-if="item.compact">
+                        <span class="w-8 flex-none" role="presentation"></span>
+                      </template>
+                      <div class="vbox min-w-0 flex-1">
+                        <template x-if="!item.compact">
+                          <div class="hbox items-baseline gap-2">
+                            <span class="text-sm font-semibold" x-text="$store.chat.displayName(item.message.userId)"></span>
+                            <time class="text-xs text-nowrap text-muted-foreground" x-h-date-format="item.message.ts" data-options='{ "timeStyle": "short" }'></time>
+                          </div>
+                        </template>
+                        <template x-if="editingId !== item.message.id">
+                          <!-- pre-wrap sits on the inner span: on the paragraph it would
+                               also render this file's markup indentation as an indent. -->
+                          <p class="text-sm wrap-break-word">
+                            <span class="whitespace-pre-wrap" x-text="item.message.text"></span>
+                            <span class="text-xs text-muted-foreground" x-show="item.message.edited">(edited)</span>
+                          </p>
+                        </template>
+                        <template x-if="editingId === item.message.id">
+                          <div class="vbox gap-2 py-1">
+                            <textarea x-h-textarea rows="2" class="resize-none" aria-label="Edit message" x-model="editDraft" x-h-focus="true" @keydown.enter="editKeydown($event)" @keydown.escape="cancelEdit()"></textarea>
+                            <div class="hbox gap-2">
+                              <button x-h-button data-variant="primary" data-size="sm" :disabled="!editDraft.trim()" @click="saveEdit()">Save</button>
+                              <button x-h-button data-variant="outline" data-size="sm" @click="cancelEdit()">Cancel</button>
+                            </div>
+                          </div>
+                        </template>
+                        <div class="hbox flex-wrap gap-1 pt-1" x-show="item.message.reactions.length">
+                          <template x-for="reaction in item.message.reactions" :key="reaction.emoji">
+                            <button
+                              x-h-chip
+                              :data-variant="isMine(reaction) ? 'primary' : 'outline'"
+                              :aria-pressed="isMine(reaction)"
+                              :aria-label="'Toggle ' + reaction.emoji + ' reaction, ' + reaction.userIds.length + ' so far'"
+                              @click="react(item.message.id, reaction.emoji)"
+                            >
+                              <span x-text="reaction.emoji"></span>
+                              <span x-text="reaction.userIds.length"></span>
+                            </button>
+                          </template>
+                        </div>
+                      </div>
+                      <div class="absolute top-0 right-0 mr-2 hbox gap-1 rounded-md border bg-background p-1 opacity-0 shadow-sm transition-opacity group-focus-within:opacity-100 group-hover:opacity-100" style="margin-top: -0.75rem">
+                        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Add reaction" x-h-popover-trigger>
+                          <i x-h-lucide role="img" data-lucide="smile-plus"></i>
+                        </button>
+                        <div x-h-popover data-align="bottom-end">
+                          <div class="hbox gap-1 p-1">
+                            <template x-for="emoji in emojis" :key="emoji">
+                              <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'React with ' + emoji" @click="react(item.message.id, emoji)">
+                                <span x-text="emoji"></span>
+                              </button>
+                            </template>
+                          </div>
+                        </div>
+                        <template x-if="item.message.userId === 'you'">
+                          <div class="hbox gap-1">
+                            <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Message actions" x-h-menu-trigger.dropdown>
+                              <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+                            </button>
+                            <ul x-h-menu aria-label="Message actions" data-align="bottom-end">
+                              <li x-h-menu-item @click="startEdit(item.message)">
+                                <i x-h-lucide role="img" data-lucide="pencil"></i>
+                                <span>Edit message</span>
+                              </li>
+                              <div x-h-menu-separator></div>
+                              <li x-h-menu-item data-variant="negative" @click="deleteTarget = item.message">
+                                <i x-h-lucide role="img" data-lucide="trash-2"></i>
+                                <span>Delete message</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </template>
+              <div class="hbox items-center gap-2 px-4 py-2" x-show="typingHere" aria-live="polite">
+                <span x-h-spinner class="size-4"></span>
+                <span class="text-sm text-muted-foreground" x-text="typerName + ' is typing...'"></span>
+              </div>
+            </div>
+          </template>
+          <template x-if="conversation && !timeline.length && !typingHere">
+            <div class="hbox flex-1 items-center justify-center p-4">
+              <div x-h-info-page>
+                <div x-h-info-page-header>
+                  <div x-h-info-page-media.icon>
+                    <i x-h-lucide role="img" data-lucide="message-circle"></i>
+                  </div>
+                  <div x-h-info-page-title>No messages yet</div>
+                  <div x-h-info-page-description x-text="'Say hello and start the conversation with ' + label + '.'"></div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template x-if="!conversation">
+            <div class="hbox flex-1 items-center justify-center p-4">
+              <div x-h-info-page>
+                <div x-h-info-page-header>
+                  <div x-h-info-page-media.icon>
+                    <i x-h-lucide role="img" data-lucide="compass"></i>
+                  </div>
+                  <div x-h-info-page-title>Conversation not found</div>
+                  <div x-h-info-page-description>This channel or direct message does not exist, or you may have left it.</div>
+                </div>
+                <div x-h-info-page-content class="hbox gap-2">
+                  <button x-h-button data-variant="primary" @click="go('/')">Go to chat</button>
+                  <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+                  <a x-h-button data-variant="outline" href="/channels">Browse channels</a>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <div class="overflow-visible px-3 pb-3" x-show="conversation">
+          <div x-h-input-group>
+            <textarea x-h-textarea.group rows="2" class="resize-none" x-model="draft" :placeholder="'Message ' + label" :aria-label="'Message ' + label" @keydown.enter="composerKeydown($event)"></textarea>
+            <div x-h-input-group-addon data-align="block-end" class="border-t">
+              <button x-h-button.addon data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Insert emoji" x-h-popover-trigger>
+                <i x-h-lucide role="img" data-lucide="smile"></i>
+              </button>
+              <div x-h-popover data-align="top-start" data-innerclicks="true">
+                <div class="hbox gap-1 p-1">
+                  <template x-for="emoji in emojis" :key="emoji">
+                    <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Add ' + emoji + ' to the message'" @click="draft += emoji">
+                      <span x-text="emoji"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+              <span x-h-input-group-text class="ml-auto hidden text-xs md:block">Enter to send, Shift+Enter for a new line</span>
+              <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send message" :disabled="!draft.trim()" @click="send()">
+                <i x-h-lucide role="img" data-lucide="arrow-up"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div x-h-split-panel data-size="30%" data-min="20%" :data-hidden="!detailsOpen">
+      <div class="vbox size-full min-w-0">
+        <div x-h-toolbar data-size="md" data-variant="transparent">
+          <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to conversation" @click="detailsOpen = false">
+            <i x-h-lucide role="img" data-lucide="arrow-left"></i>
+          </button>
+          <div x-h-toolbar-title>Details</div>
+          <div x-h-toolbar-spacer></div>
+          <button x-show="!isCompact" x-h-button data-variant="transparent" data-size="icon-md" aria-label="Close details" @click="detailsOpen = false">
+            <i x-h-lucide role="img" data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="flex-1 overflow-auto p-4">
+          <template x-if="conversation && !isDm">
+            <div class="vbox gap-4">
+              <div class="vbox gap-1">
+                <span class="font-semibold" x-text="'#' + conversation.name"></span>
+                <span class="text-sm text-muted-foreground" x-text="conversation.topic"></span>
+              </div>
+              <p class="text-sm" x-text="conversation.description"></p>
+              <div x-h-separator data-orientation="horizontal"></div>
+              <div class="vbox gap-2">
+                <span class="text-sm font-medium" x-text="'Members (' + members.length + ')'"></span>
+                <ul x-h-list>
+                  <template x-for="member in members" :key="member.id">
+                    <li x-h-list-item class="gap-3 py-1">
+                      <div x-h-avatar class="relative size-8 rounded-control text-xs" :data-color="member.color">
+                        <span x-text="member.initials"></span>
+                        <span x-h-badge-indicator data-dot="true" x-show="member.status !== 'offline'" :data-variant="member.status === 'online' ? 'positive' : 'warning'"></span>
+                      </div>
+                      <div class="vbox min-w-0">
+                        <span class="truncate text-sm" x-text="member.name + (member.id === 'you' ? ' (you)' : '')"></span>
+                        <span class="truncate text-xs text-muted-foreground" x-text="member.title"></span>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+              <div x-h-separator data-orientation="horizontal"></div>
+              <button x-h-button data-variant="outline" @click="leave()">
+                <i x-h-lucide role="img" data-lucide="log-out"></i>
+                Leave channel
+              </button>
+            </div>
+          </template>
+          <template x-if="conversation && isDm">
+            <div class="vbox items-center gap-3 pt-4 text-center">
+              <div x-h-avatar class="relative size-12 rounded-control text-lg" :data-color="partner?.color">
+                <span x-text="partner?.initials"></span>
+                <span x-h-badge-indicator data-dot="true" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'"></span>
+              </div>
+              <div class="vbox gap-1">
+                <span class="font-semibold" x-text="partner?.name"></span>
+                <span class="text-sm text-muted-foreground" x-text="partner?.title"></span>
+                <span class="text-sm text-muted-foreground" x-text="partner?.email"></span>
+                <span class="text-sm text-muted-foreground" x-text="'Status: ' + (partner?.status || 'offline')"></span>
+              </div>
+              <button x-h-button data-variant="outline" @click="go('/people')">
+                <i x-h-lucide role="img" data-lucide="users"></i>
+                View directory
+              </button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation dialog -->
+  <div x-h-dialog-overlay :data-open="!!deleteTarget" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Delete message</h2>
+        <p x-h-dialog-description x-text="deleteTarget ? 'This will permanently remove the message: ' + (deleteTarget.text.length > 140 ? deleteTarget.text.slice(0, 140) + '...' : deleteTarget.text) : ''"></p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="deleteTarget = null">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="deleteTarget = null">Cancel</button>
+        <button x-h-button data-variant="negative" @click="confirmDelete()">Delete message</button>
+      </div>
+    </div>
+  </div>
+</div>

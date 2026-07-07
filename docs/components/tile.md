@@ -138,10 +138,10 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media>
-    <span x-h-avatar class="size-10">
+    <div x-h-avatar class="size-10">
       <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
-    </span>
+    </div>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Account settings updated</div>

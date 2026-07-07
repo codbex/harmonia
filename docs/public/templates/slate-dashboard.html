@@ -73,7 +73,7 @@
 
       <div x-h-sidebar-footer data-borderless="true">
         <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
-          <span x-h-avatar>JD</span>
+          <div x-h-avatar>JD</div>
           <div class="vbox min-w-0 text-left">
             <span class="truncate">John Doe</span>
             <span class="truncate text-sm font-normal">john@codbex.com</span>
@@ -131,12 +131,12 @@
                 <li x-h-notification class="hbox" :class="{ 'items-center': !n.action }" :data-unread="n.unread">
                   <div x-h-notification-media :class="n.media.kind === 'text' ? 'justify-start' : 'w-10'">
                     <template x-if="n.media.kind === 'text'">
-                      <span x-h-avatar class="size-10" x-text="n.media.text"></span>
+                      <div x-h-avatar class="size-10" x-text="n.media.text"></div>
                     </template>
                     <template x-if="n.media.kind === 'badge'">
-                      <span x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
+                      <div x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
                         <svg x-h-icon :data-icon="n.media.icon" role="presentation"></svg>
-                      </span>
+                      </div>
                     </template>
                     <template x-if="n.media.kind === 'icon'">
                       <svg x-h-icon :data-icon="n.media.icon" class="size-6" :class="n.media.tone" role="presentation"></svg>
@@ -172,7 +172,7 @@
               </template>
             </ol>
           </div>
-          <span x-h-avatar>JD</span>
+          <div x-h-avatar>JD</div>
         </div>
 
         <div class="vbox flex-1 gap-4 overflow-auto p-4">
@@ -348,7 +348,7 @@
                     <tr x-h-table-row data-hoverable="true">
                       <td x-h-table-cell>
                         <div class="hbox items-center gap-3">
-                          <span x-h-avatar x-text="order.initials"></span>
+                          <div x-h-avatar x-text="order.initials"></div>
                           <div class="vbox min-w-0">
                             <span class="truncate" x-text="order.customer"></span>
                             <span class="truncate text-sm text-muted-foreground" x-text="order.email"></span>
@@ -450,11 +450,13 @@
                       <p x-h-text.muted>Choose how the dashboard looks.</p>
                     </div>
                     <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
-                      <i x-h-lucide x-show="settings.theme === 'light'" role="img" data-lucide="sun"></i>
+                      <!-- svg placeholders on purpose: x-h-lucide renders them in place,
+                           so the x-show bindings keep switching the visible icon. -->
+                      <svg x-h-lucide x-show="settings.theme === 'light'" role="img" data-lucide="sun"></svg>
                       <span x-show="settings.theme === 'light'">Light</span>
-                      <i x-h-lucide x-show="settings.theme === 'dark'" role="img" data-lucide="moon"></i>
+                      <svg x-h-lucide x-show="settings.theme === 'dark'" role="img" data-lucide="moon"></svg>
                       <span x-show="settings.theme === 'dark'">Dark</span>
-                      <i x-h-lucide x-show="settings.theme === 'auto'" role="img" data-lucide="sun-moon"></i>
+                      <svg x-h-lucide x-show="settings.theme === 'auto'" role="img" data-lucide="sun-moon"></svg>
                       <span x-show="settings.theme === 'auto'">Auto</span>
                       <i x-h-lucide role="img" data-lucide="chevron-down"></i>
                     </button>

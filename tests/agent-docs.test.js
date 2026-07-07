@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 
 // The generator is CommonJS (like the other scripts/*.cjs); pull it in via require.
 const require = createRequire(import.meta.url);
-const { transform, readInputs, OUT_DIR, REF_DIR } = require('../scripts/generate-agent-docs.cjs');
+const { transform, readInputs, OUT_DIR, REF_DIR, DOCS_URL } = require('../scripts/generate-agent-docs.cjs');
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -49,6 +49,46 @@ describe('agent docs (skills/harmonia)', () => {
         expect(content, `skills/harmonia/${rel} leaks <${tag}>`).not.toContain(tag);
       }
     }
+  });
+
+  it('converts VitePress ::: containers instead of leaking them raw', () => {
+    // ::: info/warning blocks are docs-site syntax; convertContainers() must
+    // turn them into plain blockquotes (this used to leak into e.g. chip.md).
+    for (const [rel, content] of Object.entries(files)) {
+      if (!rel.startsWith('references/')) continue;
+      for (const line of content.split('\n')) {
+        expect(/^\s*:{3,}/.test(line), `skills/harmonia/${rel} leaks a raw ::: container line: "${line}"`).toBe(false);
+      }
+    }
+  });
+
+  it('carries the full Examples section into each reference', () => {
+    // Every example from the source doc ships in the reference (not just the
+    // minimal one), so the old dangling "More examples..." teaser must be gone.
+    for (const [rel, content] of Object.entries(files)) {
+      expect(content, `skills/harmonia/${rel} still has the dangling docs-site teaser`).not.toContain('More examples in the docs site');
+    }
+    for (const name of ['### Clearable', '### Multiple', '### With groups']) {
+      expect(files['references/select.md'], `select.md reference lost the "${name}" example`).toContain(name);
+    }
+  });
+
+  it('carries Usage constraints and Keyboard Handling into references', () => {
+    // The split layout's nesting rule lives in a ::: info container inside
+    // ## Usage; losing either the section or the container drops a constraint
+    // whose violation fails silently at runtime.
+    expect(files['references/split.md']).toContain('MUST be direct children');
+    expect(files['references/select.md']).toContain('## Keyboard Handling');
+  });
+
+  it('links every reference to its docs-site page', () => {
+    for (const [rel, content] of Object.entries(files)) {
+      if (!rel.startsWith('references/') || rel === 'references/utility-classes.md') continue;
+      expect(content, `skills/harmonia/${rel} has no docs-site link`).toContain(`Full docs: ${DOCS_URL}/`);
+    }
+    expect(files['references/select.md']).toContain(`Full docs: ${DOCS_URL}/components/select.html`);
+    expect(files['SKILL.md']).toContain(DOCS_URL);
+    expect(files['llms.txt']).toContain(DOCS_URL);
   });
 
   it('generates a reference for every component', () => {

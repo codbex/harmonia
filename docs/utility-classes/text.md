@@ -8,6 +8,7 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 
 | Class     | Description                                                            | `!` support |
 | --------- | ---------------------------------------------------------------------- | ----------- |
+| text-2xs  | Smallest text (0.625rem / 10px). Useful for compact badges and labels. | Yes         |
 | text-xs   | Extra small text (0.75rem / 12px).                                     | Yes         |
 | text-sm   | Small text (0.875rem / 14px). Common for labels and secondary content. | Yes         |
 | text-base | Default body text size (1rem / 16px).                                  | Yes         |
@@ -60,22 +61,26 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 | leading-7       | `line-height: calc(var(--spacing) * 7)`          | Yes         |
 | leading-8       | `line-height: calc(var(--spacing) * 8)`          | Yes         |
 
-| Class               | Description                                                                                     |
-| ------------------- | ----------------------------------------------------------------------------------------------- |
-| italic              | Renders text in italic style.                                                                   |
-| underline           | Underlines the text (`text-decoration: underline`).                                             |
-| no-underline        | Removes text underline (`text-decoration: none`).                                               |
-| line-through        | Strikes through the text (`text-decoration: line-through`).                                     |
-| uppercase           | Transforms all characters to uppercase.                                                         |
-| lowercase           | Transforms all characters to lowercase.                                                         |
-| capitalize          | Capitalizes the first letter of each word.                                                      |
-| truncate            | Combines `overflow: hidden`, `text-overflow: ellipsis`, and `white-space: nowrap` in one class. |
-| align-middle        | Sets `vertical-align: middle`. Aligns an inline element to the middle of the surrounding text.  |
-| whitespace-nowrap   | Prevents text from wrapping, equivalent to `white-space: nowrap`.                               |
-| whitespace-pre      | Preserves whitespace and newlines; text does not wrap (`white-space: pre`).                     |
-| whitespace-pre-wrap | Preserves whitespace and newlines; text wraps normally (`white-space: pre-wrap`).               |
-| whitespace-pre-line | Collapses runs of whitespace but preserves newlines; text wraps (`white-space: pre-line`).      |
-| line-clamp-`1-6`    | Truncates text to the given number of lines (1 to 6) with an ellipsis.                          |
+| Class               | Description                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| italic              | Renders text in italic style.                                                                                                        |
+| underline           | Underlines the text (`text-decoration: underline`).                                                                                  |
+| no-underline        | Removes text underline (`text-decoration: none`).                                                                                    |
+| line-through        | Strikes through the text (`text-decoration: line-through`).                                                                          |
+| uppercase           | Transforms all characters to uppercase.                                                                                              |
+| lowercase           | Transforms all characters to lowercase.                                                                                              |
+| capitalize          | Capitalizes the first letter of each word.                                                                                           |
+| tabular-nums        | Uses fixed-width figures so numbers align vertically (`font-variant-numeric: tabular-nums`). Useful for tables, timers, and amounts. |
+| truncate            | Combines `overflow: hidden`, `text-overflow: ellipsis`, and `white-space: nowrap` in one class.                                      |
+| align-middle        | Sets `vertical-align: middle`. Aligns an inline element to the middle of the surrounding text.                                       |
+| whitespace-nowrap   | Prevents text from wrapping, equivalent to `white-space: nowrap`.                                                                    |
+| whitespace-pre      | Preserves whitespace and newlines; text does not wrap (`white-space: pre`).                                                          |
+| whitespace-pre-wrap | Preserves whitespace and newlines; text wraps normally (`white-space: pre-wrap`).                                                    |
+| whitespace-pre-line | Collapses runs of whitespace but preserves newlines; text wraps (`white-space: pre-line`).                                           |
+| wrap-break-word     | Breaks long words onto the next line to prevent overflow (`overflow-wrap: break-word`).                                              |
+| wrap-anywhere       | Allows a break at any character to prevent overflow, also within intrinsic sizing (`overflow-wrap: anywhere`).                       |
+| select-none         | Prevents the text from being selected (`user-select: none`).                                                                         |
+| line-clamp-`1-6`    | Truncates text to the given number of lines (1 to 6) with an ellipsis.                                                               |
 
 ## Examples
 
@@ -84,6 +89,7 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 <LiveExample data-class="vbox gap-2">
 
 ```html
+<p class="text-2xs">Smallest</p>
 <p class="text-xs">Extra small</p>
 <p class="text-sm">Small</p>
 <p class="text-base">Base</p>
@@ -161,6 +167,39 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
     aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
   </p>
 </div>
+```
+
+</LiveExample>
+
+### Tabular numbers
+
+<LiveExample>
+
+```html
+<div class="hbox gap-8">
+  <div class="vbox gap-1 text-right">
+    <p class="font-medium text-muted-foreground">Default</p>
+    <span>1,111.11</span>
+    <span>8,428.00</span>
+    <span>1,690.19</span>
+  </div>
+  <div class="vbox gap-1 text-right tabular-nums">
+    <p class="font-medium text-muted-foreground">tabular-nums</p>
+    <span>1,111.11</span>
+    <span>8,428.00</span>
+    <span>1,690.19</span>
+  </div>
+</div>
+```
+
+</LiveExample>
+
+### Wrap anywhere
+
+<LiveExample>
+
+```html
+<div class="w-3xs border p-2 wrap-anywhere">ThisIsOneVeryLongUnbrokenIdentifierThatWouldOverflowTheContainerWithoutWrapAnywhere</div>
 ```
 
 </LiveExample>

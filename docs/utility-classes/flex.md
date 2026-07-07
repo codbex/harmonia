@@ -11,18 +11,19 @@
 
 ### Flex
 
-| Class            | Description                      |
-| ---------------- | -------------------------------- |
-| flex             | `display: flex;`                 |
-| flex-row         | Horizontal flex.                 |
-| flex-col         | Vertical flex.                   |
-| flex-row-reverse | Reverse order horizontal flex.   |
-| flex-col-reverse | Reverse order vertical flex.     |
-| flex-wrap        | Flex layout with wrapping items. |
-| flex-0           | `flex: 0;`                       |
-| flex-1           | `flex: 1;`                       |
-| flex-auto        | `flex: auto;`                    |
-| flex-none        | `flex: none;`                    |
+| Class            | Description                                                                     |
+| ---------------- | ------------------------------------------------------------------------------- |
+| flex             | `display: flex;`                                                                |
+| flex-row         | Horizontal flex.                                                                |
+| flex-col         | Vertical flex.                                                                  |
+| flex-row-reverse | Reverse order horizontal flex.                                                  |
+| flex-col-reverse | Reverse order vertical flex.                                                    |
+| flex-wrap        | Flex layout with wrapping items.                                                |
+| flex-0           | `flex: 0;`                                                                      |
+| flex-1           | `flex: 1;`                                                                      |
+| flex-auto        | `flex: auto;`                                                                   |
+| flex-none        | `flex: none;`                                                                   |
+| shrink-0         | `flex-shrink: 0;` - prevents a flex item from shrinking below its content size. |
 
 `flex-row-reverse` and `flex-col-reverse` also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:` (e.g. `md:flex-row-reverse`).
 
@@ -185,6 +186,19 @@ The `flex-*` classes must be combined with the `flex` class.
 <div class="flex flex-row gap-1">
   <span class="flex-none bg-primary p-2 text-primary-foreground">None</span>
   <span class="flex-none bg-primary p-2 text-primary-foreground">None</span>
+</div>
+```
+
+</LiveExample>
+
+### Prevent shrinking
+
+<LiveExample>
+
+```html
+<div class="flex w-3xs flex-row gap-1">
+  <span class="shrink-0 bg-primary p-2 text-primary-foreground">Does not shrink</span>
+  <span class="bg-primary p-2 text-primary-foreground">Shrinks to fit the remaining space</span>
 </div>
 ```
 

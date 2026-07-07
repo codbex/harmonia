@@ -145,5 +145,45 @@ features:
 
 </TemplateShowcase>
 
+<TemplateShowcase title="Onyx Chat" src="/harmonia/templates/onyx-chat/index.html" desc="A multi-page team chat app with channels, direct messages, reactions, and simulated replies, split across one shell, two scripts, and six page fragments, routed client-side with Pinecone Router.">
+
+**index.html**
+
+<<< @/public/templates/onyx-chat/index.html
+
+**js/app.js**
+
+<<< @/public/templates/onyx-chat/js/app.js
+
+**js/data.js**
+
+<<< @/public/templates/onyx-chat/js/data.js
+
+**pages/chat.html**
+
+<<< @/public/templates/onyx-chat/pages/chat.html
+
+**pages/channels.html**
+
+<<< @/public/templates/onyx-chat/pages/channels.html
+
+**pages/activity.html**
+
+<<< @/public/templates/onyx-chat/pages/activity.html
+
+**pages/people.html**
+
+<<< @/public/templates/onyx-chat/pages/people.html
+
+**pages/settings.html**
+
+<<< @/public/templates/onyx-chat/pages/settings.html
+
+**pages/not-found.html**
+
+<<< @/public/templates/onyx-chat/pages/not-found.html
+
+</TemplateShowcase>
+
   </div>
 </div>

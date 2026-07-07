@@ -17,9 +17,21 @@ x-h-badge-indicator
 
 ### Attributes
 
+#### x-h-badge
+
 | Attribute    | Type                                                                                       | Required | Description    |
 | ------------ | ------------------------------------------------------------------------------------------ | -------- | -------------- |
 | data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline` | false    | Semantic color |
+
+#### x-h-badge-indicator
+
+| Attribute     | Type                                                                        | Required | Description                                                           |
+| ------------- | --------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| data-variant  | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color (defaults to `primary`)                                |
+| data-size     | `default`<br />`sm`                                                         | false    | Indicator size (defaults to `default`)                                |
+| data-position | `top-right`<br />`top-left`<br />`bottom-left`<br />`bottom-right`          | false    | Corner of the host the indicator anchors to (defaults to `top-right`) |
+| data-dot      | `true`                                                                      | false    | Renders a small dot without content instead of a labelled badge       |
+| data-ping     | `true`                                                                      | false    | Adds a pulsing ping animation behind the indicator                    |
 
 ## Examples
 
@@ -75,11 +87,25 @@ The badge indicator can be used on any element as long as it that element's posi
 <LiveExample>
 
 ```html
-<span x-h-avatar class="relative">
+<div x-h-avatar class="relative">
   <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
   <div x-h-avatar-fallback>HM</div>
   <span x-h-badge-indicator data-dot="true"></span>
-</span>
+</div>
+```
+
+</LiveExample>
+
+- Small avatar with small badge
+
+<LiveExample>
+
+```html
+<div x-h-avatar class="relative size-5!">
+  <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+  <span x-h-badge-indicator data-dot="true" data-size="sm"></span>
+</div>
 ```
 
 </LiveExample>
@@ -105,6 +131,52 @@ The badge indicator can be used on any element as long as it that element's posi
 <button class="relative" x-h-button data-variant="outline">
   Tasks
   <span x-h-badge-indicator data-variant="negative">4</span>
+</button>
+```
+
+</LiveExample>
+
+- Small size
+
+The `data-size="sm"` variant renders a more compact indicator, both for labelled badges and dots.
+
+<LiveExample data-class="flex gap-6">
+
+```html
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with small badge">
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-size="sm">9</span>
+</button>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Icon button with small badge dot">
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-size="sm" data-dot="true"></span>
+</button>
+```
+
+</LiveExample>
+
+- Positions
+
+Use `data-position` to anchor the indicator to any corner of the host.
+
+<LiveExample data-class="flex gap-6">
+
+```html
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Badge top-right">
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-position="top-right" data-dot="true"></span>
+</button>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Badge top-left">
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-position="top-left" data-dot="true"></span>
+</button>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Badge bottom-left">
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-position="bottom-left" data-dot="true"></span>
+</button>
+<button class="relative" x-h-button data-variant="outline" data-size="icon" aria-label="Badge bottom-right">
+  <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
+  <span x-h-badge-indicator data-position="bottom-right" data-dot="true"></span>
 </button>
 ```
 

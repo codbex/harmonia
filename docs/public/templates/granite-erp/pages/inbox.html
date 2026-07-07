@@ -18,7 +18,7 @@
         <ul x-h-list class="flex-1 overflow-auto">
           <template x-for="message in list" :key="message.id">
             <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" :class="selectedId === message.id && 'bg-muted'" @click="open(message.id)">
-              <span x-h-avatar x-text="message.initials"></span>
+              <div x-h-avatar x-text="message.initials"></div>
               <div class="vbox min-w-0 flex-1">
                 <div class="hbox items-baseline justify-between gap-2">
                   <span class="truncate" :class="message.unread ? 'font-semibold' : 'font-medium'" x-text="message.from"></span>
@@ -51,7 +51,7 @@
             <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to message list" @click="selectedId = null">
               <i x-h-lucide role="img" data-lucide="arrow-left"></i>
             </button>
-            <span x-h-avatar x-text="selected.initials"></span>
+            <div x-h-avatar x-text="selected.initials"></div>
             <div class="vbox min-w-0 flex-1">
               <span class="text-lg font-semibold" x-text="selected.subject"></span>
               <div class="text-sm text-muted-foreground" x-text="selected.from + ', ' + selected.date"></div>

@@ -35,6 +35,8 @@ x-h-alert-actions
 
 ## Examples
 
+### Alert with icon, title and actions
+
 <LiveExample>
 
 ```html
@@ -49,6 +51,8 @@ x-h-alert-actions
 
 </LiveExample>
 
+### Alert with icon, title and description
+
 <LiveExample>
 
 ```html
@@ -60,6 +64,8 @@ x-h-alert-actions
 ```
 
 </LiveExample>
+
+### Information variant
 
 <LiveExample>
 
@@ -73,6 +79,8 @@ x-h-alert-actions
 
 </LiveExample>
 
+### Warning variant
+
 <LiveExample>
 
 ```html
@@ -85,6 +93,8 @@ x-h-alert-actions
 
 </LiveExample>
 
+### Negative variant
+
 <LiveExample>
 
 ```html
@@ -96,6 +106,8 @@ x-h-alert-actions
 ```
 
 </LiveExample>
+
+### Positive variant
 
 <LiveExample>
 

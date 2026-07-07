@@ -1,6 +1,6 @@
 # Lucide
 
-An optional plugin that keeps [Lucide](https://lucide.dev) icons in sync with the Alpine/Harmonia lifecycle. Place `x-h-lucide` on a Lucide placeholder and it renders that icon when Alpine initializes the element, including markup added dynamically through `x-h-include`, a router (e.g. Pinecone-router) or Alpine's `x-for` / `x-if`. No global `lucide.createIcons` scans and no event wiring are needed.
+An optional plugin that keeps [Lucide](https://lucide.dev) icons in sync with the Alpine/Harmonia lifecycle. Place `x-h-lucide` on a Lucide placeholder and it renders that icon when Alpine initializes the element, including markup added dynamically through `x-h-include`, a router (e.g. Pinecone-router) or Alpine's `x-for` / `x-if`. No global `lucide.createIcons` scans and no event wiring are needed. Use an `<svg>` placeholder when the icon carries other Alpine directives: it is rendered in place, while any other tag is replaced by the rendered svg.
 
 ::: info
 This plugin is **not** part of the default Harmonia bundle. You opt in by loading it, and Lucide itself must be available as a global (`window.lucide`).
@@ -49,7 +49,10 @@ x-h-lucide
 | ------------- | ------ | -------- | ------------------------------------------------------------------------------------------ |
 | `data-lucide` | string | false    | The icon name. Takes priority over the expression, so existing Lucide markup is a drop-in. |
 
-The placeholder's other attributes (`class`, `role`, `aria-*`, sizing, etc.) are copied onto the rendered `<svg>`, which replaces the placeholder element.
+How the placeholder is rendered depends on its tag:
+
+- An `<svg x-h-lucide>` placeholder is rendered **in place**: the icon's shapes are inserted into the element, Lucide's identifying classes are merged with yours, and Lucide's default attributes are applied only where you have not set that attribute yourself. Because the element is never replaced, Alpine directives on it (`x-show`, `:class`, `x-transition`, `@click`, ...) keep working.
+- Any other tag (typically `<i>`, matching Lucide's own markup) is **replaced** by the rendered `<svg>`; the placeholder's attributes (`class`, `role`, `aria-*`, sizing, etc.) are copied onto it. Alpine bindings cannot survive that replacement, so combining another directive with `x-h-lucide` on such a placeholder throws an error. The one exception is `:data-lucide`, whose bound name is consumed when the icon renders. Use the `<svg>` form for anything reactive.
 
 ## Examples
 
@@ -68,6 +71,22 @@ Add `x-h-lucide` to any existing Lucide placeholder; the `data-lucide` name is r
 ```html
 <i x-h-lucide="'arrow-up-right'"></i>
 ```
+
+### Reactive icons
+
+Put `x-h-lucide` on an `<svg>` element when the icon needs other Alpine directives. The element is rendered in place instead of being replaced, so bindings like `x-show` stay live; here the visible icon follows the current theme choice:
+
+```html
+<div x-data="{ theme: 'light' }">
+  <button x-h-button data-variant="outline" @click="theme = theme === 'light' ? 'dark' : 'light'">
+    <svg x-h-lucide x-show="theme === 'light'" role="presentation" data-lucide="sun"></svg>
+    <svg x-h-lucide x-show="theme === 'dark'" role="presentation" data-lucide="moon"></svg>
+    <span x-text="theme === 'light' ? 'Light' : 'Dark'"></span>
+  </button>
+</div>
+```
+
+On a replaced placeholder like `<i>`, the same markup would silently break (the binding would keep toggling the replaced element), which is why the plugin throws for it and points you here.
 
 ### Inside dynamic content
 

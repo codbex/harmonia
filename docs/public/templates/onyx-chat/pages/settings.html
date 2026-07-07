@@ -1,0 +1,152 @@
+<div x-data="pageSettings" class="vbox items-center gap-4 p-4">
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Profile</h3>
+    <p x-h-text.muted>How you appear to teammates. Renaming yourself updates your past messages too.</p>
+
+    <div x-h-card class="mt-4 w-full">
+      <div x-h-card-content>
+        <fieldset x-h-fieldset>
+          <div x-h-field-group class="gap-4!">
+            <div x-h-field>
+              <label x-h-label for="st-name">Display name</label>
+              <input x-h-input id="st-name" x-model="$store.chat.profile.name" />
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div x-h-field>
+                <label x-h-label for="st-title">Title</label>
+                <input x-h-input id="st-title" x-model="$store.chat.profile.title" />
+              </div>
+              <div x-h-field>
+                <label x-h-label for="st-email">Email</label>
+                <input x-h-input id="st-email" type="email" x-model="$store.chat.profile.email" />
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div x-h-card-footer class="hbox justify-end">
+        <button x-h-button data-variant="primary" @click="save()">Save changes</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Appearance</h3>
+
+    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+      <ul x-h-list>
+        <li x-h-list-item class="gap-3 px-4 py-3">
+          <div class="vbox w-full">
+            <p class="text-base font-medium">Theme</p>
+            <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
+          </div>
+          <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+            <!-- svg placeholders on purpose: x-h-lucide renders them in place,
+                 so the x-show bindings keep switching the visible icon. -->
+            <svg x-h-lucide x-show="$store.chat.settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
+            <span x-show="$store.chat.settings.theme === 'light'">Light</span>
+            <svg x-h-lucide x-show="$store.chat.settings.theme === 'dark'" role="presentation" data-lucide="moon"></svg>
+            <span x-show="$store.chat.settings.theme === 'dark'">Dark</span>
+            <svg x-h-lucide x-show="$store.chat.settings.theme === 'auto'" role="presentation" data-lucide="sun-moon"></svg>
+            <span x-show="$store.chat.settings.theme === 'auto'">Auto</span>
+            <i x-h-lucide role="presentation" data-lucide="chevron-down"></i>
+          </button>
+          <ul x-h-menu data-align="bottom-end" aria-label="Theme">
+            <li x-h-menu-item @click="$store.chat.setTheme('light')">
+              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <span>Light</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'light'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.chat.setTheme('dark')">
+              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <span>Dark</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'dark'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.chat.setTheme('auto')">
+              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <span>Auto</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'auto'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2">
+    <h3 x-h-text.h5>Notifications</h3>
+    <p x-h-text.muted>Each switch gates a real part of the demo's reply simulation.</p>
+
+    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+      <ul x-h-list>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <i x-h-lucide role="img" data-lucide="bell" class="size-5"></i>
+          <div class="vbox w-full">
+            <label class="text-base font-medium" for="sw-message-toasts">New message toasts</label>
+            <p x-h-text.muted>Show a toast when a message arrives in a conversation you are not viewing.</p>
+          </div>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-message-toasts" x-model="$store.chat.settings.notifications.messageToasts" />
+          </span>
+        </li>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <i x-h-lucide role="img" data-lucide="at-sign" class="size-5"></i>
+          <div class="vbox w-full">
+            <label class="text-base font-medium" for="sw-mention-alerts">Mention alerts</label>
+            <p x-h-text.muted>Show a toast whenever a teammate mentions you.</p>
+          </div>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-mention-alerts" x-model="$store.chat.settings.notifications.mentionAlerts" />
+          </span>
+        </li>
+        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+          <i x-h-lucide role="img" data-lucide="keyboard" class="size-5"></i>
+          <div class="vbox w-full">
+            <label class="text-base font-medium" for="sw-typing">Typing indicators</label>
+            <p x-h-text.muted>Show the "is typing" row while a reply is being written.</p>
+          </div>
+          <span x-h-switch>
+            <input type="checkbox" id="sw-typing" x-model="$store.chat.settings.notifications.typingIndicators" />
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="vbox w-full max-w-xl pt-2 pb-4">
+    <h3 x-h-text.h5>Danger zone</h3>
+
+    <div x-h-tile data-variant="shadow" class="mt-4">
+      <div x-h-tile-content>
+        <div x-h-tile-title>Reset demo data</div>
+        <p x-h-tile-description>Restores every conversation, membership, and profile change to its initial state. Anything you sent in this session will be lost.</p>
+      </div>
+      <div x-h-tile-actions>
+        <button x-h-button data-variant="negative" @click="showReset = true">Reset workspace</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reset confirmation dialog -->
+  <div x-h-dialog-overlay :data-open="showReset" class="backdrop-blur-xs">
+    <div x-h-dialog>
+      <div x-h-dialog-header>
+        <h2 x-h-dialog-title>Reset workspace</h2>
+        <p x-h-dialog-description>All demo conversations will be restored to their initial state, including channel memberships and your profile. Continue?</p>
+        <button x-h-dialog-close aria-label="Close dialog" @click="showReset = false">
+          <i x-h-lucide role="img" data-lucide="x"></i>
+        </button>
+      </div>
+      <div x-h-dialog-footer>
+        <button x-h-button data-variant="outline" @click="showReset = false">Cancel</button>
+        <button x-h-button data-variant="negative" @click="confirmReset()">Reset everything</button>
+      </div>
+    </div>
+  </div>
+</div>

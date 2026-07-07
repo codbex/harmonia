@@ -1,0 +1,51 @@
+<div x-data="pagePeople" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-end justify-between gap-2">
+    <div class="vbox">
+      <h3 x-h-text.h5>People</h3>
+      <p x-h-text.muted x-text="$store.chat.users.length + ' teammates in the Onyx Labs workspace.'"></p>
+    </div>
+    <div class="w-3xs">
+      <div x-h-input-group>
+        <input x-h-input.group placeholder="Search people..." aria-label="Search people" x-model="search" />
+        <div x-h-input-group-addon data-align="inline-start">
+          <i x-h-lucide role="img" data-lucide="search"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div x-h-tile-group aria-label="People" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <template x-for="person in list" :key="person.id">
+      <div x-h-tile data-variant="outline">
+        <div x-h-tile-media>
+          <div x-h-avatar class="relative size-10 rounded-control" :data-color="person.color">
+            <span x-text="person.initials"></span>
+            <span x-h-badge-indicator data-dot="true" x-show="person.status !== 'offline'" :data-variant="person.status === 'online' ? 'positive' : 'warning'"></span>
+          </div>
+        </div>
+        <div x-h-tile-content>
+          <div x-h-tile-title x-text="person.name + (person.id === 'you' ? ' (you)' : '')"></div>
+          <p x-h-tile-description x-text="person.title + ', ' + person.status"></p>
+        </div>
+        <div x-h-tile-actions x-show="person.id !== 'you'">
+          <button x-h-button data-variant="outline" data-size="sm" @click="message(person)">
+            <i x-h-lucide role="img" data-lucide="message-circle"></i>
+            Message
+          </button>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <template x-if="!list.length">
+    <div x-h-info-page>
+      <div x-h-info-page-header>
+        <div x-h-info-page-media.icon>
+          <i x-h-lucide role="img" data-lucide="search-x"></i>
+        </div>
+        <div x-h-info-page-title>No people match</div>
+        <div x-h-info-page-description>Try a different name or role.</div>
+      </div>
+    </div>
+  </template>
+</div>

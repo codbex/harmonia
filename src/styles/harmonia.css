@@ -9,6 +9,7 @@
 @source inline("flex");
 @source inline("flex-{col,row,col-reverse,row-reverse,wrap,0,1,auto,none}");
 @source inline("{sm:,md:,lg:,xl:}flex-{col-reverse,row-reverse}");
+@source inline("shrink-0");
 @utility hbox {
   display: flex;
   flex-direction: row;
@@ -30,6 +31,7 @@
 @source inline("place-content-{start,center,end,between,around,evenly,stretch}");
 @source inline("items-{start,center,end,baseline,stretch}");
 @source inline("place-items-{start,center,end,stretch}");
+@source inline("self-{start,center,end,stretch}");
 
 @source inline("gap-{x,y}-{1..12}");
 @source inline("gap-{1..12}{!,}");
@@ -118,8 +120,9 @@
 @source inline("no-underline");
 @source inline("line-through");
 @source inline("text-{left,right,center,justify,ellipsis,wrap,nowrap}");
-@source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}{!,}");
-@source inline("{sm:,md:,lg:,xl:}text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}");
+@source inline("text-{2xs,xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}{!,}");
+@source inline("{sm:,md:,lg:,xl:}text-{2xs,xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl}");
+@source inline("tabular-nums");
 @source inline("font-{extrabold,bold,semibold,medium,normal,light}{!,}");
 @source inline("font-{sans,serif,mono}{!,}");
 @source inline("leading-{none,normal,snug,relaxed}{!,}");
@@ -138,8 +141,10 @@
 @source inline("truncate");
 @source inline("align-middle");
 @source inline("whitespace-{nowrap,pre,pre-wrap,pre-line}");
+@source inline("wrap-{break-word,anywhere}");
 @source inline("rotate-{90,180,270}");
 @source inline("resize-none");
+@source inline("select-none");
 
 @source inline("overflow-{auto,hidden,visible,scroll,x-scroll,y-scroll,x-visible,y-visible,x-auto,y-auto,x-hidden,y-hidden}");
 @source inline("object-{contain,cover,fill}");
@@ -163,6 +168,7 @@
 @source inline("divide-{x,y}-{2..12}");
 @source inline("rounded-{s,e,t,b,tl,tr,bl,br}-{xs,sm,md,lg,xl,2xl,3xl,4xl,none,full}");
 @source inline("rounded-{xs,sm,md,lg,xl,2xl,3xl,4xl,none,none!,full}");
+@source inline("rounded-control");
 @source inline("{max-sm:,max-md:,max-lg:,max-xl:}rounded-none");
 @source inline("shadow-{xs,sm,md,lg,xl,none,none!}");
 @source inline("{max-sm:,max-md:,max-lg:,max-xl:}shadow-none");
@@ -182,6 +188,9 @@
   @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform;
 }
 @source inline("opacity-{0,25,50,75,100}");
+@source inline("group-hover:opacity-100");
+@source inline("group-focus-within:opacity-100");
+@source inline("hover:bg-muted");
 @source inline("backdrop-blur-{xs,sm,md}");
 @source inline("scale-{95,105}");
 @source inline("*:scale-95");
@@ -192,12 +201,14 @@
 @source inline("ease-{out,linear}");
 @source inline("fill-none");
 
-@source inline("bg-{primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground,sidebar}");
+@source inline(
+  "bg-{card,background,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground,sidebar}"
+);
 @source inline("fill-{current,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 /* prettier-ignore */
 @source inline("text-{background,foreground,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground,sidebar-foreground}");
 /* prettier-ignore */
-@source inline("border-{background,foreground,primary,primary/50,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
+@source inline("border-{border,background,foreground,primary,primary/50,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground}");
 
 /* Standard color palette (500 step) for general use */
 @source inline("{bg,text}-{white,black}");
@@ -211,4 +222,12 @@
 }
 [x-cloak] {
   display: none !important;
+}
+.h-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
+}
+.v-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
 }

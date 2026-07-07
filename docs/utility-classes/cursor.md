@@ -1,10 +1,8 @@
-# Color
+# Cursor
 
-CSS utility classes to apply colors to border, elements, svgs and text.
+CSS utility classes to change the mouse cursor when hovering over an element.
 
 ## Class names
-
-### Background colors
 
 | Class              | Description            |
 | ------------------ | ---------------------- |
@@ -18,8 +16,6 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | cursor-none        | `cursor: none;`        |
 
 ## Examples
-
-<br />
 
 <LiveExample data-class="flex flex-col gap-4">
 

@@ -34,10 +34,15 @@ function effect(fn) {
 
 export function createMockAlpine() {
   const _directives = {};
+  const _magics = {};
   return {
     _directives,
+    _magics,
     directive(name, fn) {
       _directives[name] = fn;
+    },
+    magic(name, fn) {
+      _magics[name] = fn;
     },
     reactive,
     findClosest(el, fn) {

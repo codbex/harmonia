@@ -1,4 +1,4 @@
-# Align Content
+# Align Items
 
 Aligns items along the cross axis of a flex or grid container.
 

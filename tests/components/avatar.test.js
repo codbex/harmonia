@@ -37,6 +37,13 @@ describe('h-avatar', () => {
     expect(el.classList.contains('shrink-0')).toBe(true);
   });
 
+  it('adds primary variant classes', () => {
+    mountDirective(avatarPlugin, 'h-avatar', el);
+    expect(el.classList.contains('data-[variant="primary"]:bg-primary/10')).toBe(true);
+    expect(el.classList.contains('data-[variant="primary"]:text-primary')).toBe(true);
+    expect(el.classList.contains('data-[variant="primary"]:border-primary')).toBe(true);
+  });
+
   it('sets data-slot="avatar"', () => {
     mountDirective(avatarPlugin, 'h-avatar', el);
     expect(el.getAttribute('data-slot')).toBe('avatar');
@@ -46,6 +53,39 @@ describe('h-avatar', () => {
     mountDirective(avatarPlugin, 'h-avatar', el);
     expect(el._h_avatar).toBeDefined();
     expect(el._h_avatar.fallback).toBe(false);
+  });
+
+  it('fills solid with a standard palette color via data-color', () => {
+    el.setAttribute('data-color', 'red');
+    mountDirective(avatarPlugin, 'h-avatar', el);
+    expect(el.classList.contains('bg-red-500')).toBe(true);
+    expect(el.classList.contains('text-white')).toBe(true);
+    expect(el.classList.contains('bg-secondary')).toBe(false);
+    expect(el.classList.contains('text-secondary-foreground')).toBe(false);
+  });
+
+  it('uses a dark foreground for light data-color backgrounds', () => {
+    el.setAttribute('data-color', 'white');
+    mountDirective(avatarPlugin, 'h-avatar', el);
+    expect(el.classList.contains('bg-white')).toBe(true);
+    expect(el.classList.contains('text-black')).toBe(true);
+  });
+
+  it('ignores an unknown data-color and keeps the secondary base', () => {
+    el.setAttribute('data-color', 'not-a-color');
+    mountDirective(avatarPlugin, 'h-avatar', el);
+    expect(el.classList.contains('bg-secondary')).toBe(true);
+    expect(el.classList.contains('text-white')).toBe(false);
+  });
+
+  it('skips secondary hover classes on a button when data-color is set', () => {
+    const btn = document.createElement('button');
+    btn.setAttribute('data-color', 'blue');
+    document.body.appendChild(btn);
+    mountDirective(avatarPlugin, 'h-avatar', btn);
+    expect(btn.classList.contains('cursor-pointer')).toBe(true);
+    expect(btn.classList.contains('bg-blue-500')).toBe(true);
+    expect(btn.classList.contains('hover:bg-secondary-hover')).toBe(false);
   });
 
   it('adds cursor-pointer for button elements', () => {

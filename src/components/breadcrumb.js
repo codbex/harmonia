@@ -2,7 +2,6 @@ import { ChevronRight, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-breadcrumb', (el, _, { Alpine, cleanup }) => {
-    // Additional component styles in src/styles/breadcrumb.css
     el.classList.add('flex', 'items-center', 'break-words', 'text-sm', 'text-muted-foreground', 'rounded-control');
     el.setAttribute('role', 'navigation');
     el.setAttribute('aria-label', 'breadcrumb');
@@ -11,7 +10,7 @@ export default function (Alpine) {
     const variants = {
       outline: ['border'],
     };
-    const allVariantClasses = [...Object.values(variants).flat(), 'h-mask-bc'];
+    const allVariantClasses = [...Object.values(variants).flat(), 'h-mask'];
 
     const sizes = {
       default: ['h-9', 'px-3'],
@@ -28,7 +27,7 @@ export default function (Alpine) {
         el.classList.add(...variants[variant]);
         el.classList.add(...(sizes[size] ?? sizes.default));
       } else {
-        el.classList.add('px-2', 'h-mask-bc');
+        el.classList.add('px-2', 'h-mask');
       }
     }
 

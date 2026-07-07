@@ -1,5 +1,6 @@
 import { findAncestorState } from '../common/ancestor';
 import { classListStartsWith } from '../common/class-list';
+import { colorClass, resolveColor } from '../common/colors';
 export default function (Alpine) {
   Alpine.directive('h-avatar', (el, _, { Alpine }) => {
     if (!classListStartsWith(el.classList, 'rounded')) {
@@ -9,24 +10,22 @@ export default function (Alpine) {
       'relative',
       'bg-secondary',
       'text-secondary-foreground',
-      'fill-secondary-foreground',
       '[[data-slot=toolbar]:not([data-variant=transparent])>&]:border',
+      'data-[variant="primary"]:bg-primary/10',
+      'data-[variant="primary"]:text-primary',
+      'data-[variant="primary"]:border-primary',
       'data-[variant="information"]:bg-information/10',
       'data-[variant="information"]:text-information',
       'data-[variant="information"]:border-information',
-      '[&[data-variant="information"]>svg]:fill-information',
       'data-[variant="warning"]:bg-warning/10',
       'data-[variant="warning"]:text-warning',
       'data-[variant="warning"]:border-warning',
-      '[&[data-variant="warning"]>svg]:fill-warning',
       'data-[variant="positive"]:bg-positive/10',
       'data-[variant="positive"]:text-positive',
       'data-[variant="positive"]:border-positive',
-      '[&[data-variant="positive"]>svg]:fill-positive',
       'data-[variant="negative"]:bg-negative/10',
       'data-[variant="negative"]:text-negative',
       'data-[variant="negative"]:border-negative',
-      '[&[data-variant="negative"]>svg]:fill-negative',
       'has-[img]:border-0',
       'flex',
       'size-8',
@@ -41,8 +40,20 @@ export default function (Alpine) {
     el._h_avatar = Alpine.reactive({
       fallback: false,
     });
+
+    // A standard palette color (data-color) fills the avatar solid, overriding the
+    // secondary base and the semantic data-variant tint. Light backgrounds get a
+    // dark foreground for contrast; everything else gets white.
+    const color = resolveColor(el.getAttribute('data-color'), null);
+    if (color) {
+      el.classList.remove('bg-secondary', 'text-secondary-foreground');
+      const lightBackground = color === 'white' || color === 'yellow';
+      el.classList.add(colorClass(color), lightBackground ? 'text-black' : 'text-white');
+    }
+
     if (el.tagName === 'BUTTON') {
-      el.classList.add('cursor-pointer', 'hover:bg-secondary-hover', 'active:bg-secondary-active');
+      el.classList.add('cursor-pointer');
+      if (!color) el.classList.add('hover:bg-secondary-hover', 'active:bg-secondary-active');
     }
   });
 

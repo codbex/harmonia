@@ -24,9 +24,9 @@
     <div x-h-sidebar data-borderless="true" x-ref="sidebar" style="order: 1">
       <div x-h-sidebar-header data-borderless="true">
         <div x-h-sidebar-header-item>
-          <span x-h-avatar class="rounded-lg" data-variant="primary">
+          <div x-h-avatar class="rounded-lg" data-variant="primary">
             <i x-h-lucide role="img" data-lucide="mountain"></i>
-          </span>
+          </div>
           <div class="vbox">
             <span>Granite ERP</span>
             <span class="text-sm font-normal">Granite Industrial Ltd</span>
@@ -195,12 +195,12 @@
                 <li x-h-notification class="hbox" :class="{ 'items-center': !n.action }" :data-unread="n.unread">
                   <div x-h-notification-media :class="n.media.kind === 'text' ? 'justify-start' : 'w-10'">
                     <template x-if="n.media.kind === 'text'">
-                      <span x-h-avatar class="size-10" x-text="n.media.text"></span>
+                      <div x-h-avatar class="size-10" x-text="n.media.text"></div>
                     </template>
                     <template x-if="n.media.kind === 'badge'">
-                      <span x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
+                      <div x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
                         <svg x-h-icon :data-icon="n.media.icon" role="presentation"></svg>
-                      </span>
+                      </div>
                     </template>
                     <template x-if="n.media.kind === 'icon'">
                       <svg x-h-icon :data-icon="n.media.icon" class="size-6" :class="n.media.tone" role="presentation"></svg>
@@ -237,7 +237,7 @@
             </ol>
           </div>
           <button x-h-button data-variant="transparent" data-size="icon" aria-label="User menu" x-h-menu-trigger.dropdown>
-            <span x-h-avatar>AS</span>
+            <div x-h-avatar>AS</div>
           </button>
           <ul x-h-menu aria-label="User menu" data-align="bottom-end">
             <div x-h-menu-label>
@@ -300,9 +300,9 @@
       <template id="toast">
         <li x-h-notification.floating class="hbox" :class="{ 'items-center': !description }">
           <div x-h-notification-media class="w-10">
-            <span x-h-avatar class="rounded-lg" :data-variant="variant">
+            <div x-h-avatar class="rounded-lg" :data-variant="variant">
               <svg x-h-icon :data-icon="icon" role="presentation"></svg>
-            </span>
+            </div>
           </div>
           <div class="vbox flex-1 gap-1">
             <h1 x-h-notification-title x-text="title"></h1>

@@ -20,9 +20,10 @@ x-h-avatar-fallback
 
 #### x-h-avatar
 
-| Attribute    | Type                                                         | Required | Description          |
-| ------------ | ------------------------------------------------------------ | -------- | -------------------- |
-| data-variant | `positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color state |
+| Attribute    | Type                                                                                                                                                 | Required | Description                                                                                                               |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`                                                                          | false    | Semantic color state                                                                                                      |
+| data-color   | `white`<br />`black`<br />`red`<br />`orange`<br />`yellow`<br />`green`<br />`teal`<br />`blue`<br />`indigo`<br />`purple`<br />`pink`<br />`gray` | false    | Fills the avatar solid with a [standard palette color](/utility-classes/color#standard-colors). Overrides `data-variant`. |
 
 ## Examples
 
@@ -31,10 +32,10 @@ x-h-avatar-fallback
 <LiveExample data-class="flex flex-col items-center">
 
 ```html
-<span x-h-avatar>
+<div x-h-avatar>
   <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
   <div x-h-avatar-fallback>HM</div>
-</span>
+</div>
 ```
 
 </LiveExample>
@@ -44,10 +45,10 @@ x-h-avatar-fallback
 <LiveExample data-class="flex flex-col items-center">
 
 ```html
-<span x-h-avatar class="size-12">
+<div x-h-avatar class="size-12">
   <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
   <div x-h-avatar-fallback>HM</div>
-</span>
+</div>
 ```
 
 </LiveExample>
@@ -59,10 +60,10 @@ You can change the avatar shape by using the `rounded-` classes.
 <LiveExample data-class="flex flex-col items-center">
 
 ```html
-<span x-h-avatar class="rounded-md">
+<div x-h-avatar class="rounded-md">
   <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
   <div x-h-avatar-fallback>HM</div>
-</span>
+</div>
 ```
 
 </LiveExample>
@@ -72,7 +73,7 @@ You can change the avatar shape by using the `rounded-` classes.
 <LiveExample data-class="flex flex-col items-center">
 
 ```html
-<span x-h-avatar>HM</span>
+<div x-h-avatar>HM</div>
 ```
 
 </LiveExample>
@@ -82,41 +83,70 @@ You can change the avatar shape by using the `rounded-` classes.
 <LiveExample data-class="flex flex-col items-center">
 
 ```html
-<span x-h-avatar aria-label="camera">
+<div x-h-avatar aria-label="camera">
   <i x-h-lucide role="img" data-lucide="camera"></i>
-</span>
+</div>
 ```
 
 </LiveExample>
 
 ### Variants
 
-<LiveExample data-class="grid grid-cols-4 justify-items-center gap-4">
+<LiveExample data-class="grid grid-cols-5 justify-items-center gap-4">
 
 ```html
-<span x-h-avatar data-variant="information">
+<div x-h-avatar data-variant="primary">
+  <svg x-h-icon data-icon="circle-user" role="img" aria-label="user"></svg>
+</div>
+
+<div x-h-avatar data-variant="information">
   <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
-</span>
+</div>
 
-<span x-h-avatar data-variant="warning">
+<div x-h-avatar data-variant="warning">
   <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
-</span>
+</div>
 
-<span x-h-avatar data-variant="positive">
+<div x-h-avatar data-variant="positive">
   <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
-</span>
+</div>
 
-<span x-h-avatar data-variant="negative">
+<div x-h-avatar data-variant="negative">
   <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
-</span>
+</div>
 
-<span x-h-avatar data-variant="information">IN</span>
+<div x-h-avatar data-variant="primary">PR</div>
 
-<span x-h-avatar data-variant="warning">WA</span>
+<div x-h-avatar data-variant="information">IN</div>
 
-<span x-h-avatar data-variant="positive">PO</span>
+<div x-h-avatar data-variant="warning">WA</div>
 
-<span x-h-avatar data-variant="negative">NE</span>
+<div x-h-avatar data-variant="positive">PO</div>
+
+<div x-h-avatar data-variant="negative">NE</div>
+```
+
+</LiveExample>
+
+### Colors
+
+Use `data-color` to fill the avatar with one of Harmonia's standard palette colors. This is independent of the semantic `data-variant` and is well suited to color-coded initials.
+
+<LiveExample data-class="grid grid-cols-6 justify-items-center gap-4">
+
+```html
+<div x-h-avatar data-color="red">RE</div>
+<div x-h-avatar data-color="orange">OR</div>
+<div x-h-avatar data-color="yellow">YE</div>
+<div x-h-avatar data-color="green">GR</div>
+<div x-h-avatar data-color="teal">TE</div>
+<div x-h-avatar data-color="blue">BL</div>
+<div x-h-avatar data-color="indigo">IN</div>
+<div x-h-avatar data-color="purple">PU</div>
+<div x-h-avatar data-color="pink">PI</div>
+<div x-h-avatar data-color="gray">GY</div>
+<div x-h-avatar data-color="white">WH</div>
+<div x-h-avatar data-color="black">BK</div>
 ```
 
 </LiveExample>

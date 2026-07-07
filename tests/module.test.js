@@ -5,7 +5,7 @@ import * as Harmonia from '../src/module.js';
 const NON_PLUGIN_EXPORTS = new Set(['version', 'registerComponents', 'default', 'getBreakpointListener', 'getColorScheme', 'getSystemColorScheme', 'setColorScheme', 'addColorSchemeListener', 'removeColorSchemeListener']);
 
 // Plugins exported for manual opt-in that must stay OUT of registerComponents.
-const OPT_IN_PLUGINS = new Set([Harmonia.Lucide]);
+const OPT_IN_PLUGINS = new Set([Harmonia.Lucide, Harmonia.I18next]);
 
 function collectRegistered() {
   const registered = new Set();
@@ -28,5 +28,9 @@ describe('registerComponents', () => {
 
   it('does not auto-register the opt-in Lucide plugin', () => {
     expect(collectRegistered().has(Harmonia.Lucide)).toBe(false);
+  });
+
+  it('does not auto-register the opt-in I18next plugin', () => {
+    expect(collectRegistered().has(Harmonia.I18next)).toBe(false);
   });
 });

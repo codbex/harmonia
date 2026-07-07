@@ -137,7 +137,7 @@
             </div>
             <div x-h-card-content class="vbox gap-3">
               <div class="hbox items-center gap-3">
-                <span x-h-avatar x-text="customer ? customer.initials : '?'"></span>
+                <div x-h-avatar x-text="customer ? customer.initials : '?'"></div>
                 <div class="vbox min-w-0">
                   <span class="truncate font-medium" x-text="invoice.customer"></span>
                   <span class="truncate text-sm text-muted-foreground" x-text="customer ? customer.contact : 'No contact on file'"></span>

@@ -54,6 +54,7 @@ export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
+import i18next from './plugins/i18next';
 import lucide from './plugins/lucide';
 import dateFormat from './utils/date-format';
 import focus from './utils/focus';
@@ -80,6 +81,7 @@ export {
   fieldset as Fieldset,
   fileUpload as FileUpload,
   focus as Focus,
+  i18next as I18next,
   icon as Icon,
   include as Include,
   infoPage as InfoPage,

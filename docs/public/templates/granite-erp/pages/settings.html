@@ -99,11 +99,13 @@
             <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
           </div>
           <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
-            <i x-h-lucide x-show="$store.erp.settings.theme === 'light'" role="img" data-lucide="sun"></i>
+            <!-- svg placeholders on purpose: x-h-lucide renders them in place,
+                 so the x-show bindings keep switching the visible icon. -->
+            <svg x-h-lucide x-show="$store.erp.settings.theme === 'light'" role="img" data-lucide="sun"></svg>
             <span x-show="$store.erp.settings.theme === 'light'">Light</span>
-            <i x-h-lucide x-show="$store.erp.settings.theme === 'dark'" role="img" data-lucide="moon"></i>
+            <svg x-h-lucide x-show="$store.erp.settings.theme === 'dark'" role="img" data-lucide="moon"></svg>
             <span x-show="$store.erp.settings.theme === 'dark'">Dark</span>
-            <i x-h-lucide x-show="$store.erp.settings.theme === 'auto'" role="img" data-lucide="sun-moon"></i>
+            <svg x-h-lucide x-show="$store.erp.settings.theme === 'auto'" role="img" data-lucide="sun-moon"></svg>
             <span x-show="$store.erp.settings.theme === 'auto'">Auto</span>
             <i x-h-lucide role="img" data-lucide="chevron-down"></i>
           </button>

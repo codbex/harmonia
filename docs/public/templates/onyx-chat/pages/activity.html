@@ -1,0 +1,77 @@
+<div x-data="pageActivity" class="vbox gap-4 p-4">
+  <div class="vbox">
+    <h3 x-h-text.h5>Activity</h3>
+    <p x-h-text.muted>Mentions of you and reactions to your messages, newest first.</p>
+  </div>
+
+  <div x-h-tabs data-orientation="horizontal">
+    <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
+      <div x-h-tab-list>
+        <button id="act-tab-mentions" x-h-tab aria-controls="act-panel-mentions" :aria-selected="tab === 'mentions'" @click="tab = 'mentions'">
+          <i x-h-lucide role="img" data-lucide="at-sign"></i>
+          <span x-text="'Mentions (' + $store.chat.mentionEvents.length + ')'"></span>
+        </button>
+        <button id="act-tab-reactions" x-h-tab aria-controls="act-panel-reactions" :aria-selected="tab === 'reactions'" @click="tab = 'reactions'">
+          <i x-h-lucide role="img" data-lucide="smile"></i>
+          <span x-text="'Reactions (' + $store.chat.reactionEvents.length + ')'"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-4" x-h-tabs-content id="act-panel-mentions" aria-labelledby="act-tab-mentions" :hidden="tab !== 'mentions'">
+      <div x-h-card class="w-full overflow-hidden py-0!">
+        <ul x-h-list>
+          <template x-for="event in $store.chat.mentionEvents" :key="event.id">
+            <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" @click="go(event.path)">
+              <div x-h-avatar class="size-8 rounded-control text-xs" :data-color="$store.chat.userById(event.userId)?.color" x-text="$store.chat.userById(event.userId)?.initials || '?'"></div>
+              <div class="vbox min-w-0 flex-1">
+                <span class="text-sm font-medium" x-text="$store.chat.displayName(event.userId) + ' mentioned you in ' + event.label"></span>
+                <span class="truncate text-sm text-muted-foreground" x-text="event.text"></span>
+              </div>
+              <time class="text-xs text-nowrap text-muted-foreground" x-h-date-format="event.ts" data-options='{ "dateStyle": "medium", "timeStyle": "short" }'></time>
+            </li>
+          </template>
+          <template x-if="!$store.chat.mentionEvents.length">
+            <li x-h-info-page class="py-6">
+              <div x-h-info-page-header>
+                <div x-h-info-page-media.icon>
+                  <i x-h-lucide role="img" data-lucide="at-sign"></i>
+                </div>
+                <div x-h-info-page-title>No mentions yet</div>
+                <div x-h-info-page-description>Send a message and teammates will reply; some of them will mention you.</div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pt-4" x-h-tabs-content id="act-panel-reactions" aria-labelledby="act-tab-reactions" :hidden="tab !== 'reactions'">
+      <div x-h-card class="w-full overflow-hidden py-0!">
+        <ul x-h-list>
+          <template x-for="event in $store.chat.reactionEvents" :key="event.id">
+            <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" @click="go(event.path)">
+              <div x-h-avatar class="size-8 rounded-control text-xs" :data-color="$store.chat.userById(event.userId)?.color" x-text="$store.chat.userById(event.userId)?.initials || '?'"></div>
+              <div class="vbox min-w-0 flex-1">
+                <span class="text-sm font-medium" x-text="$store.chat.displayName(event.userId) + ' reacted ' + event.emoji + ' to your message in ' + event.label"></span>
+                <span class="truncate text-sm text-muted-foreground" x-text="event.text"></span>
+              </div>
+              <time class="text-xs text-nowrap text-muted-foreground" x-h-date-format="event.ts" data-options='{ "dateStyle": "medium", "timeStyle": "short" }'></time>
+            </li>
+          </template>
+          <template x-if="!$store.chat.reactionEvents.length">
+            <li x-h-info-page class="py-6">
+              <div x-h-info-page-header>
+                <div x-h-info-page-media.icon>
+                  <i x-h-lucide role="img" data-lucide="smile"></i>
+                </div>
+                <div x-h-info-page-title>No reactions yet</div>
+                <div x-h-info-page-description>When teammates react to your messages, the reactions collect here.</div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

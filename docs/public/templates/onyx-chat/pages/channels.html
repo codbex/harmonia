@@ -1,0 +1,58 @@
+<div x-data="pageChannels" class="vbox gap-4 p-4">
+  <div class="hbox flex-wrap items-end justify-between gap-2">
+    <div class="vbox">
+      <h3 x-h-text.h5>Channels</h3>
+      <p x-h-text.muted>Join the conversations that matter to you; joined channels show up in the sidebar.</p>
+    </div>
+    <div class="w-3xs">
+      <div x-h-input-group>
+        <input x-h-input.group placeholder="Search channels..." aria-label="Search channels" x-model="search" />
+        <div x-h-input-group-addon data-align="inline-start">
+          <i x-h-lucide role="img" data-lucide="search"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div x-h-card class="w-full overflow-hidden py-0!">
+    <ul x-h-list>
+      <template x-for="channel in list" :key="channel.id">
+        <li x-h-list-item class="items-start gap-3 px-4 py-3">
+          <div x-h-avatar class="rounded-control">
+            <i x-h-lucide role="img" data-lucide="hash"></i>
+          </div>
+          <div class="vbox min-w-0 flex-1">
+            <div class="hbox items-center gap-2">
+              <span class="font-medium" x-text="channel.name"></span>
+              <span x-h-badge data-variant="outline" x-show="channel.joined">Joined</span>
+            </div>
+            <span class="truncate text-sm text-muted-foreground" x-text="channel.topic"></span>
+            <span class="text-xs text-muted-foreground" x-text="channel.memberIds.length + ' members'"></span>
+          </div>
+          <div class="hbox gap-2">
+            <template x-if="channel.joined">
+              <div class="hbox gap-2">
+                <button x-h-button data-variant="outline" data-size="sm" @click="go('/channels/' + channel.id)">Open</button>
+                <button x-h-button data-variant="transparent" data-size="sm" @click="$store.chat.leaveChannel(channel.id)">Leave</button>
+              </div>
+            </template>
+            <template x-if="!channel.joined">
+              <button x-h-button data-variant="primary" data-size="sm" @click="$store.chat.joinChannel(channel.id)">Join channel</button>
+            </template>
+          </div>
+        </li>
+      </template>
+      <template x-if="!list.length">
+        <li x-h-info-page class="py-6">
+          <div x-h-info-page-header>
+            <div x-h-info-page-media.icon>
+              <i x-h-lucide role="img" data-lucide="search-x"></i>
+            </div>
+            <div x-h-info-page-title>No channels match</div>
+            <div x-h-info-page-description>Try a different search term.</div>
+          </div>
+        </li>
+      </template>
+    </ul>
+  </div>
+</div>

@@ -4,9 +4,14 @@
 // The docs/ tree is the source of truth for components: this script transcribes
 // each directive-bearing doc into an agent-optimized reference file, builds the
 // SKILL.md router (with a generated component index) and an llms.txt index.
-// It strips VitePress-only markup (the <LiveExample> / <IconGallery> /
-// <TemplateShowcase> example wrappers, internal links) and keeps the ```html
-// example blocks, which are already written in the exact syntax a consumer types.
+// Each reference carries the doc's Usage prose, API tables, Keyboard Handling
+// and Accessibility sections, and the FULL Examples section verbatim (every
+// ```html block with its headings and surrounding prose - the examples are
+// already written in the exact syntax a consumer types), plus a link to the
+// component's page on the docs site. VitePress-only markup is normalized:
+// example wrappers (<LiveExample> / <IconGallery> / <TemplateShowcase>) and
+// internal links are stripped, and ::: info/warning containers become plain
+// markdown blockquotes.
 //
 // The utility-class reference (references/utility-classes.md) is generated from
 // src/styles/harmonia.css - the authoritative Tailwind safelist - so agents get
@@ -30,6 +35,10 @@ const REF_DIR = path.join(OUT_DIR, 'references');
 // which also contains undocumented internal classes).
 const HARMONIA_CSS = path.join(ROOT, 'src', 'styles', 'harmonia.css');
 const UTILITY_LABEL = 'Utility classes';
+
+// Canonical public docs site. Referenced from every generated reference file
+// (per-component "Full docs" link) and from the SKILL.md / llms.txt headers.
+const DOCS_URL = 'https://www.codbex.com/harmonia';
 
 // Doc subdirectories to transcribe, in index order. `requireDirectives` marks
 // the directive-bearing groups where a missing directive block signals drift.
@@ -116,6 +125,45 @@ function stripComponentWrappers(md) {
   return out.join('\n');
 }
 
+// VitePress `::: info|tip|warning|...` custom containers are site-only syntax;
+// left as-is they leak raw `:::` lines into the references. Convert each to a
+// plain markdown blockquote: the opening line becomes `> **Label:** Title`,
+// body lines get a `> ` prefix, and the closing `:::` is dropped. Fence-aware.
+// Unknown container types fall back to the capitalized type name so no
+// container can ever pass through unconverted.
+const CONTAINER_LABELS = { info: 'Note', tip: 'Tip', warning: 'Warning', danger: 'Caution', details: 'Details' };
+function convertContainers(md) {
+  const lines = md.split('\n');
+  let inFence = false;
+  let inContainer = false;
+  const out = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) {
+      inFence = !inFence;
+      out.push(inContainer ? `> ${line}` : line);
+      continue;
+    }
+    if (inFence) {
+      out.push(inContainer ? `> ${line}` : line);
+      continue;
+    }
+    const open = /^:{3,}\s*(\S+)\s*(.*)$/.exec(line);
+    if (open && !inContainer) {
+      inContainer = true;
+      const type = open[1].toLowerCase();
+      const label = CONTAINER_LABELS[type] || type.charAt(0).toUpperCase() + type.slice(1);
+      out.push(open[2] ? `> **${label}:** ${open[2].trim()}` : `> **${label}:**`);
+      continue;
+    }
+    if (inContainer && /^:{3,}\s*$/.test(line)) {
+      inContainer = false;
+      continue;
+    }
+    out.push(inContainer ? (line.trim() ? `> ${line}` : '>') : line);
+  }
+  return out.join('\n');
+}
+
 function extractTitleAndDescription(lines, mask) {
   const ti = findHeading(lines, mask, { level: 1 });
   const title = ti >= 0 ? headingAt(lines, mask, ti).text : null;
@@ -181,18 +229,26 @@ function extractApi(lines, mask) {
   return { directives, apiDetails: stripComponentWrappers(stripInternalLinks(parts.join('\n\n'))) };
 }
 
-// Collects every ```html block in the doc (fence-aware), each tagged with the
-// nearest preceding heading. Docs title their example sections inconsistently
-// ("Examples", "Button Variants", "Tree examples"), so we scan the whole doc
-// rather than a single named section. Attribute tables live in ``` / ```js
-// blocks, so only ```html is picked up.
-function extractExampleBlocks(lines, mask) {
+// Verbatim body of the H2 section with the given name (`## Usage`,
+// `## Keyboard Handling`, `## Accessibility`, `## Examples` - the canonical
+// section set enforced by tests/docs-structure.test.js), normalized for a
+// standalone reference (internal links and VitePress wrappers removed).
+// Returns null when the section is missing or empty.
+function extractSection(lines, mask, name) {
+  const match = new RegExp(`^${name}$`, 'i');
+  const start = findHeading(lines, mask, { level: 2, match });
+  if (start < 0) return null;
+  const end = sectionEnd(lines, mask, start);
+  const body = stripComponentWrappers(stripInternalLinks(lines.slice(start + 1, end).join('\n'))).trim();
+  return body || null;
+}
+
+// Collects every ```html block in the doc (fence-aware). Used only to detect
+// `x-model` usage across all examples (including ones inside API Reference).
+function extractExampleBlocks(lines) {
   const blocks = [];
-  let lastHeading = null;
   let i = 0;
   while (i < lines.length) {
-    const h = headingAt(lines, mask, i);
-    if (h) lastHeading = h.text;
     if (/^\s*```html\s*$/.test(lines[i])) {
       i++;
       const buf = [];
@@ -200,41 +256,28 @@ function extractExampleBlocks(lines, mask) {
         buf.push(lines[i]);
         i++;
       }
-      blocks.push({ code: buf.join('\n').replace(/\s+$/, ''), name: lastHeading });
+      blocks.push({ code: buf.join('\n').replace(/\s+$/, '') });
     }
     i++;
   }
   return blocks;
 }
 
-// The most useful minimal example: prefer script-free blocks, then the shortest.
-function pickMinimalExample(blocks) {
-  if (!blocks.length) return null;
-  const scriptFree = blocks.filter((b) => !/<script/i.test(b.code));
-  const pool = scriptFree.length ? scriptFree : blocks;
-  return pool.slice().sort((a, b) => a.code.split('\n').length - b.code.split('\n').length)[0];
-}
-
 function parseDoc(text) {
-  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const lines = convertContainers(text.replace(/\r\n/g, '\n')).split('\n');
   const mask = computeFenceMask(lines);
   const { title, description } = extractTitleAndDescription(lines, mask);
   const { directives, apiDetails } = extractApi(lines, mask);
-  const blocks = extractExampleBlocks(lines, mask);
-  const example = pickMinimalExample(blocks);
-  const otherNames = [];
-  for (const b of blocks) {
-    if (b === example) continue;
-    if (b.name && !otherNames.includes(b.name)) otherNames.push(b.name);
-  }
-  const hasModel = blocks.some((b) => /x-model/.test(b.code));
+  const hasModel = extractExampleBlocks(lines).some((b) => /x-model/.test(b.code));
   return {
     title,
     description,
     directives,
     apiDetails,
-    example: example ? example.code : null,
-    exampleNames: otherNames,
+    usage: extractSection(lines, mask, 'Usage'),
+    keyboard: extractSection(lines, mask, 'Keyboard Handling'),
+    accessibility: extractSection(lines, mask, 'Accessibility'),
+    examples: extractSection(lines, mask, 'Examples'),
     hasModel,
   };
 }
@@ -262,7 +305,7 @@ function firstSentence(text) {
   return (m ? m[1] : text).trim();
 }
 
-function renderReference(doc) {
+function renderReference(doc, docUrl) {
   const out = [];
   out.push(`# ${doc.title}`);
   out.push('');
@@ -273,6 +316,13 @@ function renderReference(doc) {
   out.push('Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-` prefix.');
   out.push('');
 
+  if (doc.usage) {
+    out.push('## Usage');
+    out.push('');
+    out.push(doc.usage);
+    out.push('');
+  }
+
   if (doc.directives.length === 1) {
     out.push('## Directive');
     out.push('');
@@ -281,7 +331,7 @@ function renderReference(doc) {
   } else if (doc.directives.length > 1) {
     out.push('## Directives');
     out.push('');
-    out.push(`\`${doc.directives[0]}\` is the root. The directives compose one component and must be nested as shown in the Example below (the library throws at runtime when a required ancestor is missing):`);
+    out.push(`\`${doc.directives[0]}\` is the root. The directives compose one component and must be nested as shown in the Examples below (the library throws at runtime when a required ancestor is missing):`);
     out.push('');
     for (const d of doc.directives) out.push(`- \`${d}\``);
     out.push('');
@@ -294,24 +344,37 @@ function renderReference(doc) {
     out.push('');
   }
 
-  if (doc.hasModel) {
-    out.push('## Binding');
+  if (doc.keyboard) {
+    out.push('## Keyboard Handling');
     out.push('');
-    out.push('Binds through Alpine `x-model`. See the Example for the expected value shape.');
+    out.push(doc.keyboard);
     out.push('');
   }
 
-  if (doc.example) {
-    out.push('## Example');
+  if (doc.accessibility) {
+    out.push('## Accessibility');
     out.push('');
-    out.push('```html');
-    out.push(doc.example);
-    out.push('```');
+    out.push(doc.accessibility);
     out.push('');
-    if (doc.exampleNames.length) {
-      out.push(`More examples in the docs site: ${doc.exampleNames.join(', ')}.`);
-      out.push('');
-    }
+  }
+
+  if (doc.hasModel) {
+    out.push('## Binding');
+    out.push('');
+    out.push('Binds through Alpine `x-model`. See the Examples for the expected value shape.');
+    out.push('');
+  }
+
+  if (doc.examples) {
+    out.push('## Examples');
+    out.push('');
+    out.push(doc.examples);
+    out.push('');
+  }
+
+  if (docUrl) {
+    out.push(`Full docs: ${docUrl}`);
+    out.push('');
   }
 
   out.push('## Notes');
@@ -345,10 +408,12 @@ function renderSkill(index) {
     'Harmonia is a UI component library for [Alpine.js](https://alpinejs.dev/), built with Tailwind CSS. Components are Alpine directives: you add `x-h-*` attributes to plain HTML elements and the library upgrades them. There is no JSX and no component-tag syntax.'
   );
   out.push('');
+  out.push(`Full documentation: ${DOCS_URL}/`);
+  out.push('');
   out.push('## How to use this skill');
   out.push('');
   out.push(
-    'Find the component in the index below and open its file under `references/`. Each reference lists the directive set, its attributes, whether it binds with `x-model`, and a minimal working example you can adapt. Load only the reference(s) you need.'
+    'Find the component in the index below and open its file under `references/`. Each reference lists the directive set, its attributes, whether it binds with `x-model`, and working examples you can adapt. Load only the reference(s) you need.'
   );
   out.push('');
   out.push('## Setup');
@@ -427,7 +492,7 @@ function renderLlms(groups) {
   const out = [];
   out.push('# Harmonia');
   out.push('');
-  out.push('> A UI component library for Alpine.js (@codbex/harmonia). Components are `x-h-*` directives added to plain HTML. Full usage per component is in the linked reference files; start from SKILL.md.');
+  out.push(`> A UI component library for Alpine.js (@codbex/harmonia). Components are \`x-h-*\` directives added to plain HTML. Full usage per component is in the linked reference files; start from SKILL.md. Docs site: ${DOCS_URL}/`);
   out.push('');
   for (const group of groups) {
     if (!group.entries.length) continue;
@@ -671,7 +736,7 @@ function transform(inputs) {
       warnings.push(`${input.category}/${input.slug}.md is missing a "Component attribute(s)" block (expected directives)`);
     }
 
-    files[`references/${input.slug}.md`] = renderReference(doc);
+    files[`references/${input.slug}.md`] = renderReference(doc, `${DOCS_URL}/${input.category}/${input.slug}.html`);
 
     if (!groupsByLabel.has(input.label)) groupsByLabel.set(input.label, { label: input.label, entries: [] });
     groupsByLabel.get(input.label).entries.push({
@@ -794,6 +859,6 @@ function main() {
   console.warn(`generate-agent-docs: wrote ${refCount} references to ${path.relative(ROOT, REF_DIR)}${warnings.length ? ` (${warnings.length} warning(s))` : ''}`);
 }
 
-module.exports = { transform, parseDoc, outline, readInputs, SOURCES, OUT_DIR, REF_DIR, DOCS_DIR };
+module.exports = { transform, parseDoc, outline, readInputs, SOURCES, OUT_DIR, REF_DIR, DOCS_DIR, DOCS_URL };
 
 if (require.main === module) main();

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" class="size-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onyx Chat | Harmonia</title>
+    <!-- Pinecone Router must be evaluated before Alpine starts. -->
+    <script src="/harmonia/lib/node_modules/pinecone-router/dist/router.min.js"></script>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js"></script>
+    <script src="/harmonia/templates/onyx-chat/js/data.js"></script>
+    <script src="/harmonia/templates/onyx-chat/js/app.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="hbox size-full bg-sidebar" x-data="AppShell" @pinecone:start.document="onRouteStart" @pinecone:end.document="onRouteEnd" @pinecone:fetch-error.document="onFetchError">
+    <div x-h-sheet-overlay="showSidebarSheet">
+      <div x-h-sheet data-align="left" x-ref="sidebarSheet"></div>
+    </div>
+
+    <div x-h-sidebar data-borderless="true" x-ref="sidebar" style="order: 1">
+      <div x-h-sidebar-header data-borderless="true">
+        <div x-h-sidebar-header-item>
+          <div x-h-avatar class="rounded-control" data-variant="primary">
+            <i x-h-lucide role="img" data-lucide="messages-square"></i>
+          </div>
+          <div class="vbox">
+            <span>Onyx Chat</span>
+            <span class="text-sm font-normal">Onyx Labs</span>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-sidebar-content>
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Home</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/activity')" @click="go('/activity')">
+                  <i x-h-lucide role="img" data-lucide="at-sign"></i>
+                  <span>Activity</span>
+                  <span x-h-sidebar-menu-badge x-show="$store.chat.unseenMentionCount" x-text="$store.chat.unseenMentionCount"></span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/channels') && !$router.context.params.id" @click="go('/channels')">
+                  <i x-h-lucide role="img" data-lucide="layout-list"></i>
+                  <span>Browse channels</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="isActive('/people')" @click="go('/people')">
+                  <i x-h-lucide role="img" data-lucide="users"></i>
+                  <span>People</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Channels</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <template x-for="channel in $store.chat.joinedChannels" :key="channel.id">
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button :data-active="channelActive(channel.id)" @click="go('/channels/' + channel.id)">
+                    <i x-h-lucide role="img" data-lucide="hash"></i>
+                    <span x-text="channel.name"></span>
+                    <span x-h-sidebar-menu-badge x-show="channel.unread" x-text="channel.unread"></span>
+                  </button>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Direct messages</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <template x-for="dm in $store.chat.dms" :key="dm.id">
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button :data-active="isActive('/dms/' + dm.id)" @click="go('/dms/' + dm.id)">
+                    <div x-h-avatar class="relative size-6! rounded-control text-xs" :data-color="$store.chat.userById(dm.userId)?.color">
+                      <span x-text="$store.chat.userById(dm.userId)?.initials"></span>
+                      <span
+                        x-h-badge-indicator
+                        data-dot="true"
+                        data-size="sm"
+                        x-show="$store.chat.userById(dm.userId)?.status !== 'offline'"
+                        :data-variant="$store.chat.userById(dm.userId)?.status === 'online' ? 'positive' : 'warning'"
+                      ></span>
+                    </div>
+                    <span x-text="$store.chat.displayName(dm.userId)"></span>
+                    <span x-h-sidebar-menu-badge x-show="dm.unread" x-text="dm.unread"></span>
+                  </button>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-sidebar-footer data-borderless="true">
+        <button x-h-sidebar-menu-button :data-active="isActive('/settings')" @click="go('/settings')">
+          <i x-h-lucide role="img" data-lucide="settings"></i>
+          <span>Settings</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1" style="order: 2">
+      <main class="vbox size-full overflow-hidden bg-background" :class="isSmallScreen || 'border shadow-sm'">
+        <div x-h-toolbar data-variant="transparent">
+          <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="Open navigation" @click="showSidebarSheet = true">
+            <i x-h-lucide role="img" data-lucide="menu"></i>
+          </button>
+          <nav x-h-breadcrumb data-overflow="scroll" :data-variant="isSmallScreen ? 'outline' : 'default'">
+            <ol x-h-breadcrumb-list>
+              <li x-h-breadcrumb-item>
+                <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+                <a x-h-breadcrumb-link href="/">Onyx</a>
+              </li>
+              <template x-for="crumb in crumbs" :key="crumb.label">
+                <li x-h-breadcrumb-item>
+                  <template x-if="crumb.path">
+                    <a x-h-breadcrumb-link :href="crumb.path" x-text="crumb.label"></a>
+                  </template>
+                  <template x-if="!crumb.path">
+                    <span x-h-breadcrumb-page x-text="crumb.label"></span>
+                  </template>
+                </li>
+              </template>
+            </ol>
+          </nav>
+          <div x-h-toolbar-spacer></div>
+          <button x-h-button data-variant="transparent" data-size="icon" aria-label="Jump to a channel or person" x-h-popover-trigger="jumpOpen">
+            <i x-h-lucide role="img" data-lucide="search"></i>
+          </button>
+          <div x-h-popover data-align="bottom-end" data-innerclicks="true" class="w-full" data-max-w="md">
+            <div class="vbox gap-2 p-2" style="min-width: 18rem">
+              <div x-h-input-group>
+                <!-- x-h-focus moves focus into the field whenever the popover opens. -->
+                <input x-h-input.group placeholder="Search channels and people..." aria-label="Search channels and people" x-model="jumpQuery" x-h-focus="jumpOpen" @keydown.enter="jumpFirst()" />
+                <div x-h-input-group-addon data-align="inline-start">
+                  <i x-h-lucide role="img" data-lucide="search"></i>
+                </div>
+              </div>
+              <ul x-h-list>
+                <template x-if="jumpQuery.trim() && !jumpResults.length">
+                  <li class="border-0 px-3 py-2 text-sm text-muted-foreground">No channels or people match.</li>
+                </template>
+                <template x-if="!jumpQuery.trim()">
+                  <li class="border-0 px-3 py-2 text-sm text-muted-foreground">Type to search channels and people. Enter opens the first match.</li>
+                </template>
+                <template x-for="result in jumpResults" :key="result.id">
+                  <li x-h-list-item.interactive class="cursor-pointer gap-3 px-3 py-2" @click="jumpTo(result)">
+                    <i x-h-lucide role="img" :data-lucide="result.kind === 'channel' ? 'hash' : 'user'"></i>
+                    <div class="vbox min-w-0 flex-1">
+                      <span class="truncate" x-text="result.label"></span>
+                      <span class="truncate text-sm text-muted-foreground" x-text="result.hint"></span>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </div>
+          <button x-h-button data-variant="transparent" data-size="icon" aria-label="User menu" x-h-menu-trigger.dropdown>
+            <div x-h-avatar class="relative rounded-control" :data-color="$store.chat.profile.color" x-text="$store.chat.profile.initials"></div>
+          </button>
+          <ul x-h-menu aria-label="User menu" data-align="bottom-end">
+            <div x-h-menu-label>
+              <div class="vbox">
+                <span x-text="$store.chat.profile.name"></span>
+                <span class="font-normal text-muted-foreground" x-text="$store.chat.profile.email"></span>
+              </div>
+            </div>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item @click="$store.chat.setStatus('online')">
+              <i x-h-lucide role="img" data-lucide="circle-dot"></i>
+              <span>Online</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.profile.status === 'online'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.chat.setStatus('away')">
+              <i x-h-lucide role="img" data-lucide="clock"></i>
+              <span>Away</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.profile.status === 'away'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item @click="$store.chat.setTheme('light')">
+              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <span>Light</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'light'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.chat.setTheme('dark')">
+              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <span>Dark</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'dark'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <li x-h-menu-item @click="$store.chat.setTheme('auto')">
+              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <span>Auto</span>
+              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'auto'">
+                <svg x-h-icon data-icon="check" role="presentation"></svg>
+              </span>
+            </li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item @click="go('/settings')">
+              <i x-h-lucide role="img" data-lucide="user"></i>
+              <span>Profile and preferences</span>
+            </li>
+            <li x-h-menu-item data-variant="negative" @click="$store.chat.toast('Signed out', 'This is where the demo ends; reload the page to sign back in.', 'information')">
+              <i x-h-lucide role="img" data-lucide="log-out"></i>
+              <span>Sign out</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="relative">
+          <div class="absolute top-0 left-0 w-full" x-show="routeLoading" style="display: none; z-index: 20">
+            <div x-h-progress="0" data-loading="true" aria-label="Loading page"></div>
+          </div>
+        </div>
+
+        <div class="flex-1 overflow-auto" x-ref="pageScroll">
+          <!-- Pages own their padding; the outlet is full height so the full-bleed chat page can fill it. -->
+          <div id="page-outlet" class="h-full"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast overlay: the single x-h-notification-overlay for the whole app.
+         The chat store renders toasts through the "toast" template below. -->
+    <section x-h-notification-overlay>
+      <template id="toast">
+        <li x-h-notification.floating class="hbox" :class="{ 'items-center': !description }">
+          <div x-h-notification-media class="w-10">
+            <div x-h-avatar class="rounded-lg" :data-variant="variant">
+              <svg x-h-icon :data-icon="icon" role="presentation"></svg>
+            </div>
+          </div>
+          <div class="vbox flex-1 gap-1">
+            <h1 x-h-notification-title x-text="title"></h1>
+            <template x-if="description">
+              <p x-h-notification-description x-text="description"></p>
+            </template>
+          </div>
+          <div x-h-notification-actions data-orientation="vertical" :class="{ 'justify-start': description }">
+            <button x-h-button x-h-notification-close data-variant="transparent" data-size="icon-sm" aria-label="Dismiss notification">
+              <svg x-h-icon data-icon="close" role="presentation"></svg>
+            </button>
+          </div>
+        </li>
+      </template>
+    </section>
+
+    <!-- Routes: every page is a separate fragment fetched on demand and
+         rendered into #page-outlet (see targetID in js/app.js). The home
+         route and both conversation routes share the same chat fragment. -->
+    <template x-route="/" x-template="/harmonia/templates/onyx-chat/pages/chat.html"></template>
+    <template x-route="/channels" x-template="/harmonia/templates/onyx-chat/pages/channels.html"></template>
+    <template x-route="/channels/:id" x-template="/harmonia/templates/onyx-chat/pages/chat.html"></template>
+    <template x-route="/dms/:id" x-template="/harmonia/templates/onyx-chat/pages/chat.html"></template>
+    <template x-route="/activity" x-template="/harmonia/templates/onyx-chat/pages/activity.html"></template>
+    <template x-route="/people" x-template="/harmonia/templates/onyx-chat/pages/people.html"></template>
+    <template x-route="/settings" x-template="/harmonia/templates/onyx-chat/pages/settings.html"></template>
+    <template x-route="notfound" x-handler="notFound" x-template="/harmonia/templates/onyx-chat/pages/not-found.html"></template>
+  </body>
+</html>

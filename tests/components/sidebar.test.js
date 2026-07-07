@@ -68,6 +68,15 @@ describe('h-sidebar-header-item', () => {
     const anchor = document.createElement('a');
     expect(() => mountDirective(sidebarPlugin, 'h-sidebar-header-item', anchor, { original: 'x-h-sidebar-header-item' })).toThrow();
   });
+
+  it('keeps a first-child avatar visible and resizes it when collapsed', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    // The collapse hide rule exempts a first-child avatar so it stays visible.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!')).toBe(true);
+    // and it is sized down to fit the collapsed rail.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!')).toBe(true);
+  });
 });
 
 describe('h-sidebar-content', () => {
@@ -151,6 +160,32 @@ describe('h-sidebar-menu-item', () => {
         expression: 'false',
       })
     ).toThrow();
+  });
+});
+
+describe('h-sidebar-menu-button', () => {
+  it('throws unless set on a button or a link', () => {
+    const el = document.createElement('div');
+    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] })).toThrow();
+  });
+
+  it('applies base classes and data-slot on a button', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('type')).toBe('button');
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-button');
+    expect(el.classList.contains('flex')).toBe(true);
+  });
+
+  it('keeps a first-child avatar visible and centers it when collapsed', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    // Exempt a first-child avatar from the collapse hide rule.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!')).toBe(true);
+    // Size it to the collapsed rail, drop the button padding and center it.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!')).toBe(true);
   });
 });
 

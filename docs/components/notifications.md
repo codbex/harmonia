@@ -266,10 +266,10 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media>
-    <span x-h-avatar>
+    <div x-h-avatar>
       <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
-    </span>
+    </div>
   </div>
   <div class="vbox flex-1">
     <h1 x-h-notification-title>Notification</h1>
@@ -348,10 +348,10 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox">
   <div x-h-notification-media class="justify-start">
-    <span x-h-avatar class="size-10">
+    <div x-h-avatar class="size-10">
       <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
       <div x-h-avatar-fallback>HM</div>
-    </span>
+    </div>
   </div>
   <div class="vbox flex-1 gap-1">
     <h1 x-h-notification-title>Harmonia Doe</h1>
@@ -380,9 +380,9 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="information">
+    <div x-h-avatar class="rounded-lg" data-variant="information">
       <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
-    </span>
+    </div>
   </div>
   <div x-h-notification-title>Information</div>
 </li>
@@ -397,9 +397,9 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="warning">
+    <div x-h-avatar class="rounded-lg" data-variant="warning">
       <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
-    </span>
+    </div>
   </div>
   <div x-h-notification-title>Warning</div>
 </li>
@@ -414,9 +414,9 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="positive">
+    <div x-h-avatar class="rounded-lg" data-variant="positive">
       <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
-    </span>
+    </div>
   </div>
   <div x-h-notification-title>Success</div>
 </li>
@@ -431,9 +431,9 @@ The notification item has four inner components but they have no strict structur
 ```html
 <li x-h-notification.floating class="hbox items-center">
   <div x-h-notification-media>
-    <span x-h-avatar class="rounded-lg" data-variant="negative">
+    <div x-h-avatar class="rounded-lg" data-variant="negative">
       <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
-    </span>
+    </div>
   </div>
   <div x-h-notification-title>Error</div>
 </li>
@@ -464,10 +464,10 @@ You can use the notification list anywhere but the most common place is usually 
     <ol x-h-notification-list>
       <li x-h-notification class="hbox" data-unread="true">
         <div x-h-notification-media class="justify-start">
-          <span x-h-avatar class="size-10">
+          <div x-h-avatar class="size-10">
             <img x-h-avatar-image src="/harmonia/logo/harmonia-square.svg" alt="@harmonia" />
             <div x-h-avatar-fallback>HM</div>
-          </span>
+          </div>
         </div>
         <div class="vbox flex-1 gap-1">
           <h1 x-h-notification-title>Harmonia Doe</h1>
@@ -487,9 +487,9 @@ You can use the notification list anywhere but the most common place is usually 
       </li>
       <li x-h-notification class="hbox items-center">
         <div x-h-notification-media class="w-10">
-          <span x-h-avatar class="rounded-lg" data-variant="negative">
+          <div x-h-avatar class="rounded-lg" data-variant="negative">
             <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
-          </span>
+          </div>
         </div>
         <div class="vbox flex-1">
           <h1 x-h-notification-title>Generation failed</h1>
@@ -569,9 +569,9 @@ Notifications can contain actions and dynamic information. The following example
       <li x-h-notification.floating class="hbox min-w-xs">
         <template x-if="progress >= 100">
           <div x-h-notification-media>
-            <span x-h-avatar class="size-9" data-variant="information">
+            <div x-h-avatar class="size-9" data-variant="information">
               <svg x-h-icon data-icon="circle-info" role="img" aria-label="info"></svg>
-            </span>
+            </div>
           </div>
         </template>
         <template x-if="progress < 100">

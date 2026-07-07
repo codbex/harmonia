@@ -22,6 +22,10 @@ x-h-icon
 | data-link | url                      | false    | URL to the svg icon.                                                                                                                                                                                                                                                                                                                                                            |
 | role      | `img`<br/>`presentation` | true     | The role of the icon. This is required as it affects the accessibility.<br />The `presentation` role excludes the icon from being visible to assistive technologies.<br />When using the `img` role, either `aria-label` or `aria-labelledby` attribute must also be provided. If not, assistive technologies will have trouble conveying to the user what the icon represents. |
 
+::: info
+Icons do not have a size by default. When placed directly inside components, like button, menu and sidebar, they will automatically have their size set. However, if placed directly inside components like cards, info pages, etc. or `<div>` and `<span>` elements, then it's recommended to use a size class on them (`size-4` being the default recommended one) as they will otherwise be randomly sized.
+:::
+
 ### Built-in icons
 
 Harmonia includes several built-in icons. Instead of using the `data-link` attribute, set `data-icon` to one of the names below to render it.

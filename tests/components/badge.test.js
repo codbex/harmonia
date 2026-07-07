@@ -162,6 +162,76 @@ describe('h-badge-indicator', () => {
     expect(el.classList.contains('data-[ping=true]:before:bg-primary')).toBe(false);
   });
 
+  it('applies default size for a regular badge', () => {
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('h-4')).toBe(true);
+    expect(el.classList.contains('min-w-4')).toBe(true);
+    expect(el.classList.contains('text-xs')).toBe(true);
+  });
+
+  it('applies default size for a dot badge', () => {
+    el.setAttribute('data-dot', 'true');
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('h-3')).toBe(true);
+    expect(el.classList.contains('min-w-3')).toBe(true);
+    expect(el.classList.contains('h-4')).toBe(false);
+    expect(el.classList.contains('min-w-4')).toBe(false);
+  });
+
+  it('applies sm size for a regular badge', () => {
+    el.setAttribute('data-size', 'sm');
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('h-3')).toBe(true);
+    expect(el.classList.contains('min-w-3')).toBe(true);
+    expect(el.classList.contains('text-2xs')).toBe(true);
+    expect(el.classList.contains('h-4')).toBe(false);
+    expect(el.classList.contains('min-w-4')).toBe(false);
+    expect(el.classList.contains('text-xs')).toBe(false);
+  });
+
+  it('applies sm size for a dot badge', () => {
+    el.setAttribute('data-size', 'sm');
+    el.setAttribute('data-dot', 'true');
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('h-2.5')).toBe(true);
+    expect(el.classList.contains('min-w-2.5')).toBe(true);
+    expect(el.classList.contains('h-3')).toBe(false);
+    expect(el.classList.contains('min-w-3')).toBe(false);
+  });
+
+  it('applies top-right position by default', () => {
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('-end-0.75')).toBe(true);
+    expect(el.classList.contains('-top-0.75')).toBe(true);
+    expect(el.classList.contains('[.rounded-full>&]:-end-0.25')).toBe(true);
+    expect(el.classList.contains('[.rounded-full>&]:-top-0.25')).toBe(true);
+  });
+
+  it('applies top-left position', () => {
+    el.setAttribute('data-position', 'top-left');
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('-start-0.75')).toBe(true);
+    expect(el.classList.contains('-top-0.75')).toBe(true);
+    expect(el.classList.contains('-end-0.75')).toBe(false);
+  });
+
+  it('applies bottom-left position', () => {
+    el.setAttribute('data-position', 'bottom-left');
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('-start-0.75')).toBe(true);
+    expect(el.classList.contains('-bottom-0.75')).toBe(true);
+    expect(el.classList.contains('-top-0.75')).toBe(false);
+    expect(el.classList.contains('-end-0.75')).toBe(false);
+  });
+
+  it('applies bottom-right position', () => {
+    el.setAttribute('data-position', 'bottom-right');
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    expect(el.classList.contains('-end-0.75')).toBe(true);
+    expect(el.classList.contains('-bottom-0.75')).toBe(true);
+    expect(el.classList.contains('-top-0.75')).toBe(false);
+  });
+
   it('calls cleanup', () => {
     const { ctx } = mountDirective(badgePlugin, 'h-badge-indicator', el);
     expect(ctx.cleanup).toHaveBeenCalled();

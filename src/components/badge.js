@@ -58,25 +58,16 @@ export default function (Alpine) {
   Alpine.directive('h-badge-indicator', (el, _, { cleanup }) => {
     el.classList.add(
       'absolute',
-      '-end-1',
-      '-top-1',
-      '[.rounded-full>&]:end-0',
-      '[.rounded-full>&]:top-0',
       'inline-flex',
-      'h-4',
-      'min-w-4',
       'items-center',
       'justify-center',
       'rounded-full',
       'py-0.5',
       'px-1',
-      'text-xs',
       'font-bold',
       'leading-none',
       'transform-gpu',
       'data-[dot=true]:p-0',
-      'data-[dot=true]:min-w-3',
-      'data-[dot=true]:h-3',
       'data-[ping=true]:before:absolute',
       'data-[ping=true]:before:inline-flex',
       'data-[ping=true]:before:w-full',
@@ -94,6 +85,18 @@ export default function (Alpine) {
       information: ['bg-information', 'text-information-foreground', 'data-[ping=true]:before:bg-information'],
     };
 
+    const positions = {
+      'top-right': ['-end-0.75', '-top-0.75', '[.rounded-full>&]:-end-0.25', '[.rounded-full>&]:-top-0.25'],
+      'top-left': ['-start-0.75', '-top-0.75', '[.rounded-full>&]:-start-0.25', '[.rounded-full>&]:-top-0.25'],
+      'bottom-left': ['-start-0.75', '-bottom-0.75', '[.rounded-full>&]:-start-0.25', '[.rounded-full>&]:-bottom-0.25'],
+      'bottom-right': ['-end-0.75', '-bottom-0.75', '[.rounded-full>&]:-end-0.25', '[.rounded-full>&]:-bottom-0.25'],
+    };
+
+    const sizes = {
+      default: { regular: ['h-4', 'min-w-4', 'text-xs'], dot: ['h-3', 'min-w-3'] },
+      sm: { regular: ['h-3', 'min-w-3', 'text-2xs'], dot: ['h-2.5', 'min-w-2.5'] },
+    };
+
     function setVariant(variant) {
       for (const [_, value] of Object.entries(variants)) {
         el.classList.remove(...value);
@@ -101,13 +104,30 @@ export default function (Alpine) {
       if (Object.prototype.hasOwnProperty.call(variants, variant)) el.classList.add(...variants[variant]);
     }
 
+    function setPosition(position) {
+      for (const [_, value] of Object.entries(positions)) {
+        el.classList.remove(...value);
+      }
+      el.classList.add(...(positions[position] ?? positions['top-right']));
+    }
+
+    function setSize() {
+      el.classList.remove('h-4', 'min-w-4', 'h-3', 'min-w-3', 'h-2.5', 'min-w-2.5', 'text-xs', 'text-2xs');
+      const size = sizes[el.getAttribute('data-size')] ?? sizes.default;
+      el.classList.add(...(el.getAttribute('data-dot') === 'true' ? size.dot : size.regular));
+    }
+
     setVariant(el.getAttribute('data-variant') ?? 'primary');
+    setPosition(el.getAttribute('data-position') ?? 'top-right');
+    setSize();
 
     const observer = new MutationObserver(() => {
       setVariant(el.getAttribute('data-variant') ?? 'primary');
+      setPosition(el.getAttribute('data-position') ?? 'top-right');
+      setSize();
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-variant'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-variant', 'data-position', 'data-size', 'data-dot'] });
 
     cleanup(() => {
       observer.disconnect();

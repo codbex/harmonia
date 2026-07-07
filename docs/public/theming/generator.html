@@ -110,11 +110,13 @@
     <div x-data="themeController" class="vbox h-full border-l" :style="{ width: isNarrow ? '19rem' : '21rem' }">
       <div x-h-toolbar>
         <button x-h-button data-variant="transparent" x-h-menu-trigger.dropdown>
-          <i x-h-lucide x-show="mode === 'auto'" role="img" data-lucide="sun-moon"></i>
+          <!-- svg placeholders on purpose: x-h-lucide renders them in place,
+               so the x-show bindings keep switching the visible icon. -->
+          <svg x-h-lucide x-show="mode === 'auto'" role="img" data-lucide="sun-moon"></svg>
           <span x-show="mode === 'auto'">Auto</span>
-          <i x-h-lucide x-show="mode === 'light'" role="img" data-lucide="sun"></i>
+          <svg x-h-lucide x-show="mode === 'light'" role="img" data-lucide="sun"></svg>
           <span x-show="mode === 'light'">Light</span>
-          <i x-h-lucide x-show="mode === 'dark'" role="img" data-lucide="moon"></i>
+          <svg x-h-lucide x-show="mode === 'dark'" role="img" data-lucide="moon"></svg>
           <span x-show="mode === 'dark'">Dark</span>
         </button>
         <ul x-h-menu>
