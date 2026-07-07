@@ -5,7 +5,10 @@
 (function () {
   if (!window.i18next || window.i18next.isInitialized) return;
   window.i18next.init({
-    lng: 'en',
+    // Seed from the language stored by the Harmonia i18next plugin, so pages
+    // and the iframe demo start in the chosen language without a flash of the
+    // default (the plugin would reconcile it after init anyway).
+    lng: localStorage.getItem('codbex.harmonia.language') || 'en',
     fallbackLng: 'en',
     // Initialize synchronously so the examples never flash their raw keys.
     initImmediate: false,

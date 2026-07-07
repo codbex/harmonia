@@ -20,8 +20,6 @@ CSS utility classes for controlling the size and repeat behavior of background i
 
 #### Contain
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -32,8 +30,6 @@ CSS utility classes for controlling the size and repeat behavior of background i
 
 #### Cover
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -43,8 +39,6 @@ CSS utility classes for controlling the size and repeat behavior of background i
 </LiveExample>
 
 #### Auto
-
-<br />
 
 <LiveExample>
 
@@ -68,8 +62,6 @@ CSS utility classes for controlling the size and repeat behavior of background i
 
 #### Repeat X
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -80,8 +72,6 @@ CSS utility classes for controlling the size and repeat behavior of background i
 
 #### Repeat Y
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -91,8 +81,6 @@ CSS utility classes for controlling the size and repeat behavior of background i
 </LiveExample>
 
 #### No Repeat
-
-<br />
 
 <LiveExample>
 

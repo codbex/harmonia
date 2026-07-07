@@ -109,7 +109,10 @@ describe('h-datetime-picker-trigger', () => {
 describe('h-datetime-picker-popup', () => {
   function createPopup({ config = {}, model } = {}) {
     const wrapper = document.createElement('div');
-    const input = { value: '' };
+    const input = document.createElement('input');
+    wrapper.appendChild(input);
+    const changeEvents = [];
+    wrapper.addEventListener('change', (event) => changeEvents.push(event));
     wrapper._h_datetimepicker = { state: { expanded: false }, input, controls: 'c1' };
     const popupEl = document.createElement('div');
     popupEl.setAttribute('x-model', 'dt');
@@ -138,7 +141,7 @@ describe('h-datetime-picker-popup', () => {
         target.dispatchEvent(new InputEvent('beforeinput', { data: ch, inputType: 'insertText', bubbles: true, cancelable: true }));
       }
     };
-    return { wrapper, popupEl, input, seg, disp, dayCell, key, type, ctx, getModel: () => modelValue };
+    return { wrapper, popupEl, input, seg, disp, dayCell, key, type, ctx, changeEvents, getModel: () => modelValue };
   }
 
   it('builds a calendar and a time group with hour and minute spinbuttons', () => {
@@ -232,6 +235,29 @@ describe('h-datetime-picker-popup', () => {
     // pick a day -> now complete
     dayCell(15).click();
     expect(getModel()).toBe(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-15T00:00`);
+  });
+
+  it('dispatches a bubbling change event once user interaction completes the value', () => {
+    const { seg, key, dayCell, changeEvents } = createPopup({ model: '' });
+    // time only -> value still incomplete -> no event
+    key(seg('hour'), 'ArrowUp');
+    key(seg('minute'), 'ArrowUp');
+    expect(changeEvents.length).toBe(0);
+    // picking a day completes the value -> one bubbling change on the input
+    dayCell(15).click();
+    expect(changeEvents.length).toBe(1);
+    expect(changeEvents[0].type).toBe('change');
+    expect(changeEvents[0].bubbles).toBe(true);
+    // adjusting a segment now changes the complete value -> another event
+    key(seg('hour'), 'ArrowUp');
+    expect(changeEvents.length).toBe(2);
+  });
+
+  it('does not dispatch a change event for a programmatic model update', () => {
+    const now = new Date();
+    const iso = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-15T14:30`;
+    const { changeEvents } = createPopup({ model: iso });
+    expect(changeEvents.length).toBe(0);
   });
 
   it('writes a 24-hour model from 12-hour segments', () => {

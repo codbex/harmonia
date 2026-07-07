@@ -57,8 +57,6 @@ x-h-tree-button
 
 ### File browser
 
-<br />
-
 <LiveExample>
 
 ```html

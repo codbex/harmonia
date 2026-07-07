@@ -62,6 +62,14 @@ You can pass a configuration object to the popup as an expression or as a value.
 
 The date picker reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`), matching the value format of a native `<input type="date">`. The display format shown in the text input is separate and can be customised via the `options` key in the calendar config.
 
+### Events
+
+| Event  | Description                                                                                                                                                                                                                                                                               |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| change | Fired on the inner input when the user picks a date from the calendar or types a valid date. The event bubbles, so a listener can be placed on the `x-h-date-picker` element. Read the new value from the bound model, as the input's own value holds the formatted display text instead. |
+
+There is no need to use `$watch` to react to user selection - listen for `change` instead. See Listening for changes.
+
 ### Display format
 
 By default the input displays the date using the user's locale. To customise it, pass [Intl.DateTimeFormat options](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options) via the `options` key on `x-h-date-picker-popup`. The model value always remains `YYYY-MM-DD` regardless of the display format.
@@ -130,6 +138,16 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 }"
 >
   <input type="text" id="date-input-1" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
+### Listening for changes
+
+```html
+<div x-h-date-picker x-data="{ date: '' }" @change="console.log('Selected date:', date)">
+  <input type="text" id="date-input-change" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-date-picker-popup x-model="date"></div>
 </div>

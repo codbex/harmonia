@@ -32,15 +32,11 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ### Default
 
-<br />
-
 ```html
 <button x-h-button>Default</button>
 ```
 
 ### Primary
-
-<br />
 
 ```html
 <button x-h-button data-variant="primary">Primary</button>
@@ -48,15 +44,11 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ### Positive
 
-<br />
-
 ```html
 <button x-h-button data-variant="positive">Positive</button>
 ```
 
 ### Negative
-
-<br />
 
 ```html
 <button x-h-button data-variant="negative">Negative</button>
@@ -64,15 +56,11 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ### Warning
 
-<br />
-
 ```html
 <button x-h-button data-variant="warning">Warning</button>
 ```
 
 ### Information
-
-<br />
 
 ```html
 <button x-h-button data-variant="information">Information</button>
@@ -80,23 +68,17 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ### Outline
 
-<br />
-
 ```html
 <button x-h-button data-variant="outline">Outline</button>
 ```
 
 ### Transparent
 
-<br />
-
 ```html
 <button x-h-button data-variant="transparent">Transparent</button>
 ```
 
 ### Link
-
-<br />
 
 ```html
 <a x-h-button data-variant="link" href="#">Link</a>

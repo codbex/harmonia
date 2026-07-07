@@ -1,6 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import i18nextPlugin from '../../src/plugins/i18next';
+import { setLanguageStorageKey } from '../../src/utils/language';
 import { createMockAlpine, createMockContext, mountDirective } from '../test-utils';
+
+const LANGUAGE_KEY = 'codbex.harmonia.language';
+
+// Synthesize the storage event another same-origin document would produce
+// (without touching localStorage, which lets the tests tell handler writes
+// apart from the simulated external one).
+function emitStorage(key, newValue) {
+  window.dispatchEvent(Object.assign(new Event('storage'), { key, newValue }));
+}
 
 // Minimal i18next global stub: translation lookup with {{name}} interpolation,
 // an event emitter for the instance and (optionally) its resource store, and
@@ -81,12 +91,15 @@ function setupMagics() {
 
 describe('i18next plugin', () => {
   beforeEach(() => {
+    localStorage.clear();
     window.i18next = mockI18next();
   });
 
   afterEach(() => {
     delete window.i18next;
     document.body.innerHTML = '';
+    localStorage.clear();
+    setLanguageStorageKey(LANGUAGE_KEY);
     vi.restoreAllMocks();
   });
 
@@ -303,6 +316,84 @@ describe('i18next plugin', () => {
       expect(i18n.dir()).toBe('ltr');
       await expect(i18n.changeLanguage('de')).resolves.toBeUndefined();
       expect(errorSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('cross frame language propagation', () => {
+    it('persists the language when $i18n.changeLanguage is used', async () => {
+      const { i18n } = setupMagics();
+      await i18n.changeLanguage('de');
+      expect(localStorage.getItem(LANGUAGE_KEY)).toBe('de');
+    });
+
+    it('does not persist direct i18next.changeLanguage calls', async () => {
+      setupMagics();
+      await window.i18next.changeLanguage('de');
+      expect(localStorage.getItem(LANGUAGE_KEY)).toBeNull();
+    });
+
+    it('switches the language and re-renders when a storage event arrives', () => {
+      const { el } = setup({ expression: "'greeting'", value: 'greeting' });
+      expect(el.textContent).toBe('Hello');
+      emitStorage(LANGUAGE_KEY, 'de');
+      expect(window.i18next.changeLanguage).toHaveBeenCalledTimes(1);
+      expect(window.i18next.changeLanguage).toHaveBeenCalledWith('de');
+      expect(el.textContent).toBe('Hallo');
+    });
+
+    it('ignores storage events for other keys, empty values, the same language, or before init', () => {
+      setup({ expression: "'greeting'", value: 'greeting' });
+      emitStorage('some.other.key', 'de');
+      emitStorage(LANGUAGE_KEY, null);
+      emitStorage(LANGUAGE_KEY, 'en');
+      expect(window.i18next.changeLanguage).not.toHaveBeenCalled();
+      window.i18next = mockI18next({ initialized: false });
+      emitStorage(LANGUAGE_KEY, 'de');
+      expect(window.i18next.changeLanguage).not.toHaveBeenCalled();
+    });
+
+    it('does not write localStorage itself on a storage driven update', () => {
+      setup({ expression: "'greeting'", value: 'greeting' });
+      emitStorage(LANGUAGE_KEY, 'de');
+      expect(window.i18next.language).toBe('de');
+      expect(localStorage.getItem(LANGUAGE_KEY)).toBeNull();
+    });
+
+    it('adopts the stored language when i18next initializes', () => {
+      localStorage.setItem(LANGUAGE_KEY, 'de');
+      window.i18next = mockI18next({ initialized: false });
+      const { el } = setup({ expression: "'greeting'", value: 'greeting' });
+      expect(el.textContent).toBe('greeting');
+      window.i18next.isInitialized = true;
+      window.i18next.emit('initialized');
+      expect(window.i18next.changeLanguage).toHaveBeenCalledWith('de');
+      expect(el.textContent).toBe('Hallo');
+    });
+
+    it('adopts the stored language at first use when already initialized', () => {
+      localStorage.setItem(LANGUAGE_KEY, 'de');
+      const { el } = setup({ expression: "'greeting'", value: 'greeting' });
+      expect(window.i18next.changeLanguage).toHaveBeenCalledWith('de');
+      expect(el.textContent).toBe('Hallo');
+    });
+
+    it('adopts the stored language at plugin registration alone', () => {
+      localStorage.setItem(LANGUAGE_KEY, 'de');
+      i18nextPlugin(createMockAlpine());
+      expect(window.i18next.changeLanguage).toHaveBeenCalledWith('de');
+      expect(window.i18next.language).toBe('de');
+    });
+
+    it('honors a configured storage key', async () => {
+      setLanguageStorageKey('custom.key');
+      const { i18n } = setupMagics();
+      await i18n.changeLanguage('de');
+      expect(localStorage.getItem('custom.key')).toBe('de');
+      expect(localStorage.getItem(LANGUAGE_KEY)).toBeNull();
+      emitStorage(LANGUAGE_KEY, 'en');
+      expect(i18n.language).toBe('de');
+      emitStorage('custom.key', 'en');
+      expect(i18n.language).toBe('en');
     });
   });
 });

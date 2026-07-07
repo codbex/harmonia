@@ -2,7 +2,19 @@ import { describe, expect, it } from 'vitest';
 import * as Harmonia from '../src/module.js';
 
 // Exports that are not auto-registered plugins.
-const NON_PLUGIN_EXPORTS = new Set(['version', 'registerComponents', 'default', 'getBreakpointListener', 'getColorScheme', 'getSystemColorScheme', 'setColorScheme', 'addColorSchemeListener', 'removeColorSchemeListener']);
+const NON_PLUGIN_EXPORTS = new Set([
+  'version',
+  'registerComponents',
+  'default',
+  'getBreakpointListener',
+  'getColorScheme',
+  'getSystemColorScheme',
+  'setColorScheme',
+  'addColorSchemeListener',
+  'removeColorSchemeListener',
+  'getLanguageStorageKey',
+  'setLanguageStorageKey',
+]);
 
 // Plugins exported for manual opt-in that must stay OUT of registerComponents.
 const OPT_IN_PLUGINS = new Set([Harmonia.Lucide, Harmonia.I18next]);

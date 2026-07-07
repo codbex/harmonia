@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>i18next frame demo | Harmonia</title>
+    <script src="/harmonia/lib/node_modules/i18next/dist/umd/i18next.min.js"></script>
+    <!-- Shares the docs demo init (guarded), so the resources match the examples. -->
+    <script src="/harmonia/js/i18next-demo.js"></script>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-i18next.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="vbox items-start gap-3 bg-background p-4 text-foreground" x-data>
+    <div class="hbox gap-2">
+      <button x-h-button data-size="sm" :data-variant="$i18n.language === 'en' ? 'primary' : 'outline'" @click="$i18n.changeLanguage('en')">English</button>
+      <button x-h-button data-size="sm" :data-variant="$i18n.language === 'de' ? 'primary' : 'outline'" @click="$i18n.changeLanguage('de')">Deutsch</button>
+      <button x-h-button data-size="sm" :data-variant="$i18n.language === 'bg' ? 'primary' : 'outline'" @click="$i18n.changeLanguage('bg')">Български</button>
+    </div>
+    <p x-h-translate="'greeting'"></p>
+    <p class="text-sm text-muted-foreground">Current language: <span x-text="$i18n.language"></span></p>
+  </body>
+</html>

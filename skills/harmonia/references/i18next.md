@@ -1,6 +1,6 @@
 # i18next
 
-An optional plugin that binds the [i18next](https://www.i18next.com/) internationalization library to Alpine and Harmonia. It adds the `x-h-translate` directive, which renders a translation into the element's text content, and two magics: `$t`, which returns a translated string anywhere an Alpine expression runs (including `Alpine.data` objects), and `$i18n`, which exposes the current language reactively along with switching helpers. Everything re-renders automatically when the language changes or translation resources load.
+An optional plugin that binds the [i18next](https://www.i18next.com/) internationalization library to Alpine and Harmonia. It adds the `x-h-translate` directive, which renders a translation into the element's text content, and two magics: `$t`, which returns a translated string anywhere an Alpine expression runs (including `Alpine.data` objects), and `$i18n`, which exposes the current language reactively along with switching helpers. Everything re-renders automatically when the language changes or translation resources load, and languages switched through `$i18n.changeLanguage` propagate to other same-origin tabs and iframes the way the color mode does.
 
 Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-` prefix.
 
@@ -50,6 +50,36 @@ i18next.init({
 
 Initialization is asynchronous: until it completes, translated elements show their fallback text (or their key when no fallback is provided), then re-render as soon as i18next reports `initialized`. Translations also re-render on `languageChanged`, `loaded` and on resource bundle changes (`added` / `removed`), including when you call `i18next.changeLanguage(...)` directly on the global.
 
+### Language synchronization across tabs and iframes
+
+Languages switched through `$i18n.changeLanguage` are saved to localStorage (under the `codbex.harmonia.language` key by default) and propagate to every other same-origin document that uses the plugin, exactly like the color mode does. Embedded iframes and other browser tabs follow immediately. A document that loads later (an iframe added to the page, a new tab, a reload) adopts the stored language as soon as its own i18next instance initializes, overriding the configured `lng`. Calling `i18next.changeLanguage(...)` directly on the global updates only the current document.
+
+The storage key is configurable through the `Harmonia.plugins.i18next` object, for example to keep the languages of two apps on one origin separate. Only documents using the same key stay in sync. Set it before Alpine starts:
+
+```html
+<script src="https://unpkg.com/@codbex/harmonia/dist/harmonia-i18next.min.js"></script>
+<script>
+  Harmonia.plugins.i18next.setLanguageStorageKey('myapp.language');
+</script>
+```
+
+With the ESM build, import the functions instead:
+
+```js
+import { setLanguageStorageKey } from '@codbex/harmonia';
+
+setLanguageStorageKey('myapp.language');
+```
+
+Because the stored language is applied after i18next initializes, a page briefly renders in its configured `lng` first. To start in the stored language directly, seed the init with it:
+
+```js
+i18next.init({
+  lng: localStorage.getItem(Harmonia.plugins.i18next.getLanguageStorageKey()) || 'en',
+  // ...
+});
+```
+
 ## Directive
 
 - `x-h-translate`
@@ -85,7 +115,7 @@ Returns the translated string for a key. It works inline (`x-text="$t('app.title
 | language       | string   | The current language. Reactive, e.g. `:data-variant="$i18n.language === 'de' ? 'primary' : 'outline'"`. |
 | languages      | array    | The language fallback chain, most specific first. Reactive.                                             |
 | isInitialized  | boolean  | Whether i18next has finished initializing. Reactive.                                                    |
-| changeLanguage | function | Switches the language.                                                                                  |
+| changeLanguage | function | Switches the language, persists it, and propagates it to other same-origin tabs and iframes.            |
 | exists         | function | Whether a key resolves in the current language.                                                         |
 | dir            | function | The text direction of the current (or a given) language.                                                |
 
@@ -124,6 +154,25 @@ this.$i18n.changeLanguage('de');
 | Argument | Type   | Required | Description                                                                                     |
 | -------- | ------ | -------- | ----------------------------------------------------------------------------------------------- |
 | lng      | string | false    | The language to get the direction for. Defaults to the current one. Returns `'ltr'` or `'rtl'`. |
+
+### Configuration
+
+The plugin adds an `i18next` object to `Harmonia.plugins` (the ESM build exports the same functions by name) for configuring the language synchronization:
+
+| Function              | Description                                                                                                     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------- |
+| setLanguageStorageKey | Sets the localStorage key under which the language is persisted and synchronized. Call it before Alpine starts. |
+| getLanguageStorageKey | Returns the current storage key, `codbex.harmonia.language` by default.                                         |
+
+- `setLanguageStorageKey` function
+
+| Argument | Type   | Required | Description                                                   |
+| -------- | ------ | -------- | ------------------------------------------------------------- |
+| key      | string | true     | The localStorage key. Empty or non-string values are ignored. |
+
+```js
+Harmonia.plugins.i18next.setLanguageStorageKey('myapp.language');
+```
 
 ## Binding
 
@@ -257,6 +306,22 @@ The directive's expression is reactive, so switching the key re-renders the elem
     <button x-h-button data-size="sm" data-variant="outline" @click="key = 'farewell'">farewell</button>
   </div>
   <p x-h-translate="key"></p>
+</div>
+```
+
+### Cross frame synchronization
+
+The frame below is a separate document with its own i18next instance, embedded in an iframe. Switching the language here updates the frame, switching it inside the frame updates this page (and every other example on it), and the frame comes up in the stored language when it loads:
+
+```html
+<div x-data class="vbox items-start gap-3">
+  <div class="hbox gap-2">
+    <button x-h-button :data-variant="$i18n.language === 'en' ? 'primary' : 'outline'" @click="$i18n.changeLanguage('en')">English</button>
+    <button x-h-button :data-variant="$i18n.language === 'de' ? 'primary' : 'outline'" @click="$i18n.changeLanguage('de')">Deutsch</button>
+    <button x-h-button :data-variant="$i18n.language === 'bg' ? 'primary' : 'outline'" @click="$i18n.changeLanguage('bg')">Български</button>
+  </div>
+  <p x-h-translate="'greeting'"></p>
+  <iframe src="/harmonia/i18next/i18next-frame.html" title="Harmonia page in an iframe" class="w-full rounded-md border border-border" style="height: 12rem"></iframe>
 </div>
 ```
 

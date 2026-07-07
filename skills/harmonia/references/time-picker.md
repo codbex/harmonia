@@ -52,6 +52,14 @@ When using `x-model` on `x-h-time-picker-input`, the time picker reads and write
 
 The `is12Hour` option only affects the popup display - the model value is always in 24-hour format regardless of the display mode.
 
+### Events
+
+| Event  | Description                                                                                                                                                                                                                                                          |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| change | Fired on the `x-h-time-picker-input` element when the user selects a time from the popup. The event bubbles, so a listener can be placed on the `x-h-time-picker` element. Read the new value from the bound model, as the input's own value holds the display text. |
+
+There is no need to use `$watch` to react to user selection - listen for `change` instead. See Listening for changes.
+
 ### Configuration
 
 You can pass a configuration object to the time picker as an expression or as a value.
@@ -111,6 +119,15 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 ```html
 <div x-data="{ time: '13:33' }" x-h-time-picker>
   <input type="text" id="tpi-2" x-model="time" x-h-time-picker-input />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
+### Listening for changes
+
+```html
+<div x-data="{ time: '' }" x-h-time-picker @change="console.log('Selected time:', time)">
+  <input type="text" id="tpi-3" x-model="time" x-h-time-picker-input />
   <div x-h-time-picker-popup></div>
 </div>
 ```

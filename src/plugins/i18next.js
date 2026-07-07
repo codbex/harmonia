@@ -5,6 +5,11 @@
 // reactively when the language changes or translation resources load. i18next
 // is treated as an external global (`window.i18next`) and is never bundled;
 // ESM consumers assign `window.i18next` themselves before Alpine starts.
+// Language changes made through $i18n.changeLanguage propagate to every other
+// same-origin document (tabs and iframes) the way the theme utility's color
+// mode does, via localStorage and the storage event.
+
+import { getLanguageStorageKey } from '../utils/language';
 
 export default function (Alpine) {
   // One reactive cell shared by the directive and both magics. Every i18next
@@ -43,6 +48,16 @@ export default function (Alpine) {
       };
       bindStore();
       i18next.on('initialized', bindStore);
+      // Adopt the stored language once this instance is ready, so documents
+      // loaded after a change (a late iframe, a new tab, a reload) come up in
+      // the language the user already chose. applyLanguage no-ops until
+      // isInitialized, so the immediate call only acts when init already ran.
+      const applyStored = () => {
+        const stored = localStorage.getItem(getLanguageStorageKey());
+        if (stored) applyLanguage(stored);
+      };
+      i18next.on('initialized', applyStored);
+      applyStored();
     }
     return i18next;
   }
@@ -55,6 +70,29 @@ export default function (Alpine) {
       console.error('Harmonia i18next plugin: the global "i18next" library is not available. Load i18next before using $t or $i18n.');
     }
   }
+
+  // Cross frame propagation, mirroring the theme utility: $i18n.changeLanguage
+  // persists the language, and the storage listener keeps this document in
+  // sync when another same-origin document (an embedded iframe or another
+  // browser tab) changes it. The storage event never fires in the document
+  // that made the change, and storage driven updates go straight to i18next
+  // without re-persisting, so there is no feedback loop.
+  const persistLanguage = (lng) => {
+    if (lng) localStorage.setItem(getLanguageStorageKey(), lng);
+  };
+
+  const applyLanguage = (lng) => {
+    const i18next = resolve();
+    if (!i18next || !i18next.isInitialized || typeof i18next.changeLanguage !== 'function') return;
+    if (i18next.language !== lng) i18next.changeLanguage(lng);
+  };
+
+  const onStorage = (event) => {
+    if (event.key !== getLanguageStorageKey() || !event.newValue) return;
+    applyLanguage(event.newValue);
+  };
+
+  if (typeof window !== 'undefined') window.addEventListener('storage', onStorage);
 
   // Translate a key, reading the reactive tick so any Alpine effect calling
   // this re-runs on language or resource changes. `fallback` is what renders
@@ -101,7 +139,12 @@ export default function (Alpine) {
         missing();
         return Promise.resolve(undefined);
       }
-      return i18next.changeLanguage(lng);
+      // Persist after the change settles so a rejected change never
+      // broadcasts and the stored value is the language i18next resolved.
+      return i18next.changeLanguage(lng).then((t) => {
+        persistLanguage(i18next.language || lng);
+        return t;
+      });
     },
     exists(key, options) {
       void state.tick;
@@ -153,4 +196,10 @@ export default function (Alpine) {
       getValue(render);
     });
   });
+
+  // Bind eagerly when the global is already present (the CDN script order
+  // guarantees it), so a stored language is adopted at registration, before
+  // Alpine renders. Resolves to null silently otherwise, keeping the lazy
+  // path for ESM consumers that assign window.i18next after Alpine.plugin().
+  resolve();
 }

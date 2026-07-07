@@ -5,6 +5,7 @@
 @source inline("{m,p}{x,y,t,b,l,r,}-{0..12}{!,}");
 @source inline("{m,p}{l,r}-auto{!,}");
 @source inline("{sm:,md:,lg:,xl:}{m,p}{x,y,}-{0..12}");
+@source inline("mx-auto");
 
 @source inline("flex");
 @source inline("flex-{col,row,col-reverse,row-reverse,wrap,0,1,auto,none}");

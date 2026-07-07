@@ -32,8 +32,6 @@ x-h-button
 
 ### Default
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -43,8 +41,6 @@ x-h-button
 </LiveExample>
 
 ### Primary
-
-<br />
 
 <LiveExample>
 
@@ -56,8 +52,6 @@ x-h-button
 
 ### Positive
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -67,8 +61,6 @@ x-h-button
 </LiveExample>
 
 ### Negative
-
-<br />
 
 <LiveExample>
 
@@ -80,8 +72,6 @@ x-h-button
 
 ### Warning
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -91,8 +81,6 @@ x-h-button
 </LiveExample>
 
 ### Information
-
-<br />
 
 <LiveExample>
 
@@ -104,8 +92,6 @@ x-h-button
 
 ### Outline
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -116,8 +102,6 @@ x-h-button
 
 ### Transparent
 
-<br />
-
 <LiveExample>
 
 ```html
@@ -127,8 +111,6 @@ x-h-button
 </LiveExample>
 
 ### Link
-
-<br />
 
 <LiveExample>
 

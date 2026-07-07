@@ -19,8 +19,6 @@ Add a shadow to an element.
 
 ## Examples
 
-<br />
-
 <LiveExample>
 
 ```html

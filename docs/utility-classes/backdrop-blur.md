@@ -12,8 +12,6 @@ Apply a backdrop-blur filter to an element.
 
 ## Examples
 
-<br />
-
 <LiveExample>
 
 ```html

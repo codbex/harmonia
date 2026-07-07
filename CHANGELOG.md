@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.1.1
+
+A patch release that synchronizes the i18next plugin's language across tabs and iframes, adds bubbling `change` events to the time and datetime pickers, and brings small docs improvements. No breaking changes.
+
+### i18next: language synchronization across tabs and iframes
+
+- Languages switched through `$i18n.changeLanguage` are now persisted to localStorage (under `codbex.harmonia.language` by default) and propagate to every other same-origin document that uses the plugin, embedded iframes and other browser tabs alike, exactly like the color mode does. Calling `i18next.changeLanguage(...)` directly on the global still updates only the current document.
+- A document that loads after a change (a late iframe, a new tab, a reload) adopts the stored language as soon as its own i18next instance initializes, overriding the configured `lng`. The docs show how to seed `i18next.init` from the stored key to avoid the brief flash of the default language.
+- The `Harmonia` global gains a `plugins` container where opt-in plugin bundles expose their APIs: the i18next bundle registers `Harmonia.plugins.i18next` with `setLanguageStorageKey` / `getLanguageStorageKey` for configuring the storage key (also named exports of the ESM build). Only documents using the same key sync with each other.
+- The plugin docs add a live "Cross frame synchronization" example that embeds a real second Harmonia page in an iframe, driving and following the language of the parent page.
+
+### Component enhancements
+
+- **Time Picker** - the `change` event fired after a popup selection now bubbles, so it can be handled on the `x-h-time-picker` element itself.
+- **Datetime Picker** - fires a bubbling `change` event on its input whenever the combined date and time value changes.
+- The date, time, and datetime picker docs gain an Events section and a "Listening for changes" example, so reacting to a selection needs no `$watch`.
+
+### New utility classes
+
+- `mx-auto`.
+
+### Docs and tooling
+
+- Typing `/` inside a live example input (a date, for instance) no longer opens the docs search box. The search hotkey handler saw the shadow host instead of the inner input, so editable origins are now detected through the composed event path.
+
 ## v2.1.0
 
 A release that adds translations through an opt-in i18next plugin, ships two new full application templates (Granite ERP and Onyx Chat), extends the badge indicator and avatar and rebuilds the skill generator. No breaking changes.

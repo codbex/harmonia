@@ -15,6 +15,7 @@ The margin class names start with `m` and have a range of 0 to 12.
 | mb-`0-12` | Add a bottom margin.                              | Yes         |
 | mx-`0-12` | Add a margin on the left and right sides.         | Yes         |
 | my-`0-12` | Add a top and bottom margin.                      | Yes         |
+| mx-auto   | Automatic margin on the left and right.           | No          |
 
 The padding class names start with `p` and have a range of 0 to 12.
 

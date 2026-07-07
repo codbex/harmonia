@@ -78,6 +78,14 @@ When using `x-model`, the picker reads and writes a single ISO date-time string 
 
 The time is always stored in 24-hour form regardless of the display format. The model is set only when both a date and a complete time have been chosen; until then it is an empty string.
 
+### Events
+
+| Event  | Description                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| change | Fired on the inner input whenever user interaction produces a new combined date and time value. It does not fire while the value is still incomplete (e.g. a date is picked but no time yet) or for programmatic model changes. The event bubbles, so a listener can be placed on the `x-h-datetime-picker` element. Read the new value from the bound model, as the input's own value holds the display text. |
+
+There is no need to use `$watch` to react to user selection - listen for `change` instead. See [Listening for changes](#listening-for-changes).
+
 ### Configuration
 
 You can pass a configuration object to the popup as an expression or as a value. It accepts every [Date Picker](/components/date-picker) calendar key (`locale`, `firstDay`, `min`, `max`, `options`, `delimiter`, `order`) plus the time keys below.
@@ -98,6 +106,20 @@ By default this control shows native-constraint errors (for example `required`) 
 ```html
 <div x-h-datetime-picker x-data="{ dt: '' }">
   <input type="text" id="datetime-input-1" />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup x-model="dt"></div>
+</div>
+```
+
+</LiveExample>
+
+### Listening for changes
+
+<LiveExample>
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '' }" @change="console.log('Selected date and time:', dt)">
+  <input type="text" id="datetime-input-3" />
   <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
   <div x-h-datetime-picker-popup x-model="dt"></div>
 </div>

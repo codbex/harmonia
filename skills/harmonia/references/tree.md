@@ -59,8 +59,6 @@ The user can use the following keyboard shortcuts in order to navigate through t
 
 ### File browser
 
-<br />
-
 ```html
 <ul x-h-tree>
   <li x-h-tree-item.expanded="true">

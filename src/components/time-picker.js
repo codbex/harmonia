@@ -183,7 +183,7 @@ export default function (Alpine) {
     };
     timepicker._h_time.changed = () => {
       Alpine.nextTick(() => {
-        el.dispatchEvent(new Event('change'));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
       });
     };
     const updateDisplay = (value24h) => {

@@ -167,6 +167,20 @@ describe('h-time-picker-input', () => {
     expect(typeof timepicker._h_timepicker.focusInput).toBe('function');
     expect(typeof timepicker._h_time.changed).toBe('function');
   });
+
+  it('dispatches a bubbling change event on the input when the time changes', () => {
+    const { input, timepicker } = createTimePickerInputSetup();
+    mountDirective(timepickerPlugin, 'h-time-picker-input', input, {
+      original: 'x-h-time-picker-input',
+    });
+    const events = [];
+    timepicker.addEventListener('change', (event) => events.push(event));
+    timepicker._h_time.changed();
+    expect(events.length).toBe(1);
+    expect(events[0].type).toBe('change');
+    expect(events[0].bubbles).toBe(true);
+    expect(events[0].target).toBe(input);
+  });
 });
 
 describe('h-time-picker-popup', () => {

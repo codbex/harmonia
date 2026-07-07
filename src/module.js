@@ -52,6 +52,7 @@ import tree from './components/tree';
 
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
+export { getLanguageStorageKey, setLanguageStorageKey } from './utils/language';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import i18next from './plugins/i18next';

@@ -13,6 +13,21 @@ class ComponentContainer extends HTMLElement {
     this.observer = new MutationObserver(() => {
       this.classToggle();
     });
+
+    // VitePress binds '/' as a global open-search hotkey and only skips it when
+    // event.target is an editable element - but for keys typed inside a shadow
+    // tree, the target seen at the window level is retargeted to this host, never
+    // the inner input. Stop such keystrokes here, before they bubble to the window
+    // listener, so typing '/' in an example input (e.g. a date) does not open the
+    // search box. The real origin is the first entry of the composed path.
+    this.addEventListener('keydown', (event) => {
+      if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+      const origin = event.composedPath()[0];
+      const tagName = origin && origin.tagName;
+      if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT' || (origin && origin.isContentEditable)) {
+        event.stopPropagation();
+      }
+    });
   }
 
   classToggle() {

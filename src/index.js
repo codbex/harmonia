@@ -64,7 +64,10 @@ import dateFormat from './utils/date-format';
 
 import { version } from '../package.json';
 
-window.Harmonia = { getBreakpointListener, addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme, getSystemColorScheme, version };
+// Opt-in plugin bundles (Lucide, i18next, ...) expose their own APIs in an
+// object under `plugins`, kept when a plugin script happened to create the
+// namespace before this bundle ran.
+window.Harmonia = { getBreakpointListener, addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme, getSystemColorScheme, version, plugins: (window.Harmonia && window.Harmonia.plugins) || {} };
 
 function registerPlugins() {
   window.Alpine.plugin(accordion);

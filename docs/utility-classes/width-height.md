@@ -242,8 +242,6 @@ You may have to horizontally scroll the container to see the "End" label.
 
 ## Size examples
 
-<br />
-
 <LiveExample>
 
 ```html

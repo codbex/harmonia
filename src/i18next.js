@@ -3,6 +3,14 @@
 // `$t` / `$i18n` magics on alpine:init. It is intentionally NOT part of the
 // default `harmonia.js` bundle.
 import i18next from './plugins/i18next';
+import { getLanguageStorageKey, setLanguageStorageKey } from './utils/language';
+
+// Optional plugin APIs live in their own object under Harmonia.plugins, not
+// on the Harmonia object itself. The guards keep this working when the main
+// bundle has not run (yet).
+window.Harmonia = window.Harmonia || {};
+window.Harmonia.plugins = window.Harmonia.plugins || {};
+window.Harmonia.plugins.i18next = { getLanguageStorageKey, setLanguageStorageKey };
 
 function registerPlugin() {
   window.Alpine.plugin(i18next);

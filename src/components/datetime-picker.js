@@ -201,7 +201,7 @@ export default function (Alpine) {
     // Per-segment digit buffer for native-style typed entry; reset when a segment
     // gains focus so each visit starts fresh.
     const typeBuffers = { hour: '', minute: '', second: '' };
-    let lastModelValue;
+    let lastModelValue = '';
 
     // The calendar lives on its own child element so the widget never reads or
     // writes el._x_model (which holds the ISO datetime, not a bare date).
@@ -417,8 +417,10 @@ export default function (Alpine) {
       const time24 = currentTime24();
       const value = date && time24 ? `${toDateString(date)}T${time24}` : '';
       input.value = mainDisplay(date, time24);
+      const changed = value !== lastModelValue;
       lastModelValue = value;
       if (model) model.set(value);
+      if (changed) input.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     function onTimeKeydown(event) {
