@@ -28,7 +28,7 @@
           </button>
         </div>
 
-        <div class="vbox flex-1 overflow-auto" x-ref="timeline" role="log" aria-label="Messages">
+        <div class="v-mask vbox flex-1 overflow-auto" x-ref="timeline" role="log" aria-label="Messages">
           <template x-if="conversation">
             <div class="vbox pb-2">
               <template x-for="item in timeline" :key="item.id">
