@@ -14,38 +14,58 @@ export default function (Alpine) {
       el.classList.add('fill-current');
     }
     el.setAttribute('data-slot', 'icon');
-    if (el.hasAttribute('data-link')) {
-      fetch(el.getAttribute('data-link'))
-        .then((response) => {
-          if (response.status === 200) return response.text();
-          throw response;
-        })
-        .then((content) => {
-          const parser = new DOMParser();
-          const svg = parser.parseFromString(content, 'image/svg+xml');
-          for (let a = 0; a < svg.firstElementChild.attributes.length; a++) {
-            el.setAttribute(svg.firstElementChild.attributes[a].name, svg.firstElementChild.attributes[a].value);
-          }
-          el.append(...svg.firstElementChild.children);
-        })
-        .catch((response) => {
-          console.error(response);
-        });
-    } else {
-      const renderIcon = () => {
-        if (!el.hasAttribute('data-icon')) return;
-        while (el.firstChild) el.removeChild(el.firstChild);
+
+    let requestId = 0;
+    let linkClasses = [];
+
+    const clearContent = () => {
+      el.classList.remove(...linkClasses);
+      linkClasses = [];
+      while (el.firstChild) el.removeChild(el.firstChild);
+    };
+
+    const renderIcon = () => {
+      requestId++;
+      if (el.hasAttribute('data-link')) {
+        const id = requestId;
+        fetch(el.getAttribute('data-link'))
+          .then((response) => {
+            if (response.status === 200) return response.text();
+            throw response;
+          })
+          .then((content) => {
+            if (id !== requestId) return;
+            const parser = new DOMParser();
+            const svg = parser.parseFromString(content, 'image/svg+xml');
+            clearContent();
+            for (let a = 0; a < svg.firstElementChild.attributes.length; a++) {
+              const { name, value } = svg.firstElementChild.attributes[a];
+              if (name === 'class') {
+                const added = value.split(/\s+/).filter((token) => token !== '' && !el.classList.contains(token));
+                el.classList.add(...added);
+                linkClasses = added;
+              } else {
+                el.setAttribute(name, value);
+              }
+            }
+            el.append(...svg.firstElementChild.children);
+          })
+          .catch((response) => {
+            console.error(response);
+          });
+      } else if (el.hasAttribute('data-icon')) {
+        clearContent();
         setSvgContent(el, el.getAttribute('data-icon'));
-      };
+      }
+    };
 
-      renderIcon();
+    renderIcon();
 
-      const observer = new MutationObserver(renderIcon);
-      observer.observe(el, { attributes: true, attributeFilter: ['data-icon'] });
+    const observer = new MutationObserver(renderIcon);
+    observer.observe(el, { attributes: true, attributeFilter: ['data-icon', 'data-link'] });
 
-      cleanup(() => {
-        observer.disconnect();
-      });
-    }
+    cleanup(() => {
+      observer.disconnect();
+    });
   });
 }

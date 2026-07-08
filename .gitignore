@@ -27,6 +27,7 @@ github_pages
 docs/public/harmonia
 docs/public/fonts
 docs/public/lib
+docs/public/tests
 
 # VitePress
 **/.vitepress/cache

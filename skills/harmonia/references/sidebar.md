@@ -150,26 +150,46 @@ Use a header item for a non-interactive branding or title row at the top of the 
 
 ### Product switch header
 
-Use a large menu button in the header as a product switcher: an avatar next to a stacked title and description, with a dropdown listing the available products.
+Use a large menu button in the header as a product switcher. Has an SVG icon or avatar next to a stacked title and description, with a dropdown listing the available products.
 
 ```html
-<div class="size-full" x-data="{ product: 'Aurora ERP', collapsed: false }">
-  <div x-h-sidebar :data-collapsed="collapsed">
+<div class="size-full" x-data="{
+    product: {
+        name: 'Harmonia',
+        brand: 'by codbex',
+        logo: '/harmonia/logo/harmonia-square.svg'
+    },
+    products: [{
+        name: 'Harmonia',
+        brand: 'by codbex',
+        logo: '/harmonia/logo/harmonia-square.svg'
+    }, {
+        name: 'Granite ERP',
+        brand: 'by codbex',
+        logo: '/harmonia/icons/codbex.svg'
+    }],
+    onProductSelect(selected) {
+        this.product = selected;
+    },
+    collapsed: false
+}">
+   <div x-h-sidebar :data-collapsed="collapsed">
     <div x-h-sidebar-header>
       <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
-        <svg x-h-icon class="size-9 rounded-control" data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+        <svg x-h-icon class="size-9 rounded-control" :data-link="product.logo" role="presentation"></svg>
         <div class="vbox min-w-0 text-left">
-          <span class="truncate font-medium" x-text="product"></span>
-          <span class="truncate text-xs font-normal">by codbex</span>
+          <span class="truncate font-medium" x-text="product.name"></span>
+          <span class="truncate text-xs font-normal" x-text="product.brand"></span>
         </div>
         <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
       </button>
       <ul x-h-menu aria-label="Products" data-align="bottom-start">
         <div x-h-menu-label>Products</div>
-        <li x-h-menu-item @click="product = 'Aurora ERP'">Aurora ERP</li>
-        <li x-h-menu-item @click="product = 'Quartz CRM'">Quartz CRM</li>
-        <li x-h-menu-item @click="product = 'Nimbus BI'">Nimbus BI</li>
-        <li x-h-menu-item @click="product = 'Vertex HR'">Vertex HR</li>
+        <template x-for="item in products" :key="item.name">
+        <li x-h-menu-item @click="onProductSelect(item)">
+          <svg x-h-icon class="size-6 rounded-control" :data-link="item.logo" role="presentation"></svg>
+          <span x-text="item.name"></span>
+        </li>
       </ul>
     </div>
     <div x-h-sidebar-content></div>

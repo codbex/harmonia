@@ -348,6 +348,8 @@ export default function (Alpine) {
         'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
         'group-data-[collapsed=true]/sidebar:size-8!',
         'group-data-[collapsed=true]/sidebar:p-2!',
+        'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!',
+        'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
         'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!',
         'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!',
         'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!',

@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.1.2
+
+A patch release that makes the icon component's `data-link` attribute reactive and keeps leading icons visible in collapsed sidebars. No breaking changes.
+
+### Component enhancements
+
+- **Icon** - the `data-link` attribute is now reactive: bind it with `:data-link` and the SVG is fetched again and replaced whenever the value changes, just like `data-icon`. Classes on the fetched SVG's root element are merged with the classes already on the icon instead of replacing them, and a re-render removes only the classes the previous SVG introduced while author-set classes are kept. Out-of-order responses from rapid link changes are discarded, a failed fetch leaves the current icon intact, and removing `data-link` falls back to rendering `data-icon`.
+- **Sidebar** - a leading SVG icon in a menu button now stays visible when the sidebar is collapsed, filling the button the same way a leading avatar does. This makes product logos loaded with the icon component usable in product switch headers.
+
 ## v2.1.1
 
 A patch release that synchronizes the i18next plugin's language across tabs and iframes, adds bubbling `change` events to the time and datetime pickers, and brings small docs improvements. No breaking changes.

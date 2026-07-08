@@ -36,13 +36,15 @@ features:
   - icon: <svg-icon class="feature-icon" src="./icons/alpine.svg"></svg-icon>
     title: Powered by Alpine.js
     details: Every component is a plain Alpine directive you drop straight onto your markup. Declarative, reactive, and instantly familiar to anyone who already knows Alpine.
+    link: https://alpinejs.dev/
+    target: _self
   - icon: <svg-icon class="feature-icon" src="./icons/tailwindcss.svg"></svg-icon>
     title: Styled with Tailwind CSS v4
     details: Built on Tailwind's latest engine and a consistent set of design tokens, with a full library of utility classes so every component fits naturally into your design system.
     link: /utility-classes
     linkText: Explore utility classes
   - icon: <svg-icon class="feature-icon" src="./icons/graphs.svg"></svg-icon>
-    title: Themeable Charts for Dashboards
+    title: Built-in Charts
     details: Visualize data with bar, line, scatter, pie, and doughnut charts that inherit your theme colors and adapt to light and dark mode automatically.
     link: /charts
     linkText: See the charts
@@ -50,7 +52,7 @@ features:
     title: Accessible by Default
     details: Accessibility is built in, not bolted on. Components ship with proper ARIA roles and states, full keyboard operability, and sensible accessible names out of the box.
   - icon: <svg-icon class="feature-icon" src="./icons/light-dark.svg"></svg-icon>
-    title: Light and Dark Mode Built In
+    title: Light and Dark Mode
     details: Carefully crafted themes adapt to light and dark automatically, powered by modern oklch color tokens for crisp, consistent visuals on any screen.
   - icon: <svg-icon class="feature-icon" src="./icons/theming.svg"></svg-icon>
     title: Effortless Theming
