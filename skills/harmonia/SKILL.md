@@ -84,6 +84,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | List | A container that displays a collection of related items in a structured format. | [list](references/list.md) |
 | Listbox | A single-selection list component with support for grouped options, functionally similar to an HTML `<select>` element. | [listbox](references/listbox.md) |
 | Menu | A structured list of options, optionally including headers, used to create navigational menus, context menus, or dropdowns. | [menu](references/menu.md) |
+| Menubar | A horizontal bar of always-visible command menus, like the "File Edit View" menus found in desktop applications. | [menubar](references/menubar.md) |
 | Navigation Menu | A horizontal navigation bar where items are either direct links or triggers that open a dropdown Menu. | [navigation-menu](references/navigation-menu.md) |
 | Notifications | The Notification component is used to present important system feedback, status updates, or contextual information to the user. | [notifications](references/notifications.md) |
 | Pagination | Divides content into discrete pages, allowing users to navigate large datasets or collections more easily. | [pagination](references/pagination.md) |
@@ -120,6 +121,8 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Doughnut Chart | `x-h-chart-doughnut` draws a doughnut chart (a pie with a hole in the middle) from a single reactive configuration object. | [doughnut](references/doughnut.md) |
 | Line Chart | `x-h-chart-line` draws a line chart from a single reactive configuration object. | [line](references/line.md) |
 | Pie Chart | `x-h-chart-pie` draws a pie chart from a single reactive configuration object. | [pie](references/pie.md) |
+| Polar Area Chart | `x-h-chart-polar-area` draws a polar area chart from a single reactive configuration object. | [polar-area](references/polar-area.md) |
+| Radar Chart | `x-h-chart-radar` draws a radar chart from a single reactive configuration object. | [radar](references/radar.md) |
 | Scatter Chart | `x-h-chart-scatter` draws a scatter chart from a single reactive configuration object: the same plot as a line chart, but with only the points and no connecting lines. | [scatter](references/scatter.md) |
 
 ### Layouts

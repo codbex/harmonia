@@ -196,6 +196,13 @@ outline: deep
       <p class="text">Context, navigation or dropdown menu for presenting action lists and nested options.</p>
     </div>
   </a>
+  <a href="./components/menubar" class="card">
+    <svg-icon class="card-media" src="./images/navigation-menu.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Menubar</h3>
+      <p class="text">Horizontal bar of always-visible command menus, like the File and Edit menus of desktop applications.</p>
+    </div>
+  </a>
   <a href="./components/navigation-menu" class="card">
     <svg-icon class="card-media" src="./images/navigation-menu.svg"></svg-icon>
     <div class="card-content">

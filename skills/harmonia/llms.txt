@@ -31,6 +31,7 @@
 - [List](references/list.md): A container that displays a collection of related items in a structured format.
 - [Listbox](references/listbox.md): A single-selection list component with support for grouped options, functionally similar to an HTML `<select>` element.
 - [Menu](references/menu.md): A structured list of options, optionally including headers, used to create navigational menus, context menus, or dropdowns.
+- [Menubar](references/menubar.md): A horizontal bar of always-visible command menus, like the "File Edit View" menus found in desktop applications.
 - [Navigation Menu](references/navigation-menu.md): A horizontal navigation bar where items are either direct links or triggers that open a dropdown Menu.
 - [Notifications](references/notifications.md): The Notification component is used to present important system feedback, status updates, or contextual information to the user.
 - [Pagination](references/pagination.md): Divides content into discrete pages, allowing users to navigate large datasets or collections more easily.
@@ -65,6 +66,8 @@
 - [Doughnut Chart](references/doughnut.md): `x-h-chart-doughnut` draws a doughnut chart (a pie with a hole in the middle) from a single reactive configuration object.
 - [Line Chart](references/line.md): `x-h-chart-line` draws a line chart from a single reactive configuration object.
 - [Pie Chart](references/pie.md): `x-h-chart-pie` draws a pie chart from a single reactive configuration object.
+- [Polar Area Chart](references/polar-area.md): `x-h-chart-polar-area` draws a polar area chart from a single reactive configuration object.
+- [Radar Chart](references/radar.md): `x-h-chart-radar` draws a radar chart from a single reactive configuration object.
 - [Scatter Chart](references/scatter.md): `x-h-chart-scatter` draws a scatter chart from a single reactive configuration object: the same plot as a line chart, but with only the points and no connecting lines.
 
 ## Layouts

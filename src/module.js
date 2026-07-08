@@ -21,6 +21,7 @@ import input from './components/input';
 import label from './components/label';
 import list from './components/list';
 import menu from './components/menu';
+import menubar from './components/menubar';
 import navigationMenu from './components/navigation-menu';
 import notifications from './components/notifications';
 import pagination from './components/pagination';
@@ -91,6 +92,7 @@ export {
   list as List,
   lucide as Lucide,
   menu as Menu,
+  menubar as Menubar,
   navigationMenu as NavigationMenu,
   notifications as Notifications,
   pagination as Pagination,
@@ -149,6 +151,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(label);
   registerPlugin(list);
   registerPlugin(menu);
+  registerPlugin(menubar);
   registerPlugin(navigationMenu);
   registerPlugin(notifications);
   registerPlugin(pagination);

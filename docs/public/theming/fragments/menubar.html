@@ -1,0 +1,90 @@
+<div class="vbox items-start gap-4">
+  <ul x-h-menubar aria-label="Text editor" x-data="{ view: { statusbar: true, minimap: false } }">
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>File</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>New File <span x-h-menu-item-secondary>Ctrl+N</span></li>
+        <li x-h-menu-item>Open <span x-h-menu-item-secondary>Ctrl+O</span></li>
+        <li x-h-menu-sub>
+          <span>Open Recent</span>
+          <ul x-h-menu.sub>
+            <li x-h-menu-item>harmonia</li>
+            <li x-h-menu-item>website</li>
+            <li x-h-menu-item>playground</li>
+          </ul>
+        </li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item>Save <span x-h-menu-item-secondary>Ctrl+S</span></li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item data-variant="negative">Exit</li>
+      </ul>
+    </li>
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>Edit</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Undo <span x-h-menu-item-secondary>Ctrl+Z</span></li>
+        <li x-h-menu-item>Redo <span x-h-menu-item-secondary>Ctrl+Y</span></li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item>Cut <span x-h-menu-item-secondary>Ctrl+X</span></li>
+        <li x-h-menu-item>Copy <span x-h-menu-item-secondary>Ctrl+C</span></li>
+        <li x-h-menu-item>Paste <span x-h-menu-item-secondary>Ctrl+V</span></li>
+      </ul>
+    </li>
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>View</button>
+      <ul x-h-menu>
+        <div x-h-menu-label>Appearance</div>
+        <div x-h-menu-checkbox-item x-model="view.statusbar">Status Bar</div>
+        <div x-h-menu-checkbox-item x-model="view.minimap">Minimap</div>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item>Zoom In</li>
+        <li x-h-menu-item>Zoom Out</li>
+      </ul>
+    </li>
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>Help</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Documentation</li>
+        <li x-h-menu-item>Check for Updates</li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item>About</li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul x-h-menubar aria-label="Outline menubar" data-variant="outline">
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>File</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>New Note</li>
+        <li x-h-menu-item>Duplicate</li>
+        <div x-h-menu-separator></div>
+        <li x-h-menu-item data-variant="negative">Delete</li>
+      </ul>
+    </li>
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>Edit</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Undo</li>
+        <li x-h-menu-item>Redo</li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul x-h-menubar aria-label="Small outline menubar" data-variant="outline" data-size="sm">
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>File</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>New Note</li>
+        <li x-h-menu-item>Duplicate</li>
+      </ul>
+    </li>
+    <li x-h-menubar-item>
+      <button x-h-menubar-trigger>Edit</button>
+      <ul x-h-menu>
+        <li x-h-menu-item>Undo</li>
+        <li x-h-menu-item>Redo</li>
+      </ul>
+    </li>
+  </ul>
+</div>

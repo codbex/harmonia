@@ -44,4 +44,18 @@ Harmonia includes a small set of themeable charts that inherit the active theme 
       <p class="text">A pie chart with a hollow center, ideal for emphasizing proportions alongside a central label.</p>
     </div>
   </a>
+  <a href="./charts/polar-area" class="card">
+    <svg-icon class="card-media" src="./images/polar-area.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Polar Area Chart</h3>
+      <p class="text">Compares magnitudes with equal-angle slices that reach further from the center as their value grows.</p>
+    </div>
+  </a>
+  <a href="./charts/radar" class="card">
+    <svg-icon class="card-media" src="./images/radar.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Radar Chart</h3>
+      <p class="text">Compares several quantitative dimensions at once, drawing each series as a closed shape across the axes.</p>
+    </div>
+  </a>
 </div>

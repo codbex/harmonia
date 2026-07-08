@@ -106,6 +106,7 @@ export default function (Alpine) {
     }
 
     function close(closeParent = false, focusTrigger = false) {
+      isOpen = false;
       el.pauseKeyEvents = false;
       if (autoUpdateCleanup) {
         autoUpdateCleanup();
@@ -176,6 +177,16 @@ export default function (Alpine) {
             if (isSubmenu) {
               Alpine.nextTick(() => menuSubItem.focus());
               close();
+            } else if (menuTrigger?._h_menu_trigger.moveInBar) {
+              event.preventDefault();
+              menuTrigger._h_menu_trigger.moveInBar('previous');
+            }
+            break;
+          case 'Right':
+          case 'ArrowRight':
+            if (!isSubmenu && menuTrigger?._h_menu_trigger.moveInBar) {
+              event.preventDefault();
+              menuTrigger._h_menu_trigger.moveInBar('next');
             }
             break;
           case 'Esc':
@@ -249,9 +260,11 @@ export default function (Alpine) {
     }
 
     let autoUpdateCleanup;
+    let isOpen = false;
 
     function open(parent) {
-      if (el.classList.contains('hidden')) {
+      if (!isOpen) {
+        isOpen = true;
         el.classList.remove('hidden');
         el.pauseKeyEvents = false;
         function getPlacement() {
@@ -287,7 +300,14 @@ export default function (Alpine) {
           }).then(({ x, y }) => {
             if (isFirst) {
               if (!isSubmenu) {
-                Alpine.nextTick(() => el.focus());
+                const focusOnOpen = menuTrigger._h_menu_trigger.focusOnOpen;
+                menuTrigger._h_menu_trigger.focusOnOpen = undefined;
+                let focusTarget = el;
+                if (focusOnOpen) {
+                  const items = el.querySelectorAll(':scope > [role^=menuitem]');
+                  focusTarget = (focusOnOpen === 'last' ? items[items.length - 1] : items[0]) ?? el;
+                }
+                Alpine.nextTick(() => focusTarget.focus());
                 listenForTrigger(false);
               }
               Alpine.nextTick(() => {

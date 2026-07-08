@@ -61,6 +61,7 @@ export default defineConfig({
           { text: 'List', link: '/components/list' },
           { text: 'Listbox', link: '/components/listbox' },
           { text: 'Menu', link: '/components/menu' },
+          { text: 'Menubar', link: '/components/menubar' },
           { text: 'Navigation Menu', link: '/components/navigation-menu' },
           { text: 'Notifications', link: '/components/notifications' },
           { text: 'Pagination', link: '/components/pagination' },
@@ -99,6 +100,8 @@ export default defineConfig({
           { text: 'Scatter', link: '/charts/scatter' },
           { text: 'Pie', link: '/charts/pie' },
           { text: 'Doughnut', link: '/charts/doughnut' },
+          { text: 'Polar Area', link: '/charts/polar-area' },
+          { text: 'Radar', link: '/charts/radar' },
         ],
       },
       {

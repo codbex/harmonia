@@ -31,6 +31,8 @@ describe('chart directives', () => {
     expect(alpine._directives['h-chart-scatter']).toBeDefined();
     expect(alpine._directives['h-chart-pie']).toBeDefined();
     expect(alpine._directives['h-chart-doughnut']).toBeDefined();
+    expect(alpine._directives['h-chart-polar-area']).toBeDefined();
+    expect(alpine._directives['h-chart-radar']).toBeDefined();
   });
 
   it('sets host classes, data-slot, and a tooltip element', () => {
@@ -273,6 +275,161 @@ describe('chart directives', () => {
     });
   });
 
+  describe('polar area', () => {
+    const slices = [
+      { label: 'A', value: 25 },
+      { label: 'B', value: 100 },
+    ];
+
+    it('renders a translucent conic-gradient circle per slice, sized by value', () => {
+      mount('h-chart-polar-area', { slices }, el);
+      const drawn = slot(el, 'chart-polar-slice');
+      expect(drawn.length).toBe(2);
+      expect(drawn[0].style.background).toContain('conic-gradient(');
+      expect(drawn[0].style.background).toContain('var(--color-blue-500)');
+      expect(drawn[0].style.opacity).toBe('0.75');
+      const size = (s) => parseFloat(s.style.width);
+      expect(size(drawn[0])).toBeLessThan(size(drawn[1]));
+      expect(size(drawn[1])).toBe(100);
+    });
+
+    it('gives every slice an equal angle', () => {
+      mount('h-chart-polar-area', { slices: [...slices, { label: 'C', value: 50 }] }, el);
+      const drawn = slot(el, 'chart-polar-slice');
+      expect(drawn[0].style.background).toContain('from 0.0000turn');
+      expect(drawn[1].style.background).toContain('from 0.3333turn');
+      expect(drawn[2].style.background).toContain('from 0.6667turn');
+    });
+
+    it('draws concentric grid rings above the slices and tick labels', () => {
+      mount('h-chart-polar-area', { slices }, el);
+      const rings = slot(el, 'chart-ring');
+      expect(rings.length).toBeGreaterThan(0);
+      expect(rings[0].classList.contains('rounded-full')).toBe(true);
+      expect(rings[0].classList.contains('pointer-events-none')).toBe(true);
+      expect(slot(el, 'chart-tick').length).toBeGreaterThan(0);
+    });
+
+    it('omits rings and ticks when gridlines and axes are false', () => {
+      mount('h-chart-polar-area', { gridlines: false, axes: false, slices }, el);
+      expect(slot(el, 'chart-ring').length).toBe(0);
+      expect(slot(el, 'chart-tick').length).toBe(0);
+    });
+
+    it('labels large slices with their value and skips small ones', () => {
+      mount(
+        'h-chart-polar-area',
+        {
+          slices: [
+            { label: 'A', value: 10 },
+            { label: 'B', value: 100 },
+          ],
+        },
+        el
+      );
+      expect(Array.from(slot(el, 'chart-label')).map((l) => l.textContent)).toEqual(['100']);
+    });
+
+    it('omits value labels when dataLabels is false', () => {
+      mount('h-chart-polar-area', { dataLabels: false, slices }, el);
+      expect(slot(el, 'chart-label').length).toBe(0);
+    });
+
+    it('ignores non-positive slices and shows a legend swatch per slice', () => {
+      mount('h-chart-polar-area', { slices: [...slices, { label: 'C', value: 0 }] }, el);
+      expect(slot(el, 'chart-polar-slice').length).toBe(2);
+      expect(slot(el, 'chart-legend-swatch').length).toBe(2);
+    });
+
+    it('shows "No data" when every slice is non-positive', () => {
+      mount('h-chart-polar-area', { slices: [{ label: 'A', value: 0 }] }, el);
+      expect(slot(el, 'chart-empty').length).toBe(1);
+    });
+
+    it('fires chart-click for the slice under the pointer', () => {
+      const spy = vi.fn();
+      el.addEventListener('chart-click', spy);
+      mount('h-chart-polar-area', { slices: [{ label: 'A', value: 30 }] }, el);
+      el.querySelector('.cursor-pointer').dispatchEvent(new MouseEvent('click', { clientX: 0, clientY: 0 }));
+      expect(spy.mock.calls[0][0].detail).toMatchObject({ type: 'slice', label: 'A', value: 30 });
+    });
+  });
+
+  describe('radar', () => {
+    const cfg = { labels: ['Speed', 'Power', 'Range'], series: [{ name: 'S1', data: [10, 20, 30] }] };
+
+    it('renders a dot per value and a closed outline', () => {
+      mount('h-chart-radar', cfg, el);
+      expect(slot(el, 'chart-point').length).toBe(3);
+      expect(slot(el, 'chart-segment').length).toBe(3);
+    });
+
+    it('does not close the outline twice for two points', () => {
+      mount('h-chart-radar', { series: [{ data: [1, 2] }] }, el);
+      expect(slot(el, 'chart-segment').length).toBe(1);
+    });
+
+    it('fills the series area with a translucent clip-path polygon', () => {
+      mount('h-chart-radar', cfg, el);
+      const fill = slot(el, 'chart-area')[0];
+      expect(fill.style.clipPath).toContain('polygon(');
+      expect(fill.style.opacity).toBe('0.2');
+      expect(fill.classList.contains('bg-blue-500')).toBe(true);
+      expect(fill.classList.contains('pointer-events-none')).toBe(true);
+    });
+
+    it('draws a spoke per category and a polygonal web ring per tick', () => {
+      mount('h-chart-radar', cfg, el);
+      expect(slot(el, 'chart-spoke').length).toBe(3);
+      const rings = slot(el, 'chart-ring');
+      expect(rings.length).toBeGreaterThan(0);
+      expect(rings.length % 3).toBe(0);
+      expect(rings[0].classList.contains('border-t')).toBe(true);
+    });
+
+    it('omits the web and ticks when gridlines and axes are false', () => {
+      mount('h-chart-radar', { ...cfg, gridlines: false, axes: false }, el);
+      expect(slot(el, 'chart-spoke').length).toBe(0);
+      expect(slot(el, 'chart-ring').length).toBe(0);
+      expect(slot(el, 'chart-tick').length).toBe(0);
+    });
+
+    it('renders the category labels around the disc', () => {
+      mount('h-chart-radar', cfg, el);
+      const texts = Array.from(el.querySelectorAll('div')).map((d) => d.textContent.trim());
+      expect(texts).toContain('Speed');
+      expect(texts).toContain('Power');
+      expect(texts).toContain('Range');
+    });
+
+    it('overlays multiple series with distinct colors', () => {
+      mount('h-chart-radar', { labels: ['A', 'B', 'C'], series: [{ data: [1, 2, 3] }, { data: [3, 2, 1] }] }, el);
+      expect(slot(el, 'chart-point').length).toBe(6);
+      expect(slot(el, 'chart-area').length).toBe(2);
+      expect(slot(el, 'chart-area')[1].classList.contains('bg-red-500')).toBe(true);
+      expect(slot(el, 'chart-legend-swatch').length).toBe(2);
+    });
+
+    it('labels each point when dataLabels is enabled', () => {
+      mount('h-chart-radar', { ...cfg, dataLabels: true }, el);
+      expect(Array.from(slot(el, 'chart-label')).map((l) => l.textContent)).toEqual(['10', '20', '30']);
+    });
+
+    it('fires chart-hover with the point payload', () => {
+      const spy = vi.fn();
+      el.addEventListener('chart-hover', spy);
+      mount('h-chart-radar', cfg, el);
+      slot(el, 'chart-point')[1].dispatchEvent(new Event('pointerenter'));
+      expect(spy.mock.calls[0][0].detail).toMatchObject({ type: 'point', value: 20, label: 'Power', color: 'blue' });
+    });
+
+    it('shows "No data" for empty series', () => {
+      mount('h-chart-radar', { series: [] }, el);
+      expect(slot(el, 'chart-empty').length).toBe(1);
+      expect(slot(el, 'chart-point').length).toBe(0);
+    });
+  });
+
   describe('data labels', () => {
     it('are off by default for bar and on with dataLabels', () => {
       mount('h-chart-bar', { labels: ['A', 'B'], series: [{ data: [10, 20] }] }, el);
@@ -373,6 +530,17 @@ describe('chart directives', () => {
       expect(table.classList.contains('sr-only')).toBe(true);
       expect(Array.from(table.querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Category', 'Revenue']);
       expect(Array.from(table.querySelectorAll('tbody tr')[0].children).map((c) => c.textContent)).toEqual(['Jan', '12']);
+    });
+
+    it('labels the radial charts and renders their data tables', () => {
+      mount('h-chart-radar', { labels: ['A'], series: [{ name: 'S1', data: [5] }] }, el);
+      expect(el.getAttribute('aria-label')).toBe('Radar chart');
+      expect(Array.from(slot(el, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Category', 'S1']);
+
+      const el2 = makeEl();
+      mount('h-chart-polar-area', { slices: [{ label: 'A', value: 5 }] }, el2);
+      expect(el2.getAttribute('aria-label')).toBe('Polar area chart');
+      expect(Array.from(slot(el2, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Segment', 'Value']);
     });
 
     it('renders a segment/value table for pie', () => {

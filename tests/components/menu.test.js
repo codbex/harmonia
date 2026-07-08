@@ -2,7 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
-  autoUpdate: vi.fn().mockReturnValue(() => {}),
+  autoUpdate: vi.fn((parent, el, update) => {
+    update();
+    return () => {};
+  }),
   flip: vi.fn(),
   offset: vi.fn(),
   shift: vi.fn(),
@@ -152,6 +155,50 @@ describe('h-menu', () => {
 
     expect(typeof trigger._h_menu_trigger.openMenu).toBe('function');
     expect(typeof trigger._h_menu_trigger.closeMenu).toBe('function');
+  });
+
+  function createOpenableMenuSetup() {
+    const container = document.createElement('div');
+    const trigger = document.createElement('button');
+    trigger._h_menu_trigger = {
+      isDropdown: true,
+      navItem: true,
+      openMenu: undefined,
+      closeMenu: undefined,
+      setOpen: vi.fn(),
+    };
+    trigger.setAttribute('id', 'openable-trigger-id');
+    const menu = document.createElement('ul');
+    menu.setAttribute('aria-label', 'Openable menu');
+    const item = document.createElement('li');
+    item.textContent = 'First item';
+    menu.appendChild(item);
+    container.appendChild(trigger);
+    container.appendChild(menu);
+    document.body.appendChild(container);
+    mountDirective(menuPlugin, 'h-menu', menu, { original: 'x-h-menu', modifiers: [] });
+    mountDirective(menuPlugin, 'h-menu-item', item, { original: 'x-h-menu-item', modifiers: [] });
+    return { trigger, menu, item };
+  }
+
+  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  it('focuses the menu itself on open when focusOnOpen is not set', async () => {
+    const { trigger, menu } = createOpenableMenuSetup();
+    trigger._h_menu_trigger.openMenu();
+    await flush();
+    expect(document.activeElement).toBe(menu);
+  });
+
+  it('ArrowRight on an open menu without moveInBar does nothing', async () => {
+    const { trigger, menu } = createOpenableMenuSetup();
+    trigger._h_menu_trigger.openMenu();
+    await flush();
+    trigger._h_menu_trigger.setOpen.mockClear();
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+    await flush();
+    expect(menu.classList.contains('hidden')).toBe(false);
+    expect(trigger._h_menu_trigger.setOpen).not.toHaveBeenCalled();
   });
 });
 

@@ -30,6 +30,21 @@ function labelChart(root, defaultLabel) {
 // Root font size used to express measured pixel lengths in rem.
 const REM = 16;
 
+// Size and rotate connecting segments (thin divs between two percent-coordinate
+// points). Percent coordinates only translate to a length/angle once the
+// container's pixel size is known, so callers rerun this on mount and resize.
+function layoutSegments(container, segments) {
+  const rect = container.getBoundingClientRect();
+  segments.forEach(({ el, a, b }) => {
+    const dx = ((b.x - a.x) / 100) * rect.width;
+    const dy = ((b.y - a.y) / 100) * rect.height;
+    const len = Math.hypot(dx, dy);
+    const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+    el.style.width = `${len / REM}rem`;
+    el.style.transform = `rotate(${angle}deg)`;
+  });
+}
+
 // Read the shared chart options that every chart type understands.
 function commonOptions(cfg) {
   return {
@@ -129,6 +144,30 @@ function placeBarLabel(label, horizontal, positive) {
     } else {
       label.style.bottom = '0';
       label.style.transform = 'translate(-50%, calc(100% + 0.25rem))';
+    }
+  }
+}
+
+// Place a value label inside a bar at its value-end. Used when the bar (nearly)
+// reaches the plot edge, where an outside label would land on the axis labels.
+function placeBarLabelInside(label, horizontal, positive) {
+  if (horizontal) {
+    label.style.top = '50%';
+    if (positive) {
+      label.style.right = '0';
+      label.style.transform = 'translate(-0.25rem, -50%)';
+    } else {
+      label.style.left = '0';
+      label.style.transform = 'translate(0.25rem, -50%)';
+    }
+  } else {
+    label.style.left = '50%';
+    if (positive) {
+      label.style.top = '0';
+      label.style.transform = 'translate(-50%, 0.25rem)';
+    } else {
+      label.style.bottom = '0';
+      label.style.transform = 'translate(-50%, -0.25rem)';
     }
   }
 }
@@ -233,11 +272,15 @@ function renderBar(root, cfg, ctx) {
         }
       } else {
         bar.classList.add('rounded-sm');
-        placeValue(bar, basePct, valueToPct(v, scale), horizontal);
+        const vPct = valueToPct(v, scale);
+        placeValue(bar, basePct, vPct, horizontal);
         placeCross(bar, (si * 100) / series.length, 100 / series.length, horizontal);
         if (showLabels) {
-          const label = make('div', ['absolute', 'text-xs', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: format(v) });
-          placeBarLabel(label, horizontal, v >= 0);
+          // A bar whose end (nearly) reaches the plot edge gets its label inside
+          // the bar instead, so it cannot land on the axis labels.
+          const clamped = v >= 0 ? Math.max(basePct, vPct) > 92 : Math.min(basePct, vPct) < 8;
+          const label = clamped ? onColorLabel(format(v)) : make('div', ['absolute', 'text-xs', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: format(v) });
+          (clamped ? placeBarLabelInside : placeBarLabel)(label, horizontal, v >= 0);
           bar.appendChild(label);
         }
       }
@@ -349,21 +392,9 @@ function renderLine(root, cfg, ctx, scatter = false) {
 
   // Connecting segments need the plot's pixel size; recompute on mount and resize.
   if (!scatter) {
-    const layoutSegments = () => {
-      const rect = plot.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
-      segments.forEach(({ el, a, b }) => {
-        const dx = ((b.x - a.x) / 100) * w;
-        const dy = ((b.y - a.y) / 100) * h;
-        const len = Math.hypot(dx, dy);
-        const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-        el.style.width = `${len / REM}rem`;
-        el.style.transform = `rotate(${angle}deg)`;
-      });
-    };
-    ctx.onMount(layoutSegments);
-    ctx.observe(plot, layoutSegments);
+    const relayout = () => layoutSegments(plot, segments);
+    ctx.onMount(relayout);
+    ctx.observe(plot, relayout);
   }
 
   visual.appendChild(wrap);
@@ -382,24 +413,76 @@ function renderLine(root, cfg, ctx, scatter = false) {
 // Map a pointer event to a slice index from its angle around the pie center,
 // or -1 when the pointer is outside the ring. The hit region is the actual
 // drawn wedge, so even thin slices are reliably hoverable. `cutout` (0..1)
-// excludes the doughnut hole.
+// excludes the doughnut hole; a range's own `radius` (0..1) caps its wedge
+// (polar area slices each stop at a different distance from the center).
 function sliceAtPointer(pie, ranges, event, cutout = 0) {
   const rect = pie.getBoundingClientRect();
   const radius = Math.min(rect.width, rect.height) / 2;
   const dx = event.clientX - (rect.left + rect.width / 2);
   const dy = event.clientY - (rect.top + rect.height / 2);
   const dist = Math.hypot(dx, dy);
-  if (radius > 0 && (dist > radius || dist < radius * cutout)) return -1;
   // Turn fraction measured clockwise from the top, matching the conic-gradient.
   let turn = (Math.atan2(dy, dx) + Math.PI / 2) / (2 * Math.PI);
   turn = ((turn % 1) + 1) % 1;
-  return ranges.findIndex((r) => turn >= r.start && turn < r.end);
+  const idx = ranges.findIndex((r) => turn >= r.start && turn < r.end);
+  if (idx === -1) return -1;
+  if (radius > 0 && (dist > radius * (ranges[idx].radius ?? 1) || dist < radius * cutout)) return -1;
+  return idx;
 }
 
 // A floating-ui virtual reference at the cursor, so the tooltip follows the pointer.
 function cursorReference(event) {
   const { clientX: x, clientY: y } = event;
   return { getBoundingClientRect: () => ({ width: 0, height: 0, x, y, top: y, bottom: y, left: x, right: x }) };
+}
+
+// Cursor-following hover/click handling shared by the pie-family charts.
+// `hitTest` maps a pointer event to a slice index (-1 = miss); `ranges` holds
+// the event payload per slice.
+function attachSliceInteraction(target, ranges, hitTest, { root, ctx, enabled, format }) {
+  let current = -1;
+  const leave = () => {
+    if (current === -1) return;
+    ctx.tooltip.hide();
+    dispatchChartEvent(root, 'chart-leave', ranges[current].payload);
+    current = -1;
+  };
+  const move = (event) => {
+    const idx = hitTest(event);
+    if (idx === -1) {
+      leave();
+      return;
+    }
+    if (idx !== current) {
+      if (current !== -1) dispatchChartEvent(root, 'chart-leave', ranges[current].payload);
+      current = idx;
+      dispatchChartEvent(root, 'chart-hover', ranges[idx].payload);
+    }
+    if (enabled && !ctx.tooltip.pinned) ctx.tooltip.show(cursorReference(event), tooltipContent(ranges[idx].payload, format));
+  };
+  // Stop the press from reaching the document dismiss handler when it lands on a slice.
+  const down = (event) => {
+    if (hitTest(event) !== -1) event.stopPropagation();
+  };
+  const click = (event) => {
+    const idx = hitTest(event);
+    if (idx === -1) return;
+    if (enabled) {
+      ctx.tooltip.show(cursorReference(event), tooltipContent(ranges[idx].payload, format));
+      ctx.tooltip.pin();
+    }
+    dispatchChartEvent(root, 'chart-click', ranges[idx].payload);
+  };
+  target.addEventListener('pointermove', move);
+  target.addEventListener('pointerleave', leave);
+  target.addEventListener('pointerdown', down);
+  target.addEventListener('click', click);
+  ctx.addListeners([
+    { target, type: 'pointermove', fn: move },
+    { target, type: 'pointerleave', fn: leave },
+    { target, type: 'pointerdown', fn: down },
+    { target, type: 'click', fn: click },
+  ]);
 }
 
 function renderPie(root, cfg, ctx, doughnut = false) {
@@ -469,51 +552,250 @@ function renderPie(root, cfg, ctx, doughnut = false) {
   }
 
   // Angle-based hover detection on the whole pie (no per-slice overlay elements).
-  let current = -1;
-  const leave = () => {
-    if (current === -1) return;
-    ctx.tooltip.hide();
-    dispatchChartEvent(root, 'chart-leave', ranges[current].payload);
-    current = -1;
-  };
-  const move = (event) => {
-    const idx = sliceAtPointer(pie, ranges, event, cutout);
-    if (idx === -1) {
-      leave();
-      return;
-    }
-    if (idx !== current) {
-      if (current !== -1) dispatchChartEvent(root, 'chart-leave', ranges[current].payload);
-      current = idx;
-      dispatchChartEvent(root, 'chart-hover', ranges[idx].payload);
-    }
-    if (tooltip && !ctx.tooltip.pinned) ctx.tooltip.show(cursorReference(event), tooltipContent(ranges[idx].payload, format));
-  };
-  // Stop the press from reaching the document dismiss handler when it lands on a slice.
-  const down = (event) => {
-    if (sliceAtPointer(pie, ranges, event, cutout) !== -1) event.stopPropagation();
-  };
-  const click = (event) => {
-    const idx = sliceAtPointer(pie, ranges, event, cutout);
-    if (idx === -1) return;
-    if (tooltip) {
-      ctx.tooltip.show(cursorReference(event), tooltipContent(ranges[idx].payload, format));
-      ctx.tooltip.pin();
-    }
-    dispatchChartEvent(root, 'chart-click', ranges[idx].payload);
-  };
-  pie.addEventListener('pointermove', move);
-  pie.addEventListener('pointerleave', leave);
-  pie.addEventListener('pointerdown', down);
-  pie.addEventListener('click', click);
-  ctx.addListeners([
-    { target: pie, type: 'pointermove', fn: move },
-    { target: pie, type: 'pointerleave', fn: leave },
-    { target: pie, type: 'pointerdown', fn: down },
-    { target: pie, type: 'click', fn: click },
-  ]);
+  attachSliceInteraction(pie, ranges, (event) => sliceAtPointer(pie, ranges, event, cutout), { root, ctx, enabled: tooltip, format });
 
   box.appendChild(disc);
+  visual.appendChild(box);
+  if (legend) visual.appendChild(buildLegend(slices.map((s) => ({ label: s.label, color: s.color }))));
+  out.appendChild(visual);
+  out.appendChild(
+    buildDataTable(
+      ariaLabel,
+      ['Segment', 'Value'],
+      slices.map((s) => [s.label, format(s.value)])
+    )
+  );
+  return out;
+}
+
+// Center-anchored square canvas for the radial charts (radar, polar area).
+// Percent geometry is only circular in a square box, which the disc guarantees.
+// `maxSize` shrinks the disc within its box, leaving room for labels placed on
+// or past the circle's edge so they stay inside the chart element.
+function buildDisc(maxSize) {
+  const box = make('div', ['flex', 'flex-1', 'min-h-0', 'items-center', 'justify-center']);
+  const disc = make('div', ['relative', 'aspect-square', 'h-full', 'max-h-full', 'max-w-full']);
+  if (maxSize) {
+    disc.style.maxWidth = maxSize;
+    disc.style.maxHeight = maxSize;
+  }
+  box.appendChild(disc);
+  return { box, disc };
+}
+
+// A point on the disc: `angle` in radians, `r` as a percentage of the box
+// (0 = center, 50 = the circle's edge, beyond 50 = outside the circle).
+function discPoint(angle, r) {
+  return { x: 50 + Math.cos(angle) * r, y: 50 + Math.sin(angle) * r };
+}
+
+// Numeric tick labels along the upward vertical of a radial chart. The halo
+// shadow in the theme background keeps them readable on colored slices and fills.
+function radialTicks(disc, ticks, scale, format) {
+  ticks.forEach((t) => {
+    const label = make('div', ['absolute', 'text-xs', 'text-muted-foreground', 'pointer-events-none', 'whitespace-nowrap', 'leading-none', 'font-medium'], { slot: 'chart-tick', text: format(t) });
+    label.style.left = '50%';
+    label.style.top = `${50 - valueToPct(t, scale) / 2}%`;
+    // Left of the axis, keeping clear of the data drawn on the top spoke.
+    label.style.transform = 'translate(calc(-100% - 0.25rem), -50%)';
+    disc.appendChild(label);
+  });
+}
+
+function renderRadar(root, cfg, ctx) {
+  const { palette, legend, tooltip, format } = commonOptions(cfg);
+  const showAxes = cfg.axes !== false;
+  const showGrid = cfg.gridlines !== false;
+  const showLabels = cfg.dataLabels === true;
+  const tickCount = Number.isInteger(cfg.tickCount) ? cfg.tickCount : 5;
+  const labels = Array.isArray(cfg.labels) ? cfg.labels : [];
+  const series = normalizeSeries(cfg, palette);
+  const ariaLabel = labelChart(root, 'Radar chart');
+
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
+
+  const values = series.flatMap((s) => s.data);
+  if (!series.length || !values.length) {
+    out.appendChild(noData());
+    return out;
+  }
+
+  const catCount = Math.max(labels.length, ...series.map((s) => s.data.length));
+  const categories = Array.from({ length: catCount }, (_, i) => (labels[i] != null ? String(labels[i]) : ''));
+  const scale = niceScale(Math.min(0, ...values), Math.max(0, ...values), tickCount);
+  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
+  const { box, disc } = buildDisc('80%');
+
+  // Category `i` sits at this angle, starting at the top and going clockwise.
+  const angleAt = (i) => (i / catCount) * 2 * Math.PI - Math.PI / 2;
+  const segments = [];
+  const addSegment = (a, b, classes, slotName) => {
+    const seg = make('div', ['absolute', 'origin-left', ...classes], { slot: slotName });
+    seg.style.left = `${a.x}%`;
+    seg.style.top = `${a.y}%`;
+    segments.push({ el: seg, a, b });
+    disc.appendChild(seg);
+    return seg;
+  };
+  const gridClasses = ['border-t', 'border-border/50', 'pointer-events-none'];
+
+  if (showGrid) {
+    // Spokes from the center to the outer ring, then a polygonal web ring per tick.
+    for (let i = 0; i < catCount; i++) {
+      addSegment(discPoint(angleAt(i), 0), discPoint(angleAt(i), 50), gridClasses, 'chart-spoke');
+    }
+    scale.ticks.forEach((t) => {
+      const r = valueToPct(t, scale) / 2;
+      if (r <= 0) return;
+      for (let i = 0; i < catCount; i++) {
+        addSegment(discPoint(angleAt(i), r), discPoint(angleAt((i + 1) % catCount), r), gridClasses, 'chart-ring');
+      }
+    });
+  }
+
+  // Category labels just past the circle's edge (the shrunken disc leaves room).
+  categories.forEach((c, i) => {
+    if (!c) return;
+    const p = discPoint(angleAt(i), 58);
+    const label = make('div', ['absolute', 'text-xs', 'text-muted-foreground', 'pointer-events-none', 'whitespace-nowrap', '-translate-x-1/2', '-translate-y-1/2'], { text: c, attrs: { title: c } });
+    label.style.left = `${p.x}%`;
+    label.style.top = `${p.y}%`;
+    disc.appendChild(label);
+  });
+
+  if (showAxes) radialTicks(disc, scale.ticks, scale, format);
+
+  series.forEach((s, si) => {
+    const points = s.data.map((v, k) => ({ ...discPoint(angleAt(k), valueToPct(v, scale) / 2), v, k }));
+
+    // Translucent area fill; percent-based clip-path needs no measurement.
+    const fill = make('div', ['absolute', 'inset-0', 'pointer-events-none', colorClass(s.color)], { slot: 'chart-area' });
+    fill.style.clipPath = `polygon(${points.map((p) => `${p.x}% ${p.y}%`).join(', ')})`;
+    fill.style.opacity = '0.2';
+    disc.appendChild(fill);
+
+    // Outline segments closing the loop, drawn like line-chart segments.
+    if (points.length > 1) {
+      points.forEach((p, k) => {
+        // Two points would draw the same closing edge twice.
+        if (points.length === 2 && k === 1) return;
+        const seg = addSegment(p, points[(k + 1) % points.length], [colorClass(s.color)], 'chart-segment');
+        seg.style.height = '0.125rem';
+      });
+    }
+
+    points.forEach((p) => {
+      const dot = make('div', ['absolute', 'size-2', 'rounded-full', 'ring-2', 'ring-card', '-translate-x-1/2', '-translate-y-1/2', colorClass(s.color)], { slot: 'chart-point' });
+      dot.style.left = `${p.x}%`;
+      dot.style.top = `${p.y}%`;
+      ctx.addListeners(
+        attachHover(
+          dot,
+          { type: 'point', seriesName: s.name, seriesIndex: si, categoryIndex: p.k, label: categories[p.k] || s.name, value: p.v, color: s.color, showSeries: series.length > 1 },
+          { tooltip: ctx.tooltip, root, format, enabled: tooltip }
+        )
+      );
+      disc.appendChild(dot);
+
+      if (showLabels) {
+        const label = make('div', ['absolute', 'text-xs', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: format(p.v) });
+        label.style.left = `${p.x}%`;
+        label.style.top = `${p.y}%`;
+        // Up-right of the dot, on the opposite side of the axis from the ticks.
+        label.style.transform = 'translate(0.375rem, calc(-100% - 0.125rem))';
+        disc.appendChild(label);
+      }
+    });
+  });
+
+  // Web rings, spokes, and outlines need the disc's pixel size; recompute on mount and resize.
+  if (segments.length) {
+    const relayout = () => layoutSegments(disc, segments);
+    ctx.onMount(relayout);
+    ctx.observe(disc, relayout);
+  }
+
+  visual.appendChild(box);
+  if (legend) visual.appendChild(buildLegend(series.map((s) => ({ label: s.name, color: s.color }))));
+  out.appendChild(visual);
+  out.appendChild(
+    buildDataTable(
+      ariaLabel,
+      ['Category', ...series.map((s) => s.name)],
+      categories.map((c, i) => [c || String(i + 1), ...series.map((s) => (typeof s.data[i] === 'number' && !Number.isNaN(s.data[i]) ? format(s.data[i]) : ''))])
+    )
+  );
+  return out;
+}
+
+function renderPolarArea(root, cfg, ctx) {
+  const { palette, legend, tooltip, format } = commonOptions(cfg);
+  const showAxes = cfg.axes !== false;
+  const showGrid = cfg.gridlines !== false;
+  const showLabels = cfg.dataLabels !== false;
+  const tickCount = Number.isInteger(cfg.tickCount) ? cfg.tickCount : 5;
+  const slices = normalizeSlices(cfg, palette);
+  const ariaLabel = labelChart(root, 'Polar area chart');
+
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
+
+  if (!slices.length) {
+    out.appendChild(noData());
+    return out;
+  }
+
+  const scale = niceScale(0, Math.max(...slices.map((s) => s.value)), tickCount);
+  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
+  const { box, disc } = buildDisc('92%');
+  disc.classList.add('cursor-pointer');
+
+  // Every slice spans an equal angle; the value sets how far it reaches.
+  const step = 1 / slices.length;
+  const ranges = [];
+  slices.forEach((s, i) => {
+    const start = i * step;
+    const sizePct = valueToPct(s.value, scale);
+    const slice = make('div', ['absolute', 'rounded-full', '-translate-x-1/2', '-translate-y-1/2', 'pointer-events-none'], { slot: 'chart-polar-slice' });
+    slice.style.left = '50%';
+    slice.style.top = '50%';
+    slice.style.width = `${sizePct}%`;
+    slice.style.height = `${sizePct}%`;
+    slice.style.background = `conic-gradient(from ${start.toFixed(4)}turn, ${colorVar(s.color)} 0 ${step.toFixed(4)}turn, transparent 0)`;
+    // Slightly translucent so the grid rings stay visible through the slices.
+    slice.style.opacity = '0.75';
+    disc.appendChild(slice);
+    ranges.push({ start, end: start + step, radius: sizePct / 100, payload: { type: 'slice', seriesName: undefined, seriesIndex: 0, categoryIndex: i, label: s.label, value: s.value, color: s.color, showSeries: false } });
+
+    // Value label at mid-angle, mid-radius (skip slices too small to fit one).
+    if (showLabels && sizePct >= 25) {
+      const angle = (start + step / 2) * 2 * Math.PI - Math.PI / 2;
+      const p = discPoint(angle, sizePct / 4 + 6);
+      const label = onColorLabel(format(s.value));
+      label.classList.add('-translate-x-1/2', '-translate-y-1/2');
+      label.style.left = `${p.x}%`;
+      label.style.top = `${p.y}%`;
+      disc.appendChild(label);
+    }
+  });
+
+  if (showGrid) {
+    // Concentric rings above the slices (visible through their translucency).
+    scale.ticks.forEach((t) => {
+      const sizePct = valueToPct(t, scale);
+      if (sizePct <= 0) return;
+      const ring = make('div', ['absolute', 'rounded-full', 'border', 'border-border/50', '-translate-x-1/2', '-translate-y-1/2', 'pointer-events-none'], { slot: 'chart-ring' });
+      ring.style.left = '50%';
+      ring.style.top = '50%';
+      ring.style.width = `${sizePct}%`;
+      ring.style.height = `${sizePct}%`;
+      disc.appendChild(ring);
+    });
+  }
+
+  if (showAxes) radialTicks(disc, scale.ticks, scale, format);
+
+  attachSliceInteraction(disc, ranges, (event) => sliceAtPointer(disc, ranges, event), { root, ctx, enabled: tooltip, format });
+
   visual.appendChild(box);
   if (legend) visual.appendChild(buildLegend(slices.map((s) => ({ label: s.label, color: s.color }))));
   out.appendChild(visual);
@@ -601,4 +883,6 @@ export default function (Alpine) {
   defineChart(Alpine, 'h-chart-scatter', (root, cfg, ctx) => renderLine(root, cfg, ctx, true));
   defineChart(Alpine, 'h-chart-pie', renderPie);
   defineChart(Alpine, 'h-chart-doughnut', (root, cfg, ctx) => renderPie(root, cfg, ctx, true));
+  defineChart(Alpine, 'h-chart-polar-area', renderPolarArea);
+  defineChart(Alpine, 'h-chart-radar', renderRadar);
 }
