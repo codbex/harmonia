@@ -74,9 +74,9 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 | truncate            | Combines `overflow: hidden`, `text-overflow: ellipsis`, and `white-space: nowrap` in one class.                                      |
 | align-middle        | Sets `vertical-align: middle`. Aligns an inline element to the middle of the surrounding text.                                       |
 | whitespace-nowrap   | Prevents text from wrapping, equivalent to `white-space: nowrap`.                                                                    |
-| whitespace-pre      | Preserves whitespace and newlines; text does not wrap (`white-space: pre`).                                                          |
-| whitespace-pre-wrap | Preserves whitespace and newlines; text wraps normally (`white-space: pre-wrap`).                                                    |
-| whitespace-pre-line | Collapses runs of whitespace but preserves newlines; text wraps (`white-space: pre-line`).                                           |
+| whitespace-pre      | Preserves whitespace and newlines. Text does not wrap (`white-space: pre`).                                                          |
+| whitespace-pre-wrap | Preserves whitespace and newlines. Text wraps normally (`white-space: pre-wrap`).                                                    |
+| whitespace-pre-line | Collapses runs of whitespace but preserves newlines. Text wraps (`white-space: pre-line`).                                           |
 | wrap-break-word     | Breaks long words onto the next line to prevent overflow (`overflow-wrap: break-word`).                                              |
 | wrap-anywhere       | Allows a break at any character to prevent overflow, also within intrinsic sizing (`overflow-wrap: anywhere`).                       |
 | select-none         | Prevents the text from being selected (`user-select: none`).                                                                         |

@@ -35,7 +35,7 @@ In range mode the model is an object `{ start, end }` instead of a single string
 
 | Event  | Description                                                                                                                                                                                              |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| change | Triggered when the selection changes. In single mode the selected `Date` is passed in `event.detail.date`; in range mode the `Date` endpoints are passed in `event.detail.start` and `event.detail.end`. |
+| change | Triggered when the selection changes. In single mode the selected `Date` is passed in `event.detail.date`. In range mode the `Date` endpoints are passed in `event.detail.start` and `event.detail.end`. |
 
 ### Configuration
 

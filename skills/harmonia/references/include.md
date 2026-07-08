@@ -6,7 +6,7 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 
 ## Usage
 
-Use `x-h-include` to compose a page from smaller same-origin HTML fragments, for example reusable headers, footers, or partial views loaded on demand. Point it at a relative path to the fragment; by default any script in the fragment is ignored, so set `data-js` only when you trust the source and need its scripts to run.
+Use `x-h-include` to compose a page from smaller same-origin HTML fragments, for example reusable headers, footers, or partial views loaded on demand. Point it at a relative path to the fragment. By default any script in the fragment is ignored, so set `data-js` only when you trust the source and need its scripts to run.
 
 > **Warning:**
 >

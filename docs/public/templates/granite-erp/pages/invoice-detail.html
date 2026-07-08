@@ -12,37 +12,37 @@
         <div class="hbox flex-1 flex-wrap items-center justify-end gap-2">
           <template x-if="invoice.status === 'Draft'">
             <button x-h-button data-variant="primary" @click="$store.erp.setInvoiceStatus(invoice.id, 'Sent')">
-              <i x-h-lucide role="img" data-lucide="send"></i>
+              <svg x-h-lucide role="presentation" data-lucide="send"></svg>
               Send invoice
             </button>
           </template>
           <template x-if="invoice.status === 'Sent' || invoice.status === 'Overdue'">
             <div class="hbox gap-2">
               <button x-h-button data-variant="outline" @click="$store.erp.remindInvoice(invoice.id)">
-                <i x-h-lucide role="img" data-lucide="bell-ring"></i>
+                <svg x-h-lucide role="presentation" data-lucide="bell-ring"></svg>
                 Send reminder
               </button>
               <button x-h-button data-variant="primary" @click="$store.erp.setInvoiceStatus(invoice.id, 'Paid')">
-                <i x-h-lucide role="img" data-lucide="circle-check"></i>
+                <svg x-h-lucide role="presentation" data-lucide="circle-check"></svg>
                 Mark as paid
               </button>
             </div>
           </template>
           <button x-h-button data-variant="outline" data-size="icon" aria-label="More invoice actions" x-h-menu-trigger.dropdown>
-            <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+            <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
           </button>
           <ul x-h-menu aria-label="More invoice actions" data-align="bottom-end">
             <li x-h-menu-item @click="$store.erp.toast('Download started', invoice.id + '.pdf is being prepared.', 'information')">
-              <i x-h-lucide role="img" data-lucide="download"></i>
+              <svg x-h-lucide role="presentation" data-lucide="download"></svg>
               <span>Download PDF</span>
             </li>
             <li x-h-menu-item @click="$store.erp.toast('Invoice duplicated', 'A copy of ' + invoice.id + ' was saved as a draft.', 'information')">
-              <i x-h-lucide role="img" data-lucide="copy"></i>
+              <svg x-h-lucide role="presentation" data-lucide="copy"></svg>
               <span>Duplicate</span>
             </li>
             <div x-h-menu-separator></div>
             <li x-h-menu-item data-variant="negative" @click="$store.erp.toast('Not available', 'Voiding invoices is disabled in this demo.', 'warning')">
-              <i x-h-lucide role="img" data-lucide="ban"></i>
+              <svg x-h-lucide role="presentation" data-lucide="ban"></svg>
               <span>Void invoice</span>
             </li>
           </ul>
@@ -167,7 +167,7 @@
               <ul x-h-list>
                 <template x-for="(entry, index) in invoice.activity" :key="index">
                   <li x-h-list-item class="items-start gap-3 py-2">
-                    <i x-h-lucide role="img" data-lucide="history" class="text-muted-foreground"></i>
+                    <svg x-h-lucide role="presentation" data-lucide="history" class="text-muted-foreground"></svg>
                     <div class="vbox min-w-0 flex-1">
                       <span class="text-sm" x-text="entry.text"></span>
                       <span class="text-sm text-muted-foreground" x-text="$store.erp.date(entry.date)"></span>
@@ -186,7 +186,7 @@
     <div x-h-info-page class="py-12">
       <div x-h-info-page-header>
         <div x-h-info-page-media.icon>
-          <i x-h-lucide role="img" data-lucide="file-question-mark"></i>
+          <svg x-h-lucide role="img" data-lucide="file-question-mark"></svg>
         </div>
         <div x-h-info-page-title>Invoice not found</div>
         <div x-h-info-page-description x-text="'There is no invoice with the number ' + $params.id + ' in this workspace.'"></div>

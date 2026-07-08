@@ -31,8 +31,8 @@ Use dialogs to capture critical decisions, confirmations, or inputs that demand 
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Edit profile</h2>
         <p x-h-dialog-description>Make changes to your profile and click save.</p>
-        <button x-h-dialog-close aria-label="Icon button" @click="showDialog = false">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+        <button x-h-dialog-close aria-label="Close button" @click="showDialog = false">
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <div class="grid gap-4">

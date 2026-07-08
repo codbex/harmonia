@@ -27,17 +27,17 @@
           <template x-if="approval.status === 'Pending'">
             <div class="hbox gap-2">
               <button x-h-button data-variant="outline" data-size="sm" @click="$store.erp.reject(approval.id)">
-                <i x-h-lucide role="img" data-lucide="x"></i>
+                <svg x-h-icon data-icon="close" role="presentation"></svg>
                 Reject
               </button>
               <button x-h-button data-variant="primary" data-size="sm" @click="$store.erp.approve(approval.id)">
-                <i x-h-lucide role="img" data-lucide="check"></i>
+                <svg x-h-lucide role="presentation" data-lucide="check"></svg>
                 Approve
               </button>
             </div>
           </template>
           <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="(expandedId === approval.id ? 'Collapse ' : 'Expand ') + approval.id" :aria-expanded="expandedId === approval.id" @click="toggle(approval.id)">
-            <i x-h-lucide role="img" :data-lucide="expandedId === approval.id ? 'chevron-up' : 'chevron-down'"></i>
+            <svg x-h-lucide role="presentation" :data-lucide="expandedId === approval.id ? 'chevron-up' : 'chevron-down'"></svg>
           </button>
         </div>
       </div>

@@ -301,8 +301,8 @@ In horizontal orientation the label stays beside the input, while the error and 
   <fieldset x-h-fieldset>
     <div x-h-field-group>
       <div x-h-field data-disabled="true">
-        <label x-h-label for="visuallyDisabled">Label Disabled</label>
-        <input x-h-input id="visuallyDisabled" placeholder="Input inactive" disabled />
+        <label x-h-label for="fullyDisabled">Label Disabled</label>
+        <input x-h-input id="fullyDisabled" placeholder="Input inactive" disabled />
       </div>
     </div>
   </fieldset>

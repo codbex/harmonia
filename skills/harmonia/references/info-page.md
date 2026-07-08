@@ -37,7 +37,7 @@ Use Info Pages to guide users, explain empty states, or report errors in a visua
 <div x-h-info-page>
   <div x-h-info-page-header>
     <div x-h-info-page-media.icon>
-      <i x-h-lucide role="img" data-lucide="folder"></i>
+      <svg x-h-lucide role="img" aria-label="Project icon" data-lucide="folder"></svg>
     </div>
     <div x-h-info-page-title>No Projects Yet</div>
     <div x-h-info-page-description>You haven't created any projects yet. Get started by creating your first project.</div>
@@ -48,7 +48,10 @@ Use Info Pages to guide users, explain empty states, or report errors in a visua
       <button x-h-button data-variant="outline">Import Project</button>
     </div>
   </div>
-  <a href="#" x-h-button data-size="sm" data-variant="link">Learn More<i x-h-lucide role="img" data-lucide="arrow-up-right"></i></a>
+  <a href="#" x-h-button data-size="sm" data-variant="link">
+    <span>Learn More</span>
+    <svg x-h-lucide role="presentation" data-lucide="arrow-up-right"></svg>
+  </a>
 </div>
 ```
 
@@ -75,7 +78,7 @@ Use Info Pages to guide users, explain empty states, or report errors in a visua
 <div x-h-info-page class="border">
   <div x-h-info-page-header>
     <div x-h-info-page-media>
-      <i x-h-lucide role="img" data-lucide="upload"></i>
+      <svg x-h-lucide role="img" aria-label="Upload icon" data-lucide="upload"></svg>
     </div>
     <div x-h-info-page-title>Upload file(s)</div>
     <div x-h-info-page-description>Drag & drop your file(s) or use the button below</div>

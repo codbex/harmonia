@@ -45,7 +45,7 @@ x-h-pagination-ellipsis
   <ul x-h-pagination-content>
     <li x-h-pagination-item>
       <a x-h-pagination-link.previous href="#">
-        <i x-h-lucide role="img" data-lucide="chevron-left"></i>
+        <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
         <span x-h-pagination-link-label>Previous</span>
       </a>
     </li>
@@ -64,7 +64,7 @@ x-h-pagination-ellipsis
     <li x-h-pagination-item>
       <a x-h-pagination-link.next href="#">
         <span x-h-pagination-link-label>Next</span>
-        <i x-h-lucide role="img" data-lucide="chevron-right"></i>
+        <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
       </a>
     </li>
   </ul>

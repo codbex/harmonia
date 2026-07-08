@@ -12,7 +12,7 @@
           </button>
           <div x-h-toolbar-spacer></div>
           <button x-h-button data-variant="transparent" data-size="icon" aria-label="Mark all as read" :disabled="!$store.erp.unreadCount" @click="$store.erp.markAllRead()">
-            <i x-h-lucide role="img" data-lucide="mail-check"></i>
+            <svg x-h-lucide role="presentation" data-lucide="mail-check"></svg>
           </button>
         </div>
         <ul x-h-list class="flex-1 overflow-auto">
@@ -49,7 +49,7 @@
         <div class="vbox size-full min-w-0">
           <div class="hbox items-start gap-3 border-b" :class="isCompact ? 'p-2' : 'p-4'">
             <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to message list" @click="selectedId = null">
-              <i x-h-lucide role="img" data-lucide="arrow-left"></i>
+              <svg x-h-lucide role="presentation" data-lucide="arrow-left"></svg>
             </button>
             <div x-h-avatar x-text="selected.initials"></div>
             <div class="vbox min-w-0 flex-1">
@@ -58,11 +58,11 @@
             </div>
             <div class="hbox gap-2">
               <button x-h-button data-variant="outline" data-size="sm" @click="$store.erp.toast('Reply sent', 'Your reply to ' + selected.from + ' is on its way.', 'positive')">
-                <i x-h-lucide role="img" data-lucide="reply"></i>
+                <svg x-h-lucide role="presentation" data-lucide="reply"></svg>
                 Reply
               </button>
               <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Archive message" @click="archive(selected.id)">
-                <i x-h-lucide role="img" data-lucide="archive"></i>
+                <svg x-h-lucide role="presentation" data-lucide="archive"></svg>
               </button>
             </div>
           </div>
@@ -79,7 +79,7 @@
           <div x-h-info-page>
             <div x-h-info-page-header>
               <div x-h-info-page-media.icon>
-                <i x-h-lucide role="img" data-lucide="inbox"></i>
+                <svg x-h-lucide role="img" data-lucide="inbox"></svg>
               </div>
               <div x-h-info-page-title>Select a message</div>
               <div x-h-info-page-description>Choose a message from the list to read it here.</div>

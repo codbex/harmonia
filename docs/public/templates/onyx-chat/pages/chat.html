@@ -24,7 +24,7 @@
           </template>
           <div x-h-toolbar-spacer></div>
           <button x-show="conversation" x-h-button data-variant="transparent" data-size="icon-md" :data-toggled="detailsOpen" aria-label="Toggle conversation details" @click="detailsOpen = !detailsOpen">
-            <i x-h-lucide role="img" data-lucide="info"></i>
+            <svg x-h-lucide role="presentation" data-lucide="info"></svg>
           </button>
         </div>
 
@@ -92,7 +92,7 @@
                       </div>
                       <div class="absolute top-0 right-0 mr-2 hbox gap-1 rounded-md border bg-background p-1 opacity-0 shadow-sm transition-opacity group-focus-within:opacity-100 group-hover:opacity-100" style="margin-top: -0.75rem">
                         <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Add reaction" x-h-popover-trigger>
-                          <i x-h-lucide role="img" data-lucide="smile-plus"></i>
+                          <svg x-h-lucide role="presentation" data-lucide="smile-plus"></svg>
                         </button>
                         <div x-h-popover data-align="bottom-end">
                           <div class="hbox gap-1 p-1">
@@ -106,16 +106,16 @@
                         <template x-if="item.message.userId === 'you'">
                           <div class="hbox gap-1">
                             <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Message actions" x-h-menu-trigger.dropdown>
-                              <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+                              <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
                             </button>
                             <ul x-h-menu aria-label="Message actions" data-align="bottom-end">
                               <li x-h-menu-item @click="startEdit(item.message)">
-                                <i x-h-lucide role="img" data-lucide="pencil"></i>
+                                <svg x-h-lucide role="presentation" data-lucide="pencil"></svg>
                                 <span>Edit message</span>
                               </li>
                               <div x-h-menu-separator></div>
                               <li x-h-menu-item data-variant="negative" @click="deleteTarget = item.message">
-                                <i x-h-lucide role="img" data-lucide="trash-2"></i>
+                                <svg x-h-lucide role="presentation" data-lucide="trash-2"></svg>
                                 <span>Delete message</span>
                               </li>
                             </ul>
@@ -137,7 +137,7 @@
               <div x-h-info-page>
                 <div x-h-info-page-header>
                   <div x-h-info-page-media.icon>
-                    <i x-h-lucide role="img" data-lucide="message-circle"></i>
+                    <svg x-h-lucide role="img" data-lucide="message-circle"></svg>
                   </div>
                   <div x-h-info-page-title>No messages yet</div>
                   <div x-h-info-page-description x-text="'Say hello and start the conversation with ' + label + '.'"></div>
@@ -150,7 +150,7 @@
               <div x-h-info-page>
                 <div x-h-info-page-header>
                   <div x-h-info-page-media.icon>
-                    <i x-h-lucide role="img" data-lucide="compass"></i>
+                    <svg x-h-lucide role="img" data-lucide="compass"></svg>
                   </div>
                   <div x-h-info-page-title>Conversation not found</div>
                   <div x-h-info-page-description>This channel or direct message does not exist, or you may have left it.</div>
@@ -170,7 +170,7 @@
             <textarea x-h-textarea.group rows="2" class="resize-none" x-model="draft" :placeholder="'Message ' + label" :aria-label="'Message ' + label" @keydown.enter="composerKeydown($event)"></textarea>
             <div x-h-input-group-addon data-align="block-end" class="border-t">
               <button x-h-button.addon data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Insert emoji" x-h-popover-trigger>
-                <i x-h-lucide role="img" data-lucide="smile"></i>
+                <svg x-h-lucide role="presentation" data-lucide="smile"></svg>
               </button>
               <div x-h-popover data-align="top-start" data-innerclicks="true">
                 <div class="hbox gap-1 p-1">
@@ -183,7 +183,7 @@
               </div>
               <span x-h-input-group-text class="ml-auto hidden text-xs md:block">Enter to send, Shift+Enter for a new line</span>
               <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send message" :disabled="!draft.trim()" @click="send()">
-                <i x-h-lucide role="img" data-lucide="arrow-up"></i>
+                <svg x-h-lucide role="presentation" data-lucide="arrow-up"></svg>
               </button>
             </div>
           </div>
@@ -195,12 +195,12 @@
       <div class="vbox size-full min-w-0">
         <div x-h-toolbar data-size="md" data-variant="transparent">
           <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to conversation" @click="detailsOpen = false">
-            <i x-h-lucide role="img" data-lucide="arrow-left"></i>
+            <svg x-h-lucide role="presentation" data-lucide="arrow-left"></svg>
           </button>
           <div x-h-toolbar-title>Details</div>
           <div x-h-toolbar-spacer></div>
           <button x-show="!isCompact" x-h-button data-variant="transparent" data-size="icon-md" aria-label="Close details" @click="detailsOpen = false">
-            <i x-h-lucide role="img" data-lucide="x"></i>
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
           </button>
         </div>
         <div class="flex-1 overflow-auto p-4">
@@ -231,7 +231,7 @@
               </div>
               <div x-h-separator data-orientation="horizontal"></div>
               <button x-h-button data-variant="outline" @click="leave()">
-                <i x-h-lucide role="img" data-lucide="log-out"></i>
+                <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
                 Leave channel
               </button>
             </div>
@@ -249,7 +249,7 @@
                 <span class="text-sm text-muted-foreground" x-text="'Status: ' + (partner?.status || 'offline')"></span>
               </div>
               <button x-h-button data-variant="outline" @click="go('/people')">
-                <i x-h-lucide role="img" data-lucide="users"></i>
+                <svg x-h-lucide role="presentation" data-lucide="users"></svg>
                 View directory
               </button>
             </div>
@@ -266,7 +266,7 @@
         <h2 x-h-dialog-title>Delete message</h2>
         <p x-h-dialog-description x-text="deleteTarget ? 'This will permanently remove the message: ' + (deleteTarget.text.length > 140 ? deleteTarget.text.slice(0, 140) + '...' : deleteTarget.text) : ''"></p>
         <button x-h-dialog-close aria-label="Close dialog" @click="deleteTarget = null">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <div x-h-dialog-footer>

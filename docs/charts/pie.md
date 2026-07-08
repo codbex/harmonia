@@ -4,7 +4,7 @@
 
 ## Usage
 
-Give the chart a container with an explicit height (charts fill their parent). Provide the `slices` to draw, each with a `label` and a `value`. Use a pie chart to show how parts make up a whole; to compare discrete categories use a [Bar Chart](/charts/bar), and for trends over an ordered sequence use a [Line Chart](/charts/line).
+Give the chart a container with an explicit height (charts fill their parent). Provide the `slices` to draw, each with a `label` and a `value`. Use a pie chart to show how parts make up a whole. To compare discrete categories use a [Bar Chart](/charts/bar), and for trends over an ordered sequence use a [Line Chart](/charts/line).
 
 ## API Reference
 
@@ -13,6 +13,12 @@ Give the chart a container with an explicit height (charts fill their parent). P
 ```
 x-h-chart-pie
 ```
+
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
 
 ### Configuration
 

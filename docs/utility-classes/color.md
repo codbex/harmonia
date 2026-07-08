@@ -90,22 +90,22 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 
 ### Standard colors
 
-A subset of the standard color palette is available as `bg-` and `text-` utilities for general-purpose use. The chromatic colors are provided at the `500` step; `white` and `black` have no step.
+A subset of the standard color palette is available as `bg-`, `text-`, `fill-`, and `stroke-` utilities for general-purpose use. The chromatic colors are provided at the `500` step, while `white` and `black` have no step. The `fill-` and `stroke-` classes paint SVG content, such as icons or custom vector graphics.
 
-| Color  | Background class | Text class      |
-| ------ | ---------------- | --------------- |
-| White  | bg-white         | text-white      |
-| Black  | bg-black         | text-black      |
-| Red    | bg-red-500       | text-red-500    |
-| Orange | bg-orange-500    | text-orange-500 |
-| Yellow | bg-yellow-500    | text-yellow-500 |
-| Green  | bg-green-500     | text-green-500  |
-| Teal   | bg-teal-500      | text-teal-500   |
-| Blue   | bg-blue-500      | text-blue-500   |
-| Indigo | bg-indigo-500    | text-indigo-500 |
-| Purple | bg-purple-500    | text-purple-500 |
-| Pink   | bg-pink-500      | text-pink-500   |
-| Gray   | bg-gray-500      | text-gray-500   |
+| Color  | Background class | Text class      | Fill class      | Stroke class      |
+| ------ | ---------------- | --------------- | --------------- | ----------------- |
+| White  | bg-white         | text-white      | fill-white      | stroke-white      |
+| Black  | bg-black         | text-black      | fill-black      | stroke-black      |
+| Red    | bg-red-500       | text-red-500    | fill-red-500    | stroke-red-500    |
+| Orange | bg-orange-500    | text-orange-500 | fill-orange-500 | stroke-orange-500 |
+| Yellow | bg-yellow-500    | text-yellow-500 | fill-yellow-500 | stroke-yellow-500 |
+| Green  | bg-green-500     | text-green-500  | fill-green-500  | stroke-green-500  |
+| Teal   | bg-teal-500      | text-teal-500   | fill-teal-500   | stroke-teal-500   |
+| Blue   | bg-blue-500      | text-blue-500   | fill-blue-500   | stroke-blue-500   |
+| Indigo | bg-indigo-500    | text-indigo-500 | fill-indigo-500 | stroke-indigo-500 |
+| Purple | bg-purple-500    | text-purple-500 | fill-purple-500 | stroke-purple-500 |
+| Pink   | bg-pink-500      | text-pink-500   | fill-pink-500   | stroke-pink-500   |
+| Gray   | bg-gray-500      | text-gray-500   | fill-gray-500   | stroke-gray-500   |
 
 ## Examples
 

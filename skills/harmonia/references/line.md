@@ -6,13 +6,19 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 
 ## Usage
 
-Give the chart a container with an explicit height (charts fill their parent). Provide one or more `series`, each a list of numeric `data` points, and a matching `labels` array naming the points along the axis. Use a line chart to show a trend across an ordered sequence; to compare discrete categories use a Bar Chart, and for parts of a whole use a Pie Chart.
+Give the chart a container with an explicit height (charts fill their parent). Provide one or more `series`, each a list of numeric `data` points, and a matching `labels` array naming the points along the axis. Use a line chart to show a trend across an ordered sequence. To compare discrete categories use a Bar Chart, and for parts of a whole use a Pie Chart.
 
 ## Directive
 
 - `x-h-chart-line`
 
 ## API
+
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
 
 ### Configuration
 

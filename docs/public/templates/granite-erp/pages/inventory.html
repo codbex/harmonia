@@ -6,7 +6,7 @@
       <div class="vbox size-full min-w-0">
         <div x-h-toolbar data-size="md">
           <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Back to stock list" @click="treeOpen = false">
-            <i x-h-lucide role="img" data-lucide="arrow-left"></i>
+            <svg x-h-lucide role="presentation" data-lucide="arrow-left"></svg>
           </button>
           <div x-h-toolbar-title>Warehouses</div>
         </div>
@@ -14,21 +14,21 @@
           <ul x-h-tree>
             <li x-h-tree-item>
               <button x-h-tree-button @click="pick(null)">
-                <i x-h-lucide role="img" data-lucide="warehouse"></i>
+                <svg x-h-lucide role="presentation" data-lucide="warehouse"></svg>
                 <span>All warehouses</span>
               </button>
             </li>
             <template x-for="node in tree" :key="node.name">
               <li x-h-tree-item.expanded="true">
                 <button x-h-tree-button :data-indicator="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'negative' : 'positive'" @click="pick(node.name)">
-                  <i x-h-lucide role="img" data-lucide="warehouse"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="warehouse"></svg>
                   <span x-text="node.name"></span>
                 </button>
                 <ul x-h-tree.sub data-border="true">
                   <template x-for="categoryName in node.categories" :key="categoryName">
                     <li x-h-tree-item>
                       <button x-h-tree-button @click="pick(node.name, categoryName)">
-                        <i x-h-lucide role="img" data-lucide="box"></i>
+                        <svg x-h-lucide role="presentation" data-lucide="box"></svg>
                         <span x-text="categoryName"></span>
                       </button>
                     </li>
@@ -52,7 +52,7 @@
             <span x-h-chip-close aria-label="Clear warehouse filter"></span>
           </button>
           <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Filter by warehouse" @click="treeOpen = true">
-            <i x-h-lucide role="img" data-lucide="list-tree"></i>
+            <svg x-h-lucide role="presentation" data-lucide="list-tree"></svg>
           </button>
         </div>
         <div x-h-table-container.scroll class="flex-1">
@@ -89,7 +89,7 @@
                   <td x-h-table-cell class="text-right" x-text="$store.erp.money(item.unitPrice)"></td>
                   <td x-h-table-cell class="text-right">
                     <button x-h-button data-variant="outline" data-size="sm" @click="askRestock(item)">
-                      <i x-h-lucide role="img" data-lucide="package-plus"></i>
+                      <svg x-h-lucide role="presentation" data-lucide="package-plus"></svg>
                       Restock
                     </button>
                   </td>
@@ -117,7 +117,7 @@
           x-text="restockTarget ? 'Order more ' + restockTarget.name + ' for the ' + restockTarget.warehouse + ' warehouse. Current stock: ' + restockTarget.stock + ' pcs, reorder level: ' + restockTarget.reorderLevel + ' pcs.' : ''"
         ></p>
         <button x-h-dialog-close aria-label="Close dialog" @click="restockTarget = null">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <div x-h-field>

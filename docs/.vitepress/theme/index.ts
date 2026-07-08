@@ -11,7 +11,7 @@ import './custom.css';
 export default {
   extends: DefaultTheme,
   setup() {
-    // VitePress owns the docs color scheme; mirror its resolved value into Harmonia so
+    // VitePress owns the docs color scheme. Mirror its resolved value into Harmonia so
     // the component previews (which follow `<html>.dark`) and the template iframes (which
     // read Harmonia's shared color-scheme key + storage events) stay in sync with the
     // VitePress appearance toggle.

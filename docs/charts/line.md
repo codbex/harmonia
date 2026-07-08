@@ -4,7 +4,7 @@
 
 ## Usage
 
-Give the chart a container with an explicit height (charts fill their parent). Provide one or more `series`, each a list of numeric `data` points, and a matching `labels` array naming the points along the axis. Use a line chart to show a trend across an ordered sequence; to compare discrete categories use a [Bar Chart](/charts/bar), and for parts of a whole use a [Pie Chart](/charts/pie).
+Give the chart a container with an explicit height (charts fill their parent). Provide one or more `series`, each a list of numeric `data` points, and a matching `labels` array naming the points along the axis. Use a line chart to show a trend across an ordered sequence. To compare discrete categories use a [Bar Chart](/charts/bar), and for parts of a whole use a [Pie Chart](/charts/pie).
 
 ## API Reference
 
@@ -13,6 +13,12 @@ Give the chart a container with an explicit height (charts fill their parent). P
 ```
 x-h-chart-line
 ```
+
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
 
 ### Configuration
 
@@ -43,7 +49,7 @@ When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEve
 
 ### Basic
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div style="height: 20rem" x-h-chart-line="{ labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [{ name: 'Visitors', data: [120, 200, 150, 280, 240] }] }"></div>

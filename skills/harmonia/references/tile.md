@@ -65,8 +65,8 @@ Use tiles to create visually engaging entry points to content, functionality, or
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i x-h-lucide role="img" data-lucide="plus"></i>
+    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Add">
+      <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
     </button>
   </div>
 </div>
@@ -87,8 +87,8 @@ Use tiles to create visually engaging entry points to content, functionality, or
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Icon button">
-      <i x-h-lucide role="img" data-lucide="plus"></i>
+    <button x-h-button data-size="icon-md" data-variant="outline" aria-label="Add">
+      <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
     </button>
   </div>
 </div>
@@ -99,13 +99,13 @@ Use tiles to create visually engaging entry points to content, functionality, or
 ```html
 <a x-h-tile data-variant="outline" href="#variants">
   <div x-h-tile-media>
-    <i x-h-lucide role="img" data-lucide="link" class="size-5"></i>
+    <svg x-h-lucide role="img" aria-label="Link logo" data-lucide="link" class="size-5"></svg>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Tile as link</div>
   </div>
   <div x-h-tile-actions>
-    <i x-h-lucide role="img" data-lucide="chevron-right" class="size-4"></i>
+    <svg x-h-lucide role="presentation" data-lucide="chevron-right" class="size-4"></svg>
   </div>
 </a>
 ```
@@ -115,7 +115,7 @@ Use tiles to create visually engaging entry points to content, functionality, or
 ```html
 <div x-h-tile data-variant="outline">
   <div x-h-tile-media data-variant="icon">
-    <i x-h-lucide role="img" data-lucide="cog" class="size-5"></i>
+    <svg x-h-lucide role="img" aria-label="Cog logo" data-lucide="cog" class="size-5"></svg>
   </div>
   <div x-h-tile-content>
     <div x-h-tile-title>Account settings updated</div>
@@ -213,7 +213,7 @@ A selectable tile (a.k.a Choice Card) is a `<label>` that wraps a single checkbo
 
 #### Checkbox group
 
-Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the group `role="group"` and a name via `aria-label` or `aria-labelledby`; `x-h-tile-group` keeps any `role` you set.
+Group selectable tiles in an `x-h-tile-group`. For a set of checkboxes, give the group `role="group"` and a name via `aria-label` or `aria-labelledby`. The `x-h-tile-group` directive keeps any `role` you set.
 
 ```html
 <div x-h-tile-group role="group" aria-label="Notifications" class="flex flex-col gap-2">

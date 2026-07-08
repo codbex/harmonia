@@ -6,13 +6,19 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 
 ## Usage
 
-Give the chart a container with an explicit height (charts fill their parent). Provide the `slices` to draw, each with a `label` and a `value`. A doughnut reads the same as a Pie Chart; use it when you prefer the lighter ring style or want to leave the center open. To compare discrete categories use a Bar Chart, and for trends over an ordered sequence use a Line Chart.
+Give the chart a container with an explicit height (charts fill their parent). Provide the `slices` to draw, each with a `label` and a `value`. A doughnut reads the same as a Pie Chart. Use it when you prefer the lighter ring style or want to leave the center open. To compare discrete categories use a Bar Chart, and for trends over an ordered sequence use a Line Chart.
 
 ## Directive
 
 - `x-h-chart-doughnut`
 
 ## API
+
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
 
 ### Configuration
 

@@ -4,7 +4,7 @@ outline: deep
 
 # Charts
 
-Harmonia includes a small set of themeable charts that inherit the active theme colors and adapt to light and dark mode automatically. They are designed primarily for dashboards and summaries, where a clear, good-looking visual matters more than heavy data processing. For demanding use cases such as very large datasets, real-time streaming, or advanced interactions, reach for a dedicated charting library instead.
+Harmonia includes a small set of themeable charts that inherit the active theme colors and adapt to light and dark mode automatically. They are designed primarily for dashboards and summaries, where a clear, good-looking visual matters more than heavy data processing. For demanding use cases such as very large datasets, real-time streaming, or advanced interactions, reach for a dedicated charting library instead. Every chart can be exported as a scalable SVG or a raster image with the [Chart Export](/utilities/chart-export) utility.
 
 <br />
 

@@ -15,6 +15,14 @@ export function colorClass(name) {
   return `bg-${colorToken(name)}`;
 }
 
+export function fillClass(name) {
+  return `fill-${colorToken(name)}`;
+}
+
+export function strokeClass(name) {
+  return `stroke-${colorToken(name)}`;
+}
+
 export function textColorClass(name) {
   return `text-${colorToken(name)}`;
 }

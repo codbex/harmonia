@@ -41,10 +41,12 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ```html
 <div x-h-alert>
-  <i x-h-lucide role="img" data-lucide="files"></i>
+  <svg x-h-lucide role="presentation" data-lucide="files"></svg>
   <div x-h-alert-title>No description!</div>
   <div x-h-alert-actions>
-    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close"><i x-h-lucide role="img" data-lucide="x"></i></button>
+    <button x-h-button data-size="icon-sm" data-variant="outline" aria-label="Close">
+      <svg x-h-icon data-icon="close" role="presentation"></svg>
+    </button>
   </div>
 </div>
 ```
@@ -53,7 +55,7 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ```html
 <div x-h-alert>
-  <i x-h-lucide role="img" data-lucide="mail"></i>
+  <svg x-h-lucide role="presentation" data-lucide="mail"></svg>
   <div x-h-alert-title>Mail Sent</div>
   <div x-h-alert-description>Your mail has been sent</div>
 </div>
@@ -63,7 +65,7 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ```html
 <div x-h-alert data-variant="information">
-  <i x-h-lucide role="img" data-lucide="info"></i>
+  <svg x-h-lucide role="presentation" data-lucide="info"></svg>
   <div x-h-alert-title>Information</div>
   <div x-h-alert-description>Information variant description</div>
 </div>
@@ -73,7 +75,7 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ```html
 <div x-h-alert data-variant="warning">
-  <i x-h-lucide role="img" data-lucide="circle-alert"></i>
+  <svg x-h-lucide role="presentation" data-lucide="circle-alert"></svg>
   <div x-h-alert-title>Warning</div>
   <div x-h-alert-description>Warning variant description</div>
 </div>
@@ -83,7 +85,7 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ```html
 <div x-h-alert data-variant="negative">
-  <i x-h-lucide role="img" data-lucide="circle-x"></i>
+  <svg x-h-lucide role="presentation" data-lucide="circle-x"></svg>
   <div x-h-alert-title>Negative</div>
   <div x-h-alert-description>Negative variant description</div>
 </div>
@@ -93,7 +95,7 @@ Use alerts to surface timely or important information that impacts the user’s 
 
 ```html
 <div x-h-alert data-variant="positive">
-  <i x-h-lucide role="img" data-lucide="circle-check"></i>
+  <svg x-h-lucide role="presentation" data-lucide="circle-check"></svg>
   <div x-h-alert-title>Positive</div>
   <div x-h-alert-description>Positive variant description</div>
 </div>

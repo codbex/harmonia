@@ -68,7 +68,7 @@ x-h-progress
 
 ### Loading
 
-Set `data-loading` to show an indefinite animation when the completion amount is unknown. The line sweeps left to right; the circle spins.
+Set `data-loading` to show an indefinite animation when the completion amount is unknown. The line sweeps left to right and the circle spins.
 
 <LiveExample data-class="vbox gap-6">
 

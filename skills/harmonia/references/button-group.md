@@ -31,7 +31,7 @@ Use button groups to organize actions that share a common context or hierarchy. 
 <div x-h-button-group>
   <button x-h-button data-variant="outline">Action</button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Add button">
-    <i x-h-lucide role="img" data-lucide="plus"></i>
+    <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
   </button>
 </div>
 <div x-h-button-group>
@@ -51,13 +51,13 @@ Use button groups to organize actions that share a common context or hierarchy. 
 </div>
 <div x-h-button-group data-orientation="vertical">
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom in">
-    <i x-h-lucide role="img" data-lucide="zoom-in"></i>
+    <svg x-h-lucide role="presentation" data-lucide="zoom-in"></svg>
   </button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Fit to screen">
-    <i x-h-lucide role="img" data-lucide="fullscreen"></i>
+    <svg x-h-lucide role="presentation" data-lucide="fullscreen"></svg>
   </button>
   <button x-h-button data-size="icon" data-variant="outline" aria-label="Zoom out">
-    <i x-h-lucide role="img" data-lucide="zoom-out"></i>
+    <svg x-h-lucide role="presentation" data-lucide="zoom-out"></svg>
   </button>
 </div>
 ```

@@ -42,10 +42,11 @@ x-h-sidebar-footer
 
 #### x-h-sidebar-menu-button
 
-| Attribute   | Type                        | Required | Description                       |
-| ----------- | --------------------------- | -------- | --------------------------------- |
-| data-active | boolean                     | false    | Sets the menu button as active.   |
-| data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button. |
+| Attribute   | Type                        | Required | Description                                                                                                                                                                                                          |
+| ----------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-active | boolean                     | false    | Sets the menu button as active.                                                                                                                                                                                      |
+| data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button.                                                                                                                                                                                    |
+| data-logo   | boolean                     | false    | When the sidebar is collapsed, removes the button padding and makes the icon or avatar fill the button. Use it on buttons that show a brand logo in the header or footer, or a user avatar elsewhere in the sidebar. |
 
 #### x-h-sidebar-header
 
@@ -96,14 +97,14 @@ x-h-sidebar-footer
 
 ### Sidebar header and footer
 
-<LiveExample data-class="p-0" data-style="height:16rem">
+<LiveExample data-class="p-0" data-style="height:16rem" data-exclude="generator">
 
 ```html
 <div x-h-sidebar>
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
       <span>Header popover</span>
-      <i x-h-lucide role="img" data-lucide="chevron-down"></i>
+      <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
     </button>
     <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
@@ -111,7 +112,7 @@ x-h-sidebar-footer
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
       <span>Footer popover</span>
-      <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
+      <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
     </button>
     <ul x-h-menu aria-label="dropdown" data-align="top-start">
       <li x-h-menu-item>Set yourself as away</li>
@@ -130,14 +131,14 @@ x-h-sidebar-footer
 
 Use a header item for a non-interactive branding or title row at the top of the sidebar, such as a logo. It lays out an icon and a label, and when the sidebar is collapsed everything except the leading icon or avatar is hidden. It must not be a `button` or `a` element (it will throw). For an interactive header row use `x-h-sidebar-menu-button` instead.
 
-<LiveExample data-class="p-0" data-style="height:16rem">
+<LiveExample data-class="p-0" data-style="height:16rem" data-exclude="generator">
 
 ```html
 <div class="hbox size-full gap-2" x-data="{ collapsed: false }">
   <div x-h-sidebar :data-collapsed="collapsed">
     <div x-h-sidebar-header>
       <div x-h-sidebar-header-item>
-        <i x-h-lucide role="img" class="size-6" data-lucide="box"></i>
+        <svg x-h-lucide role="presentation" class="size-8" data-lucide="box"></svg>
         <span>Harmonia</span>
       </div>
     </div>
@@ -161,7 +162,9 @@ Use a large menu button in the header as a product switcher. Has an SVG icon or 
 <LiveExample data-class="p-0" data-style="height:16rem">
 
 ```html
-<div class="size-full" x-data="{
+<div
+  class="size-full"
+  x-data="{
     product: {
         name: 'Harmonia',
         brand: 'by codbex',
@@ -180,24 +183,26 @@ Use a large menu button in the header as a product switcher. Has an SVG icon or 
         this.product = selected;
     },
     collapsed: false
-}">
-   <div x-h-sidebar :data-collapsed="collapsed">
+}"
+>
+  <div x-h-sidebar :data-collapsed="collapsed">
     <div x-h-sidebar-header>
-      <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
+      <button x-h-sidebar-menu-button data-logo="true" data-size="lg" x-h-menu-trigger.dropdown>
         <svg x-h-icon class="size-9 rounded-control" :data-link="product.logo" role="presentation"></svg>
         <div class="vbox min-w-0 text-left">
           <span class="truncate font-medium" x-text="product.name"></span>
           <span class="truncate text-xs font-normal" x-text="product.brand"></span>
         </div>
-        <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
+        <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
       </button>
       <ul x-h-menu aria-label="Products" data-align="bottom-start">
         <div x-h-menu-label>Products</div>
         <template x-for="item in products" :key="item.name">
-        <li x-h-menu-item @click="onProductSelect(item)">
-          <svg x-h-icon class="size-6 rounded-control" :data-link="item.logo" role="presentation"></svg>
-          <span x-text="item.name"></span>
-        </li>
+          <li x-h-menu-item @click="onProductSelect(item)">
+            <svg x-h-icon class="size-6 rounded-control" :data-link="item.logo" role="presentation"></svg>
+            <span x-text="item.name"></span>
+          </li>
+        </template>
       </ul>
     </div>
     <div x-h-sidebar-content></div>
@@ -229,20 +234,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and let it blend
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-active="false">
-                <i x-h-lucide role="img" data-lucide="house"></i>
+                <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                 <span>Home</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-active="false">
-                <i x-h-lucide role="img" data-lucide="file-text"></i>
+                <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-active="true">
-                <i x-h-lucide role="img" data-lucide="blocks"></i>
+                <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                 <span>Extensions</span>
               </button>
             </li>
@@ -276,20 +281,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-active="false">
-                <i x-h-lucide role="img" data-lucide="house"></i>
+                <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                 <span>Home</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-active="false">
-                <i x-h-lucide role="img" data-lucide="file-text"></i>
+                <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-active="true">
-                <i x-h-lucide role="img" data-lucide="blocks"></i>
+                <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                 <span>Extensions</span>
               </button>
             </li>
@@ -318,20 +323,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="house"></i>
+              <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="file-text"></i>
+              <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="true">
-              <i x-h-lucide role="img" data-lucide="blocks"></i>
+              <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
           </li>
@@ -346,7 +351,7 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
 
 ### Sidebar right side
 
-<LiveExample data-class="p-0" data-style="height:16rem">
+<LiveExample data-class="p-0" data-style="height:16rem" data-exclude="generator">
 
 ```html
 <div x-h-sidebar.right class="float-right">
@@ -357,20 +362,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="house"></i>
+              <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="file-text"></i>
+              <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="true">
-              <i x-h-lucide role="img" data-lucide="blocks"></i>
+              <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
           </li>
@@ -391,9 +396,9 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
 <div x-h-sidebar data-collapsed="true">
   <div x-h-sidebar-header>
     <button x-h-sidebar-menu-button x-h-popover-trigger.chevron>
-      <i x-h-lucide role="img" data-lucide="menu"></i>
+      <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
       <span>Header popover</span>
-      <i x-h-lucide role="img" data-lucide="chevron-down"></i>
+      <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
     </button>
     <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
   </div>
@@ -404,20 +409,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="house"></i>
+              <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="file-text"></i>
+              <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
             <button x-h-sidebar-menu-button data-active="false">
-              <i x-h-lucide role="img" data-lucide="blocks"></i>
+              <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
           </li>
@@ -427,9 +432,9 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
   </div>
   <div x-h-sidebar-footer>
     <button x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
-      <i x-h-lucide role="img" data-lucide="circle-user"></i>
+      <svg x-h-lucide role="presentation" data-lucide="circle-user"></svg>
       <span>Footer popover</span>
-      <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
+      <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
     </button>
     <ul x-h-menu aria-label="dropdown" data-align="top-start">
       <li x-h-menu-item>Set yourself as away</li>
@@ -456,7 +461,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
     <div x-h-sidebar-header>
       <div x-h-sidebar-header-item>
         <div x-h-avatar class="rounded-control" data-variant="primary">
-          <i x-h-lucide role="img" data-lucide="messages-square"></i>
+          <svg x-h-lucide role="img" aria-label="Onyx Chat Logo" data-lucide="messages-square"></svg>
         </div>
         <div class="vbox min-w-0">
           <span class="truncate">Onyx Chat</span>
@@ -470,14 +475,14 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="true">
+              <button x-h-sidebar-menu-button data-logo="true" data-active="true">
                 <div x-h-avatar class="size-6! rounded-control text-xs" data-color="orange">AM</div>
                 <span>Ava Morgan</span>
                 <span x-h-sidebar-menu-badge>3</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button>
+              <button x-h-sidebar-menu-button data-logo="true">
                 <div x-h-avatar class="size-6! rounded-control text-xs" data-color="green">LC</div>
                 <span>Liam Chen</span>
               </button>
@@ -500,7 +505,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
 
 ### Sidebar skeleton
 
-<LiveExample data-class="p-0">
+<LiveExample data-class="p-0" data-exclude="generator">
 
 ```html
 <div x-h-sidebar>
@@ -543,7 +548,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
     <div x-h-sidebar-header>
       <button type="button" x-h-sidebar-menu-button x-h-popover-trigger.chevron>
         <span>Header popover</span>
-        <i x-h-lucide role="img" data-lucide="chevron-down"></i>
+        <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
       </button>
       <div class="p-4" x-h-popover data-align="bottom-start">Header popover content</div>
     </div>
@@ -553,20 +558,20 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
         <div x-h-sidebar-group-label>
           <span>General</span>
           <button x-h-sidebar-group-action aria-label="Add">
-            <i x-h-lucide role="img" data-lucide="plus"></i>
+            <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
           </button>
         </div>
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button type="button" x-h-sidebar-menu-button :data-active="active === 'dashboard'" @click="changeActive('dashboard')">
-                <i x-h-lucide role="img" data-lucide="layout-dashboard"></i>
+                <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
                 <span>Dashboard</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'analytics'" @click="changeActive('analytics')">
-                <i x-h-lucide role="img" data-lucide="chart-no-axes-combined"></i>
+                <svg x-h-lucide role="presentation" data-lucide="chart-no-axes-combined"></svg>
                 <span>Analytics</span>
               </a>
             </li>
@@ -580,18 +585,18 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button type="button" x-h-sidebar-menu-button :data-active="active === 'files'" @click="changeActive('files')">
-                <i x-h-lucide role="img" data-lucide="folder"></i>
+                <svg x-h-lucide role="presentation" data-lucide="folder"></svg>
                 <span>Files</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'docs'" @click="changeActive('docs')">
-                <i x-h-lucide role="img" data-lucide="file-text"></i>
+                <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </a>
               <button type="button" x-h-sidebar-menu-action.autohide>
-                <i x-h-lucide role="img" data-lucide="info"></i>
+                <svg x-h-lucide role="presentation" data-lucide="info"></svg>
                 <span class="sr-only">Info</span>
               </button>
             </li>
@@ -605,7 +610,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
             <button type="button" x-h-sidebar-menu-button :data-active="active === 'tree'" @click="changeActive('tree')">
-              <i x-h-lucide role="img" data-lucide="list-tree"></i>
+              <svg x-h-lucide role="presentation" data-lucide="list-tree"></svg>
               <span>Tree</span>
             </button>
             <ul x-h-sidebar-menu-sub>
@@ -642,7 +647,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item.collapsed>
             <button type="button" x-h-sidebar-menu-button>
-              <i x-h-lucide role="img" data-lucide="list-tree"></i>
+              <svg x-h-lucide role="presentation" data-lucide="list-tree"></svg>
               <span>Tree (Collapsable)</span>
             </button>
             <ul x-h-sidebar-menu-sub>
@@ -692,7 +697,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
     <div x-h-sidebar-footer>
       <button type="button" x-h-sidebar-menu-button x-h-menu-trigger.dropdown>
         <span>Footer popover</span>
-        <i x-h-lucide role="img" data-lucide="chevrons-up-down"></i>
+        <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
       </button>
       <ul x-h-menu aria-label="dropdown" data-align="top-start">
         <li x-h-menu-item>Set yourself as away</li>

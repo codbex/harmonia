@@ -214,6 +214,9 @@
 /* Standard color palette (500 step) for general use */
 @source inline("{bg,text}-{white,black}");
 @source inline("{bg,text}-{red,orange,yellow,green,blue,purple,pink,indigo,gray,teal}-500");
+/* SVG paint utilities for the charts (same palette) */
+@source inline("{fill,stroke}-{white,black}");
+@source inline("{fill,stroke}-{red,orange,yellow,green,blue,purple,pink,indigo,gray,teal}-500");
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;

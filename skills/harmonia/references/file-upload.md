@@ -1,6 +1,6 @@
 # File Upload
 
-Lets users choose one or more files for upload. It looks like a regular input with a "Browse" button on the side; clicking the field or the button opens the native file picker, and the chosen files are shown as tags inside the field.
+Lets users choose one or more files for upload. It looks like a regular input with a "Browse" button on the side. Clicking the field or the button opens the native file picker, and the chosen files are shown as tags inside the field.
 
 Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-` prefix.
 
@@ -22,7 +22,7 @@ Use the File Upload when a form needs the user to attach files, such as a docume
 | ---------------- | ------ | -------- | ------------------------------------------------------------------ |
 | data-placeholder | string | false    | Text shown when no file is selected (default: `"No file chosen"`). |
 
-The `<input type="file">` keeps its native attributes - set `multiple`, `accept`, `required`, `name` and `disabled` directly on it. The selected files are shown as display-only tags; picking again replaces the selection, mirroring the native control (there is no per-file remove button).
+The `<input type="file">` keeps its native attributes - set `multiple`, `accept`, `required`, `name` and `disabled` directly on it. The selected files are shown as display-only tags. Picking again replaces the selection, mirroring the native control (there is no per-file remove button).
 
 ### Model
 

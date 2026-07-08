@@ -80,7 +80,7 @@ x-h-select-separator
 
 ### With model
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="selectData">
@@ -130,7 +130,7 @@ x-h-select-separator
 
 ### Clearable
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ selected: 'opt-1' }">
@@ -201,7 +201,7 @@ The input automatically switches modes based on the model. If you want to select
 
 ### No model
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-select>

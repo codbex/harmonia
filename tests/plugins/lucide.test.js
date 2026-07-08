@@ -26,8 +26,8 @@ function setup(attrs = {}, { expression = '', evaluate, tag = 'i' } = {}) {
   const el = tag === 'svg' ? document.createElementNS('http://www.w3.org/2000/svg', 'svg') : document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   parent.appendChild(el);
-  mountDirective(lucidePlugin, 'h-lucide', el, { expression, original: 'x-h-lucide' }, evaluate ? { evaluate } : {});
-  return { parent, el };
+  const { ctx } = mountDirective(lucidePlugin, 'h-lucide', el, { expression, original: 'x-h-lucide' }, evaluate ? { evaluate } : {});
+  return { parent, el, ctx };
 }
 
 describe('x-h-lucide directive', () => {
@@ -155,6 +155,36 @@ describe('x-h-lucide directive', () => {
       expect(el.getAttribute('x-show')).toBe('open');
       expect(el.getAttribute('x-bind:class')).toBe('cls');
       expect(el.querySelector('path')).toBeTruthy();
+    });
+
+    it('re-renders the icon when data-lucide changes', async () => {
+      const { el } = setup({ 'data-lucide': 'home', class: 'size-4' }, { tag: 'svg' });
+      expect(el.classList.contains('lucide-home')).toBe(true);
+      el.setAttribute('data-lucide', 'arrow-up-right');
+      await new Promise((resolve) => setTimeout(resolve, 0)); // let the MutationObserver fire
+      expect(el.classList.contains('lucide-arrow-up-right')).toBe(true);
+      expect(el.classList.contains('lucide-home')).toBe(false); // previous icon class removed
+      expect(el.classList.contains('size-4')).toBe(true); // author classes untouched
+      expect(el.querySelector('path')).toBeTruthy();
+    });
+
+    it('keeps the current icon when data-lucide changes to an unknown name', async () => {
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const { el } = setup({ 'data-lucide': 'home' }, { tag: 'svg' });
+      el.setAttribute('data-lucide', 'definitely-not-an-icon');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(spy).toHaveBeenCalled();
+      expect(el.classList.contains('lucide-home')).toBe(true);
+      expect(el.querySelector('path')).toBeTruthy();
+    });
+
+    it('stops observing data-lucide on cleanup', async () => {
+      const { el, ctx } = setup({ 'data-lucide': 'home' }, { tag: 'svg' });
+      for (const [fn] of ctx.cleanup.mock.calls) fn();
+      el.setAttribute('data-lucide', 'arrow-up-right');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(el.classList.contains('lucide-home')).toBe(true);
+      expect(el.classList.contains('lucide-arrow-up-right')).toBe(false);
     });
 
     it('renders in place through the scoped createIcons fallback too', () => {

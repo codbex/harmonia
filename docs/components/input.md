@@ -35,7 +35,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Text Input
 
-<LiveExample data-class="flex flex-col gap-4">
+<LiveExample data-class="flex flex-col gap-4" data-exclude="generator">
 
 <!-- prettier-ignore -->
 ```html

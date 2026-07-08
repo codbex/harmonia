@@ -125,6 +125,34 @@ function stripComponentWrappers(md) {
   return out.join('\n');
 }
 
+// A doc example marked data-exclude="skill" (or "all") is site-only: drop the
+// whole <LiveExample> block (wrapper tag, fence and any prose inside it) before
+// transcription. Counterpart of the theming generator's data-exclude="generator"
+// handling in scripts/generate-theming-fragments.cjs. Fence-aware.
+function removeExcludedExamples(md) {
+  const lines = md.split('\n');
+  let inFence = false;
+  let skipping = false;
+  const out = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) inFence = !inFence;
+    if (!inFence && !skipping) {
+      const open = /^<LiveExample\b([^>]*)>/.exec(line.trim());
+      const exclude = open ? (open[1].match(/data-exclude="([^"]*)"/) || [])[1] : undefined;
+      if (exclude && exclude.split(/\s+/).some((token) => token === 'skill' || token === 'all')) {
+        skipping = true;
+        continue;
+      }
+    }
+    if (skipping) {
+      if (!inFence && /^<\/LiveExample>$/.test(line.trim())) skipping = false;
+      continue;
+    }
+    out.push(line);
+  }
+  return out.join('\n');
+}
+
 // VitePress `::: info|tip|warning|...` custom containers are site-only syntax;
 // left as-is they leak raw `:::` lines into the references. Convert each to a
 // plain markdown blockquote: the opening line becomes `> **Label:** Title`,
@@ -264,7 +292,7 @@ function extractExampleBlocks(lines) {
 }
 
 function parseDoc(text) {
-  const lines = convertContainers(text.replace(/\r\n/g, '\n')).split('\n');
+  const lines = convertContainers(removeExcludedExamples(text.replace(/\r\n/g, '\n'))).split('\n');
   const mask = computeFenceMask(lines);
   const { title, description } = extractTitleAndDescription(lines, mask);
   const { directives, apiDetails } = extractApi(lines, mask);

@@ -8,7 +8,7 @@
       <div x-h-input-group>
         <input x-h-input.group placeholder="Search channels..." aria-label="Search channels" x-model="search" />
         <div x-h-input-group-addon data-align="inline-start">
-          <i x-h-lucide role="img" data-lucide="search"></i>
+          <svg x-h-lucide role="presentation" data-lucide="search"></svg>
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@
       <template x-for="channel in list" :key="channel.id">
         <li x-h-list-item class="items-start gap-3 px-4 py-3">
           <div x-h-avatar class="rounded-control">
-            <i x-h-lucide role="img" data-lucide="hash"></i>
+            <svg x-h-lucide role="presentation" data-lucide="hash"></svg>
           </div>
           <div class="vbox min-w-0 flex-1">
             <div class="hbox items-center gap-2">
@@ -46,7 +46,7 @@
         <li x-h-info-page class="py-6">
           <div x-h-info-page-header>
             <div x-h-info-page-media.icon>
-              <i x-h-lucide role="img" data-lucide="search-x"></i>
+              <svg x-h-lucide role="presentation" data-lucide="search-x"></svg>
             </div>
             <div x-h-info-page-title>No channels match</div>
             <div x-h-info-page-description>Try a different search term.</div>

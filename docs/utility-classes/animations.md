@@ -59,7 +59,7 @@ Be sure to account for this preference in your implementation, as excessive moti
 <div class="vbox gap-4" x-data="ScaleController">
   <button x-h-button @click="toggle()" x-text="isShown ? 'Hide' : 'Show'"></button>
   <div x-h-alert class="hidden scale-95 opacity-0 transition-[opacity,scale] duration-200 ease-out motion-reduce:transition-none" x-ref="alert">
-    <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+    <svg x-h-icon data-icon="circle-info" role="presentation"></svg>
     <div x-h-alert-title>Alert</div>
   </div>
 </div>

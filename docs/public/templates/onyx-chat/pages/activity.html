@@ -8,11 +8,11 @@
     <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
       <div x-h-tab-list>
         <button id="act-tab-mentions" x-h-tab aria-controls="act-panel-mentions" :aria-selected="tab === 'mentions'" @click="tab = 'mentions'">
-          <i x-h-lucide role="img" data-lucide="at-sign"></i>
+          <svg x-h-lucide role="presentation" data-lucide="at-sign"></svg>
           <span x-text="'Mentions (' + $store.chat.mentionEvents.length + ')'"></span>
         </button>
         <button id="act-tab-reactions" x-h-tab aria-controls="act-panel-reactions" :aria-selected="tab === 'reactions'" @click="tab = 'reactions'">
-          <i x-h-lucide role="img" data-lucide="smile"></i>
+          <svg x-h-lucide role="presentation" data-lucide="smile"></svg>
           <span x-text="'Reactions (' + $store.chat.reactionEvents.length + ')'"></span>
         </button>
       </div>
@@ -35,7 +35,7 @@
             <li x-h-info-page class="py-6">
               <div x-h-info-page-header>
                 <div x-h-info-page-media.icon>
-                  <i x-h-lucide role="img" data-lucide="at-sign"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="at-sign"></svg>
                 </div>
                 <div x-h-info-page-title>No mentions yet</div>
                 <div x-h-info-page-description>Send a message and teammates will reply; some of them will mention you.</div>
@@ -63,7 +63,7 @@
             <li x-h-info-page class="py-6">
               <div x-h-info-page-header>
                 <div x-h-info-page-media.icon>
-                  <i x-h-lucide role="img" data-lucide="smile"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="smile"></svg>
                 </div>
                 <div x-h-info-page-title>No reactions yet</div>
                 <div x-h-info-page-description>When teammates react to your messages, the reactions collect here.</div>

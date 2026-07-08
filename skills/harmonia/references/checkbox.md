@@ -35,9 +35,9 @@ Use checkboxes for independent options where multiple selections are allowed. Fo
 ```html
 <div class="flex items-center gap-3">
   <span x-h-checkbox>
-    <input type="checkbox" id="checked" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
+    <input type="checkbox" id="indeterminate" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
   </span>
-  <label x-h-label for="checked">Indeterminate</label>
+  <label x-h-label for="indeterminate">Indeterminate</label>
 </div>
 ```
 

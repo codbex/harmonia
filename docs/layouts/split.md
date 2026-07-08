@@ -69,7 +69,7 @@ x-h-split-panel
 
 ### Horizontal split (2 panels)
 
-<LiveExample data-style="height: 12rem">
+<LiveExample data-style="height: 12rem" data-exclude="generator">
 
 ```html
 <div class="size-full" x-h-split data-orientation="horizontal" data-variant="handle" data-locked="false">
@@ -125,7 +125,7 @@ This is useful for split-window layouts. The gutter is visually thin but provide
 You can use the [Breakpoint Listener](/utilities/breakpoint-listener) in order to hide a panel (or panels) based on screen size.
 In the following example, the left and right panels will hide if the screen is less then 1024 pixels wide.
 
-<LiveExample data-class="p-0" data-style="height: 16rem">
+<LiveExample data-class="p-0" data-style="height: 16rem" data-exclude="generator">
 
 ```html
 <div x-data="ResponsiveSplitController" class="size-full">
@@ -164,7 +164,7 @@ In the following example, the left and right panels will hide if the screen is l
 
 You can use the `x-for` directive to add or remove panels dynamically.
 
-<LiveExample data-class="p-0" data-style="height: 36rem">
+<LiveExample data-class="p-0" data-style="height: 36rem" data-exclude="generator">
 
 ```html
 <div x-data="DynamicSplitController" class="vbox size-full">
@@ -213,7 +213,7 @@ You can use the `x-for` directive to add or remove panels dynamically.
 
 You can use the [Template](/utilities/template) directive to create layouts dynamically.
 
-<LiveExample data-class="p-0" data-style="height: 28rem">
+<LiveExample data-class="p-0" data-style="height: 28rem" data-exclude="generator">
 
 ```html
 <div x-data="RecursiveSplitController" class="vbox size-full">

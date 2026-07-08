@@ -3,7 +3,7 @@
     <div x-h-input-group class="w-full md:w-1/3">
       <input x-h-input.group placeholder="Search by number or customer..." aria-label="Search invoices" x-model="search" @input="page = 1" />
       <div x-h-input-group-addon data-align="inline-start">
-        <i x-h-lucide role="img" data-lucide="search"></i>
+        <svg x-h-lucide role="presentation" data-lucide="search"></svg>
       </div>
     </div>
     <div class="hbox flex-1 flex-wrap items-center justify-between gap-2">
@@ -13,7 +13,7 @@
         </template>
       </div>
       <button x-h-button data-variant="primary" @click="openNew()">
-        <i x-h-lucide role="img" data-lucide="plus"></i>
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
         New invoice
       </button>
     </div>
@@ -26,32 +26,32 @@
           <th x-h-table-head scope="col" :aria-sort="ariaSort('id')">
             <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('id')">
               Invoice
-              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'id' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+              <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'id' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
           <th x-h-table-head scope="col" :aria-sort="ariaSort('customer')">
             <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('customer')">
               Customer
-              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'customer' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+              <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'customer' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
           <th x-h-table-head scope="col" :aria-sort="ariaSort('issued')">
             <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('issued')">
               Issued
-              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'issued' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+              <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'issued' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
           <th x-h-table-head scope="col" :aria-sort="ariaSort('due')">
             <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('due')">
               Due
-              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'due' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+              <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'due' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
           <th x-h-table-head scope="col">Status</th>
           <th x-h-table-head scope="col" class="text-right" :aria-sort="ariaSort('amount')">
             <button class="hbox w-full cursor-pointer items-center justify-end gap-1" @click="sortBy('amount')">
               Amount
-              <i x-h-lucide class="size-4" role="img" :data-lucide="sortKey === 'amount' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></i>
+              <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'amount' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
           <th x-h-table-head scope="col" class="w-12"><span class="sr-only">Open</span></th>
@@ -73,7 +73,7 @@
                    No stopPropagation here: the router's click listener lives on the body,
                    so stopping the event would turn this into a full page load. -->
               <a x-h-button data-variant="transparent" data-size="icon-sm" :href="'/invoices/' + invoice.id" :aria-label="'Open ' + invoice.id">
-                <i x-h-lucide role="img" data-lucide="arrow-right"></i>
+                <svg x-h-lucide role="presentation" data-lucide="arrow-right"></svg>
               </a>
             </td>
           </tr>
@@ -93,7 +93,7 @@
       <ul x-h-pagination-content>
         <li x-h-pagination-item>
           <a x-h-pagination-link.previous href="#" @click.prevent="page = Math.max(1, page - 1)">
-            <i x-h-lucide role="img" data-lucide="chevron-left"></i>
+            <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
             <span x-h-pagination-link-label>Previous</span>
           </a>
         </li>
@@ -105,7 +105,7 @@
         <li x-h-pagination-item>
           <a x-h-pagination-link.next href="#" @click.prevent="page = Math.min(pageCount, page + 1)">
             <span x-h-pagination-link-label>Next</span>
-            <i x-h-lucide role="img" data-lucide="chevron-right"></i>
+            <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
           </a>
         </li>
       </ul>
@@ -122,7 +122,7 @@
             <p x-h-text.muted>Drafts can be sent later from the invoice page.</p>
           </div>
           <button x-h-button data-variant="transparent" data-size="icon" aria-label="Close new invoice panel" @click="showNew = false">
-            <i x-h-lucide role="img" data-lucide="x"></i>
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
           </button>
         </div>
         <form id="new-invoice-form" x-ref="newInvoiceForm" @submit.prevent="newInvoiceValid && submitNew(true)" @input="newInvoiceValid = $el.checkValidity()" @change="newInvoiceValid = $el.checkValidity()">

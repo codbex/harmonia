@@ -35,7 +35,7 @@ x-h-switch
 
 </LiveExample>
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div class="flex items-center gap-3">

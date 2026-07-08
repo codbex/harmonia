@@ -7,7 +7,7 @@
           <div x-h-card-title class="text-2xl" x-text="kpi.value"></div>
           <div x-h-card-action>
             <div x-h-avatar class="rounded-lg" data-variant="primary">
-              <i x-h-lucide role="img" :data-lucide="kpi.icon"></i>
+              <svg x-h-lucide role="img" :data-lucide="kpi.icon"></svg>
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@
         <ul x-h-list>
           <template x-for="entry in $store.erp.activity.slice(0, 6)" :key="entry.id">
             <li x-h-list-item class="items-start gap-3 py-2">
-              <i x-h-lucide role="img" :data-lucide="entry.icon" class="text-muted-foreground"></i>
+              <svg x-h-lucide role="presentation" :data-lucide="entry.icon" class="text-muted-foreground"></svg>
               <div class="vbox min-w-0 flex-1">
                 <span class="text-sm" x-text="entry.text"></span>
                 <span class="text-sm text-muted-foreground" x-text="entry.time"></span>

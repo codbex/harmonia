@@ -77,6 +77,7 @@
 ## Utilities
 
 - [Breakpoint Listener](references/breakpoint-listener.md): Creates a listener that triggers actions when the viewport reaches specified breakpoint.
+- [Chart Export](references/chart-export.md): Utility functions for exporting a chart as an image.
 - [Date Format](references/date-format.md): A behavior-only directive that renders a date value as a locale-aware date string into the element's text content.
 - [Focus](references/focus.md): A behavior-only directive that programmatically sets focus on an element based on a specified condition.
 - [Include](references/include.md): The include directive makes it easy to fetch and insert an external HTML fragment inside an element.

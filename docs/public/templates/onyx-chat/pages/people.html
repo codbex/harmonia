@@ -8,7 +8,7 @@
       <div x-h-input-group>
         <input x-h-input.group placeholder="Search people..." aria-label="Search people" x-model="search" />
         <div x-h-input-group-addon data-align="inline-start">
-          <i x-h-lucide role="img" data-lucide="search"></i>
+          <svg x-h-lucide role="presentation" data-lucide="search"></svg>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
         </div>
         <div x-h-tile-actions x-show="person.id !== 'you'">
           <button x-h-button data-variant="outline" data-size="sm" @click="message(person)">
-            <i x-h-lucide role="img" data-lucide="message-circle"></i>
+            <svg x-h-lucide role="presentation" data-lucide="message-circle"></svg>
             Message
           </button>
         </div>
@@ -41,7 +41,7 @@
     <div x-h-info-page>
       <div x-h-info-page-header>
         <div x-h-info-page-media.icon>
-          <i x-h-lucide role="img" data-lucide="search-x"></i>
+          <svg x-h-lucide role="presentation" data-lucide="search-x"></svg>
         </div>
         <div x-h-info-page-title>No people match</div>
         <div x-h-info-page-description>Try a different name or role.</div>

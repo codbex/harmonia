@@ -153,7 +153,7 @@ x-h-exp-panel-content
 
 ### Medium Panels
 
-<LiveExample data-class="p-0" data-style="height:10rem">
+<LiveExample data-class="p-0" data-style="height:10rem" data-exclude="generator">
 
 ```html
 <div x-h-exp-panel data-size="md">
@@ -172,7 +172,7 @@ x-h-exp-panel-content
 
 ### Small Panels
 
-<LiveExample data-class="p-0" data-style="height:10rem">
+<LiveExample data-class="p-0" data-style="height:10rem" data-exclude="generator">
 
 ```html
 <div x-h-exp-panel data-size="sm">
@@ -197,7 +197,7 @@ It can be used both inline and in a component object.
 
 - #### Inline
 
-<LiveExample data-class="p-0" data-style="height:16rem">
+<LiveExample data-class="p-0" data-style="height:16rem" data-exclude="generator">
 
 ```html
 <div x-h-exp-panel x-data="{ panelOneOpen: true }">
@@ -222,7 +222,7 @@ It can be used both inline and in a component object.
 
 - #### Component Object
 
-<LiveExample data-class="p-0" data-style="height:16rem">
+<LiveExample data-class="p-0" data-style="height:16rem" data-exclude="generator">
 
 ```html
 <div x-h-exp-panel x-data="twoWayPanel">

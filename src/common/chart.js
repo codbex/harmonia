@@ -1,8 +1,8 @@
 import { computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { KNOWN_COLORS, colorClass, colorVar } from './colors';
+import { KNOWN_COLORS, colorClass, colorVar, fillClass, strokeClass } from './colors';
 
 // Re-exported so chart consumers keep importing these from `common/chart`.
-export { KNOWN_COLORS, colorClass, colorVar };
+export { KNOWN_COLORS, colorClass, colorVar, fillClass, strokeClass };
 
 // Curated, visually distinct order cycled for series without an explicit color.
 export const DEFAULT_PALETTE = ['blue', 'red', 'green', 'orange', 'purple', 'teal', 'pink', 'indigo', 'yellow'];
@@ -25,6 +25,42 @@ export function make(tag, classes = [], opts = {}) {
   if (opts.attrs) for (const [k, v] of Object.entries(opts.attrs)) node.setAttribute(k, String(v));
   if (opts.style) Object.assign(node.style, opts.style);
   return node;
+}
+
+/** `make` for SVG elements (same options, SVG namespace). */
+export function makeSvg(tag, classes = [], opts = {}) {
+  const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  if (classes.length) node.classList.add(...classes);
+  if (opts.text != null) node.textContent = opts.text;
+  if (opts.slot) node.setAttribute('data-slot', opts.slot);
+  if (opts.attrs) for (const [k, v] of Object.entries(opts.attrs)) node.setAttribute(k, String(v));
+  return node;
+}
+
+// Measure rendered text width via a cached canvas context. Falls back to a
+// character estimate where canvas is unavailable (e.g. happy-dom in tests).
+let measureContext;
+export function measureText(text, font) {
+  if (measureContext === undefined) {
+    try {
+      measureContext = document.createElement('canvas').getContext('2d') || null;
+    } catch {
+      measureContext = null;
+    }
+  }
+  if (!measureContext) return String(text).length * (parseFloat(font) || 12) * 0.6;
+  measureContext.font = font;
+  return measureContext.measureText(String(text)).width;
+}
+
+/** Shorten `text` with an ellipsis until it fits `maxWidth`. */
+export function fitText(text, maxWidth, font) {
+  let value = String(text);
+  if (measureText(value, font) <= maxWidth) return { text: value, truncated: false };
+  while (value.length > 1 && measureText(`${value}…`, font) > maxWidth) {
+    value = value.slice(0, -1);
+  }
+  return { text: `${value}…`, truncated: true };
 }
 
 function resolveColor(color, palette, index) {
@@ -156,22 +192,35 @@ export function tooltipContent(payload, format) {
   return frag;
 }
 
+// A floating-ui virtual reference at the cursor, so the tooltip follows the pointer.
+function cursorReference(event, contextElement) {
+  const { clientX: x, clientY: y } = event;
+  return {
+    getBoundingClientRect: () => ({ width: 0, height: 0, x, y, top: y, bottom: y, left: x, right: x }),
+    contextElement,
+  };
+}
+
 /**
  * Wire pointer/click handlers on a data element (bar/point/slice).
- * Returns listener records so the caller can detach them on re-render.
+ * With `followCursor` the tooltip tracks the pointer instead of anchoring
+ * to the element (used by the pie family, whose wedges are too large an
+ * anchor). Returns listener records so the caller can detach them on
+ * re-render.
  */
-export function attachHover(target, payload, { tooltip, root, format, enabled }) {
+export function attachHover(target, payload, { tooltip, root, format, enabled, followCursor }) {
   const records = [];
   const add = (type, fn) => {
     target.addEventListener(type, fn);
     records.push({ target, type, fn });
   };
-  add('pointerenter', () => {
-    if (enabled && !tooltip.pinned) tooltip.show(target, tooltipContent(payload, format));
+  const reference = (event) => (followCursor ? cursorReference(event, target) : target);
+  add('pointerenter', (event) => {
+    if (enabled && !tooltip.pinned) tooltip.show(reference(event), tooltipContent(payload, format));
     dispatchChartEvent(root, 'chart-hover', payload);
   });
-  add('pointermove', () => {
-    if (enabled && !tooltip.pinned) tooltip.show(target, tooltipContent(payload, format));
+  add('pointermove', (event) => {
+    if (enabled && !tooltip.pinned) tooltip.show(reference(event), tooltipContent(payload, format));
   });
   add('pointerleave', () => {
     if (enabled) tooltip.hide();
@@ -179,26 +228,14 @@ export function attachHover(target, payload, { tooltip, root, format, enabled })
   });
   // Keep the press from bubbling to the document-level dismiss handler.
   add('pointerdown', (event) => event.stopPropagation());
-  add('click', () => {
+  add('click', (event) => {
     if (enabled) {
-      tooltip.show(target, tooltipContent(payload, format));
+      tooltip.show(reference(event), tooltipContent(payload, format));
       tooltip.pin();
     }
     dispatchChartEvent(root, 'chart-click', payload);
   });
   return records;
-}
-
-/** Legend strip mapping colors to labels. `items` is `[{ label, color }]`. */
-export function buildLegend(items) {
-  const legend = make('div', ['flex', 'flex-wrap', 'items-center', 'justify-center', 'gap-3', 'text-xs', 'text-muted-foreground', 'shrink-0'], { slot: 'chart-legend' });
-  items.forEach((it) => {
-    const item = make('span', ['inline-flex', 'items-center', 'gap-1.5']);
-    item.appendChild(make('span', ['size-2.5', 'rounded-sm', colorClass(it.color)], { slot: 'chart-legend-swatch' }));
-    item.appendChild(make('span', [], { text: it.label }));
-    legend.appendChild(item);
-  });
-  return legend;
 }
 
 export function noData() {

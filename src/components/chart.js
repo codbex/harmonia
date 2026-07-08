@@ -1,49 +1,37 @@
-import {
-  DEFAULT_PALETTE,
-  attachHover,
-  buildDataTable,
-  buildLegend,
-  colorClass,
-  colorVar,
-  createTooltip,
-  defaultFormat,
-  dispatchChartEvent,
-  make,
-  niceScale,
-  noData,
-  normalizeSeries,
-  normalizeSlices,
-  tooltipContent,
-  valueToPct,
-} from '../common/chart';
+import { DEFAULT_PALETTE, attachHover, buildDataTable, createTooltip, defaultFormat, fillClass, fitText, make, makeSvg, measureText, niceScale, noData, normalizeSeries, normalizeSlices, strokeClass, valueToPct } from '../common/chart';
 
-// Mark the chart root as a labeled figure for assistive tech. The visual layers
-// are decorative (`aria-hidden`); the real data is exposed via a hidden table.
-// Respect an author-provided `aria-label`, only falling back to the default.
-// Returns the effective label (used as the data table caption).
+// Mark the chart root as a labeled figure for assistive tech. The visual layer
+// (the SVG) is decorative (`aria-hidden`); the real data is exposed via a
+// hidden table. Respect an author-provided `aria-label`, only falling back to
+// the default. Returns the effective label (used as the data table caption).
 function labelChart(root, defaultLabel) {
   root.setAttribute('role', 'figure');
   if (!root.hasAttribute('aria-label')) root.setAttribute('aria-label', defaultLabel);
   return root.getAttribute('aria-label');
 }
 
-// Root font size used to express measured pixel lengths in rem.
-const REM = 16;
+// Chart text presets selectable with `data-font-size` on the chart element.
+// `fallback` is the size used when computed styles are unavailable.
+const FONT_SIZES = {
+  xs: { class: 'text-xs', fallback: 12 },
+  sm: { class: 'text-sm', fallback: 14 },
+  base: { class: 'text-base', fallback: 16 },
+  lg: { class: 'text-lg', fallback: 18 },
+};
 
-// Size and rotate connecting segments (thin divs between two percent-coordinate
-// points). Percent coordinates only translate to a length/angle once the
-// container's pixel size is known, so callers rerun this on mount and resize.
-function layoutSegments(container, segments) {
-  const rect = container.getBoundingClientRect();
-  segments.forEach(({ el, a, b }) => {
-    const dx = ((b.x - a.x) / 100) * rect.width;
-    const dy = ((b.y - a.y) / 100) * rect.height;
-    const len = Math.hypot(dx, dy);
-    const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-    el.style.width = `${len / REM}rem`;
-    el.style.transform = `rotate(${angle}deg)`;
-  });
-}
+// Layout constants (pixels).
+const TICK_GAP = 6;
+const BAR_RADIUS = 4;
+const BAR_INSET = 2;
+// A dot's 2px card-colored stroke straddles the radius, so r = 5 leaves the
+// same 8px colored core and 12px overall size as the previous size-2 + ring-2.
+const DOT_RADIUS = 5;
+const LABEL_GAP = 6;
+const EDGE_CLAMP = 16;
+const LEGEND_SWATCH = 10;
+const LEGEND_ITEM_GAP = 16;
+const LEGEND_TEXT_GAP = 6;
+const LEGEND_TOP_GAP = 6;
 
 // Read the shared chart options that every chart type understands.
 function commonOptions(cfg) {
@@ -55,137 +43,180 @@ function commonOptions(cfg) {
   };
 }
 
-// Build the cartesian scaffold (axes + gridlines) shared by bar and line charts.
-// Returns the grid wrapper and the plot area to fill with bars/points.
-function buildCartesian({ scale, categories, horizontal, axes, gridlines, format }) {
-  const grid = make('div', ['grid', 'flex-1', 'min-h-0', 'gap-1'], {
-    style: { gridTemplateColumns: 'auto 1fr', gridTemplateRows: '1fr auto' },
+// Text metrics of the chart, from the `data-font-size` preset on the chart
+// element ("xs", "sm", "base" or "lg", default "xs"). The size is measured
+// from a probe carrying the preset's class, because the `text-*` utilities
+// resolve `--text-*` theme variables the user may have overridden, and the
+// layout math must reserve exactly what the text renders at. `row` is the
+// height of an axis or legend row, `font` the CSS font string used for text
+// measurement.
+function chartText(root) {
+  const preset = FONT_SIZES[root.getAttribute('data-font-size')] || FONT_SIZES.xs;
+  let size = preset.fallback;
+  let family = 'sans-serif';
+  if (typeof getComputedStyle === 'function') {
+    const probe = make('span', [preset.class]);
+    root.appendChild(probe);
+    const style = getComputedStyle(probe);
+    size = parseFloat(style.fontSize) || size;
+    family = style.fontFamily || family;
+    probe.remove();
+  }
+  return { class: preset.class, size, row: size + 4, font: `${size}px ${family}` };
+}
+
+// A text node. Coordinates are the anchor point; `title` adds a native tooltip
+// carrying the untruncated string.
+function svgText(text, x, y, { anchor = 'start', baseline = 'central', classes = ['fill-muted-foreground'], slot, title } = {}) {
+  const node = makeSvg('text', classes, { slot, text, attrs: { x: x.toFixed(2), y: y.toFixed(2), 'text-anchor': anchor, 'dominant-baseline': baseline } });
+  if (title) node.appendChild(makeSvg('title', [], { text: title }));
+  return node;
+}
+
+// Data label drawn on top of a colored shape (white text + dark outline for contrast).
+function onColorText(text, x, y, anchor = 'middle') {
+  const node = svgText(text, x, y, { anchor, classes: ['fill-white', 'font-medium'], slot: 'chart-label' });
+  node.setAttribute('paint-order', 'stroke');
+  node.setAttribute('stroke', 'rgba(0, 0, 0, 0.35)');
+  node.setAttribute('stroke-width', '2');
+  node.setAttribute('stroke-linejoin', 'round');
+  return node;
+}
+
+// Data label drawn on the chart background.
+function dataText(text, x, y, anchor = 'middle') {
+  return svgText(text, x, y, { anchor, classes: ['fill-foreground'], slot: 'chart-label' });
+}
+
+// A rectangle path with per-corner rounding (stacked bars round only their outer end).
+function roundedRectPath(x, y, w, h, radius, corners) {
+  const r = Math.max(0, Math.min(radius, w / 2, h / 2));
+  const tl = corners.tl ? r : 0;
+  const tr = corners.tr ? r : 0;
+  const br = corners.br ? r : 0;
+  const bl = corners.bl ? r : 0;
+  return (
+    `M ${(x + tl).toFixed(2)} ${y.toFixed(2)}` +
+    ` H ${(x + w - tr).toFixed(2)}${tr ? ` A ${tr} ${tr} 0 0 1 ${(x + w).toFixed(2)} ${(y + tr).toFixed(2)}` : ''}` +
+    ` V ${(y + h - br).toFixed(2)}${br ? ` A ${br} ${br} 0 0 1 ${(x + w - br).toFixed(2)} ${(y + h).toFixed(2)}` : ''}` +
+    ` H ${(x + bl).toFixed(2)}${bl ? ` A ${bl} ${bl} 0 0 1 ${x.toFixed(2)} ${(y + h - bl).toFixed(2)}` : ''}` +
+    ` V ${(y + tl).toFixed(2)}${tl ? ` A ${tl} ${tl} 0 0 1 ${(x + tl).toFixed(2)} ${y.toFixed(2)}` : ''}` +
+    ' Z'
+  );
+}
+
+// A pie/doughnut/polar wedge between two angles (radians). `innerR > 0` leaves
+// a hole. A full turn is drawn as two half arcs (a single arc with identical
+// endpoints collapses to nothing).
+function wedgePath(cx, cy, innerR, outerR, a0, a1) {
+  const pt = (a, r) => `${(cx + Math.cos(a) * r).toFixed(3)} ${(cy + Math.sin(a) * r).toFixed(3)}`;
+  const span = a1 - a0;
+  if (span >= 2 * Math.PI - 0.0001) {
+    const mid = a0 + Math.PI;
+    let d = `M ${pt(a0, outerR)} A ${outerR} ${outerR} 0 1 1 ${pt(mid, outerR)} A ${outerR} ${outerR} 0 1 1 ${pt(a0, outerR)}`;
+    if (innerR > 0) d += ` M ${pt(a0, innerR)} A ${innerR} ${innerR} 0 1 0 ${pt(mid, innerR)} A ${innerR} ${innerR} 0 1 0 ${pt(a0, innerR)}`;
+    return `${d} Z`;
+  }
+  const large = span > Math.PI ? 1 : 0;
+  let d = `M ${pt(a0, outerR)} A ${outerR} ${outerR} 0 ${large} 1 ${pt(a1, outerR)}`;
+  if (innerR > 0) d += ` L ${pt(a1, innerR)} A ${innerR} ${innerR} 0 ${large} 0 ${pt(a0, innerR)}`;
+  else d += ` L ${cx.toFixed(3)} ${cy.toFixed(3)}`;
+  return `${d} Z`;
+}
+
+// The chart's SVG canvas, sized to the measured chart area.
+function chartSvg(width, height, text) {
+  return makeSvg('svg', [text.class, 'shrink-0'], { slot: 'chart-svg', attrs: { width: Math.max(0, width), height: Math.max(0, height), 'aria-hidden': 'true' } });
+}
+
+// Wrapped, centered legend rows at the bottom of the SVG. Returns the height
+// it consumed (rows + the gap above them).
+function buildLegendSvg(svg, items, width, height, text) {
+  const measured = items.map((it) => ({ ...it, w: LEGEND_SWATCH + LEGEND_TEXT_GAP + measureText(it.label, text.font) }));
+  const rows = [];
+  let row = [];
+  let rowWidth = 0;
+  for (const it of measured) {
+    const extra = (row.length ? LEGEND_ITEM_GAP : 0) + it.w;
+    if (row.length && rowWidth + extra > width) {
+      rows.push({ items: row, width: rowWidth });
+      row = [it];
+      rowWidth = it.w;
+    } else {
+      row.push(it);
+      rowWidth += extra;
+    }
+  }
+  if (row.length) rows.push({ items: row, width: rowWidth });
+
+  const legend = makeSvg('g', [], { slot: 'chart-legend' });
+  rows.forEach((r, ri) => {
+    const rowY = height - (rows.length - ri) * text.row;
+    let x = Math.max(0, (width - r.width) / 2);
+    r.items.forEach((it) => {
+      legend.appendChild(makeSvg('circle', [fillClass(it.color)], { slot: 'chart-legend-swatch', attrs: { cx: (x + LEGEND_SWATCH / 2).toFixed(2), cy: (rowY + text.row / 2).toFixed(2), r: LEGEND_SWATCH / 2 } }));
+      legend.appendChild(svgText(it.label, x + LEGEND_SWATCH + LEGEND_TEXT_GAP, rowY + text.row / 2, {}));
+      x += it.w + LEGEND_ITEM_GAP;
+    });
   });
+  svg.appendChild(legend);
+  return rows.length * text.row + LEGEND_TOP_GAP;
+}
 
-  const gutter = make('div', ['flex', 'shrink-0', 'text-xs', 'text-muted-foreground', 'overflow-hidden']);
-  const plot = make('div', ['relative', 'min-h-0', 'min-w-0', 'border-l', 'border-b', 'border-border'], { slot: 'chart-plot' });
-  const corner = make('div', []);
-  const axisRow = make('div', ['flex', 'text-xs', 'text-muted-foreground', 'overflow-hidden']);
+// Snap a coordinate to the pixel center so a 1px stroke fills exactly one
+// pixel row (unsnapped strokes antialias across two rows and look faded).
+const crisp = (v) => Math.round(v) + 0.5;
 
-  const numericTicks = axes ? scale.ticks : [];
+// Cartesian scaffold: numeric ticks, category labels, gridlines, and the two
+// plot borders. Returns the plot rectangle and the group shapes render into.
+function buildCartesianSvg(svg, { width, height, scale, categories, horizontal, axes, gridlines, format, text }) {
+  const showCats = categories.some((c) => c);
+  const plot = makeSvg('g', [], { slot: 'chart-plot' });
+  let px;
+  let py;
+  let pw;
+  let ph;
 
   if (!horizontal) {
-    // Numeric axis on the left (top = max), categories along the bottom.
-    gutter.classList.add('flex-col', 'justify-between', 'text-right', 'pr-1');
-    [...numericTicks].reverse().forEach((t) => gutter.appendChild(make('div', ['leading-none'], { text: format(t) })));
-    axisRow.classList.add('flex-row');
-    categories.forEach((c) => axisRow.appendChild(make('div', ['flex-1', 'min-w-0', 'text-center', 'truncate', 'px-0.5'], { text: c, attrs: { title: c } })));
-    if (gridlines) {
-      scale.ticks.forEach((t) => {
-        const line = make('div', ['absolute', 'left-0', 'right-0', 'border-t', 'border-border/50']);
-        line.style.bottom = `${valueToPct(t, scale)}%`;
-        plot.appendChild(line);
+    px = axes ? Math.max(...scale.ticks.map((t) => measureText(format(t), text.font))) + TICK_GAP : 1;
+    py = text.size / 2;
+    // Right margin so edge points, their labels, and the last category fit.
+    pw = Math.max(0, width - px - text.size);
+    ph = Math.max(0, height - py - (showCats ? text.row : 4));
+    const tickY = (t) => py + ph - (valueToPct(t, scale) / 100) * ph;
+    if (axes) scale.ticks.forEach((t) => svg.appendChild(svgText(format(t), px - TICK_GAP, tickY(t), { anchor: 'end' })));
+    if (gridlines) scale.ticks.forEach((t) => plot.appendChild(makeSvg('line', ['stroke-border/50'], { attrs: { x1: px, y1: crisp(tickY(t)), x2: px + pw, y2: crisp(tickY(t)) } })));
+    if (showCats) {
+      const slotW = pw / categories.length;
+      categories.forEach((c, i) => {
+        if (!c) return;
+        const fitted = fitText(c, Math.max(0, slotW - 4), text.font);
+        svg.appendChild(svgText(fitted.text, px + (i + 0.5) * slotW, py + ph + text.row / 2 + 2, { anchor: 'middle', title: fitted.truncated ? c : undefined }));
       });
     }
   } else {
-    // Numeric axis along the bottom, categories down the left.
-    gutter.classList.add('flex-col', 'justify-around', 'text-right', 'pr-1');
-    categories.forEach((c) => gutter.appendChild(make('div', ['truncate'], { text: c, attrs: { title: c } })));
-    axisRow.classList.add('flex-row', 'justify-between');
-    numericTicks.forEach((t) => axisRow.appendChild(make('div', ['leading-none'], { text: format(t) })));
-    if (gridlines) {
-      scale.ticks.forEach((t) => {
-        const line = make('div', ['absolute', 'top-0', 'bottom-0', 'border-l', 'border-border/50']);
-        line.style.left = `${valueToPct(t, scale)}%`;
-        plot.appendChild(line);
+    const catWidth = showCats ? Math.min(Math.max(...categories.map((c) => measureText(c, text.font))), width * 0.3) : 0;
+    px = showCats ? catWidth + TICK_GAP : 1;
+    py = 2;
+    pw = Math.max(0, width - px - text.size);
+    ph = Math.max(0, height - py - (axes ? text.row : 4));
+    const tickX = (t) => px + (valueToPct(t, scale) / 100) * pw;
+    if (showCats) {
+      const slotH = ph / categories.length;
+      categories.forEach((c, i) => {
+        if (!c) return;
+        const fitted = fitText(c, catWidth, text.font);
+        svg.appendChild(svgText(fitted.text, px - TICK_GAP, py + (i + 0.5) * slotH, { anchor: 'end', title: fitted.truncated ? c : undefined }));
       });
     }
+    if (axes) scale.ticks.forEach((t) => svg.appendChild(svgText(format(t), tickX(t), py + ph + text.row / 2 + 2, { anchor: 'middle' })));
+    if (gridlines) scale.ticks.forEach((t) => plot.appendChild(makeSvg('line', ['stroke-border/50'], { attrs: { x1: crisp(tickX(t)), y1: py, x2: crisp(tickX(t)), y2: py + ph } })));
   }
 
-  grid.append(gutter, plot, corner, axisRow);
-  return { wrap: grid, plot };
-}
-
-// Position a bar along the value axis between two value-percentages.
-function placeValue(bar, loPct, hiPct, horizontal) {
-  const a = Math.min(loPct, hiPct);
-  const size = Math.abs(hiPct - loPct);
-  if (horizontal) {
-    bar.style.left = `${a}%`;
-    bar.style.width = `${size}%`;
-  } else {
-    bar.style.bottom = `${a}%`;
-    bar.style.height = `${size}%`;
-  }
-}
-
-// Position a bar along the cross (category) axis within its slot, leaving a small gap.
-function placeCross(bar, startPct, sizePct, horizontal) {
-  if (horizontal) {
-    bar.style.top = `calc(${startPct}% + 0.125rem)`;
-    bar.style.height = `calc(${sizePct}% - 0.25rem)`;
-  } else {
-    bar.style.left = `calc(${startPct}% + 0.125rem)`;
-    bar.style.width = `calc(${sizePct}% - 0.25rem)`;
-  }
-}
-
-// Place a value label just past the value-end of a bar (above/right for positive).
-function placeBarLabel(label, horizontal, positive) {
-  if (horizontal) {
-    label.style.top = '50%';
-    if (positive) {
-      label.style.left = '100%';
-      label.style.transform = 'translate(0.25rem, -50%)';
-    } else {
-      label.style.left = '0';
-      label.style.transform = 'translate(calc(-100% - 0.25rem), -50%)';
-    }
-  } else {
-    label.style.left = '50%';
-    if (positive) {
-      label.style.top = '0';
-      label.style.transform = 'translate(-50%, calc(-100% - 0.25rem))';
-    } else {
-      label.style.bottom = '0';
-      label.style.transform = 'translate(-50%, calc(100% + 0.25rem))';
-    }
-  }
-}
-
-// Place a value label inside a bar at its value-end. Used when the bar (nearly)
-// reaches the plot edge, where an outside label would land on the axis labels.
-function placeBarLabelInside(label, horizontal, positive) {
-  if (horizontal) {
-    label.style.top = '50%';
-    if (positive) {
-      label.style.right = '0';
-      label.style.transform = 'translate(-0.25rem, -50%)';
-    } else {
-      label.style.left = '0';
-      label.style.transform = 'translate(0.25rem, -50%)';
-    }
-  } else {
-    label.style.left = '50%';
-    if (positive) {
-      label.style.top = '0';
-      label.style.transform = 'translate(-50%, 0.25rem)';
-    } else {
-      label.style.bottom = '0';
-      label.style.transform = 'translate(-50%, -0.25rem)';
-    }
-  }
-}
-
-// Round only the outer end of a stacked segment (the two ends where bars meet stay square).
-function roundStackEnd(bar, end, horizontal) {
-  if (horizontal) {
-    bar.classList.add(...(end === 'min' ? ['rounded-tl-sm', 'rounded-bl-sm'] : ['rounded-tr-sm', 'rounded-br-sm']));
-  } else {
-    bar.classList.add(...(end === 'min' ? ['rounded-bl-sm', 'rounded-br-sm'] : ['rounded-tl-sm', 'rounded-tr-sm']));
-  }
-}
-
-// Small data-label element drawn on top of a slice/bar (white text + shadow for contrast).
-function onColorLabel(text) {
-  const label = make('div', ['absolute', 'text-xs', 'font-medium', 'text-white', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text });
-  label.style.textShadow = '0 0.0625rem 0.125rem rgba(0, 0, 0, 0.6)';
-  return label;
+  plot.appendChild(makeSvg('line', ['stroke-border'], { attrs: { x1: crisp(px) - 1, y1: py, x2: crisp(px) - 1, y2: crisp(py + ph) } }));
+  plot.appendChild(makeSvg('line', ['stroke-border'], { attrs: { x1: crisp(px) - 1, y1: crisp(py + ph), x2: px + pw, y2: crisp(py + ph) } }));
+  svg.appendChild(plot);
+  return { plot, px, py, pw, ph };
 }
 
 function renderBar(root, cfg, ctx) {
@@ -200,7 +231,7 @@ function renderBar(root, cfg, ctx) {
   const series = normalizeSeries(cfg, palette);
   const ariaLabel = labelChart(root, 'Bar chart');
 
-  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0']);
 
   const values = series.flatMap((s) => s.data);
   if (!series.length || !values.length) {
@@ -210,7 +241,8 @@ function renderBar(root, cfg, ctx) {
 
   const catCount = Math.max(labels.length, ...series.map((s) => s.data.length));
   const categories = Array.from({ length: catCount }, (_, i) => (labels[i] != null ? String(labels[i]) : ''));
-  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
+  const text = chartText(root);
+  const svg = chartSvg(ctx.width, ctx.height, text);
 
   // Value domain - bars always include the 0 baseline.
   let dataMin = Math.min(0, ...values);
@@ -231,24 +263,38 @@ function renderBar(root, cfg, ctx) {
     }
   }
   const scale = niceScale(dataMin, dataMax, tickCount);
-  const basePct = valueToPct(0, scale);
 
-  const { wrap, plot } = buildCartesian({ scale, categories, horizontal, axes: showAxes, gridlines: showGrid, format });
+  const legendHeight = legend
+    ? buildLegendSvg(
+        svg,
+        series.map((s) => ({ label: s.name, color: s.color })),
+        ctx.width,
+        ctx.height,
+        text
+      )
+    : 0;
+  const { plot, px, py, pw, ph } = buildCartesianSvg(svg, { width: ctx.width, height: ctx.height - legendHeight, scale, categories, horizontal, axes: showAxes, gridlines: showGrid, format, text });
 
-  const slots = make('div', ['absolute', 'inset-0', 'flex', horizontal ? 'flex-col' : 'flex-row']);
+  // Distance of a value from the plot's min edge, along the value axis.
+  const valueSize = (v) => (valueToPct(v, scale) / 100) * (horizontal ? pw : ph);
+  const slotSize = (horizontal ? ph : pw) / catCount;
+
   for (let i = 0; i < catCount; i++) {
-    const slot = make('div', ['relative', 'flex-1', horizontal ? 'w-full' : 'h-full']);
+    const slotStart = (horizontal ? py : px) + i * slotSize;
     let posCursor = 0;
     let negCursor = 0;
     const stackSegs = [];
+
     series.forEach((s, si) => {
       const v = s.data[i];
       if (typeof v !== 'number' || Number.isNaN(v)) return;
-      const bar = make('div', ['absolute', colorClass(s.color)], { slot: 'chart-bar' });
+      const payload = { type: 'bar', seriesName: s.name, seriesIndex: si, categoryIndex: i, label: categories[i] || s.name, value: v, color: s.color, showSeries: series.length > 1 };
 
+      let startVal;
+      let endVal;
+      let cross;
+      let crossSize;
       if (stacked) {
-        let startVal;
-        let endVal;
         if (v >= 0) {
           startVal = posCursor;
           endVal = posCursor + v;
@@ -258,44 +304,59 @@ function renderBar(root, cfg, ctx) {
           endVal = negCursor;
           negCursor = startVal;
         }
-        const lo = Math.min(valueToPct(startVal, scale), valueToPct(endVal, scale));
-        const hi = Math.max(valueToPct(startVal, scale), valueToPct(endVal, scale));
-        placeValue(bar, lo, hi, horizontal);
-        placeCross(bar, 20, 60, horizontal);
-        // Only the outer ends of the stack are rounded; skip zero-height segments.
-        if (hi - lo > 0.001) stackSegs.push({ bar, lo, hi });
-        // Stacked segments have no outside edge, so center the label inside if it fits.
-        if (showLabels && Math.abs(valueToPct(v, scale) - basePct) >= 10) {
-          const label = onColorLabel(format(v));
-          label.classList.add('left-1/2', 'top-1/2', '-translate-x-1/2', '-translate-y-1/2');
-          bar.appendChild(label);
-        }
+        cross = slotStart + slotSize * 0.2;
+        crossSize = slotSize * 0.6;
       } else {
-        bar.classList.add('rounded-sm');
-        const vPct = valueToPct(v, scale);
-        placeValue(bar, basePct, vPct, horizontal);
-        placeCross(bar, (si * 100) / series.length, 100 / series.length, horizontal);
-        if (showLabels) {
-          // A bar whose end (nearly) reaches the plot edge gets its label inside
-          // the bar instead, so it cannot land on the axis labels.
-          const clamped = v >= 0 ? Math.max(basePct, vPct) > 92 : Math.min(basePct, vPct) < 8;
-          const label = clamped ? onColorLabel(format(v)) : make('div', ['absolute', 'text-xs', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: format(v) });
-          (clamped ? placeBarLabelInside : placeBarLabel)(label, horizontal, v >= 0);
-          bar.appendChild(label);
-        }
+        startVal = Math.min(0, v);
+        endVal = Math.max(0, v);
+        // The group fills 85% of the category slot, so the gap between groups
+        // stays clearly larger than the small fixed gap between grouped bars.
+        const groupSize = slotSize * 0.85;
+        const subSize = groupSize / series.length;
+        const inset = series.length > 1 ? BAR_INSET : 0;
+        cross = slotStart + (slotSize - groupSize) / 2 + si * subSize + inset;
+        crossSize = Math.max(1, subSize - 2 * inset);
       }
 
-      ctx.addListeners(
-        attachHover(
-          bar,
-          { type: 'bar', seriesName: s.name, seriesIndex: si, categoryIndex: i, label: categories[i] || s.name, value: v, color: s.color, showSeries: series.length > 1 },
-          { tooltip: ctx.tooltip, root, format, enabled: tooltip }
-        )
-      );
-      slot.appendChild(bar);
+      const lo = Math.min(valueSize(startVal), valueSize(endVal));
+      const hi = Math.max(valueSize(startVal), valueSize(endVal));
+      // Bar rectangle in svg coordinates.
+      const rect = horizontal ? { x: px + lo, y: cross, w: hi - lo, h: crossSize } : { x: cross, y: py + ph - hi, w: crossSize, h: hi - lo };
+
+      if (stacked) {
+        if (hi - lo > 0.01) stackSegs.push({ rect, lo, hi, color: s.color, payload, v });
+        if (showLabels && hi - lo >= EDGE_CLAMP) {
+          svg.appendChild(onColorText(format(v), rect.x + rect.w / 2, rect.y + rect.h / 2));
+        }
+        if (!(hi - lo > 0.01)) return;
+      } else {
+        const radius = Math.min(BAR_RADIUS, rect.w / 2, rect.h / 2);
+        const bar = makeSvg('rect', [fillClass(s.color)], { slot: 'chart-bar', attrs: { x: rect.x.toFixed(2), y: rect.y.toFixed(2), width: rect.w.toFixed(2), height: rect.h.toFixed(2), rx: radius.toFixed(2) } });
+        ctx.addListeners(attachHover(bar, payload, { tooltip: ctx.tooltip, root, format, enabled: tooltip }));
+        plot.appendChild(bar);
+
+        if (showLabels) {
+          // A bar whose end (nearly) reaches the plot edge gets its label
+          // inside the bar instead, so it cannot land on the axis labels.
+          const positive = v >= 0;
+          if (horizontal) {
+            const yc = rect.y + rect.h / 2;
+            const end = positive ? rect.x + rect.w : rect.x;
+            const clamped = positive ? end > px + pw - EDGE_CLAMP : end < px + EDGE_CLAMP;
+            if (clamped) svg.appendChild(onColorText(format(v), end + (positive ? -LABEL_GAP : LABEL_GAP), yc, positive ? 'end' : 'start'));
+            else svg.appendChild(dataText(format(v), end + (positive ? LABEL_GAP : -LABEL_GAP), yc, positive ? 'start' : 'end'));
+          } else {
+            const xc = rect.x + rect.w / 2;
+            const end = positive ? rect.y : rect.y + rect.h;
+            const clamped = positive ? end < py + EDGE_CLAMP : end > py + ph - EDGE_CLAMP;
+            if (clamped) svg.appendChild(onColorText(format(v), xc, end + (positive ? 1 : -1) * (text.size + 4)));
+            else svg.appendChild(dataText(format(v), xc, end + (positive ? -LABEL_GAP - 2 : LABEL_GAP + 2)));
+          }
+        }
+      }
     });
 
-    // Round the lowest and highest edges of the whole stack (a lone segment gets both).
+    // Round only the outer ends of the stack (a lone segment gets both).
     if (stackSegs.length) {
       let minIdx = 0;
       let maxIdx = 0;
@@ -303,17 +364,23 @@ function renderBar(root, cfg, ctx) {
         if (seg.lo < stackSegs[minIdx].lo) minIdx = k;
         if (seg.hi > stackSegs[maxIdx].hi) maxIdx = k;
       });
-      roundStackEnd(stackSegs[minIdx].bar, 'min', horizontal);
-      roundStackEnd(stackSegs[maxIdx].bar, 'max', horizontal);
+      stackSegs.forEach((seg, k) => {
+        const corners = { tl: false, tr: false, br: false, bl: false };
+        if (horizontal) {
+          if (k === minIdx) corners.tl = corners.bl = true;
+          if (k === maxIdx) corners.tr = corners.br = true;
+        } else {
+          if (k === minIdx) corners.bl = corners.br = true;
+          if (k === maxIdx) corners.tl = corners.tr = true;
+        }
+        const bar = makeSvg('path', [fillClass(seg.color)], { slot: 'chart-bar', attrs: { d: roundedRectPath(seg.rect.x, seg.rect.y, seg.rect.w, seg.rect.h, BAR_RADIUS, corners) } });
+        ctx.addListeners(attachHover(bar, seg.payload, { tooltip: ctx.tooltip, root, format, enabled: tooltip }));
+        plot.appendChild(bar);
+      });
     }
-
-    slots.appendChild(slot);
   }
-  plot.appendChild(slots);
-  visual.appendChild(wrap);
 
-  if (legend) visual.appendChild(buildLegend(series.map((s) => ({ label: s.name, color: s.color }))));
-  out.appendChild(visual);
+  out.appendChild(svg);
   out.appendChild(
     buildDataTable(
       ariaLabel,
@@ -334,7 +401,7 @@ function renderLine(root, cfg, ctx, scatter = false) {
   const series = normalizeSeries(cfg, palette);
   const ariaLabel = labelChart(root, scatter ? 'Scatter chart' : 'Line chart');
 
-  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0']);
 
   const values = series.flatMap((s) => s.data);
   if (!series.length || !values.length) {
@@ -345,32 +412,40 @@ function renderLine(root, cfg, ctx, scatter = false) {
   const catCount = Math.max(labels.length, ...series.map((s) => s.data.length));
   const categories = Array.from({ length: catCount }, (_, i) => (labels[i] != null ? String(labels[i]) : ''));
   const scale = niceScale(Math.min(...values), Math.max(...values), tickCount);
-  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
+  const text = chartText(root);
+  const svg = chartSvg(ctx.width, ctx.height, text);
 
-  const { wrap, plot } = buildCartesian({ scale, categories, horizontal: false, axes: showAxes, gridlines: showGrid, format });
-
-  const xPct = (k, n) => (n === 1 ? 50 : (k / (n - 1)) * 100);
-  const segments = [];
+  const legendHeight = legend
+    ? buildLegendSvg(
+        svg,
+        series.map((s) => ({ label: s.name, color: s.color })),
+        ctx.width,
+        ctx.height,
+        text
+      )
+    : 0;
+  const { plot, px, py, pw, ph } = buildCartesianSvg(svg, { width: ctx.width, height: ctx.height - legendHeight, scale, categories, horizontal: false, axes: showAxes, gridlines: showGrid, format, text });
 
   series.forEach((s, si) => {
     const n = s.data.length;
-    const points = s.data.map((v, k) => ({ x: xPct(k, n), y: 100 - valueToPct(v, scale), v, k }));
+    const points = s.data.map((v, k) => ({
+      x: px + (n === 1 ? pw / 2 : (k / (n - 1)) * pw),
+      y: py + ph - (valueToPct(v, scale) / 100) * ph,
+      v,
+      k,
+    }));
 
-    if (!scatter) {
-      for (let k = 0; k < points.length - 1; k++) {
-        const seg = make('div', ['absolute', 'origin-left', colorClass(s.color)], { slot: 'chart-segment' });
-        seg.style.left = `${points[k].x}%`;
-        seg.style.top = `${points[k].y}%`;
-        seg.style.height = '0.125rem';
-        segments.push({ el: seg, a: points[k], b: points[k + 1] });
-        plot.appendChild(seg);
-      }
+    if (!scatter && points.length > 1) {
+      plot.appendChild(
+        makeSvg('polyline', ['fill-none', strokeClass(s.color)], {
+          slot: 'chart-segment',
+          attrs: { points: points.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' '), 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' },
+        })
+      );
     }
 
     points.forEach((p) => {
-      const dot = make('div', ['absolute', 'size-2', 'rounded-full', 'ring-2', 'ring-card', '-translate-x-1/2', '-translate-y-1/2', colorClass(s.color)], { slot: 'chart-point' });
-      dot.style.left = `${p.x}%`;
-      dot.style.top = `${p.y}%`;
+      const dot = makeSvg('circle', [fillClass(s.color), 'stroke-card'], { slot: 'chart-point', attrs: { cx: p.x.toFixed(2), cy: p.y.toFixed(2), r: DOT_RADIUS, 'stroke-width': 2 } });
       ctx.addListeners(
         attachHover(
           dot,
@@ -379,27 +454,11 @@ function renderLine(root, cfg, ctx, scatter = false) {
         )
       );
       plot.appendChild(dot);
-
-      if (showLabels) {
-        const label = make('div', ['absolute', 'text-xs', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: format(p.v) });
-        label.style.left = `${p.x}%`;
-        label.style.top = `${p.y}%`;
-        label.style.transform = 'translate(-50%, calc(-100% - 0.375rem))';
-        plot.appendChild(label);
-      }
+      if (showLabels) svg.appendChild(dataText(format(p.v), p.x, p.y - DOT_RADIUS - LABEL_GAP));
     });
   });
 
-  // Connecting segments need the plot's pixel size; recompute on mount and resize.
-  if (!scatter) {
-    const relayout = () => layoutSegments(plot, segments);
-    ctx.onMount(relayout);
-    ctx.observe(plot, relayout);
-  }
-
-  visual.appendChild(wrap);
-  if (legend) visual.appendChild(buildLegend(series.map((s) => ({ label: s.name, color: s.color }))));
-  out.appendChild(visual);
+  out.appendChild(svg);
   out.appendChild(
     buildDataTable(
       ariaLabel,
@@ -410,87 +469,12 @@ function renderLine(root, cfg, ctx, scatter = false) {
   return out;
 }
 
-// Map a pointer event to a slice index from its angle around the pie center,
-// or -1 when the pointer is outside the ring. The hit region is the actual
-// drawn wedge, so even thin slices are reliably hoverable. `cutout` (0..1)
-// excludes the doughnut hole; a range's own `radius` (0..1) caps its wedge
-// (polar area slices each stop at a different distance from the center).
-function sliceAtPointer(pie, ranges, event, cutout = 0) {
-  const rect = pie.getBoundingClientRect();
-  const radius = Math.min(rect.width, rect.height) / 2;
-  const dx = event.clientX - (rect.left + rect.width / 2);
-  const dy = event.clientY - (rect.top + rect.height / 2);
-  const dist = Math.hypot(dx, dy);
-  // Turn fraction measured clockwise from the top, matching the conic-gradient.
-  let turn = (Math.atan2(dy, dx) + Math.PI / 2) / (2 * Math.PI);
-  turn = ((turn % 1) + 1) % 1;
-  const idx = ranges.findIndex((r) => turn >= r.start && turn < r.end);
-  if (idx === -1) return -1;
-  if (radius > 0 && (dist > radius * (ranges[idx].radius ?? 1) || dist < radius * cutout)) return -1;
-  return idx;
-}
-
-// A floating-ui virtual reference at the cursor, so the tooltip follows the pointer.
-function cursorReference(event) {
-  const { clientX: x, clientY: y } = event;
-  return { getBoundingClientRect: () => ({ width: 0, height: 0, x, y, top: y, bottom: y, left: x, right: x }) };
-}
-
-// Cursor-following hover/click handling shared by the pie-family charts.
-// `hitTest` maps a pointer event to a slice index (-1 = miss); `ranges` holds
-// the event payload per slice.
-function attachSliceInteraction(target, ranges, hitTest, { root, ctx, enabled, format }) {
-  let current = -1;
-  const leave = () => {
-    if (current === -1) return;
-    ctx.tooltip.hide();
-    dispatchChartEvent(root, 'chart-leave', ranges[current].payload);
-    current = -1;
-  };
-  const move = (event) => {
-    const idx = hitTest(event);
-    if (idx === -1) {
-      leave();
-      return;
-    }
-    if (idx !== current) {
-      if (current !== -1) dispatchChartEvent(root, 'chart-leave', ranges[current].payload);
-      current = idx;
-      dispatchChartEvent(root, 'chart-hover', ranges[idx].payload);
-    }
-    if (enabled && !ctx.tooltip.pinned) ctx.tooltip.show(cursorReference(event), tooltipContent(ranges[idx].payload, format));
-  };
-  // Stop the press from reaching the document dismiss handler when it lands on a slice.
-  const down = (event) => {
-    if (hitTest(event) !== -1) event.stopPropagation();
-  };
-  const click = (event) => {
-    const idx = hitTest(event);
-    if (idx === -1) return;
-    if (enabled) {
-      ctx.tooltip.show(cursorReference(event), tooltipContent(ranges[idx].payload, format));
-      ctx.tooltip.pin();
-    }
-    dispatchChartEvent(root, 'chart-click', ranges[idx].payload);
-  };
-  target.addEventListener('pointermove', move);
-  target.addEventListener('pointerleave', leave);
-  target.addEventListener('pointerdown', down);
-  target.addEventListener('click', click);
-  ctx.addListeners([
-    { target, type: 'pointermove', fn: move },
-    { target, type: 'pointerleave', fn: leave },
-    { target, type: 'pointerdown', fn: down },
-    { target, type: 'click', fn: click },
-  ]);
-}
-
 function renderPie(root, cfg, ctx, doughnut = false) {
   const { palette, legend, tooltip, format } = commonOptions(cfg);
   const slices = normalizeSlices(cfg, palette);
   const ariaLabel = labelChart(root, doughnut ? 'Doughnut chart' : 'Pie chart');
 
-  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0']);
 
   const total = slices.reduce((sum, s) => sum + s.value, 0);
   if (!slices.length || total <= 0) {
@@ -503,61 +487,54 @@ function renderPie(root, cfg, ctx, doughnut = false) {
   // Hole radius as a fraction of the pie radius (0 = solid pie).
   const cutout = doughnut ? Math.min(0.9, Math.max(0.2, typeof cfg.cutout === 'number' ? cfg.cutout : 0.6)) : 0;
 
-  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
-  const box = make('div', ['flex', 'flex-1', 'min-h-0', 'items-center', 'justify-center']);
-  // `disc` is the circle-sized positioning context (holds labels); `pie` paints
-  // the gradient and owns hover. Keeping labels off `pie` means the doughnut
-  // mask never clips them.
-  const disc = make('div', ['relative', 'rounded-full', 'aspect-square', 'h-full', 'max-h-full', 'max-w-full']);
-  const pie = make('div', ['absolute', 'inset-0', 'rounded-full', 'cursor-pointer'], { slot: 'chart-pie' });
-  disc.appendChild(pie);
-  // Outside labels need room around the circle, so shrink the disc within its box.
-  if (showLabels && outsideLabels) {
-    disc.style.maxWidth = '80%';
-    disc.style.maxHeight = '80%';
-  }
+  const text = chartText(root);
+  const svg = chartSvg(ctx.width, ctx.height, text);
+  const legendHeight = legend
+    ? buildLegendSvg(
+        svg,
+        slices.map((s) => ({ label: s.label, color: s.color })),
+        ctx.width,
+        ctx.height,
+        text
+      )
+    : 0;
 
-  const stops = [];
-  const ranges = [];
+  const cx = ctx.width / 2;
+  const cy = (ctx.height - legendHeight) / 2;
+  // Outside labels need room around the circle, so shrink the pie.
+  const radius = Math.max(0, Math.min(ctx.width, ctx.height - legendHeight) / 2 - 2) * (showLabels && outsideLabels ? 0.8 : 1);
+
   let acc = 0;
   slices.forEach((s, i) => {
     const start = acc / total;
     acc += s.value;
     const end = acc / total;
-    stops.push(`${colorVar(s.color)} ${(start * 100).toFixed(4)}% ${(end * 100).toFixed(4)}%`);
-    ranges.push({ start, end, payload: { type: 'slice', seriesName: undefined, seriesIndex: 0, categoryIndex: i, label: s.label, value: s.value, color: s.color, showSeries: false } });
+    const a0 = start * 2 * Math.PI - Math.PI / 2;
+    const a1 = end * 2 * Math.PI - Math.PI / 2;
+
+    const wedge = makeSvg('path', [fillClass(s.color), 'cursor-pointer'], { slot: 'chart-pie', attrs: { d: wedgePath(cx, cy, cutout * radius, radius, a0, a1) } });
+    ctx.addListeners(
+      attachHover(
+        wedge,
+        { type: 'slice', seriesName: undefined, seriesIndex: 0, categoryIndex: i, label: s.label, value: s.value, color: s.color, showSeries: false },
+        { tooltip: ctx.tooltip, root, format, enabled: tooltip, followCursor: true }
+      )
+    );
+    svg.appendChild(wedge);
 
     // Percentage label for the slice (skip slivers too small to fit one).
     const pct = (s.value / total) * 100;
     if (showLabels && pct >= 5) {
       const angle = ((start + end) / 2) * 2 * Math.PI - Math.PI / 2;
-      // 50% = center, 50 = the slice edge. Inside labels sit mid-ring; outside
-      // labels sit just past the edge (the shrunken disc leaves room).
-      const insideOffset = cutout > 0 ? ((cutout + 1) / 2) * 50 : 31;
-      const offset = outsideLabels ? 58 : insideOffset;
-      const label = outsideLabels ? make('div', ['absolute', 'text-xs', 'font-medium', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: `${s.value}%` }) : onColorLabel(`${s.value}%`);
-      label.classList.add('-translate-x-1/2', '-translate-y-1/2');
-      label.style.left = `${50 + Math.cos(angle) * offset}%`;
-      label.style.top = `${50 + Math.sin(angle) * offset}%`;
-      disc.appendChild(label);
+      const insideOffset = cutout > 0 ? ((cutout + 1) / 2) * radius : radius * 0.62;
+      const offset = outsideLabels ? radius * 1.16 : insideOffset;
+      const lx = cx + Math.cos(angle) * offset;
+      const ly = cy + Math.sin(angle) * offset;
+      svg.appendChild(outsideLabels ? dataText(`${s.value}%`, lx, ly) : onColorText(`${s.value}%`, lx, ly));
     }
   });
-  pie.style.background = `conic-gradient(${stops.join(', ')})`;
-  if (cutout > 0) {
-    // Punch a transparent hole with a radial mask (closest-side = the pie radius).
-    const stop = (cutout * 100).toFixed(2);
-    const mask = `radial-gradient(circle closest-side, transparent ${stop}%, #000 ${stop}%)`;
-    pie.style.webkitMask = mask;
-    pie.style.mask = mask;
-  }
 
-  // Angle-based hover detection on the whole pie (no per-slice overlay elements).
-  attachSliceInteraction(pie, ranges, (event) => sliceAtPointer(pie, ranges, event, cutout), { root, ctx, enabled: tooltip, format });
-
-  box.appendChild(disc);
-  visual.appendChild(box);
-  if (legend) visual.appendChild(buildLegend(slices.map((s) => ({ label: s.label, color: s.color }))));
-  out.appendChild(visual);
+  out.appendChild(svg);
   out.appendChild(
     buildDataTable(
       ariaLabel,
@@ -568,38 +545,95 @@ function renderPie(root, cfg, ctx, doughnut = false) {
   return out;
 }
 
-// Center-anchored square canvas for the radial charts (radar, polar area).
-// Percent geometry is only circular in a square box, which the disc guarantees.
-// `maxSize` shrinks the disc within its box, leaving room for labels placed on
-// or past the circle's edge so they stay inside the chart element.
-function buildDisc(maxSize) {
-  const box = make('div', ['flex', 'flex-1', 'min-h-0', 'items-center', 'justify-center']);
-  const disc = make('div', ['relative', 'aspect-square', 'h-full', 'max-h-full', 'max-w-full']);
-  if (maxSize) {
-    disc.style.maxWidth = maxSize;
-    disc.style.maxHeight = maxSize;
-  }
-  box.appendChild(disc);
-  return { box, disc };
-}
-
-// A point on the disc: `angle` in radians, `r` as a percentage of the box
-// (0 = center, 50 = the circle's edge, beyond 50 = outside the circle).
-function discPoint(angle, r) {
-  return { x: 50 + Math.cos(angle) * r, y: 50 + Math.sin(angle) * r };
-}
-
-// Numeric tick labels along the upward vertical of a radial chart. The halo
-// shadow in the theme background keeps them readable on colored slices and fills.
-function radialTicks(disc, ticks, scale, format) {
-  ticks.forEach((t) => {
-    const label = make('div', ['absolute', 'text-xs', 'text-muted-foreground', 'pointer-events-none', 'whitespace-nowrap', 'leading-none', 'font-medium'], { slot: 'chart-tick', text: format(t) });
-    label.style.left = '50%';
-    label.style.top = `${50 - valueToPct(t, scale) / 2}%`;
-    // Left of the axis, keeping clear of the data drawn on the top spoke.
-    label.style.transform = 'translate(calc(-100% - 0.25rem), -50%)';
-    disc.appendChild(label);
+// Numeric tick labels along the upward vertical of a radial chart, left of the
+// axis to keep clear of the data drawn on the top spoke. The outline in the
+// theme background color keeps them legible on top of colored slices and fills.
+function radialTicks(svg, cx, cy, radius, scale, format) {
+  scale.ticks.forEach((t) => {
+    const r = (valueToPct(t, scale) / 100) * radius;
+    const label = svgText(format(t), cx - 4, cy - r, { anchor: 'end', classes: ['fill-muted-foreground', 'font-medium', 'stroke-background'], slot: 'chart-tick' });
+    label.setAttribute('paint-order', 'stroke');
+    label.setAttribute('stroke-width', '2');
+    label.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(label);
   });
+}
+
+function renderPolarArea(root, cfg, ctx) {
+  const { palette, legend, tooltip, format } = commonOptions(cfg);
+  const showAxes = cfg.axes !== false;
+  const showGrid = cfg.gridlines !== false;
+  const showLabels = cfg.dataLabels !== false;
+  const tickCount = Number.isInteger(cfg.tickCount) ? cfg.tickCount : 5;
+  const slices = normalizeSlices(cfg, palette);
+  const ariaLabel = labelChart(root, 'Polar area chart');
+
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0']);
+
+  if (!slices.length) {
+    out.appendChild(noData());
+    return out;
+  }
+
+  const scale = niceScale(0, Math.max(...slices.map((s) => s.value)), tickCount);
+  const text = chartText(root);
+  const svg = chartSvg(ctx.width, ctx.height, text);
+  const legendHeight = legend
+    ? buildLegendSvg(
+        svg,
+        slices.map((s) => ({ label: s.label, color: s.color })),
+        ctx.width,
+        ctx.height,
+        text
+      )
+    : 0;
+
+  const cx = ctx.width / 2;
+  const cy = (ctx.height - legendHeight) / 2;
+  // Leave room above for the outermost tick label.
+  const radius = Math.max(0, Math.min(ctx.width, ctx.height - legendHeight) / 2 - text.size / 2 - 2);
+
+  // Every slice spans an equal angle; the value sets how far it reaches.
+  const step = (2 * Math.PI) / slices.length;
+  slices.forEach((s, i) => {
+    const a0 = i * step - Math.PI / 2;
+    const outer = (valueToPct(s.value, scale) / 100) * radius;
+    const wedge = makeSvg('path', [fillClass(s.color), 'cursor-pointer'], { slot: 'chart-polar-slice', attrs: { d: wedgePath(cx, cy, 0, outer, a0, a0 + step), opacity: '0.75' } });
+    ctx.addListeners(
+      attachHover(
+        wedge,
+        { type: 'slice', seriesName: undefined, seriesIndex: 0, categoryIndex: i, label: s.label, value: s.value, color: s.color, showSeries: false },
+        { tooltip: ctx.tooltip, root, format, enabled: tooltip, followCursor: true }
+      )
+    );
+    svg.appendChild(wedge);
+
+    // Value label at mid-angle, mid-radius (skip slices too small to fit one).
+    if (showLabels && outer >= radius * 0.25) {
+      const angle = a0 + step / 2;
+      const r = outer / 2 + radius * 0.12;
+      svg.appendChild(onColorText(format(s.value), cx + Math.cos(angle) * r, cy + Math.sin(angle) * r));
+    }
+  });
+
+  if (showGrid) {
+    scale.ticks.forEach((t) => {
+      const r = (valueToPct(t, scale) / 100) * radius;
+      if (r <= 0) return;
+      svg.appendChild(makeSvg('circle', ['fill-none', 'stroke-border/50'], { slot: 'chart-ring', attrs: { cx: cx.toFixed(2), cy: cy.toFixed(2), r: r.toFixed(2) } }));
+    });
+  }
+  if (showAxes) radialTicks(svg, cx, cy, radius, scale, format);
+
+  out.appendChild(svg);
+  out.appendChild(
+    buildDataTable(
+      ariaLabel,
+      ['Segment', 'Value'],
+      slices.map((s) => [s.label, format(s.value)])
+    )
+  );
+  return out;
 }
 
 function renderRadar(root, cfg, ctx) {
@@ -612,7 +646,7 @@ function renderRadar(root, cfg, ctx) {
   const series = normalizeSeries(cfg, palette);
   const ariaLabel = labelChart(root, 'Radar chart');
 
-  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
+  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0']);
 
   const values = series.flatMap((s) => s.data);
   if (!series.length || !values.length) {
@@ -623,71 +657,69 @@ function renderRadar(root, cfg, ctx) {
   const catCount = Math.max(labels.length, ...series.map((s) => s.data.length));
   const categories = Array.from({ length: catCount }, (_, i) => (labels[i] != null ? String(labels[i]) : ''));
   const scale = niceScale(Math.min(0, ...values), Math.max(0, ...values), tickCount);
-  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
-  const { box, disc } = buildDisc('80%');
+  const text = chartText(root);
+  const svg = chartSvg(ctx.width, ctx.height, text);
+  const legendHeight = legend
+    ? buildLegendSvg(
+        svg,
+        series.map((s) => ({ label: s.name, color: s.color })),
+        ctx.width,
+        ctx.height,
+        text
+      )
+    : 0;
+
+  const cx = ctx.width / 2;
+  const cy = (ctx.height - legendHeight) / 2;
+  // Reserve room around the web for the category labels.
+  const maxLabel = categories.length ? Math.max(...categories.map((c) => measureText(c, text.font))) : 0;
+  const reserveX = Math.min(maxLabel + 16, ctx.width * 0.25);
+  const reserveY = text.size + 12;
+  const radius = Math.max(10, Math.min(cx - reserveX, (ctx.height - legendHeight) / 2 - reserveY));
 
   // Category `i` sits at this angle, starting at the top and going clockwise.
   const angleAt = (i) => (i / catCount) * 2 * Math.PI - Math.PI / 2;
-  const segments = [];
-  const addSegment = (a, b, classes, slotName) => {
-    const seg = make('div', ['absolute', 'origin-left', ...classes], { slot: slotName });
-    seg.style.left = `${a.x}%`;
-    seg.style.top = `${a.y}%`;
-    segments.push({ el: seg, a, b });
-    disc.appendChild(seg);
-    return seg;
-  };
-  const gridClasses = ['border-t', 'border-border/50', 'pointer-events-none'];
+  const pointAt = (i, r) => ({ x: cx + Math.cos(angleAt(i)) * r, y: cy + Math.sin(angleAt(i)) * r });
+  const ringPoints = (r) =>
+    Array.from({ length: catCount }, (_, i) => pointAt(i, r))
+      .map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`)
+      .join(' ');
 
   if (showGrid) {
-    // Spokes from the center to the outer ring, then a polygonal web ring per tick.
     for (let i = 0; i < catCount; i++) {
-      addSegment(discPoint(angleAt(i), 0), discPoint(angleAt(i), 50), gridClasses, 'chart-spoke');
+      const p = pointAt(i, radius);
+      svg.appendChild(makeSvg('line', ['stroke-border/50'], { slot: 'chart-spoke', attrs: { x1: cx.toFixed(2), y1: cy.toFixed(2), x2: p.x.toFixed(2), y2: p.y.toFixed(2) } }));
     }
     scale.ticks.forEach((t) => {
-      const r = valueToPct(t, scale) / 2;
+      const r = (valueToPct(t, scale) / 100) * radius;
       if (r <= 0) return;
-      for (let i = 0; i < catCount; i++) {
-        addSegment(discPoint(angleAt(i), r), discPoint(angleAt((i + 1) % catCount), r), gridClasses, 'chart-ring');
-      }
+      svg.appendChild(makeSvg('polygon', ['fill-none', 'stroke-border/50'], { slot: 'chart-ring', attrs: { points: ringPoints(r) } }));
     });
   }
 
-  // Category labels just past the circle's edge (the shrunken disc leaves room).
+  // Category labels just past the web, anchored away from the circle.
   categories.forEach((c, i) => {
     if (!c) return;
-    const p = discPoint(angleAt(i), 58);
-    const label = make('div', ['absolute', 'text-xs', 'text-muted-foreground', 'pointer-events-none', 'whitespace-nowrap', '-translate-x-1/2', '-translate-y-1/2'], { text: c, attrs: { title: c } });
-    label.style.left = `${p.x}%`;
-    label.style.top = `${p.y}%`;
-    disc.appendChild(label);
+    const angle = angleAt(i);
+    const p = pointAt(i, radius + 12);
+    const cos = Math.cos(angle);
+    const anchor = Math.abs(cos) < 0.35 ? 'middle' : cos > 0 ? 'start' : 'end';
+    svg.appendChild(svgText(c, p.x, p.y, { anchor }));
   });
 
-  if (showAxes) radialTicks(disc, scale.ticks, scale, format);
+  if (showAxes) radialTicks(svg, cx, cy, radius, scale, format);
 
   series.forEach((s, si) => {
-    const points = s.data.map((v, k) => ({ ...discPoint(angleAt(k), valueToPct(v, scale) / 2), v, k }));
+    const points = s.data.map((v, k) => ({ ...pointAt(k, (valueToPct(v, scale) / 100) * radius), v, k }));
+    const pointsAttr = points.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
 
-    // Translucent area fill; percent-based clip-path needs no measurement.
-    const fill = make('div', ['absolute', 'inset-0', 'pointer-events-none', colorClass(s.color)], { slot: 'chart-area' });
-    fill.style.clipPath = `polygon(${points.map((p) => `${p.x}% ${p.y}%`).join(', ')})`;
-    fill.style.opacity = '0.2';
-    disc.appendChild(fill);
-
-    // Outline segments closing the loop, drawn like line-chart segments.
+    svg.appendChild(makeSvg('polygon', [fillClass(s.color)], { slot: 'chart-area', attrs: { points: pointsAttr, opacity: '0.2' } }));
     if (points.length > 1) {
-      points.forEach((p, k) => {
-        // Two points would draw the same closing edge twice.
-        if (points.length === 2 && k === 1) return;
-        const seg = addSegment(p, points[(k + 1) % points.length], [colorClass(s.color)], 'chart-segment');
-        seg.style.height = '0.125rem';
-      });
+      svg.appendChild(makeSvg('polygon', ['fill-none', strokeClass(s.color)], { slot: 'chart-segment', attrs: { points: pointsAttr, 'stroke-width': 2, 'stroke-linejoin': 'round' } }));
     }
 
     points.forEach((p) => {
-      const dot = make('div', ['absolute', 'size-2', 'rounded-full', 'ring-2', 'ring-card', '-translate-x-1/2', '-translate-y-1/2', colorClass(s.color)], { slot: 'chart-point' });
-      dot.style.left = `${p.x}%`;
-      dot.style.top = `${p.y}%`;
+      const dot = makeSvg('circle', [fillClass(s.color), 'stroke-card'], { slot: 'chart-point', attrs: { cx: p.x.toFixed(2), cy: p.y.toFixed(2), r: DOT_RADIUS, 'stroke-width': 2 } });
       ctx.addListeners(
         attachHover(
           dot,
@@ -695,29 +727,13 @@ function renderRadar(root, cfg, ctx) {
           { tooltip: ctx.tooltip, root, format, enabled: tooltip }
         )
       );
-      disc.appendChild(dot);
-
-      if (showLabels) {
-        const label = make('div', ['absolute', 'text-xs', 'text-foreground', 'pointer-events-none', 'whitespace-nowrap'], { slot: 'chart-label', text: format(p.v) });
-        label.style.left = `${p.x}%`;
-        label.style.top = `${p.y}%`;
-        // Up-right of the dot, on the opposite side of the axis from the ticks.
-        label.style.transform = 'translate(0.375rem, calc(-100% - 0.125rem))';
-        disc.appendChild(label);
-      }
+      svg.appendChild(dot);
+      // Up-right of the dot, on the opposite side of the axis from the ticks.
+      if (showLabels) svg.appendChild(dataText(format(p.v), p.x + LABEL_GAP, p.y - DOT_RADIUS - LABEL_GAP, 'start'));
     });
   });
 
-  // Web rings, spokes, and outlines need the disc's pixel size; recompute on mount and resize.
-  if (segments.length) {
-    const relayout = () => layoutSegments(disc, segments);
-    ctx.onMount(relayout);
-    ctx.observe(disc, relayout);
-  }
-
-  visual.appendChild(box);
-  if (legend) visual.appendChild(buildLegend(series.map((s) => ({ label: s.name, color: s.color }))));
-  out.appendChild(visual);
+  out.appendChild(svg);
   out.appendChild(
     buildDataTable(
       ariaLabel,
@@ -728,103 +744,23 @@ function renderRadar(root, cfg, ctx) {
   return out;
 }
 
-function renderPolarArea(root, cfg, ctx) {
-  const { palette, legend, tooltip, format } = commonOptions(cfg);
-  const showAxes = cfg.axes !== false;
-  const showGrid = cfg.gridlines !== false;
-  const showLabels = cfg.dataLabels !== false;
-  const tickCount = Number.isInteger(cfg.tickCount) ? cfg.tickCount : 5;
-  const slices = normalizeSlices(cfg, palette);
-  const ariaLabel = labelChart(root, 'Polar area chart');
-
-  const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2']);
-
-  if (!slices.length) {
-    out.appendChild(noData());
-    return out;
-  }
-
-  const scale = niceScale(0, Math.max(...slices.map((s) => s.value)), tickCount);
-  const visual = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0', 'gap-2'], { attrs: { 'aria-hidden': 'true' } });
-  const { box, disc } = buildDisc('92%');
-  disc.classList.add('cursor-pointer');
-
-  // Every slice spans an equal angle; the value sets how far it reaches.
-  const step = 1 / slices.length;
-  const ranges = [];
-  slices.forEach((s, i) => {
-    const start = i * step;
-    const sizePct = valueToPct(s.value, scale);
-    const slice = make('div', ['absolute', 'rounded-full', '-translate-x-1/2', '-translate-y-1/2', 'pointer-events-none'], { slot: 'chart-polar-slice' });
-    slice.style.left = '50%';
-    slice.style.top = '50%';
-    slice.style.width = `${sizePct}%`;
-    slice.style.height = `${sizePct}%`;
-    slice.style.background = `conic-gradient(from ${start.toFixed(4)}turn, ${colorVar(s.color)} 0 ${step.toFixed(4)}turn, transparent 0)`;
-    // Slightly translucent so the grid rings stay visible through the slices.
-    slice.style.opacity = '0.75';
-    disc.appendChild(slice);
-    ranges.push({ start, end: start + step, radius: sizePct / 100, payload: { type: 'slice', seriesName: undefined, seriesIndex: 0, categoryIndex: i, label: s.label, value: s.value, color: s.color, showSeries: false } });
-
-    // Value label at mid-angle, mid-radius (skip slices too small to fit one).
-    if (showLabels && sizePct >= 25) {
-      const angle = (start + step / 2) * 2 * Math.PI - Math.PI / 2;
-      const p = discPoint(angle, sizePct / 4 + 6);
-      const label = onColorLabel(format(s.value));
-      label.classList.add('-translate-x-1/2', '-translate-y-1/2');
-      label.style.left = `${p.x}%`;
-      label.style.top = `${p.y}%`;
-      disc.appendChild(label);
-    }
-  });
-
-  if (showGrid) {
-    // Concentric rings above the slices (visible through their translucency).
-    scale.ticks.forEach((t) => {
-      const sizePct = valueToPct(t, scale);
-      if (sizePct <= 0) return;
-      const ring = make('div', ['absolute', 'rounded-full', 'border', 'border-border/50', '-translate-x-1/2', '-translate-y-1/2', 'pointer-events-none'], { slot: 'chart-ring' });
-      ring.style.left = '50%';
-      ring.style.top = '50%';
-      ring.style.width = `${sizePct}%`;
-      ring.style.height = `${sizePct}%`;
-      disc.appendChild(ring);
-    });
-  }
-
-  if (showAxes) radialTicks(disc, scale.ticks, scale, format);
-
-  attachSliceInteraction(disc, ranges, (event) => sliceAtPointer(disc, ranges, event), { root, ctx, enabled: tooltip, format });
-
-  visual.appendChild(box);
-  if (legend) visual.appendChild(buildLegend(slices.map((s) => ({ label: s.label, color: s.color }))));
-  out.appendChild(visual);
-  out.appendChild(
-    buildDataTable(
-      ariaLabel,
-      ['Segment', 'Value'],
-      slices.map((s) => [s.label, format(s.value)])
-    )
-  );
-  return out;
-}
-
-// Shared directive wiring: host setup, reactive config, full re-render, teardown.
+// Shared directive wiring: host setup, reactive config, full re-render on
+// config change or container resize, teardown.
 function defineChart(Alpine, name, render) {
   Alpine.directive(name, (el, { expression }, { effect, evaluateLater, cleanup }) => {
-    el.classList.add('relative', 'flex', 'flex-col', 'gap-2', 'w-full', 'h-full', 'min-h-0', 'text-foreground');
+    el.classList.add('relative', 'flex', 'flex-col', 'w-full', 'h-full', 'min-h-0', 'text-foreground');
     el.setAttribute('data-slot', 'chart');
 
     const tooltip = createTooltip(el);
     let body = null;
     let listeners = [];
-    let observers = [];
+    let config = {};
+    let drawnWidth = -1;
+    let drawnHeight = -1;
 
     const clear = () => {
       listeners.forEach(({ target, type, fn }) => target.removeEventListener(type, fn));
       listeners = [];
-      observers.forEach((o) => o.disconnect());
-      observers = [];
       if (body) {
         body.remove();
         body = null;
@@ -832,22 +768,17 @@ function defineChart(Alpine, name, render) {
       tooltip.release();
     };
 
-    const draw = (cfg) => {
+    const draw = () => {
       clear();
-      const mountFns = [];
+      const rect = el.getBoundingClientRect();
+      drawnWidth = rect.width;
+      drawnHeight = rect.height;
       const ctx = {
         tooltip,
+        width: rect.width,
+        height: rect.height,
         addListeners(records) {
           listeners.push(...records);
-        },
-        onMount(fn) {
-          mountFns.push(fn);
-        },
-        observe(target, fn) {
-          if (typeof ResizeObserver === 'undefined') return;
-          const observer = new ResizeObserver(fn);
-          observer.observe(target);
-          observers.push(observer);
         },
       };
 
@@ -856,18 +787,34 @@ function defineChart(Alpine, name, render) {
       const dismiss = () => tooltip.release();
       document.addEventListener('pointerdown', dismiss);
       listeners.push({ target: document, type: 'pointerdown', fn: dismiss });
-      body = render(el, cfg && typeof cfg === 'object' ? cfg : {}, ctx);
-      if (body) {
-        el.appendChild(body);
-        mountFns.forEach((fn) => fn());
-      }
+      body = render(el, config, ctx);
+      if (body) el.appendChild(body);
     };
 
     if (expression) {
       const getConfig = evaluateLater(expression);
-      effect(() => getConfig((cfg) => draw(cfg)));
+      effect(() =>
+        getConfig((cfg) => {
+          config = cfg && typeof cfg === 'object' ? cfg : {};
+          draw();
+        })
+      );
     } else {
-      draw({});
+      draw();
+    }
+
+    // SVG coordinates are pixels, so a resized container needs a redraw.
+    if (typeof ResizeObserver !== 'undefined') {
+      let frame = 0;
+      const observer = new ResizeObserver(() => {
+        const rect = el.getBoundingClientRect();
+        if (rect.width === drawnWidth && rect.height === drawnHeight) return;
+        if (typeof cancelAnimationFrame === 'function') cancelAnimationFrame(frame);
+        if (typeof requestAnimationFrame === 'function') frame = requestAnimationFrame(() => draw());
+        else draw();
+      });
+      observer.observe(el);
+      cleanup(() => observer.disconnect());
     }
 
     cleanup(() => {

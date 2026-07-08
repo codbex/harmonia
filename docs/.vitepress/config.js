@@ -112,6 +112,7 @@ export default defineConfig({
         text: 'Utilities',
         items: [
           { text: 'Breakpoint Listener', link: '/utilities/breakpoint-listener' },
+          { text: 'Chart Export', link: '/utilities/chart-export' },
           { text: 'Date Format', link: '/utilities/date-format' },
           { text: 'Focus', link: '/utilities/focus' },
           { text: 'Include', link: '/utilities/include' },

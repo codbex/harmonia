@@ -60,7 +60,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip>
-  <svg x-h-icon data-icon="mail" role="img" aria-label="mail"></svg>
+  <svg x-h-icon data-icon="mail" role="presentation"></svg>
   <span>Chip</span>
 </button>
 ```
@@ -69,7 +69,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip>
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+  <svg x-h-icon data-icon="circle-info" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -79,7 +79,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip data-variant="outline">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+  <svg x-h-icon data-icon="circle-info" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -89,7 +89,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip data-variant="primary">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+  <svg x-h-icon data-icon="circle-info" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -99,7 +99,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip data-variant="information">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+  <svg x-h-icon data-icon="circle-info" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -109,7 +109,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip data-variant="warning">
-  <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
+  <svg x-h-icon data-icon="circle-warning" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -119,7 +119,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip data-variant="positive">
-  <svg x-h-icon data-icon="circle-success" role="img" aria-label="success"></svg>
+  <svg x-h-icon data-icon="circle-success" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -129,7 +129,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip data-variant="negative">
-  <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>
+  <svg x-h-icon data-icon="circle-error" role="presentation"></svg>
   <span>Chip</span>
   <span x-h-chip-close aria-label="remove chip"></span>
 </button>
@@ -139,7 +139,7 @@ To enable text truncation, wrap the label in a `<span>`, `<p>`, or `<div>` eleme
 
 ```html
 <button x-h-chip x-h-popover-trigger data-variant="information">
-  <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
+  <svg x-h-icon data-icon="circle-info" role="presentation"></svg>
   <span class="text-muted-foreground">Chip:</span>
   <span>Enabled</span>
   <span x-h-chip-close aria-label="remove chip"></span>

@@ -98,15 +98,15 @@ You can include an icon directly inside the button.
 
 ```html
 <button x-h-button>
-  <i x-h-lucide role="img" data-lucide="chevron-left"></i>
+  <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
   Left-aligned
 </button>
 <button x-h-button>
-  <i x-h-lucide role="img" data-lucide="chevron-right"></i>
+  <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
   Right-aligned
 </button>
 <button x-h-button>
-  <svg x-h-icon data-icon="search" role="img" aria-label="search"></svg>
+  <svg x-h-icon data-icon="search" role="presentation"></svg>
   Search
 </button>
 ```
@@ -130,7 +130,7 @@ You can include a spinner directly inside the button. The spinner will adjust it
 
 ```html
 <button x-h-button data-size="icon" aria-label="Icon button">
-  <i x-h-lucide role="img" data-lucide="save"></i>
+  <svg x-h-lucide role="presentation" data-lucide="save"></svg>
 </button>
 ```
 
@@ -140,11 +140,11 @@ You can include a spinner directly inside the button. The spinner will adjust it
 
 ```html
 <button x-h-button data-size="sm">
-  <i x-h-lucide role="img" data-lucide="save"></i>
+  <svg x-h-lucide role="presentation" data-lucide="save"></svg>
   Save
 </button>
 <button x-h-button data-size="icon-sm" aria-label="Icon button">
-  <i x-h-lucide role="img" data-lucide="save"></i>
+  <svg x-h-lucide role="presentation" data-lucide="save"></svg>
 </button>
 ```
 
@@ -152,11 +152,11 @@ You can include a spinner directly inside the button. The spinner will adjust it
 
 ```html
 <button x-h-button data-size="md">
-  <i x-h-lucide role="img" data-lucide="save"></i>
+  <svg x-h-lucide role="presentation" data-lucide="save"></svg>
   Save
 </button>
 <button x-h-button data-size="icon-md" aria-label="Icon button">
-  <i x-h-lucide role="img" data-lucide="save"></i>
+  <svg x-h-lucide role="presentation" data-lucide="save"></svg>
 </button>
 ```
 

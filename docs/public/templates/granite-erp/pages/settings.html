@@ -101,31 +101,31 @@
           <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
             <!-- svg placeholders on purpose: x-h-lucide renders them in place,
                  so the x-show bindings keep switching the visible icon. -->
-            <svg x-h-lucide x-show="$store.erp.settings.theme === 'light'" role="img" data-lucide="sun"></svg>
+            <svg x-h-lucide x-show="$store.erp.settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
             <span x-show="$store.erp.settings.theme === 'light'">Light</span>
-            <svg x-h-lucide x-show="$store.erp.settings.theme === 'dark'" role="img" data-lucide="moon"></svg>
+            <svg x-h-lucide x-show="$store.erp.settings.theme === 'dark'" role="presentation" data-lucide="moon"></svg>
             <span x-show="$store.erp.settings.theme === 'dark'">Dark</span>
-            <svg x-h-lucide x-show="$store.erp.settings.theme === 'auto'" role="img" data-lucide="sun-moon"></svg>
+            <svg x-h-lucide x-show="$store.erp.settings.theme === 'auto'" role="presentation" data-lucide="sun-moon"></svg>
             <span x-show="$store.erp.settings.theme === 'auto'">Auto</span>
-            <i x-h-lucide role="img" data-lucide="chevron-down"></i>
+            <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
           </button>
           <ul x-h-menu data-align="bottom-end" aria-label="Theme">
             <li x-h-menu-item @click="$store.erp.setTheme('light')">
-              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
               <span>Light</span>
               <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'light'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.erp.setTheme('dark')">
-              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
               <span>Dark</span>
               <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'dark'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.erp.setTheme('auto')">
-              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
               <span>Auto</span>
               <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'auto'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
@@ -167,7 +167,7 @@
           </span>
         </li>
         <li x-h-list-item.interactive class="gap-3 px-4 py-3">
-          <i x-h-lucide role="img" data-lucide="package-open" class="size-5"></i>
+          <svg x-h-lucide role="presentation" data-lucide="package-open" class="size-5"></svg>
           <div class="vbox w-full">
             <label class="text-base font-medium" for="sw-low-stock">Low stock alerts</label>
             <p x-h-text.muted>Warn when an item drops below its reorder level.</p>
@@ -201,7 +201,7 @@
         <h2 x-h-dialog-title>Reset workspace</h2>
         <p x-h-dialog-description>All demo data will be restored to its initial state, including settings and the theme preference. Continue?</p>
         <button x-h-dialog-close aria-label="Close dialog" @click="showReset = false">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <div x-h-dialog-footer>

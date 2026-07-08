@@ -17,15 +17,15 @@
           <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
             <div x-h-tab-list>
               <button id="rp-tab-revenue" x-h-tab aria-controls="rp-panel-revenue" :aria-selected="tab === 'revenue'" @click="tab = 'revenue'">
-                <i x-h-lucide role="img" data-lucide="chart-column"></i>
+                <svg x-h-lucide role="presentation" data-lucide="chart-column"></svg>
                 Revenue
               </button>
               <button id="rp-tab-cashflow" x-h-tab aria-controls="rp-panel-cashflow" :aria-selected="tab === 'cashflow'" @click="tab = 'cashflow'">
-                <i x-h-lucide role="img" data-lucide="chart-line"></i>
+                <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
                 Cash flow
               </button>
               <button id="rp-tab-receivables" x-h-tab aria-controls="rp-panel-receivables" :aria-selected="tab === 'receivables'" @click="tab = 'receivables'">
-                <i x-h-lucide role="img" data-lucide="chart-pie"></i>
+                <svg x-h-lucide role="presentation" data-lucide="chart-pie"></svg>
                 Receivables
               </button>
             </div>
@@ -39,7 +39,7 @@
               </div>
             </div>
             <button x-h-button data-variant="outline" data-size="sm" @click="exportReport()">
-              <i x-h-lucide role="img" data-lucide="download"></i>
+              <svg x-h-lucide role="presentation" data-lucide="download"></svg>
               Export
             </button>
           </div>

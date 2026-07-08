@@ -28,6 +28,8 @@ docs/public/harmonia
 docs/public/fonts
 docs/public/lib
 docs/public/tests
+docs/public/theming/fragments
+docs/public/theming/sections.json
 
 # VitePress
 **/.vitepress/cache

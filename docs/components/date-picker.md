@@ -106,7 +106,7 @@ In range mode the model value is an object with `start` and `end` keys (each a `
 { start: '2025-06-09', end: '2025-06-16' }
 ```
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-date-picker x-data="{ range: { start: '', end: '' } }">
@@ -147,7 +147,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Listening for changes
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-date-picker x-data="{ date: '' }" @change="console.log('Selected date:', date)">
@@ -161,7 +161,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### With locale
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div
@@ -174,7 +174,7 @@ By default this control shows native-constraint errors (for example `required`) 
   }
 }"
 >
-  <input type="text" id="date-input-1" />
+  <input type="text" id="date-input-locale" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-date-picker-popup="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
 </div>
@@ -184,7 +184,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### With custom display format
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div

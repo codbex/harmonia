@@ -25,7 +25,7 @@
       <div x-h-sidebar-header data-borderless="true">
         <div x-h-sidebar-header-item>
           <div x-h-avatar class="rounded-lg" data-variant="primary">
-            <i x-h-lucide role="img" data-lucide="mountain"></i>
+            <svg x-h-lucide role="img" aria-label="Granite ERP logo" data-lucide="mountain"></svg>
           </div>
           <div class="vbox">
             <span>Granite ERP</span>
@@ -41,20 +41,20 @@
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="path === '/'" @click="go('/')">
-                  <i x-h-lucide role="img" data-lucide="layout-dashboard"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
                   <span>Dashboard</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/inbox')" @click="go('/inbox')">
-                  <i x-h-lucide role="img" data-lucide="inbox"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="inbox"></svg>
                   <span>Inbox</span>
                   <span x-h-sidebar-menu-badge x-show="$store.erp.unreadCount" x-text="$store.erp.unreadCount"></span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/approvals')" @click="go('/approvals')">
-                  <i x-h-lucide role="img" data-lucide="stamp"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="stamp"></svg>
                   <span>Approvals</span>
                   <span x-h-sidebar-menu-badge x-show="$store.erp.pendingApprovals.length" x-text="$store.erp.pendingApprovals.length"></span>
                 </button>
@@ -69,13 +69,13 @@
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/invoices')" @click="go('/invoices')">
-                  <i x-h-lucide role="img" data-lucide="receipt-text"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="receipt-text"></svg>
                   <span>Invoices</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/bills')" @click="go('/bills')">
-                  <i x-h-lucide role="img" data-lucide="wallet"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="wallet"></svg>
                   <span>Bills</span>
                 </button>
               </li>
@@ -89,13 +89,13 @@
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/customers')" @click="go('/customers')">
-                  <i x-h-lucide role="img" data-lucide="users"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="users"></svg>
                   <span>Customers</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/vendors')" @click="go('/vendors')">
-                  <i x-h-lucide role="img" data-lucide="truck"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="truck"></svg>
                   <span>Vendors</span>
                 </button>
               </li>
@@ -109,14 +109,14 @@
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/inventory')" @click="go('/inventory')">
-                  <i x-h-lucide role="img" data-lucide="boxes"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="boxes"></svg>
                   <span>Inventory</span>
                   <span x-h-sidebar-menu-badge x-show="$store.erp.lowStockItems.length" x-text="$store.erp.lowStockItems.length"></span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/documents')" @click="go('/documents')">
-                  <i x-h-lucide role="img" data-lucide="folder-open"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="folder-open"></svg>
                   <span>Documents</span>
                 </button>
               </li>
@@ -130,7 +130,7 @@
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/reports')" @click="go('/reports')">
-                  <i x-h-lucide role="img" data-lucide="chart-line"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
                   <span>Reports</span>
                 </button>
               </li>
@@ -141,7 +141,7 @@
 
       <div x-h-sidebar-footer data-borderless="true">
         <button x-h-sidebar-menu-button :data-active="isActive('/settings')" @click="go('/settings')">
-          <i x-h-lucide role="img" data-lucide="settings"></i>
+          <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
           <span>Settings</span>
         </button>
       </div>
@@ -151,7 +151,7 @@
       <main class="vbox size-full overflow-hidden bg-background" :class="isSmallScreen || 'rounded-xl border shadow-sm'">
         <div x-h-toolbar data-variant="transparent">
           <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="Open navigation" @click="showSidebarSheet = true">
-            <i x-h-lucide role="img" data-lucide="menu"></i>
+            <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
           </button>
           <nav x-h-breadcrumb data-overflow="scroll" :data-variant="isSmallScreen ? 'outline' : 'default'">
             <ol x-h-breadcrumb-list>
@@ -176,7 +176,7 @@
             <div x-h-input-group>
               <input x-h-input.group placeholder="Search invoices..." aria-label="Search invoices" x-model="searchQuery" @keydown.enter="globalSearch()" />
               <div x-h-input-group-addon data-align="inline-start">
-                <i x-h-lucide role="img" data-lucide="search"></i>
+                <svg x-h-lucide role="presentation" data-lucide="search"></svg>
               </div>
             </div>
           </div>
@@ -248,26 +248,26 @@
             </div>
             <div x-h-menu-separator></div>
             <li x-h-menu-item @click="go('/settings')">
-              <i x-h-lucide role="img" data-lucide="user"></i>
+              <svg x-h-lucide role="presentation" data-lucide="user"></svg>
               <span>Profile and preferences</span>
             </li>
             <div x-h-menu-separator></div>
             <li x-h-menu-item @click="$store.erp.setTheme('light')">
-              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
               <span>Light</span>
               <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'light'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.erp.setTheme('dark')">
-              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
               <span>Dark</span>
               <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'dark'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.erp.setTheme('auto')">
-              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
               <span>Auto</span>
               <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'auto'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
@@ -275,7 +275,7 @@
             </li>
             <div x-h-menu-separator></div>
             <li x-h-menu-item data-variant="negative" @click="$store.erp.toast('Signed out', 'This is where the demo ends; reload the page to sign back in.', 'information')">
-              <i x-h-lucide role="img" data-lucide="log-out"></i>
+              <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
               <span>Sign out</span>
             </li>
           </ul>

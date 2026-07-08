@@ -127,12 +127,12 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 <div x-h-menu-trigger class="flex items-center justify-center p-12">Right click for context menu</div>
 <ul x-h-menu aria-label="context menu" x-data="{ checkbox: { autosave: true }, radioItems: [{ label: 'Radio 1', value: 'r1' }, { label: 'Radio 2', value: 'r2' }], radioSelected: 'r1' }">
   <li x-h-menu-item>
-    <i x-h-lucide role="img" data-lucide="save"></i>
+    <svg x-h-lucide role="presentation" data-lucide="save"></svg>
     <span>Save</span>
     <span x-h-menu-item-secondary>Ctrl+S</span>
   </li>
   <li x-h-menu-item data-variant="negative">
-    <i x-h-lucide role="img" data-lucide="trash"></i>
+    <svg x-h-lucide role="presentation" data-lucide="trash"></svg>
     <span>Delete</span>
     <span x-h-menu-item-secondary>Del</span>
   </li>

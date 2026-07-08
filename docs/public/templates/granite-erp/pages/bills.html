@@ -47,7 +47,7 @@
             <td x-h-table-cell class="text-right">
               <template x-if="bill.status !== 'Paid'">
                 <button x-h-button data-variant="outline" data-size="sm" @click="payTarget = bill">
-                  <i x-h-lucide role="img" data-lucide="banknote"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="banknote"></svg>
                   Pay
                 </button>
               </template>
@@ -67,7 +67,7 @@
   </div>
 
   <div x-h-alert data-variant="information" x-show="$store.erp.overdueBillCount">
-    <i x-h-lucide role="img" data-lucide="circle-alert"></i>
+    <svg x-h-lucide role="presentation" data-lucide="circle-alert"></svg>
     <div x-h-alert-title x-text="$store.erp.overdueBillCount + (($store.erp.overdueBillCount === 1) ? ' bill is overdue' : ' bills are overdue')"></div>
     <div x-h-alert-description>Paying an overdue bill immediately updates the dashboard and the reports page.</div>
   </div>
@@ -79,7 +79,7 @@
         <h2 x-h-dialog-title>Pay bill</h2>
         <p x-h-dialog-description x-text="payTarget ? 'Schedule payment of ' + $store.erp.money(payTarget.amount) + ' to ' + payTarget.vendor + ' for ' + payTarget.id + '?' : ''"></p>
         <button x-h-dialog-close aria-label="Close dialog" @click="payTarget = null">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <div x-h-dialog-footer>

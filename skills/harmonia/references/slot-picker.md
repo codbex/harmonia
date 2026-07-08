@@ -8,7 +8,7 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 
 Use the Slot Picker when users need to book or choose one or more time slots from an upcoming schedule, for example booking appointments, selecting meeting windows, or configuring availability.
 
-Navigate between days with the previous/next buttons (which move three days at a time) or jump straight to any date with the calendar button in the toolbar; the chosen date becomes the first of the three visible days, which avoids paging far ahead one step at a time.
+Navigate between days with the previous/next buttons (which move three days at a time) or jump straight to any date with the calendar button in the toolbar. The chosen date becomes the first of the three visible days, which avoids paging far ahead one step at a time.
 
 ## Directive
 
@@ -51,14 +51,14 @@ Pass a configuration object as an Alpine expression.
 
 #### Slot object (explicit mode)
 
-| Key       | Type             | Description                                                                                                                          |
-| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| date      | string           | The date of the slot in `YYYY-MM-DD` format.                                                                                         |
-| start     | string           | Start time in `HH:MM` format.                                                                                                        |
-| end       | string           | End time in `HH:MM` format.                                                                                                          |
-| available | boolean          | When `false`, the slot is shown as unavailable and unclickable.                                                                      |
-| icon      | `{ url, alt }`   | An image rendered as a badge in the top-right corner of the cell. `url` is the image path; `alt` is the alt text (defaults to `''`). |
-| icons     | `{ url, alt }[]` | An array of badge images. Takes precedence over `icon` when both are set.                                                            |
+| Key       | Type             | Description                                                                                                                             |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| date      | string           | The date of the slot in `YYYY-MM-DD` format.                                                                                            |
+| start     | string           | Start time in `HH:MM` format.                                                                                                           |
+| end       | string           | End time in `HH:MM` format.                                                                                                             |
+| available | boolean          | When `false`, the slot is shown as unavailable and unclickable.                                                                         |
+| icon      | `{ url, alt }`   | An image rendered as a badge in the top-right corner of the cell. `url` is the image path and `alt` is the alt text (defaults to `''`). |
+| icons     | `{ url, alt }[]` | An array of badge images. Takes precedence over `icon` when both are set.                                                               |
 
 ### Model
 
@@ -75,7 +75,7 @@ When used with `x-model`, the bound value follows the selection mode:
 
 ## Accessibility
 
-The picker is a labeled `group` (default name "Time slot picker"; set an `aria-label` attribute to override). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. Available slots are toggle `button`s with a day + time `aria-label` and `aria-pressed` reflecting selection; unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The calendar button opens a `dialog` containing a fully keyboard-navigable date grid; picking a date moves the visible range and returns focus to the button, and `Esc` closes it.
+The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. Available slots are toggle `button`s with a day + time `aria-label` and `aria-pressed` reflecting selection, while unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The calendar button opens a `dialog` containing a fully keyboard-navigable date grid. Picking a date moves the visible range and returns focus to the button, and `Esc` closes it.
 
 ## Binding
 

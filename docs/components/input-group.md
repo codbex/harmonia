@@ -45,7 +45,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <i x-h-lucide role="img" data-lucide="search"></i>
+    <svg x-h-lucide role="presentation" data-lucide="search"></svg>
   </div>
   <div x-h-input-group-addon data-align="inline-end">12 results</div>
 </div>
@@ -61,7 +61,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <div x-h-input-group>
   <input x-h-input.group placeholder="Search..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <i x-h-lucide role="img" data-lucide="search"></i>
+    <svg x-h-lucide role="presentation" data-lucide="search"></svg>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
     <div x-h-tag-group>
@@ -83,7 +83,9 @@ In order to achieve proper focus navigation, place the group addon after the inp
 <div x-h-input-group>
   <input x-h-input.group placeholder="https://..." />
   <div x-h-input-group-addon data-align="inline-start">
-    <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info"><i x-h-lucide role="img" data-lucide="info"></i></button>
+    <button x-h-button.addon x-h-popover-trigger data-size="icon-sm" aria-label="info">
+      <svg x-h-lucide role="presentation" data-lucide="info"></svg>
+    </button>
     <div class="p-4" x-h-popover>This is a popover with some info.</div>
   </div>
   <div x-h-input-group-addon data-align="inline-end">
@@ -118,22 +120,22 @@ In order to achieve proper focus navigation, place the group addon after the inp
   <textarea x-h-textarea.group placeholder="Message..."></textarea>
   <div x-h-input-group-addon data-align="block-start" class="border-b">
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make bold">
-      <i x-h-lucide role="img" data-lucide="bold"></i>
+      <svg x-h-lucide role="presentation" data-lucide="bold"></svg>
     </button>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make italic">
-      <i x-h-lucide role="img" data-lucide="italic"></i>
+      <svg x-h-lucide role="presentation" data-lucide="italic"></svg>
     </button>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
-      <i x-h-lucide role="img" data-lucide="italic"></i>
+      <svg x-h-lucide role="presentation" data-lucide="italic"></svg>
     </button>
     <span x-h-separator data-orientation="vertical"></span>
     <button x-h-button.addon data-size="icon-sm" data-variant="transparent" aria-label="make underline">
-      <i x-h-lucide role="img" data-lucide="link"></i>
+      <svg x-h-lucide role="presentation" data-lucide="link"></svg>
     </button>
   </div>
   <div x-h-input-group-addon data-align="block-end" class="border-t">
     <button id="attachFile" x-h-button.addon x-h-menu-trigger.dropdown data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Attach">
-      <i x-h-lucide role="img" data-lucide="plus"></i>
+      <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
     </button>
     <ul x-h-menu data-align="top-start" aria-labelledby="attachFile">
       <li x-h-menu-item>List</li>
@@ -142,7 +144,7 @@ In order to achieve proper focus navigation, place the group addon after the inp
     </ul>
     <span x-h-input-group-text class="ml-auto">0/300</span>
     <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send">
-      <i x-h-lucide role="img" data-lucide="arrow-up"></i>
+      <svg x-h-lucide role="presentation" data-lucide="arrow-up"></svg>
     </button>
   </div>
 </div>

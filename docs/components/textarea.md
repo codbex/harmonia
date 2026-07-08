@@ -36,7 +36,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Without resize handle
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <textarea x-h-textarea class="resize-none"></textarea>

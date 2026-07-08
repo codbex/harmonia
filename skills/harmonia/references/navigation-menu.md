@@ -209,13 +209,13 @@ Hover and active states show a border outline instead of a filled background.
   <ul x-h-nav-list>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
         Home
       </a>
     </li>
     <li x-h-nav-item>
       <button x-h-nav-trigger>
-        <i x-h-lucide role="img" data-lucide="library-big"></i>
+        <svg x-h-lucide role="presentation" data-lucide="library-big"></svg>
         <span>Products</span>
       </button>
       <ul x-h-menu>
@@ -233,7 +233,7 @@ Hover and active states show a border outline instead of a filled background.
     </li>
     <li x-h-nav-item>
       <a x-h-nav-link href="#">
-        <i x-h-lucide role="img" data-lucide="gem"></i>
+        <svg x-h-lucide role="impresentationg" data-lucide="gem"></svg>
         Pricing
       </a>
     </li>

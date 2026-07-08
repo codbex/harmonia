@@ -66,7 +66,7 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 
 The popover sizes to its content, up to a maximum width. That maximum defaults to the width available in the viewport. Set `data-max-w` to a container size to cap it smaller (here `sm`), so long content wraps instead of stretching the popover wider.
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <button x-h-button x-h-popover-trigger>Popover</button>
@@ -77,7 +77,7 @@ The popover sizes to its content, up to a maximum width. That maximum defaults t
 
 ### Disable closing on inner click events
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <button x-h-button x-h-popover-trigger>Popover</button>
@@ -92,7 +92,7 @@ The popover sizes to its content, up to a maximum width. That maximum defaults t
 
 Bind a variable to the trigger to read or control the open state while keeping the automatic behavior. The popover still toggles on click and dismisses on an outside click, and setting the variable elsewhere shows or hides it. This is useful to close the popover from a button inside it (for example a "confirm" action) while other inner controls leave it open.
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ open: false }">
@@ -110,7 +110,7 @@ Bind a variable to the trigger to read or control the open state while keeping t
 
 Add your own `@click` handler on the trigger, alongside the bound variable, to take full manual control. The directive then leaves open/close entirely to you, so the automatic outside-click dismiss is disabled.
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ open: false }">
@@ -125,12 +125,12 @@ Add your own `@click` handler on the trigger, alongside the bound variable, to t
 
 In order to use the chevron modifier, the trigger label must be placed inside a nested element (usually a `span`).
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <button x-h-button x-h-popover-trigger.chevron>
   <span>Popover</span>
-  <i x-h-lucide role="img" data-lucide="chevron-down"></i>
+  <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
 </button>
 <div class="p-4" x-h-popover>With chevron</div>
 ```
@@ -139,7 +139,7 @@ In order to use the chevron modifier, the trigger label must be placed inside a 
 
 ### Alignment
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div class="flex flex-col" style="gap: 4rem">

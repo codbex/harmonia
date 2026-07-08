@@ -13,7 +13,7 @@
     </div>
     <div class="hbox flex-1 justify-end">
       <button x-h-button data-variant="outline" :disabled="scanning" @click="scan()">
-        <i x-h-lucide role="img" data-lucide="scan-search"></i>
+        <svg x-h-lucide role="presentation" data-lucide="scan-search"></svg>
         <span x-text="scanning ? 'Scanning...' : 'Scan library'"></span>
       </button>
     </div>
@@ -53,7 +53,7 @@
             <tr x-h-table-row data-hoverable="true">
               <td x-h-table-cell>
                 <div class="hbox min-w-0 items-center gap-3">
-                  <i x-h-lucide role="img" :data-lucide="typeIcon(doc.type)" class="text-muted-foreground"></i>
+                  <svg x-h-lucide role="presentation" :data-lucide="typeIcon(doc.type)" class="text-muted-foreground"></svg>
                   <div class="vbox min-w-0">
                     <span class="truncate font-medium" x-text="doc.name"></span>
                     <div class="hbox gap-1">
@@ -92,7 +92,7 @@
         <h2 x-h-dialog-title>Delete document</h2>
         <p x-h-dialog-description x-text="removeTarget ? 'Remove ' + removeTarget.name + ' from the library? This cannot be undone.' : ''"></p>
         <button x-h-dialog-close aria-label="Close dialog" @click="removeTarget = null">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <div x-h-dialog-footer>

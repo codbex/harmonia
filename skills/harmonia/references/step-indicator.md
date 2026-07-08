@@ -68,7 +68,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="2">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <i x-h-lucide role="img" data-lucide="map-pin"></i>
+          <svg x-h-lucide role="img" aria-label="step address" data-lucide="map-pin"></svg>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Address</span>
@@ -80,7 +80,7 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
     <div x-h-step-indicator-item="3">
       <button x-h-step-indicator-trigger>
         <span x-h-step-indicator-marker>
-          <i x-h-lucide role="img" data-lucide="banknote"></i>
+          <svg x-h-lucide role="img" data-lucide="banknote" aria-label="step payment"></svg>
         </span>
         <span x-h-step-indicator-content>
           <span x-h-step-indicator-title>Payment</span>

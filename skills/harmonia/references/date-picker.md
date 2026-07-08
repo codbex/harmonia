@@ -166,7 +166,7 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
   }
 }"
 >
-  <input type="text" id="date-input-1" />
+  <input type="text" id="date-input-locale" />
   <button x-h-date-picker-trigger aria-label="Choose date"></button>
   <div x-h-date-picker-popup="{ locale: 'bg-BG', firstDay: 1 }" x-model="date"></div>
 </div>

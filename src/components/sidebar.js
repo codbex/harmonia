@@ -77,8 +77,10 @@ export default function (Alpine) {
       "[&_svg:not([class*='size-'])]:size-4",
       '[&>svg]:shrink-0',
       '[&>svg:not(:first-child):last-child]:ml-auto',
-      'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-4!',
-      'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!',
+      'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
+      'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!',
+      'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!',
+      'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!',
       'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!'
     );
 
@@ -348,13 +350,18 @@ export default function (Alpine) {
         'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
         'group-data-[collapsed=true]/sidebar:size-8!',
         'group-data-[collapsed=true]/sidebar:p-2!',
-        'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!',
-        'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
-        'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!',
-        'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!',
-        'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!',
         'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!'
       );
+
+      if (el.getAttribute('data-logo') === 'true') {
+        el.classList.add(
+          'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!',
+          'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
+          'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!',
+          'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!',
+          'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!'
+        );
+      }
     }
 
     if (menuItem && menuItem._h_sidebar_menu_item.collapsable) {

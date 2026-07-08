@@ -8,12 +8,14 @@
 // Two placeholder forms are supported:
 // - `<svg x-h-lucide>`: the icon is rendered INTO the element, which stays in
 //   the DOM as the svg root. Because the node is never replaced, Alpine
-//   directives on it (x-show, :class, x-transition, @click, ...) keep working.
+//   directives on it (x-show, :class, x-transition, @click, ...) keep working,
+//   and `data-lucide` is reactive: changing it (e.g. via `:data-lucide`)
+//   re-renders the icon in place, like the icon component's `data-icon`.
 // - `<i x-h-lucide>` (or any other tag): the element is REPLACED by the
 //   rendered <svg>, mirroring Lucide's native createIcons behavior. Alpine
 //   bindings cannot survive that replacement, so any other directive on such
 //   a placeholder throws; `:data-lucide` is the one exception, because x-bind
-//   runs first and the bound name is consumed at render time.
+//   runs first and the bound name is consumed once at render time.
 
 function pascal(name) {
   return String(name)
@@ -100,61 +102,92 @@ function buildSvg(el, name) {
   return null;
 }
 
-// Render the icon for `el`. An <svg> placeholder is filled in place; any other
-// tag is replaced by the rendered <svg>, mirroring Lucide's native behavior so
-// the svg becomes the direct child of Harmonia components (their `[&>svg]` /
-// `[&_svg]` selectors target it).
-function renderIcon(el, name, original) {
+// Merge a rendered lucide svg into the <svg> placeholder `el`: lucide classes
+// are added to the author's, generated attributes are applied only where the
+// author has not set that attribute, and the icon's shapes become the
+// children. Returns the classes it added, so a re-render can remove the
+// previous icon's classes (e.g. `lucide-home`) without touching the author's.
+function mergeIntoSvg(el, svg) {
+  const added = [];
+  for (const attr of [...svg.attributes]) {
+    if (attr.name === 'data-lucide') continue;
+    if (attr.name === 'class') {
+      for (const token of attr.value.split(/\s+/)) {
+        if (token && !el.classList.contains(token)) {
+          el.classList.add(token);
+          added.push(token);
+        }
+      }
+      continue;
+    }
+    if (!el.hasAttribute(attr.name)) el.setAttribute(attr.name, attr.value);
+  }
+  el.replaceChildren(...svg.childNodes);
+  return added;
+}
+
+// Replace a non-svg placeholder with the rendered <svg>, mirroring Lucide's
+// native behavior so the svg becomes the direct child of Harmonia components
+// (their `[&>svg]` / `[&_svg]` selectors target it).
+function replaceWithIcon(el, name, original) {
   if (!el.isConnected) return;
   const svg = buildSvg(el, name);
   if (!svg) return;
-
-  if (el.tagName.toLowerCase() === 'svg') {
-    // Merge the rendered svg into the placeholder: lucide classes are added to
-    // the author's, generated attributes are applied only where the author has
-    // not set that attribute, and the icon's shapes become the children.
-    for (const attr of [...svg.attributes]) {
-      if (attr.name === 'data-lucide') continue;
-      if (attr.name === 'class') {
-        const classes = attr.value.split(/\s+/).filter(Boolean);
-        if (classes.length) el.classList.add(...classes);
-        continue;
-      }
-      if (!el.hasAttribute(attr.name)) el.setAttribute(attr.name, attr.value);
-    }
-    el.replaceChildren(...svg.childNodes);
-    return;
-  }
-
   copyAttributes(el, svg, original);
   el.replaceWith(svg);
 }
 
 export default function (Alpine) {
-  Alpine.directive('h-lucide', (el, { expression, original }, { evaluate }) => {
+  Alpine.directive('h-lucide', (el, { expression, original }, { evaluate, cleanup }) => {
     if (typeof window === 'undefined' || !window.lucide) {
       console.error(`${original}: the global "lucide" library is not available. Load Lucide before using x-h-lucide.`);
+      return;
+    }
+
+    const readName = () => {
+      const name = el.getAttribute('data-lucide') || (expression ? evaluate(expression) : null);
+      if (!name) {
+        console.error(`${original}: no icon name found. Set a "data-lucide" attribute or pass the name as the expression.`);
+        return null;
+      }
+      return String(name);
+    };
+
+    if (el.tagName.toLowerCase() === 'svg') {
+      let lucideClasses = [];
+      let rendered = null;
+      const render = () => {
+        const name = readName();
+        if (!name || name === rendered) return;
+        const svg = buildSvg(el, name);
+        if (!svg) return;
+        el.classList.remove(...lucideClasses);
+        lucideClasses = mergeIntoSvg(el, svg);
+        rendered = name;
+      };
+      render();
+
+      // `data-lucide` is reactive on an svg placeholder: changing it (e.g.
+      // via `:data-lucide`) re-renders the icon in place.
+      const observer = new MutationObserver(render);
+      observer.observe(el, { attributes: true, attributeFilter: ['data-lucide'] });
+      cleanup(() => {
+        observer.disconnect();
+      });
       return;
     }
 
     // A non-svg placeholder is replaced by the rendered svg, which would
     // orphan any Alpine binding on it (an x-show, for example, would keep
     // toggling the detached placeholder while the visible icon stays frozen).
-    if (el.tagName.toLowerCase() !== 'svg') {
-      const incompatible = findIncompatibleDirective(el, original);
-      if (incompatible) {
-        throw new Error(
-          `${original}: "${incompatible}" cannot be used on a <${el.tagName.toLowerCase()}> placeholder, because the element is replaced by the rendered svg and the binding would be lost. Use an <svg x-h-lucide> placeholder instead; it is rendered in place and keeps Alpine directives working.`
-        );
-      }
+    const incompatible = findIncompatibleDirective(el, original);
+    if (incompatible) {
+      throw new Error(
+        `${original}: "${incompatible}" cannot be used on a <${el.tagName.toLowerCase()}> placeholder, because the element is replaced by the rendered svg and the binding would be lost. Use an <svg x-h-lucide> placeholder instead; it is rendered in place and keeps Alpine directives working.`
+      );
     }
 
-    const name = el.getAttribute('data-lucide') || (expression ? evaluate(expression) : null);
-    if (!name) {
-      console.error(`${original}: no icon name found. Set a "data-lucide" attribute or pass the name as the expression.`);
-      return;
-    }
-
-    renderIcon(el, String(name), original);
+    const name = readName();
+    if (name) replaceWithIcon(el, name, original);
   });
 }

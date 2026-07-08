@@ -25,7 +25,7 @@
       <div x-h-sidebar-header data-borderless="true">
         <div x-h-sidebar-header-item>
           <div x-h-avatar class="rounded-control" data-variant="primary">
-            <i x-h-lucide role="img" data-lucide="messages-square"></i>
+            <svg x-h-lucide role="img" data-lucide="messages-square"></svg>
           </div>
           <div class="vbox">
             <span>Onyx Chat</span>
@@ -41,20 +41,20 @@
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/activity')" @click="go('/activity')">
-                  <i x-h-lucide role="img" data-lucide="at-sign"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="at-sign"></svg>
                   <span>Activity</span>
                   <span x-h-sidebar-menu-badge x-show="$store.chat.unseenMentionCount" x-text="$store.chat.unseenMentionCount"></span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/channels') && !$router.context.params.id" @click="go('/channels')">
-                  <i x-h-lucide role="img" data-lucide="layout-list"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="layout-list"></svg>
                   <span>Browse channels</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
                 <button x-h-sidebar-menu-button :data-active="isActive('/people')" @click="go('/people')">
-                  <i x-h-lucide role="img" data-lucide="users"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="users"></svg>
                   <span>People</span>
                 </button>
               </li>
@@ -69,7 +69,7 @@
               <template x-for="channel in $store.chat.joinedChannels" :key="channel.id">
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button :data-active="channelActive(channel.id)" @click="go('/channels/' + channel.id)">
-                    <i x-h-lucide role="img" data-lucide="hash"></i>
+                    <svg x-h-lucide role="presentation" data-lucide="hash"></svg>
                     <span x-text="channel.name"></span>
                     <span x-h-sidebar-menu-badge x-show="channel.unread" x-text="channel.unread"></span>
                   </button>
@@ -108,7 +108,7 @@
 
       <div x-h-sidebar-footer data-borderless="true">
         <button x-h-sidebar-menu-button :data-active="isActive('/settings')" @click="go('/settings')">
-          <i x-h-lucide role="img" data-lucide="settings"></i>
+          <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
           <span>Settings</span>
         </button>
       </div>
@@ -118,7 +118,7 @@
       <main class="vbox size-full overflow-hidden bg-background" :class="isSmallScreen || 'border-l shadow-sm'">
         <div x-h-toolbar data-variant="transparent">
           <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="Open navigation" @click="showSidebarSheet = true">
-            <i x-h-lucide role="img" data-lucide="menu"></i>
+            <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
           </button>
           <nav x-h-breadcrumb data-overflow="scroll" :data-variant="isSmallScreen ? 'outline' : 'default'">
             <ol x-h-breadcrumb-list>
@@ -140,7 +140,7 @@
           </nav>
           <div x-h-toolbar-spacer></div>
           <button x-h-button data-variant="transparent" data-size="icon" aria-label="Jump to a channel or person" x-h-popover-trigger="jumpOpen">
-            <i x-h-lucide role="img" data-lucide="search"></i>
+            <svg x-h-lucide role="presentation" data-lucide="search"></svg>
           </button>
           <div x-h-popover data-align="bottom-end" data-innerclicks="true" class="w-full" data-max-w="md">
             <div class="vbox gap-2 p-2" style="min-width: 18rem">
@@ -148,7 +148,7 @@
                 <!-- x-h-focus moves focus into the field whenever the popover opens. -->
                 <input x-h-input.group placeholder="Search channels and people..." aria-label="Search channels and people" x-model="jumpQuery" x-h-focus="jumpOpen" @keydown.enter="jumpFirst()" />
                 <div x-h-input-group-addon data-align="inline-start">
-                  <i x-h-lucide role="img" data-lucide="search"></i>
+                  <svg x-h-lucide role="presentation" data-lucide="search"></svg>
                 </div>
               </div>
               <ul x-h-list>
@@ -160,7 +160,7 @@
                 </template>
                 <template x-for="result in jumpResults" :key="result.id">
                   <li x-h-list-item.interactive class="cursor-pointer gap-3 px-3 py-2" @click="jumpTo(result)">
-                    <i x-h-lucide role="img" :data-lucide="result.kind === 'channel' ? 'hash' : 'user'"></i>
+                    <svg x-h-lucide role="presentation" :data-lucide="result.kind === 'channel' ? 'hash' : 'user'"></svg>
                     <div class="vbox min-w-0 flex-1">
                       <span class="truncate" x-text="result.label"></span>
                       <span class="truncate text-sm text-muted-foreground" x-text="result.hint"></span>
@@ -182,14 +182,14 @@
             </div>
             <div x-h-menu-separator></div>
             <li x-h-menu-item @click="$store.chat.setStatus('online')">
-              <i x-h-lucide role="img" data-lucide="circle-dot"></i>
+              <svg x-h-lucide role="presentation" data-lucide="circle-dot"></svg>
               <span>Online</span>
               <span x-h-menu-item-secondary x-show="$store.chat.profile.status === 'online'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.chat.setStatus('away')">
-              <i x-h-lucide role="img" data-lucide="clock"></i>
+              <svg x-h-lucide role="presentation" data-lucide="clock"></svg>
               <span>Away</span>
               <span x-h-menu-item-secondary x-show="$store.chat.profile.status === 'away'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
@@ -197,21 +197,21 @@
             </li>
             <div x-h-menu-separator></div>
             <li x-h-menu-item @click="$store.chat.setTheme('light')">
-              <i x-h-lucide role="img" data-lucide="sun"></i>
+              <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
               <span>Light</span>
               <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'light'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.chat.setTheme('dark')">
-              <i x-h-lucide role="img" data-lucide="moon"></i>
+              <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
               <span>Dark</span>
               <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'dark'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
               </span>
             </li>
             <li x-h-menu-item @click="$store.chat.setTheme('auto')">
-              <i x-h-lucide role="img" data-lucide="sun-moon"></i>
+              <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
               <span>Auto</span>
               <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'auto'">
                 <svg x-h-icon data-icon="check" role="presentation"></svg>
@@ -219,11 +219,11 @@
             </li>
             <div x-h-menu-separator></div>
             <li x-h-menu-item @click="go('/settings')">
-              <i x-h-lucide role="img" data-lucide="user"></i>
+              <svg x-h-lucide role="presentation" data-lucide="user"></svg>
               <span>Profile and preferences</span>
             </li>
             <li x-h-menu-item data-variant="negative" @click="$store.chat.toast('Signed out', 'This is where the demo ends; reload the page to sign back in.', 'information')">
-              <i x-h-lucide role="img" data-lucide="log-out"></i>
+              <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
               <span>Sign out</span>
             </li>
           </ul>

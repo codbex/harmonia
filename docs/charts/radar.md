@@ -14,6 +14,12 @@ Give the chart a container with an explicit height (charts fill their parent). P
 x-h-chart-radar
 ```
 
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
+
 ### Configuration
 
 | Key           | Type                                  | Default       | Description                                                 |
@@ -43,7 +49,7 @@ When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEve
 
 ### Basic
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div

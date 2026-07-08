@@ -6,6 +6,8 @@ const NON_PLUGIN_EXPORTS = new Set([
   'version',
   'registerComponents',
   'default',
+  'chartToImage',
+  'chartToSvg',
   'getBreakpointListener',
   'getColorScheme',
   'getSystemColorScheme',

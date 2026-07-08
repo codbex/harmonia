@@ -136,6 +136,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Name | Description | Reference |
 | ---- | ----------- | --------- |
 | Breakpoint Listener | Creates a listener that triggers actions when the viewport reaches specified breakpoint. | [breakpoint-listener](references/breakpoint-listener.md) |
+| Chart Export | Utility functions for exporting a chart as an image. | [chart-export](references/chart-export.md) |
 | Date Format | A behavior-only directive that renders a date value as a locale-aware date string into the element's text content. | [date-format](references/date-format.md) |
 | Focus | A behavior-only directive that programmatically sets focus on an element based on a specified condition. | [focus](references/focus.md) |
 | Include | The include directive makes it easy to fetch and insert an external HTML fragment inside an element. | [include](references/include.md) |

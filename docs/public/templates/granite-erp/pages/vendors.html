@@ -3,12 +3,12 @@
     <div x-h-input-group class="w-full md:w-1/3">
       <input x-h-input.group placeholder="Search vendors..." aria-label="Search vendors" x-model="search" />
       <div x-h-input-group-addon data-align="inline-start">
-        <i x-h-lucide role="img" data-lucide="search"></i>
+        <svg x-h-lucide role="presentation" data-lucide="search"></svg>
       </div>
     </div>
     <div class="hbox flex-1 justify-end">
       <button x-h-button data-variant="primary" @click="openAdd()">
-        <i x-h-lucide role="img" data-lucide="plus"></i>
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
         Add vendor
       </button>
     </div>
@@ -69,7 +69,7 @@
         <h2 x-h-dialog-title>Add vendor</h2>
         <p x-h-dialog-description>New vendors become available for purchase orders and bills.</p>
         <button x-h-dialog-close aria-label="Close dialog" @click="showAdd = false">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <form id="add-vendor-form" x-ref="newVendorForm" @submit.prevent="newVendorValid && submitAdd()" @input="newVendorValid = $el.checkValidity()" @change="newVendorValid = $el.checkValidity()">

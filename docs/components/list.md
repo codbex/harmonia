@@ -26,7 +26,7 @@ x-h-list-header
 
 ## Examples
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <ul x-h-list>
@@ -78,7 +78,7 @@ x-h-list-header
     List Item 1
     <div class="flex-1"></div>
     <button x-h-button data-variant="outline" data-size="icon-sm" aria-label="Save button">
-      <i x-h-lucide role="img" data-lucide="save"></i>
+      <svg x-h-lucide role="presentation" data-lucide="save"></svg>
     </button>
   </li>
   <li x-h-list-item>

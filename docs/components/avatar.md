@@ -42,7 +42,7 @@ x-h-avatar-fallback
 
 ### Big avatar
 
-<LiveExample data-class="flex flex-col items-center">
+<LiveExample data-class="flex flex-col items-center" data-exclude="generator">
 
 ```html
 <div x-h-avatar class="size-12">
@@ -57,7 +57,7 @@ x-h-avatar-fallback
 
 You can change the avatar shape by using the `rounded-` classes.
 
-<LiveExample data-class="flex flex-col items-center">
+<LiveExample data-class="flex flex-col items-center" data-exclude="generator">
 
 ```html
 <div x-h-avatar class="rounded-md">
@@ -83,8 +83,8 @@ You can change the avatar shape by using the `rounded-` classes.
 <LiveExample data-class="flex flex-col items-center">
 
 ```html
-<div x-h-avatar aria-label="camera">
-  <i x-h-lucide role="img" data-lucide="camera"></i>
+<div x-h-avatar aria-label="user">
+  <svg x-h-icon data-icon="circle-user" role="presentaion"></svg>
 </div>
 ```
 

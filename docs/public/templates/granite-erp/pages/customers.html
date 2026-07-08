@@ -3,7 +3,7 @@
     <div x-h-input-group class="w-full md:w-1/3">
       <input x-h-input.group placeholder="Search customers..." aria-label="Search customers" x-model="search" />
       <div x-h-input-group-addon data-align="inline-start">
-        <i x-h-lucide role="img" data-lucide="search"></i>
+        <svg x-h-lucide role="presentation" data-lucide="search"></svg>
       </div>
     </div>
     <div class="hbox flex-1 items-center justify-between gap-2">
@@ -18,10 +18,10 @@
       </div>
       <div class="hbox gap-1">
         <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'grid'" aria-label="Card view" @click="view = 'grid'">
-          <i x-h-lucide role="img" data-lucide="layout-grid"></i>
+          <svg x-h-lucide role="presentation" data-lucide="layout-grid"></svg>
         </button>
         <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'table'" aria-label="Table view" @click="view = 'table'">
-          <i x-h-lucide role="img" data-lucide="rows-3"></i>
+          <svg x-h-lucide role="presentation" data-lucide="rows-3"></svg>
         </button>
       </div>
     </div>
@@ -102,7 +102,7 @@
     <div x-h-info-page class="py-12">
       <div x-h-info-page-header>
         <div x-h-info-page-media.icon>
-          <i x-h-lucide role="img" data-lucide="users"></i>
+          <svg x-h-lucide role="presentation" data-lucide="users"></svg>
         </div>
         <div x-h-info-page-title>No customers found</div>
         <div x-h-info-page-description>Try a different search term or segment.</div>
@@ -117,7 +117,7 @@
         <h2 x-h-dialog-title x-text="selected ? selected.name : ''"></h2>
         <p x-h-dialog-description x-text="selected ? selected.segment + ', ' + selected.city + ', ' + selected.country : ''"></p>
         <button x-h-dialog-close aria-label="Close dialog" @click="selected = null">
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </button>
       </div>
       <template x-if="selected">

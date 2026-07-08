@@ -4,9 +4,9 @@ Lets users pick a date and a time together. The date is chosen from a calendar a
 
 ## Usage
 
-Use the Date Time Picker when a single value needs both a calendar date and a time of day (e.g. scheduling an appointment). For a date only, use the [Date Picker](/components/date-picker); for a time only, use the [Time Picker](/components/time-picker).
+Use the Date Time Picker when a single value needs both a calendar date and a time of day (e.g. scheduling an appointment). For a date only, use the [Date Picker](/components/date-picker). For a time only, use the [Time Picker](/components/time-picker).
 
-The date is selected in the calendar; the time is set by focusing a segment (hour, minute, optional second, optional AM/PM) and pressing the arrow keys, like a native time field. The popover stays open while you adjust both date and time, and closes on Escape or an outside click.
+The date is selected in the calendar. The time is set by focusing a segment (hour, minute, optional second, optional AM/PM) and pressing the arrow keys, like a native time field. The popover stays open while you adjust both date and time, and closes on Escape or an outside click.
 
 ## Keyboard Handling
 
@@ -20,7 +20,7 @@ In the calendar grid:
 In the time editor:
 
 - `Tab` / `Left` / `Right` - Move between the hour, minute, second and AM/PM segments.
-- `0`-`9` - Type the value directly; the segment fills and focus auto-advances to the next one, just like a native time input. On touch devices the numeric keyboard is shown.
+- `0`-`9` - Type the value directly. The segment fills and focus auto-advances to the next one, just like a native time input. On touch devices the numeric keyboard is shown.
 - `A` / `P` - Set the AM/PM segment (or tap it to toggle).
 - `Up` / `Down` - Increase / decrease the focused segment (wraps around).
 - `Home` / `End` - Set the focused segment to its minimum / maximum.
@@ -76,7 +76,7 @@ When using `x-model`, the picker reads and writes a single ISO date-time string 
 '2025-06-25T14:30:00'; // with seconds
 ```
 
-The time is always stored in 24-hour form regardless of the display format. The model is set only when both a date and a complete time have been chosen; until then it is an empty string.
+The time is always stored in 24-hour form regardless of the display format. The model is set only when both a date and a complete time have been chosen. Until then it is an empty string.
 
 ### Events
 
@@ -115,7 +115,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Listening for changes
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-datetime-picker x-data="{ dt: '' }" @change="console.log('Selected date and time:', dt)">
@@ -129,7 +129,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### 12-hour with seconds
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-datetime-picker x-data="{ dt: '' }">

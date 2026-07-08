@@ -94,7 +94,10 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Invoice Number</th>
         <th x-h-table-head scope="col" data-hoverable="true" data-activable="true">
-          <div class="flex items-center justify-between gap-1">Invoice Date<i x-h-lucide role="img" class="size-4" data-lucide="arrow-up-down"></i></div>
+          <div class="flex items-center justify-between gap-1">
+            <span>Invoice Date</span>
+            <svg x-h-lucide role="presentation" class="size-4" data-lucide="arrow-up-down"></svg>
+          </div>
         </th>
         <th x-h-table-head scope="col">Customer Name</th>
         <th x-h-table-head scope="col">Due Date</th>
@@ -480,7 +483,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
         <td x-h-table-cell>
           <button x-h-table-cell-button x-h-menu-trigger.dropdown>
             <span>Dropdown</span>
-            <svg x-h-icon data-icon="chevron-down" role="img" aria-label="chevron down"></svg>
+            <svg x-h-icon data-icon="chevron-down" role="presentation"></svg>
           </button>
           <ul x-h-menu aria-label="dropdown">
             <li x-h-menu-item>Item 1</li>

@@ -142,24 +142,24 @@ Use tabs to group related content or functionality, allowing users to switch bet
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="hib1" aria-controls="hib1c" :aria-selected="activeTabId === 'hib1'" @click="activeTabId = 'hib1'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="hib2" aria-controls="hib2c" :aria-selected="activeTabId === 'hib2'" @click="activeTabId = 'hib2'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="hib3" aria-controls="hib3c" :aria-selected="activeTabId === 'hib3'" @click="activeTabId = 'hib3'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
@@ -185,13 +185,13 @@ Use tabs to group related content or functionality, allowing users to switch bet
       <button x-h-tab id="hitwa1" aria-controls="hitwa1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
-        <i x-h-lucide role="img" data-lucide="plus"></i>
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
       </button>
     </div>
   </div>
@@ -210,13 +210,13 @@ Use tabs to group related content or functionality, allowing users to switch bet
       <button x-h-tab id="hitwae1" aria-controls="hitwae1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions.end>
-      <button x-h-tab-list-action aria-label="menu button">
-        <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+      <button x-h-tab-list-action aria-label="tab bar menu button">
+        <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
       </button>
     </div>
   </div>
@@ -277,24 +277,24 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="hbt1" aria-controls="hbt1c" :aria-selected="activeTabId === 'hbt1'" @click="activeTabId = 'hbt1'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="hbt2" aria-controls="hbt2c" :aria-selected="activeTabId === 'hbt2'" @click="activeTabId = 'hbt2'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="hbt3" aria-controls="hbt3c" :aria-selected="activeTabId === 'hbt3'" @click="activeTabId = 'hbt3'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
@@ -320,13 +320,13 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="hftwa1" aria-controls="hftwa1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
-        <i x-h-lucide role="img" data-lucide="plus"></i>
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
       </button>
     </div>
   </div>
@@ -345,13 +345,13 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="hftwae1" aria-controls="hftwae1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action aria-label="menu button">
-        <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+        <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
       </button>
     </div>
   </div>
@@ -391,24 +391,24 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <button x-h-tab id="vib1" aria-controls="vib1c" :aria-selected="activeTabId === 'vib1'" @click="activeTabId = 'vib1'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vib2" aria-controls="vib2c" :aria-selected="activeTabId === 'vib2'" @click="activeTabId = 'vib2'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vib3" aria-controls="vib3c" :aria-selected="activeTabId === 'vib3'" @click="activeTabId = 'vib3'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
@@ -434,13 +434,13 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="vitwa1" aria-controls="vitwa1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
-        <i x-h-lucide role="img" data-lucide="plus"></i>
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
       </button>
     </div>
   </div>
@@ -459,13 +459,13 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="vitwae1" aria-controls="vitwae1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action aria-label="menu button">
-        <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+        <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
       </button>
     </div>
   </div>
@@ -505,24 +505,24 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
       <button x-h-tab id="vbt1" aria-controls="vbt1c" :aria-selected="activeTabId === 'vbt1'" @click="activeTabId = 'vbt1'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vbt2" aria-controls="vbt2c" :aria-selected="activeTabId === 'vbt2'" @click="activeTabId = 'vbt2'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vbt3" aria-controls="vbt3c" :aria-selected="activeTabId === 'vbt3'" @click="activeTabId = 'vbt3'">
-        <i x-h-lucide role="img" data-lucide="file"></i>
+        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
@@ -548,13 +548,13 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="vftwa1" aria-controls="vftwa1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
-        <i x-h-lucide role="img" data-lucide="plus"></i>
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
       </button>
     </div>
   </div>
@@ -573,13 +573,13 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="vftwae1" aria-controls="vftwae1c" aria-selected="true">
         Tab 1
         <span x-h-tab-action>
-          <i x-h-lucide role="img" data-lucide="x"></i>
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action data-variant="outline" aria-label="menu button">
-        <i x-h-lucide role="img" data-lucide="ellipsis"></i>
+        <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
       </button>
     </div>
   </div>

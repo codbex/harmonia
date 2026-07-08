@@ -80,7 +80,7 @@ x-h-accordion-content
 
 ### Default section
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-accordion>
@@ -105,7 +105,7 @@ x-h-accordion-content
 
 ### Medium size
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-accordion data-size="md">
@@ -130,7 +130,7 @@ x-h-accordion-content
 
 ### Small size
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-accordion data-size="sm">

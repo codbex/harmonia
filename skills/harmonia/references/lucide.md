@@ -1,6 +1,6 @@
 # Lucide
 
-An optional plugin that keeps [Lucide](https://lucide.dev) icons in sync with the Alpine/Harmonia lifecycle. Place `x-h-lucide` on a Lucide placeholder and it renders that icon when Alpine initializes the element, including markup added dynamically through `x-h-include`, a router (e.g. Pinecone-router) or Alpine's `x-for` / `x-if`. No global `lucide.createIcons` scans and no event wiring are needed. Use an `<svg>` placeholder when the icon carries other Alpine directives: it is rendered in place, while any other tag is replaced by the rendered svg.
+An optional plugin that keeps [Lucide](https://lucide.dev) icons in sync with the Alpine/Harmonia lifecycle. Place `x-h-lucide` on a Lucide placeholder and it renders that icon when Alpine initializes the element, including markup added dynamically through `x-h-include`, a router (e.g. Pinecone-router) or Alpine's `x-for` / `x-if`. No global `lucide.createIcons` scans and no event wiring are needed. Use an `<svg>` placeholder when the icon carries other Alpine directives or a dynamic name: it is rendered in place with a reactive `data-lucide`, while any other tag is replaced by the rendered svg.
 
 Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-` prefix.
 
@@ -41,20 +41,20 @@ Alpine.start();
 
 ### Attributes
 
-| Attribute     | Type   | Required | Description                                                                                |
-| ------------- | ------ | -------- | ------------------------------------------------------------------------------------------ |
-| `data-lucide` | string | false    | The icon name. Takes priority over the expression, so existing Lucide markup is a drop-in. |
+| Attribute     | Type   | Required | Description                                                                                                                                |
+| ------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data-lucide` | string | false    | The icon name. Takes priority over the expression, so existing Lucide markup is a drop-in. Reactive on an `<svg>` placeholder (see below). |
 
 How the placeholder is rendered depends on its tag:
 
-- An `<svg x-h-lucide>` placeholder is rendered **in place**: the icon's shapes are inserted into the element, Lucide's identifying classes are merged with yours, and Lucide's default attributes are applied only where you have not set that attribute yourself. Because the element is never replaced, Alpine directives on it (`x-show`, `:class`, `x-transition`, `@click`, ...) keep working.
-- Any other tag (typically `<i>`, matching Lucide's own markup) is **replaced** by the rendered `<svg>`; the placeholder's attributes (`class`, `role`, `aria-*`, sizing, etc.) are copied onto it. Alpine bindings cannot survive that replacement, so combining another directive with `x-h-lucide` on such a placeholder throws an error. The one exception is `:data-lucide`, whose bound name is consumed when the icon renders. Use the `<svg>` form for anything reactive.
+- An `<svg x-h-lucide>` placeholder is rendered **in place**: the icon's shapes are inserted into the element, Lucide's identifying classes are merged with yours, and Lucide's default attributes are applied only where you have not set that attribute yourself. Because the element is never replaced, Alpine directives on it (`x-show`, `:class`, `x-transition`, `@click`, ...) keep working. On this form `data-lucide` is also reactive: change it (for example with a bound `:data-lucide`) and the new icon is rendered in place.
+- Any other tag (typically `<i>`, matching Lucide's own markup) is **replaced** by the rendered `<svg>`. The placeholder's attributes (`class`, `role`, `aria-*`, sizing, etc.) are copied onto it. Alpine bindings cannot survive that replacement, so combining another directive with `x-h-lucide` on such a placeholder throws an error. The one exception is `:data-lucide`, whose bound name is consumed once when the icon renders. Use the `<svg>` form for anything reactive.
 
 ## Examples
 
 ### Drop-in for existing markup
 
-Add `x-h-lucide` to any existing Lucide placeholder; the `data-lucide` name is reused.
+Add `x-h-lucide` to any existing Lucide placeholder and the `data-lucide` name is reused.
 
 <!-- prettier-ignore -->
 ```html
@@ -70,19 +70,18 @@ Add `x-h-lucide` to any existing Lucide placeholder; the `data-lucide` name is r
 
 ### Reactive icons
 
-Put `x-h-lucide` on an `<svg>` element when the icon needs other Alpine directives. The element is rendered in place instead of being replaced, so bindings like `x-show` stay live; here the visible icon follows the current theme choice:
+Put `x-h-lucide` on an `<svg>` element when the icon needs other Alpine directives or a dynamic name. The element is rendered in place instead of being replaced, so bindings like `x-show` stay live, and a bound `:data-lucide` swaps the rendered icon whenever its value changes. Here the icon follows the current theme choice:
 
 ```html
 <div x-data="{ theme: 'light' }">
   <button x-h-button data-variant="outline" @click="theme = theme === 'light' ? 'dark' : 'light'">
-    <svg x-h-lucide x-show="theme === 'light'" role="presentation" data-lucide="sun"></svg>
-    <svg x-h-lucide x-show="theme === 'dark'" role="presentation" data-lucide="moon"></svg>
+    <svg x-h-lucide role="presentation" :data-lucide="theme === 'light' ? 'sun' : 'moon'"></svg>
     <span x-text="theme === 'light' ? 'Light' : 'Dark'"></span>
   </button>
 </div>
 ```
 
-On a replaced placeholder like `<i>`, the same markup would silently break (the binding would keep toggling the replaced element), which is why the plugin throws for it and points you here.
+On a replaced placeholder like `<i>`, `:data-lucide` is consumed once when the icon first renders, so later changes have no effect. Any other directive on a replaced placeholder would silently die with the replaced element, which is why the plugin throws for it and points you here.
 
 ### Inside dynamic content
 
@@ -102,7 +101,7 @@ Because each icon renders when Alpine initializes its element, icons work automa
 ```
 
 > **Tip:**
-> The icon name is read once, so prefer static names. For an icon whose name changes at runtime, re-create the element (for example with `x-if` / `template`) so the directive runs again.
+> On a replaced placeholder like `<i>`, the icon name is read once. For an icon whose name changes at runtime, use an `<svg>` placeholder with a bound `:data-lucide`, which re-renders the icon in place.
 
 Full docs: https://www.codbex.com/harmonia/plugins/lucide.html
 

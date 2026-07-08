@@ -53,6 +53,7 @@ import tree from './components/tree';
 
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
+export { chartToImage, chartToSvg } from './utils/chart-export';
 export { getLanguageStorageKey, setLanguageStorageKey } from './utils/language';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 

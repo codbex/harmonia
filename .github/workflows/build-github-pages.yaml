@@ -24,6 +24,9 @@ jobs:
       - name: Build Harmonia
         run: npm run build
 
+      - name: Generate theming fragments
+        run: npm run theming:generate
+
       - name: Build documentation
         id: build
         run: npm run docs:build

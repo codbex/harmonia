@@ -34,7 +34,10 @@ Use breadcrumbs on pages that are deeply nested within a site hierarchy. Avoid t
 <nav x-h-breadcrumb>
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#">
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
+        <span>Home</span>
+      </a>
     </li>
     <li x-h-breadcrumb-item>
       <a x-h-breadcrumb-link href="#">Components</a>
@@ -53,7 +56,7 @@ Use breadcrumbs on pages that are deeply nested within a site hierarchy. Avoid t
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
       <button x-h-breadcrumb-link>
-        <svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
         <span>Home</span>
       </button>
     </li>
@@ -89,13 +92,15 @@ Use breadcrumbs on pages that are deeply nested within a site hierarchy. Avoid t
 
 ```html
 <div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
+  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button">
+    <svg x-h-lucide role="presentation" data-lucide="panel-left"></svg>
+  </button>
   <div x-h-toolbar-separator></div>
   <nav x-h-breadcrumb>
     <ol x-h-breadcrumb-list>
       <li x-h-breadcrumb-item>
         <button x-h-breadcrumb-link>
-          <i x-h-lucide role="img" data-lucide="home"></i>
+          <svg x-h-icon data-icon="home" role="presentation"></svg>
           <span>Home</span>
         </button>
       </li>
@@ -108,20 +113,28 @@ Use breadcrumbs on pages that are deeply nested within a site hierarchy. Avoid t
     </ol>
   </nav>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent">
+    <svg x-h-lucide role="presentation" data-lucide="save"></svg>
+    <span>Save</span>
+  </button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent">
+    <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+    <span>Add</span>
+  </button>
 </div>
 ```
 
 ```html
 <div x-h-toolbar data-variant="transparent">
-  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button"><i x-h-lucide role="img" data-lucide="panel-left"></i></button>
+  <button x-h-button data-variant="transparent" data-size="icon" aria-label="fake side panel button">
+    <svg x-h-lucide role="presentation" data-lucide="panel-left"></svg>
+  </button>
   <nav x-h-breadcrumb data-variant="outline">
     <ol x-h-breadcrumb-list>
       <li x-h-breadcrumb-item>
         <button x-h-breadcrumb-link>
-          <i x-h-lucide role="img" data-lucide="home"></i>
+          <svg x-h-icon data-icon="home" role="presentation"></svg>
           <span>Home</span>
         </button>
       </li>
@@ -134,9 +147,15 @@ Use breadcrumbs on pages that are deeply nested within a site hierarchy. Avoid t
     </ol>
   </nav>
   <div x-h-toolbar-spacer></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="save"></i>Save</button>
+  <button x-h-button data-variant="transparent">
+    <svg x-h-lucide role="presentation" data-lucide="save"></svg>
+    <span>Save</span>
+  </button>
   <div x-h-toolbar-separator></div>
-  <button x-h-button data-variant="transparent"><i x-h-lucide role="img" data-lucide="plus"></i>Add</button>
+  <button x-h-button data-variant="transparent">
+    <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+    <span>Add</span>
+  </button>
 </div>
 ```
 
@@ -192,7 +211,10 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="scroll">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#">
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
+        <span>Home</span>
+      </a>
     </li>
     <li x-h-breadcrumb-item>
       <a x-h-breadcrumb-link href="#">Page 1</a>
@@ -227,7 +249,10 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="scroll" data-variant="outline">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#">
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
+        <span>Home</span>
+      </a>
     </li>
     <li x-h-breadcrumb-item>
       <a x-h-breadcrumb-link href="#">Page 1</a>
@@ -266,11 +291,14 @@ Sizes are only applied when the `outline` variant is set.
 <nav x-h-breadcrumb data-overflow="nowrap">
   <ol x-h-breadcrumb-list>
     <li x-h-breadcrumb-item>
-      <a x-h-breadcrumb-link href="#"><svg x-h-icon data-icon="home" role="img" aria-label="home"></svg>Home</a>
+      <a x-h-breadcrumb-link href="#">
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
+        <span>Home</span>
+      </a>
     </li>
     <li x-h-breadcrumb-item>
       <button x-h-breadcrumb-link x-h-menu-trigger.dropdown>
-        <svg x-h-icon data-icon="ellipsis" role="img" aria-label="ellipsis"></svg>
+        <svg x-h-icon data-icon="ellipsis" role="presentation"></svg>
         <span class="sr-only">Breadcrumb overflow menu</span>
       </button>
       <ul x-h-menu>

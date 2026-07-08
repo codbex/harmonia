@@ -117,6 +117,8 @@ The icons below ship with Harmonia. Reference one by its name with `data-icon`, 
 <svg x-h-icon data-icon="chevrons-right" role="img" aria-label="chevrons right"></svg>
 <svg x-h-icon data-icon="clock" role="img" aria-label="clock"></svg>
 <svg x-h-icon data-icon="search" role="img" aria-label="search"></svg>
+<svg x-h-icon data-icon="eye" role="img" aria-label="eye"></svg>
+<svg x-h-icon data-icon="eye-off" role="img" aria-label="eye off"></svg>
 <svg x-h-icon data-icon="ellipsis" role="img" aria-label="ellipsis"></svg>
 <svg x-h-icon data-icon="minus" role="img" aria-label="minus"></svg>
 <svg x-h-icon data-icon="plus" role="img" aria-label="plus"></svg>
@@ -124,6 +126,7 @@ The icons below ship with Harmonia. Reference one by its name with `data-icon`, 
 <svg x-h-icon data-icon="bell" role="img" aria-label="bell"></svg>
 <svg x-h-icon data-icon="trash" role="img" aria-label="trash"></svg>
 <svg x-h-icon data-icon="mail" role="img" aria-label="mail"></svg>
+<svg x-h-icon data-icon="inbox" role="img" aria-label="inbox"></svg>
 <svg x-h-icon data-icon="send" role="img" aria-label="send"></svg>
 <svg x-h-icon data-icon="export" role="img" aria-label="export"></svg>
 <svg x-h-icon data-icon="import" role="img" aria-label="import"></svg>

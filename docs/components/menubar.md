@@ -153,7 +153,7 @@ The `outline` variant wraps the menubar in a border. The first and last triggers
 
 The `data-size` attribute changes the height of the triggers and matches the button sizes.
 
-<LiveExample data-class="flex flex-col items-start gap-3">
+<LiveExample data-class="flex flex-col items-start gap-3" data-exclude="generator">
 
 ```html
 <ul x-h-menubar aria-label="Default size" data-variant="outline">

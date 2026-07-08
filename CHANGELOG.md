@@ -1,5 +1,37 @@
 # Changelog
 
+## v2.2.0
+
+A release that adds a menubar component, rebuilds the charts as scalable vector graphics with two new chart types and an export utility, and brings smaller component, icon, and utility additions. No breaking changes to the documented API. Custom CSS that targeted the charts' old div-based internals may need updating, since charts now render as SVG.
+
+### New component: Menubar
+
+- **Menubar** (`x-h-menubar`) - a horizontal bar of always-visible command menus, like the "File Edit View" menus found in desktop applications. Each top-level item opens a dropdown powered by the existing Menu component, so submenus, labels, separators, and checkbox and radio items all work inside. While a menu is open, hovering or focusing a sibling trigger switches to that menu without an extra click, just like in desktop applications. The bar is a single Tab stop with full keyboard operation: `Left` / `Right` move across the top-level items (switching the open menu along the way), `Down` / `Enter` / `Space` and `Up` open the focused menu at its first or last item, and `Home` / `End` jump to the ends of the bar.
+
+### Charts rebuilt as SVG
+
+- All charts are now drawn as SVG vector graphics instead of styled divs, so they stay crisp at any size and zoom level and can be exported. The configuration objects, theming, tooltips (including click-to-pin), events, legends, and accessible data tables all work as before.
+- **New chart types** - **Polar Area** (`x-h-chart-polar-area`) compares magnitudes with equal-angle slices that reach further from the center as their value grows, and **Radar** (`x-h-chart-radar`) compares several quantitative dimensions at once, drawing each series as a closed shape across the axes. Both come with docs, configuration references, and events.
+- **Chart Export** - new `chartToSvg` and `chartToImage` functions (on the `Harmonia` global and as named ESM exports) capture a chart exactly as currently rendered, including the active light or dark theme colors. `chartToSvg` returns standalone SVG markup that looks identical at any size, and `chartToImage` resolves with a PNG (or JPEG/WebP) data URL with configurable background, pixel density, format, and quality. Documented under Utilities.
+- **New `data-font-size` attribute** on every chart element (`xs` default, `sm`, `base`, `lg`) scales all chart text, such as labels, axis ticks, and the legend.
+
+### Component enhancements
+
+- **Sidebar** - new `data-logo` attribute on menu buttons. When the sidebar is collapsed, it removes the button padding and makes the leading icon or avatar fill the button. Use it on buttons that show a brand logo in the header or footer, or a user avatar elsewhere in the sidebar.
+- **Lucide plugin** - `data-lucide` is now reactive on `<svg>` placeholders: changing it (for example via `:data-lucide`) re-renders the icon in place, just like the icon component's `data-icon`. A re-render removes only the classes the previous icon introduced, while author-set classes are kept.
+
+### New icons
+
+- `eye`, `eye-off`, and `inbox`, with the matching `Eye`, `EyeOff`, and `Inbox` ESM constants.
+
+### New utility classes
+
+- SVG paint utilities matching the standard palette: `fill-*` and `stroke-*` for `white`, `black`, and the ten palette colors at the 500 step.
+
+### Fixes
+
+- **Include** - inline scripts in a fragment loaded with `data-js` now execute synchronously when the fragment is inserted. Previously Alpine initialized the inserted markup between scripts, so registrations from any script after the first were not picked up.
+
 ## v2.1.2
 
 A patch release that makes the icon component's `data-link` attribute reactive and keeps leading icons visible in collapsed sidebars. No breaking changes.

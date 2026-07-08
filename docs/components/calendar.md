@@ -20,11 +20,11 @@ In the month view (and within each year-view mini-month) the day cells form an A
 - `PageUp` / `PageDown` - Move focus to the previous/next month.
 - `Enter` / `Space` - Fire `date-click` for the focused day (year view: open that day in day view).
 
-Events are buttons in the tab order; activate them to fire `event-click`. In the month view, the "+N more" overflow opens a dialog that moves focus to its event list and returns focus to the trigger on `Escape`.
+Events are buttons in the tab order. Activate them to fire `event-click`. In the month view, the "+N more" overflow opens a dialog that moves focus to its event list and returns focus to the trigger on `Escape`.
 
 ## Accessibility
 
-The calendar is a labeled `group` (default name "Calendar"; set an `aria-label` attribute to override). The toolbar period heading is an `aria-live` region; the month grid uses `role="grid"`/`row`/`gridcell` with `aria-current="date"` on today and full keyboard navigation; events are `button`s whose accessible label includes the title, time (or "all day"), and status (e.g. "unconfirmed"). The week/day time grid's empty-slot "click to pick a time" is a pointer-only convenience.
+The calendar is a labeled `group` (default name "Calendar", overridable with an `aria-label` attribute). The toolbar period heading is an `aria-live` region. The month grid uses `role="grid"`/`row`/`gridcell` with `aria-current="date"` on today and full keyboard navigation. Events are `button`s whose accessible label includes the title, time (or "all day"), and status (e.g. "unconfirmed"). The week/day time grid's empty-slot "click to pick a time" is a pointer-only convenience.
 
 ## API Reference
 
@@ -52,7 +52,7 @@ x-h-calendar
 | Event       | Description                                                                                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | event-click | Fired when the user clicks an event. The original event object is passed in `$event.detail.event`.                                                                                               |
-| date-click  | Fired when the user clicks an empty date cell or time slot. The clicked `Date` is in `$event.detail.date`; for time-grid views the slot time string (`"HH:MM"`) is also in `$event.detail.time`. |
+| date-click  | Fired when the user clicks an empty date cell or time slot. The clicked `Date` is in `$event.detail.date`. For time-grid views the slot time string (`"HH:MM"`) is also in `$event.detail.time`. |
 
 ### Configuration
 
@@ -84,7 +84,7 @@ Each item in the `events` array supports the following fields:
 | end         | string  | false    | End datetime. Defaults to `start`. For all-day events, defaults to end of the start day.                     |
 | allDay      | boolean | false    | When `true`, the event appears in the all-day strip of week/day views. Defaults to `false`.                  |
 | color       | string  | false    | Color key: `blue` (default), `red`, `green`, `yellow`, `purple`, `pink`, `indigo`, `orange`, `gray`, `teal`. |
-| status      | string  | false    | Pill style: `confirmed` (default) renders a filled pill; `unconfirmed` renders an outlined pill.             |
+| status      | string  | false    | Pill style: `confirmed` (default) renders a filled pill and `unconfirmed` renders an outlined pill.          |
 | description | string  | false    | Shown as a tooltip on event pills.                                                                           |
 
 ## Examples
@@ -122,7 +122,7 @@ Each item in the `events` array supports the following fields:
 
 ### Week view
 
-<LiveExample data-class="p-0">
+<LiveExample data-class="p-0" data-exclude="generator">
 
 ```html
 <div
@@ -154,7 +154,7 @@ Each item in the `events` array supports the following fields:
 
 ### Day view
 
-<LiveExample data-class="p-0">
+<LiveExample data-class="p-0" data-exclude="generator">
 
 ```html
 <div
@@ -186,7 +186,7 @@ Each item in the `events` array supports the following fields:
 
 ### Year view
 
-<LiveExample data-class="p-0">
+<LiveExample data-class="p-0" data-exclude="generator">
 
 ```html
 <div

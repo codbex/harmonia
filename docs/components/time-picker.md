@@ -103,7 +103,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ## Examples
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ timeConfig: { seconds: true, is12Hour: true } }" x-h-time-picker="timeConfig">
@@ -127,7 +127,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Listening for changes
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ time: '' }" x-h-time-picker @change="console.log('Selected time:', time)">

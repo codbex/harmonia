@@ -4,7 +4,7 @@
 
 ## Usage
 
-Give the chart a container with an explicit height (charts fill their parent). Provide the `slices` to draw, each with a `label` and a `value`. A doughnut reads the same as a [Pie Chart](/charts/pie); use it when you prefer the lighter ring style or want to leave the center open. To compare discrete categories use a [Bar Chart](/charts/bar), and for trends over an ordered sequence use a [Line Chart](/charts/line).
+Give the chart a container with an explicit height (charts fill their parent). Provide the `slices` to draw, each with a `label` and a `value`. A doughnut reads the same as a [Pie Chart](/charts/pie). Use it when you prefer the lighter ring style or want to leave the center open. To compare discrete categories use a [Bar Chart](/charts/bar), and for trends over an ordered sequence use a [Line Chart](/charts/line).
 
 ## API Reference
 
@@ -13,6 +13,12 @@ Give the chart a container with an explicit height (charts fill their parent). P
 ```
 x-h-chart-doughnut
 ```
+
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
 
 ### Configuration
 
@@ -63,7 +69,7 @@ When `tooltip` is enabled, hovering and clicking slices emit bubbling `CustomEve
 
 ### Thinner ring
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div

@@ -47,20 +47,20 @@ Use sheets to present supplementary information or interactive content without n
               <ul x-h-sidebar-menu>
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
-                    <i x-h-lucide role="img" data-lucide="house"></i>
+                    <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                     <span>Home</span>
                     <span x-h-sidebar-menu-badge>11</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
-                    <i x-h-lucide role="img" data-lucide="file-text"></i>
+                    <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                     <span>Documents</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
                   <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
-                    <i x-h-lucide role="img" data-lucide="blocks"></i>
+                    <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                     <span>Extensions</span>
                   </button>
                 </li>

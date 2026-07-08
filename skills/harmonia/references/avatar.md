@@ -67,8 +67,8 @@ You can change the avatar shape by using the `rounded-` classes.
 ### Icon-only
 
 ```html
-<div x-h-avatar aria-label="camera">
-  <i x-h-lucide role="img" data-lucide="camera"></i>
+<div x-h-avatar aria-label="user">
+  <svg x-h-icon data-icon="circle-user" role="presentaion"></svg>
 </div>
 ```
 

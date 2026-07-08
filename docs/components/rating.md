@@ -70,7 +70,7 @@ Bind a number with `x-model`. The value updates on selection (click, drag, or ke
 
 ### Whole stars
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ score: 3 }">
@@ -94,7 +94,7 @@ Bind a number with `x-model`. The value updates on selection (click, drag, or ke
 
 ### Read-only
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-h-rating data-readonly data-value="4.5" data-max="5" data-label="Average rating"></div>
@@ -104,7 +104,7 @@ Bind a number with `x-model`. The value updates on selection (click, drag, or ke
 
 ### Larger, ten stars
 
-<LiveExample>
+<LiveExample data-exclude="generator">
 
 ```html
 <div x-data="{ score: 7 }">
