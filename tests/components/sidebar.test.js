@@ -74,8 +74,9 @@ describe('h-sidebar-header-item', () => {
     mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
     // The collapse hide rule exempts a first-child avatar so it stays visible.
     expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!')).toBe(true);
-    // and it is sized down to fit the collapsed rail.
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!')).toBe(true);
+    // and it fills the collapsed rail, with the item padding dropped.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!')).toBe(true);
   });
 });
 
@@ -177,13 +178,24 @@ describe('h-sidebar-menu-button', () => {
     expect(el.classList.contains('flex')).toBe(true);
   });
 
-  it('keeps a first-child avatar visible and centers it when collapsed', () => {
+  it('keeps a first-child avatar visible but padded when collapsed', () => {
     const el = document.createElement('button');
     mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
     // Exempt a first-child avatar from the collapse hide rule.
     expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!')).toBe(true);
-    // Size it to the collapsed rail, drop the button padding and center it.
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!')).toBe(true);
+    // Without data-logo the button keeps its padding and the avatar is not resized.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!')).toBe(false);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!')).toBe(false);
+  });
+
+  it('makes a first-child icon or avatar fill the button when collapsed with data-logo', () => {
+    const el = document.createElement('button');
+    el.setAttribute('data-logo', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    // Size the icon or avatar to the collapsed rail, drop the button padding and center it.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!')).toBe(true);
     expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!')).toBe(true);
     expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!')).toBe(true);
   });
