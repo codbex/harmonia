@@ -19,7 +19,6 @@ export default function (Alpine) {
       'group/field',
       'w-full',
       'gap-3',
-      'transform-gpu',
       'has-[[aria-invalid=true]]:text-negative',
       'has-[input:user-invalid]:text-negative',
       'has-[textarea:user-invalid]:text-negative',

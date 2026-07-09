@@ -40,6 +40,21 @@ x-h-avatar-fallback
 
 </LiveExample>
 
+### Fallback
+
+When the image link does not return an image, the fallback text is shown.
+
+<LiveExample data-class="flex flex-col items-center" data-exclude="generator">
+
+```html
+<div x-h-avatar>
+  <img x-h-avatar-image src="/harmonia/logo/non-existant.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+</div>
+```
+
+</LiveExample>
+
 ### Big avatar
 
 <LiveExample data-class="flex flex-col items-center" data-exclude="generator">

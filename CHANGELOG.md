@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.3.1
+
+Bugfix release
+
+### Fixed Avatar fallback
+
+The avatar fallback directive has it'w own background, which interfered with the avatar color set using the `data-color` attribute. The fallback background is now transparent.
+
+### Fixed input dropdown in form fields
+
+The `x-h-field` directive added a `transform-gpu` class to every field wrapper, which sets `transform: translateZ(0)` - and any non-none transform creates a new stacking context (plus a containing block for the absolutely-positioned dropdown).
+
+Any input dropdown is a descendant of that field, so its `z-50` class only competed inside the field's own stacking context, and it could never escape it. Every sibling `x-h-field` below was also a stacking context (all effectively at level 0), and sibling stacking contexts at the same level paint in DOM order. Later fields therefore painted on top of the open dropdown.
+
+The fix was to remove the `transform-gpu` class.
+
 ## v2.3.0
 
 A release that adds read-only support to the text-like inputs, makes the disabled opacity themeable through a new `--opacity-disabled` variable, ensures every input reacts to `disabled` and `readonly` being toggled at runtime, and fills the documentation with Disabled and Read-only examples for all inputs. No breaking changes.

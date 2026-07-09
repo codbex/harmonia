@@ -38,6 +38,17 @@ Use avatars to visually identify users or related entities in lists, profiles, o
 </div>
 ```
 
+### Fallback
+
+When the image link does not return an image, the fallback text is shown.
+
+```html
+<div x-h-avatar>
+  <img x-h-avatar-image src="/harmonia/logo/non-existant.svg" alt="@harmonia" />
+  <div x-h-avatar-fallback>HM</div>
+</div>
+```
+
 ### Big avatar
 
 ```html

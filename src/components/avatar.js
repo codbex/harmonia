@@ -106,7 +106,7 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an avatar element`);
     }
 
-    el.classList.add('hidden', 'bg-muted', 'flex', 'size-full', 'items-center', 'justify-center', 'rounded-[inherit]');
+    el.classList.add('hidden', 'flex', 'size-full', 'items-center', 'justify-center', 'rounded-[inherit]');
     el.setAttribute('data-slot', 'avatar-fallback');
 
     effect(() => {
