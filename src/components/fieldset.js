@@ -19,6 +19,7 @@ export default function (Alpine) {
       'group/field',
       'w-full',
       'gap-3',
+      'transform-gpu',
       'has-[[aria-invalid=true]]:text-negative',
       'has-[input:user-invalid]:text-negative',
       'has-[textarea:user-invalid]:text-negative',
@@ -73,7 +74,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-field-title', (el) => {
-    el.classList.add('flex', 'w-fit', 'items-center', 'gap-2', 'text-sm', 'leading-snug', 'font-medium', 'group-data-[disabled=true]/field:opacity-50');
+    el.classList.add('flex', 'w-fit', 'items-center', 'gap-2', 'text-sm', 'leading-snug', 'font-medium', 'group-data-[disabled=true]/field:opacity-disabled');
     el.setAttribute('data-slot', 'field-title');
   });
 

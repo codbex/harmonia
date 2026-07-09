@@ -30,7 +30,7 @@ export default function (Alpine) {
       set: undefined,
       get: undefined,
     };
-    el.classList.add('cursor-pointer', 'outline-none', 'transition-[color,box-shadow]', 'motion-reduce:transition-none', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-50');
+    el.classList.add('cursor-pointer', 'outline-none', 'transition-[color,box-shadow]', 'motion-reduce:transition-none', 'duration-200', 'w-full', 'has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-disabled');
     if (modifiers.includes('table')) {
       el.classList.add(
         'h-10',
@@ -506,7 +506,7 @@ export default function (Alpine) {
     const searchInput = document.createElement('input');
     searchInput.setAttribute('type', 'text');
     searchInput.setAttribute('data-slot', 'select-input');
-    searchInput.classList.add('placeholder:text-muted-foreground', 'flex', 'h-10', 'w-full', 'rounded-md', 'bg-transparent', 'py-3', 'text-sm', 'outline-hidden', 'disabled:cursor-not-allowed', 'disabled:opacity-50');
+    searchInput.classList.add('placeholder:text-muted-foreground', 'flex', 'h-10', 'w-full', 'rounded-md', 'bg-transparent', 'py-3', 'text-sm', 'outline-hidden', 'disabled:cursor-not-allowed', 'disabled:opacity-disabled');
     el.appendChild(searchIcon);
     el.appendChild(searchInput);
 
@@ -603,7 +603,7 @@ export default function (Alpine) {
       'outline-hidden',
       'select-none',
       'data-[disabled]:pointer-events-none',
-      'data-[disabled]:opacity-50',
+      'data-[disabled]:opacity-disabled',
       '[&_svg]:pointer-events-none',
       '[&_svg]:shrink-0',
       "[&_svg:not([class*='size-'])]:size-4",

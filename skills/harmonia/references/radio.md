@@ -37,6 +37,25 @@ Use radio buttons when users must choose only one option from a group. All optio
 </form>
 ```
 
+### Disabled
+
+```html
+<form class="flex flex-col gap-3">
+  <div x-h-field data-orientation="horizontal">
+    <span x-h-radio>
+      <input type="radio" name="plan" id="r_basic" value="basic" checked disabled />
+    </span>
+    <label x-h-label for="r_basic">Basic</label>
+  </div>
+  <div x-h-field data-orientation="horizontal">
+    <span x-h-radio>
+      <input type="radio" name="plan" id="r_pro" value="pro" disabled />
+    </span>
+    <label x-h-label for="r_pro">Pro</label>
+  </div>
+</form>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/radio.html
 
 ## Notes

@@ -15,7 +15,7 @@ Use checkboxes for independent options where multiple selections are allowed. Fo
 ## Examples
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-checkbox>
     <input type="checkbox" id="unchecked" />
   </span>
@@ -24,7 +24,7 @@ Use checkboxes for independent options where multiple selections are allowed. Fo
 ```
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-checkbox>
     <input type="checkbox" id="checked" checked />
   </span>
@@ -33,11 +33,22 @@ Use checkboxes for independent options where multiple selections are allowed. Fo
 ```
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-checkbox>
     <input type="checkbox" id="indeterminate" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
   </span>
   <label x-h-label for="indeterminate">Indeterminate</label>
+</div>
+```
+
+### Disabled
+
+```html
+<div x-h-field data-orientation="horizontal">
+  <span x-h-checkbox>
+    <input type="checkbox" id="disabledCheckbox" checked disabled />
+  </span>
+  <label x-h-label for="disabledCheckbox">Disabled</label>
 </div>
 ```
 

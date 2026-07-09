@@ -142,7 +142,7 @@ export const setButtonClasses = (el) => {
     'duration-100',
     'motion-reduce:transition-none',
     'disabled:pointer-events-none',
-    'disabled:opacity-50',
+    'disabled:opacity-disabled',
     '[&_svg]:pointer-events-none',
     "[&_svg:not([class*='size-'])]:size-4",
     'shrink-0',

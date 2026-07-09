@@ -53,6 +53,18 @@ By default this control shows native-constraint errors (for example `required`) 
 <input x-h-input type="text" aria-invalid="true" />
 ```
 
+### Disabled
+
+```html
+<input x-h-input type="text" value="Disabled" disabled />
+```
+
+### Read-only
+
+```html
+<input x-h-input type="text" value="Read-only value" readonly />
+```
+
 Full docs: https://www.codbex.com/harmonia/components/input.html
 
 ## Notes

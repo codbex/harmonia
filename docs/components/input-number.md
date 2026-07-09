@@ -51,3 +51,29 @@ x-h-input-number
 ```
 
 </LiveExample>
+
+### Disabled
+
+<LiveExample>
+
+```html
+<div x-h-input-number>
+  <input type="number" min="0" max="10" step="2" value="4" disabled />
+</div>
+```
+
+</LiveExample>
+
+### Read-only
+
+The value is shown with a muted background, and the step controls are hidden.
+
+<LiveExample>
+
+```html
+<div x-h-input-number>
+  <input type="number" min="0" max="10" step="2" value="4" readonly />
+</div>
+```
+
+</LiveExample>

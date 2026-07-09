@@ -28,7 +28,9 @@ describe('h-radio', () => {
     expect(el.classList.contains('[&>input]:focus-visible:ring-[calc(var(--spacing)*0.75)]')).toBe(true);
     expect(el.classList.contains('has-[input:checked]:before:visible')).toBe(true);
     expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
-    expect(el.classList.contains('has-[input:disabled]:opacity-50')).toBe(true);
+    expect(el.classList.contains('has-[input:disabled]:opacity-disabled')).toBe(true);
+    expect(el.classList.contains('[&:has(input:disabled)~label]:cursor-not-allowed')).toBe(true);
+    expect(el.classList.contains('[&:has(input:disabled)~label]:opacity-disabled')).toBe(true);
   });
 
   it('applies before pseudo-element classes', () => {

@@ -91,6 +91,8 @@
   --radius: 0.625rem;
 
   --spacing: 0.25rem;
+
+  --opacity-disabled: 0.5;
 }
 
 .dark {
@@ -161,6 +163,8 @@
 
   --shadow-button: none;
   --shadow-input: var(--shadow-xs);
+
+  --opacity-disabled: 0.5;
 }
 
 @theme inline {

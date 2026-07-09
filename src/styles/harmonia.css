@@ -191,6 +191,9 @@
 @source inline("opacity-{0,25,50,75,100}");
 @source inline("group-hover:opacity-100");
 @source inline("group-focus-within:opacity-100");
+@utility opacity-disabled {
+  opacity: var(--opacity-disabled);
+}
 @source inline("hover:bg-muted");
 @source inline("backdrop-blur-{xs,sm,md}");
 @source inline("scale-{95,105}");

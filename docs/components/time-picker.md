@@ -137,3 +137,33 @@ By default this control shows native-constraint errors (for example `required`) 
 ```
 
 </LiveExample>
+
+### Disabled
+
+Set the native `disabled` attribute on the inner input to disable the whole picker.
+
+<LiveExample>
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-disabled" x-model="time" x-h-time-picker-input disabled />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
+</LiveExample>
+
+### Read-only
+
+Set the native `readonly` attribute on the inner input. The value is shown with a muted background, and the popup cannot be opened.
+
+<LiveExample>
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-readonly" x-model="time" x-h-time-picker-input readonly />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
+</LiveExample>

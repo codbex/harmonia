@@ -66,7 +66,10 @@ export default function (Alpine) {
       'outline-none',
       'has-[input:disabled]:pointer-events-none',
       'has-[input:disabled]:cursor-not-allowed',
-      'has-[input:disabled]:opacity-50'
+      'has-[input:disabled]:opacity-disabled',
+      'has-[input[readonly]]:bg-muted',
+      'has-[input[readonly]]:cursor-default',
+      'has-[input[readonly]]:text-foreground'
     );
     if (modifiers.includes('table')) {
       el.classList.add(
@@ -146,6 +149,8 @@ export default function (Alpine) {
 
     const handler = (event) => {
       if (event.type === 'keydown' && event.key !== 'Enter') return;
+      const input = el.querySelector('input');
+      if (input && (input.readOnly || input.disabled)) return;
       el._h_timepicker.expanded = !el._h_timepicker.expanded;
       el.setAttribute('aria-expanded', el._h_timepicker.expanded);
       Alpine.nextTick(() => {
@@ -215,6 +220,7 @@ export default function (Alpine) {
     el.classList.add(
       'appearance-none',
       'cursor-pointer',
+      '[&[readonly]]:cursor-default',
       'bg-transparent',
       'text-transparent',
       'text-shadow-[0_0_0_var(--foreground)]',
@@ -325,7 +331,7 @@ export default function (Alpine) {
       'outline-hidden',
       'select-none',
       'aria-disabled:pointer-events-none',
-      'aria-disabled:opacity-50',
+      'aria-disabled:opacity-disabled',
     ];
 
     const updateModel = () => {

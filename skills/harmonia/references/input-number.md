@@ -44,6 +44,24 @@ Use the number input when users need to enter a bounded numeric value, such as a
 </div>
 ```
 
+### Disabled
+
+```html
+<div x-h-input-number>
+  <input type="number" min="0" max="10" step="2" value="4" disabled />
+</div>
+```
+
+### Read-only
+
+The value is shown with a muted background, and the step controls are hidden.
+
+```html
+<div x-h-input-number>
+  <input type="number" min="0" max="10" step="2" value="4" readonly />
+</div>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/input-number.html
 
 ## Notes

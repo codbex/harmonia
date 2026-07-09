@@ -135,6 +135,30 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </div>
 ```
 
+### Disabled
+
+Set the native `disabled` attribute on the inner input to disable the whole picker.
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '2026-07-09T14:30' }">
+  <input type="text" id="datetime-input-disabled" disabled />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup x-model="dt"></div>
+</div>
+```
+
+### Read-only
+
+Set the native `readonly` attribute on the inner input. The value is shown with a muted background, and the popover cannot change it.
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '2026-07-09T14:30' }">
+  <input type="text" id="datetime-input-readonly" readonly />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup x-model="dt"></div>
+</div>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/datetime-picker.html
 
 ## Notes

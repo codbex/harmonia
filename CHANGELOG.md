@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.3.0
+
+A release that adds read-only support to the text-like inputs, makes the disabled opacity themeable through a new `--opacity-disabled` variable, ensures every input reacts to `disabled` and `readonly` being toggled at runtime, and fills the documentation with Disabled and Read-only examples for all inputs. No breaking changes.
+
+### Read-only support for text-like inputs
+
+- **Input, Textarea, Number Input, Date Picker, Datetime Picker, Time Picker** - the native `readonly` attribute on the (inner) input is now styled: the value is shown with a muted background, normal text color, and a default cursor, clearly distinct from the dimmed disabled look. Read-only is fully dynamic, so toggling the attribute at runtime updates the styling.
+- **Date, Datetime, and Time Picker** - a read-only picker is locked: the trigger no longer opens the popover with mouse or keyboard, and it exposes `aria-disabled` (kept in sync when the attribute is toggled at runtime), so the value cannot be changed while it stays selectable and readable.
+- **Number Input** - a read-only number input hides its step buttons entirely, and the steppers no longer change the value.
+
+### Themeable disabled opacity
+
+- New `--opacity-disabled` variable in the light and dark themes (default `0.5`), exposed as an `opacity-disabled` utility class. All components now dim disabled elements with it instead of the hardcoded `opacity-50`, so themes can tune how muted disabled controls look. Documented under Custom Themes and the opacity utilities, and available in the theme generator.
+
+### Disabled state improvements
+
+- **Checkbox, Radio, Switch** - a label following a disabled control is now dimmed and shows the not-allowed cursor, matching how the text input dims its content.
+- **File Upload** - now reacts to the `disabled` attribute being set or removed after the initial render. Previously the dimmed, non-interactive state was applied only when the input was disabled at initialization.
+- **Rating** - the `disabled`, `data-disabled`, and `data-readonly` attributes are now fully reactive: toggling them at runtime switches the role between `slider` and `img`, updates `tabindex`, the ARIA value attributes, and the dimming, and restores interactivity when they are removed.
+- **Date and Datetime Picker** - the trigger is now also locked when the input is disabled. Previously it could still be opened with the keyboard, since only pointer events were blocked.
+
+### Documentation
+
+- Every input page gains a Disabled example (Input, Textarea, Number Input, Input Group, Checkbox, Radio, Switch, Select, File Upload, Range, Date Picker, Datetime Picker, Time Picker), and the text-like inputs gain a Read-only example showing the muted read-only look.
+
 ## v2.2.0
 
 A release that adds a menubar component, rebuilds the charts as scalable vector graphics with two new chart types and an export utility, and brings smaller component, icon, and utility additions. No breaking changes to the documented API. Custom CSS that targeted the charts' old div-based internals may need updating, since charts now render as SVG.

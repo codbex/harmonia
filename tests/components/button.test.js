@@ -73,10 +73,10 @@ describe('setButtonClasses', () => {
     expect(el.classList.contains('font-medium')).toBe(true);
   });
 
-  it('adds disabled:opacity-50', () => {
+  it('adds disabled:opacity-disabled', () => {
     const el = document.createElement('button');
     setButtonClasses(el);
-    expect(el.classList.contains('disabled:opacity-50')).toBe(true);
+    expect(el.classList.contains('disabled:opacity-disabled')).toBe(true);
   });
 });
 

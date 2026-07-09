@@ -72,7 +72,7 @@ export default function (Alpine) {
       'data-[non-interactive=true]:pointer-events-none',
       'data-[non-interactive=true]:cursor-none',
       'disabled:pointer-events-none',
-      'disabled:opacity-50'
+      'disabled:opacity-disabled'
     );
     el.setAttribute('data-slot', 'step-indicator-trigger');
 

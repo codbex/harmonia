@@ -90,6 +90,19 @@ describe('h-datetime-picker-trigger', () => {
     expect(() => mountDirective(datetimePlugin, 'h-datetime-picker-trigger', div, { original: 'h-datetime-picker-trigger' })).toThrow();
   });
 
+  it('readonly input: a click does not open the popover and the trigger is aria-disabled', () => {
+    const input = document.createElement('input');
+    input.setAttribute('readonly', '');
+    wrapperEl.insertBefore(input, triggerEl);
+    wrapperEl._h_datetimepicker.input = input;
+    mountDirective(datetimePlugin, 'h-datetime-picker-trigger', triggerEl, { original: 'h-datetime-picker-trigger' });
+
+    expect(triggerEl.getAttribute('aria-disabled')).toBe('true');
+
+    triggerEl.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(wrapperEl._h_datetimepicker.state.expanded).toBe(false);
+  });
+
   it('a click inside the picker keeps the popover open; an outside click closes it', () => {
     const inside = document.createElement('div');
     wrapperEl.appendChild(inside);

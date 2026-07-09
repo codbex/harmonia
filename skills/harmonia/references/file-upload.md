@@ -74,6 +74,22 @@ Listen to the native `change` event on the file input to react to the chosen fil
 </div>
 ```
 
+### Disabled
+
+Set the native `disabled` attribute on the file input to disable the whole control.
+
+```html
+<div x-h-input-group x-h-file-upload>
+  <input type="file" disabled />
+  <div x-h-input-group-addon data-align="inline-start">
+    <div x-h-tag-group></div>
+  </div>
+  <div x-h-input-group-addon data-align="inline-end">
+    <button type="button" x-h-button.addon>Browse</button>
+  </div>
+</div>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/file-upload.html
 
 ## Notes

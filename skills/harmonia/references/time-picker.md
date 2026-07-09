@@ -132,6 +132,28 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </div>
 ```
 
+### Disabled
+
+Set the native `disabled` attribute on the inner input to disable the whole picker.
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-disabled" x-model="time" x-h-time-picker-input disabled />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
+### Read-only
+
+Set the native `readonly` attribute on the inner input. The value is shown with a muted background, and the popup cannot be opened.
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-readonly" x-model="time" x-h-time-picker-input readonly />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/time-picker.html
 
 ## Notes

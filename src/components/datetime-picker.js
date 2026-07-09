@@ -85,7 +85,8 @@ export default function (Alpine) {
       'min-w-0',
       'has-[input:disabled]:pointer-events-none',
       'has-[input:disabled]:cursor-not-allowed',
-      'has-[input:disabled]:opacity-50'
+      'has-[input:disabled]:opacity-disabled',
+      'has-[input[readonly]]:bg-muted'
     );
     if (el._h_datetimepicker.inTable) {
       el.classList.add(
@@ -137,7 +138,7 @@ export default function (Alpine) {
       'focus-visible:ring-0',
       'disabled:pointer-events-none',
       'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
+      'disabled:opacity-disabled',
       'md:text-sm',
       'text-base',
       'truncate'

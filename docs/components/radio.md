@@ -42,3 +42,26 @@ x-h-radio
 ```
 
 </LiveExample>
+
+### Disabled
+
+<LiveExample>
+
+```html
+<form class="flex flex-col gap-3">
+  <div x-h-field data-orientation="horizontal">
+    <span x-h-radio>
+      <input type="radio" name="plan" id="r_basic" value="basic" checked disabled />
+    </span>
+    <label x-h-label for="r_basic">Basic</label>
+  </div>
+  <div x-h-field data-orientation="horizontal">
+    <span x-h-radio>
+      <input type="radio" name="plan" id="r_pro" value="pro" disabled />
+    </span>
+    <label x-h-label for="r_pro">Pro</label>
+  </div>
+</form>
+```
+
+</LiveExample>

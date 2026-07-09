@@ -64,3 +64,23 @@ By default this control shows native-constraint errors (for example `required`) 
 ```
 
 </LiveExample>
+
+### Disabled
+
+<LiveExample>
+
+```html
+<input x-h-input type="text" value="Disabled" disabled />
+```
+
+</LiveExample>
+
+### Read-only
+
+<LiveExample>
+
+```html
+<input x-h-input type="text" value="Read-only value" readonly />
+```
+
+</LiveExample>

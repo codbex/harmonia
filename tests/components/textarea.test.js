@@ -53,7 +53,13 @@ describe('h-textarea', () => {
     const el = document.createElement('textarea');
     mountDirective(textareaPlugin, 'h-textarea', el, { modifiers: [] });
     expect(el.classList.contains('disabled:cursor-not-allowed')).toBe(true);
-    expect(el.classList.contains('disabled:opacity-50')).toBe(true);
+    expect(el.classList.contains('disabled:opacity-disabled')).toBe(true);
+  });
+
+  it('applies the readonly background class', () => {
+    const el = document.createElement('textarea');
+    mountDirective(textareaPlugin, 'h-textarea', el, { modifiers: [] });
+    expect(el.classList.contains('[&[readonly]]:bg-muted')).toBe(true);
   });
 
   it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {

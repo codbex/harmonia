@@ -42,6 +42,26 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </script>
 ```
 
+### Disabled
+
+Set the native `disabled` attribute on the element to disable the slider.
+
+```html
+<div x-h-range="config" x-data="rangeDisabledData" disabled x-model="value"></div>
+<script>
+  Alpine.data('rangeDisabledData', () => ({
+    value: [40],
+    config: {
+      orientation: 'horizontal',
+      start: [40],
+      connect: 'lower',
+      range: { min: 0, max: 100 },
+      step: 1,
+    },
+  }));
+</script>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/range.html
 
 ## Notes

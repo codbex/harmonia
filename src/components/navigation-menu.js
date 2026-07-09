@@ -127,7 +127,7 @@ export default function (Alpine) {
     el.setAttribute('aria-expanded', 'false');
     el.setAttribute('data-state', 'closed');
 
-    el.classList.add('bg-transparent', 'disabled:opacity-50', 'disabled:pointer-events-none', ...navItemTriggerClasses);
+    el.classList.add('bg-transparent', 'disabled:opacity-disabled', 'disabled:pointer-events-none', ...navItemTriggerClasses);
 
     el.appendChild(chevron);
     el.setAttribute('data-slot', 'nav-trigger');

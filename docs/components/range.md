@@ -41,3 +41,27 @@ Please refer to the [noUiSlider documentation](https://refreshless.com/nouislide
 ```
 
 </LiveExample>
+
+### Disabled
+
+Set the native `disabled` attribute on the element to disable the slider.
+
+<LiveExample data-style="height: 4rem">
+
+```html
+<div x-h-range="config" x-data="rangeDisabledData" disabled x-model="value"></div>
+<script>
+  Alpine.data('rangeDisabledData', () => ({
+    value: [40],
+    config: {
+      orientation: 'horizontal',
+      start: [40],
+      connect: 'lower',
+      range: { min: 0, max: 100 },
+      step: 1,
+    },
+  }));
+</script>
+```
+
+</LiveExample>

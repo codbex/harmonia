@@ -19,6 +19,7 @@ const triggerBaseClasses = [
   'hover:text-secondary-foreground',
   'active:bg-secondary-active',
   'active:text-secondary-foreground',
+  '[input[readonly]~&]:pointer-events-none',
   'outline-none',
 ];
 
@@ -115,6 +116,24 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
     el.setAttribute('aria-expanded', pickerState.state.expanded);
   });
 
+  // aria-readonly is not valid on a button, so a readonly (or disabled) picker
+  // exposes its locked trigger as aria-disabled; the observer keeps it in sync
+  // when either attribute is toggled at runtime.
+  const inputLocked = () => pickerState.input && (pickerState.input.readOnly || pickerState.input.disabled);
+  const syncLocked = () => {
+    if (inputLocked()) {
+      el.setAttribute('aria-disabled', 'true');
+    } else {
+      el.removeAttribute('aria-disabled');
+    }
+  };
+  let lockedObserver;
+  if (pickerState.input) {
+    syncLocked();
+    lockedObserver = new MutationObserver(syncLocked);
+    lockedObserver.observe(pickerState.input, { attributeFilter: ['readonly', 'disabled'] });
+  }
+
   // Persistent listener (not once), removed when it actually closes.
   const close = (event) => {
     if (event && stayOpenInside && stayOpenInside(event)) return;
@@ -123,6 +142,7 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
   };
 
   const handler = () => {
+    if (inputLocked()) return;
     pickerState.state.expanded = !pickerState.state.expanded;
     Alpine.nextTick(() => {
       if (pickerState.state.expanded) {
@@ -136,6 +156,7 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
   el.addEventListener('click', handler);
 
   cleanup(() => {
+    if (lockedObserver) lockedObserver.disconnect();
     el.removeEventListener('click', handler);
     removeDismiss(el, 'click', close);
   });

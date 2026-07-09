@@ -25,7 +25,7 @@ x-h-switch
 <LiveExample>
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-switch>
     <input type="checkbox" id="sw" />
   </span>
@@ -38,11 +38,26 @@ x-h-switch
 <LiveExample data-exclude="generator">
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-switch data-size="sm">
     <input type="checkbox" id="sws" />
   </span>
   <label x-h-label for="sws">Just switch</label>
+</div>
+```
+
+</LiveExample>
+
+### Disabled
+
+<LiveExample>
+
+```html
+<div x-h-field data-orientation="horizontal">
+  <span x-h-switch>
+    <input type="checkbox" id="swd" checked disabled />
+  </span>
+  <label x-h-label for="swd">Disabled switch</label>
 </div>
 ```
 

@@ -140,3 +140,9 @@ This approach keeps theming lightweight, flexible, and easy to maintain.
 | --radius-control | Border radius applied to all interactive control components, such as buttons, inputs, popovers, calendars, and listboxes. |
 | --radius         | Base radius value used to derive small, medium, large, and extra-large border radius variants.                            |
 | --spacing        | Base spacing unit used to calculate paddings and margins throughout the interface.                                        |
+
+### Opacity
+
+| Property           | Description                                                               |
+| ------------------ | ------------------------------------------------------------------------- |
+| --opacity-disabled | Opacity applied to disabled controls and their labels. Defaults to `0.5`. |

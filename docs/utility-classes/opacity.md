@@ -4,13 +4,14 @@ Utilities for controlling the opacity of an element.
 
 ## Class names
 
-| Class       | Description      |
-| ----------- | ---------------- |
-| opacity-0   | `opacity: 0%;`   |
-| opacity-25  | `opacity: 25%;`  |
-| opacity-50  | `opacity: 50%;`  |
-| opacity-75  | `opacity: 75%;`  |
-| opacity-100 | `opacity: 100%;` |
+| Class            | Description                         |
+| ---------------- | ----------------------------------- |
+| opacity-0        | `opacity: 0%;`                      |
+| opacity-25       | `opacity: 25%;`                     |
+| opacity-50       | `opacity: 50%;`                     |
+| opacity-75       | `opacity: 75%;`                     |
+| opacity-100      | `opacity: 100%;`                    |
+| opacity-disabled | `opacity: var(--opacity-disabled);` |
 
 `opacity-100` is also available with the `group-hover:` and `group-focus-within:` variants (`group-hover:opacity-100`, `group-focus-within:opacity-100`). Combine them with a hidden element inside a `group` container to reveal it when the container is hovered or receives focus.
 

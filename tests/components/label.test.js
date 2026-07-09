@@ -28,9 +28,9 @@ describe('h-label', () => {
   it('adds disabled state classes', () => {
     mountDirective(labelPlugin, 'h-label', el);
     expect(el.classList.contains('group-data-[disabled=true]:pointer-events-none')).toBe(true);
-    expect(el.classList.contains('group-data-[disabled=true]:opacity-50')).toBe(true);
+    expect(el.classList.contains('group-data-[disabled=true]:opacity-disabled')).toBe(true);
     expect(el.classList.contains('peer-disabled:cursor-not-allowed')).toBe(true);
-    expect(el.classList.contains('peer-disabled:opacity-50')).toBe(true);
+    expect(el.classList.contains('peer-disabled:opacity-disabled')).toBe(true);
   });
 
   it('sets data-slot="label" without modifier', () => {

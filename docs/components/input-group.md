@@ -111,6 +111,24 @@ In order to achieve proper focus navigation, place the group addon after the inp
 
 </LiveExample>
 
+### Disabled
+
+Set the native `disabled` attribute on the grouped input and `data-disabled="true"` on the addon(s).
+
+<LiveExample>
+
+```html
+<div x-h-input-group>
+  <input x-h-input.group placeholder="Search..." disabled />
+  <div x-h-input-group-addon data-align="inline-start" data-disabled="true">
+    <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+  </div>
+  <div x-h-input-group-addon data-align="inline-end" data-disabled="true">12 results</div>
+</div>
+```
+
+</LiveExample>
+
 ### Textarea with top and bottom toolbars
 
 <LiveExample>

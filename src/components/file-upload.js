@@ -32,9 +32,7 @@ export default function (Alpine) {
     placeholder.classList.add('text-muted-foreground', 'truncate', 'px-1.5', 'font-normal');
     placeholder.textContent = el.getAttribute('data-placeholder') || 'No file chosen';
 
-    if (fileInput.disabled) {
-      el.classList.add('pointer-events-none', 'opacity-50');
-    }
+    el.classList.add('has-[input:disabled]:pointer-events-none', 'has-[input:disabled]:opacity-disabled');
 
     // Tags are Alpine-managed (the x-h-tag directive runs via initTree), so each
     // must be destroyed before it is removed to avoid leaking reactive effects.

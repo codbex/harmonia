@@ -30,7 +30,8 @@ export default function (Alpine) {
       'outline-none',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
+      'disabled:opacity-disabled',
+      '[&[readonly]]:bg-muted',
       'md:text-sm'
     );
     if (modifiers.includes('group')) {

@@ -43,3 +43,23 @@ By default this control shows native-constraint errors (for example `required`) 
 ```
 
 </LiveExample>
+
+### Disabled
+
+<LiveExample>
+
+```html
+<textarea x-h-textarea disabled>Disabled text</textarea>
+```
+
+</LiveExample>
+
+### Read-only
+
+<LiveExample>
+
+```html
+<textarea x-h-textarea readonly>Read-only text</textarea>
+```
+
+</LiveExample>

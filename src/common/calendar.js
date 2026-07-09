@@ -337,7 +337,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
         'data-[range=start]:rounded-r-none',
         'data-[range=end]:rounded-l-none',
         'aria-disabled:pointer-events-none',
-        'aria-disabled:opacity-50'
+        'aria-disabled:opacity-disabled'
       );
       cell.setAttribute('tabindex', '-1');
       dayCells.push(row.appendChild(cell));

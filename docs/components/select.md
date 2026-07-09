@@ -218,6 +218,25 @@ The input automatically switches modes based on the model. If you want to select
 
 </LiveExample>
 
+### Disabled
+
+Set the native `disabled` attribute on the `x-h-select-input` input to disable the whole select. To disable a single option, use `data-disabled="true"` on it instead.
+
+<LiveExample>
+
+```html
+<div x-h-select>
+  <input x-h-select-input placeholder="Select" disabled />
+  <div x-h-select-content>
+    <div x-h-select-option="'Option 1'" data-value="1"></div>
+    <div x-h-select-option="'Option 2'" data-value="2"></div>
+    <div x-h-select-option="'Option 3'" data-value="3"></div>
+  </div>
+</div>
+```
+
+</LiveExample>
+
 ### With groups
 
 <LiveExample>

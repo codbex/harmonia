@@ -45,6 +45,11 @@ describe('h-input', () => {
     expect(el.getAttribute('data-slot')).toBe('input');
   });
 
+  it('applies the readonly background class', () => {
+    mountDirective(inputPlugin, 'h-input', el);
+    expect(el.classList.contains('[&[readonly]]:bg-muted')).toBe(true);
+  });
+
   it('adds standard input classes by default', () => {
     mountDirective(inputPlugin, 'h-input', el);
     expect(el.classList.contains('w-full')).toBe(true);
@@ -257,6 +262,42 @@ describe('h-input-number', () => {
     mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
     const input = el.querySelector('input');
     expect(input.getAttribute('inputmode')).toBe('numeric');
+  });
+
+  it('applies the readonly classes to the wrapper and hides the steppers', () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    expect(el.classList.contains('has-[input[readonly]]:bg-muted')).toBe(true);
+    const buttons = el.querySelectorAll('button');
+    for (const button of buttons) {
+      expect(button.classList.contains('group-has-[input[readonly]]/input-number:hidden')).toBe(true);
+    }
+  });
+
+  it('steppers change the value of an editable input', () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    const input = el.querySelector('input');
+    input.setAttribute('step', 'any');
+    input.value = '4';
+    const buttons = el.querySelectorAll('button');
+    const stepUp = buttons[buttons.length - 1];
+    stepUp.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(input.value).toBe('5');
+  });
+
+  it('steppers do not change the value of a readonly input', () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    const input = el.querySelector('input');
+    input.setAttribute('step', 'any');
+    input.value = '4';
+    input.setAttribute('readonly', '');
+    const events = [];
+    input.addEventListener('input', () => events.push('input'));
+    input.addEventListener('change', () => events.push('change'));
+    const [stepDown, stepUp] = [el.querySelectorAll('button')[0], el.querySelectorAll('button')[1]];
+    stepDown.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    stepUp.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(input.value).toBe('4');
+    expect(events).toEqual([]);
   });
 
   it('calls cleanup', () => {

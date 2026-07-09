@@ -178,6 +178,69 @@ describe('h-date-picker-trigger', () => {
     expect(ctx.cleanup).toHaveBeenCalled();
   });
 
+  it('readonly input: a click does not open the popover and the trigger is aria-disabled', () => {
+    const input = document.createElement('input');
+    input.setAttribute('readonly', '');
+    wrapperEl.insertBefore(input, triggerEl);
+    wrapperEl._h_datepicker.input = input;
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+
+    expect(triggerEl.getAttribute('aria-disabled')).toBe('true');
+    expect(triggerEl.classList.contains('[input[readonly]~&]:pointer-events-none')).toBe(true);
+
+    triggerEl.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(wrapperEl._h_datepicker.state.expanded).toBe(false);
+  });
+
+  it('editable input: a click still opens the popover and no aria-disabled is set', () => {
+    const input = document.createElement('input');
+    wrapperEl.insertBefore(input, triggerEl);
+    wrapperEl._h_datepicker.input = input;
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+
+    expect(triggerEl.hasAttribute('aria-disabled')).toBe(false);
+
+    // Non-bubbling click: the mock Alpine's nextTick is synchronous, so a
+    // bubbling click would reach the just-added outside-click dismiss listener
+    // and close the popover again within the same dispatch.
+    triggerEl.dispatchEvent(new MouseEvent('click'));
+    expect(wrapperEl._h_datepicker.state.expanded).toBe(true);
+  });
+
+  it('toggling readonly at runtime updates aria-disabled on the trigger', async () => {
+    const input = document.createElement('input');
+    wrapperEl.insertBefore(input, triggerEl);
+    wrapperEl._h_datepicker.input = input;
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+
+    input.setAttribute('readonly', '');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(triggerEl.getAttribute('aria-disabled')).toBe('true');
+
+    input.removeAttribute('readonly');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(triggerEl.hasAttribute('aria-disabled')).toBe(false);
+  });
+
+  it('disabled input: a click does not open the popover, also when toggled after init', async () => {
+    const input = document.createElement('input');
+    wrapperEl.insertBefore(input, triggerEl);
+    wrapperEl._h_datepicker.input = input;
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+
+    input.setAttribute('disabled', '');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(triggerEl.getAttribute('aria-disabled')).toBe('true');
+    triggerEl.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(wrapperEl._h_datepicker.state.expanded).toBe(false);
+
+    input.removeAttribute('disabled');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(triggerEl.hasAttribute('aria-disabled')).toBe(false);
+    triggerEl.dispatchEvent(new MouseEvent('click'));
+    expect(wrapperEl._h_datepicker.state.expanded).toBe(true);
+  });
+
   it('range mode: a click inside the picker keeps the popover open; an outside click closes it', () => {
     wrapperEl._h_datepicker.range = true;
     const inside = document.createElement('div');

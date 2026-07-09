@@ -19,7 +19,7 @@ x-h-checkbox
 <LiveExample>
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-checkbox>
     <input type="checkbox" id="unchecked" />
   </span>
@@ -32,7 +32,7 @@ x-h-checkbox
 <LiveExample>
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-checkbox>
     <input type="checkbox" id="checked" checked />
   </span>
@@ -45,11 +45,26 @@ x-h-checkbox
 <LiveExample>
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-checkbox>
     <input type="checkbox" id="indeterminate" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
   </span>
   <label x-h-label for="indeterminate">Indeterminate</label>
+</div>
+```
+
+</LiveExample>
+
+### Disabled
+
+<LiveExample>
+
+```html
+<div x-h-field data-orientation="horizontal">
+  <span x-h-checkbox>
+    <input type="checkbox" id="disabledCheckbox" checked disabled />
+  </span>
+  <label x-h-label for="disabledCheckbox">Disabled</label>
 </div>
 ```
 

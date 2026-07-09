@@ -8,9 +8,9 @@ export default function (Alpine) {
       'font-medium',
       'select-none',
       'group-data-[disabled=true]:pointer-events-none',
-      'group-data-[disabled=true]:opacity-50',
+      'group-data-[disabled=true]:opacity-disabled',
       'peer-disabled:cursor-not-allowed',
-      'peer-disabled:opacity-50'
+      'peer-disabled:opacity-disabled'
     );
     if (el.parentElement.getAttribute('data-slot') === 'field') {
       el.classList.add(
@@ -18,7 +18,7 @@ export default function (Alpine) {
         'peer/field-label',
         'w-fit',
         'leading-snug',
-        'group-data-[disabled=true]/field:opacity-50',
+        'group-data-[disabled=true]/field:opacity-disabled',
         'has-[>[data-slot=field]]:w-full',
         'has-[>[data-slot=field]]:flex-col',
         'has-[>[data-slot=field]]:rounded-md',

@@ -91,7 +91,7 @@ export default function (Alpine) {
       'hover:underline',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'disabled:pointer-events-none',
-      'disabled:opacity-50',
+      'disabled:opacity-disabled',
       '[&[aria-expanded=true]>svg]:rotate-180'
     );
     el.appendChild(button);

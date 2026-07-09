@@ -204,3 +204,35 @@ By default this control shows native-constraint errors (for example `required`) 
 ```
 
 </LiveExample>
+
+### Disabled
+
+Set the native `disabled` attribute on the inner input to disable the whole picker.
+
+<LiveExample>
+
+```html
+<div x-h-date-picker x-data="{ date: '2026-07-09' }">
+  <input type="text" id="date-input-disabled" disabled />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
+</LiveExample>
+
+### Read-only
+
+Set the native `readonly` attribute on the inner input. The value is shown with a muted background, and neither typing nor the calendar popover can change it.
+
+<LiveExample>
+
+```html
+<div x-h-date-picker x-data="{ date: '2026-07-09' }">
+  <input type="text" id="date-input-readonly" readonly />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
+</LiveExample>

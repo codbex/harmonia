@@ -12,7 +12,7 @@ export default function (Alpine) {
       'outline-none',
       'disabled:pointer-events-none',
       'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
+      'disabled:opacity-disabled',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',

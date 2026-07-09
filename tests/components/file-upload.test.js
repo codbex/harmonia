@@ -98,11 +98,25 @@ describe('h-file-upload', () => {
   it('does not open when the input is disabled', () => {
     const { group, input, browse } = build({ disabled: true });
     mount(group);
-    expect(group.classList.contains('pointer-events-none')).toBe(true);
-    expect(group.classList.contains('opacity-50')).toBe(true);
+    expect(group.classList.contains('has-[input:disabled]:pointer-events-none')).toBe(true);
+    expect(group.classList.contains('has-[input:disabled]:opacity-disabled')).toBe(true);
     const clickSpy = vi.spyOn(input, 'click');
     browse.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(clickSpy).not.toHaveBeenCalled();
+  });
+
+  it('reacts to the disabled attribute being toggled after init', () => {
+    const { group, input, browse } = build();
+    mount(group);
+    const clickSpy = vi.spyOn(input, 'click');
+
+    input.disabled = true;
+    browse.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(clickSpy).not.toHaveBeenCalled();
+
+    input.disabled = false;
+    browse.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(clickSpy).toHaveBeenCalledTimes(1);
   });
 
   it('renders a tag per selected file on change and hides the placeholder', () => {

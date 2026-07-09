@@ -36,7 +36,7 @@ export default function (Alpine) {
         'has-[input:checked]:border-primary',
         'has-[input:focus-visible]:ring-primary/50',
         'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
-        'has-[input:disabled]:opacity-50',
+        'has-[input:disabled]:opacity-disabled',
         'has-[input:disabled]:cursor-not-allowed'
       );
 

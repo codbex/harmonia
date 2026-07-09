@@ -92,6 +92,67 @@ describe('h-time-picker', () => {
     });
     expect(ctx.cleanup).toHaveBeenCalled();
   });
+
+  it('applies the readonly classes', () => {
+    const el = document.createElement('div');
+    mountDirective(timepickerPlugin, 'h-time-picker', el, {
+      modifiers: [],
+      expression: '',
+    });
+    expect(el.classList.contains('has-[input[readonly]]:bg-muted')).toBe(true);
+    expect(el.classList.contains('has-[input[readonly]]:cursor-default')).toBe(true);
+  });
+
+  it('readonly input: click and Enter do not open the popover', () => {
+    const el = document.createElement('div');
+    const input = document.createElement('input');
+    input.setAttribute('readonly', '');
+    el.appendChild(input);
+    document.body.appendChild(el);
+    mountDirective(timepickerPlugin, 'h-time-picker', el, {
+      modifiers: [],
+      expression: '',
+    });
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(el._h_timepicker.expanded).toBe(false);
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(el._h_timepicker.expanded).toBe(false);
+  });
+
+  it('disabled input: a click does not open the popover, also when toggled after init', () => {
+    const el = document.createElement('div');
+    const input = document.createElement('input');
+    el.appendChild(input);
+    document.body.appendChild(el);
+    mountDirective(timepickerPlugin, 'h-time-picker', el, {
+      modifiers: [],
+      expression: '',
+    });
+
+    input.disabled = true;
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(el._h_timepicker.expanded).toBe(false);
+
+    input.disabled = false;
+    el.dispatchEvent(new MouseEvent('click'));
+    expect(el._h_timepicker.expanded).toBe(true);
+  });
+
+  it('editable input: a click opens the popover', () => {
+    const el = document.createElement('div');
+    const input = document.createElement('input');
+    el.appendChild(input);
+    document.body.appendChild(el);
+    mountDirective(timepickerPlugin, 'h-time-picker', el, {
+      modifiers: [],
+      expression: '',
+    });
+    // Non-bubbling click: the mock Alpine's nextTick is synchronous, so a
+    // bubbling click would reach the just-added outside-click dismiss listener
+    // and close the popover again within the same dispatch.
+    el.dispatchEvent(new MouseEvent('click'));
+    expect(el._h_timepicker.expanded).toBe(true);
+  });
 });
 
 describe('h-time-picker-input', () => {

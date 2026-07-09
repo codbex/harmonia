@@ -1,5 +1,5 @@
-[data-slot="radio"] + [data-slot$="label"],
-[data-slot="checkbox"] + [data-slot$="label"] {
+[data-slot="radio"]:not(:has(input:disabled)) + [data-slot$="label"],
+[data-slot="checkbox"]:not(:has(input:disabled)) + [data-slot$="label"] {
   @apply cursor-pointer;
 }
 span[data-slot="radio"],

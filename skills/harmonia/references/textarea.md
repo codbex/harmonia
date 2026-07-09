@@ -36,6 +36,18 @@ By default this control shows native-constraint errors (for example `required`) 
 <textarea x-h-textarea class="resize-none"></textarea>
 ```
 
+### Disabled
+
+```html
+<textarea x-h-textarea disabled>Disabled text</textarea>
+```
+
+### Read-only
+
+```html
+<textarea x-h-textarea readonly>Read-only text</textarea>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/textarea.html
 
 ## Notes

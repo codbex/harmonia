@@ -10,9 +10,9 @@ export default function (Alpine) {
     const step = precision === 'half' ? 0.5 : 1;
     const starSize = sizeClasses[el.getAttribute('data-size')] || sizeClasses.default;
     const fillColor = textColorClass(resolveColor(el.getAttribute('data-color'), 'yellow'));
-    const disabled = el.hasAttribute('disabled') || el.getAttribute('data-disabled') === 'true';
-    const readonly = disabled || el.hasAttribute('data-readonly') || el.getAttribute('data-readonly') === 'true';
-    const interactive = !readonly;
+    const isDisabled = () => el.hasAttribute('disabled') || el.getAttribute('data-disabled') === 'true';
+    const isReadonly = () => isDisabled() || el.hasAttribute('data-readonly') || el.getAttribute('data-readonly') === 'true';
+    const isInteractive = () => !isReadonly();
 
     function clamp(v) {
       if (isNaN(v)) return 0;
@@ -29,20 +29,36 @@ export default function (Alpine) {
       el.setAttribute('aria-label', el.getAttribute('data-label') || 'Rating');
     }
 
-    if (interactive) {
-      el.setAttribute('role', 'slider');
-      el.setAttribute('tabindex', disabled ? '-1' : '0');
-      el.setAttribute('aria-valuemin', '0');
-      el.setAttribute('aria-valuemax', String(max));
-      el.setAttribute('aria-orientation', 'horizontal');
-      el.classList.add('cursor-pointer', 'rounded-control', 'focus-visible:ring-ring/50', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
-    } else {
-      el.setAttribute('role', 'img');
-    }
-    if (readonly && interactive) el.setAttribute('aria-readonly', 'true');
-    if (disabled) {
-      el.setAttribute('aria-disabled', 'true');
-      el.classList.add('opacity-50', 'cursor-not-allowed');
+    const interactiveClasses = ['cursor-pointer', 'rounded-control', 'focus-visible:ring-ring/50', 'focus-visible:ring-[calc(var(--spacing)*0.75)]'];
+
+    function applyState() {
+      const disabled = isDisabled();
+      if (isInteractive()) {
+        el.setAttribute('role', 'slider');
+        el.setAttribute('tabindex', disabled ? '-1' : '0');
+        el.setAttribute('aria-valuemin', '0');
+        el.setAttribute('aria-valuemax', String(max));
+        el.setAttribute('aria-orientation', 'horizontal');
+        el.classList.add(...interactiveClasses);
+      } else {
+        preview = null;
+        el.setAttribute('role', 'img');
+        el.removeAttribute('tabindex');
+        el.removeAttribute('aria-valuemin');
+        el.removeAttribute('aria-valuemax');
+        el.removeAttribute('aria-valuenow');
+        el.removeAttribute('aria-valuetext');
+        el.removeAttribute('aria-orientation');
+        el.classList.remove(...interactiveClasses);
+      }
+      if (disabled) {
+        el.setAttribute('aria-disabled', 'true');
+        el.classList.add('opacity-disabled', 'cursor-not-allowed');
+      } else {
+        el.removeAttribute('aria-disabled');
+        el.classList.remove('opacity-disabled', 'cursor-not-allowed');
+      }
+      render();
     }
 
     const stars = [];
@@ -81,7 +97,7 @@ export default function (Alpine) {
         stars[i].setAttribute('data-state', state);
         stars[i].replaceChildren(createSvg({ icon, classes: `${starSize} ${colorClass}`, attrs: { 'aria-hidden': true, role: 'presentation' } }));
       }
-      if (interactive) {
+      if (isInteractive()) {
         el.setAttribute('aria-valuenow', String(value));
         el.setAttribute('aria-valuetext', valueText(value));
       } else {
@@ -116,19 +132,23 @@ export default function (Alpine) {
     }
 
     const onPointerMove = (event) => {
+      if (!isInteractive()) return;
       preview = clamp(valueFromPointer(event));
       render();
     };
     const onPointerLeave = () => {
+      if (!isInteractive()) return;
       preview = null;
       render();
     };
     const onClick = (event) => {
+      if (!isInteractive()) return;
       const picked = clamp(valueFromPointer(event));
       // Clicking the current value again clears the rating.
       setValue(picked === value ? 0 : picked);
     };
     const onKeyDown = (event) => {
+      if (!isInteractive()) return;
       let handled = true;
       switch (event.key) {
         case 'ArrowRight':
@@ -151,14 +171,15 @@ export default function (Alpine) {
       if (handled) event.preventDefault();
     };
 
-    if (interactive && !disabled) {
-      el.addEventListener('pointermove', onPointerMove);
-      el.addEventListener('pointerleave', onPointerLeave);
-      el.addEventListener('click', onClick);
-      el.addEventListener('keydown', onKeyDown);
-    }
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerleave', onPointerLeave);
+    el.addEventListener('click', onClick);
+    el.addEventListener('keydown', onKeyDown);
 
-    render();
+    applyState();
+
+    const stateObserver = new MutationObserver(applyState);
+    stateObserver.observe(el, { attributeFilter: ['disabled', 'data-disabled', 'data-readonly'] });
 
     // Sync from an external x-model value (the effect runs after Alpine has wired
     // x-model, so el._x_model is available here).
@@ -171,6 +192,7 @@ export default function (Alpine) {
     });
 
     cleanup(() => {
+      stateObserver.disconnect();
       el.removeEventListener('pointermove', onPointerMove);
       el.removeEventListener('pointerleave', onPointerLeave);
       el.removeEventListener('click', onClick);

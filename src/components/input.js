@@ -29,7 +29,8 @@ export default function (Alpine) {
       'file:font-medium',
       'disabled:pointer-events-none',
       'disabled:cursor-not-allowed',
-      'disabled:opacity-50',
+      'disabled:opacity-disabled',
+      '[&[readonly]]:bg-muted',
       'md:text-sm',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
@@ -128,7 +129,7 @@ export default function (Alpine) {
       'select-none',
       "[&>svg:not([class*='size-'])]:size-4",
       '[&>[data-slot=tag]]:rounded-[calc(var(--radius)-5px)]',
-      'data-[disabled=true]:opacity-50',
+      'data-[disabled=true]:opacity-disabled',
       'data-[disabled=true]:pointer-events-none'
     );
     el.setAttribute('role', 'group');
@@ -199,7 +200,8 @@ export default function (Alpine) {
       'min-w-0',
       'has-[input:disabled]:pointer-events-none',
       'has-[input:disabled]:cursor-not-allowed',
-      'has-[input:disabled]:opacity-50'
+      'has-[input:disabled]:opacity-disabled',
+      'has-[input[readonly]]:bg-muted'
     );
     if (modifiers.includes('table')) {
       el.classList.add(
@@ -299,11 +301,13 @@ export default function (Alpine) {
       'active:text-secondary-foreground',
       'outline-none',
       'relative',
+      'group-has-[input[readonly]]/input-number:hidden',
       '[&:hover>svg]:text-secondary-foreground'
     );
     el.appendChild(stepDown);
 
     const onStepDown = () => {
+      if (input.readOnly || input.disabled) return;
       if (input.step === 'any') {
         input.value = (parseFloat(input.value) || 0) - 1;
       } else input.stepDown();
@@ -351,12 +355,14 @@ export default function (Alpine) {
       'active:text-secondary-foreground',
       'outline-none',
       'relative',
+      'group-has-[input[readonly]]/input-number:hidden',
       '[&:hover>svg]:text-secondary-foreground'
     );
 
     el.appendChild(stepUp);
 
     const onStepUp = () => {
+      if (input.readOnly || input.disabled) return;
       if (input.step === 'any') {
         input.value = (parseFloat(input.value) || 0) + 1;
       } else input.stepUp();

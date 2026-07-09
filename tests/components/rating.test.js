@@ -101,7 +101,49 @@ describe('h-rating', () => {
     const el = build({ disabled: '', 'data-value': '1' });
     mount(el);
     expect(el.getAttribute('aria-disabled')).toBe('true');
-    expect(el.classList.contains('opacity-50')).toBe(true);
+    expect(el.classList.contains('opacity-disabled')).toBe(true);
+  });
+
+  it('reacts to the disabled attribute being toggled after init', async () => {
+    const el = build({ 'data-value': '2' });
+    mount(el);
+    expect(el.getAttribute('role')).toBe('slider');
+
+    el.setAttribute('disabled', '');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(el.getAttribute('aria-disabled')).toBe('true');
+    expect(el.classList.contains('opacity-disabled')).toBe(true);
+    expect(el.getAttribute('role')).toBe('img');
+    key(el, 'ArrowRight');
+    expect(states(el)).toEqual(['full', 'full', 'empty', 'empty', 'empty']);
+
+    el.removeAttribute('disabled');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(el.hasAttribute('aria-disabled')).toBe(false);
+    expect(el.classList.contains('opacity-disabled')).toBe(false);
+    expect(el.getAttribute('role')).toBe('slider');
+    key(el, 'ArrowRight');
+    expect(el.getAttribute('aria-valuenow')).toBe('2.5');
+  });
+
+  it('reacts to data-readonly being toggled after init', async () => {
+    const el = build({ 'data-value': '3' });
+    mount(el);
+
+    el.setAttribute('data-readonly', 'true');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(el.getAttribute('role')).toBe('img');
+    expect(el.hasAttribute('tabindex')).toBe(false);
+    expect(el.getAttribute('aria-label')).toBe('3 of 5 stars');
+    key(el, 'ArrowRight');
+    expect(states(el)).toEqual(['full', 'full', 'full', 'empty', 'empty']);
+
+    el.removeAttribute('data-readonly');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(el.getAttribute('role')).toBe('slider');
+    expect(el.getAttribute('tabindex')).toBe('0');
+    key(el, 'ArrowRight');
+    expect(el.getAttribute('aria-valuenow')).toBe('3.5');
   });
 
   it('uses a default accessible name unless one is provided', () => {

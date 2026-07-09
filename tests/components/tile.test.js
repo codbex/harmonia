@@ -79,7 +79,7 @@ describe('h-tile (selectable label)', () => {
     expect(el.classList.contains('has-[input:checked]:bg-secondary/20')).toBe(true);
     expect(el.classList.contains('has-[input:checked]:border-primary')).toBe(true);
     expect(el.classList.contains('has-[input:focus-visible]:ring-primary/50')).toBe(true);
-    expect(el.classList.contains('has-[input:disabled]:opacity-50')).toBe(true);
+    expect(el.classList.contains('has-[input:disabled]:opacity-disabled')).toBe(true);
     expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
   });
 

@@ -34,7 +34,7 @@ const menubarTriggerClasses = [
   'focus:text-secondary-foreground',
   'data-[state=open]:bg-secondary-hover',
   'data-[state=open]:text-secondary-foreground',
-  'disabled:opacity-50',
+  'disabled:opacity-disabled',
   'disabled:pointer-events-none',
   '[&_svg]:shrink-0',
   "[&_svg:not([class*='size-'])]:size-4",

@@ -191,6 +191,30 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </div>
 ```
 
+### Disabled
+
+Set the native `disabled` attribute on the inner input to disable the whole picker.
+
+```html
+<div x-h-date-picker x-data="{ date: '2026-07-09' }">
+  <input type="text" id="date-input-disabled" disabled />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
+### Read-only
+
+Set the native `readonly` attribute on the inner input. The value is shown with a muted background, and neither typing nor the calendar popover can change it.
+
+```html
+<div x-h-date-picker x-data="{ date: '2026-07-09' }">
+  <input type="text" id="date-input-readonly" readonly />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
 Full docs: https://www.codbex.com/harmonia/components/date-picker.html
 
 ## Notes

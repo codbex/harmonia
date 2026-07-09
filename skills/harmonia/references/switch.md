@@ -23,7 +23,7 @@ Use switches for settings or options that can be turned on or off instantly, esp
 ## Examples
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-switch>
     <input type="checkbox" id="sw" />
   </span>
@@ -32,11 +32,22 @@ Use switches for settings or options that can be turned on or off instantly, esp
 ```
 
 ```html
-<div class="flex items-center gap-3">
+<div x-h-field data-orientation="horizontal">
   <span x-h-switch data-size="sm">
     <input type="checkbox" id="sws" />
   </span>
   <label x-h-label for="sws">Just switch</label>
+</div>
+```
+
+### Disabled
+
+```html
+<div x-h-field data-orientation="horizontal">
+  <span x-h-switch>
+    <input type="checkbox" id="swd" checked disabled />
+  </span>
+  <label x-h-label for="swd">Disabled switch</label>
 </div>
 ```
 
