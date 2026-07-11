@@ -62,6 +62,7 @@ export default defineConfig({
           { text: 'Listbox', link: '/components/listbox' },
           { text: 'Menu', link: '/components/menu' },
           { text: 'Menubar', link: '/components/menubar' },
+          { text: 'Month Picker', link: '/components/month-picker' },
           { text: 'Navigation Menu', link: '/components/navigation-menu' },
           { text: 'Notifications', link: '/components/notifications' },
           { text: 'Pagination', link: '/components/pagination' },
@@ -89,6 +90,7 @@ export default defineConfig({
           { text: 'Toolbar', link: '/components/toolbar' },
           { text: 'Tooltip', link: '/components/tooltip' },
           { text: 'Tree', link: '/components/tree' },
+          { text: 'Week Picker', link: '/components/week-picker' },
         ],
       },
       {
