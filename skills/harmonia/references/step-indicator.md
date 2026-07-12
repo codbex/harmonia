@@ -34,9 +34,9 @@ Use a step indicator when a task is split into a clear, ordered sequence of step
 
 #### x-h-step-indicator-item
 
-| Attribute | Type   | Required | Description                                                          |
-| --------- | ------ | -------- | -------------------------------------------------------------------- |
-| `self`    | number | true     | The number of this step. The first step is 1, the next 2, and so on. |
+| Attribute | Type                 | Required | Description                                                                                                                                                                                                                                                           |
+| --------- | -------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `self`    | number \| expression | true     | The number of this step. The first step is 1, the next 2, and so on. A bare integer is used as-is; anything else is evaluated as an Alpine expression, so you can render one item per element of a list with `x-for` (for example `x-h-step-indicator-item="i + 1"`). |
 
 Each item exposes its state through a `data-state` attribute of `inactive`, `active`, or `completed`, which the child parts use for their styling.
 
@@ -162,6 +162,32 @@ Each item exposes its state through a `data-state` attribute of `inactive`, `act
         </span>
       </button>
     </div>
+  </div>
+</div>
+```
+
+### Dynamic steps
+
+The step number accepts an Alpine expression, so a list of steps can be rendered with `x-for` instead of being hard-coded. Each item passes its loop index as its step number.
+
+```html
+<div x-data="{ step: 2, steps: [{ title: 'Account' }, { title: 'Address' }, { title: 'Payment' }] }" class="vbox w-full gap-6">
+  <div x-h-step-indicator="step">
+    <template x-for="(s, i) in steps" :key="i">
+      <div x-h-step-indicator-item="i + 1">
+        <button x-h-step-indicator-trigger>
+          <span x-h-step-indicator-marker x-text="i + 1"></span>
+          <span x-h-step-indicator-content>
+            <span x-h-step-indicator-title x-text="s.title"></span>
+          </span>
+        </button>
+        <div x-h-step-indicator-separator x-show="i < steps.length - 1"></div>
+      </div>
+    </template>
+  </div>
+  <div class="hbox justify-between gap-2">
+    <button x-h-button data-variant="outline" @click="step = Math.max(step - 1, 1)" :disabled="step === 1">Back</button>
+    <button x-h-button data-variant="primary" @click="step = Math.min(step + 1, steps.length)" :disabled="step === steps.length">Next</button>
   </div>
 </div>
 ```

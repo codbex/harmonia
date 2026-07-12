@@ -87,6 +87,24 @@ describe('h-step-indicator-item', () => {
     expect(el._h_step_indicator_item.state).toBe('inactive');
     expect(el.getAttribute('data-state')).toBe('inactive');
   });
+
+  it('evaluates a non-literal step expression via evaluateLater (enables x-for-driven steps)', () => {
+    // "idx + 1" is not a bare number, so the step must come from evaluateLater, not Number("idx + 1").
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: 'idx + 1' }, { evaluateLater: () => (cb) => cb(2) });
+    expect(el._h_step_indicator_item.step).toBe(2);
+    expect(el._h_step_indicator_item.state).toBe('active');
+    expect(el.getAttribute('data-state')).toBe('active');
+  });
+
+  it('does not evaluate a bare integer-literal step', () => {
+    const evaluateLater = vi.fn(() => (cb) => cb(1));
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '2' }, { evaluateLater });
+    expect(el._h_step_indicator_item.step).toBe(2);
+    // Only the active-step expression is evaluated; the literal step is used as-is.
+    expect(evaluateLater).toHaveBeenCalledTimes(1);
+    expect(evaluateLater).toHaveBeenCalledWith('currentStep');
+    expect(evaluateLater).not.toHaveBeenCalledWith('2');
+  });
 });
 
 describe('h-step-indicator-trigger', () => {

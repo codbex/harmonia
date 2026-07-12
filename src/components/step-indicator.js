@@ -30,21 +30,30 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'step-indicator-item');
 
-    const step = Number(expression);
+    // The step number may be a bare integer literal (`x-h-step-indicator-item="2"`) or an Alpine
+    // expression (`x-h-step-indicator-item="index + 1"`), so a step can be rendered per item of an
+    // x-for over a data-driven list. A literal is used as-is; anything else is evaluated reactively.
+    const literalStep = Number(expression);
+    const isLiteralStep = typeof expression === 'string' && expression.trim() !== '' && !Number.isNaN(literalStep);
 
     el._h_step_indicator_item = Alpine.reactive({
-      step,
+      step: isLiteralStep ? literalStep : NaN,
       state: 'inactive',
     });
 
+    const getStep = isLiteralStep ? (cb) => cb(literalStep) : evaluateLater(expression);
     const getActiveStep = evaluateLater(root._h_step_indicator.expression);
 
     effect(() => {
-      getActiveStep((active) => {
-        const activeStep = Number(active);
-        const state = activeStep < step ? 'inactive' : activeStep === step ? 'active' : 'completed';
-        el._h_step_indicator_item.state = state;
-        el.setAttribute('data-state', state);
+      getStep((rawStep) => {
+        const step = Number(rawStep);
+        el._h_step_indicator_item.step = step;
+        getActiveStep((active) => {
+          const activeStep = Number(active);
+          const state = activeStep < step ? 'inactive' : activeStep === step ? 'active' : 'completed';
+          el._h_step_indicator_item.state = state;
+          el.setAttribute('data-state', state);
+        });
       });
     });
   });
