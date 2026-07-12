@@ -66,6 +66,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Button Group | Groups related buttons into a single container to present them as a unified set of actions. | [button-group](references/button-group.md) |
 | Calendar | A full multi-view event calendar with month, week, day, and year views. | [calendar](references/calendar.md) |
 | Card | A flexible container that organizes content into distinct sections, typically including a header, main content area, and footer. | [card](references/card.md) |
+| Chat | A conversation thread that lays out messages as aligned bubbles with an author, a timestamp and a body, plus a composer for writing new messages. | [chat](references/chat.md) |
 | Checkbox | Allows users to select or deselect an option, representing a binary choice (true/false). | [checkbox](references/checkbox.md) |
 | Chip | A compact, interactive element used to represent an applied filter, a selected item, or a categorization. | [chip](references/chip.md) |
 | Date Picker | Allows users to enter a date either by typing it directly or by selecting it from a calendar popover. | [date-picker](references/date-picker.md) |

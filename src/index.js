@@ -7,6 +7,7 @@ import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
 import chart from './components/chart';
+import chat from './components/chat';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
 import datepicker from './components/date-picker';
@@ -93,6 +94,7 @@ function registerPlugins() {
   window.Alpine.plugin(calendar);
   window.Alpine.plugin(card);
   window.Alpine.plugin(chart);
+  window.Alpine.plugin(chat);
   window.Alpine.plugin(checkbox);
   window.Alpine.plugin(chip);
   window.Alpine.plugin(datepicker);

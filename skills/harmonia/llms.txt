@@ -13,6 +13,7 @@
 - [Button Group](references/button-group.md): Groups related buttons into a single container to present them as a unified set of actions.
 - [Calendar](references/calendar.md): A full multi-view event calendar with month, week, day, and year views.
 - [Card](references/card.md): A flexible container that organizes content into distinct sections, typically including a header, main content area, and footer.
+- [Chat](references/chat.md): A conversation thread that lays out messages as aligned bubbles with an author, a timestamp and a body, plus a composer for writing new messages.
 - [Checkbox](references/checkbox.md): Allows users to select or deselect an option, representing a binary choice (true/false).
 - [Chip](references/chip.md): A compact, interactive element used to represent an applied filter, a selected item, or a categorization.
 - [Date Picker](references/date-picker.md): Allows users to enter a date either by typing it directly or by selecting it from a calendar popover.

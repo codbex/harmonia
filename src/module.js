@@ -7,6 +7,7 @@ import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
 import chart from './components/chart';
+import chat from './components/chat';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
 import datepicker from './components/date-picker';
@@ -74,6 +75,7 @@ export {
   calendar as Calendar,
   card as Card,
   chart as Chart,
+  chat as Chat,
   checkbox as Checkbox,
   chip as Chip,
   dateFormat as DateFormat,
@@ -135,6 +137,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(calendar);
   registerPlugin(card);
   registerPlugin(chart);
+  registerPlugin(chat);
   registerPlugin(checkbox);
   registerPlugin(chip);
   registerPlugin(dateFormat);
