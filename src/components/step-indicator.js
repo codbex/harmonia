@@ -30,21 +30,26 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'step-indicator-item');
 
-    const step = Number(expression);
-
     el._h_step_indicator_item = Alpine.reactive({
-      step,
+      step: NaN,
       state: 'inactive',
     });
 
+    // The step is a JS expression evaluated in the element's Alpine scope, not a
+    // literal, so items generated with x-for (e.g. `i + 1`) resolve correctly.
+    const getStep = evaluateLater(expression);
     const getActiveStep = evaluateLater(root._h_step_indicator.expression);
 
     effect(() => {
-      getActiveStep((active) => {
-        const activeStep = Number(active);
-        const state = activeStep < step ? 'inactive' : activeStep === step ? 'active' : 'completed';
-        el._h_step_indicator_item.state = state;
-        el.setAttribute('data-state', state);
+      getStep((rawStep) => {
+        const step = Number(rawStep);
+        el._h_step_indicator_item.step = step;
+        getActiveStep((active) => {
+          const activeStep = Number(active);
+          const state = activeStep < step ? 'inactive' : activeStep === step ? 'active' : 'completed';
+          el._h_step_indicator_item.state = state;
+          el.setAttribute('data-state', state);
+        });
       });
     });
   });

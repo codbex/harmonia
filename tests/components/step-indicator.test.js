@@ -46,6 +46,11 @@ describe('h-step-indicator', () => {
 describe('h-step-indicator-item', () => {
   let rootEl, el;
 
+  // Expression-aware evaluateLater mock: the root's active-step expression
+  // ('currentStep') resolves to `active`; an item's step expression is a JS
+  // expression evaluated in scope (here the literal number strings).
+  const evalWith = (active) => (expr) => (cb) => cb(expr === 'currentStep' ? active : Number(expr));
+
   beforeEach(() => {
     rootEl = document.createElement('div');
     rootEl._h_step_indicator = { expression: 'currentStep' };
@@ -60,8 +65,17 @@ describe('h-step-indicator-item', () => {
   });
 
   it('creates reactive state with the parsed step number', () => {
-    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '2' });
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '2' }, { evaluateLater: evalWith(1) });
     expect(el._h_step_indicator_item.step).toBe(2);
+  });
+
+  it('evaluates the step as a JS expression, not a literal (x-for usage)', () => {
+    // Simulates `x-h-step-indicator-item="i + 1"` inside x-for: the expression
+    // must be evaluated (here to 2), not parsed with Number("i + 1") (NaN).
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: 'i + 1' }, { evaluateLater: (expr) => (cb) => cb({ 'i + 1': 2, currentStep: 2 }[expr]) });
+    expect(el._h_step_indicator_item.step).toBe(2);
+    expect(el._h_step_indicator_item.state).toBe('active');
+    expect(el.getAttribute('data-state')).toBe('active');
   });
 
   it('throws when not inside a step indicator', () => {
@@ -71,19 +85,19 @@ describe('h-step-indicator-item', () => {
   });
 
   it('marks the item completed when its step is before the active step', () => {
-    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '1' }, { evaluateLater: () => (cb) => cb(2) });
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '1' }, { evaluateLater: evalWith(2) });
     expect(el._h_step_indicator_item.state).toBe('completed');
     expect(el.getAttribute('data-state')).toBe('completed');
   });
 
   it('marks the item active when its step equals the active step', () => {
-    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '2' }, { evaluateLater: () => (cb) => cb(2) });
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '2' }, { evaluateLater: evalWith(2) });
     expect(el._h_step_indicator_item.state).toBe('active');
     expect(el.getAttribute('data-state')).toBe('active');
   });
 
   it('marks the item inactive when its step is after the active step', () => {
-    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '3' }, { evaluateLater: () => (cb) => cb(2) });
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '3' }, { evaluateLater: evalWith(2) });
     expect(el._h_step_indicator_item.state).toBe('inactive');
     expect(el.getAttribute('data-state')).toBe('inactive');
   });
