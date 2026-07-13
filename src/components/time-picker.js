@@ -76,7 +76,7 @@ export default function (Alpine) {
         'size-full',
         'h-10',
         'has-[input:focus-visible]:inset-ring-ring/50',
-        'has-[input:focus-visible]:inset-ring-2',
+        'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
         'has-[input:user-invalid]:inset-ring-negative/20!',

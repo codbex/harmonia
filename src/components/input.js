@@ -52,7 +52,7 @@ export default function (Alpine) {
         'size-full',
         'h-10',
         'focus-visible:inset-ring-ring/50',
-        'focus-visible:inset-ring-2',
+        'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
         'aria-invalid:inset-ring-negative/20',
         'dark:aria-invalid:inset-ring-negative/40',
         'user-invalid:inset-ring-negative/20!',

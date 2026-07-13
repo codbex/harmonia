@@ -202,7 +202,7 @@ export default function (Alpine) {
       'motion-reduce:transition-none',
       'hover:bg-secondary',
       'hover:text-secondary-foreground',
-      'focus-visible:ring-2',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'active:bg-primary',
       'active:text-primary-foreground',
       'disabled:pointer-events-none',

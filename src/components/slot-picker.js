@@ -312,7 +312,7 @@ export default function (Alpine) {
 
           if (available) {
             cell.type = 'button';
-            cell.classList.add('cursor-pointer', 'focus-visible:outline-none', 'focus-visible:ring-2', 'focus-visible:ring-ring', 'focus-visible:ring-inset');
+            cell.classList.add('cursor-pointer', 'focus-visible:outline-none', 'focus-visible:ring-[calc(var(--spacing)*0.75)]', 'focus-visible:ring-ring', 'focus-visible:ring-inset');
             // Self-describing name (day + time); selection is exposed via aria-pressed.
             cell.setAttribute('aria-label', `${dayLabel}, ${timeLabel}`);
             setCellSelected(cell, selected.includes(key));
@@ -388,6 +388,7 @@ export default function (Alpine) {
 
     let syncingCalendar = false;
     const calWidget = createCalendarWidget('x-h-slot-picker', calPopover, {
+      Alpine,
       onSelectionChanged: () => {
         if (syncingCalendar) return;
         const selectedDate = calWidget.getSelected();

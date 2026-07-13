@@ -1,7 +1,9 @@
 import { findAncestorState } from '../common/ancestor';
-import { ChevronRight, createSvg } from '../common/icons';
+import { ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { sizeObserver } from '../common/input-size';
+import { createDateTimeFormatCache } from '../common/intl';
 import { setupPopover, setupTrigger } from '../common/picker-popover';
+import { pad2 } from '../common/time';
 import uuidv4 from '../utils/uuid';
 
 // Month Picker. Reads and writes a single `YYYY-MM` string (e.g. "2025-06"),
@@ -16,11 +18,7 @@ function resolveLocale(config) {
   return (typeof navigator !== 'undefined' && navigator.language) || 'en';
 }
 
-function pad2(value) {
-  return String(value).padStart(2, '0');
-}
-
-// The wrapper + input frame shared with the date picker (kept in sync visually).
+// The wrapper + input frame shared with the date picker (kept in sync with it).
 function applyFrameClasses(el, input, inTable) {
   el.classList.add(
     'overflow-hidden',
@@ -39,7 +37,18 @@ function applyFrameClasses(el, input, inTable) {
     'has-[input[readonly]]:bg-muted'
   );
   if (inTable) {
-    el.classList.add('size-full', 'h-10');
+    el.classList.add(
+      'size-full',
+      'h-10',
+      'has-[input:focus-visible]:inset-ring-ring/50',
+      'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
+      'has-[input[aria-invalid=true]]:inset-ring-negative/20',
+      'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
+      'has-[input:user-invalid]:inset-ring-negative/20!',
+      'dark:has-[input:user-invalid]:inset-ring-negative/40!',
+      '[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/20!',
+      'dark:[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/40!'
+    );
     el.setAttribute('data-slot', 'cell-input-month');
   } else {
     el.classList.add(
@@ -53,7 +62,13 @@ function applyFrameClasses(el, input, inTable) {
       'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
       'has-[input[aria-invalid=true]]:ring-negative/20',
       'has-[input[aria-invalid=true]]:border-negative',
-      'dark:has-[input[aria-invalid=true]]:ring-negative/40'
+      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
+      'has-[input:user-invalid]:ring-negative/20',
+      'has-[input:user-invalid]:border-negative',
+      'dark:has-[input:user-invalid]:ring-negative/40',
+      '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
+      '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
+      'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40'
     );
     el.setAttribute('data-slot', 'month-picker');
   }
@@ -65,6 +80,8 @@ function applyFrameClasses(el, input, inTable) {
     'border-r',
     'border-input',
     'aria-invalid:border-negative',
+    'user-invalid:border-negative',
+    '[[data-validate=immediate]_&:invalid]:border-negative',
     'focus-visible:ring-0',
     'disabled:pointer-events-none',
     'disabled:cursor-not-allowed',
@@ -128,6 +145,7 @@ export default function (Alpine) {
     }
 
     const { input } = picker._h_monthpicker;
+    const dtf = createDateTimeFormatCache();
 
     el.setAttribute('tabindex', '-1');
     el.setAttribute('role', 'dialog');
@@ -137,95 +155,123 @@ export default function (Alpine) {
     let locale = resolveLocale();
     let viewYear = new Date().getFullYear();
     let selected = null; // { year, month } with month in 1..12
+    let focusedMonth = null; // 0..11, the roving-tabindex target within viewYear
 
     // Header: previous-year / year label / next-year.
     const header = document.createElement('div');
-    header.classList.add('flex', 'items-center', 'justify-between', 'gap-1', 'px-1', 'pb-1');
+    header.classList.add('flex', 'items-center', 'justify-between', 'gap-2');
 
-    const navButtonClasses = [
-      'inline-flex',
-      'items-center',
-      'justify-center',
-      'size-7',
-      'rounded-control',
-      'bg-transparent',
-      'hover:bg-secondary',
-      'hover:text-secondary-foreground',
-      'outline-none',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-2',
-      'cursor-pointer',
-    ];
+    // The nav buttons reuse the button component (transparent icon variant);
+    // the header subtree is initialized as a whole after it is appended.
+    function applyNavButtonDirective(btn) {
+      btn.setAttribute(Alpine.prefixed('h-button'), '');
+      btn.setAttribute('data-variant', 'transparent');
+      btn.setAttribute('data-size', 'icon');
+    }
 
     const prevBtn = document.createElement('button');
     prevBtn.type = 'button';
-    prevBtn.classList.add(...navButtonClasses);
+    applyNavButtonDirective(prevBtn);
     prevBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-year') ? el.getAttribute('data-aria-prev-year') : 'previous year');
-    const prevIcon = createSvg({ icon: ChevronRight, classes: 'size-4 rotate-180', attrs: { 'aria-hidden': true } });
-    prevBtn.appendChild(prevIcon);
+    prevBtn.appendChild(createSvg({ icon: ChevronLeft, classes: 'size-4', attrs: { 'aria-hidden': true, role: 'presentation' } }));
 
-    const yearLabel = document.createElement('span');
-    yearLabel.classList.add('text-sm', 'font-medium', 'tabular-nums');
+    const yearLabel = document.createElement('h2');
+    yearLabel.setAttribute('id', `hmpl${uuidv4()}`);
+    yearLabel.setAttribute('aria-live', 'polite');
 
     const nextBtn = document.createElement('button');
     nextBtn.type = 'button';
-    nextBtn.classList.add(...navButtonClasses);
+    applyNavButtonDirective(nextBtn);
     nextBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-year') ? el.getAttribute('data-aria-next-year') : 'next year');
-    nextBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'size-4', attrs: { 'aria-hidden': true } }));
+    nextBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'size-4', attrs: { 'aria-hidden': true, role: 'presentation' } }));
 
     header.append(prevBtn, yearLabel, nextBtn);
 
-    // Grid: twelve month buttons in a 3-column layout.
-    const grid = document.createElement('div');
-    grid.classList.add('grid', 'grid-cols-3', 'gap-1');
-    grid.setAttribute('role', 'grid');
+    // Grid: twelve month cells in four rows of three, built as a table like the
+    // other picker calendars.
+    const table = document.createElement('table');
+    table.classList.add('table-fixed', 'border-separate', 'border-spacing-1');
+    table.setAttribute('role', 'grid');
+    table.setAttribute('aria-labelledby', yearLabel.getAttribute('id'));
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
 
-    const monthButtons = [];
-    for (let m = 0; m < 12; m++) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.dataset.month = String(m);
-      btn.setAttribute('role', 'gridcell');
-      btn.classList.add(
-        'h-9',
-        'rounded-control',
-        'text-sm',
-        'bg-transparent',
-        'hover:bg-secondary',
-        'hover:text-secondary-foreground',
-        'outline-none',
-        'focus-visible:ring-ring/50',
-        'focus-visible:ring-2',
-        'cursor-pointer',
-        'aria-selected:bg-primary-active!',
-        'aria-selected:text-primary-foreground!',
-        'aria-selected:hover:bg-primary-hover!'
-      );
-      btn.addEventListener('click', () => selectMonth(m));
-      monthButtons.push(btn);
-      grid.appendChild(btn);
+    const monthCells = [];
+    for (let r = 0; r < 4; r++) {
+      const row = document.createElement('tr');
+      row.setAttribute('role', 'row');
+      for (let c = 0; c < 3; c++) {
+        const m = r * 3 + c;
+        const cell = document.createElement('td');
+        cell.dataset.month = String(m);
+        cell.setAttribute('role', 'gridcell');
+        cell.setAttribute('tabindex', '-1');
+        cell.classList.add(
+          'p-1',
+          'h-9',
+          'text-center',
+          'align-middle',
+          'rounded-control',
+          'text-sm',
+          'bg-transparent',
+          'hover:bg-secondary',
+          'hover:text-secondary-foreground',
+          'outline-none',
+          'focus-visible:ring-ring/50',
+          'focus-visible:ring-[calc(var(--spacing)*0.75)]',
+          'cursor-pointer',
+          'aria-[current=date]:bg-secondary',
+          'aria-[current=date]:text-secondary-foreground',
+          'aria-selected:bg-primary-active!',
+          'aria-selected:text-primary-foreground!',
+          'aria-selected:hover:bg-primary-hover!'
+        );
+        cell.addEventListener('click', monthClick);
+        monthCells.push(cell);
+        row.appendChild(cell);
+      }
+      tbody.appendChild(row);
     }
 
-    el.append(header, grid);
+    el.append(header, table);
+    Alpine.initTree(header);
 
     function monthShortLabel(m) {
-      return new Intl.DateTimeFormat(locale, { month: 'short' }).format(new Date(2020, m, 1));
+      return dtf(locale, { month: 'short' }).format(new Date(2020, m, 1));
     }
 
     function displayValue() {
       if (!selected) return '';
-      return new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long' }).format(new Date(selected.year, selected.month - 1, 1));
+      return dtf(locale, { year: 'numeric', month: 'long' }).format(new Date(selected.year, selected.month - 1, 1));
+    }
+
+    // The month button holding the roving tabindex: the explicitly focused one,
+    // else the selection when its year is shown, else the current month in the
+    // current year, else January.
+    function focusTargetIndex() {
+      if (focusedMonth !== null) return focusedMonth;
+      if (selected && selected.year === viewYear) return selected.month - 1;
+      const now = new Date();
+      if (viewYear === now.getFullYear()) return now.getMonth();
+      return 0;
     }
 
     function render() {
-      yearLabel.textContent = String(viewYear);
+      yearLabel.textContent = dtf(locale, { year: 'numeric' }).format(new Date(viewYear, 0, 1));
+      const now = new Date();
+      const target = focusTargetIndex();
       for (let m = 0; m < 12; m++) {
-        monthButtons[m].textContent = monthShortLabel(m);
-        const isSelected = selected && selected.year === viewYear && selected.month === m + 1;
-        if (isSelected) {
-          monthButtons[m].setAttribute('aria-selected', 'true');
+        monthCells[m].textContent = monthShortLabel(m);
+        monthCells[m].setAttribute('tabindex', m === target ? '0' : '-1');
+        if (selected && selected.year === viewYear && selected.month === m + 1) {
+          monthCells[m].setAttribute('aria-selected', 'true');
         } else {
-          monthButtons[m].removeAttribute('aria-selected');
+          monthCells[m].removeAttribute('aria-selected');
+        }
+        if (viewYear === now.getFullYear() && m === now.getMonth()) {
+          monthCells[m].setAttribute('aria-current', 'date');
+        } else {
+          monthCells[m].removeAttribute('aria-current');
         }
       }
     }
@@ -244,30 +290,114 @@ export default function (Alpine) {
 
     function selectMonth(m) {
       selected = { year: viewYear, month: m + 1 };
+      focusedMonth = m;
       render();
       syncModel(true);
     }
 
-    function applyModel(value) {
+    function monthClick(event) {
+      selectMonth(Number(event.target.dataset.month));
+    }
+
+    function parseMonthValue(value) {
       const match = typeof value === 'string' && value.match(MONTH_RE);
-      if (match) {
-        selected = { year: Number(match[1]), month: Number(match[2]) };
-        viewYear = selected.year;
-      } else if (!value) {
+      if (!match) return null;
+      const month = Number(match[2]);
+      if (month < 1 || month > 12) return null;
+      return { year: Number(match[1]), month };
+    }
+
+    function applyModel(value) {
+      if (!value) {
         selected = null;
+      } else {
+        const parsed = parseMonthValue(value);
+        if (!parsed) {
+          console.error(`${original}: model value is not a valid month - ${value}`);
+          input.setCustomValidity('Input value is not a valid month.');
+          return;
+        }
+        selected = parsed;
+        viewYear = selected.year;
       }
+      input.setCustomValidity('');
       render();
       input.value = displayValue();
     }
 
-    prevBtn.addEventListener('click', () => {
+    function prevYearClick(event) {
+      event.stopPropagation();
       viewYear -= 1;
       render();
-    });
-    nextBtn.addEventListener('click', () => {
+    }
+    function nextYearClick(event) {
+      event.stopPropagation();
       viewYear += 1;
       render();
-    });
+    }
+    prevBtn.addEventListener('click', prevYearClick);
+    nextBtn.addEventListener('click', nextYearClick);
+
+    function onKeyDown(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        event.stopPropagation();
+        event.preventDefault();
+        picker._h_monthpicker.state.expanded = false;
+        return;
+      }
+      const idx = monthCells.indexOf(event.target);
+      if (idx === -1) return;
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.stopPropagation();
+        event.preventDefault();
+        selectMonth(idx);
+        return;
+      }
+      let next;
+      switch (event.key) {
+        case 'ArrowLeft':
+          next = idx - 1;
+          break;
+        case 'ArrowRight':
+          next = idx + 1;
+          break;
+        case 'ArrowUp':
+          next = idx - 3;
+          break;
+        case 'ArrowDown':
+          next = idx + 3;
+          break;
+        case 'Home':
+          next = 0;
+          break;
+        case 'End':
+          next = 11;
+          break;
+        case 'PageUp':
+          viewYear -= 1;
+          next = idx;
+          break;
+        case 'PageDown':
+          viewYear += 1;
+          next = idx;
+          break;
+        default:
+          return;
+      }
+      event.stopPropagation();
+      event.preventDefault();
+      if (next < 0) {
+        viewYear -= 1;
+        next += 12;
+      } else if (next > 11) {
+        viewYear += 1;
+        next -= 12;
+      }
+      focusedMonth = next;
+      render();
+      monthCells[next].focus();
+    }
+    el.addEventListener('keydown', onKeyDown);
 
     const onInputChange = (event) => {
       if (event && !event.isTrusted) return;
@@ -277,14 +407,17 @@ export default function (Alpine) {
         syncModel(false);
         return;
       }
-      const match = raw.match(MONTH_RE);
-      const parsed = match ? new Date(Number(match[1]), Number(match[2]) - 1, 1) : new Date(raw);
-      if (isNaN(parsed)) {
-        console.error(`${original}: input value is not a valid month - ${input.value}`);
-        input.setCustomValidity('Input value is not a valid month.');
-        return;
+      let parsed = parseMonthValue(raw);
+      if (!parsed) {
+        const asDate = MONTH_RE.test(raw) ? NaN : new Date(raw);
+        if (isNaN(asDate)) {
+          console.error(`${original}: input value is not a valid month - ${input.value}`);
+          input.setCustomValidity('Input value is not a valid month.');
+          return;
+        }
+        parsed = { year: asDate.getFullYear(), month: asDate.getMonth() + 1 };
       }
-      selected = { year: parsed.getFullYear(), month: parsed.getMonth() + 1 };
+      selected = parsed;
       viewYear = selected.year;
       render();
       syncModel(false);
@@ -318,13 +451,19 @@ export default function (Alpine) {
       effect,
       cleanup,
       onOpen: () => {
-        const target = selected && selected.year === viewYear ? monthButtons[selected.month - 1] : monthButtons[new Date().getMonth()];
-        if (target) target.focus();
+        focusedMonth = null;
+        render();
+        monthCells[focusTargetIndex()].focus();
       },
     });
 
     cleanup(() => {
+      el.removeEventListener('keydown', onKeyDown);
+      prevBtn.removeEventListener('click', prevYearClick);
+      nextBtn.removeEventListener('click', nextYearClick);
+      for (const btn of monthCells) btn.removeEventListener('click', monthClick);
       input.removeEventListener('change', onInputChange);
+      Alpine.destroyTree(header);
     });
   });
 }

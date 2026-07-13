@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { createCalendarWidget, dateOrderMap, isDisabled, nextFocusDate, parseDateValue, sameDay, toDateString } from '../../src/common/calendar';
+import { createCalendarWidget, dateOrderMap, isDisabled, isoWeekParts, mondayOfIsoWeek, nextFocusDate, parseDateValue, sameDay, toDateString } from '../../src/common/calendar';
+import { createMockAlpine } from '../test-utils.js';
 
 const noop = () => {};
 const defaultCallbacks = {
+  Alpine: createMockAlpine(),
   onSelectionChanged: noop,
   onEscape: noop,
   onInvalidModel: noop,
@@ -42,6 +44,47 @@ describe('nextFocusDate', () => {
   it('does not mutate the input date', () => {
     nextFocusDate(base, 'ArrowRight');
     expect(toDateString(base)).toBe('2026-06-15');
+  });
+});
+
+describe('isoWeekParts', () => {
+  it('returns the ISO week of a mid-year Monday', () => {
+    expect(isoWeekParts(new Date(2025, 5, 9))).toEqual({ year: 2025, week: 24 });
+  });
+
+  it('assigns early January to the previous ISO year when week 53 spills over', () => {
+    expect(isoWeekParts(new Date(2027, 0, 1))).toEqual({ year: 2026, week: 53 });
+    expect(isoWeekParts(new Date(2021, 0, 1))).toEqual({ year: 2020, week: 53 });
+  });
+
+  it('assigns late December to the next ISO year when it belongs to week 1', () => {
+    expect(isoWeekParts(new Date(2024, 11, 30))).toEqual({ year: 2025, week: 1 });
+  });
+
+  it('starts week 1 on the week containing the first Thursday', () => {
+    expect(isoWeekParts(new Date(2026, 0, 1))).toEqual({ year: 2026, week: 1 });
+  });
+});
+
+describe('mondayOfIsoWeek', () => {
+  it('returns the Monday starting the given ISO week', () => {
+    expect(toDateString(mondayOfIsoWeek(2025, 24))).toBe('2025-06-09');
+  });
+
+  it('handles week 1 starting in the previous calendar year', () => {
+    expect(toDateString(mondayOfIsoWeek(2025, 1))).toBe('2024-12-30');
+  });
+
+  it('round-trips with isoWeekParts across the year', () => {
+    for (let offset = 0; offset < 400; offset += 17) {
+      const d = new Date(2024, 0, 1 + offset);
+      const parts = isoWeekParts(d);
+      const monday = mondayOfIsoWeek(parts.year, parts.week);
+      expect(monday.getDay()).toBe(1);
+      expect(isoWeekParts(monday)).toEqual(parts);
+      expect(monday <= d).toBe(true);
+      expect((d - monday) / 86400000).toBeLessThan(7);
+    }
   });
 });
 
@@ -132,6 +175,20 @@ describe('createCalendarWidget', () => {
     createCalendarWidget('test', el, defaultCallbacks);
     const buttons = el.querySelectorAll('button');
     expect(buttons.length).toBe(4);
+  });
+
+  it('nav buttons reuse the button component and the header is initialized as an Alpine tree', () => {
+    const el = makeEl();
+    const alpine = createMockAlpine();
+    createCalendarWidget('test', el, { ...defaultCallbacks, Alpine: alpine });
+    const buttons = el.querySelectorAll('button');
+    buttons.forEach((btn) => {
+      expect(btn.hasAttribute('x-h-button')).toBe(true);
+      expect(btn.getAttribute('data-variant')).toBe('transparent');
+      expect(btn.getAttribute('data-size')).toBe('icon');
+      expect(btn.getAttribute('type')).toBe('button');
+    });
+    expect(alpine.initTree).toHaveBeenCalledWith(buttons[0].parentElement);
   });
 
   it('renders 42 day cells (6 rows × 7 columns)', () => {

@@ -123,7 +123,7 @@ export default function (Alpine) {
       'transition-opacity',
       'motion-reduce:transition-none',
       'hover:opacity-100',
-      'focus:ring-2',
+      'focus:ring-[calc(var(--spacing)*0.75)]',
       'focus:ring-offset-2',
       'focus:outline-hidden',
       'disabled:pointer-events-none',

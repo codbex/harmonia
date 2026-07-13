@@ -116,7 +116,7 @@ export default function (Alpine) {
       'shrink-0',
       '[&_svg]:shrink-0',
       'focus-visible:inset-ring-ring/50',
-      'focus-visible:inset-ring-2',
+      'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
       'hover:bg-table-hover',
       'hover:text-table-hover-foreground',
       'active:bg-table-active!',

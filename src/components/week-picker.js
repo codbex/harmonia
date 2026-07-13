@@ -1,13 +1,16 @@
 import { findAncestorState } from '../common/ancestor';
-import { ChevronRight, createSvg } from '../common/icons';
+import { isoWeekParts, mondayOfIsoWeek } from '../common/calendar';
+import { ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { sizeObserver } from '../common/input-size';
+import { createDateTimeFormatCache } from '../common/intl';
 import { setupPopover, setupTrigger } from '../common/picker-popover';
+import { pad2 } from '../common/time';
 import uuidv4 from '../utils/uuid';
 
 // Week Picker. Reads and writes a single ISO week string `YYYY-Www`
 // (e.g. "2025-W23"), matching the value format of a native `<input type="week">`.
 // The popup is a month calendar whose rows are whole ISO weeks (Monday-first);
-// hovering highlights a week, clicking selects it.
+// hovering highlights a week, clicking or Enter/Space selects it.
 
 const WEEK_RE = /^(\d{4})-W(\d{2})$/;
 
@@ -16,39 +19,22 @@ function resolveLocale(config) {
   return (typeof navigator !== 'undefined' && navigator.language) || 'en';
 }
 
-function pad2(value) {
-  return String(value).padStart(2, '0');
-}
-
-// ISO 8601 week number + week-numbering year for a local date.
-function isoWeekParts(date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNum = (d.getUTCDay() + 6) % 7; // Monday = 0
-  d.setUTCDate(d.getUTCDate() - dayNum + 3); // Thursday of this week
-  const thursday = d.getTime();
-  const year = d.getUTCFullYear();
-  const firstThursday = new Date(Date.UTC(year, 0, 4));
-  const firstDayNum = (firstThursday.getUTCDay() + 6) % 7;
-  firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDayNum + 3);
-  const week = 1 + Math.round((thursday - firstThursday.getTime()) / (7 * 24 * 3600 * 1000));
-  return { year, week };
-}
-
-// The local Monday date that starts the given ISO week.
-function mondayOfIsoWeek(year, week) {
-  const jan4 = new Date(year, 0, 4);
-  const jan4DayNum = (jan4.getDay() + 6) % 7;
-  const week1Monday = new Date(jan4);
-  week1Monday.setDate(jan4.getDate() - jan4DayNum);
-  const monday = new Date(week1Monday);
-  monday.setDate(week1Monday.getDate() + (week - 1) * 7);
-  return monday;
-}
-
 function sameWeek(a, b) {
-  return a && b && a.year === b.year && a.week === b.week;
+  return !!(a && b && a.year === b.year && a.week === b.week);
 }
 
+// A `{ year, week }` pair only when the week actually exists in that
+// ISO week-numbering year (e.g. rejects week 53 of a 52-week year).
+function validWeekParts(year, week) {
+  const parts = isoWeekParts(mondayOfIsoWeek(year, week));
+  return parts.year === year && parts.week === week ? { year, week } : null;
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// The wrapper + input frame shared with the date picker (kept in sync with it).
 function applyFrameClasses(el, input, inTable) {
   el.classList.add(
     'overflow-hidden',
@@ -67,7 +53,18 @@ function applyFrameClasses(el, input, inTable) {
     'has-[input[readonly]]:bg-muted'
   );
   if (inTable) {
-    el.classList.add('size-full', 'h-10');
+    el.classList.add(
+      'size-full',
+      'h-10',
+      'has-[input:focus-visible]:inset-ring-ring/50',
+      'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
+      'has-[input[aria-invalid=true]]:inset-ring-negative/20',
+      'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
+      'has-[input:user-invalid]:inset-ring-negative/20!',
+      'dark:has-[input:user-invalid]:inset-ring-negative/40!',
+      '[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/20!',
+      'dark:[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/40!'
+    );
     el.setAttribute('data-slot', 'cell-input-week');
   } else {
     el.classList.add(
@@ -81,7 +78,13 @@ function applyFrameClasses(el, input, inTable) {
       'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
       'has-[input[aria-invalid=true]]:ring-negative/20',
       'has-[input[aria-invalid=true]]:border-negative',
-      'dark:has-[input[aria-invalid=true]]:ring-negative/40'
+      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
+      'has-[input:user-invalid]:ring-negative/20',
+      'has-[input:user-invalid]:border-negative',
+      'dark:has-[input:user-invalid]:ring-negative/40',
+      '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
+      '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
+      'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40'
     );
     el.setAttribute('data-slot', 'week-picker');
   }
@@ -93,6 +96,8 @@ function applyFrameClasses(el, input, inTable) {
     'border-r',
     'border-input',
     'aria-invalid:border-negative',
+    'user-invalid:border-negative',
+    '[[data-validate=immediate]_&:invalid]:border-negative',
     'focus-visible:ring-0',
     'disabled:pointer-events-none',
     'disabled:cursor-not-allowed',
@@ -156,6 +161,10 @@ export default function (Alpine) {
     }
 
     const { input } = picker._h_weekpicker;
+    const dtf = createDateTimeFormatCache();
+    const weekLabel = el.getAttribute('data-week-label') || 'Week';
+    const weekColumnLabel = el.getAttribute('data-week-column-label') || 'Week number';
+    const displayRe = new RegExp(`^${escapeRegExp(weekLabel)}\\s+(\\d{1,2}),\\s*(\\d{4})$`, 'i');
 
     el.setAttribute('tabindex', '-1');
     el.setAttribute('role', 'dialog');
@@ -167,115 +176,177 @@ export default function (Alpine) {
     let viewYear = today.getFullYear();
     let viewMonth = today.getMonth();
     let selected = null; // { year, week }
+    let focusedMonday = null; // Date (always a Monday), the roving-tabindex target
 
     // Header: previous-month / month-year label / next-month.
     const header = document.createElement('div');
-    header.classList.add('flex', 'items-center', 'justify-between', 'gap-1', 'px-1', 'pb-1');
+    header.classList.add('flex', 'items-center', 'justify-between', 'gap-2');
 
-    const navButtonClasses = [
-      'inline-flex',
-      'items-center',
-      'justify-center',
-      'size-7',
-      'rounded-control',
-      'bg-transparent',
-      'hover:bg-secondary',
-      'hover:text-secondary-foreground',
-      'outline-none',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-2',
-      'cursor-pointer',
-    ];
+    // The nav buttons reuse the button component (transparent icon variant);
+    // the header subtree is initialized as a whole after it is appended.
+    function applyNavButtonDirective(btn) {
+      btn.setAttribute(Alpine.prefixed('h-button'), '');
+      btn.setAttribute('data-variant', 'transparent');
+      btn.setAttribute('data-size', 'icon');
+    }
 
     const prevBtn = document.createElement('button');
     prevBtn.type = 'button';
-    prevBtn.classList.add(...navButtonClasses);
+    applyNavButtonDirective(prevBtn);
     prevBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-month') ? el.getAttribute('data-aria-prev-month') : 'previous month');
-    prevBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'size-4 rotate-180', attrs: { 'aria-hidden': true } }));
+    prevBtn.appendChild(createSvg({ icon: ChevronLeft, classes: 'size-4', attrs: { 'aria-hidden': true, role: 'presentation' } }));
 
-    const monthLabel = document.createElement('span');
-    monthLabel.classList.add('text-sm', 'font-medium');
+    const monthLabel = document.createElement('h2');
+    monthLabel.classList.add('text-base');
+    monthLabel.setAttribute('id', `hwpl${uuidv4()}`);
+    monthLabel.setAttribute('aria-live', 'polite');
 
     const nextBtn = document.createElement('button');
     nextBtn.type = 'button';
-    nextBtn.classList.add(...navButtonClasses);
+    applyNavButtonDirective(nextBtn);
     nextBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-month') ? el.getAttribute('data-aria-next-month') : 'next month');
-    nextBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'size-4', attrs: { 'aria-hidden': true } }));
+    nextBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'size-4', attrs: { 'aria-hidden': true, role: 'presentation' } }));
 
     header.append(prevBtn, monthLabel, nextBtn);
 
-    // Weekday header row: a leading week-number spacer then Mon..Sun.
-    const weekdaysRow = document.createElement('div');
-    weekdaysRow.classList.add('grid', 'gap-1', 'mb-1', 'text-xs', 'text-muted-foreground');
-    weekdaysRow.style.gridTemplateColumns = 'auto repeat(7, minmax(0, 1fr))';
+    // Grid: a weekday header row plus six selectable whole-week rows, built as
+    // a table like the other picker calendars. Backgrounds, radii and rings do
+    // not render on tr, so the row hover/selected/focus highlight is painted on
+    // the cells via group-* variants; with zero horizontal spacing the cell
+    // backgrounds form one continuous bar, rounded at the row's outer edges.
+    const table = document.createElement('table');
+    table.classList.add('border-separate', 'border-spacing-x-0', 'border-spacing-y-1');
+    table.setAttribute('role', 'grid');
+    table.setAttribute('aria-labelledby', monthLabel.getAttribute('id'));
 
-    const body = document.createElement('div');
-    body.classList.add('flex', 'flex-col', 'gap-1');
+    const thead = document.createElement('thead');
+    const weekdaysRow = document.createElement('tr');
+    weekdaysRow.classList.add('text-sm', 'text-muted-foreground');
+    weekdaysRow.setAttribute('role', 'row');
+    thead.appendChild(weekdaysRow);
 
-    el.append(header, weekdaysRow, body);
+    const tbody = document.createElement('tbody');
 
-    function weekdayNames() {
-      const fmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
-      // 2020-06-01 is a Monday.
-      return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2020, 5, 1 + i)));
+    const rowCellClasses = [
+      'size-9',
+      'text-center',
+      'align-middle',
+      'tabular-nums',
+      'first:rounded-l-control',
+      'last:rounded-r-control',
+      'group-hover:bg-secondary',
+      'group-focus-visible:bg-secondary-hover',
+      'group-aria-selected:bg-primary-active!',
+      'group-hover:group-aria-selected:bg-primary-hover!',
+    ];
+
+    const weekRows = [];
+    for (let w = 0; w < 6; w++) {
+      const row = document.createElement('tr');
+      row.classList.add('group', 'cursor-pointer', 'outline-none');
+      row.setAttribute('role', 'row');
+      row.setAttribute('tabindex', '-1');
+      row.addEventListener('click', rowClick);
+
+      const weekNo = document.createElement('th');
+      weekNo.classList.add(...rowCellClasses, 'text-xs', 'font-normal', 'text-muted-foreground', '[[aria-selected=true]>&]:text-primary-foreground/80');
+      weekNo.setAttribute('scope', 'row');
+      weekNo.setAttribute('role', 'rowheader');
+      row.appendChild(weekNo);
+
+      for (let d = 0; d < 7; d++) {
+        const cell = document.createElement('td');
+        cell.classList.add(...rowCellClasses, 'text-sm', 'group-hover:text-secondary-foreground', 'group-aria-selected:text-primary-foreground!');
+        cell.setAttribute('role', 'gridcell');
+        row.appendChild(cell);
+      }
+      tbody.appendChild(row);
+      weekRows.push(row);
     }
 
+    table.append(thead, tbody);
+    el.append(header, table);
+    Alpine.initTree(header);
+
     function displayValue() {
-      return selected ? `Week ${selected.week}, ${selected.year}` : '';
+      return selected ? `${weekLabel} ${selected.week}, ${selected.year}` : '';
     }
 
     function renderHeader() {
-      monthLabel.textContent = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(viewYear, viewMonth, 1));
+      monthLabel.textContent = dtf(locale, { month: 'long', year: 'numeric' }).format(new Date(viewYear, viewMonth, 1));
     }
 
     function renderWeekdays() {
       weekdaysRow.replaceChildren();
-      const corner = document.createElement('span');
-      corner.classList.add('flex', 'items-center', 'justify-center', 'size-9', 'font-normal');
+      const corner = document.createElement('th');
+      corner.classList.add('size-9', 'text-center', 'align-middle', 'font-normal');
+      corner.setAttribute('scope', 'col');
+      corner.setAttribute('role', 'columnheader');
+      corner.setAttribute('aria-label', weekColumnLabel);
       corner.textContent = '#';
       weekdaysRow.appendChild(corner);
-      for (const name of weekdayNames()) {
-        const cell = document.createElement('span');
-        cell.classList.add('flex', 'items-center', 'justify-center', 'size-9');
-        cell.textContent = name;
+      const shortFmt = dtf(locale, { weekday: 'short' });
+      const longFmt = dtf(locale, { weekday: 'long' });
+      for (let i = 0; i < 7; i++) {
+        // 2020-06-01 is a Monday.
+        const day = new Date(2020, 5, 1 + i);
+        const cell = document.createElement('th');
+        cell.classList.add('size-9', 'text-center', 'align-middle', 'font-normal');
+        cell.setAttribute('scope', 'col');
+        cell.setAttribute('role', 'columnheader');
+        cell.setAttribute('abbr', shortFmt.format(day));
+        cell.setAttribute('aria-label', longFmt.format(day));
+        cell.textContent = shortFmt.format(day);
         weekdaysRow.appendChild(cell);
       }
     }
 
     function renderGrid() {
-      body.replaceChildren();
       // First Monday on or before the 1st of the visible month.
       const first = new Date(viewYear, viewMonth, 1);
       const firstDayNum = (first.getDay() + 6) % 7; // Monday = 0
       const cursor = new Date(first);
       cursor.setDate(first.getDate() - firstDayNum);
 
+      const todayParts = isoWeekParts(new Date());
+      const focusedParts = focusedMonday ? isoWeekParts(focusedMonday) : null;
+      const rowParts = [];
+
       for (let w = 0; w < 6; w++) {
         const weekParts = isoWeekParts(cursor);
-        const row = document.createElement('div');
-        row.classList.add('grid', 'gap-1', 'rounded-control', 'cursor-pointer', 'hover:bg-secondary', 'aria-selected:bg-primary-active!', 'aria-selected:text-primary-foreground!', 'aria-selected:hover:bg-primary-hover!');
-        row.style.gridTemplateColumns = 'auto repeat(7, minmax(0, 1fr))';
-        row.setAttribute('role', 'row');
-        if (sameWeek(weekParts, selected)) row.setAttribute('aria-selected', 'true');
+        rowParts.push(weekParts);
+        const row = weekRows[w];
+        row.dataset.year = String(weekParts.year);
+        row.dataset.week = String(weekParts.week);
+        row.setAttribute('aria-label', `${weekLabel} ${weekParts.week}, ${weekParts.year}`);
+        if (sameWeek(weekParts, selected)) {
+          row.setAttribute('aria-selected', 'true');
+        } else {
+          row.removeAttribute('aria-selected');
+        }
+        if (sameWeek(weekParts, todayParts)) {
+          row.setAttribute('aria-current', 'date');
+        } else {
+          row.removeAttribute('aria-current');
+        }
 
-        const captured = { year: weekParts.year, week: weekParts.week };
-        row.addEventListener('click', () => selectWeek(captured));
-
-        const weekNo = document.createElement('span');
-        weekNo.classList.add('flex', 'items-center', 'justify-center', 'size-9', 'text-xs', 'text-muted-foreground', 'tabular-nums');
-        weekNo.textContent = String(weekParts.week);
-        row.appendChild(weekNo);
-
-        for (let d = 0; d < 7; d++) {
-          const day = new Date(cursor);
-          const cell = document.createElement('span');
-          cell.classList.add('flex', 'items-center', 'justify-center', 'size-9', 'text-sm', 'tabular-nums');
-          if (day.getMonth() !== viewMonth) cell.classList.add('text-muted-foreground/60');
-          cell.textContent = String(day.getDate());
-          row.appendChild(cell);
+        row.firstChild.textContent = String(weekParts.week);
+        for (let d = 1; d <= 7; d++) {
+          const cell = row.children[d];
+          cell.classList.toggle('text-muted-foreground/60', cursor.getMonth() !== viewMonth);
+          cell.textContent = String(cursor.getDate());
           cursor.setDate(cursor.getDate() + 1);
         }
-        body.appendChild(row);
+      }
+
+      // Roving tabindex: the focused week, else the selection, else the current
+      // week when visible, else the first row.
+      let target = rowParts.findIndex((p) => sameWeek(p, focusedParts));
+      if (target === -1) target = rowParts.findIndex((p) => sameWeek(p, selected));
+      if (target === -1) target = rowParts.findIndex((p) => sameWeek(p, todayParts));
+      if (target === -1) target = 0;
+      for (let w = 0; w < 6; w++) {
+        weekRows[w].setAttribute('tabindex', w === target ? '0' : '-1');
       }
     }
 
@@ -299,8 +370,14 @@ export default function (Alpine) {
 
     function selectWeek(weekParts) {
       selected = weekParts;
-      render();
+      focusedMonday = mondayOfIsoWeek(weekParts.year, weekParts.week);
+      renderGrid();
       syncModel(true);
+    }
+
+    function rowClick(event) {
+      const row = event.currentTarget;
+      selectWeek({ year: Number(row.dataset.year), week: Number(row.dataset.week) });
     }
 
     function focusView(year, week) {
@@ -310,33 +387,110 @@ export default function (Alpine) {
     }
 
     function applyModel(value) {
-      const match = typeof value === 'string' && value.match(WEEK_RE);
-      if (match) {
-        selected = { year: Number(match[1]), week: Number(match[2]) };
-        focusView(selected.year, selected.week);
-      } else if (!value) {
+      if (!value) {
         selected = null;
+      } else {
+        const match = typeof value === 'string' && value.match(WEEK_RE);
+        const parsed = match && validWeekParts(Number(match[1]), Number(match[2]));
+        if (!parsed) {
+          console.error(`${original}: model value is not a valid ISO week - ${value}`);
+          input.setCustomValidity('Input value is not a valid week.');
+          return;
+        }
+        selected = parsed;
+        focusView(selected.year, selected.week);
       }
+      input.setCustomValidity('');
       render();
       input.value = displayValue();
     }
 
-    prevBtn.addEventListener('click', () => {
+    function prevMonthClick(event) {
+      event.stopPropagation();
       viewMonth -= 1;
       if (viewMonth < 0) {
         viewMonth = 11;
         viewYear -= 1;
       }
-      render();
-    });
-    nextBtn.addEventListener('click', () => {
+      renderHeader();
+      renderGrid();
+    }
+    function nextMonthClick(event) {
+      event.stopPropagation();
       viewMonth += 1;
       if (viewMonth > 11) {
         viewMonth = 0;
         viewYear += 1;
       }
-      render();
-    });
+      renderHeader();
+      renderGrid();
+    }
+    prevBtn.addEventListener('click', prevMonthClick);
+    nextBtn.addEventListener('click', nextMonthClick);
+
+    // Focus the given Monday's week row, moving the visible month when the week
+    // is not among the six rendered rows.
+    function focusWeekRow(monday) {
+      focusedMonday = monday;
+      const parts = isoWeekParts(monday);
+      let row = weekRows.find((r) => Number(r.dataset.year) === parts.year && Number(r.dataset.week) === parts.week);
+      if (!row) {
+        viewYear = monday.getFullYear();
+        viewMonth = monday.getMonth();
+        renderHeader();
+        renderGrid();
+        row = weekRows.find((r) => Number(r.dataset.year) === parts.year && Number(r.dataset.week) === parts.week);
+      } else {
+        renderGrid();
+      }
+      if (row) row.focus();
+    }
+
+    function onKeyDown(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        event.stopPropagation();
+        event.preventDefault();
+        picker._h_weekpicker.state.expanded = false;
+        return;
+      }
+      const row = event.target;
+      if (!weekRows.includes(row)) return;
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.stopPropagation();
+        event.preventDefault();
+        selectWeek({ year: Number(row.dataset.year), week: Number(row.dataset.week) });
+        return;
+      }
+      const monday = mondayOfIsoWeek(Number(row.dataset.year), Number(row.dataset.week));
+      const next = new Date(monday);
+      switch (event.key) {
+        case 'ArrowUp':
+          next.setDate(next.getDate() - 7);
+          break;
+        case 'ArrowDown':
+          next.setDate(next.getDate() + 7);
+          break;
+        case 'PageUp':
+          next.setMonth(next.getMonth() - 1);
+          break;
+        case 'PageDown':
+          next.setMonth(next.getMonth() + 1);
+          break;
+        case 'Home':
+          next.setTime(mondayOfIsoWeek(Number(weekRows[0].dataset.year), Number(weekRows[0].dataset.week)).getTime());
+          break;
+        case 'End':
+          next.setTime(mondayOfIsoWeek(Number(weekRows[5].dataset.year), Number(weekRows[5].dataset.week)).getTime());
+          break;
+        default:
+          return;
+      }
+      event.stopPropagation();
+      event.preventDefault();
+      const parts = isoWeekParts(next);
+      focusWeekRow(mondayOfIsoWeek(parts.year, parts.week));
+    }
+    el.addEventListener('keydown', onKeyDown);
 
     const onInputChange = (event) => {
       if (event && !event.isTrusted) return;
@@ -346,15 +500,21 @@ export default function (Alpine) {
         syncModel(false);
         return;
       }
-      const match = raw.match(WEEK_RE);
-      if (!match) {
+      // Accept the model format (`2025-W24`) and the display format (`Week 24, 2025`).
+      let match = raw.match(WEEK_RE);
+      let parsed = match && validWeekParts(Number(match[1]), Number(match[2]));
+      if (!parsed && (match = raw.match(displayRe))) {
+        parsed = validWeekParts(Number(match[2]), Number(match[1]));
+      }
+      if (!parsed) {
         console.error(`${original}: input value is not a valid ISO week - ${input.value}`);
         input.setCustomValidity('Input value is not a valid week.');
         return;
       }
-      selected = { year: Number(match[1]), week: Number(match[2]) };
+      selected = parsed;
       focusView(selected.year, selected.week);
-      render();
+      renderHeader();
+      renderGrid();
       syncModel(false);
     };
     input.addEventListener('change', onInputChange);
@@ -385,11 +545,21 @@ export default function (Alpine) {
       Alpine,
       effect,
       cleanup,
-      onOpen: () => el.focus(),
+      onOpen: () => {
+        focusedMonday = null;
+        renderGrid();
+        const target = weekRows.find((row) => row.getAttribute('tabindex') === '0');
+        if (target) target.focus();
+      },
     });
 
     cleanup(() => {
+      el.removeEventListener('keydown', onKeyDown);
+      prevBtn.removeEventListener('click', prevMonthClick);
+      nextBtn.removeEventListener('click', nextMonthClick);
+      for (const row of weekRows) row.removeEventListener('click', rowClick);
       input.removeEventListener('change', onInputChange);
+      Alpine.destroyTree(header);
     });
   });
 }
