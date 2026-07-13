@@ -31,6 +31,31 @@ export function isDisabled(d, minDate, maxDate) {
   return false;
 }
 
+// ISO 8601 week number + week-numbering year for a local date.
+export function isoWeekParts(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = (d.getUTCDay() + 6) % 7; // Monday = 0
+  d.setUTCDate(d.getUTCDate() - dayNum + 3); // Thursday of this week
+  const thursday = d.getTime();
+  const year = d.getUTCFullYear();
+  const firstThursday = new Date(Date.UTC(year, 0, 4));
+  const firstDayNum = (firstThursday.getUTCDay() + 6) % 7;
+  firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDayNum + 3);
+  const week = 1 + Math.round((thursday - firstThursday.getTime()) / (7 * 24 * 3600 * 1000));
+  return { year, week };
+}
+
+// The local Monday date that starts the given ISO week.
+export function mondayOfIsoWeek(year, week) {
+  const jan4 = new Date(year, 0, 4);
+  const jan4DayNum = (jan4.getDay() + 6) % 7;
+  const week1Monday = new Date(jan4);
+  week1Monday.setDate(jan4.getDate() - jan4DayNum);
+  const monday = new Date(week1Monday);
+  monday.setDate(week1Monday.getDate() + (week - 1) * 7);
+  return monday;
+}
+
 /**
  * Given a focused date and a navigation key, return the date the focus should
  * move to, or null when the key is not a navigation key. Shared by the inline
@@ -85,13 +110,14 @@ export function nextFocusDate(date, key) {
  * @param {string} directiveName - used in console.error messages
  * @param {HTMLElement} el
  * @param {{
+ *   Alpine:             object,
  *   onSelectionChanged: (triggerInput: boolean) => void,
  *   onEscape:           () => void,
  *   onInvalidModel:     (raw: string|object) => void,
  *   onModelValid:       (date: Date) => void,
  *   stopNavPropagation: boolean,
  *   tableFullWidth:     boolean,
- * }} callbacks
+ * }} callbacks - `Alpine` is used to init the header nav buttons as h-button elements
  */
 export function createCalendarWidget(directiveName, el, callbacks) {
   let date = new Date();
@@ -193,31 +219,16 @@ export function createCalendarWidget(directiveName, el, callbacks) {
 
   const header = document.createElement('div');
   header.classList.add('hbox', 'gap-2', 'items-center', 'justify-between', 'overflow-visible');
-  const buttonClasses = [
-    'size-9',
-    'cursor-pointer',
-    'inline-flex',
-    'items-center',
-    'justify-center',
-    'rounded-control',
-    'text-sm',
-    'font-medium',
-    'transition-all',
-    'motion-reduce:transition-none',
-    'outline-none',
-    'focus-visible:border-ring',
-    'focus-visible:ring-ring/50',
-    'focus-visible:ring-[calc(var(--spacing)*0.75)]',
-    'bg-transparent',
-    'text-foreground',
-    'hover:bg-secondary',
-    'hover:text-secondary-foreground',
-    'active:bg-secondary-active',
-    'aria-pressed:bg-secondary-active',
-  ];
+  // The nav buttons reuse the button component (transparent icon variant);
+  // the header subtree is initialized as a whole after it is appended.
+  function applyNavButtonDirective(btn) {
+    btn.setAttribute(callbacks.Alpine.prefixed('h-button'), '');
+    btn.setAttribute('data-variant', 'transparent');
+    btn.setAttribute('data-size', 'icon');
+  }
 
   const previousYearBtn = document.createElement('button');
-  previousYearBtn.classList.add(...buttonClasses);
+  applyNavButtonDirective(previousYearBtn);
   previousYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-year') ? el.getAttribute('data-aria-prev-year') : 'previous year');
   previousYearBtn.setAttribute('type', 'button');
   previousYearBtn.appendChild(createSvg({ icon: ChevronsLeft, classes: 'opacity-70 size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': true, role: 'presentation' } }));
@@ -229,7 +240,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   header.appendChild(previousYearBtn);
 
   const previousMonthBtn = document.createElement('button');
-  previousMonthBtn.classList.add(...buttonClasses);
+  applyNavButtonDirective(previousMonthBtn);
   previousMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-prev-month') ? el.getAttribute('data-aria-prev-month') : 'previous month');
   previousMonthBtn.setAttribute('type', 'button');
   previousMonthBtn.appendChild(createSvg({ icon: ChevronLeft, classes: 'opacity-70 size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': true, role: 'presentation' } }));
@@ -241,13 +252,13 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   header.appendChild(previousMonthBtn);
 
   const headerLabel = document.createElement('h2');
-  headerLabel.classList.add('min-w-[8rem]', 'text-center');
+  headerLabel.classList.add('min-w-[8rem]', 'text-center', 'truncate');
   headerLabel.setAttribute('id', `hdpl${uuidv4()}`);
   headerLabel.setAttribute('aria-live', 'polite');
   header.appendChild(headerLabel);
 
   const nextMonthBtn = document.createElement('button');
-  nextMonthBtn.classList.add(...buttonClasses);
+  applyNavButtonDirective(nextMonthBtn);
   nextMonthBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-month') ? el.getAttribute('data-aria-next-month') : 'next month');
   nextMonthBtn.setAttribute('type', 'button');
   nextMonthBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'opacity-70 size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': true, role: 'presentation' } }));
@@ -259,7 +270,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   header.appendChild(nextMonthBtn);
 
   const nextYearBtn = document.createElement('button');
-  nextYearBtn.classList.add(...buttonClasses);
+  applyNavButtonDirective(nextYearBtn);
   nextYearBtn.setAttribute('aria-label', el.hasAttribute('data-aria-next-year') ? el.getAttribute('data-aria-next-year') : 'next year');
   nextYearBtn.setAttribute('type', 'button');
   nextYearBtn.appendChild(createSvg({ icon: ChevronsRight, classes: 'opacity-70 size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': true, role: 'presentation' } }));
@@ -270,6 +281,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   });
   header.appendChild(nextYearBtn);
   el.appendChild(header);
+  callbacks.Alpine.initTree(header);
 
   const datesTable = document.createElement('table');
   datesTable.classList.add('table-fixed', 'border-separate', 'border-spacing-1', 'flex-1');
@@ -618,6 +630,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
       for (let d = 0; d < dayCells.length; d++) {
         dayCells[d].removeEventListener('click', dayClick);
       }
+      callbacks.Alpine.destroyTree(header);
     },
   };
 }

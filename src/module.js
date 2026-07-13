@@ -22,6 +22,7 @@ import label from './components/label';
 import list from './components/list';
 import menu from './components/menu';
 import menubar from './components/menubar';
+import monthPicker from './components/month-picker';
 import navigationMenu from './components/navigation-menu';
 import notifications from './components/notifications';
 import pagination from './components/pagination';
@@ -50,6 +51,7 @@ import timepicker from './components/time-picker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 import tree from './components/tree';
+import weekPicker from './components/week-picker';
 
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
@@ -94,6 +96,7 @@ export {
   lucide as Lucide,
   menu as Menu,
   menubar as Menubar,
+  monthPicker as MonthPicker,
   navigationMenu as NavigationMenu,
   notifications as Notifications,
   pagination as Pagination,
@@ -123,6 +126,7 @@ export {
   toolbar as Toolbar,
   tooltip as Tooltip,
   tree as Tree,
+  weekPicker as WeekPicker,
 };
 
 export const registerComponents = (registerPlugin) => {
@@ -153,6 +157,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(list);
   registerPlugin(menu);
   registerPlugin(menubar);
+  registerPlugin(monthPicker);
   registerPlugin(navigationMenu);
   registerPlugin(notifications);
   registerPlugin(pagination);
@@ -182,6 +187,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(toolbar);
   registerPlugin(tooltip);
   registerPlugin(tree);
+  registerPlugin(weekPicker);
 };
 
 export default registerComponents;

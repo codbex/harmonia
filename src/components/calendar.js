@@ -10,6 +10,7 @@ export default function (Alpine) {
     el.setAttribute('tabindex', '-1');
 
     const widget = createCalendarWidget('x-h-calendar-inline', el, {
+      Alpine,
       onSelectionChanged: () => el.setAttribute('data-invalid', 'false'),
       onEscape: () => {},
       onInvalidModel: () => el.setAttribute('data-invalid', 'true'),

@@ -47,7 +47,7 @@ const COMBINED = {
   'checkbox-radio': { label: 'Checkbox & Radio', sources: ['components/checkbox.md', 'components/radio.md'] },
   'date-time-pickers': {
     label: 'Date & Time Pickers',
-    sources: ['components/date-picker.md', 'components/time-picker.md', 'components/datetime-picker.md'],
+    sources: ['components/date-picker.md', 'components/time-picker.md', 'components/datetime-picker.md', 'components/month-picker.md', 'components/week-picker.md'],
   },
   inputs: {
     label: 'Inputs & Labels',

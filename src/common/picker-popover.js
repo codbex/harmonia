@@ -21,11 +21,8 @@ const triggerBaseClasses = [
   'active:text-secondary-foreground',
   '[input[readonly]~&]:pointer-events-none',
   'outline-none',
-];
-
-const triggerTableClasses = [
   'focus-visible:inset-ring-ring/50',
-  'focus-visible:inset-ring-2',
+  'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
   '[input[aria-invalid=true]~&]:inset-ring-negative/20',
   'dark:[input[aria-invalid=true]~&]:inset-ring-negative/40',
   '[input:user-invalid~&]:inset-ring-negative/20!',
@@ -34,20 +31,7 @@ const triggerTableClasses = [
   'dark:[[data-validate=immediate]_input:invalid~&]:inset-ring-negative/40!',
 ];
 
-const triggerStandaloneClasses = [
-  'focus-visible:border-ring',
-  'focus-visible:ring-ring/50',
-  'focus-visible:ring-[calc(var(--spacing)*0.75)]',
-  '[input[aria-invalid=true]~&]:ring-negative/20',
-  '[input[aria-invalid=true]~&]:border-negative',
-  'dark:[input[aria-invalid=true]~&]:ring-negative/40',
-  '[input:user-invalid~&]:ring-negative/20',
-  '[input:user-invalid~&]:border-negative',
-  'dark:[input:user-invalid~&]:ring-negative/40',
-  '[[data-validate=immediate]_input:invalid~&]:ring-negative/20',
-  '[[data-validate=immediate]_input:invalid~&]:border-negative',
-  'dark:[[data-validate=immediate]_input:invalid~&]:ring-negative/40',
-];
+const triggerStandaloneClasses = ['focus-visible:border-ring', '[input[aria-invalid=true]~&]:border-negative', '[input:user-invalid~&]:border-negative', '[[data-validate=immediate]_input:invalid~&]:border-negative'];
 
 const popoverClasses = [
   'border',
@@ -95,7 +79,11 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
   }
 
   el.classList.add(...triggerBaseClasses);
-  el.classList.add(...(pickerState.inTable ? triggerTableClasses : triggerStandaloneClasses));
+  if (pickerState.inTable) {
+    el.classList.add(...triggerStandaloneClasses);
+  } else {
+    el.classList.add('rounded-r-control');
+  }
 
   el.setAttribute('aria-controls', pickerState.controls);
   el.setAttribute('aria-expanded', 'false');
@@ -111,9 +99,20 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
     })
   );
 
+  // Persistent listener (not once), removed when it actually closes.
+  const close = (event) => {
+    if (event && stayOpenInside && stayOpenInside(event)) return;
+    pickerState.state.expanded = false;
+    removeDismiss(el, 'click', close);
+  };
+
   effect(() => {
     el.setAttribute('data-state', pickerState.state.expanded ? 'open' : 'closed');
     el.setAttribute('aria-expanded', pickerState.state.expanded);
+    // A close that does not come from a click (Escape, keyboard selection)
+    // must still disarm the outside-click dismiss, or the stale listener
+    // immediately re-closes the popover on the next trigger click.
+    if (!pickerState.state.expanded) removeDismiss(el, 'click', close);
   });
 
   // aria-readonly is not valid on a button, so a readonly (or disabled) picker
@@ -133,13 +132,6 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
     lockedObserver = new MutationObserver(syncLocked);
     lockedObserver.observe(pickerState.input, { attributeFilter: ['readonly', 'disabled'] });
   }
-
-  // Persistent listener (not once), removed when it actually closes.
-  const close = (event) => {
-    if (event && stayOpenInside && stayOpenInside(event)) return;
-    pickerState.state.expanded = false;
-    removeDismiss(el, 'click', close);
-  };
 
   const handler = () => {
     if (inputLocked()) return;

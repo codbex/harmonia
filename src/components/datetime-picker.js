@@ -93,7 +93,7 @@ export default function (Alpine) {
         'size-full',
         'h-10',
         'has-[input:focus-visible]:inset-ring-ring/50',
-        'has-[input:focus-visible]:inset-ring-2',
+        'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
         'has-[input[aria-invalid=true]]:inset-ring-negative/20',
         'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
         'has-[input:user-invalid]:inset-ring-negative/20!',
@@ -211,6 +211,7 @@ export default function (Alpine) {
     el.appendChild(calendarEl);
 
     const widget = createCalendarWidget('x-h-datetime-picker-popup', calendarEl, {
+      Alpine,
       onSelectionChanged: () => combineAndWrite(),
       onEscape: () => {
         picker._h_datetimepicker.state.expanded = false;

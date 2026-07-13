@@ -22,6 +22,7 @@ import label from './components/label';
 import list from './components/list';
 import menu from './components/menu';
 import menubar from './components/menubar';
+import monthPicker from './components/month-picker';
 import navigationMenu from './components/navigation-menu';
 import notifications from './components/notifications';
 import pagination from './components/pagination';
@@ -50,6 +51,7 @@ import timepicker from './components/time-picker';
 import toolbar from './components/toolbar';
 import tooltip from './components/tooltip';
 import tree from './components/tree';
+import weekPicker from './components/week-picker';
 
 import { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
@@ -108,6 +110,7 @@ function registerPlugins() {
   window.Alpine.plugin(list);
   window.Alpine.plugin(menu);
   window.Alpine.plugin(menubar);
+  window.Alpine.plugin(monthPicker);
   window.Alpine.plugin(navigationMenu);
   window.Alpine.plugin(notifications);
   window.Alpine.plugin(pagination);
@@ -136,6 +139,7 @@ function registerPlugins() {
   window.Alpine.plugin(toolbar);
   window.Alpine.plugin(tooltip);
   window.Alpine.plugin(tree);
+  window.Alpine.plugin(weekPicker);
   // Utility plugins
   window.Alpine.plugin(focus);
   window.Alpine.plugin(template);

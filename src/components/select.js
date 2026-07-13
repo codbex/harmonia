@@ -36,7 +36,7 @@ export default function (Alpine) {
         'h-10',
         'flex',
         'focus-visible:inset-ring-ring/50',
-        'focus-visible:inset-ring-2',
+        'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
         '[&>[data-slot="select-input"]]:hover:bg-table-hover',
         '[&>[data-slot="select-input"]]:hover:text-table-hover-foreground',
         '[&>[data-slot="select-input"]]:active:bg-table-active!',

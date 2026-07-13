@@ -85,6 +85,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Listbox | A single-selection list component with support for grouped options, functionally similar to an HTML `<select>` element. | [listbox](references/listbox.md) |
 | Menu | A structured list of options, optionally including headers, used to create navigational menus, context menus, or dropdowns. | [menu](references/menu.md) |
 | Menubar | A horizontal bar of always-visible command menus, like the "File Edit View" menus found in desktop applications. | [menubar](references/menubar.md) |
+| Month Picker | Allows users to select a month and year, either by typing it directly or by choosing from a popup of a year header and a twelve-month grid. | [month-picker](references/month-picker.md) |
 | Navigation Menu | A horizontal navigation bar where items are either direct links or triggers that open a dropdown Menu. | [navigation-menu](references/navigation-menu.md) |
 | Notifications | The Notification component is used to present important system feedback, status updates, or contextual information to the user. | [notifications](references/notifications.md) |
 | Pagination | Divides content into discrete pages, allowing users to navigate large datasets or collections more easily. | [pagination](references/pagination.md) |
@@ -112,6 +113,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Toolbar | A container that groups actions (like buttons, inputs, or popovers) relevant to the current view. | [toolbar](references/toolbar.md) |
 | Tooltip | A small pop-up that provides additional information or context about an interface element, displayed on hover. | [tooltip](references/tooltip.md) |
 | Tree | Displays hierarchical data in a structured, expandable format, allowing users to explore nested items efficiently. | [tree](references/tree.md) |
+| Week Picker | Allows users to select a whole ISO week, either by typing it directly or by choosing from a month calendar whose rows are weeks (Monday-first). | [week-picker](references/week-picker.md) |
 
 ### Charts
 
