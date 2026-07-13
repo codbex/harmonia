@@ -93,6 +93,29 @@ describe('h-date-picker', () => {
     expect(input.classList.contains('outline-none')).toBe(true);
   });
 
+  it('lets the input shrink in table mode but not by default', () => {
+    const plain = createDatePickerEl();
+    mountDirective(datepickerPlugin, 'h-date-picker', plain, { original: 'h-date-picker' });
+    expect(plain.querySelector('input').classList.contains('min-w-0')).toBe(false);
+
+    const table = createDatePickerEl();
+    mountDirective(datepickerPlugin, 'h-date-picker', table, { original: 'h-date-picker', modifiers: ['table'] });
+    expect(table.querySelector('input').classList.contains('min-w-0')).toBe(true);
+  });
+
+  it('gates the input-to-trigger divider on the table having horizontal borders', () => {
+    const plain = createDatePickerEl();
+    mountDirective(datepickerPlugin, 'h-date-picker', plain, { original: 'h-date-picker' });
+    expect(plain.querySelector('input').classList.contains('border-r')).toBe(true);
+
+    const table = createDatePickerEl();
+    mountDirective(datepickerPlugin, 'h-date-picker', table, { original: 'h-date-picker', modifiers: ['table'] });
+    const input = table.querySelector('input');
+    expect(input.classList.contains('border-r')).toBe(false);
+    expect(input.classList.contains('[table[data-borders=rows]_&]:border-r')).toBe(true);
+    expect(input.classList.contains('[table[data-borders=both]_&]:border-r')).toBe(true);
+  });
+
   it('sets input type to text', () => {
     const el = createDatePickerEl();
     mountDirective(datepickerPlugin, 'h-date-picker', el, { original: 'h-date-picker' });
@@ -145,6 +168,28 @@ describe('h-date-picker-trigger', () => {
     expect(triggerEl.classList.contains('inline-flex')).toBe(true);
     expect(triggerEl.classList.contains('h-full')).toBe(true);
     expect(triggerEl.classList.contains('outline-none')).toBe(true);
+  });
+
+  it('keeps the square rounded trigger and stays non-shrinking when not in a table', () => {
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+    expect(triggerEl.classList.contains('rounded-r-control')).toBe(true);
+    expect(triggerEl.classList.contains('min-w-6')).toBe(false);
+  });
+
+  it('lets the trigger shrink below its square in table mode', () => {
+    wrapperEl._h_datepicker.inTable = true;
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+    // Shrinkable down to a tappable floor, and never pinned with shrink-0.
+    expect(triggerEl.classList.contains('min-w-6')).toBe(true);
+    expect(triggerEl.classList.contains('shrink-0')).toBe(false);
+    expect(triggerEl.classList.contains('rounded-r-control')).toBe(false);
+  });
+
+  it('keeps the icon from distorting when the trigger narrows', () => {
+    wrapperEl._h_datepicker.inTable = true;
+    mountDirective(datepickerPlugin, 'h-date-picker-trigger', triggerEl, { original: 'h-date-picker-trigger' });
+    const svg = triggerEl.querySelector('svg');
+    expect(svg.classList.contains('shrink-0')).toBe(true);
   });
 
   it('sets data-slot="date-picker-trigger"', () => {

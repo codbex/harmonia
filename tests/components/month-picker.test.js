@@ -88,6 +88,29 @@ describe('h-month-picker', () => {
     expect(el.getAttribute('data-slot')).toBe('cell-input-month');
   });
 
+  it('lets the input shrink in table mode but not by default', () => {
+    const plain = createWrapper();
+    mountDirective(monthPickerPlugin, 'h-month-picker', plain, { original: 'h-month-picker' });
+    expect(plain.querySelector('input').classList.contains('min-w-0')).toBe(false);
+
+    const table = createWrapper();
+    mountDirective(monthPickerPlugin, 'h-month-picker', table, { original: 'h-month-picker', modifiers: ['table'] });
+    expect(table.querySelector('input').classList.contains('min-w-0')).toBe(true);
+  });
+
+  it('gates the input-to-trigger divider on the table having horizontal borders', () => {
+    const plain = createWrapper();
+    mountDirective(monthPickerPlugin, 'h-month-picker', plain, { original: 'h-month-picker' });
+    expect(plain.querySelector('input').classList.contains('border-r')).toBe(true);
+
+    const table = createWrapper();
+    mountDirective(monthPickerPlugin, 'h-month-picker', table, { original: 'h-month-picker', modifiers: ['table'] });
+    const input = table.querySelector('input');
+    expect(input.classList.contains('border-r')).toBe(false);
+    expect(input.classList.contains('[table[data-borders=rows]_&]:border-r')).toBe(true);
+    expect(input.classList.contains('[table[data-borders=both]_&]:border-r')).toBe(true);
+  });
+
   it('applies the shared validation frame classes of the date picker', () => {
     const el = createWrapper();
     mountDirective(monthPickerPlugin, 'h-month-picker', el, { original: 'h-month-picker' });

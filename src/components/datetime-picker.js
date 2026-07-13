@@ -130,7 +130,6 @@ export default function (Alpine) {
       'outline-none',
       'size-full',
       'pr-1',
-      'border-r',
       'border-input',
       'aria-invalid:border-negative',
       'user-invalid:border-negative',
@@ -143,6 +142,12 @@ export default function (Alpine) {
       'text-base',
       'truncate'
     );
+    if (el._h_datetimepicker.inTable) {
+      // The input-to-trigger divider shows only when the table has horizontal borders.
+      el._h_datetimepicker.input.classList.add('min-w-0', '[table[data-borders=rows]_&]:border-r', '[table[data-borders=both]_&]:border-r');
+    } else {
+      el._h_datetimepicker.input.classList.add('border-r');
+    }
     el._h_datetimepicker.input.setAttribute('aria-autocomplete', 'none');
     el._h_datetimepicker.input.setAttribute('type', 'text');
 

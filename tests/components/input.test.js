@@ -245,6 +245,13 @@ describe('h-input-number', () => {
     expect(buttons.length).toBe(2);
   });
 
+  it('keeps a plain divider on the buttons when not in a table', () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    for (const button of el.querySelectorAll('button')) {
+      expect(button.classList.contains('border-l')).toBe(true);
+    }
+  });
+
   it('step-down button has aria-label="Decrease"', () => {
     mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
     const [stepDown] = el.querySelectorAll('button');
@@ -303,5 +310,73 @@ describe('h-input-number', () => {
   it('calls cleanup', () => {
     const { ctx } = mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe('h-input-number (table modifier)', () => {
+  let el;
+
+  const mount = () => mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number', modifiers: ['table'] });
+
+  beforeEach(() => {
+    el = document.createElement('div');
+    const input = document.createElement('input');
+    input.setAttribute('type', 'number');
+    el.appendChild(input);
+    document.body.appendChild(el);
+  });
+
+  it('sets data-slot="cell-input-number"', () => {
+    mount();
+    expect(el.getAttribute('data-slot')).toBe('cell-input-number');
+  });
+
+  it('lets the input shrink so the steppers cannot overflow it', () => {
+    mount();
+    const input = el.querySelector('input');
+    expect(input.classList.contains('min-w-0')).toBe(true);
+    expect(input.classList.contains('flex-1')).toBe(true);
+  });
+
+  it('stacks the two steppers in a vertical column', () => {
+    mount();
+    const steppers = el.querySelector('[data-slot="step-controls"]');
+    expect(steppers).not.toBeNull();
+    expect(steppers.classList.contains('flex-col')).toBe(true);
+    const buttons = steppers.querySelectorAll('button');
+    expect(buttons.length).toBe(2);
+    // Plus on top, Minus below.
+    expect(buttons[0].getAttribute('aria-label')).toBe('Increase');
+    expect(buttons[1].getAttribute('aria-label')).toBe('Decrease');
+  });
+
+  it('hides the stepper column when the input is readonly', () => {
+    mount();
+    const steppers = el.querySelector('[data-slot="step-controls"]');
+    expect(steppers.classList.contains('group-has-[input[readonly]]/input-number:hidden')).toBe(true);
+  });
+
+  it('gates the inner dividers on the table having horizontal borders', () => {
+    mount();
+    const steppers = el.querySelector('[data-slot="step-controls"]');
+    // The input-to-steppers divider is only drawn for rows/both, never plain.
+    expect(steppers.classList.contains('border-l')).toBe(false);
+    expect(steppers.classList.contains('[table[data-borders=rows]_&]:border-l')).toBe(true);
+    expect(steppers.classList.contains('[table[data-borders=both]_&]:border-l')).toBe(true);
+    // The divider between the two stacked buttons is gated the same way.
+    const stepDown = el.querySelector('button[aria-label="Decrease"]');
+    expect(stepDown.classList.contains('border-t')).toBe(false);
+    expect(stepDown.classList.contains('[table[data-borders=rows]_&]:border-t')).toBe(true);
+    expect(stepDown.classList.contains('[table[data-borders=both]_&]:border-t')).toBe(true);
+  });
+
+  it('steppers change the value of an editable input', () => {
+    mount();
+    const input = el.querySelector('input');
+    input.setAttribute('step', 'any');
+    input.value = '4';
+    const stepUp = el.querySelector('button[aria-label="Increase"]');
+    stepUp.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(input.value).toBe('5');
   });
 });

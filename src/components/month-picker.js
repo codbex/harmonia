@@ -77,7 +77,6 @@ function applyFrameClasses(el, input, inTable) {
     'outline-none',
     'size-full',
     'pr-1',
-    'border-r',
     'border-input',
     'aria-invalid:border-negative',
     'user-invalid:border-negative',
@@ -90,6 +89,12 @@ function applyFrameClasses(el, input, inTable) {
     'text-base',
     'truncate'
   );
+  if (inTable) {
+    // The input-to-trigger divider shows only when the table has horizontal borders.
+    input.classList.add('min-w-0', '[table[data-borders=rows]_&]:border-r', '[table[data-borders=both]_&]:border-r');
+  } else {
+    input.classList.add('border-r');
+  }
   input.setAttribute('aria-autocomplete', 'none');
   input.setAttribute('type', 'text');
 }

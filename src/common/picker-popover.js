@@ -80,7 +80,9 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
 
   el.classList.add(...triggerBaseClasses);
   if (pickerState.inTable) {
-    el.classList.add(...triggerStandaloneClasses);
+    // In a table cell the trigger may shrink below its square when the column is
+    // narrow (down to a still-tappable 1.5rem) instead of overflowing the value.
+    el.classList.add(...triggerStandaloneClasses, 'min-w-6');
   } else {
     el.classList.add('rounded-r-control');
   }
@@ -94,7 +96,7 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
   el.appendChild(
     createSvg({
       icon: icon || Calendar,
-      classes: 'opacity-70 text-inherit size-4',
+      classes: 'opacity-70 text-inherit size-4 shrink-0',
       attrs: { 'aria-hidden': true, role: 'presentation' },
     })
   );

@@ -186,6 +186,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-input-number', (el, { original, modifiers }, { cleanup }) => {
+    const inTable = modifiers.includes('table');
     el.classList.add(
       'overflow-hidden',
       'group/input-number',
@@ -203,7 +204,7 @@ export default function (Alpine) {
       'has-[input:disabled]:opacity-disabled',
       'has-[input[readonly]]:bg-muted'
     );
-    if (modifiers.includes('table')) {
+    if (inTable) {
       el.classList.add(
         'size-full',
         'h-10',
@@ -262,49 +263,73 @@ export default function (Alpine) {
     input.setAttribute('spellcheck', 'off');
     input.setAttribute('data-slot', 'input-number-control');
     input.classList.add('size-full', 'px-3', 'py-1', 'outline-none');
+    if (inTable) input.classList.add('min-w-0', 'flex-1');
 
-    const stepDown = document.createElement('button');
-    stepDown.setAttribute('type', 'button');
-    stepDown.setAttribute('tabIndex', '-1');
-    stepDown.setAttribute('aria-label', 'Decrease');
-    stepDown.setAttribute('aria-controls', input.getAttribute('id'));
-    stepDown.setAttribute('data-slot', 'step-up-trigger');
-    stepDown.appendChild(
-      createSvg({
-        icon: Minus,
-        classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none',
-        attrs: {
-          'aria-hidden': true,
-          role: 'presentation',
-        },
-      })
-    );
-    stepDown.classList.add(
-      'inline-flex',
-      'items-center',
-      'justify-center',
-      'cursor-pointer',
-      'border-l',
-      'border-input',
-      '[input[aria-invalid=true]~&]:border-negative',
-      '[input:user-invalid~&]:border-negative',
-      '[[data-validate=immediate]_input:invalid~&]:border-negative',
-      'h-full',
-      'aspect-square',
-      'transition-colors',
-      'motion-reduce:transition-none',
-      'duration-100',
-      'bg-transparent',
-      'hover:bg-secondary',
-      'hover:text-secondary-foreground',
-      'active:bg-secondary-active',
-      'active:text-secondary-foreground',
-      'outline-none',
-      'relative',
-      'group-has-[input[readonly]]/input-number:hidden',
-      '[&:hover>svg]:text-secondary-foreground'
-    );
-    el.appendChild(stepDown);
+    const buildStepButton = (icon, label) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('type', 'button');
+      btn.setAttribute('tabIndex', '-1');
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-controls', input.getAttribute('id'));
+      btn.setAttribute('data-slot', 'step-up-trigger');
+      btn.appendChild(
+        createSvg({
+          icon,
+          classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none',
+          attrs: {
+            'aria-hidden': true,
+            role: 'presentation',
+          },
+        })
+      );
+      btn.classList.add(
+        'inline-flex',
+        'items-center',
+        'justify-center',
+        'cursor-pointer',
+        'border-input',
+        'transition-colors',
+        'motion-reduce:transition-none',
+        'duration-100',
+        'bg-transparent',
+        'hover:bg-secondary',
+        'hover:text-secondary-foreground',
+        'active:bg-secondary-active',
+        'active:text-secondary-foreground',
+        'outline-none',
+        'relative',
+        '[&:hover>svg]:text-secondary-foreground'
+      );
+      return btn;
+    };
+
+    const invalidBorderClasses = ['[input[aria-invalid=true]~&]:border-negative', '[input:user-invalid~&]:border-negative', '[[data-validate=immediate]_input:invalid~&]:border-negative'];
+    const readonlyHide = 'group-has-[input[readonly]]/input-number:hidden';
+
+    const stepDown = buildStepButton(Minus, 'Decrease');
+    const stepUp = buildStepButton(Plus, 'Increase');
+
+    if (inTable) {
+      // Stack the steppers into a single narrow column so they never overlap the
+      // number when the cell is narrow (Plus on top, Minus below).
+      const steppers = document.createElement('div');
+      steppers.setAttribute('data-slot', 'step-controls');
+      // The inner dividers appear only when the table draws horizontal row lines
+      // (data-borders="rows"/"both"); a borderless or column-only table reads as
+      // fully borderless.
+      steppers.classList.add('flex', 'flex-col', 'h-full', 'w-6', 'shrink-0', '[table[data-borders=rows]_&]:border-l', '[table[data-borders=both]_&]:border-l', 'border-input', readonlyHide, ...invalidBorderClasses);
+      stepUp.classList.add('w-full', 'flex-1');
+      stepDown.classList.add('w-full', 'flex-1', '[table[data-borders=rows]_&]:border-t', '[table[data-borders=both]_&]:border-t', 'border-input');
+      steppers.appendChild(stepUp);
+      steppers.appendChild(stepDown);
+      el.appendChild(steppers);
+    } else {
+      for (const btn of [stepDown, stepUp]) {
+        btn.classList.add('border-l', 'h-full', 'aspect-square', readonlyHide, ...invalidBorderClasses);
+      }
+      el.appendChild(stepDown);
+      el.appendChild(stepUp);
+    }
 
     const onStepDown = () => {
       if (input.readOnly || input.disabled) return;
@@ -316,50 +341,6 @@ export default function (Alpine) {
     };
 
     stepDown.addEventListener('click', onStepDown);
-
-    const stepUp = document.createElement('button');
-    stepUp.setAttribute('type', 'button');
-    stepUp.setAttribute('tabIndex', '-1');
-    stepUp.setAttribute('aria-label', 'Increase');
-    stepUp.setAttribute('aria-controls', input.getAttribute('id'));
-    stepUp.setAttribute('data-slot', 'step-up-trigger');
-    stepUp.appendChild(
-      createSvg({
-        icon: Plus,
-        classes: 'opacity-70 text-inherit size-4 shrink-0 pointer-events-none',
-        attrs: {
-          'aria-hidden': true,
-          role: 'presentation',
-        },
-      })
-    );
-    stepUp.classList.add(
-      'inline-flex',
-      'items-center',
-      'justify-center',
-      'cursor-pointer',
-      'border-l',
-      'border-input',
-      '[input[aria-invalid=true]~&]:border-negative',
-      '[input:user-invalid~&]:border-negative',
-      '[[data-validate=immediate]_input:invalid~&]:border-negative',
-      'h-full',
-      'aspect-square',
-      'transition-all',
-      'motion-reduce:transition-none',
-      'duration-100',
-      'bg-transparent',
-      'hover:bg-secondary',
-      'hover:text-secondary-foreground',
-      'active:bg-secondary-active',
-      'active:text-secondary-foreground',
-      'outline-none',
-      'relative',
-      'group-has-[input[readonly]]/input-number:hidden',
-      '[&:hover>svg]:text-secondary-foreground'
-    );
-
-    el.appendChild(stepUp);
 
     const onStepUp = () => {
       if (input.readOnly || input.disabled) return;

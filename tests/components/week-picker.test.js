@@ -91,6 +91,29 @@ describe('h-week-picker', () => {
     expect(el.getAttribute('data-slot')).toBe('cell-input-week');
   });
 
+  it('lets the input shrink in table mode but not by default', () => {
+    const plain = createWrapper();
+    mountDirective(weekPickerPlugin, 'h-week-picker', plain, { original: 'h-week-picker' });
+    expect(plain.querySelector('input').classList.contains('min-w-0')).toBe(false);
+
+    const table = createWrapper();
+    mountDirective(weekPickerPlugin, 'h-week-picker', table, { original: 'h-week-picker', modifiers: ['table'] });
+    expect(table.querySelector('input').classList.contains('min-w-0')).toBe(true);
+  });
+
+  it('gates the input-to-trigger divider on the table having horizontal borders', () => {
+    const plain = createWrapper();
+    mountDirective(weekPickerPlugin, 'h-week-picker', plain, { original: 'h-week-picker' });
+    expect(plain.querySelector('input').classList.contains('border-r')).toBe(true);
+
+    const table = createWrapper();
+    mountDirective(weekPickerPlugin, 'h-week-picker', table, { original: 'h-week-picker', modifiers: ['table'] });
+    const input = table.querySelector('input');
+    expect(input.classList.contains('border-r')).toBe(false);
+    expect(input.classList.contains('[table[data-borders=rows]_&]:border-r')).toBe(true);
+    expect(input.classList.contains('[table[data-borders=both]_&]:border-r')).toBe(true);
+  });
+
   it('applies the shared validation frame classes of the date picker', () => {
     const el = createWrapper();
     mountDirective(weekPickerPlugin, 'h-week-picker', el, { original: 'h-week-picker' });

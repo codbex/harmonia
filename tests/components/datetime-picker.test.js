@@ -45,6 +45,29 @@ describe('h-datetime-picker', () => {
     expect(el.getAttribute('data-slot')).toBe('cell-input-datetime');
   });
 
+  it('lets the input shrink in table mode but not by default', () => {
+    const plain = createWrapperEl();
+    mountDirective(datetimePlugin, 'h-datetime-picker', plain, { original: 'h-datetime-picker' });
+    expect(plain.querySelector('input').classList.contains('min-w-0')).toBe(false);
+
+    const table = createWrapperEl();
+    mountDirective(datetimePlugin, 'h-datetime-picker', table, { original: 'h-datetime-picker', modifiers: ['table'] });
+    expect(table.querySelector('input').classList.contains('min-w-0')).toBe(true);
+  });
+
+  it('gates the input-to-trigger divider on the table having horizontal borders', () => {
+    const plain = createWrapperEl();
+    mountDirective(datetimePlugin, 'h-datetime-picker', plain, { original: 'h-datetime-picker' });
+    expect(plain.querySelector('input').classList.contains('border-r')).toBe(true);
+
+    const table = createWrapperEl();
+    mountDirective(datetimePlugin, 'h-datetime-picker', table, { original: 'h-datetime-picker', modifiers: ['table'] });
+    const input = table.querySelector('input');
+    expect(input.classList.contains('border-r')).toBe(false);
+    expect(input.classList.contains('[table[data-borders=rows]_&]:border-r')).toBe(true);
+    expect(input.classList.contains('[table[data-borders=both]_&]:border-r')).toBe(true);
+  });
+
   it('throws if no input child found', () => {
     const el = document.createElement('div');
     document.body.appendChild(el);
