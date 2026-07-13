@@ -109,7 +109,7 @@ x-h-tabs-content
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
-    <div class="position-fit absolute overflow-auto">
+    <div class="absolute inset-0 overflow-auto">
       <img src="/harmonia/logo/harmonia.svg" alt="@harmonia" width="240px" />
     </div>
   </div>

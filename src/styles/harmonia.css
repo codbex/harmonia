@@ -179,12 +179,7 @@
 @source inline("fixed");
 @source inline("sticky");
 @source inline("{top,left,right,bottom}-0");
-.position-fit {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
+@source inline("inset-0");
 .position-center {
   @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform;
 }

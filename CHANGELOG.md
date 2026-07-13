@@ -1,5 +1,36 @@
 # Changelog
 
+## v2.4.0
+
+A release that adds two new date pickers - Month Picker and Week Picker - and makes the number input and the date and time pickers behave well inside table cells. It also fixes step indicators whose steps are generated dynamically. The only breaking change is the removal of the custom `position-fit` utility, which is replaced by the standard `inset-0` class.
+
+### New components: Month Picker and Week Picker
+
+- **Month Picker** (`x-h-month-picker`) - a text input paired with a popup that has a year header and a 12-month grid for selecting a month and year. The model is a `YYYY-MM` string. Supports `x-model`, the `table` modifier, a `locale` configuration key, and the trigger/popup, data-slot, and ARIA wiring shared with the date picker.
+- **Week Picker** (`x-h-week-picker`) - a text input paired with a Monday-first month calendar whose rows are whole ISO weeks, for selecting a single week. The model is a `YYYY-Www` ISO week string, with the same `x-model`, `table` modifier, `locale`, and accessibility support.
+
+### Table-cell input improvements
+
+- **Number Input** (`x-h-input-number.table`) - inside a table the step buttons now stack into a single narrow column (plus over minus) instead of sitting side by side, so they no longer overflow or cover the value in a narrow cell. The input shrinks and the value truncates gracefully.
+- **Date, Datetime, Month, and Week Pickers** (`.table`) - the trigger button may now shrink below its square shape, down to a still-tappable minimum, when the cell is cramped, keeping the value readable instead of forcing overflow.
+- **Inner dividers** - the divider between the input and its trigger or step buttons now follows the table's border style: it is shown only when the table draws horizontal row lines (`data-borders="rows"` or `"both"`) and hidden when the table has no borders or only column borders.
+
+### Step Indicator fix
+
+- Items whose step number is an expression - for example generated with `x-for` from a loop index - now resolve to the correct step. Previously the item's step was read in a way that broke dynamically generated steps.
+
+### Utility classes
+
+- The custom `position-fit` class has been removed in favor of the standard `inset-0` utility, which produces the same `top: 0; right: 0; bottom: 0; left: 0;`. Replace any `position-fit` with `inset-0`.
+
+### Documentation
+
+- The date and time related components (Calendar, the pickers, Inline Calendar) are now grouped together in the components list and landing page, so the related pickers are easy to find instead of being scattered across the alphabetical list.
+
+### Consistent focus rings
+
+- Focus rings across components (dialog, select, tree, calendar, time and slot pickers, table cells, and the pickers) now use a spacing-relative ring width, so the focus outline is consistent everywhere.
+
 ## 2.3.1
 
 Bugfix release
