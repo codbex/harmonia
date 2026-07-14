@@ -29,7 +29,7 @@ hero:
 
 features:
   - icon: <svg-icon class="feature-icon" src="./icons/components.svg"></svg-icon>
-    title: 60+ Production-Ready Components
+    title: 65+ Production-Ready Components
     details: From buttons, inputs, and dialogs to calendars, data tables, and charts, Harmonia ships a comprehensive toolkit for building rich interfaces, so you never have to stitch together mismatched third-party widgets.
     link: /components
     linkText: Browse all components
@@ -73,9 +73,9 @@ features:
 
   <div class="template-list">
 
-<TemplateShowcase title="Slate Dashboard" src="/harmonia/templates/slate-dashboard.html" desc="A single-file analytics dashboard with KPI cards, charts, data tables, and a responsive sidebar.">
+<TemplateShowcase title="Slate Dashboard" src="/harmonia/templates/slate/slate-dashboard.html" desc="A single-file analytics dashboard with KPI cards, charts, data tables, and a responsive sidebar.">
 
-<<< @/public/templates/slate-dashboard.html
+<<< @/public/templates/slate/slate-dashboard.html
 
 </TemplateShowcase>
 

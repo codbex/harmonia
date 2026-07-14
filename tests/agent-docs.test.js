@@ -62,6 +62,18 @@ describe('agent docs (skills/harmonia)', () => {
     }
   });
 
+  it('strips <!-- skill:ignore --> regions (e.g. photo credits) from references', () => {
+    // A skill:ignore region is docs-site-only prose; it must never reach a
+    // reference (the carousel/bubble photo-attribution notes live in one).
+    for (const [rel, content] of Object.entries(files)) {
+      if (!rel.startsWith('references/')) continue;
+      expect(content, `skills/harmonia/${rel} leaks a skill:ignore note`).not.toContain('via Pixabay');
+      expect(content, `skills/harmonia/${rel} leaks a skill:ignore marker`).not.toContain('skill:ignore');
+    }
+    // The strip is scoped to the note: the examples (and their photos) remain.
+    expect(files['references/carousel.md'], 'carousel reference lost its example images').toContain('ignartonosbg-mountains.jpg');
+  });
+
   it('carries the full Examples section into each reference', () => {
     // Every example from the source doc ships in the reference (not just the
     // minimal one), so the old dangling "More examples..." teaser must be gone.

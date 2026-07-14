@@ -16,6 +16,20 @@ export function minsToTime(mins) {
 }
 
 /**
+ * Format a number of seconds as an elapsed-time clock: "m:ss" (e.g. "1:05"),
+ * or "h:mm:ss" once it reaches an hour. Returns "0:00" for NaN/negative/empty
+ * input (native `audio.duration` is NaN until metadata loads).
+ */
+export function formatDuration(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+  const total = Math.floor(seconds);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${m}:${pad2(s)}`;
+}
+
+/**
  * Parse a 24-hour "HH:mm" / "HH:mm:ss" string into its parts. When
  * `convertTo12` is true the hour is converted to 12-hour form and a `period`
  * (AM/PM) is produced. Returns null parts for an empty input.

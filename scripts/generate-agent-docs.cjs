@@ -11,7 +11,9 @@
 // component's page on the docs site. VitePress-only markup is normalized:
 // example wrappers (<LiveExample> / <IconGallery> / <TemplateShowcase>) and
 // internal links are stripped, and ::: info/warning containers become plain
-// markdown blockquotes.
+// markdown blockquotes. Content wrapped in a <!-- skill:ignore --> ... <!--
+// /skill:ignore --> region is docs-site-only and dropped entirely (the prose
+// counterpart of a <LiveExample data-exclude="skill"> block).
 //
 // The utility-class reference (references/utility-classes.md) is generated from
 // src/styles/harmonia.css - the authoritative Tailwind safelist - so agents get
@@ -146,6 +148,31 @@ function removeExcludedExamples(md) {
     }
     if (skipping) {
       if (!inFence && /^<\/LiveExample>$/.test(line.trim())) skipping = false;
+      continue;
+    }
+    out.push(line);
+  }
+  return out.join('\n');
+}
+
+// A <!-- skill:ignore --> ... <!-- /skill:ignore --> region is docs-site-only
+// (e.g. a photo-attribution note): drop it entirely before transcription so it
+// never reaches an agent reference. The markers are HTML comments, invisible in
+// the rendered docs; the wrapped markdown stays visible on the site. The prose
+// counterpart of the <LiveExample data-exclude="skill"> hook above. Fence-aware.
+function removeSkillIgnored(md) {
+  const lines = md.split('\n');
+  let inFence = false;
+  let skipping = false;
+  const out = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) inFence = !inFence;
+    if (!inFence && !skipping && /^\s*<!--\s*skill:ignore\s*-->\s*$/.test(line)) {
+      skipping = true;
+      continue;
+    }
+    if (skipping) {
+      if (!inFence && /^\s*<!--\s*\/skill:ignore\s*-->\s*$/.test(line)) skipping = false;
       continue;
     }
     out.push(line);
@@ -292,7 +319,7 @@ function extractExampleBlocks(lines) {
 }
 
 function parseDoc(text) {
-  const lines = convertContainers(removeExcludedExamples(text.replace(/\r\n/g, '\n'))).split('\n');
+  const lines = convertContainers(removeExcludedExamples(removeSkillIgnored(text.replace(/\r\n/g, '\n')))).split('\n');
   const mask = computeFenceMask(lines);
   const { title, description } = extractTitleAndDescription(lines, mask);
   const { directives, apiDetails } = extractApi(lines, mask);

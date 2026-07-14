@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en" class="size-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slate Dashboard | Harmonia</title>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="hbox size-full bg-sidebar" x-data="DashboardController">
+    <div x-h-sheet-overlay="showSidebarSheet">
+      <div x-h-sheet data-align="left" x-ref="sidebarSheet"></div>
+    </div>
+
+    <div x-h-sidebar data-borderless="true" x-ref="sidebar" style="order: 1">
+      <div x-h-sidebar-header data-borderless="true">
+        <div x-h-sidebar-header-item>
+          <svg x-h-icon class="size-9" data-link="/harmonia/logo/harmonia-circle.svg" role="presentation"></svg>
+          <div class="vbox">
+            <span>Harmonia</span>
+            <span class="text-sm font-normal">by codbex</span>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-sidebar-content>
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Dashboards</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="view === 'overview'" @click="go('overview')">
+                  <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
+                  <span>Overview</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="view === 'analytics'" @click="go('analytics')">
+                  <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
+                  <span>Analytics</span>
+                </button>
+              </li>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="view === 'customers'" @click="go('customers')">
+                  <svg x-h-lucide role="presentation" data-lucide="users"></svg>
+                  <span>Customers</span>
+                  <span x-h-sidebar-menu-badge x-text="orders.length"></span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div x-h-sidebar-group>
+          <div x-h-sidebar-group-label>Workspace</div>
+          <div x-h-sidebar-group-content>
+            <ul x-h-sidebar-menu>
+              <li x-h-sidebar-menu-item>
+                <button x-h-sidebar-menu-button :data-active="view === 'settings'" @click="go('settings')">
+                  <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
+                  <span>Settings</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div x-h-sidebar-footer data-borderless="true">
+        <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
+          <div x-h-avatar>JD</div>
+          <div class="vbox min-w-0 text-left">
+            <span class="truncate">John Doe</span>
+            <span class="truncate text-sm font-normal">john@codbex.com</span>
+          </div>
+          <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
+        </button>
+        <ul x-h-menu aria-label="User menu" data-align="top-start">
+          <div x-h-menu-label>Account</div>
+          <li x-h-menu-item @click="go('settings')">
+            <svg x-h-lucide role="presentation" data-lucide="user"></svg>
+            <span>Profile</span>
+          </li>
+          <li x-h-menu-item @click="go('settings')">
+            <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
+            <span>Settings</span>
+          </li>
+          <div x-h-menu-separator></div>
+          <li x-h-menu-item data-variant="negative">
+            <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
+            <span>Log out</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-hidden" :class="isSmallScreen || 'p-2'" style="order: 2">
+      <main class="vbox size-full overflow-hidden bg-background" :class="isSmallScreen || 'rounded-xl border shadow-sm'">
+        <div x-h-toolbar data-variant="transparent">
+          <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar sheet open button" @click="showSidebarSheet = true">
+            <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
+          </button>
+          <nav x-h-breadcrumb data-overflow="scroll" :data-variant="isSmallScreen ? 'outline' : 'default'">
+            <ol x-h-breadcrumb-list>
+              <li x-h-breadcrumb-item>
+                <a x-h-breadcrumb-link href="#" @click.prevent="go('overview')">Slate</a>
+              </li>
+              <li x-h-breadcrumb-item>
+                <span x-h-breadcrumb-page x-text="viewTitle"></span>
+              </li>
+            </ol>
+          </nav>
+          <div x-h-toolbar-spacer></div>
+          <button x-h-button data-variant="transparent" data-size="icon" class="relative" aria-label="Notifications" x-h-popover-trigger="notificationListShown">
+            <svg x-h-icon data-icon="bell" role="presentation" aria-label="notifications"></svg>
+            <span x-show="notifications.length" x-h-badge-indicator x-text="notifications.length"></span>
+          </button>
+          <div x-h-popover data-innerclicks="true" class="w-full" data-max-w="lg">
+            <div x-h-toolbar data-size="md">
+              <span x-h-toolbar-title x-text="'Notifications (' + notifications.length + ')'"></span>
+              <div x-h-toolbar-spacer></div>
+              <button x-h-button data-size="md" data-variant="transparent" :disabled="!notifications.length" @click="clearNotifications()"><svg x-h-icon data-icon="trash" role="presentation"></svg>Clear</button>
+            </div>
+            <ol x-h-notification-list>
+              <template x-for="n in notifications" :key="n.id">
+                <li x-h-notification class="hbox" :class="{ 'items-center': !n.action }" :data-unread="n.unread">
+                  <div x-h-notification-media :class="n.media.kind === 'text' ? 'justify-start' : 'w-10'">
+                    <template x-if="n.media.kind === 'text'">
+                      <div x-h-avatar class="size-10" x-text="n.media.text"></div>
+                    </template>
+                    <template x-if="n.media.kind === 'badge'">
+                      <div x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
+                        <svg x-h-icon :data-icon="n.media.icon" role="presentation"></svg>
+                      </div>
+                    </template>
+                    <template x-if="n.media.kind === 'icon'">
+                      <svg x-h-icon :data-icon="n.media.icon" class="size-6" :class="n.media.tone" role="presentation"></svg>
+                    </template>
+                  </div>
+                  <div class="vbox flex-1 gap-1">
+                    <h1 x-h-notification-title x-text="n.title"></h1>
+                    <template x-if="n.description">
+                      <p x-h-notification-description x-text="n.description"></p>
+                    </template>
+                    <template x-if="n.action">
+                      <div x-h-notification-actions class="pt-2" data-orientation="horizontal">
+                        <button x-h-button data-variant="primary" data-size="sm" x-text="n.action.label" @click="go(n.action.view); notificationListShown = false"></button>
+                      </div>
+                    </template>
+                  </div>
+                  <div x-h-notification-actions data-orientation="vertical" :class="{ 'justify-start': n.action }">
+                    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="remove notification" @click="removeNotification(n.id)">
+                      <svg x-h-icon data-icon="close" role="presentation"></svg>
+                    </button>
+                  </div>
+                </li>
+              </template>
+              <template x-if="!notifications.length">
+                <li x-h-info-page>
+                  <div x-h-info-page-header>
+                    <div x-h-info-page-media.icon>
+                      <svg x-h-icon class="size-4" data-icon="check" role="presentation"></svg>
+                    </div>
+                    <div x-h-info-page-title>You're all caught up</div>
+                  </div>
+                </li>
+              </template>
+            </ol>
+          </div>
+          <div x-h-avatar>JD</div>
+        </div>
+
+        <div class="vbox flex-1 gap-4 overflow-auto p-4">
+          <!-- ==================== OVERVIEW ==================== -->
+          <div x-show="view === 'overview'" class="vbox gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <template x-for="metric in metrics" :key="metric.label">
+                <div x-h-card>
+                  <div x-h-card-header>
+                    <div x-h-card-description x-text="metric.label"></div>
+                    <div x-h-card-title class="text-2xl" x-text="metric.value"></div>
+                    <div x-h-card-action>
+                      <span x-h-badge :data-variant="metric.trend >= 0 ? 'positive' : 'negative'">
+                        <svg x-h-lucide role="presentation" :data-lucide="metric.trend >= 0 ? 'trending-up' : 'trending-down'"></svg>
+                        <span x-text="(metric.trend >= 0 ? '+' : '') + metric.trend + '%'"></span>
+                      </span>
+                    </div>
+                  </div>
+                  <div x-h-card-footer class="text-sm text-muted-foreground" x-text="metric.hint"></div>
+                </div>
+              </template>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div x-h-card class="lg:col-span-2">
+                <div x-h-card-header>
+                  <div x-h-card-title>Revenue</div>
+                  <div x-h-card-description>This year compared to last year</div>
+                </div>
+                <div x-h-card-content>
+                  <div style="height: 18rem" x-h-chart-line="revenueChart" aria-label="Monthly revenue"></div>
+                </div>
+              </div>
+              <div x-h-card>
+                <div x-h-card-header>
+                  <div x-h-card-title>Traffic sources</div>
+                  <div x-h-card-description>Where visitors come from</div>
+                </div>
+                <div x-h-card-content class="hbox items-center justify-center">
+                  <div class="aspect-square w-full" style="max-height: 18rem" x-h-chart-doughnut="trafficChart" aria-label="Traffic sources"></div>
+                </div>
+              </div>
+            </div>
+
+            <div x-h-card>
+              <div x-h-card-header>
+                <div x-h-card-title>Recent orders</div>
+                <div x-h-card-description>Your latest 5 transactions</div>
+              </div>
+              <div x-h-card-content>
+                <div x-h-table-container>
+                  <table x-h-table>
+                    <thead x-h-table-header>
+                      <tr x-h-table-row>
+                        <th x-h-table-head scope="col">Customer</th>
+                        <th x-h-table-head scope="col">Status</th>
+                        <th x-h-table-head scope="col" style="text-align: right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody x-h-table-body>
+                      <template x-for="order in orders.slice(0, 5)" :key="order.id">
+                        <tr x-h-table-row data-hoverable="true">
+                          <td x-h-table-cell x-text="order.customer"></td>
+                          <td x-h-table-cell>
+                            <span x-h-badge :data-variant="badgeVariant(order.status)" x-text="order.status"></span>
+                          </td>
+                          <td x-h-table-cell style="text-align: right" x-text="order.amount"></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== ANALYTICS ==================== -->
+          <div x-show="view === 'analytics'" class="vbox gap-4">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div x-h-card class="lg:col-span-2">
+                <div x-h-card-header>
+                  <div x-h-card-title>Acquisition by channel</div>
+                  <div x-h-card-description>New users per channel, last 6 months</div>
+                </div>
+                <div x-h-card-content>
+                  <div style="height: 18rem" x-h-chart-bar="channelChart" aria-label="Acquisition by channel"></div>
+                </div>
+              </div>
+
+              <div x-h-card>
+                <div x-h-card-header>
+                  <div x-h-card-title>Goals</div>
+                  <div x-h-card-description>Progress toward quarterly targets</div>
+                </div>
+                <div x-h-card-content class="grid grid-cols-2 gap-4">
+                  <template x-for="kpi in kpis" :key="kpi.label">
+                    <div class="vbox items-center gap-2">
+                      <div class="relative">
+                        <div x-h-progress="kpi.value" data-type="circle" :data-variant="kpi.variant" style="width: 6rem"></div>
+                        <span class="position-center absolute text-lg font-medium" x-text="kpi.value + '%'"></span>
+                      </div>
+                      <span class="text-sm text-muted-foreground" x-text="kpi.label"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <div x-h-card>
+              <div x-h-card-content>
+                <div x-h-tabs data-orientation="horizontal" x-data="{ tab: 'traffic' }">
+                  <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
+                    <div x-h-tab-list>
+                      <button id="an-tab-traffic" x-h-tab aria-controls="an-panel-traffic" :aria-selected="tab === 'traffic'" @click="tab = 'traffic'">
+                        <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
+                        Traffic
+                      </button>
+                      <button id="an-tab-devices" x-h-tab aria-controls="an-panel-devices" :aria-selected="tab === 'devices'" @click="tab = 'devices'">
+                        <svg x-h-lucide role="presentation" data-lucide="chart-column"></svg>
+                        Devices
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pt-4" x-h-tabs-content id="an-panel-traffic" aria-labelledby="an-tab-traffic" :hidden="tab !== 'traffic'">
+                    <div style="height: 16rem" x-h-chart-line="visitorsChart" aria-label="Visitors over time"></div>
+                  </div>
+                  <div class="pt-4" x-h-tabs-content id="an-panel-devices" aria-labelledby="an-tab-devices" :hidden="tab !== 'devices'">
+                    <div style="height: 16rem" x-h-chart-bar="devicesChart" aria-label="Sessions by device"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== CUSTOMERS ==================== -->
+          <div x-show="view === 'customers'" class="vbox gap-4">
+            <div class="hbox flex-wrap gap-2">
+              <div x-h-input-group class="md:w-1/3">
+                <input x-h-input.group placeholder="Search customers..." x-model="search" @input="page = 1" />
+                <div x-h-input-group-addon data-align="inline-start">
+                  <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+                </div>
+              </div>
+              <div class="hbox flex-1 justify-between gap-2">
+                <div x-h-select style="max-width: 11rem">
+                  <input x-h-select-input placeholder="All statuses" x-model="statusFilter" @change="page = 1" />
+                  <div x-h-select-content>
+                    <div x-h-select-option="'All statuses'" data-value="all"></div>
+                    <div x-h-select-option="'Paid'" data-value="Paid"></div>
+                    <div x-h-select-option="'Pending'" data-value="Pending"></div>
+                    <div x-h-select-option="'Refunded'" data-value="Refunded"></div>
+                  </div>
+                </div>
+                <button x-h-button data-variant="primary" @click="openAddCustomer()">
+                  <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+                  Add customer
+                </button>
+              </div>
+            </div>
+
+            <div x-h-table-container data-border="true">
+              <table x-h-table data-borders="rows">
+                <thead x-h-table-header>
+                  <tr x-h-table-row>
+                    <th x-h-table-head scope="col">Customer</th>
+                    <th x-h-table-head scope="col">Status</th>
+                    <th x-h-table-head scope="col" style="text-align: right">Amount</th>
+                    <th x-h-table-head scope="col" style="width: 3rem"></th>
+                  </tr>
+                </thead>
+                <tbody x-h-table-body>
+                  <template x-for="order in pagedOrders" :key="order.id">
+                    <tr x-h-table-row data-hoverable="true">
+                      <td x-h-table-cell>
+                        <div class="hbox items-center gap-3">
+                          <div x-h-avatar x-text="order.initials"></div>
+                          <div class="vbox min-w-0">
+                            <span class="truncate" x-text="order.customer"></span>
+                            <span class="truncate text-sm text-muted-foreground" x-text="order.email"></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td x-h-table-cell>
+                        <span x-h-badge :data-variant="badgeVariant(order.status)" x-text="order.status"></span>
+                      </td>
+                      <td x-h-table-cell style="text-align: right" x-text="order.amount"></td>
+                      <td x-h-table-cell style="text-align: right">
+                        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Row actions" x-h-menu-trigger.dropdown>
+                          <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
+                        </button>
+                        <ul x-h-menu aria-label="Row actions" data-align="bottom-end">
+                          <li x-h-menu-item>View details</li>
+                          <li x-h-menu-item>Edit</li>
+                          <div x-h-menu-separator></div>
+                          <li x-h-menu-item data-variant="negative">Delete</li>
+                        </ul>
+                      </td>
+                    </tr>
+                  </template>
+                  <template x-if="pagedOrders.length === 0">
+                    <tr x-h-table-row>
+                      <td x-h-table-cell colspan="4" class="text-center text-muted-foreground">No customers match your filters.</td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+            <nav x-h-pagination>
+              <ul x-h-pagination-content>
+                <li x-h-pagination-item>
+                  <a x-h-pagination-link.previous href="#" @click.prevent="page = Math.max(1, page - 1)">
+                    <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
+                    <span x-h-pagination-link-label>Previous</span>
+                  </a>
+                </li>
+                <template x-for="p in pageCount" :key="p">
+                  <li x-h-pagination-item>
+                    <a x-h-pagination-link="page === p" href="#" @click.prevent="page = p" x-text="p"></a>
+                  </li>
+                </template>
+                <li x-h-pagination-item>
+                  <a x-h-pagination-link.next href="#" @click.prevent="page = Math.min(pageCount, page + 1)">
+                    <span x-h-pagination-link-label>Next</span>
+                    <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- ==================== SETTINGS ==================== -->
+          <div x-show="view === 'settings'" class="vbox items-center gap-4">
+            <section class="vbox w-full max-w-xl pt-2">
+              <h3 x-h-text.h5>Preferences</h3>
+              <p x-h-text.muted>Defaults applied across the dashboard unless overridden.</p>
+
+              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+                <ul x-h-list>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <div class="vbox flex-1">
+                      <p class="text-base font-medium">Default currency</p>
+                      <p x-h-text.muted>Used for revenue and order amounts across every view.</p>
+                    </div>
+                    <div x-h-select class="flex-1" style="max-width: 11rem">
+                      <input x-h-select-input placeholder="Select" x-model="settings.currency" />
+                      <div x-h-select-content>
+                        <template x-for="option in currencies" :key="option.value">
+                          <div x-h-select-option="option.label" :data-value="option.value"></div>
+                        </template>
+                      </div>
+                    </div>
+                  </li>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <div class="vbox flex-1">
+                      <p class="text-base font-medium">Rows per page</p>
+                      <p x-h-text.muted>How many customers to show per page in the table.</p>
+                    </div>
+                    <div x-h-input-number class="flex-1" style="max-width: 11rem">
+                      <input type="number" min="1" max="100" step="1" value="5" />
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="vbox w-full max-w-xl pt-2">
+              <h3 x-h-text.h5>Appearance</h3>
+
+              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+                <ul x-h-list>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <div class="vbox w-full">
+                      <p class="text-base font-medium">Theme</p>
+                      <p x-h-text.muted>Choose how the dashboard looks.</p>
+                    </div>
+                    <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+                      <!-- svg placeholders on purpose: x-h-lucide renders them in place,
+                           so the x-show bindings keep switching the visible icon. -->
+                      <svg x-h-lucide x-show="settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
+                      <span x-show="settings.theme === 'light'">Light</span>
+                      <svg x-h-lucide x-show="settings.theme === 'dark'" role="presentation" data-lucide="moon"></svg>
+                      <span x-show="settings.theme === 'dark'">Dark</span>
+                      <svg x-h-lucide x-show="settings.theme === 'auto'" role="presentation" data-lucide="sun-moon"></svg>
+                      <span x-show="settings.theme === 'auto'">Auto</span>
+                      <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
+                    </button>
+                    <ul x-h-menu data-align="bottom-end">
+                      <li x-h-menu-item @click="setTheme('light')">
+                        <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
+                        <span>Light</span>
+                        <span x-h-menu-item-secondary x-show="settings.theme === 'light'">
+                          <svg x-h-icon data-icon="check" role="presentation"></svg>
+                        </span>
+                      </li>
+                      <li x-h-menu-item @click="setTheme('dark')">
+                        <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
+                        <span>Dark</span>
+                        <span x-h-menu-item-secondary x-show="settings.theme === 'dark'">
+                          <svg x-h-icon data-icon="check" role="presentation"></svg>
+                        </span>
+                      </li>
+                      <li x-h-menu-item @click="setTheme('auto')">
+                        <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
+                        <span>Auto</span>
+                        <span x-h-menu-item-secondary x-show="settings.theme === 'auto'">
+                          <svg x-h-icon data-icon="check" role="presentation"></svg>
+                        </span>
+                      </li>
+                    </ul>
+                  </li>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <label class="w-full text-base font-medium" for="sw-compact">Compact tables</label>
+                    <span x-h-switch>
+                      <input type="checkbox" id="sw-compact" />
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="vbox w-full max-w-xl pt-2">
+              <h3 x-h-text.h5>Notifications</h3>
+
+              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+                <ul x-h-list>
+                  <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+                    <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
+                    <label class="w-full text-base font-medium" for="sw-email">Email notifications</label>
+                    <span x-h-switch>
+                      <input type="checkbox" id="sw-email" checked />
+                    </span>
+                  </li>
+                  <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+                    <svg x-h-icon data-icon="bell" class="size-5" role="presentation"></svg>
+                    <div class="vbox w-full">
+                      <label class="text-base font-medium" for="sw-push">Push notifications</label>
+                      <p x-h-text.muted>Get alerted about new orders in real time.</p>
+                    </div>
+                    <span x-h-switch>
+                      <input type="checkbox" id="sw-push" />
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="vbox w-full max-w-xl pt-2">
+              <h3 x-h-text.h5>Default view</h3>
+              <p x-h-text.muted>The page shown when the dashboard opens.</p>
+
+              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+                <ul x-h-list>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <span x-h-radio>
+                      <input type="radio" name="defaultView" id="dv-overview" value="overview" x-model="settings.defaultView" />
+                    </span>
+                    <label class="w-full text-base" for="dv-overview">Overview</label>
+                  </li>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <span x-h-radio>
+                      <input type="radio" name="defaultView" id="dv-analytics" value="analytics" x-model="settings.defaultView" />
+                    </span>
+                    <label class="w-full text-base" for="dv-analytics">Analytics</label>
+                  </li>
+                  <li x-h-list-item class="gap-3 px-4 py-3">
+                    <span x-h-radio>
+                      <input type="radio" name="defaultView" id="dv-customers" value="customers" x-model="settings.defaultView" />
+                    </span>
+                    <label class="w-full text-base" for="dv-customers">Customers</label>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add-customer dialog (top level, so it is not hidden by a view's x-show) -->
+    <div x-h-dialog-overlay :data-open="showAddCustomer" class="backdrop-blur-xs">
+      <div x-h-dialog>
+        <div x-h-dialog-header>
+          <h2 x-h-dialog-title>Add customer</h2>
+          <p x-h-dialog-description>Enter the details for the new customer.</p>
+          <button x-h-dialog-close aria-label="Close dialog" @click="showAddCustomer = false">
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
+          </button>
+        </div>
+        <form id="add-customer-form" x-ref="addCustomerForm" @submit.prevent="addCustomer()" @input="newCustomerValid = $el.checkValidity()">
+          <fieldset x-h-fieldset>
+            <div x-h-field-group class="gap-4!">
+              <div x-h-field>
+                <label x-h-label for="nc-name">Name</label>
+                <input x-h-input x-h-focus="showAddCustomer" id="nc-name" x-model="newCustomer.name" placeholder="Jane Doe" required />
+                <p x-h-field-error>Name is required.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="nc-email">Email</label>
+                <input x-h-input id="nc-email" type="email" x-model="newCustomer.email" placeholder="jane@codbex.com" required />
+                <p x-h-field-error>Enter a valid email address.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="nc-status">Status</label>
+                <div x-h-select>
+                  <input x-h-select-input id="nc-status" x-model="newCustomer.status" placeholder="Select status" />
+                  <div x-h-select-content>
+                    <div x-h-select-option="'Paid'" data-value="Paid"></div>
+                    <div x-h-select-option="'Pending'" data-value="Pending"></div>
+                    <div x-h-select-option="'Refunded'" data-value="Refunded"></div>
+                  </div>
+                </div>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="nc-amount">Amount</label>
+                <div x-h-input-number>
+                  <input type="number" id="nc-amount" min="0" step="1" x-model="newCustomer.amount" placeholder="0" />
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div x-h-dialog-footer>
+          <button x-h-button data-variant="outline" @click="showAddCustomer = false">Cancel</button>
+          <button x-h-button data-variant="primary" type="submit" form="add-customer-form" :disabled="!newCustomerValid">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("DashboardController", () => ({
+          notificationListShown: false,
+          notifications: [
+            {
+              id: 1,
+              unread: true,
+              media: { kind: "text", text: "EJ" },
+              title: "New order received",
+              description: "Emma Johnson placed an order for $1,240.",
+              action: { label: "View order", view: "customers" },
+            },
+            {
+              id: 2,
+              unread: true,
+              media: { kind: "badge", icon: "circle-error", variant: "negative" },
+              title: "Payment failed",
+              description: "Olivia Davis' payment of $430 was declined.",
+            },
+            {
+              id: 3,
+              unread: false,
+              media: { kind: "icon", icon: "circle-success", tone: "text-positive" },
+              title: "Your monthly revenue report is ready",
+            },
+          ],
+          showSidebarSheet: false,
+          isSmallScreen: false,
+          sidebarBreakpointListener: undefined,
+
+          // active view
+          view: "overview",
+
+          // overview metrics
+          metrics: [
+            { label: "Total Revenue", value: "$45,231", trend: 12.5, hint: "Up from last month" },
+            { label: "Customers", value: "2,340", trend: 8.2, hint: "New sign-ups this month" },
+            { label: "Orders", value: "1,205", trend: -3.1, hint: "Down from last month" },
+            { label: "Refunds", value: "$1,120", trend: -0.4, hint: "Roughly flat" },
+          ],
+
+          // charts
+          revenueChart: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+            series: [
+              { name: "This year", color: "blue", data: [12, 19, 15, 27, 24, 32, 38] },
+              { name: "Last year", color: "gray", data: [10, 14, 13, 18, 20, 22, 25] },
+            ],
+          },
+          trafficChart: {
+            slices: [
+              { label: "Direct", value: 40, color: "blue" },
+              { label: "Referral", value: 25, color: "teal" },
+              { label: "Social", value: 20, color: "purple" },
+              { label: "Email", value: 15, color: "orange" },
+            ],
+          },
+          channelChart: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            series: [
+              { name: "Organic", color: "green", data: [120, 150, 170, 140, 190, 210] },
+              { name: "Paid", color: "blue", data: [80, 95, 110, 130, 105, 125] },
+              { name: "Social", color: "purple", data: [40, 55, 60, 75, 80, 95] },
+            ],
+          },
+          visitorsChart: {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            series: [{ name: "Visitors", color: "teal", data: [820, 932, 901, 934, 1290, 1330, 1120] }],
+          },
+          devicesChart: {
+            labels: ["Desktop", "Mobile", "Tablet"],
+            series: [{ name: "Sessions", color: "indigo", data: [5400, 4200, 900] }],
+          },
+
+          // analytics KPIs
+          kpis: [
+            { label: "Revenue", value: 78, variant: "positive" },
+            { label: "Signups", value: 64, variant: "information" },
+            { label: "Retention", value: 91, variant: "positive" },
+            { label: "Churn", value: 12, variant: "warning" },
+          ],
+
+          // customers table
+          orders: [
+            { id: 1, customer: "Emma Johnson", email: "emma@codbex.com", initials: "EJ", status: "Paid", amount: "$1,240" },
+            { id: 2, customer: "Liam Smith", email: "liam@codbex.com", initials: "LS", status: "Pending", amount: "$860" },
+            { id: 3, customer: "Maria Gonzalez", email: "maria@codbex.com", initials: "MG", status: "Paid", amount: "$2,110" },
+            { id: 4, customer: "Olivia Davis", email: "olivia@codbex.com", initials: "OD", status: "Refunded", amount: "$430" },
+            { id: 5, customer: "Sophia Moore", email: "sophia@codbex.com", initials: "SM", status: "Paid", amount: "$1,780" },
+            { id: 6, customer: "William Wilson", email: "william@codbex.com", initials: "WW", status: "Pending", amount: "$950" },
+            { id: 7, customer: "Anna Petrova", email: "anna@codbex.com", initials: "AP", status: "Paid", amount: "$3,020" },
+            { id: 8, customer: "Ivan Strashimechkarov", email: "ivan@codbex.com", initials: "IS", status: "Refunded", amount: "$220" },
+          ],
+          search: "",
+          statusFilter: "all",
+          page: 1,
+          pageSize: 5,
+
+          // add-customer dialog
+          showAddCustomer: false,
+          newCustomer: { name: "", email: "", status: "Pending", amount: "" },
+          newCustomerValid: false,
+
+          // settings
+          currencies: [
+            { label: "EUR - Euro (€)", value: "eur" },
+            { label: "USD - US Dollar ($)", value: "usd" },
+            { label: "GBP - British Pound (£)", value: "gbp" },
+            { label: "JPY - Japanese Yen (¥)", value: "jpy" },
+          ],
+          settings: {
+            currency: "eur",
+            // Seed from Harmonia's current color scheme ("auto" | "light" | "dark").
+            theme: Harmonia.getColorScheme(),
+            defaultView: "overview",
+          },
+
+          get viewTitle() {
+            return { overview: "Overview", analytics: "Analytics", customers: "Customers", settings: "Settings" }[this.view];
+          },
+          get filteredOrders() {
+            const q = this.search.trim().toLowerCase();
+            return this.orders.filter((o) => {
+              const matchesQuery = !q || o.customer.toLowerCase().includes(q) || o.email.toLowerCase().includes(q);
+              const matchesStatus = this.statusFilter === "all" || o.status === this.statusFilter;
+              return matchesQuery && matchesStatus;
+            });
+          },
+          get pageCount() {
+            return Math.max(1, Math.ceil(this.filteredOrders.length / this.pageSize));
+          },
+          get pagedOrders() {
+            const page = Math.min(this.page, this.pageCount);
+            const start = (page - 1) * this.pageSize;
+            return this.filteredOrders.slice(start, start + this.pageSize);
+          },
+          badgeVariant(status) {
+            return { Paid: "positive", Pending: "warning", Refunded: "negative" }[status] || "outline";
+          },
+          openAddCustomer() {
+            this.newCustomer = { name: "", email: "", status: "Pending", amount: "" };
+            // Clear any :user-invalid state from a previous attempt so the errors
+            // do not show on a freshly opened, empty form.
+            this.$refs.addCustomerForm?.reset();
+            // Seed the disabled state from the (now empty) form's own validity.
+            this.newCustomerValid = this.$refs.addCustomerForm?.checkValidity() ?? false;
+            this.showAddCustomer = true;
+          },
+          addCustomer() {
+            const name = this.newCustomer.name.trim();
+            const email = this.newCustomer.email.trim();
+            if (!name || !email) return;
+            const parts = name.split(/\s+/);
+            const initials = (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : name.slice(0, 2)).toUpperCase();
+            const amount = Number(this.newCustomer.amount) || 0;
+            const id = this.orders.length ? Math.max(...this.orders.map((o) => o.id)) + 1 : 1;
+            this.orders.unshift({
+              id,
+              customer: name,
+              email,
+              initials,
+              status: this.newCustomer.status,
+              amount: "$" + amount.toLocaleString("en-US"),
+            });
+            this.showAddCustomer = false;
+            this.page = 1;
+          },
+          go(key) {
+            this.view = key;
+            this.showSidebarSheet = false;
+          },
+          removeNotification(id) {
+            this.notifications = this.notifications.filter((n) => n.id !== id);
+          },
+          clearNotifications() {
+            this.notifications = [];
+            this.notificationListShown = false;
+          },
+          setTheme(mode) {
+            this.settings.theme = mode;
+            Harmonia.setColorScheme(mode);
+          },
+
+          init() {
+            this.sidebarBreakpointListener = Harmonia.getBreakpointListener((matches) => {
+              this.isSmallScreen = matches;
+              if (matches) {
+                this.$refs.sidebarSheet.appendChild(this.$refs.sidebar);
+              } else if (this.$refs.sidebarSheet.firstElementChild) {
+                this.showSidebarSheet = false;
+                this.$el.appendChild(this.$refs.sidebar);
+              }
+            }, 1024);
+          },
+          destroy() {
+            this.sidebarBreakpointListener.remove();
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>

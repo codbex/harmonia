@@ -3,9 +3,11 @@ import alert from './components/alert';
 import avatar from './components/avatar';
 import badge from './components/badge';
 import breadcrumb from './components/breadcrumb';
+import bubble from './components/bubble';
 import button from './components/button';
 import calendar from './components/calendar';
 import card from './components/card';
+import carousel from './components/carousel';
 import chart from './components/chart';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
@@ -72,9 +74,11 @@ export {
   avatar as Avatar,
   badge as Badge,
   breadcrumb as Breadcrumb,
+  bubble as Bubble,
   button as Button,
   calendar as Calendar,
   card as Card,
+  carousel as Carousel,
   chart as Chart,
   checkbox as Checkbox,
   chip as Chip,
@@ -135,9 +139,11 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(avatar);
   registerPlugin(badge);
   registerPlugin(breadcrumb);
+  registerPlugin(bubble);
   registerPlugin(button);
   registerPlugin(calendar);
   registerPlugin(card);
+  registerPlugin(carousel);
   registerPlugin(chart);
   registerPlugin(checkbox);
   registerPlugin(chip);

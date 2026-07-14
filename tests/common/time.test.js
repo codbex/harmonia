@@ -1,5 +1,30 @@
 import { describe, expect, it } from 'vitest';
-import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, getSystemTime, partsToValue24 } from '../../src/common/time';
+import { dayPeriodLabels, formatDuration, formatTimeDisplay, getSelectedTime, getSystemTime, partsToValue24 } from '../../src/common/time';
+
+describe('formatDuration', () => {
+  it('formats seconds as m:ss', () => {
+    expect(formatDuration(0)).toBe('0:00');
+    expect(formatDuration(5)).toBe('0:05');
+    expect(formatDuration(65)).toBe('1:05');
+    expect(formatDuration(600)).toBe('10:00');
+  });
+
+  it('formats an hour or more as h:mm:ss', () => {
+    expect(formatDuration(3600)).toBe('1:00:00');
+    expect(formatDuration(3661)).toBe('1:01:01');
+  });
+
+  it('floors fractional seconds', () => {
+    expect(formatDuration(65.9)).toBe('1:05');
+  });
+
+  it('returns 0:00 for NaN, negative or non-finite input', () => {
+    expect(formatDuration(NaN)).toBe('0:00');
+    expect(formatDuration(-5)).toBe('0:00');
+    expect(formatDuration(Infinity)).toBe('0:00');
+    expect(formatDuration(undefined)).toBe('0:00');
+  });
+});
 
 describe('getSelectedTime', () => {
   it('parses 24-hour HH:mm', () => {

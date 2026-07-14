@@ -62,10 +62,12 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Avatar | Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic. | [avatar](references/avatar.md) |
 | Badge | Displays a short label used to convey the semantic status of an object. | [badge](references/badge.md) |
 | Breadcrumb | Displays the current page's location within a navigational hierarchy, helping users understand where they are and navigate back to parent pages. | [breadcrumb](references/breadcrumb.md) |
+| Bubble | A chat message bubble with left and right alignment, semantic color variants, and optional previews for image, audio, file and link attachments. | [bubble](references/bubble.md) |
 | Button | Buttons can trigger an action or navigate the user to another location. | [button](references/button.md) |
 | Button Group | Groups related buttons into a single container to present them as a unified set of actions. | [button-group](references/button-group.md) |
 | Calendar | A full multi-view event calendar with month, week, day, and year views. | [calendar](references/calendar.md) |
 | Card | A flexible container that organizes content into distinct sections, typically including a header, main content area, and footer. | [card](references/card.md) |
+| Carousel | A slideshow that cycles through a set of slides one at a time, with previous/next controls, indicator dots, keyboard navigation, wraparound looping, and optional autoplay. | [carousel](references/carousel.md) |
 | Checkbox | Allows users to select or deselect an option, representing a binary choice (true/false). | [checkbox](references/checkbox.md) |
 | Chip | A compact, interactive element used to represent an applied filter, a selected item, or a categorization. | [chip](references/chip.md) |
 | Date Picker | Allows users to enter a date either by typing it directly or by selecting it from a calendar popover. | [date-picker](references/date-picker.md) |

@@ -42,6 +42,13 @@ outline: deep
       <p class="text">Navigational trail showing the current page's location within the site hierarchy.</p>
     </div>
   </a>
+  <a href="./components/bubble" class="card">
+    <svg-icon class="card-media" src="./images/popover.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Bubble</h3>
+      <p class="text">Chat message bubble with alignment, semantic variants, attachment previews, and reactions.</p>
+    </div>
+  </a>
   <a href="./components/button" class="card">
     <svg-icon class="card-media" src="./images/button.svg"></svg-icon>
     <div class="card-content">
@@ -61,6 +68,13 @@ outline: deep
     <div class="card-content">
       <h3>Card</h3>
       <p class="text">Flexible content container designed to present grouped information.</p>
+    </div>
+  </a>
+  <a href="./components/carousel" class="card">
+    <svg-icon class="card-media" src="./images/tabs.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Carousel</h3>
+      <p class="text">Slideshow that cycles through slides with controls, indicators, keyboard nav, and optional autoplay.</p>
     </div>
   </a>
   <a href="./components/checkbox" class="card">

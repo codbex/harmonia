@@ -40,6 +40,8 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | chevrons-right | Chevrons right icon                    |
 | clock          | Clock icon                             |
 | search         | Search icon                            |
+| eye            | Show/Eye icon                          |
+| eye-off        | Hide/Eye off icon                      |
 | ellipsis       | Ellipsis icon                          |
 | minus          | Minus icon                             |
 | plus           | Plus icon                              |
@@ -47,13 +49,18 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | bell           | Bell icon                              |
 | trash          | Delete/Trash icon                      |
 | mail           | Mail icon                              |
+| inbox          | Inbox icon                             |
 | send           | Send icon                              |
 | export         | Export/Download icon                   |
 | import         | Import/Upload icon                     |
+| file           | File icon                              |
+| link           | Link icon                              |
 | edit           | Edit icon                              |
 | menu           | Menu icon                              |
 | reply          | Reply icon                             |
 | refresh        | Refresh icon                           |
+| play           | Play icon                              |
+| pause          | Pause icon                             |
 | circle-info    | Information icon in a circle           |
 | circle-warning | Warning icon in a circle               |
 | circle-error   | Error icon in a circle                 |
@@ -115,10 +122,14 @@ The icons below ship with Harmonia. Reference one by its name with `data-icon`, 
 <svg x-h-icon data-icon="send" role="img" aria-label="send"></svg>
 <svg x-h-icon data-icon="export" role="img" aria-label="export"></svg>
 <svg x-h-icon data-icon="import" role="img" aria-label="import"></svg>
+<svg x-h-icon data-icon="file" role="img" aria-label="file"></svg>
+<svg x-h-icon data-icon="link" role="img" aria-label="link"></svg>
 <svg x-h-icon data-icon="edit" role="img" aria-label="edit"></svg>
 <svg x-h-icon data-icon="menu" role="img" aria-label="menu"></svg>
 <svg x-h-icon data-icon="reply" role="img" aria-label="reply"></svg>
 <svg x-h-icon data-icon="refresh" role="img" aria-label="refresh"></svg>
+<svg x-h-icon data-icon="play" role="img" aria-label="play"></svg>
+<svg x-h-icon data-icon="pause" role="img" aria-label="pause"></svg>
 <svg x-h-icon data-icon="circle-info" role="img" aria-label="information"></svg>
 <svg x-h-icon data-icon="circle-warning" role="img" aria-label="warning"></svg>
 <svg x-h-icon data-icon="circle-error" role="img" aria-label="error"></svg>

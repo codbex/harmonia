@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress';
 import { version } from '../../package.json';
 
 const basePath = '/harmonia/'; // Also in component-container.js
+const siteUrl = 'https://codbex.com/harmonia/';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -29,6 +30,7 @@ export default defineConfig({
           { text: 'Dark Mode', link: '/dark-mode' },
           { text: 'Theme Customization', link: '/custom-themes' },
           { text: 'Theme Generator', link: '/theming/generator.html', target: '_self' },
+          { text: 'Coding Agents', link: '/agent-skill' },
         ],
       },
       {
@@ -40,9 +42,11 @@ export default defineConfig({
           { text: 'Avatar', link: '/components/avatar' },
           { text: 'Badge', link: '/components/badge' },
           { text: 'Breadcrumb', link: '/components/breadcrumb' },
+          { text: 'Bubble', link: '/components/bubble' },
           { text: 'Button', link: '/components/button' },
           { text: 'Button Group', link: '/components/button-group' },
           { text: 'Card', link: '/components/card' },
+          { text: 'Carousel', link: '/components/carousel' },
           { text: 'Checkbox', link: '/components/checkbox' },
           { text: 'Chip', link: '/components/chip' },
           // Date & time components grouped together
@@ -186,6 +190,19 @@ export default defineConfig({
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-i18next.js`, type: 'text/javascript' }],
     ['link', { href: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.css`, rel: 'stylesheet' }],
     ['link', { href: `${basePath}fonts.css`, rel: 'stylesheet' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Harmonia' }],
+    ['meta', { property: 'og:title', content: 'Harmonia - A Modern UI Component Library for Alpine.js' }],
+    ['meta', { property: 'og:description', content: 'Build polished, accessible interfaces in minutes. A comprehensive, beautifully themed component set that brings the power of Tailwind CSS to Alpine.js, with no build step required.' }],
+    ['meta', { property: 'og:url', content: siteUrl }],
+    ['meta', { property: 'og:image', content: `${siteUrl}preview.png` }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '628' }],
+    ['meta', { property: 'og:image:alt', content: 'Harmonia - A Modern UI Component Library for Alpine.js' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Harmonia - A Modern UI Component Library for Alpine.js' }],
+    ['meta', { name: 'twitter:description', content: 'Build polished, accessible interfaces in minutes. A comprehensive, beautifully themed component set that brings the power of Tailwind CSS to Alpine.js, with no build step required.' }],
+    ['meta', { name: 'twitter:image', content: `${siteUrl}preview.png` }],
   ],
   vue: {
     template: {
