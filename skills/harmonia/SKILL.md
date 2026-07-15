@@ -101,7 +101,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Sheet | The sheet component is a side panel that overlays the window content and is shown on one side of the screen. | [sheet](references/sheet.md) |
 | Sidebar | A vertical navigation panel used to present top-level application links or sections. | [sidebar](references/sidebar.md) |
 | Skeleton | A placeholder component used to indicate that content is loading. | [skeleton](references/skeleton.md) |
-| Slot Picker | An inline calendar that shows three consecutive days, each with a grid of selectable time slots. | [slot-picker](references/slot-picker.md) |
+| Slot Picker | An inline calendar that shows a configurable number of consecutive days (1 to 7, three by default), each with a vertical stack of selectable time slots. | [slot-picker](references/slot-picker.md) |
 | Spinner | A visual indicator that signals an ongoing operation or process. | [spinner](references/spinner.md) |
 | Step Indicator | Communicates progress through a sequence of steps, showing which steps are completed, which one is active, and which are still ahead. | [step-indicator](references/step-indicator.md) |
 | Switch | Allows users to toggle a binary state, such as true/false or on/off. | [switch](references/switch.md) |

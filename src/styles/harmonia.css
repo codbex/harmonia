@@ -200,6 +200,10 @@
 @source inline("ease-{out,linear}");
 @source inline("fill-none");
 
+/* Ring width for the slot-picker's color-matched selection ring (the ring
+   colors are literals in src/common/event-colors.js) */
+@source inline("ring-{0,1,2,4}");
+
 @source inline(
   "bg-{card,background,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground,sidebar}"
 );

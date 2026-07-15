@@ -488,7 +488,8 @@ describe('h-bubble-reactions', () => {
     expect(el.classList.contains('bg-background')).toBe(true);
     expect(el.classList.contains('shadow-sm')).toBe(true);
     expect(el.classList.contains('[&>button]:cursor-pointer')).toBe(true);
-    expect(el.classList.contains('[&>button]:hover:bg-muted')).toBe(true);
+    expect(el.classList.contains('[&>button]:hover:bg-secondary-hover')).toBe(true);
+    expect(el.classList.contains('[&>button]:active:bg-secondary-active')).toBe(true);
   });
 
   it('sets data-slot="bubble-reactions"', () => {

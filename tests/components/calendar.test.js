@@ -260,6 +260,22 @@ describe('h-calendar', () => {
       expect(pill.getAttribute('aria-label')).toContain('unconfirmed');
     });
 
+    it('includes rejected status in the event label', () => {
+      const events = [{ id: '1', title: 'Declined', start: '2026-06-18T10:00:00', end: '2026-06-18T11:00:00', status: 'rejected' }];
+      mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2026-06-18', events }) });
+      const pill = Array.from(el.querySelectorAll('button')).find((b) => (b.getAttribute('aria-label') || '').startsWith('Declined'));
+      expect(pill.getAttribute('aria-label')).toContain('rejected');
+    });
+
+    it('renders a rejected event pill as a dashed outline (no fill)', () => {
+      const events = [{ id: '1', title: 'Declined', start: '2026-06-18T10:00:00', end: '2026-06-18T11:00:00', color: 'blue', status: 'rejected' }];
+      mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2026-06-18', events }) });
+      const pill = Array.from(el.querySelectorAll('button')).find((b) => (b.getAttribute('aria-label') || '').startsWith('Declined'));
+      expect(pill.className).toContain('border-blue-500');
+      expect(pill.className).toContain('border-dashed');
+      expect(pill.className).not.toContain('bg-blue-500');
+    });
+
     it('year view: mini-month titles are buttons and each month is a grid', () => {
       mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'year', date: '2026-01-01' }) });
       const titleBtns = Array.from(el.querySelectorAll('button')).filter((b) => /\b\d{4}$/.test(b.getAttribute('aria-label') || ''));

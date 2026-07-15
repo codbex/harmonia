@@ -1,5 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, toDateString } from '../common/calendar';
+import { colorClasses } from '../common/event-colors';
 import { ChevronDown, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { createDateTimeFormatCache } from '../common/intl';
 import uuidv4 from '../utils/uuid';
@@ -264,24 +265,6 @@ export default function (Alpine) {
       return new Date(str);
     }
 
-    const EVENT_COLORS = {
-      blue: { filled: ['bg-blue-500', 'text-white'], outlined: ['border', 'border-blue-500', 'text-blue-600'] },
-      red: { filled: ['bg-red-500', 'text-white'], outlined: ['border', 'border-red-500', 'text-red-600'] },
-      green: { filled: ['bg-green-500', 'text-white'], outlined: ['border', 'border-green-500', 'text-green-600'] },
-      yellow: { filled: ['bg-yellow-300', 'text-foreground'], outlined: ['border', 'border-yellow-300', 'text-yellow-600'] },
-      purple: { filled: ['bg-purple-500', 'text-white'], outlined: ['border', 'border-purple-500', 'text-purple-600'] },
-      pink: { filled: ['bg-pink-400', 'text-white'], outlined: ['border', 'border-pink-400', 'text-pink-600'] },
-      indigo: { filled: ['bg-indigo-500', 'text-white'], outlined: ['border', 'border-indigo-500', 'text-indigo-600'] },
-      orange: { filled: ['bg-orange-400', 'text-white'], outlined: ['border', 'border-orange-400', 'text-orange-600'] },
-      gray: { filled: ['bg-gray-400', 'text-white'], outlined: ['border', 'border-gray-400', 'text-gray-600'] },
-      teal: { filled: ['bg-teal-400', 'text-white'], outlined: ['border', 'border-teal-400', 'text-teal-600'] },
-    };
-
-    function colorClasses(color, status) {
-      const palette = EVENT_COLORS[color] || EVENT_COLORS.blue;
-      return status === 'unconfirmed' ? palette.outlined : palette.filled;
-    }
-
     function normalizeEvent(ev) {
       const startDate = parseEventDate(ev.start) || new Date();
       const rawEnd = parseEventDate(ev.end);
@@ -291,7 +274,7 @@ export default function (Alpine) {
         ...ev,
         id: ev.id ?? `cal-ev-${Math.random().toString(36).slice(2)}`,
         color: ev.color || 'blue',
-        status: ev.status === 'unconfirmed' ? 'unconfirmed' : 'confirmed',
+        status: ev.status === 'unconfirmed' || ev.status === 'rejected' ? ev.status : 'confirmed',
         startDate,
         endDate,
         allDay: ev.allDay ?? false,
@@ -306,7 +289,7 @@ export default function (Alpine) {
         const timeFmt = dtf(locale, { hour: 'numeric', minute: '2-digit' });
         parts.push(`${timeFmt.format(ev.startDate)} to ${timeFmt.format(ev.endDate)}`);
       }
-      if (ev.status === 'unconfirmed') parts.push('unconfirmed');
+      if (ev.status === 'unconfirmed' || ev.status === 'rejected') parts.push(ev.status);
       return parts.join(', ');
     }
 

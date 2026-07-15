@@ -71,7 +71,7 @@ outline: deep
     </div>
   </a>
   <a href="./components/carousel" class="card">
-    <svg-icon class="card-media" src="./images/tabs.svg"></svg-icon>
+    <svg-icon class="card-media" src="./images/carousel.svg"></svg-icon>
     <div class="card-content">
       <h3>Carousel</h3>
       <p class="text">Slideshow that cycles through slides with controls, indicators, keyboard nav, and optional autoplay.</p>

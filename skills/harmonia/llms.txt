@@ -48,7 +48,7 @@
 - [Sheet](references/sheet.md): The sheet component is a side panel that overlays the window content and is shown on one side of the screen.
 - [Sidebar](references/sidebar.md): A vertical navigation panel used to present top-level application links or sections.
 - [Skeleton](references/skeleton.md): A placeholder component used to indicate that content is loading.
-- [Slot Picker](references/slot-picker.md): An inline calendar that shows three consecutive days, each with a grid of selectable time slots.
+- [Slot Picker](references/slot-picker.md): An inline calendar that shows a configurable number of consecutive days (1 to 7, three by default), each with a vertical stack of selectable time slots.
 - [Spinner](references/spinner.md): A visual indicator that signals an ongoing operation or process.
 - [Step Indicator](references/step-indicator.md): Communicates progress through a sequence of steps, showing which steps are completed, which one is active, and which are still ahead.
 - [Switch](references/switch.md): Allows users to toggle a binary state, such as true/false or on/off.

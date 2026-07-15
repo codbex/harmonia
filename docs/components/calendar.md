@@ -76,16 +76,16 @@ Pass a configuration object to the directive as an expression.
 
 Each item in the `events` array supports the following fields:
 
-| Field       | Type    | Required | Description                                                                                                  |
-| ----------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------ |
-| id          | string  | false    | Unique identifier for the event. Auto-generated if omitted.                                                  |
-| title       | string  | true     | Display title of the event.                                                                                  |
-| start       | string  | true     | Start datetime as an ISO string (`"YYYY-MM-DDTHH:MM:SS"`) or date (`"YYYY-MM-DD"` for all-day).              |
-| end         | string  | false    | End datetime. Defaults to `start`. For all-day events, defaults to end of the start day.                     |
-| allDay      | boolean | false    | When `true`, the event appears in the all-day strip of week/day views. Defaults to `false`.                  |
-| color       | string  | false    | Color key: `blue` (default), `red`, `green`, `yellow`, `purple`, `pink`, `indigo`, `orange`, `gray`, `teal`. |
-| status      | string  | false    | Pill style: `confirmed` (default) renders a filled pill and `unconfirmed` renders an outlined pill.          |
-| description | string  | false    | Shown as a tooltip on event pills.                                                                           |
+| Field       | Type    | Required | Description                                                                                                                                                    |
+| ----------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id          | string  | false    | Unique identifier for the event. Auto-generated if omitted.                                                                                                    |
+| title       | string  | true     | Display title of the event.                                                                                                                                    |
+| start       | string  | true     | Start datetime as an ISO string (`"YYYY-MM-DDTHH:MM:SS"`) or date (`"YYYY-MM-DD"` for all-day).                                                                |
+| end         | string  | false    | End datetime. Defaults to `start`. For all-day events, defaults to end of the start day.                                                                       |
+| allDay      | boolean | false    | When `true`, the event appears in the all-day strip of week/day views. Defaults to `false`.                                                                    |
+| color       | string  | false    | Color key: `blue` (default), `red`, `green`, `yellow`, `purple`, `pink`, `indigo`, `orange`, `gray`, `teal`.                                                   |
+| status      | string  | false    | Pill style: `confirmed` (default) renders a filled pill, `unconfirmed` renders an outlined pill, and `rejected` renders an outlined pill with a dashed border. |
+| description | string  | false    | Shown as a tooltip on event pills.                                                                                                                             |
 
 ## Examples
 
@@ -107,6 +107,7 @@ Each item in the `events` array supports the following fields:
         { id: '2', title: 'Company Meeting', start: today + 'T10:00:00', end: today + 'T11:00:00', status: 'unconfirmed', color: 'blue' },
         { id: '3', title: 'All Hands', start: today, allDay: true, color: 'green' },
         { id: '4', title: 'Off-site', start: today + 'T08:00:00', end: tomorrow + 'T18:00:00', color: 'purple' },
+        { id: '5', title: 'Vendor Call', start: today + 'T13:00:00', end: today + 'T14:00:00', status: 'rejected', color: 'red' },
       ],
     };
   }
