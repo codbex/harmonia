@@ -1,5 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
-import { createCalendarWidget, parseDateValue, toDateString } from '../common/calendar';
+import { createCalendarWidget, forwardCalendarNavAria, parseDateValue, toDateString } from '../common/calendar';
 import { eventInsidePicker, setupPopover, setupTrigger } from '../common/picker-popover';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, getSystemTime, pad2, partsToValue24 } from '../common/time';
 import uuidv4 from '../utils/uuid';
@@ -214,6 +214,9 @@ export default function (Alpine) {
     const calendarEl = document.createElement('div');
     calendarEl.classList.add('vbox');
     el.appendChild(calendarEl);
+    // Forward the popup's calendar nav labels onto the calendar element so the widget's
+    // prev/next month/year buttons can be localized. Without this they fall back to English.
+    forwardCalendarNavAria(el, calendarEl);
 
     const widget = createCalendarWidget('x-h-datetime-picker-popup', calendarEl, {
       Alpine,

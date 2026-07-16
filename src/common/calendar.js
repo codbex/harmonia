@@ -98,6 +98,17 @@ export function nextFocusDate(date, key) {
   }
 }
 
+// The four navigation-button aria-labels createCalendarWidget reads off the element it
+// builds into (the previous/next month and year buttons). Components that build the widget
+// into an internal element rather than a consumer-supplied one (slot-picker, datetime-picker)
+// forward these from the element the author sets them on, so the buttons localize instead of
+// using their English defaults.
+export function forwardCalendarNavAria(from, to) {
+  for (const attr of ['data-aria-prev-year', 'data-aria-prev-month', 'data-aria-next-month', 'data-aria-next-year']) {
+    if (from.hasAttribute(attr)) to.setAttribute(attr, from.getAttribute(attr));
+  }
+}
+
 /**
  * Builds the full calendar DOM (header nav buttons + 6×7 table) inside `el`,
  * wires up all shared state and logic, and returns a controller object.

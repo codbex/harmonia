@@ -9,7 +9,7 @@ vi.mock('@floating-ui/dom', () => ({
 }));
 
 import slotPickerPlugin from '../../src/components/slot-picker.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: false, addListener: vi.fn(), removeListener: vi.fn() }));
 
@@ -36,9 +36,11 @@ describe('h-slot-picker', () => {
     return { evaluateLater: () => (cb) => cb(config) };
   }
 
-  it('registers h-slot-picker directive', () => {
+  it('registers h-slot-picker and its control directives', () => {
     const { alpine } = mount();
-    expect(alpine._directives['h-slot-picker']).toBeDefined();
+    ['h-slot-picker', 'h-slot-picker-previous', 'h-slot-picker-next', 'h-slot-picker-today', 'h-slot-picker-title', 'h-slot-picker-calendar'].forEach((name) => {
+      expect(alpine._directives[name]).toBeDefined();
+    });
   });
 
   it('adds flex and relative classes', () => {
@@ -47,20 +49,25 @@ describe('h-slot-picker', () => {
     expect(el.classList.contains('relative')).toBe(true);
   });
 
-  it('renders toolbar with Previous, Today, and Next buttons', () => {
-    mount();
-    const labels = Array.from(el.querySelectorAll('button')).map((b) => b.getAttribute('aria-label') || b.textContent.trim());
-    expect(labels).toContain('Previous');
-    expect(labels).toContain('Next');
-    expect(labels.some((l) => l === 'Today')).toBe(true);
+  it('exposes a navigation API on el._h_slot_picker and renders no toolbar of its own', () => {
+    mount('config', withConfig({ date: FIXED_DATE }));
+    const api = el._h_slot_picker;
+    expect(typeof api.previous).toBe('function');
+    expect(typeof api.next).toBe('function');
+    expect(typeof api.today).toBe('function');
+    expect(typeof api.registerCalendar).toBe('function');
+    expect(api).toHaveProperty('title');
+    expect(api).toHaveProperty('canPrev');
+    expect(api).toHaveProperty('canNext');
+    expect(api).toHaveProperty('calendarControlsId');
+    // The consumer owns the toolbar: the picker builds no title control and no calendar trigger.
+    expect(el.querySelector('[data-slot="slot-picker-title"]')).toBeNull();
+    expect(Array.from(el.querySelectorAll('button')).some((b) => b.getAttribute('aria-haspopup') === 'dialog')).toBe(false);
   });
 
-  it('renders a period label with aria-live="polite"', () => {
+  it('computes a period title in the navigation API', () => {
     mount('config', withConfig({ date: FIXED_DATE }));
-    const h2 = el.querySelector('h2');
-    expect(h2).toBeTruthy();
-    expect(h2.getAttribute('aria-live')).toBe('polite');
-    expect(h2.textContent.length).toBeGreaterThan(0);
+    expect(el._h_slot_picker.title.length).toBeGreaterThan(0);
   });
 
   it('renders 3 day columns with headers', () => {
@@ -328,41 +335,41 @@ describe('h-slot-picker', () => {
   });
 
   describe('start and end day bounds', () => {
-    const prevBtn = () => el.querySelector('button[aria-label="Previous"]');
-    const nextBtn = () => el.querySelector('button[aria-label="Next"]');
+    const canPrev = () => el._h_slot_picker.canPrev;
+    const canNext = () => el._h_slot_picker.canNext;
 
-    it('leaves both nav buttons enabled when no bounds are set', () => {
+    it('reports both directions navigable when no bounds are set', () => {
       mount('config', withConfig({ date: FIXED_DATE }));
-      expect(prevBtn().disabled).toBe(false);
-      expect(nextBtn().disabled).toBe(false);
+      expect(canPrev()).toBe(true);
+      expect(canNext()).toBe(true);
     });
 
-    it('disables the previous button at the start day', () => {
+    it('reports canPrev false at the start day', () => {
       // Window starts on FIXED_DATE, which is the earliest allowed day.
       mount('config', withConfig({ date: FIXED_DATE, minDate: FIXED_DATE }));
-      expect(prevBtn().disabled).toBe(true);
-      expect(nextBtn().disabled).toBe(false);
+      expect(canPrev()).toBe(false);
+      expect(canNext()).toBe(true);
     });
 
-    it('disables the next button when the end day is the last visible day', () => {
+    it('reports canNext false when the end day is the last visible day', () => {
       // FIXED_DATE window shows 22/23/24; end day 24 is the last visible day.
       mount('config', withConfig({ date: FIXED_DATE, maxDate: '2026-06-24' }));
-      expect(nextBtn().disabled).toBe(true);
-      expect(prevBtn().disabled).toBe(false);
+      expect(canNext()).toBe(false);
+      expect(canPrev()).toBe(true);
     });
 
     it('clamps the window forward so it never starts before the start day', () => {
       mount('config', withConfig({ date: '2026-06-20', minDate: FIXED_DATE }));
       // Window is pulled forward to begin on the start day (22nd).
-      expect(el.querySelector('h2').textContent).toContain('22');
-      expect(prevBtn().disabled).toBe(true);
+      expect(el._h_slot_picker.title).toContain('22');
+      expect(canPrev()).toBe(false);
     });
 
     it('clamps the window back so its last day never exceeds the end day', () => {
       mount('config', withConfig({ date: '2026-06-30', maxDate: '2026-06-24' }));
       // Window is pulled back so the last of the three days is the end day (24th).
-      expect(el.querySelector('h2').textContent).toContain('24');
-      expect(nextBtn().disabled).toBe(true);
+      expect(el._h_slot_picker.title).toContain('24');
+      expect(canNext()).toBe(false);
     });
 
     it('marks days outside the bounds as unavailable when the range is narrower than the window', () => {
@@ -377,9 +384,9 @@ describe('h-slot-picker', () => {
 
     it('treats start and end days independently', () => {
       mount('config', withConfig({ date: FIXED_DATE, minDate: '2026-06-01', maxDate: '2026-12-31' }));
-      // Neither edge is reached, so both buttons stay enabled.
-      expect(prevBtn().disabled).toBe(false);
-      expect(nextBtn().disabled).toBe(false);
+      // Neither edge is reached, so both directions stay navigable.
+      expect(canPrev()).toBe(true);
+      expect(canNext()).toBe(true);
     });
   });
 
@@ -459,34 +466,179 @@ describe('h-slot-picker', () => {
   });
 
   describe('calendar popover', () => {
-    const calButton = () => Array.from(el.querySelectorAll('button')).find((b) => b.getAttribute('aria-haspopup') === 'dialog');
+    // The consumer supplies the calendar trigger; it registers with the picker, which
+    // owns the popover. Mount the parent, then mount an x-h-slot-picker-calendar button.
+    function mountCalendar(attrs = {}) {
+      const btn = document.createElement('button');
+      Object.entries(attrs).forEach(([k, v]) => btn.setAttribute(k, v));
+      el.appendChild(btn);
+      mountDirective(slotPickerPlugin, 'h-slot-picker-calendar', btn, { original: 'h-slot-picker-calendar' });
+      return btn;
+    }
 
-    it('renders a calendar button wired to a dialog popover', () => {
+    it('does not create the calendar popover until a trigger registers', () => {
       mount('config', withConfig({ date: FIXED_DATE }));
-      const btn = calButton();
-      expect(btn).toBeTruthy();
-      expect(btn.getAttribute('aria-label')).toBe('Choose date');
+      // No calendar control: the picker builds no popover or month grid.
+      expect(el.querySelector('[data-slot="slot-picker-calendar"]')).toBeNull();
+      mountCalendar({ 'aria-label': 'Choose date' });
+      expect(el.querySelector('[data-slot="slot-picker-calendar"]')).not.toBeNull();
+    });
+
+    it('wires a registered calendar trigger to the dialog popover', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const btn = mountCalendar({ 'aria-label': 'Choose date' });
+      expect(btn.getAttribute('aria-haspopup')).toBe('dialog');
       const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
       expect(popover.getAttribute('role')).toBe('dialog');
       expect(btn.getAttribute('aria-controls')).toBe(popover.getAttribute('id'));
       expect(popover.classList.contains('hidden')).toBe(true);
     });
 
-    it('honors a custom data-aria-calendar label', () => {
-      el.setAttribute('data-aria-calendar', 'Pick a start day');
+    it('names the dialog via aria-labelledby pointing at the trigger, generating an id when absent', () => {
       mount('config', withConfig({ date: FIXED_DATE }));
-      expect(calButton().getAttribute('aria-label')).toBe('Pick a start day');
+      const btn = mountCalendar({ 'aria-label': 'Pick a start day' });
+      expect(btn.id).toBeTruthy();
+      const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
+      expect(popover.getAttribute('aria-labelledby')).toBe(btn.id);
+      expect(popover.hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('reuses a consumer-supplied id on the trigger for aria-labelledby', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const btn = mountCalendar({ id: 'my-cal', 'aria-label': 'Pick a start day' });
+      expect(btn.id).toBe('my-cal');
+      const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
+      expect(popover.getAttribute('aria-labelledby')).toBe('my-cal');
     });
 
     it('jumps the first day when a date is picked from the calendar', () => {
       mount('config', withConfig({ date: FIXED_DATE }));
-      calButton().click();
+      const btn = mountCalendar({ 'aria-label': 'Choose date' });
+      btn.click();
       const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
       const day10 = popover.querySelector('td[data-day="10"]');
       expect(day10).toBeTruthy();
       day10.click();
-      // The slot-picker heading (first h2) now starts on the 10th.
-      expect(el.querySelector('h2').textContent).toContain('10');
+      // The picker's period title now starts on the 10th.
+      expect(el._h_slot_picker.title).toContain('10');
+    });
+
+    it('forwards the host data-aria-* labels onto the popover calendar nav buttons', () => {
+      el.setAttribute('data-aria-prev-year', 'Go back a year');
+      el.setAttribute('data-aria-prev-month', 'Go back a month');
+      el.setAttribute('data-aria-next-month', 'Go forward a month');
+      el.setAttribute('data-aria-next-year', 'Go forward a year');
+      mount('config', withConfig({ date: FIXED_DATE }));
+      mountCalendar({ 'aria-label': 'Choose date' });
+      const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
+      const labels = Array.from(popover.querySelectorAll('button')).map((b) => b.getAttribute('aria-label'));
+      expect(labels).toEqual(expect.arrayContaining(['Go back a year', 'Go back a month', 'Go forward a month', 'Go forward a year']));
+    });
+
+    it('falls back to default English nav labels when the host sets none', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      mountCalendar({ 'aria-label': 'Choose date' });
+      const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
+      const labels = Array.from(popover.querySelectorAll('button')).map((b) => b.getAttribute('aria-label'));
+      expect(labels).toEqual(expect.arrayContaining(['previous year', 'previous month', 'next month', 'next year']));
+    });
+  });
+
+  describe('toolbar control directives', () => {
+    // A reactive stand-in for the picker API that the controls locate via el._h_slot_picker.
+    function withPicker(overrides = {}) {
+      const api = createMockAlpine().reactive({
+        title: 'June',
+        canPrev: true,
+        canNext: true,
+        calendarControlsId: 'cal-1',
+        previous: vi.fn(),
+        next: vi.fn(),
+        today: vi.fn(),
+        registerCalendar: vi.fn(),
+        ...overrides,
+      });
+      el._h_slot_picker = api;
+      return api;
+    }
+    function mountControl(name, controlEl) {
+      return mountDirective(slotPickerPlugin, name, controlEl, { original: name });
+    }
+    function childButton() {
+      const b = document.createElement('button');
+      el.appendChild(b);
+      return b;
+    }
+
+    it('controls throw when mounted outside a slot picker', () => {
+      const orphan = document.createElement('button');
+      document.body.appendChild(orphan);
+      ['h-slot-picker-previous', 'h-slot-picker-next', 'h-slot-picker-today', 'h-slot-picker-title', 'h-slot-picker-calendar'].forEach((name) => {
+        expect(() => mountControl(name, orphan)).toThrow();
+      });
+    });
+
+    it('previous control click calls api.previous', () => {
+      const api = withPicker();
+      const btn = childButton();
+      mountControl('h-slot-picker-previous', btn);
+      btn.click();
+      expect(api.previous).toHaveBeenCalledTimes(1);
+    });
+
+    it('next control click calls api.next', () => {
+      const api = withPicker();
+      const btn = childButton();
+      mountControl('h-slot-picker-next', btn);
+      btn.click();
+      expect(api.next).toHaveBeenCalledTimes(1);
+    });
+
+    it('today control click calls api.today', () => {
+      const api = withPicker();
+      const btn = childButton();
+      mountControl('h-slot-picker-today', btn);
+      btn.click();
+      expect(api.today).toHaveBeenCalledTimes(1);
+    });
+
+    it('previous control reflects canPrev on disabled and updates reactively', () => {
+      const api = withPicker({ canPrev: true });
+      const btn = childButton();
+      mountControl('h-slot-picker-previous', btn);
+      expect(btn.disabled).toBe(false);
+      expect(btn.getAttribute('aria-disabled')).toBe('false');
+      api.canPrev = false;
+      expect(btn.disabled).toBe(true);
+      expect(btn.getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('next control reflects canNext on disabled and updates reactively', () => {
+      const api = withPicker({ canNext: false });
+      const btn = childButton();
+      mountControl('h-slot-picker-next', btn);
+      expect(btn.disabled).toBe(true);
+      api.canNext = true;
+      expect(btn.disabled).toBe(false);
+    });
+
+    it('title control renders api.title with aria-live and updates reactively', () => {
+      const api = withPicker({ title: 'June 22' });
+      const h2 = document.createElement('h2');
+      el.appendChild(h2);
+      mountControl('h-slot-picker-title', h2);
+      expect(h2.textContent).toBe('June 22');
+      expect(h2.getAttribute('aria-live')).toBe('polite');
+      expect(h2.getAttribute('data-slot')).toBe('slot-picker-title');
+      api.title = 'June 27';
+      expect(h2.textContent).toBe('June 27');
+    });
+
+    it('calendar control registers itself with the picker', () => {
+      const api = withPicker();
+      const btn = childButton();
+      mountControl('h-slot-picker-calendar', btn);
+      expect(api.registerCalendar).toHaveBeenCalledWith(btn, expect.objectContaining({ effect: expect.any(Function), cleanup: expect.any(Function) }));
     });
   });
 
@@ -515,14 +667,14 @@ describe('h-slot-picker', () => {
     it('moves the window by the configured number of days on next', () => {
       mount('config', withConfig({ date: FIXED_DATE, days: 5 }));
       // 22 + 5 = 27
-      el.querySelector('button[aria-label="Next"]').click();
-      expect(el.querySelector('h2').textContent).toContain('27');
+      el._h_slot_picker.next();
+      expect(el._h_slot_picker.title).toContain('27');
     });
 
-    it('disables next when the end day is the last of N visible days', () => {
+    it('reports canNext false when the end day is the last of N visible days', () => {
       // days:5 from the 22nd shows 22..26; end day 26 is the last visible day.
       mount('config', withConfig({ date: FIXED_DATE, days: 5, maxDate: '2026-06-26' }));
-      expect(el.querySelector('button[aria-label="Next"]').disabled).toBe(true);
+      expect(el._h_slot_picker.canNext).toBe(false);
     });
   });
 

@@ -1,5 +1,43 @@
 # Changelog
 
+## v2.5.0
+
+A release that adds two new components - a chat-style **Bubble** and a **Carousel** - and reworks the **Slot Picker** so you compose its toolbar yourself from small control directives. The Slot Picker also gains colored slots, selectable sub-slot tiles, a configurable day count, and an optional now indicator, and the Calendar gains a rejected event status. The breaking changes are all in the Slot Picker: it no longer renders a toolbar of its own, its host-level label attributes were removed, and the slot `icons` shape changed. See "Slot Picker" below to migrate.
+
+### New component: Bubble
+
+- **Bubble** (`x-h-bubble`) - a chat message surface with left or right alignment (`data-align`) and six semantic color variants (`data-variant`: primary, secondary, warning, negative, outline, transparent), both reactive at runtime. You compose a message from optional parts placed inside it: `x-h-bubble-header`, `x-h-bubble-content`, `x-h-bubble-footer`, an image (`x-h-bubble-image`, which requires `alt`), a two-column `x-h-bubble-gallery` with a `x-h-bubble-gallery-more` "+N" overlay, a file attachment (`x-h-bubble-file`), a link preview (`x-h-bubble-link`), and a `x-h-bubble-reactions` pill that overlaps the bubble edge and flips side with the alignment.
+- **Audio attachments** - `x-h-bubble-audio` turns any `<audio>` into a custom, accessible player with a play/pause button and a `role="slider"` seek track that shows the current and total time. The slider is keyboard operable (Left/Right and Up/Down seek by five seconds, Home and End jump to the start and end) and supports pointer dragging, and its labels are localizable (`data-play-label`, `data-pause-label`, `data-label`).
+
+### New component: Carousel
+
+- **Carousel** (`x-h-carousel`) - a horizontal slideshow that shows one slide at a time with wraparound looping. Compose it from `x-h-carousel-content` (the track), one `x-h-carousel-item` per slide, `x-h-carousel-control` buttons with a `.previous` or `.next` modifier, and an `x-h-carousel-indicators` container that generates one dot per slide. Configure it with `data-autoplay`, `data-interval` (default 5000ms), `data-loop`, `data-start`, and `data-label`.
+- Full keyboard support (Left/Right move between slides, Home/End jump to the first and last), a `region` role with `aria-roledescription="carousel"`, per-slide `group` roles, and controls that disable themselves at the ends when looping is off. Autoplay pauses automatically on hover and focus, slide transitions honor the reduced-motion preference, and a `change` event fires on the host with the new slide index in `event.detail.value`.
+
+### Slot Picker
+
+- **Breaking: you now compose the toolbar.** The Slot Picker renders only the day grid - it no longer builds its own toolbar. Build one from an `x-h-toolbar` wrapping the new control directives, each on an ordinary `x-h-button` that supplies the icon, label, and styling while the directive supplies the behavior: `x-h-slot-picker-previous` and `x-h-slot-picker-next` (page the window and disable at the `minDate` / `maxDate` bounds), `x-h-slot-picker-today` (return to the current day), `x-h-slot-picker-title` (the current period heading, an `aria-live` region), and `x-h-slot-picker-calendar` (opens a calendar popover to jump to any date). Each control must be a descendant of `x-h-slot-picker`.
+- **Breaking: host label attributes removed.** Because you now own the buttons, `data-aria-prev`, `data-aria-next`, `data-aria-calendar`, and `data-today-label` were removed - put an `aria-label` or visible text on your own buttons instead. `data-unavailable-label` is the only host label attribute that remains. The calendar popover is now built lazily, only when a `x-h-slot-picker-calendar` control is present, and takes its accessible name from that control through `aria-labelledby` (generating an id when the button has none, reusing a consumer-supplied one).
+- **Breaking: the slot `icons` shape changed.** Corner badges are now `icons: { left, right }`, each an optional array of `{ url, alt }` shown in the top-left and top-right corners. The old `icon: { url, alt }` and flat `icons: [...]` (top-right only) are gone.
+- **Configurable window** - a `days` config key (default 3, up to 7) sets how many days are visible, and the previous and next controls page by that amount.
+- **Now indicator** - a `showNowIndicator` config key draws a red current-time line in today's column that repositions itself and survives midnight.
+- **Colored slots** - slots accept `color`, `status` (`confirmed`, `unconfirmed`, or `rejected`), `description`, and `note`. A colored slot keeps its color when unavailable and shows a color-matched ring when selected, a rejected slot renders with a dashed outline, and the palette matches the Calendar.
+- **Sub-slot tiles** - a slot can carry a `tiles` array of individually selectable cells grouped under the slot's time label.
+- **Richer `slot-click`** - `event.detail.slot` now also carries `description`, `note`, `color`, `status`, `key`, and `tileIndex`.
+
+### Component enhancements
+
+- **Calendar** - events accept a new `rejected` status, rendered as an outlined pill with a dashed border and announced as "rejected" to assistive technology, alongside the existing `confirmed` and `unconfirmed` statuses.
+
+### New icons
+
+- `file`, `link`, `play`, and `pause`, with the matching `File`, `Link`, `Play`, and `Pause` ESM constants.
+
+### Documentation
+
+- New **Coding Agents** page documenting the agent-readable skill that ships inside the package and the Claude Code plugin, so coding agents reach for the right `x-h-*` directives.
+- Bubble and Carousel were added to the components list and navigation, and the docs site gained social preview cards (OpenGraph and Twitter metadata).
+
 ## v2.4.0
 
 A release that adds two new date pickers - Month Picker and Week Picker - and makes the number input and the date and time pickers behave well inside table cells. It also fixes step indicators whose steps are generated dynamically. The only breaking change is the removal of the custom `position-fit` utility, which is replaced by the standard `inset-0` class.

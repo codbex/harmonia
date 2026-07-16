@@ -1,6 +1,6 @@
-import { createCalendarWidget, isToday, toDateString } from '../common/calendar';
+import { findAncestorState } from '../common/ancestor';
+import { createCalendarWidget, forwardCalendarNavAria, isToday, toDateString } from '../common/calendar';
 import { colorClasses, EVENT_COLORS, ringClass } from '../common/event-colors';
-import { Calendar, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { createDateTimeFormatCache } from '../common/intl';
 import { eventInsidePicker, setupPopover } from '../common/picker-popover';
 import { minsToTime, timeToMins } from '../common/time';
@@ -32,55 +32,32 @@ export default function (Alpine) {
     let maxDate = null;
     let showNowIndicator = false;
 
-    // Toolbar
-    const toolbar = document.createElement('div');
-    toolbar.classList.add('flex', 'items-center', 'p-1', 'border-b', 'flex-none', 'gap-2');
-
-    const prevBtn = document.createElement('button');
-    prevBtn.type = 'button';
-    prevBtn.setAttribute(Alpine.prefixed('h-button'), '');
-    prevBtn.setAttribute('data-variant', 'transparent');
-    prevBtn.setAttribute('data-size', 'icon');
-    prevBtn.setAttribute('aria-label', el.getAttribute('data-aria-prev') || 'Previous');
-    prevBtn.appendChild(createSvg({ icon: ChevronLeft, classes: 'size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': 'true', role: 'presentation' } }));
-
-    const todayBtn = document.createElement('button');
-    todayBtn.type = 'button';
-    todayBtn.textContent = el.getAttribute('data-today-label') || 'Today';
-    todayBtn.setAttribute(Alpine.prefixed('h-button'), '');
-    todayBtn.setAttribute('data-variant', 'outline');
-
-    const nextBtn = document.createElement('button');
-    nextBtn.type = 'button';
-    nextBtn.setAttribute(Alpine.prefixed('h-button'), '');
-    nextBtn.setAttribute('data-variant', 'transparent');
-    nextBtn.setAttribute('data-size', 'icon');
-    nextBtn.setAttribute('aria-label', el.getAttribute('data-aria-next') || 'Next');
-    nextBtn.appendChild(createSvg({ icon: ChevronRight, classes: 'size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': 'true', role: 'presentation' } }));
-
-    const navGroup = document.createElement('div');
-    navGroup.classList.add('flex', 'items-center', 'gap-1');
-    navGroup.append(prevBtn, todayBtn, nextBtn);
-
-    const periodLabel = document.createElement('h2');
-    periodLabel.classList.add('flex-1', 'text-sm', 'font-semibold', 'text-center');
-    periodLabel.setAttribute('aria-live', 'polite');
-
+    // The picker renders no toolbar of its own. Consumers compose one from an
+    // x-h-toolbar wrapping the x-h-slot-picker-* control directives, which reach
+    // this shared API. Publish it before anything else so child directives find
+    // it when Alpine initializes them after this parent.
     const calControls = `hspc${uuidv4()}`;
-    const calBtn = document.createElement('button');
-    calBtn.type = 'button';
-    calBtn.setAttribute(Alpine.prefixed('h-button'), '');
-    calBtn.setAttribute('data-variant', 'transparent');
-    calBtn.setAttribute('data-size', 'icon');
-    calBtn.setAttribute('aria-label', el.getAttribute('data-aria-calendar') || 'Choose date');
-    calBtn.setAttribute('aria-haspopup', 'dialog');
-    calBtn.setAttribute('aria-expanded', 'false');
-    calBtn.setAttribute('aria-controls', calControls);
-    calBtn.appendChild(createSvg({ icon: Calendar, classes: 'size-4 shrink-0 pointer-events-none', attrs: { 'aria-hidden': 'true', role: 'presentation' } }));
+    let calAnchor = null;
 
-    toolbar.append(navGroup, periodLabel, calBtn);
-    el.appendChild(toolbar);
-    Alpine.initTree(toolbar);
+    const state = Alpine.reactive({ title: '', canPrev: true, canNext: true });
+    state.calendarControlsId = calControls;
+    state.previous = () => {
+      currentDate = addDays(currentDate, -dayCount);
+      clampCurrentDate();
+      render();
+    };
+    state.next = () => {
+      currentDate = addDays(currentDate, dayCount);
+      clampCurrentDate();
+      render();
+    };
+    state.today = () => {
+      currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      clampCurrentDate();
+      render();
+    };
+    el._h_slot_picker = state;
 
     // Scrollable content
     const scrollBody = document.createElement('div');
@@ -126,8 +103,8 @@ export default function (Alpine) {
     }
 
     function updateNavState() {
-      prevBtn.disabled = !!minDate && currentDate <= minDate;
-      nextBtn.disabled = !!maxDate && addDays(currentDate, dayCount - 1) >= maxDate;
+      state.canPrev = !(!!minDate && currentDate <= minDate);
+      state.canNext = !(!!maxDate && addDays(currentDate, dayCount - 1) >= maxDate);
     }
 
     function slotKey(dateStr, start) {
@@ -464,10 +441,10 @@ export default function (Alpine) {
       todayEntries = [];
       renderedTodayStr = toDateString(now);
 
-      // Heading
+      // Heading: exposed as reactive state; an x-h-slot-picker-title control renders it.
       const shortFmt = dtf(locale, { day: 'numeric', month: 'short' });
       const longFmt = dtf(locale, { day: 'numeric', month: 'short', year: 'numeric' });
-      periodLabel.textContent = days.length === 1 ? longFmt.format(days[0]) : `${shortFmt.format(days[0])} - ${longFmt.format(days[days.length - 1])}`;
+      state.title = days.length === 1 ? longFmt.format(days[0]) : `${shortFmt.format(days[0])} - ${longFmt.format(days[days.length - 1])}`;
 
       dayGrid.className = '';
       dayGrid.classList.add('grid', 'grid-cols-1', `md:grid-cols-${dayCount}`, 'divide-y', 'md:divide-y-0', 'md:divide-x');
@@ -580,101 +557,113 @@ export default function (Alpine) {
       updateNavState();
     }
 
-    // Navigation: shift by the number of visible days
-    prevBtn.addEventListener('click', () => {
-      currentDate = addDays(currentDate, -dayCount);
-      clampCurrentDate();
-      render();
-    });
-    nextBtn.addEventListener('click', () => {
-      currentDate = addDays(currentDate, dayCount);
-      clampCurrentDate();
-      render();
-    });
-    todayBtn.addEventListener('click', () => {
-      currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0);
-      clampCurrentDate();
-      render();
-    });
-
     // Calendar popover: jump the first day to any date via the shared calendar widget.
-    const calState = Alpine.reactive({ expanded: false });
-
-    const calPopover = document.createElement('div');
-    calPopover.setAttribute('id', calControls);
-    calPopover.setAttribute('role', 'dialog');
-    calPopover.setAttribute('aria-label', el.getAttribute('data-aria-calendar') || 'Choose date');
-    calPopover.setAttribute('tabindex', '-1');
-    calPopover.setAttribute('data-align', 'bottom-end');
-    calPopover.setAttribute('data-slot', 'slot-picker-calendar');
-
-    el.appendChild(calPopover);
-
-    // The calendar's own change event is internal; keep it from bubbling out as a
-    // slot-picker change.
+    // Built lazily on the first x-h-slot-picker-calendar registration, so a picker whose
+    // toolbar has no calendar control never creates the popover or its month grid.
+    let calState = null;
+    let calPopover = null;
+    let calWidget = null;
+    let closeCalendar = null;
+    let syncCalendarToCurrent;
+    // The calendar's own change event is internal, so keep it from bubbling out as a
+    // slot-picker change. Defined once, wired only when the popover is built.
     const containChange = (event) => event.stopPropagation();
-    calPopover.addEventListener('change', containChange);
 
-    let syncingCalendar = false;
-    const calWidget = createCalendarWidget('x-h-slot-picker', calPopover, {
-      Alpine,
-      onSelectionChanged: () => {
-        if (syncingCalendar) return;
-        const selectedDate = calWidget.getSelected();
-        if (selectedDate) {
-          currentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-          clampCurrentDate();
-          render();
-        }
-        calState.expanded = false;
-        calBtn.focus();
-      },
-      onEscape: () => {
-        calState.expanded = false;
-        calBtn.focus();
-      },
-      onInvalidModel: () => {},
-      onModelValid: () => {},
-      stopNavPropagation: true,
-      tableFullWidth: false,
-    });
-    calWidget.setConfig({ locale });
+    function createCalPopover() {
+      if (calPopover) return;
 
-    // Reflect the current first day in the calendar without firing a selection.
-    function syncCalendarToCurrent() {
-      syncingCalendar = true;
-      calWidget.setSelectedAndSync(new Date(currentDate));
-      calWidget.render();
-      syncingCalendar = false;
+      calState = Alpine.reactive({ expanded: false });
+
+      calPopover = document.createElement('div');
+      calPopover.setAttribute('id', calControls);
+      calPopover.setAttribute('role', 'dialog');
+      calPopover.setAttribute('tabindex', '-1');
+      calPopover.setAttribute('data-align', 'bottom-end');
+      calPopover.setAttribute('data-slot', 'slot-picker-calendar');
+      // Stay hidden until the registered trigger's setupPopover takes over.
+      calPopover.classList.add('hidden');
+      el.appendChild(calPopover);
+      calPopover.addEventListener('change', containChange);
+
+      // Forward the host's calendar nav labels onto the popover so the widget's prev/next
+      // month/year buttons can be localized. Without this they fall back to English.
+      forwardCalendarNavAria(el, calPopover);
+
+      let syncingCalendar = false;
+      calWidget = createCalendarWidget('x-h-slot-picker', calPopover, {
+        Alpine,
+        onSelectionChanged: () => {
+          if (syncingCalendar) return;
+          const selectedDate = calWidget.getSelected();
+          if (selectedDate) {
+            currentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            clampCurrentDate();
+            render();
+          }
+          calState.expanded = false;
+          calAnchor?.focus();
+        },
+        onEscape: () => {
+          calState.expanded = false;
+          calAnchor?.focus();
+        },
+        onInvalidModel: () => {},
+        onModelValid: () => {},
+        stopNavPropagation: true,
+        tableFullWidth: false,
+      });
+      // Catch up on any locale/bounds config applied before this widget existed.
+      calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
+
+      // Reflect the current first day in the calendar without firing a selection.
+      syncCalendarToCurrent = () => {
+        syncingCalendar = true;
+        calWidget.setSelectedAndSync(new Date(currentDate));
+        calWidget.render();
+        syncingCalendar = false;
+      };
+
+      closeCalendar = (event) => {
+        if (event && (eventInsidePicker(calPopover, event) || eventInsidePicker(calAnchor, event))) return;
+        calState.expanded = false;
+        removeDismiss(el, 'click', closeCalendar);
+      };
     }
 
-    setupPopover(calPopover, {
-      anchor: calBtn,
-      pickerState: { state: calState },
-      Alpine,
-      effect,
-      cleanup,
-      onOpen: () => {
-        syncCalendarToCurrent();
-        calWidget.focusDay();
-      },
-    });
-
-    const closeCalendar = (event) => {
-      if (event && (eventInsidePicker(calPopover, event) || eventInsidePicker(calBtn, event))) return;
-      calState.expanded = false;
-      removeDismiss(el, 'click', closeCalendar);
-    };
-    const onCalBtn = () => {
-      calState.expanded = !calState.expanded;
-      Alpine.nextTick(() => {
-        if (calState.expanded) addDismiss(el, 'click', closeCalendar);
-        else removeDismiss(el, 'click', closeCalendar);
+    // An x-h-slot-picker-calendar control registers its button here. The picker owns the
+    // popover, widget, and dismiss. It builds the popover on first use, anchors it to the
+    // trigger, names the dialog after the trigger, and wires the toggle using the control's
+    // own effect/cleanup so teardown follows it.
+    state.registerCalendar = (button, ctx) => {
+      createCalPopover();
+      calAnchor = button;
+      if (!button.id) button.id = `hspb${uuidv4()}`;
+      button.setAttribute('aria-haspopup', 'dialog');
+      button.setAttribute('aria-controls', calControls);
+      // The dialog takes its accessible name from the trigger button.
+      calPopover.setAttribute('aria-labelledby', button.id);
+      setupPopover(calPopover, {
+        anchor: button,
+        pickerState: { state: calState },
+        Alpine,
+        effect: ctx.effect,
+        cleanup: ctx.cleanup,
+        onOpen: () => {
+          syncCalendarToCurrent();
+          calWidget.focusDay();
+        },
       });
+      const onCalBtn = () => {
+        calState.expanded = !calState.expanded;
+        Alpine.nextTick(() => {
+          if (calState.expanded) addDismiss(el, 'click', closeCalendar);
+          else removeDismiss(el, 'click', closeCalendar);
+        });
+      };
+      button.addEventListener('click', onCalBtn);
+      ctx.effect(() => button.setAttribute('aria-expanded', String(calState.expanded)));
+      ctx.cleanup(() => button.removeEventListener('click', onCalBtn));
     };
-    calBtn.addEventListener('click', onCalBtn);
-    effect(() => calBtn.setAttribute('aria-expanded', String(calState.expanded)));
 
     // Config
 
@@ -697,7 +686,7 @@ export default function (Alpine) {
       if (config.showNowIndicator !== undefined) showNowIndicator = !!config.showNowIndicator;
       if (config.locale !== undefined) {
         locale = config.locale;
-        calWidget.setConfig({ locale });
+        if (calWidget) calWidget.setConfig({ locale });
       }
       if (config.disabledDates !== undefined) disabledDates = Array.isArray(config.disabledDates) ? config.disabledDates : [];
       if (config.disabledDays !== undefined) disabledDays = Array.isArray(config.disabledDays) ? config.disabledDays : [];
@@ -711,7 +700,7 @@ export default function (Alpine) {
         boundsChanged = true;
       }
       // Mirror the bounds onto the calendar popover so out-of-range days can't be picked there either.
-      if (boundsChanged) calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
+      if (boundsChanged && calWidget) calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
       clampCurrentDate();
     }
 
@@ -740,11 +729,66 @@ export default function (Alpine) {
 
     cleanup(() => {
       clearTimeout(nowTimer);
-      Alpine.destroyTree(toolbar);
-      calWidget.cleanup();
-      calPopover.removeEventListener('change', containChange);
-      calBtn.removeEventListener('click', onCalBtn);
-      removeDismiss(el, 'click', closeCalendar);
+      if (calPopover) {
+        calWidget.cleanup();
+        calPopover.removeEventListener('change', containChange);
+        removeDismiss(el, 'click', closeCalendar);
+      }
     });
+  });
+
+  Alpine.directive('h-slot-picker-previous', (el, { original }, { effect, cleanup, Alpine }) => {
+    const host = findAncestorState(Alpine, el, '_h_slot_picker');
+    if (!host) throw new Error(`${original} must be inside a slot picker`);
+    const api = host._h_slot_picker;
+    const onClick = () => api.previous();
+    el.addEventListener('click', onClick);
+    effect(() => {
+      const disabled = !api.canPrev;
+      el.disabled = disabled;
+      el.setAttribute('aria-disabled', String(disabled));
+    });
+    cleanup(() => el.removeEventListener('click', onClick));
+  });
+
+  Alpine.directive('h-slot-picker-next', (el, { original }, { effect, cleanup, Alpine }) => {
+    const host = findAncestorState(Alpine, el, '_h_slot_picker');
+    if (!host) throw new Error(`${original} must be inside a slot picker`);
+    const api = host._h_slot_picker;
+    const onClick = () => api.next();
+    el.addEventListener('click', onClick);
+    effect(() => {
+      const disabled = !api.canNext;
+      el.disabled = disabled;
+      el.setAttribute('aria-disabled', String(disabled));
+    });
+    cleanup(() => el.removeEventListener('click', onClick));
+  });
+
+  Alpine.directive('h-slot-picker-today', (el, { original }, { cleanup, Alpine }) => {
+    const host = findAncestorState(Alpine, el, '_h_slot_picker');
+    if (!host) throw new Error(`${original} must be inside a slot picker`);
+    const api = host._h_slot_picker;
+    const onClick = () => api.today();
+    el.addEventListener('click', onClick);
+    cleanup(() => el.removeEventListener('click', onClick));
+  });
+
+  Alpine.directive('h-slot-picker-title', (el, { original }, { effect, Alpine }) => {
+    const host = findAncestorState(Alpine, el, '_h_slot_picker');
+    if (!host) throw new Error(`${original} must be inside a slot picker`);
+    const api = host._h_slot_picker;
+    el.classList.add('flex-1', 'text-sm', 'font-semibold', 'text-center');
+    if (!el.hasAttribute('aria-live')) el.setAttribute('aria-live', 'polite');
+    el.setAttribute('data-slot', 'slot-picker-title');
+    effect(() => {
+      el.textContent = api.title;
+    });
+  });
+
+  Alpine.directive('h-slot-picker-calendar', (el, { original }, { effect, cleanup, Alpine }) => {
+    const host = findAncestorState(Alpine, el, '_h_slot_picker');
+    if (!host) throw new Error(`${original} must be inside a slot picker`);
+    host._h_slot_picker.registerCalendar(el, { effect, cleanup });
   });
 }

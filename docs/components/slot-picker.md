@@ -6,11 +6,11 @@ An inline calendar that shows a configurable number of consecutive days (1 to 7,
 
 Use the Slot Picker when users need to book or choose one or more time slots from an upcoming schedule, for example booking appointments, selecting meeting windows, or configuring availability. Give a slot a `description` and `note` to explain what it is, a `color` to signal its status (mirroring the Calendar's event colors), or an array of `tiles` to offer several sub-slots at the same time.
 
-Set `days` to control how many day columns are shown (1 to 7). Navigate between days with the previous/next buttons (which move by that number of days) or jump straight to any date with the calendar button in the toolbar. The chosen date becomes the first of the visible days, which avoids paging far ahead one step at a time. Set `showNowIndicator: true` to mark the current time in today's column with a red line that moves as time passes.
+Set `days` to control how many day columns are shown (1 to 7). The picker renders only the day grid, so you build the toolbar yourself from the control directives (every example below includes one). The previous/next controls move by that number of days, and the calendar control jumps straight to any date. The chosen date becomes the first of the visible days, which avoids paging far ahead one step at a time. Set `showNowIndicator: true` to mark the current time in today's column with a red line that moves as time passes.
 
 ## Accessibility
 
-The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. Available slots are toggle `button`s with a day + time `aria-label` and `aria-pressed` reflecting selection, while unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The calendar button opens a `dialog` containing a fully keyboard-navigable date grid. Picking a date moves the visible range and returns focus to the button, and `Esc` closes it.
+The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. Available slots are toggle `button`s with a day + time `aria-label` and `aria-pressed` reflecting selection, while unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The `x-h-slot-picker-calendar` control opens a `dialog` containing a fully keyboard-navigable date grid, and the dialog takes its accessible name from that control. The default month and year navigation buttons labels can be overridden using the `data-aria-*` attributes. Picking a date moves the visible range and returns focus to the control, and `Esc` closes it. Because you supply the toolbar, give each control button an accessible name (an `aria-label` on an icon-only button, or visible text).
 
 ## API Reference
 
@@ -18,17 +18,26 @@ The picker is a labeled `group` (default name "Time slot picker", overridable wi
 
 ```
 x-h-slot-picker
+x-h-slot-picker-previous
+x-h-slot-picker-next
+x-h-slot-picker-today
+x-h-slot-picker-title
+x-h-slot-picker-calendar
 ```
+
+The picker renders only the day grid. You compose the toolbar yourself from the control directives (every example below shows one). Put each on an ordinary [Button](/components/button) inside an [`x-h-toolbar`](/components/toolbar), where the button supplies the icon, label, and styling and the directive supplies the behavior. `x-h-slot-picker-previous` and `-next` page the window and disable themselves at the `minDate` / `maxDate` bounds, `-today` returns to the current day, `-title` renders the current period, and `-calendar` opens the built-in date-jump dialog. Each control must be a descendant of `x-h-slot-picker`.
 
 ### Attributes
 
-| Attribute              | Values | Required | Description                                                                           |
-| ---------------------- | ------ | -------- | ------------------------------------------------------------------------------------- |
-| data-aria-prev         | string | false    | Sets the `aria-label` for the previous button.                                        |
-| data-aria-next         | string | false    | Sets the `aria-label` for the next button.                                            |
-| data-aria-calendar     | string | false    | Sets the `aria-label` for the calendar button and popover (default: `"Choose date"`). |
-| data-today-label       | string | false    | Overrides the label of the "Today" navigation button.                                 |
-| data-unavailable-label | string | false    | Overrides the "Not available" label shown for fully disabled days.                    |
+The control directives take no attributes of their own. These apply to `x-h-slot-picker`:
+
+| Attribute              | Values | Required | Description                                                        |
+| ---------------------- | ------ | -------- | ------------------------------------------------------------------ |
+| data-unavailable-label | string | false    | Overrides the "Not available" label shown for fully disabled days. |
+| data-aria-prev-year    | string | false    | Overrides the previous year button's `aria-label`.                 |
+| data-aria-prev-month   | string | false    | Overrides the previous month button's `aria-label`.                |
+| data-aria-next-month   | string | false    | Overrides the next month button's `aria-label`.                    |
+| data-aria-next-year    | string | false    | Overrides the next year button's `aria-label`.                     |
 
 ### Configuration
 
@@ -102,11 +111,12 @@ A selected sub-slot tile uses a composite key of the form `'YYYY-MM-DDTHH:MM#ind
 
 ## Examples
 
-### Basic (single select)
+### Basic (single select) with scroll
 
 This example enables the current-time indicator, so a red line marks the current time in today's column.
+It also sets the height of the slot picker, in order to show how the overflow is handled.
 
-<LiveExample data-class="p-0 overflow-visible" data-exclude="generator">
+<LiveExample data-class="p-0 overflow-visible">
 
 ```html
 <div
@@ -116,12 +126,31 @@ This example enables the current-time indicator, so a red line marks the current
     selected: null,
     init() {
       const today = new Date().toISOString().slice(0, 10);
-      this.config = { date: today, start: '09:00', end: '17:00', step: 60, showNowIndicator: true };
+      this.config = { date: today, start: '08:00', end: '17:00', step: 15, showNowIndicator: true };
     }
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+  style="height: 28rem"
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -143,7 +172,26 @@ This example enables the current-time indicator, so a red line marks the current
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -186,7 +234,25 @@ This example enables the current-time indicator, so a red line marks the current
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -225,7 +291,26 @@ Provide `start`, `end`, and `step` for the default daily schedule, list `slots` 
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -263,7 +348,26 @@ Use `disabledDays` to block recurring days (e.g. weekends) and `disabledDates` f
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -298,7 +402,26 @@ Set `minDate` to a start day and/or `maxDate` to an end day to stop the user pag
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -332,7 +455,26 @@ Give a slot a `color` to signal its status, using the same palette as the Calend
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -341,7 +483,7 @@ Give a slot a `color` to signal its status, using the same palette as the Calend
 
 Add a `description` and a `note` to explain what a slot is. Both render under the time.
 
-<LiveExample data-class="p-0 overflow-visible">
+<LiveExample data-class="p-0 overflow-visible" data-exclude="generator">
 
 ```html
 <div
@@ -363,7 +505,26 @@ Add a `description` and a `note` to explain what a slot is. Both render under th
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -372,7 +533,7 @@ Add a `description` and a `note` to explain what a slot is. Both render under th
 
 Set `days` to show up to seven day columns at once. The previous/next buttons then move by that many days.
 
-<LiveExample data-class="p-0 overflow-visible">
+<LiveExample data-class="p-0 overflow-visible" data-exclude="generator">
 
 ```html
 <div
@@ -387,7 +548,26 @@ Set `days` to show up to seven day columns at once. The previous/next buttons th
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>
@@ -435,7 +615,26 @@ Give a slot an array of `tiles` to offer several options at the same time (for e
   }"
   x-model="selected"
   class="rounded-md"
-></div>
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <span x-h-toolbar-spacer></span>
+    <div x-h-slot-picker-title></div>
+    <span x-h-toolbar-spacer></span>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
+  </div>
+</div>
 ```
 
 </LiveExample>

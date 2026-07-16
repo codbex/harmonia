@@ -57,15 +57,19 @@ x-h-datetime-picker-popup
 
 #### x-h-datetime-picker-popup
 
-| Attribute           | Values | Required | Description                                                              |
-| ------------------- | ------ | -------- | ------------------------------------------------------------------------ |
-| data-align          | string | false    | Aligns the popover relative to the trigger (e.g. `bottom-start`, `top`). |
-| data-label-time     | string | false    | `aria-label` for the time editor group (default `"Time"`).               |
-| data-label-hours    | string | false    | `aria-label` for the hour segment (default `"Hour"`).                    |
-| data-label-minutes  | string | false    | `aria-label` for the minute segment (default `"Minute"`).                |
-| data-label-seconds  | string | false    | `aria-label` for the second segment (default `"Second"`).                |
-| data-label-meridiem | string | false    | `aria-label` for the AM/PM segment (default `"AM/PM"`).                  |
-| data-label-now      | string | false    | Text label for the Now button (default `"Now"`).                         |
+| Attribute            | Values | Required | Description                                                              |
+| -------------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| data-align           | string | false    | Aligns the popover relative to the trigger (e.g. `bottom-start`, `top`). |
+| data-aria-prev-year  | string | false    | Sets the `aria-label` attribute value for the previous year button.      |
+| data-aria-prev-month | string | false    | Sets the `aria-label` attribute value for the previous month button.     |
+| data-aria-next-month | string | false    | Sets the `aria-label` attribute value for the next month button.         |
+| data-aria-next-year  | string | false    | Sets the `aria-label` attribute value for the next year button.          |
+| data-label-time      | string | false    | `aria-label` for the time editor group (default `"Time"`).               |
+| data-label-hours     | string | false    | `aria-label` for the hour segment (default `"Hour"`).                    |
+| data-label-minutes   | string | false    | `aria-label` for the minute segment (default `"Minute"`).                |
+| data-label-seconds   | string | false    | `aria-label` for the second segment (default `"Second"`).                |
+| data-label-meridiem  | string | false    | `aria-label` for the AM/PM segment (default `"AM/PM"`).                  |
+| data-label-now       | string | false    | Text label for the Now button (default `"Now"`).                         |
 
 ### Model
 

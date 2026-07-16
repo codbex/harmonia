@@ -143,7 +143,7 @@ describe('h-datetime-picker-trigger', () => {
 });
 
 describe('h-datetime-picker-popup', () => {
-  function createPopup({ config = {}, model } = {}) {
+  function createPopup({ config = {}, model, attrs = {} } = {}) {
     const wrapper = document.createElement('div');
     const input = document.createElement('input');
     wrapper.appendChild(input);
@@ -152,6 +152,7 @@ describe('h-datetime-picker-popup', () => {
     wrapper._h_datetimepicker = { state: { expanded: false }, input, controls: 'c1' };
     const popupEl = document.createElement('div');
     popupEl.setAttribute('x-model', 'dt');
+    Object.entries(attrs).forEach(([k, v]) => popupEl.setAttribute(k, v));
     wrapper.appendChild(popupEl);
     document.body.appendChild(wrapper);
 
@@ -179,6 +180,25 @@ describe('h-datetime-picker-popup', () => {
     };
     return { wrapper, popupEl, input, seg, disp, dayCell, key, type, ctx, changeEvents, getModel: () => modelValue };
   }
+
+  it('forwards data-aria-* labels onto the calendar nav buttons', () => {
+    const { popupEl } = createPopup({
+      attrs: {
+        'data-aria-prev-year': 'Go back a year',
+        'data-aria-prev-month': 'Go back a month',
+        'data-aria-next-month': 'Go forward a month',
+        'data-aria-next-year': 'Go forward a year',
+      },
+    });
+    const labels = Array.from(popupEl.querySelectorAll('button')).map((b) => b.getAttribute('aria-label'));
+    expect(labels).toEqual(expect.arrayContaining(['Go back a year', 'Go back a month', 'Go forward a month', 'Go forward a year']));
+  });
+
+  it('falls back to default English calendar nav labels when none are set', () => {
+    const { popupEl } = createPopup();
+    const labels = Array.from(popupEl.querySelectorAll('button')).map((b) => b.getAttribute('aria-label'));
+    expect(labels).toEqual(expect.arrayContaining(['previous year', 'previous month', 'next month', 'next year']));
+  });
 
   it('builds a calendar and a time group with hour and minute spinbuttons', () => {
     const { popupEl, seg } = createPopup();
