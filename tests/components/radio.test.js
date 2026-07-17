@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import radioPlugin from '../../src/components/radio.js';
 import { mountDirective } from '../test-utils.js';
@@ -36,8 +37,11 @@ describe('h-radio', () => {
   it('applies before pseudo-element classes', () => {
     const el = document.createElement('span');
     mountDirective(radioPlugin, 'h-radio', el);
-    expect(el.classList.contains('before:bg-primary')).toBe(true);
-    expect(el.classList.contains('before:rounded-full')).toBe(true);
     expect(el.classList.contains('before:invisible')).toBe(true);
+    // The indicator dot itself is styled in radio.css.
+    const radioCss = readFileSync('src/styles/radio.css', 'utf8');
+    expect(radioCss).toContain('[data-slot="radio"]::before');
+    expect(radioCss).toMatch(/::before\s*{[^}]*bg-primary/);
+    expect(radioCss).toMatch(/::before\s*{[^}]*rounded-full/);
   });
 });

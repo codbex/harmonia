@@ -94,7 +94,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Popover | Displays supplementary information or content in a compact overlay without navigating away from the current page. | [popover](references/popover.md) |
 | Progress | Visually represents the completion status of an ongoing operation, providing users with feedback on progress and expected duration. | [progress](references/progress.md) |
 | Radio | A single-choice input that allows users to select one option from a set. | [radio](references/radio.md) |
-| Range | Allows users to select a value, or a range of values, by dragging a handle along a track. | [range](references/range.md) |
+| Range | Lets users select a numeric value, or a range between two values, by dragging a handle along a track. | [range](references/range.md) |
 | Rating | Lets users view and set a star rating. | [rating](references/rating.md) |
 | Select | Allows users to choose one or more items from a predefined list of options. | [select](references/select.md) |
 | Separator | A simple visual divider used to separate content or sections within an interface. | [separator](references/separator.md) |
