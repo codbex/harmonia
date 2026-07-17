@@ -157,6 +157,7 @@ export default defineConfig({
           { text: 'Color', link: '/utility-classes/color' },
           { text: 'Border', link: '/utility-classes/border' },
           { text: 'Shadow', link: '/utility-classes/shadow' },
+          { text: 'Focus Indicator', link: '/utility-classes/focus-indicator' },
           { text: 'Opacity', link: '/utility-classes/opacity' },
           { text: 'Cursor', link: '/utility-classes/cursor' },
           { text: 'Background', link: '/utility-classes/background' },

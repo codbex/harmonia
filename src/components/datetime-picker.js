@@ -1,6 +1,7 @@
 import { findAncestorState } from '../common/ancestor';
 import { createCalendarWidget, forwardCalendarNavAria, parseDateValue, toDateString } from '../common/calendar';
 import { eventInsidePicker, setupPopover, setupTrigger } from '../common/picker-popover';
+import { disabledControlClasses, pickerCellWrapperClasses, pickerFieldWrapperClasses, pickerWrapperClasses } from '../common/shared-classes';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, getSystemTime, pad2, partsToValue24 } from '../common/time';
 import uuidv4 from '../utils/uuid';
 import { sizeObserver } from './../common/input-size';
@@ -72,56 +73,12 @@ export default function (Alpine) {
       el._h_datetimepicker.id = id;
     }
 
-    el.classList.add(
-      'overflow-hidden',
-      'border-input',
-      'flex',
-      'items-center',
-      'transition-[color,box-shadow]',
-      'motion-reduce:transition-none',
-      'duration-200',
-      'outline-none',
-      'pl-3',
-      'min-w-0',
-      'has-[input:disabled]:pointer-events-none',
-      'has-[input:disabled]:cursor-not-allowed',
-      'has-[input:disabled]:opacity-disabled',
-      'has-[input[readonly]]:bg-muted'
-    );
+    el.classList.add(...pickerWrapperClasses);
     if (el._h_datetimepicker.inTable) {
-      el.classList.add(
-        'size-full',
-        'h-10',
-        'has-[input:focus-visible]:inset-ring-ring/50',
-        'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
-        'has-[input[aria-invalid=true]]:inset-ring-negative/20',
-        'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
-        'has-[input:user-invalid]:inset-ring-negative/20!',
-        'dark:has-[input:user-invalid]:inset-ring-negative/40!',
-        '[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/20!',
-        'dark:[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/40!'
-      );
+      el.classList.add(...pickerCellWrapperClasses);
       el.setAttribute('data-slot', 'cell-input-datetime');
     } else {
-      el.classList.add(
-        'w-full',
-        'rounded-control',
-        'border',
-        'bg-input-inner',
-        'shadow-input',
-        'has-[input:focus-visible]:border-ring',
-        'has-[input:focus-visible]:ring-ring/50',
-        'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
-        'has-[input[aria-invalid=true]]:ring-negative/20',
-        'has-[input[aria-invalid=true]]:border-negative',
-        'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-        'has-[input:user-invalid]:ring-negative/20',
-        'has-[input:user-invalid]:border-negative',
-        'dark:has-[input:user-invalid]:ring-negative/40',
-        '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
-        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
-        'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40'
-      );
+      el.classList.add(...pickerFieldWrapperClasses);
       el.setAttribute('data-slot', 'datetime-picker');
     }
 
@@ -135,9 +92,8 @@ export default function (Alpine) {
       'user-invalid:border-negative',
       '[[data-validate=immediate]_&:invalid]:border-negative',
       'focus-visible:ring-0',
-      'disabled:pointer-events-none',
+      ...disabledControlClasses,
       'disabled:cursor-not-allowed',
-      'disabled:opacity-disabled',
       'md:text-sm',
       'text-base',
       'truncate'

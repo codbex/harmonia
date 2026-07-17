@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
 import { ChevronDown, createSvg } from './../common/icons';
 
@@ -20,12 +21,10 @@ const navItemTriggerClasses = [
   'duration-100',
   'motion-reduce:transition-none',
   'outline-ring/50',
-  'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-  'focus-visible:outline',
+  'focus-outline',
   'cursor-pointer',
   'shrink-0',
-  '[&_svg]:shrink-0',
-  "[&_svg:not([class*='size-'])]:size-4",
+  'svg-defaults',
   'has-[>svg]:px-2.5',
 ];
 
@@ -127,7 +126,7 @@ export default function (Alpine) {
     el.setAttribute('aria-expanded', 'false');
     el.setAttribute('data-state', 'closed');
 
-    el.classList.add('bg-transparent', 'disabled:opacity-disabled', 'disabled:pointer-events-none', ...navItemTriggerClasses);
+    el.classList.add('bg-transparent', ...disabledControlClasses, ...navItemTriggerClasses);
 
     el.appendChild(chevron);
     el.setAttribute('data-slot', 'nav-trigger');

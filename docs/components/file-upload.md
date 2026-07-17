@@ -92,6 +92,26 @@ Listen to the native `change` event on the file input to react to the chosen fil
 
 </LiveExample>
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+<LiveExample>
+
+```html
+<div x-h-input-group x-h-file-upload>
+  <input type="file" aria-invalid="true" />
+  <div x-h-input-group-addon data-align="inline-start">
+    <div x-h-tag-group></div>
+  </div>
+  <div x-h-input-group-addon data-align="inline-end">
+    <button type="button" x-h-button.addon>Browse</button>
+  </div>
+</div>
+```
+
+</LiveExample>
+
 ### Disabled
 
 Set the native `disabled` attribute on the file input to disable the whole control.

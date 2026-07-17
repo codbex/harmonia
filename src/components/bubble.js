@@ -17,12 +17,13 @@ const bubbleAligns = {
 
 export default function (Alpine) {
   Alpine.directive('h-bubble', (el, _, { cleanup }) => {
-    el.classList.add('relative', 'vbox', 'w-fit', 'max-w-full', 'gap-2', 'px-3', 'py-2', 'text-sm', 'wrap-break-word', 'has-data-[slot=bubble-reactions]:mb-3', 'has-data-[slot=bubble-reactions]:pb-4');
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('relative', 'vbox', 'w-fit', 'max-w-full', 'gap-2', 'px-3', 'py-2', 'text-sm', 'wrap-break-word');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble');
     }
-    // The reactions pill flips sides with [[data-align=right]_&] ancestor variants,
-    // so the attribute must always be present on the bubble.
+    // The reactions pill flips sides based on the bubble's data-align (see the
+    // ancestor rule in bubble.css), so the attribute must always be present.
     if (!el.hasAttribute('data-align')) {
       el.setAttribute('data-align', 'left');
     }
@@ -59,21 +60,24 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-bubble-header', (el) => {
-    el.classList.add('hbox', 'items-center', 'gap-2', 'text-sm', 'font-semibold', '[&>time]:font-normal', '[&>time]:text-xs', '[&>time]:opacity-70');
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('hbox', 'items-center', 'gap-2', 'text-sm', 'font-semibold');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-header');
     }
   });
 
   Alpine.directive('h-bubble-content', (el) => {
-    el.classList.add('text-sm', 'font-normal', '[&_p]:leading-relaxed');
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('text-sm', 'font-normal');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-content');
     }
   });
 
   Alpine.directive('h-bubble-footer', (el) => {
-    el.classList.add('hbox', 'items-center', 'gap-1', 'text-xs', 'opacity-70', '[&>svg]:size-3', '[&>svg]:fill-current');
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('hbox', 'items-center', 'gap-1', 'text-xs', 'opacity-70');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-footer');
     }
@@ -90,34 +94,16 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-bubble-gallery', (el) => {
-    el.classList.add('grid', 'grid-cols-2', 'gap-1.5', '[&_img]:aspect-square', '[&_img]:size-full', '[&_img]:object-cover', '[&_img]:rounded-lg');
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('grid', 'grid-cols-2', 'gap-1.5');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-gallery');
     }
   });
 
   Alpine.directive('h-bubble-gallery-more', (el) => {
-    el.classList.add(
-      'relative',
-      'overflow-hidden',
-      'rounded-lg',
-      '[&>button]:absolute',
-      '[&>button]:inset-0',
-      '[&>button]:hbox',
-      '[&>button]:items-center',
-      '[&>button]:justify-center',
-      '[&>button]:rounded-lg',
-      '[&>button]:bg-black/50',
-      '[&>button]:text-lg',
-      '[&>button]:font-semibold',
-      '[&>button]:text-white',
-      '[&>button]:backdrop-blur-xs',
-      '[&>button]:cursor-pointer',
-      '[&>button]:hover:bg-black/60',
-      '[&>button]:outline-ring/50',
-      '[&>button]:focus-visible:outline',
-      '[&>button]:focus-visible:outline-[calc(var(--spacing)*0.75)]'
-    );
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('relative', 'overflow-hidden', 'rounded-lg');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-gallery-more');
     }
@@ -145,21 +131,8 @@ export default function (Alpine) {
 
     const playBtn = document.createElement('button');
     playBtn.type = 'button';
-    playBtn.classList.add(
-      'hbox',
-      'items-center',
-      'justify-center',
-      'shrink-0',
-      'size-8',
-      'rounded-full',
-      'cursor-pointer',
-      'hover:bg-current/20',
-      'outline-ring/50',
-      'focus-visible:outline',
-      'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-      '[&>svg]:fill-current'
-    );
-    const playIcon = createSvg({ icon: Play, classes: 'size-4', attrs: { 'aria-hidden': 'true' } });
+    playBtn.classList.add('hbox', 'items-center', 'justify-center', 'shrink-0', 'size-8', 'rounded-full', 'cursor-pointer', 'hover:bg-current/20', 'outline-ring/50', 'focus-outline');
+    const playIcon = createSvg({ icon: Play, classes: 'size-4 fill-current', attrs: { 'aria-hidden': 'true' } });
     playBtn.appendChild(playIcon);
 
     const track = document.createElement('div');
@@ -167,7 +140,7 @@ export default function (Alpine) {
     track.setAttribute('tabindex', '0');
     track.setAttribute('aria-label', el.getAttribute('data-label') || 'Seek');
     track.setAttribute('aria-valuemin', '0');
-    track.classList.add('relative', 'h-1.5', 'flex-1', 'rounded-full', 'bg-current/20', 'cursor-pointer', 'outline-ring/50', 'focus-visible:outline', 'focus-visible:outline-[calc(var(--spacing)*0.75)]');
+    track.classList.add('relative', 'h-1.5', 'flex-1', 'rounded-full', 'bg-current/20', 'cursor-pointer', 'outline-ring/50', 'focus-outline');
 
     const fill = document.createElement('div');
     fill.classList.add('absolute', 'inset-y-0', 'left-0', 'rounded-full', 'bg-current');
@@ -322,54 +295,24 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-bubble-file', (el) => {
-    el.classList.add('hbox', 'items-center', 'gap-2.5', 'rounded-lg', 'bg-current/10', 'p-2.5', '[&>svg]:size-7', '[&>svg]:shrink-0', '[&>svg]:fill-current');
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('hbox', 'items-center', 'gap-2.5', 'rounded-lg', 'bg-current/10', 'p-2.5');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-file');
     }
   });
 
   Alpine.directive('h-bubble-link', (el) => {
-    el.classList.add(
-      'block',
-      'overflow-hidden',
-      'rounded-lg',
-      'bg-current/10',
-      'no-underline',
-      'hover:bg-current/20',
-      'outline-ring/50',
-      'focus-visible:outline',
-      'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-      '[&_img]:w-full',
-      '[&_img]:max-h-40',
-      '[&_img]:object-cover'
-    );
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('block', 'overflow-hidden', 'rounded-lg', 'bg-current/10', 'no-underline', 'hover:bg-current/20', 'outline-ring/50', 'focus-outline');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-link');
     }
   });
 
   Alpine.directive('h-bubble-reactions', (el) => {
-    el.classList.add(
-      'absolute',
-      '-bottom-3',
-      'end-2',
-      '[[data-align=right]_&]:end-auto',
-      '[[data-align=right]_&]:start-2',
-      'hbox',
-      'items-center',
-      'rounded-full',
-      'bg-background',
-      'text-foreground',
-      'text-xs',
-      'shadow-sm',
-      '[&>button]:cursor-pointer',
-      '[&>button]:px-2',
-      '[&>button]:py-1',
-      '[&>button:first-child]:rounded-s-full',
-      '[&>button:last-child]:rounded-e-full',
-      '[&>button]:hover:bg-secondary-hover',
-      '[&>button]:active:bg-secondary-active'
-    );
+    // Additional component styles in 'src/styles/bubble.css'
+    el.classList.add('absolute', '-bottom-3', 'end-2', 'hbox', 'items-center', 'rounded-full', 'bg-background', 'text-foreground', 'text-xs', 'shadow-sm');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'bubble-reactions');
     }

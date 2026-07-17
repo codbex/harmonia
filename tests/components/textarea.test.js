@@ -45,7 +45,7 @@ describe('h-textarea', () => {
     const el = document.createElement('textarea');
     mountDirective(textareaPlugin, 'h-textarea', el, { modifiers: [] });
     expect(el.classList.contains('placeholder:text-muted-foreground')).toBe(true);
-    expect(el.classList.contains('focus-visible:border-ring')).toBe(true);
+    expect(el.classList.contains('focus-ring')).toBe(true);
     expect(el.classList.contains('outline-none')).toBe(true);
   });
 

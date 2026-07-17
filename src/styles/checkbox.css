@@ -7,3 +7,8 @@
 [data-slot="checkbox"]:has(input:indeterminate)::after {
   @apply pointer-events-none absolute top-1/2 left-1/2 h-0.5 w-3/4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-foreground;
 }
+[data-slot="checkbox"]:has(input:invalid),
+[data-slot="checkbox"]:has(input:user-invalid),
+[data-slot="checkbox"]:has(input[aria-invalid="true"]) {
+  @apply bg-negative text-negative-foreground;
+}

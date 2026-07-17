@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 export default function (Alpine) {
   Alpine.directive('h-step-indicator', (el, { expression }) => {
     if (!el.hasAttribute('data-orientation')) {
@@ -76,8 +77,7 @@ export default function (Alpine) {
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'data-[non-interactive=true]:pointer-events-none',
       'data-[non-interactive=true]:cursor-none',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled'
+      ...disabledControlClasses
     );
     el.setAttribute('data-slot', 'step-indicator-trigger');
 

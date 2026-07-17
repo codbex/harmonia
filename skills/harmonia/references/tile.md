@@ -241,14 +241,45 @@ For a single choice, give the group `role="radiogroup"` and every radio the same
 ```html
 <div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
   <label x-h-tile>
-    <span x-h-radio><input type="radio" name="plan" value="starter" checked /></span>
+    <span x-h-radio>
+      <input type="radio" name="plan" value="starter" checked />
+    </span>
     <div x-h-tile-content>
       <div x-h-tile-title>Starter</div>
       <p x-h-tile-description>For individuals getting started</p>
     </div>
   </label>
   <label x-h-tile>
-    <span x-h-radio><input type="radio" name="plan" value="pro" /></span>
+    <span x-h-radio>
+      <input type="radio" name="plan" value="pro" />
+    </span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Pro</div>
+      <p x-h-tile-description>For growing teams</p>
+    </div>
+  </label>
+</div>
+```
+
+#### Radio group invalid
+
+Shows an invalid state. Applies both to radio and checkbox groups.s
+
+```html
+<div x-h-tile-group role="radiogroup" aria-label="Plan" class="flex flex-col gap-2">
+  <label x-h-tile>
+    <span x-h-radio>
+      <input type="radio" name="plan" value="starter" checked aria-invalid="true" />
+    </span>
+    <div x-h-tile-content>
+      <div x-h-tile-title>Starter</div>
+      <p x-h-tile-description>For individuals getting started</p>
+    </div>
+  </label>
+  <label x-h-tile>
+    <span x-h-radio>
+      <input type="radio" name="plan" value="pro" />
+    </span>
     <div x-h-tile-content>
       <div x-h-tile-title>Pro</div>
       <p x-h-tile-description>For growing teams</p>

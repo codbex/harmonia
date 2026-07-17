@@ -1,3 +1,4 @@
+import { disabledControlClasses, invalidControlClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
 import { Minus, Plus, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
@@ -27,22 +28,13 @@ export default function (Alpine) {
       'file:bg-transparent',
       'file:text-sm',
       'file:font-medium',
-      'disabled:pointer-events-none',
+      ...disabledControlClasses,
       'disabled:cursor-not-allowed',
-      'disabled:opacity-disabled',
       '[&[readonly]]:bg-muted',
       'md:text-sm',
       'focus-visible:border-ring',
       'focus-visible:ring-ring/50',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'user-invalid:ring-negative/20!',
-      'dark:user-invalid:ring-negative/40!',
-      'user-invalid:border-negative!',
-      '[[data-validate=immediate]_&:invalid]:ring-negative/20!',
-      'dark:[[data-validate=immediate]_&:invalid]:ring-negative/40!',
-      '[[data-validate=immediate]_&:invalid]:border-negative!'
+      ...invalidControlClasses
     );
     if (modifiers.includes('group')) {
       el.classList.add('h-full', 'flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
@@ -181,7 +173,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-input-group-text', (el) => {
-    el.classList.add('text-muted-foreground', 'flex', 'items-center', 'gap-2', 'text-sm', '[&_svg]:pointer-events-none', "[&_svg:not([class*='size-'])]:size-4");
+    el.classList.add('text-muted-foreground', 'flex', 'items-center', 'gap-2', 'text-sm', 'svg-defaults');
     el.setAttribute('data-slot', 'label');
   });
 
@@ -271,7 +263,6 @@ export default function (Alpine) {
       btn.setAttribute('tabIndex', '-1');
       btn.setAttribute('aria-label', label);
       btn.setAttribute('aria-controls', input.getAttribute('id'));
-      btn.setAttribute('data-slot', 'step-up-trigger');
       btn.appendChild(
         createSvg({
           icon,
@@ -307,7 +298,9 @@ export default function (Alpine) {
     const readonlyHide = 'group-has-[input[readonly]]/input-number:hidden';
 
     const stepDown = buildStepButton(Minus, 'Decrease');
+    stepDown.setAttribute('data-slot', 'step-down-trigger');
     const stepUp = buildStepButton(Plus, 'Increase');
+    stepDown.setAttribute('data-slot', 'step-up-trigger');
 
     if (inTable) {
       // Stack the steppers into a single narrow column so they never overlap the

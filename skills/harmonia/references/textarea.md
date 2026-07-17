@@ -36,6 +36,12 @@ By default this control shows native-constraint errors (for example `required`) 
 <textarea x-h-textarea class="resize-none"></textarea>
 ```
 
+### Invalid
+
+```html
+<textarea x-h-textarea aria-invalid="true">Invalid text</textarea>
+```
+
 ### Disabled
 
 ```html

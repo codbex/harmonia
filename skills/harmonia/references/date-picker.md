@@ -191,6 +191,18 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </div>
 ```
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+```html
+<div x-h-date-picker x-data="{ date: '2026-07-09' }">
+  <input type="text" id="date-input-invalid" aria-invalid="true" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
 ### Disabled
 
 Set the native `disabled` attribute on the inner input to disable the whole picker.

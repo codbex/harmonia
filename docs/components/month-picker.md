@@ -126,6 +126,22 @@ By default this control shows native-constraint errors (for example `required`) 
 
 </LiveExample>
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+<LiveExample>
+
+```html
+<div x-h-month-picker x-data="{ month: '2026-07' }">
+  <input type="text" id="month-input-invalid" aria-invalid="true" />
+  <button x-h-month-picker-trigger aria-label="Choose month"></button>
+  <div x-h-month-picker-popup x-model="month"></div>
+</div>
+```
+
+</LiveExample>
+
 ### Disabled
 
 Set the native `disabled` attribute on the inner input to disable the whole picker.

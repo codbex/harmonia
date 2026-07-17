@@ -604,9 +604,7 @@ export default function (Alpine) {
       'select-none',
       'data-[disabled]:pointer-events-none',
       'data-[disabled]:opacity-disabled',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4",
+      'svg-defaults',
       '*:[span]:last:flex',
       '*:[span]:last:items-center',
       '*:[span]:last:gap-2'

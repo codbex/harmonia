@@ -1,0 +1,36 @@
+[data-slot="bubble"]:has([data-slot="bubble-reactions"]) {
+  @apply mb-3 pb-4;
+}
+[data-slot="bubble-header"] > time {
+  @apply text-xs font-normal opacity-70;
+}
+[data-slot="bubble-content"] p {
+  @apply leading-relaxed;
+}
+[data-slot="bubble-footer"] > svg {
+  @apply size-3 fill-current;
+}
+[data-slot="bubble-gallery"] img {
+  @apply aspect-square size-full rounded-lg object-cover;
+}
+[data-slot="bubble-gallery-more"] > button {
+  @apply absolute inset-0 hbox cursor-pointer items-center justify-center rounded-lg bg-black/50 text-lg font-semibold text-white focus-outline outline-ring/50 backdrop-blur-xs hover:bg-black/60;
+}
+[data-slot="bubble-file"] > svg {
+  @apply size-7 shrink-0 fill-current;
+}
+[data-slot="bubble-link"] img {
+  @apply max-h-40 w-full object-cover;
+}
+[data-slot="bubble-reactions"] > button {
+  @apply cursor-pointer px-2 py-1 hover:bg-secondary-hover active:bg-secondary-active;
+}
+[data-slot="bubble-reactions"] > button:first-child {
+  @apply rounded-s-full;
+}
+[data-slot="bubble-reactions"] > button:last-child {
+  @apply rounded-e-full;
+}
+[data-align="right"] [data-slot="bubble-reactions"] {
+  @apply start-2 end-auto;
+}

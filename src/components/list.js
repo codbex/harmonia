@@ -1,3 +1,4 @@
+import { disabledControlClasses, invalidControlClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-listbox', (el, _, { cleanup }) => {
@@ -10,21 +11,10 @@ export default function (Alpine) {
       'rounded-control',
       'shadow-input',
       'outline-none',
-      'disabled:pointer-events-none',
+      ...disabledControlClasses,
       'disabled:cursor-not-allowed',
-      'disabled:opacity-disabled',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'user-invalid:ring-negative/20!',
-      'dark:user-invalid:ring-negative/40!',
-      'user-invalid:border-negative!',
-      '[[data-validate=immediate]_&:invalid]:ring-negative/20!',
-      'dark:[[data-validate=immediate]_&:invalid]:ring-negative/40!',
-      '[[data-validate=immediate]_&:invalid]:border-negative!',
+      'focus-ring',
+      ...invalidControlClasses,
       '[&>ul:first-child>*:first-child]:rounded-t-control',
       '[&>ul:last-child>*:last-child]:rounded-b-control'
     );

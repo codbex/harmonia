@@ -37,7 +37,7 @@ rounded-none shadow-none
 Unique to Harmonia (not Tailwind):
 
 ```
-h-mask hbox leading-tight min-size-4 opacity-disabled position-center scrollbar-none tile-auto-lg tile-auto-md tile-auto-sm tile-auto-xl tile-double-lg tile-double-md tile-double-sm tile-double-xl tile-lg tile-md tile-sm tile-xl v-mask vbox
+focus-outline focus-ring h-mask hbox leading-tight min-size-4 opacity-disabled position-center scrollbar-none tile-auto-lg tile-auto-md tile-auto-sm tile-auto-xl tile-double-lg tile-double-md tile-double-sm tile-double-xl tile-lg tile-md tile-sm tile-xl v-mask vbox
 ```
 
 ## Tailwind utility subset

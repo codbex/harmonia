@@ -17,9 +17,7 @@ export default function (Alpine) {
       '[&>svg]:size-3',
       'gap-1',
       '[&>svg]:pointer-events-none',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
+      'focus-ring',
       'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       'overflow-hidden'

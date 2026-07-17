@@ -44,6 +44,16 @@ By default this control shows native-constraint errors (for example `required`) 
 
 </LiveExample>
 
+### Invalid
+
+<LiveExample>
+
+```html
+<textarea x-h-textarea aria-invalid="true">Invalid text</textarea>
+```
+
+</LiveExample>
+
 ### Disabled
 
 <LiveExample>

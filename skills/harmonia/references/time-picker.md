@@ -132,6 +132,17 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </div>
 ```
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-invalid" x-model="time" x-h-time-picker-input aria-invalid="true" />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
 ### Disabled
 
 Set the native `disabled` attribute on the inner input to disable the whole picker.

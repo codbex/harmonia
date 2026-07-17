@@ -40,7 +40,9 @@ x-h-input-number
 
 </LiveExample>
 
-### Invalid Number Input
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
 
 <LiveExample>
 

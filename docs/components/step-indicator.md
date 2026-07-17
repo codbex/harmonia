@@ -205,3 +205,36 @@ Because each item's step is an expression, you can generate the steps from an ar
 ```
 
 </LiveExample>
+
+### Disabled trigger
+
+<LiveExample>
+
+```html
+<div x-data="{ step: 2 }">
+  <div x-h-step-indicator="step">
+    <div x-h-step-indicator-item="1">
+      <button x-h-step-indicator-trigger disabled>
+        <span x-h-step-indicator-marker>1</span>
+        <span x-h-step-indicator-content>
+          <span x-h-step-indicator-title>Account</span>
+          <span x-h-step-indicator-description>Your details</span>
+        </span>
+      </button>
+      <div x-h-step-indicator-separator></div>
+    </div>
+    <div x-h-step-indicator-item="2">
+      <button x-h-step-indicator-trigger>
+        <span x-h-step-indicator-marker>2</span>
+        <span x-h-step-indicator-content>
+          <span x-h-step-indicator-title>Address</span>
+          <span x-h-step-indicator-description>Shipping info</span>
+        </span>
+      </button>
+      <div x-h-step-indicator-separator></div>
+    </div>
+  </div>
+</div>
+```
+
+</LiveExample>

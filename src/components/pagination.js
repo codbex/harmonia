@@ -1,3 +1,4 @@
+import { disabledControlClasses } from '../common/shared-classes';
 import { Ellipsis, createSvg } from './../common/icons';
 
 export default function (Alpine) {
@@ -28,16 +29,11 @@ export default function (Alpine) {
       'font-medium',
       'transition-all',
       'motion-reduce:transition-none',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
-      '[&_svg]:pointer-events-none',
-      "[&_svg:not([class*='size-'])]:size-4",
+      ...disabledControlClasses,
+      'svg-defaults',
       'shrink-0',
-      '[&_svg]:shrink-0',
       'outline-none',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
+      'focus-ring',
       'h-9',
       'min-w-9',
       'text-foreground',

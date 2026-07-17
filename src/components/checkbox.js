@@ -1,3 +1,4 @@
+import { invalidInputClasses, userInvalidInputClasses } from '../common/shared-classes';
 import { Check, createSvg } from './../common/icons';
 
 export default function (Alpine) {
@@ -10,12 +11,10 @@ export default function (Alpine) {
       'bg-input-inner',
       'border',
       'border-input',
-      'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-      'dark:has-[input:user-invalid]:ring-negative/40',
-      'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40',
       'duration-200',
-      'has-[input[aria-invalid=true]]:border-negative',
-      'has-[input[aria-invalid=true]]:ring-negative/20',
+      'text-primary-foreground',
+      ...invalidInputClasses,
+      ...userInvalidInputClasses,
       'has-[input:checked]:bg-primary',
       'has-[input:checked]:border-primary',
       "has-[input:indeterminate]:after:content-['']",
@@ -23,10 +22,6 @@ export default function (Alpine) {
       'has-[input:disabled]:opacity-disabled',
       '[&:has(input:disabled)~label]:cursor-not-allowed',
       '[&:has(input:disabled)~label]:opacity-disabled',
-      'has-[input:user-invalid]:border-negative',
-      'has-[input:user-invalid]:ring-negative/20',
-      '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
-      '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
       'relative',
       'rounded-[0.438rem]',
       'shadow-input',
@@ -38,7 +33,7 @@ export default function (Alpine) {
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'checkbox');
 
-    const check = createSvg({ icon: Check, classes: 'size-full [input:checked~&]:visible invisible fill-primary-foreground', attrs: { 'aria-hidden': true, role: 'presentation' } });
+    const check = createSvg({ icon: Check, classes: 'size-full [input:checked~&]:visible invisible text-inherit', attrs: { 'aria-hidden': true, role: 'presentation' } });
     el.appendChild(check);
   });
 }

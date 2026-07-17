@@ -6,6 +6,7 @@
 @import "./checkbox.css";
 @import "./radio.css";
 @import "./calendar.css";
+@import "./bubble.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 @source not "../../docs/";
 @source not "../../tests/";
@@ -297,6 +298,17 @@ body {
     100% {
       transform: translateX(350%);
     }
+  }
+}
+
+/* Icon defaults for descendant svg elements: inert to pointer events, no
+   flex shrinking, and a size-4 fallback unless a size-* class is set */
+@utility svg-defaults {
+  & svg {
+    @apply pointer-events-none shrink-0;
+  }
+  & svg:not([class*="size-"]) {
+    @apply size-4;
   }
 }
 

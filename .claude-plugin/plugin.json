@@ -1,7 +1,7 @@
 {
   "name": "harmonia",
   "description": "Usage docs for the Harmonia Alpine.js UI component library (@codbex/harmonia): how to add, wire, and style x-h-* components.",
-  "version": "2.3.1",
+  "version": "2.5.0",
   "author": {
     "name": "codbex"
   },

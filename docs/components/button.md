@@ -120,6 +120,16 @@ x-h-button
 
 </LiveExample>
 
+### Disabled
+
+<LiveExample>
+
+```html
+<button x-h-button disabled>Disabled</button>
+```
+
+</LiveExample>
+
 ### Toggle button
 
 <LiveExample>

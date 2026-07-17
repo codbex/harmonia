@@ -264,7 +264,7 @@ export default function (Alpine) {
     if (!classListStartsWith(el.classList, 'justify-')) {
       el.classList.add('justify-center');
     }
-    el.classList.add('flex', 'flex-col', '[&_svg]:pointer-events-none', "[&_svg:not([class*='size-'])]:size-4", '[&>svg]:text-current');
+    el.classList.add('flex', 'flex-col', 'svg-defaults', '[&>svg]:text-current');
     el.setAttribute('data-slot', 'notification-media');
   });
 

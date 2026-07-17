@@ -542,7 +542,7 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
 
 ```html
 <div x-h-table-container.scroll data-border="true">
-  <table x-h-table>
+  <table x-h-table data-borders="both">
     <thead x-h-table-header>
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Number</th>

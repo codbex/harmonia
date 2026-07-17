@@ -16,6 +16,8 @@ x-h-checkbox
 
 ## Examples
 
+### Unchecked
+
 <LiveExample>
 
 ```html
@@ -28,6 +30,8 @@ x-h-checkbox
 ```
 
 </LiveExample>
+
+### Checked
 
 <LiveExample>
 
@@ -42,6 +46,8 @@ x-h-checkbox
 
 </LiveExample>
 
+### Indeterminate
+
 <LiveExample>
 
 ```html
@@ -50,6 +56,21 @@ x-h-checkbox
     <input type="checkbox" id="indeterminate" x-ref="inter" x-data="{ init() { this.$refs.inter.indeterminate = true } }" />
   </span>
   <label x-h-label for="indeterminate">Indeterminate</label>
+</div>
+```
+
+</LiveExample>
+
+### Invalid
+
+<LiveExample>
+
+```html
+<div x-h-field data-orientation="horizontal">
+  <span x-h-checkbox>
+    <input type="checkbox" id="invalidCheckbox" checked aria-invalid="true" />
+  </span>
+  <label x-h-label for="invalidCheckbox">Invalid</label>
 </div>
 ```
 

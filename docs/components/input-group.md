@@ -111,6 +111,24 @@ In order to achieve proper focus navigation, place the group addon after the inp
 
 </LiveExample>
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+<LiveExample>
+
+```html
+<div x-h-input-group>
+  <input x-h-input.group placeholder="Search..." aria-invalid="true" />
+  <div x-h-input-group-addon data-align="inline-start">
+    <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+  </div>
+  <div x-h-input-group-addon data-align="inline-end">12 results</div>
+</div>
+```
+
+</LiveExample>
+
 ### Disabled
 
 Set the native `disabled` attribute on the grouped input and `data-disabled="true"` on the addon(s).

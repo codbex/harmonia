@@ -120,6 +120,18 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 </div>
 ```
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+```html
+<div x-h-week-picker x-data="{ week: '2026-W07' }">
+  <input type="text" id="week-input-invalid" aria-invalid="true" />
+  <button x-h-week-picker-trigger aria-label="Choose week"></button>
+  <div x-h-week-picker-popup x-model="week"></div>
+</div>
+```
+
 ### Disabled
 
 Set the native `disabled` attribute on the inner input to disable the whole picker.

@@ -84,6 +84,12 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 <a x-h-button data-variant="link" href="#">Link</a>
 ```
 
+### Disabled
+
+```html
+<button x-h-button disabled>Disabled</button>
+```
+
 ### Toggle button
 
 ```html

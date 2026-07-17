@@ -205,6 +205,22 @@ By default this control shows native-constraint errors (for example `required`) 
 
 </LiveExample>
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+<LiveExample>
+
+```html
+<div x-h-date-picker x-data="{ date: '2026-07-09' }">
+  <input type="text" id="date-input-invalid" aria-invalid="true" />
+  <button x-h-date-picker-trigger aria-label="Choose date"></button>
+  <div x-h-date-picker-popup x-model="date"></div>
+</div>
+```
+
+</LiveExample>
+
 ### Disabled
 
 Set the native `disabled` attribute on the inner input to disable the whole picker.

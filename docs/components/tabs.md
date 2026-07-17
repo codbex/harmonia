@@ -97,6 +97,27 @@ x-h-tabs-content
 
 </LiveExample>
 
+### Disabled tabs
+
+<LiveExample data-class="p-0" data-exclude="generator">
+
+```html
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <button id="dt1" x-h-tab aria-controls="dt1c" aria-selected="true">Tab 1</button>
+      <button id="dt2" x-h-tab aria-controls="dt2c" disabled>Tab 2</button>
+      <button id="dt3" x-h-tab aria-controls="dt3c">Tab 3</button>
+    </div>
+  </div>
+  <div x-h-tabs-content id="dt1c" aria-labelledby="dt1"></div>
+  <div x-h-tabs-content id="dt2c" aria-labelledby="dt2" hidden></div>
+  <div x-h-tabs-content id="dt3c" aria-labelledby="dt3" hidden></div>
+</div>
+```
+
+</LiveExample>
+
 ### Scrollable tab content
 
 <LiveExample data-class="p-0" data-exclude="generator">

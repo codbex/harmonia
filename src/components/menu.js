@@ -427,9 +427,7 @@ export default function (Alpine) {
       'data-[disabled]:pointer-events-none',
       'data-[disabled]:opacity-disabled',
       'data-[inset=true]:pl-8',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4",
+      'svg-defaults',
       '[&>a]:no-underline',
       '[&>a]:text-inherit',
       '[&>a]:size-full'
@@ -496,9 +494,7 @@ export default function (Alpine) {
       'data-[disabled]:pointer-events-none',
       'data-[disabled]:opacity-disabled',
       'data-[inset=true]:pl-8',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4"
+      'svg-defaults'
     );
     el.setAttribute('role', 'menuitem');
     el.setAttribute('aria-haspopup', 'true');

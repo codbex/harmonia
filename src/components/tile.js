@@ -21,9 +21,7 @@ export default function (Alpine) {
       'duration-100',
       'flex-wrap',
       'outline-none',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]'
+      'focus-ring'
     );
     el.setAttribute('data-slot', 'tile');
 
@@ -34,6 +32,9 @@ export default function (Alpine) {
         'border-border',
         'has-[input:checked]:bg-secondary/20',
         'has-[input:checked]:border-primary',
+        'has-[input:invalid]:border-negative',
+        'has-[input:user-invalid]:border-negative',
+        'has-[input[aria-invalid="true"]]:border-negative',
         'has-[input:focus-visible]:ring-primary/50',
         'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
         'has-[input:disabled]:opacity-disabled',

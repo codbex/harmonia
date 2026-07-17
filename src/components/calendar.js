@@ -296,22 +296,7 @@ export default function (Alpine) {
     function makeEventPill(ev) {
       const pill = document.createElement('button');
       pill.type = 'button';
-      pill.classList.add(
-        'text-xs',
-        'px-1',
-        'py-0.5',
-        'rounded',
-        'cursor-pointer',
-        'leading-snug',
-        'hbox',
-        'items-center',
-        'w-full',
-        'text-left',
-        'outline-ring/50',
-        'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-        'focus-visible:outline',
-        ...colorClasses(ev.color, ev.status)
-      );
+      pill.classList.add('text-xs', 'px-1', 'py-0.5', 'rounded', 'cursor-pointer', 'leading-snug', 'hbox', 'items-center', 'w-full', 'text-left', 'outline-ring/50', 'focus-outline', ...colorClasses(ev.color, ev.status));
       pill.setAttribute('aria-label', eventAriaLabel(ev));
       const span = document.createElement('span');
       span.classList.add('truncate');
@@ -346,19 +331,7 @@ export default function (Alpine) {
 
       const more = document.createElement('button');
       more.type = 'button';
-      more.classList.add(
-        'text-xs',
-        'text-muted-foreground',
-        'px-1',
-        'text-left',
-        'w-full',
-        'rounded',
-        'hover:text-foreground',
-        'cursor-pointer',
-        'outline-ring/50',
-        'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-        'focus-visible:outline'
-      );
+      more.classList.add('text-xs', 'text-muted-foreground', 'px-1', 'text-left', 'w-full', 'rounded', 'hover:text-foreground', 'cursor-pointer', 'outline-ring/50', 'focus-outline');
       more.setAttribute('data-slot', 'overflow-more-btn');
       more.textContent = `+${hiddenCount} more`;
       more.addEventListener('click', (e) => {
@@ -709,20 +682,7 @@ export default function (Alpine) {
         timedEvs.forEach(({ ev, startMins, durMins, slotCol, slotTotal }) => {
           const evEl = document.createElement('button');
           evEl.type = 'button';
-          evEl.classList.add(
-            'absolute',
-            'rounded',
-            'px-1.5',
-            'py-0.5',
-            'cursor-pointer',
-            'overflow-hidden',
-            'text-xs',
-            'text-left',
-            'outline-ring/50',
-            'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-            'focus-visible:outline',
-            ...colorClasses(ev.color, ev.status)
-          );
+          evEl.classList.add('absolute', 'rounded', 'px-1.5', 'py-0.5', 'cursor-pointer', 'overflow-hidden', 'text-xs', 'text-left', 'outline-ring/50', 'focus-outline', ...colorClasses(ev.color, ev.status));
           evEl.setAttribute('aria-label', eventAriaLabel(ev));
           const pct = 100 / slotTotal;
           evEl.style.top = `${(startMins / 60) * HOUR_H}px`;
@@ -819,7 +779,7 @@ export default function (Alpine) {
       const title = document.createElement('button');
       title.type = 'button';
       title.setAttribute('id', titleId);
-      title.classList.add('text-xs', 'font-semibold', 'cursor-pointer', 'hover:text-primary', 'rounded', 'outline-ring/50', 'focus-visible:outline-[calc(var(--spacing)*0.75)]', 'focus-visible:outline');
+      title.classList.add('text-xs', 'font-semibold', 'cursor-pointer', 'hover:text-primary', 'rounded', 'outline-ring/50', 'focus-outline');
       title.textContent = monthName;
       title.setAttribute('aria-label', `${monthName} ${year}`);
       title.addEventListener('click', () => {

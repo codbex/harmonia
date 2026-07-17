@@ -96,6 +96,20 @@ Use Input Groups when you want to attach supplementary actions or indicators to 
 </div>
 ```
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+```html
+<div x-h-input-group>
+  <input x-h-input.group placeholder="Search..." aria-invalid="true" />
+  <div x-h-input-group-addon data-align="inline-start">
+    <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+  </div>
+  <div x-h-input-group-addon data-align="inline-end">12 results</div>
+</div>
+```
+
 ### Disabled
 
 Set the native `disabled` attribute on the grouped input and `data-disabled="true"` on the addon(s).

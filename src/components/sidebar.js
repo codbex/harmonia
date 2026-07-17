@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
 import { ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
@@ -74,8 +75,7 @@ export default function (Alpine) {
       'align-middle',
       '[&>span]:align-middle',
       '[&>span]:truncate',
-      "[&_svg:not([class*='size-'])]:size-4",
-      '[&>svg]:shrink-0',
+      'svg-defaults',
       '[&>svg:not(:first-child):last-child]:ml-auto',
       'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
       'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!',
@@ -305,15 +305,13 @@ export default function (Alpine) {
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'active:bg-sidebar-primary',
       'active:text-sidebar-primary-foreground',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
+      ...disabledControlClasses,
       'aria-disabled:pointer-events-none',
       'aria-disabled:opacity-disabled',
       'data-[active=true]:bg-sidebar-primary',
       'data-[active=true]:text-sidebar-primary-foreground',
       '[&>span]:truncate',
-      "[&_svg:not([class*='size-'])]:size-4",
-      '[&>svg]:shrink-0'
+      'svg-defaults'
     );
 
     const sizes = {

@@ -204,6 +204,18 @@
    colors are literals in src/common/event-colors.js) */
 @source inline("ring-{0,1,2,4}");
 
+/* Shared focus indicators used across interactive components */
+@utility focus-ring {
+  &:focus-visible {
+    @apply border-ring ring-[calc(var(--spacing)*0.75)] ring-ring/50;
+  }
+}
+@utility focus-outline {
+  &:focus-visible {
+    @apply outline outline-[calc(var(--spacing)*0.75)];
+  }
+}
+
 @source inline(
   "bg-{card,background,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,negative,negative-foreground,positive,positive-foreground,warning,warning-foreground,information,information-foreground,sidebar}"
 );

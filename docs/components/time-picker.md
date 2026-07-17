@@ -138,6 +138,21 @@ By default this control shows native-constraint errors (for example `required`) 
 
 </LiveExample>
 
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
+<LiveExample>
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-invalid" x-model="time" x-h-time-picker-input aria-invalid="true" />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
+</LiveExample>
+
 ### Disabled
 
 Set the native `disabled` attribute on the inner input to disable the whole picker.

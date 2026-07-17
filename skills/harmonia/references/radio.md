@@ -37,6 +37,19 @@ Use radio buttons when users must choose only one option from a group. All optio
 </form>
 ```
 
+### Invalid
+
+```html
+<form class="flex flex-col gap-3">
+  <div x-h-field data-orientation="horizontal">
+    <span x-h-radio>
+      <input type="radio" name="invalid_state" id="r_invalid" value="invalid" checked aria-invalid="true" />
+    </span>
+    <label x-h-label for="r_invalid">Invalid</label>
+  </div>
+</form>
+```
+
 ### Disabled
 
 ```html

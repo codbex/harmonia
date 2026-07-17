@@ -1,3 +1,4 @@
+import { disabledControlClasses } from '../common/shared-classes';
 import { buttonVariants, setButtonClasses } from './button';
 
 export default function (Alpine) {
@@ -91,11 +92,8 @@ export default function (Alpine) {
       'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:hover:aria-selected:inset-shadow-[-.188rem_0_var(--primary)]',
       'focus-visible:ring-[3px]',
       'focus-visible:outline-1',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4"
+      ...disabledControlClasses,
+      'svg-defaults'
     );
     el.setAttribute('role', 'tab');
     el.setAttribute('data-slot', 'tab');

@@ -36,7 +36,9 @@ Use the number input when users need to enter a bounded numeric value, such as a
 </div>
 ```
 
-### Invalid Number Input
+### Invalid
+
+Reacts to the native invalid state or to the `aria-invalid` attribute.
 
 ```html
 <div x-h-input-number>

@@ -127,9 +127,7 @@ export default function (Alpine) {
       'focus:ring-offset-2',
       'focus:outline-hidden',
       'disabled:pointer-events-none',
-      '[&_svg]:pointer-events-none',
-      '[&_svg]:shrink-0',
-      "[&_svg:not([class*='size-'])]:size-4"
+      'svg-defaults'
     );
     el.setAttribute('data-slot', 'dialog-close');
     el.setAttribute('type', 'button');

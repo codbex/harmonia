@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 import { ChevronRight, createSvg } from './../common/icons';
 
 export default function (Alpine) {
@@ -205,8 +206,7 @@ export default function (Alpine) {
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'active:bg-primary',
       'active:text-primary-foreground',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
+      ...disabledControlClasses,
       'aria-disabled:pointer-events-none',
       'aria-disabled:opacity-disabled',
       '[&>span]:w-full',

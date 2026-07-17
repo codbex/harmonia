@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
 
 const menubarTriggerClasses = [
@@ -26,18 +27,15 @@ const menubarTriggerClasses = [
   'duration-100',
   'motion-reduce:transition-none',
   'outline-ring/50',
-  'focus-visible:outline',
-  'focus-visible:outline-[calc(var(--spacing)*0.75)]',
+  'focus-outline',
   'hover:bg-secondary-hover',
   'hover:text-secondary-foreground',
   'focus:bg-secondary-hover',
   'focus:text-secondary-foreground',
   'data-[state=open]:bg-secondary-hover',
   'data-[state=open]:text-secondary-foreground',
-  'disabled:opacity-disabled',
-  'disabled:pointer-events-none',
-  '[&_svg]:shrink-0',
-  "[&_svg:not([class*='size-'])]:size-4",
+  ...disabledControlClasses,
+  'svg-defaults',
 ];
 
 export default function (Alpine) {

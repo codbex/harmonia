@@ -1,19 +1,12 @@
+import { invalidControlClasses } from '../common/shared-classes';
+
 export default function (Alpine) {
   Alpine.directive('h-textarea', (el, { modifiers }) => {
     el.classList.add(
       'border-input',
       'placeholder:text-muted-foreground',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'aria-invalid:ring-negative/20',
-      'dark:aria-invalid:ring-negative/40',
-      'aria-invalid:border-negative',
-      'user-invalid:ring-negative/20!',
-      'dark:user-invalid:ring-negative/40!',
-      'user-invalid:border-negative!',
-      '[[data-validate=immediate]_&:invalid]:ring-negative/20!',
-      'dark:[[data-validate=immediate]_&:invalid]:ring-negative/40!',
-      '[[data-validate=immediate]_&:invalid]:border-negative!',
+      'focus-ring',
+      ...invalidControlClasses,
       'bg-input-inner',
       'flex',
       'field-sizing-content',
@@ -28,14 +21,13 @@ export default function (Alpine) {
       'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
       'outline-none',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'disabled:cursor-not-allowed',
       'disabled:opacity-disabled',
       '[&[readonly]]:bg-muted',
       'md:text-sm'
     );
     if (modifiers.includes('group')) {
-      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'py-2', 'shadow-input', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
+      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'py-2', 'shadow-input', 'focus-ring');
       el.classList.add('flex-1', 'resize-none', 'rounded-none', 'border-0', 'bg-transparent', 'py-3', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
     } else el.setAttribute('data-slot', 'textarea');

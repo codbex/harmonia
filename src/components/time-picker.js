@@ -1,5 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { findAncestorState } from '../common/ancestor';
+import { disabledInputClasses, invalidInputClasses, pickerCellWrapperClasses, userInvalidInputClasses } from '../common/shared-classes';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, partsToValue24 } from '../common/time';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
@@ -64,25 +65,14 @@ export default function (Alpine) {
       'motion-reduce:transition-none',
       'duration-200',
       'outline-none',
-      'has-[input:disabled]:pointer-events-none',
-      'has-[input:disabled]:cursor-not-allowed',
-      'has-[input:disabled]:opacity-disabled',
+      ...disabledInputClasses,
       'has-[input[readonly]]:bg-muted',
       'has-[input[readonly]]:cursor-default',
       'has-[input[readonly]]:text-foreground'
     );
     if (modifiers.includes('table')) {
       el.classList.add(
-        'size-full',
-        'h-10',
-        'has-[input:focus-visible]:inset-ring-ring/50',
-        'has-[input:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
-        'has-[input[aria-invalid=true]]:inset-ring-negative/20',
-        'dark:has-[input[aria-invalid=true]]:inset-ring-negative/40',
-        'has-[input:user-invalid]:inset-ring-negative/20!',
-        'dark:has-[input:user-invalid]:inset-ring-negative/40!',
-        '[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/20!',
-        'dark:[[data-validate=immediate]_&:has(input:invalid)]:inset-ring-negative/40!',
+        ...pickerCellWrapperClasses,
         'hover:bg-table-hover',
         'hover:text-table-hover-foreground',
         'active:bg-table-active!',
@@ -109,15 +99,8 @@ export default function (Alpine) {
         'has-[input:focus-visible]:border-ring',
         'has-[input:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
         'has-[input:focus-visible]:ring-ring/50',
-        'has-[input[aria-invalid=true]]:ring-negative/20',
-        'has-[input[aria-invalid=true]]:border-negative',
-        'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-        'has-[input:user-invalid]:ring-negative/20',
-        'has-[input:user-invalid]:border-negative',
-        'dark:has-[input:user-invalid]:ring-negative/40',
-        '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
-        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
-        'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40'
+        ...invalidInputClasses,
+        ...userInvalidInputClasses
       );
       el.setAttribute('data-slot', 'time-picker');
     }

@@ -1,3 +1,5 @@
+import { disabledControlClasses } from '../common/shared-classes';
+
 export const buttonVariants = {
   default: [
     'bg-secondary',
@@ -141,24 +143,11 @@ export const setButtonClasses = (el) => {
     'transition-all',
     'duration-100',
     'motion-reduce:transition-none',
-    'disabled:pointer-events-none',
-    'disabled:opacity-disabled',
-    '[&_svg]:pointer-events-none',
-    "[&_svg:not([class*='size-'])]:size-4",
+    ...disabledControlClasses,
+    'svg-defaults',
     'shrink-0',
-    '[&_svg]:shrink-0',
     'outline-ring/50',
-    'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-    'focus-visible:outline',
-    'aria-invalid:ring-negative/20',
-    'dark:aria-invalid:ring-negative/40',
-    'aria-invalid:border-negative',
-    'user-invalid:ring-negative/20!',
-    'dark:user-invalid:ring-negative/40!',
-    'user-invalid:border-negative!',
-    '[[data-validate=immediate]_&:invalid]:ring-negative/20!',
-    'dark:[[data-validate=immediate]_&:invalid]:ring-negative/40!',
-    '[[data-validate=immediate]_&:invalid]:border-negative!'
+    'focus-outline'
   );
 };
 

@@ -1,6 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import bubblePlugin from '../../src/components/bubble.js';
 import { mountDirective } from '../test-utils.js';
+
+const bubbleCss = readFileSync('src/styles/bubble.css', 'utf8');
 
 describe('h-bubble', () => {
   let el;
@@ -34,8 +37,6 @@ describe('h-bubble', () => {
     expect(el.classList.contains('px-3')).toBe(true);
     expect(el.classList.contains('py-2')).toBe(true);
     expect(el.classList.contains('wrap-break-word')).toBe(true);
-    expect(el.classList.contains('has-data-[slot=bubble-reactions]:mb-3')).toBe(true);
-    expect(el.classList.contains('has-data-[slot=bubble-reactions]:pb-4')).toBe(true);
   });
 
   it('sets data-slot="bubble"', () => {
@@ -151,9 +152,6 @@ describe('h-bubble-header', () => {
     expect(el.classList.contains('hbox')).toBe(true);
     expect(el.classList.contains('items-center')).toBe(true);
     expect(el.classList.contains('font-semibold')).toBe(true);
-    expect(el.classList.contains('[&>time]:font-normal')).toBe(true);
-    expect(el.classList.contains('[&>time]:text-xs')).toBe(true);
-    expect(el.classList.contains('[&>time]:opacity-70')).toBe(true);
   });
 
   it('sets data-slot="bubble-header"', () => {
@@ -193,7 +191,6 @@ describe('h-bubble-footer', () => {
     expect(el.classList.contains('hbox')).toBe(true);
     expect(el.classList.contains('text-xs')).toBe(true);
     expect(el.classList.contains('opacity-70')).toBe(true);
-    expect(el.classList.contains('[&>svg]:size-3')).toBe(true);
   });
 
   it('sets data-slot="bubble-footer"', () => {
@@ -253,10 +250,6 @@ describe('h-bubble-gallery', () => {
     mountDirective(bubblePlugin, 'h-bubble-gallery', el);
     expect(el.classList.contains('grid')).toBe(true);
     expect(el.classList.contains('grid-cols-2')).toBe(true);
-    expect(el.classList.contains('[&_img]:aspect-square')).toBe(true);
-    expect(el.classList.contains('[&_img]:size-full')).toBe(true);
-    expect(el.classList.contains('[&_img]:object-cover')).toBe(true);
-    expect(el.classList.contains('[&_img]:rounded-lg')).toBe(true);
   });
 
   it('sets data-slot="bubble-gallery"', () => {
@@ -279,12 +272,8 @@ describe('h-bubble-gallery-more', () => {
     expect(el.classList.contains('rounded-lg')).toBe(true);
   });
 
-  it('adds the button overlay classes', () => {
-    mountDirective(bubblePlugin, 'h-bubble-gallery-more', el);
-    expect(el.classList.contains('[&>button]:absolute')).toBe(true);
-    expect(el.classList.contains('[&>button]:inset-0')).toBe(true);
-    expect(el.classList.contains('[&>button]:bg-black/50')).toBe(true);
-    expect(el.classList.contains('[&>button]:text-white')).toBe(true);
+  it('styles the button overlay through bubble.css', () => {
+    expect(bubbleCss).toContain('[data-slot="bubble-gallery-more"] > button');
   });
 
   it('sets data-slot="bubble-gallery-more"', () => {
@@ -435,8 +424,6 @@ describe('h-bubble-file', () => {
     expect(el.classList.contains('items-center')).toBe(true);
     expect(el.classList.contains('rounded-lg')).toBe(true);
     expect(el.classList.contains('bg-current/10')).toBe(true);
-    expect(el.classList.contains('[&>svg]:size-7')).toBe(true);
-    expect(el.classList.contains('[&>svg]:shrink-0')).toBe(true);
   });
 
   it('sets data-slot="bubble-file"', () => {
@@ -459,9 +446,6 @@ describe('h-bubble-link', () => {
     expect(el.classList.contains('rounded-lg')).toBe(true);
     expect(el.classList.contains('bg-current/10')).toBe(true);
     expect(el.classList.contains('no-underline')).toBe(true);
-    expect(el.classList.contains('[&_img]:w-full')).toBe(true);
-    expect(el.classList.contains('[&_img]:max-h-40')).toBe(true);
-    expect(el.classList.contains('[&_img]:object-cover')).toBe(true);
   });
 
   it('sets data-slot="bubble-link"', () => {
@@ -482,14 +466,14 @@ describe('h-bubble-reactions', () => {
     expect(el.classList.contains('absolute')).toBe(true);
     expect(el.classList.contains('-bottom-3')).toBe(true);
     expect(el.classList.contains('end-2')).toBe(true);
-    expect(el.classList.contains('[[data-align=right]_&]:end-auto')).toBe(true);
-    expect(el.classList.contains('[[data-align=right]_&]:start-2')).toBe(true);
     expect(el.classList.contains('rounded-full')).toBe(true);
     expect(el.classList.contains('bg-background')).toBe(true);
     expect(el.classList.contains('shadow-sm')).toBe(true);
-    expect(el.classList.contains('[&>button]:cursor-pointer')).toBe(true);
-    expect(el.classList.contains('[&>button]:hover:bg-secondary-hover')).toBe(true);
-    expect(el.classList.contains('[&>button]:active:bg-secondary-active')).toBe(true);
+  });
+
+  it('styles the reaction buttons and right-aligned flip through bubble.css', () => {
+    expect(bubbleCss).toContain('[data-slot="bubble-reactions"] > button');
+    expect(bubbleCss).toContain('[data-align="right"] [data-slot="bubble-reactions"]');
   });
 
   it('sets data-slot="bubble-reactions"', () => {

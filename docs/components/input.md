@@ -57,6 +57,8 @@ By default this control shows native-constraint errors (for example `required`) 
 
 ### Invalid Input
 
+Reacts to the native invalid state or to the `aria-invalid` attribute.
+
 <LiveExample>
 
 ```html

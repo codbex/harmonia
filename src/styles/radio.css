@@ -1,3 +1,11 @@
 [data-slot="radio"] > input {
   @apply absolute top-0 left-0 size-full cursor-pointer appearance-none rounded-full border-0 bg-transparent outline-none focus-visible:border-ring focus-visible:ring-ring/50;
 }
+[data-slot="radio"]::before {
+  @apply pointer-events-none block size-full rounded-full border-3 border-transparent bg-primary bg-clip-padding;
+}
+[data-slot="radio"]:has(input:invalid)::before,
+[data-slot="radio"]:has(input:user-invalid)::before,
+[data-slot="radio"]:has(input[aria-invalid="true"])::before {
+  @apply bg-negative;
+}

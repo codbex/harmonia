@@ -122,8 +122,7 @@ export default function (Alpine) {
     button.setAttribute('data-slot', 'exp-panel-trigger');
     button.classList.add(
       'cursor-pointer',
-      'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
+      'focus-ring',
       'flex',
       'flex-1',
       'items-center',
@@ -136,9 +135,6 @@ export default function (Alpine) {
       'motion-reduce:transition-none',
       'outline-none',
       'hover:underline',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
       '[&[aria-expanded=true]>svg]:rotate-180'
     );
     el.appendChild(button);

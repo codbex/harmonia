@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 import { Close, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-chip', (el, { original }, { cleanup }) => {
@@ -22,18 +23,14 @@ export default function (Alpine) {
       'transition-all',
       'duration-100',
       'motion-reduce:transition-none',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
-      '[&_svg]:pointer-events-none',
-      "[&_svg:not([class*='size-'])]:size-4",
+      ...disabledControlClasses,
+      'svg-defaults',
       'shrink-0',
-      '[&_svg]:shrink-0',
       'aria-expanded:outline-[calc(var(--spacing)*0.75)]',
       'aria-expanded:outline',
       'focus:outline-[calc(var(--spacing)*0.75)]',
       'focus:outline',
-      'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-      'focus-visible:outline',
+      'focus-outline',
       'h-7',
       'gap-1.5',
       'px-2.5',
@@ -138,8 +135,7 @@ export default function (Alpine) {
       'transition-all',
       'duration-100',
       'motion-reduce:transition-none',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
+      ...disabledControlClasses,
       'bg-transparent',
       'text-secondary-foreground',
       'fill-secondary-foreground',

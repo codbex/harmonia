@@ -1,9 +1,10 @@
 import { findAncestorState } from '../common/ancestor';
+import { disabledControlClasses } from '../common/shared-classes';
 import { ChevronLeft, ChevronRight, createSvg } from './../common/icons';
 
 export default function (Alpine) {
   Alpine.directive('h-carousel', (el, _binding, { cleanup, effect, Alpine }) => {
-    el.classList.add('relative', 'overflow-hidden', 'outline-ring/50', 'focus-visible:outline', 'focus-visible:outline-[calc(var(--spacing)*0.75)]');
+    el.classList.add('relative', 'overflow-hidden', 'outline-ring/50', 'focus-outline');
     el.setAttribute('data-slot', 'carousel');
     el.setAttribute('role', 'region');
     el.setAttribute('aria-roledescription', 'carousel');
@@ -160,12 +161,9 @@ export default function (Alpine) {
       'cursor-pointer',
       'hover:bg-background',
       'outline-ring/50',
-      'focus-visible:outline',
-      'focus-visible:outline-[calc(var(--spacing)*0.75)]',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
-      '[&_svg]:pointer-events-none',
-      "[&_svg:not([class*='size-'])]:size-4",
+      'focus-outline',
+      ...disabledControlClasses,
+      'svg-defaults',
       isPrev ? 'left-4' : 'right-4'
     );
     if (el.tagName === 'BUTTON' && !el.hasAttribute('type')) el.setAttribute('type', 'button');
@@ -230,7 +228,7 @@ export default function (Alpine) {
         for (let i = 0; i < count; i++) {
           const btn = document.createElement('button');
           btn.setAttribute('type', 'button');
-          btn.classList.add('size-3', 'rounded-full', 'shadow-xs', 'cursor-pointer', 'transition-colors', 'motion-reduce:transition-none', 'outline-ring/50', 'focus-visible:outline', 'focus-visible:outline-[calc(var(--spacing)*0.75)]');
+          btn.classList.add('size-3', 'rounded-full', 'shadow-xs', 'cursor-pointer', 'transition-colors', 'motion-reduce:transition-none', 'outline-ring/50', 'focus-outline');
           btn.setAttribute('aria-label', `${slideLabel} ${i + 1}`);
           const fn = () => root._h_carousel.goTo(i);
           btn.addEventListener('click', fn);
