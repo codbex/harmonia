@@ -1,5 +1,38 @@
 # Changelog
 
+## v2.6.0
+
+A release that rewrites the **Range** slider from scratch to drop the third-party `nouislider` dependency, so the slider is now a native-input-backed, Tailwind-styled control with a smaller footprint. It also brings invalid-state styling to more components, two newly exposed focus utility classes, and a bundle-size optimization that shrinks the JavaScript output. The only breaking change is the Range rewrite. See "Range" below to migrate.
+
+### Range
+
+- **Breaking: the Range slider was rewritten and no longer uses `nouislider`.** It is now a native-input-backed slider styled with Tailwind, which also removes `nouislider` from the package's dependencies.
+- **Breaking: markup now requires a child `<input>`.** The element must contain a native `<input>` as a direct child, from which the slider takes its value, `name`, and disabled state (the directive throws when the input is missing). The `disabled` attribute now goes on that inner input rather than on the wrapper element.
+- **Breaking: configuration moved from a config object to modifiers and `data-*` attributes.** The old `x-h-range="config"` object and the `auto-hide-tips` attribute are gone. Orientation and dual handles are now `x-h-range.vertical` and `x-h-range.dual` modifiers (combinable), and the range is configured with `data-min`, `data-max`, `data-step`, `data-value`, `data-tooltips` (`true` for always visible or `auto` for on-interaction), `data-unit`, `data-label`, and `data-min-label` / `data-max-label` for the dual handles.
+- **Breaking: the `x-model` shape changed.** A single slider now models a plain number instead of an array, while a `.dual` slider models a `[low, high]` array. The model updates live during dragging.
+- **New styling hooks.** The slider exposes `data-slot` values (`range`, `range-input`, `range-fill`, `range-handle`, `range-tooltip`) that replace the old `.harmonia-slider` and `noUi-*` selectors, so any custom CSS keyed on those old classes must be retargeted.
+- Each handle is a `role="slider"` with the full `aria-value*` set and an accessible label, is fully keyboard operable (arrow keys step, PageUp / PageDown jump by ten steps, Home and End go to the bounds, all RTL-aware), and dual handles cannot cross. The slider dispatches `input` during dragging and `change` on release, integrates with native forms (submitted value, form reset, and constraint validation), and shows its invalid state on submit or immediately when an ancestor opts in with `data-validate="immediate"`.
+
+### Invalid state improvements
+
+- **Checkbox and Radio** - an invalid checkbox or radio (native `:invalid` / `:user-invalid` state or `aria-invalid="true"`) now renders with a negative-colored fill or indicator, matching the error styling of the other inputs.
+- **Tile** - a tile group whose input is invalid now shows a negative border, so an invalid radio or checkbox group built from tiles is visually flagged.
+- **Calendar** - the calendar's slider handles now mirror the invalid state of their underlying input through `aria-invalid`, so the error is announced on the focusable handle that assistive technology actually reaches.
+
+### New utility classes
+
+- New `focus-ring` and `focus-outline` utility classes, the same focus indicators Harmonia components use internally, are now exposed so custom focusable elements can match the built-in focus styling. `focus-ring` colors the border and draws a translucent ring, `focus-outline` draws a focus outline (pair it with an outline color such as `outline-ring/50`), and both apply only on `:focus-visible`. Documented on a new Focus Indicator utilities page.
+
+### Bundle size
+
+- Long, repeated Tailwind class strings (the disabled, invalid, and picker-wrapper variants) that were duplicated inline across many components are now consolidated into shared constants that the components import. Identical class strings already collapse to a single CSS rule, so this leaves the rendered output unchanged and purely shrinks the JavaScript bundle. Dropping `nouislider` and its stylesheet reduces the footprint further.
+
+### Documentation
+
+- New Invalid state examples for the Checkbox, Radio, Select, File Upload, Input Group, and Tile, and new Disabled examples for the Button, Tabs, and Step Indicator.
+- A new Focus Indicator page under the utility classes documents `focus-ring` and `focus-outline`.
+- The agent-readable skill that ships in the package was regenerated to match the updated docs.
+
 ## v2.5.0
 
 A release that adds two new components - a chat-style **Bubble** and a **Carousel** - and reworks the **Slot Picker** so you compose its toolbar yourself from small control directives. The Slot Picker also gains colored slots, selectable sub-slot tiles, a configurable day count, and an optional now indicator, and the Calendar gains a rejected event status. The breaking changes are all in the Slot Picker: it no longer renders a toolbar of its own, its host-level label attributes were removed, and the slot `icons` shape changed. See "Slot Picker" below to migrate.
