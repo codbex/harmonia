@@ -28,7 +28,7 @@ import { I18next } from '@codbex/harmonia';
 import Alpine from 'alpinejs';
 import i18next from 'i18next';
 
-window.i18next = i18next; // the plugin reads the global; i18next is never bundled
+window.i18next = i18next; // the plugin reads the global as i18next is never bundled
 Alpine.plugin(I18next);
 Alpine.start();
 ```

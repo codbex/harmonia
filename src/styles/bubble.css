@@ -7,8 +7,8 @@
 [data-slot="bubble-content"] p {
   @apply leading-relaxed;
 }
-[data-slot="bubble-footer"] > svg {
-  @apply size-3 fill-current;
+[data-slot="bubble-footer"] > svg:not([class*="size-"]) {
+  @apply size-3;
 }
 [data-slot="bubble-gallery"] img {
   @apply aspect-square size-full rounded-lg object-cover;
