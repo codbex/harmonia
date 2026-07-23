@@ -188,16 +188,40 @@ describe('h-sidebar-menu-button', () => {
     expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!')).toBe(false);
   });
 
-  it('makes a first-child icon or avatar fill the button when collapsed with data-logo', () => {
+  it('rounds and centers a first-child icon or avatar with data-logo outside a header', () => {
     const el = document.createElement('button');
     el.setAttribute('data-logo', 'true');
     mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
-    // Size the icon or avatar to the collapsed rail, drop the button padding and center it.
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!')).toBe(true);
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!')).toBe(true);
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!')).toBe(true);
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!')).toBe(true);
-    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!')).toBe(true);
+    // Round the icon or avatar and center it when the sidebar collapses.
+    expect(el.classList.contains('[&>svg:first-child]:rounded-control')).toBe(true);
+    expect(el.classList.contains('[&>[data-slot=avatar]:first-child]:rounded-control')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:justify-center!')).toBe(true);
+    // Outside a header the logo is inset and sized down to fit the row.
+    expect(el.classList.contains('pl-1')).toBe(true);
+    expect(el.classList.contains('[&>svg:first-child]:size-6!')).toBe(true);
+    expect(el.classList.contains('[&>[data-slot=avatar]:first-child]:size-6!')).toBe(true);
+    expect(el.classList.contains('[&>[data-slot=avatar]:first-child]:text-xs')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:p-1')).toBe(true);
+    // The old collapse-fill classes are gone.
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!')).toBe(false);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!')).toBe(false);
+  });
+
+  it('skips the inset sizing for a data-logo button inside a sidebar header', () => {
+    const header = document.createElement('div');
+    header.setAttribute('data-slot', 'sidebar-header');
+    const el = document.createElement('button');
+    el.setAttribute('data-logo', 'true');
+    header.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    // The always-on rounding and centering still apply.
+    expect(el.classList.contains('[&>svg:first-child]:rounded-control')).toBe(true);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:justify-center!')).toBe(true);
+    // But the header logo keeps the button's own padding and full size.
+    expect(el.classList.contains('pl-1')).toBe(false);
+    expect(el.classList.contains('[&>svg:first-child]:size-6!')).toBe(false);
+    expect(el.classList.contains('[&>[data-slot=avatar]:first-child]:size-6!')).toBe(false);
+    expect(el.classList.contains('group-data-[collapsed=true]/sidebar:p-1')).toBe(false);
   });
 });
 

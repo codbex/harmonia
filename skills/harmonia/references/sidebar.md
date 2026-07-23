@@ -419,7 +419,7 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
 </div>
 ```
 
-### Collapsed with avatars
+### With avatars and logos
 
 A leading avatar in a header item or menu button behaves like a leading icon - it stays visible when the sidebar is collapsed while the label and any trailing content are hidden. This suits branding rows and user or direct-message lists where the avatar is the recognisable element. Toggle the button below to collapse the sidebar.
 
@@ -439,19 +439,33 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
     </div>
     <div x-h-sidebar-content>
       <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Channels</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-logo="true">
+                <svg x-h-icon data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+                <span>Harmonia</span>
+                <span x-h-sidebar-menu-badge>1</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div x-h-sidebar-group>
         <div x-h-sidebar-group-label>Direct messages</div>
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-logo="true" data-active="true">
-                <div x-h-avatar class="size-6! rounded-control text-xs" data-color="orange">AM</div>
+                <div x-h-avatar data-color="orange">AM</div>
                 <span>Ava Morgan</span>
                 <span x-h-sidebar-menu-badge>3</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-logo="true">
-                <div x-h-avatar class="size-6! rounded-control text-xs" data-color="green">LC</div>
+                <div x-h-avatar data-color="green">LC</div>
                 <span>Liam Chen</span>
               </button>
             </li>

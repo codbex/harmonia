@@ -8,9 +8,9 @@
     <!-- Pinecone Router must be evaluated before Alpine starts. -->
     <script src="/harmonia/lib/node_modules/pinecone-router/dist/router.min.js"></script>
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
-    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
     <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
-    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.min.js"></script>
     <script src="/harmonia/templates/onyx-chat/js/data.js"></script>
     <script src="/harmonia/templates/onyx-chat/js/app.js"></script>
     <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
@@ -85,8 +85,8 @@
             <ul x-h-sidebar-menu>
               <template x-for="dm in $store.chat.dms" :key="dm.id">
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="isActive('/dms/' + dm.id)" @click="go('/dms/' + dm.id)">
-                    <div x-h-avatar class="relative size-6! rounded-control text-xs" :data-color="$store.chat.userById(dm.userId)?.color">
+                  <button x-h-sidebar-menu-button data-logo="true" :data-active="isActive('/dms/' + dm.id)" @click="go('/dms/' + dm.id)">
+                    <div x-h-avatar class="relative" :data-color="$store.chat.userById(dm.userId)?.color">
                       <span x-text="$store.chat.userById(dm.userId)?.initials"></span>
                       <span
                         x-h-badge-indicator

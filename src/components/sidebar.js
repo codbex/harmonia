@@ -336,8 +336,8 @@ export default function (Alpine) {
     } else {
       el.classList.add(
         'peer/menu-button',
-        'p-2',
         'text-left',
+        'p-2',
         'text-sm',
         'duration-200',
         'transition-[width,height,padding]',
@@ -347,18 +347,14 @@ export default function (Alpine) {
         'aria-[expanded=true]:hover:bg-sidebar-secondary',
         'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
         'group-data-[collapsed=true]/sidebar:size-8!',
-        'group-data-[collapsed=true]/sidebar:p-2!',
         'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!'
       );
 
       if (el.getAttribute('data-logo') === 'true') {
-        el.classList.add(
-          'group-data-[collapsed=true]/sidebar:[&>svg:first-child]:size-8!',
-          'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
-          'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:p-0!',
-          'group-data-[collapsed=true]/sidebar:has-[>[data-slot=avatar]:first-child]:justify-center!',
-          'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!'
-        );
+        el.classList.add('[&>svg:first-child]:rounded-control', '[&>[data-slot=avatar]:first-child]:rounded-control', 'group-data-[collapsed=true]/sidebar:justify-center!');
+        if (el.parentElement?.getAttribute('data-slot') !== 'sidebar-header') {
+          el.classList.add('pl-1', '[&>svg:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:text-xs', 'group-data-[collapsed=true]/sidebar:p-1');
+        }
       }
     }
 

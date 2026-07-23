@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Slate Dashboard | Harmonia</title>
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
-    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
     <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
-    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.min.js"></script>
     <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
     <link href="/harmonia/fonts.css" rel="stylesheet" />
   </head>
@@ -99,9 +99,9 @@
       </div>
     </div>
 
-    <div class="flex-1 overflow-hidden" :class="isSmallScreen || 'p-2'" style="order: 2">
-      <main class="vbox size-full overflow-hidden bg-background" :class="isSmallScreen || 'rounded-xl border shadow-sm'">
-        <div x-h-toolbar data-variant="transparent">
+    <div class="flex-1" :class="isSmallScreen || 'p-2'" style="order: 2">
+      <main class="vbox size-full bg-background" :class="isSmallScreen || 'rounded-xl border shadow-sm'">
+        <div x-h-toolbar data-variant="transparent" class="pr-2">
           <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar sheet open button" @click="showSidebarSheet = true">
             <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
           </button>
@@ -172,7 +172,6 @@
               </template>
             </ol>
           </div>
-          <div x-h-avatar>JD</div>
         </div>
 
         <div class="vbox flex-1 gap-4 overflow-auto p-4">

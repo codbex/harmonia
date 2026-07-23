@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.1
+
+Bugfix release
+
+### Fixed SVG and Avatar styling in the sidebar menu button
+
+When there was an SVG or Avatar inside a sidebar menu button and the sidebar was in collapsed mode, both elements scaled to fit the button size, which obscured the active button indicator. Added a size limit to those elements fixed the issue.
+
 ## v2.7.0
 
 A release that adds a new **Responsive** utility directive for container-query-style class toggling, opens up the date formatting engine through a `$dateFormat` magic and a public `createDateFormatter` function, and configures every date and time component to honor the page's `<html lang>`. It also brings a collapsed mode to the Step Indicator, richer options and search to the Select, keyboard support to the Tooltip, and a documented set of z-index utility classes. The breaking changes are all in the Slot Picker: its day grid no longer collapses to one column on its own, and a slot is now selectable only when you bind an `x-model`. See "Slot Picker" below to migrate.
