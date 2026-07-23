@@ -198,6 +198,7 @@
 @source inline("transition-{all,colors,opacity,transform,shadow,[opacity,scale]}");
 @source inline("motion-reduce:transition-none");
 @source inline("ease-{out,linear}");
+@source inline("z-{1,10,50,60}");
 @source inline("fill-none");
 
 /* Ring width for the slot-picker's color-matched selection ring (the ring
@@ -207,12 +208,12 @@
 /* Shared focus indicators used across interactive components */
 @utility focus-ring {
   &:focus-visible {
-    @apply border-ring ring-[calc(var(--spacing)*0.75)] ring-ring/50;
+    @apply border-ring ring-[--spacing(0.75)] ring-ring/50;
   }
 }
 @utility focus-outline {
   &:focus-visible {
-    @apply outline outline-[calc(var(--spacing)*0.75)];
+    @apply outline-[--spacing(0.75)];
   }
 }
 

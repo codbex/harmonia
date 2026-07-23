@@ -6,6 +6,7 @@ import { createDateTimeFormatCache } from '../common/intl';
 import { setupPopover, setupTrigger } from '../common/picker-popover';
 import { disabledControlClasses, pickerCellWrapperClasses, pickerFieldWrapperClasses, pickerWrapperClasses } from '../common/shared-classes';
 import { pad2 } from '../common/time';
+import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
 // Week Picker. Reads and writes a single ISO week string `YYYY-Www`
@@ -14,11 +15,6 @@ import uuidv4 from '../utils/uuid';
 // hovering highlights a week, clicking or Enter/Space selects it.
 
 const WEEK_RE = /^(\d{4})-W(\d{2})$/;
-
-function resolveLocale(config) {
-  if (config && config.locale) return config.locale;
-  return (typeof navigator !== 'undefined' && navigator.language) || 'en';
-}
 
 function sameWeek(a, b) {
   return !!(a && b && a.year === b.year && a.week === b.week);
@@ -277,8 +273,8 @@ export default function (Alpine) {
         const weekParts = isoWeekParts(cursor);
         rowParts.push(weekParts);
         const row = weekRows[w];
-        row.dataset.year = String(weekParts.year);
-        row.dataset.week = String(weekParts.week);
+        row.setAttribute('data-year', String(weekParts.year));
+        row.setAttribute('data-week', String(weekParts.week));
         row.setAttribute('aria-label', `${weekLabel} ${weekParts.week}, ${weekParts.year}`);
         if (sameWeek(weekParts, selected)) {
           row.setAttribute('aria-selected', 'true');
@@ -338,7 +334,7 @@ export default function (Alpine) {
 
     function rowClick(event) {
       const row = event.currentTarget;
-      selectWeek({ year: Number(row.dataset.year), week: Number(row.dataset.week) });
+      selectWeek({ year: Number(row.getAttribute('data-year')), week: Number(row.getAttribute('data-week')) });
     }
 
     function focusView(year, week) {
@@ -394,13 +390,13 @@ export default function (Alpine) {
     function focusWeekRow(monday) {
       focusedMonday = monday;
       const parts = isoWeekParts(monday);
-      let row = weekRows.find((r) => Number(r.dataset.year) === parts.year && Number(r.dataset.week) === parts.week);
+      let row = weekRows.find((r) => Number(r.getAttribute('data-year')) === parts.year && Number(r.getAttribute('data-week')) === parts.week);
       if (!row) {
         viewYear = monday.getFullYear();
         viewMonth = monday.getMonth();
         renderHeader();
         renderGrid();
-        row = weekRows.find((r) => Number(r.dataset.year) === parts.year && Number(r.dataset.week) === parts.week);
+        row = weekRows.find((r) => Number(r.getAttribute('data-year')) === parts.year && Number(r.getAttribute('data-week')) === parts.week);
       } else {
         renderGrid();
       }
@@ -419,10 +415,10 @@ export default function (Alpine) {
       if (event.key === 'Enter' || event.key === ' ') {
         event.stopPropagation();
         event.preventDefault();
-        selectWeek({ year: Number(row.dataset.year), week: Number(row.dataset.week) });
+        selectWeek({ year: Number(row.getAttribute('data-year')), week: Number(row.getAttribute('data-week')) });
         return;
       }
-      const monday = mondayOfIsoWeek(Number(row.dataset.year), Number(row.dataset.week));
+      const monday = mondayOfIsoWeek(Number(row.getAttribute('data-year')), Number(row.getAttribute('data-week')));
       const next = new Date(monday);
       switch (event.key) {
         case 'ArrowUp':
@@ -438,10 +434,10 @@ export default function (Alpine) {
           next.setMonth(next.getMonth() + 1);
           break;
         case 'Home':
-          next.setTime(mondayOfIsoWeek(Number(weekRows[0].dataset.year), Number(weekRows[0].dataset.week)).getTime());
+          next.setTime(mondayOfIsoWeek(Number(weekRows[0].getAttribute('data-year')), Number(weekRows[0].getAttribute('data-week'))).getTime());
           break;
         case 'End':
-          next.setTime(mondayOfIsoWeek(Number(weekRows[5].dataset.year), Number(weekRows[5].dataset.week)).getTime());
+          next.setTime(mondayOfIsoWeek(Number(weekRows[5].getAttribute('data-year')), Number(weekRows[5].getAttribute('data-week'))).getTime());
           break;
         default:
           return;
@@ -484,7 +480,7 @@ export default function (Alpine) {
       const getConfig = evaluateLater(expression);
       effect(() => {
         getConfig((config) => {
-          locale = resolveLocale(config);
+          locale = resolveLocale(config && config.locale);
           render();
           input.value = displayValue();
         });

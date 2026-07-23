@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import dateFormatPlugin, { createDateFormatter, toDate } from '../../src/utils/date-format';
-import { mountDirective } from '../test-utils';
+import { createMockAlpine, mountDirective } from '../test-utils';
 
 const JUN_19 = new Date(2026, 5, 19);
 
@@ -167,5 +167,115 @@ describe('x-h-date-format directive', () => {
     el.setAttribute('data-locale', 'en-US');
     mountDirective(dateFormatPlugin, 'h-date-format', el, { expression: 'value' }, withValue(''));
     expect(el.textContent).toBe('');
+  });
+});
+
+describe('$dateFormat magic', () => {
+  // Register the plugin on a bare mock and read the magic instance from it.
+  const setup = () => {
+    const alpine = createMockAlpine();
+    dateFormatPlugin(alpine);
+    return alpine._magics.dateFormat();
+  };
+
+  it('formats a single date value into a string', () => {
+    const dateFormat = setup();
+    expect(dateFormat('2026-06-19', { locale: 'en-US' })).toBe('6/19/2026');
+  });
+
+  it('honours locale, order and delimiter config', () => {
+    const dateFormat = setup();
+    expect(dateFormat('2026-06-19', { locale: 'en-US', order: 'DMY', delimiter: '/' })).toBe('19/6/2026');
+  });
+
+  it('honours Intl options config', () => {
+    const dateFormat = setup();
+    expect(dateFormat('2026-06-19', { locale: 'en-US', options: { dateStyle: 'long' } })).toBe('June 19, 2026');
+  });
+
+  it('returns an empty string for empty or invalid input', () => {
+    const dateFormat = setup();
+    expect(dateFormat('')).toBe('');
+    expect(dateFormat(null)).toBe('');
+    expect(dateFormat(undefined)).toBe('');
+    expect(dateFormat('not a date')).toBe('');
+  });
+
+  it('formats a { start, end } range object', () => {
+    const dateFormat = setup();
+    expect(dateFormat({ start: '2026-06-01', end: '2026-06-05' }, { locale: 'en-US' })).toBe('6/1/2026 - 6/5/2026');
+  });
+
+  it('formats a start-only range as a single date', () => {
+    const dateFormat = setup();
+    expect(dateFormat({ start: '2026-06-01' }, { locale: 'en-US' })).toBe('6/1/2026');
+  });
+
+  it('.with(config) returns a reusable formatter object', () => {
+    const dateFormat = setup();
+    const formatter = dateFormat.with({ locale: 'en-US' });
+    expect(typeof formatter.format).toBe('function');
+    expect(typeof formatter.parse).toBe('function');
+    expect(formatter.format(JUN_19)).toBe('6/19/2026');
+  });
+
+  it('.with(config) round-trips format -> parse back to the same date', () => {
+    const dateFormat = setup();
+    const formatter = dateFormat.with({ locale: 'en-US', order: 'DMY', delimiter: '/' });
+    const parsed = formatter.parse('19/06/2026');
+    expect(parsed.getFullYear()).toBe(2026);
+    expect(parsed.getMonth()).toBe(5);
+    expect(parsed.getDate()).toBe(19);
+  });
+});
+
+describe('locale fallback to <html lang>', () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute('lang');
+  });
+
+  const magic = () => {
+    const alpine = createMockAlpine();
+    dateFormatPlugin(alpine);
+    return alpine._magics.dateFormat();
+  };
+
+  const withValue = (value) => ({ evaluateLater: () => (cb) => cb(value) });
+
+  it('directive uses <html lang> when data-locale is absent', () => {
+    document.documentElement.setAttribute('lang', 'en-GB');
+    const el = document.createElement('span');
+    mountDirective(dateFormatPlugin, 'h-date-format', el, { expression: 'value' }, withValue('2026-06-19'));
+    expect(el.textContent).toBe('19/06/2026');
+  });
+
+  it('directive prefers an explicit data-locale over <html lang>', () => {
+    document.documentElement.setAttribute('lang', 'en-GB');
+    const el = document.createElement('span');
+    el.setAttribute('data-locale', 'en-US');
+    mountDirective(dateFormatPlugin, 'h-date-format', el, { expression: 'value' }, withValue('2026-06-19'));
+    expect(el.textContent).toBe('6/19/2026');
+  });
+
+  it('directive still formats with no data-locale and no <html lang> (engine default)', () => {
+    const el = document.createElement('span');
+    expect(() => mountDirective(dateFormatPlugin, 'h-date-format', el, { expression: 'value' }, withValue('2026-06-19'))).not.toThrow();
+    expect(el.textContent).not.toBe('');
+  });
+
+  it('$dateFormat uses <html lang> when no config locale is given', () => {
+    document.documentElement.setAttribute('lang', 'en-GB');
+    expect(magic()('2026-06-19')).toBe('19/06/2026');
+  });
+
+  it('$dateFormat prefers an explicit config locale over <html lang>', () => {
+    document.documentElement.setAttribute('lang', 'en-GB');
+    expect(magic()('2026-06-19', { locale: 'en-US' })).toBe('6/19/2026');
+  });
+
+  it('$dateFormat.with picks up <html lang>', () => {
+    document.documentElement.setAttribute('lang', 'en-GB');
+    const formatter = magic().with();
+    expect(formatter.format(JUN_19)).toBe('19/06/2026');
   });
 });

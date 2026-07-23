@@ -65,7 +65,9 @@ import include from './utils/include';
 
 import focus from './utils/focus';
 
-import dateFormat from './utils/date-format';
+import responsive from './utils/responsive';
+
+import dateFormat, { createDateFormatter } from './utils/date-format';
 
 import { version } from '../package.json';
 
@@ -79,6 +81,7 @@ window.Harmonia = {
   addColorSchemeListener,
   chartToImage,
   chartToSvg,
+  createDateFormatter,
   getColorScheme,
   removeColorSchemeListener,
   setColorScheme,
@@ -146,6 +149,7 @@ function registerPlugins() {
   window.Alpine.plugin(weekPicker);
   // Utility plugins
   window.Alpine.plugin(focus);
+  window.Alpine.plugin(responsive);
   window.Alpine.plugin(template);
   window.Alpine.plugin(include);
   window.Alpine.plugin(dateFormat);

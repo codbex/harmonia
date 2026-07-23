@@ -10,6 +10,7 @@ vi.mock('@floating-ui/dom', () => ({
 }));
 
 import weekPickerPlugin from '../../src/components/week-picker.js';
+import { resolveLocale } from '../../src/utils/language.js';
 import { mountDirective } from '../test-utils.js';
 
 function createWrapper() {
@@ -346,7 +347,7 @@ describe('h-week-picker-popup', () => {
     mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' }, { evaluateLater: () => (cb) => cb('2025-W01') });
 
     // Week 1 of 2025 starts on Monday 2024-12-30, so the view shows December 2024.
-    const expectedLabel = new Intl.DateTimeFormat(navigator.language || 'en', { month: 'long', year: 'numeric' }).format(new Date(2024, 11, 30));
+    const expectedLabel = new Intl.DateTimeFormat(resolveLocale(), { month: 'long', year: 'numeric' }).format(new Date(2024, 11, 30));
     expect(popup.querySelector('h2').textContent).toBe(expectedLabel);
     const selected = bodyRows(popup).find((row) => row.getAttribute('aria-selected') === 'true');
     expect(selected.dataset.year).toBe('2025');

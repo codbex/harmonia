@@ -24,12 +24,12 @@ x-h-toolbar-separator
 
 #### x-h-toolbar
 
-| Attribute       | Type                          | Required | Description                                               |
-| --------------- | ----------------------------- | -------- | --------------------------------------------------------- |
-| data-variant    | `default`<br />`transparent`  | false    | Transparent background color. Does not remove the border. |
-| data-size       | `default`<br />`md`<br />`sm` | false    | Make the toolbar smaller.                                 |
-| data-floating   | boolean                       | false    | Floating style toolbar.                                   |
-| data-borderless | boolean                       | false    | Removes toolbar borders.                                  |
+| Attribute       | Type                                      | Required | Description                                                                                                                                                                                                        |
+| --------------- | ----------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| data-variant    | `default`<br />`transparent`<br />`clear` | false    | `transparent` removes the background color (keeps the border). `clear` swaps the toolbar's default header background for the page background color, useful for sticky toolbars layered over a scrolling container. |
+| data-size       | `default`<br />`md`<br />`sm`             | false    | Make the toolbar smaller.                                                                                                                                                                                          |
+| data-floating   | boolean                                   | false    | Floating style toolbar.                                                                                                                                                                                            |
+| data-borderless | boolean                                   | false    | Removes toolbar borders.                                                                                                                                                                                           |
 
 ### Modifiers
 
@@ -124,6 +124,40 @@ x-h-toolbar-separator
     <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
     <span>Add</span>
   </button>
+</div>
+```
+
+</LiveExample>
+
+### Clear
+
+The `clear` variant paints the toolbar with the page background color. Useful when the parent element has content that scrolls behind the toolbar.
+
+<LiveExample data-class="p-0">
+
+```html
+<div class="overflow-auto rounded-control" style="height:12rem">
+  <ul x-h-list>
+    <li x-h-list-item>List Item 1</li>
+    <li x-h-list-item>List Item 2</li>
+    <li x-h-list-item>List Item 3</li>
+    <li x-h-list-item>List Item 4</li>
+    <li x-h-list-item>List Item 5</li>
+    <li x-h-list-item>List Item 6</li>
+    <li x-h-list-item>List Item 7</li>
+    <li x-h-list-item>List Item 8</li>
+    <li x-h-list-item>List Item 9</li>
+    <li x-h-list-item>List Item 10</li>
+  </ul>
+  <div class="sticky bottom-0 z-10" x-h-toolbar.footer data-variant="clear">
+    <button x-h-button data-variant="outline">
+      <span>Cancel</span>
+    </button>
+    <div x-h-toolbar-spacer></div>
+    <button x-h-button data-variant="primary">
+      <span>Save</span>
+    </button>
+  </div>
 </div>
 ```
 

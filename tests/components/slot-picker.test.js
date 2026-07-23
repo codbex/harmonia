@@ -32,8 +32,27 @@ describe('h-slot-picker', () => {
     return mountDirective(slotPickerPlugin, 'h-slot-picker', el, { original: 'h-slot-picker', expression }, contextOverrides);
   }
 
+  function mountResponsive(expression = '', contextOverrides = {}) {
+    return mountDirective(slotPickerPlugin, 'h-slot-picker', el, { original: 'h-slot-picker', expression, modifiers: ['responsive'] }, contextOverrides);
+  }
+
   function withConfig(config) {
     return { evaluateLater: () => (cb) => cb(config) };
+  }
+
+  // Selection is opt-in on a bound x-model. Stub one so selection tests exercise
+  // the selectable path (mirrors the real x-model directive attaching el._x_model).
+  function withModel(target = el, initial = null) {
+    target._x_model = {
+      value: initial,
+      get() {
+        return this.value;
+      },
+      set(v) {
+        this.value = v;
+      },
+    };
+    target.setAttribute('x-model', 'selected');
   }
 
   it('registers h-slot-picker and its control directives', () => {
@@ -136,12 +155,14 @@ describe('h-slot-picker', () => {
   });
 
   it('selects a slot on click (applies bg-primary)', () => {
+    withModel();
     mount('config', withConfig({ date: FIXED_DATE }));
     el.querySelector('button[data-slot="slot-picker-cell"]').click();
     expect(el.querySelectorAll('button[data-slot="slot-picker-cell"].bg-primary').length).toBe(1);
   });
 
   it('deselects a slot when clicked again in single mode', () => {
+    withModel();
     mount('config', withConfig({ date: FIXED_DATE }));
     el.querySelector('button[data-slot="slot-picker-cell"]').click();
     el.querySelector('button[data-slot="slot-picker-cell"].bg-primary').click();
@@ -149,6 +170,7 @@ describe('h-slot-picker', () => {
   });
 
   it('single mode: clicking a second slot deselects the first', () => {
+    withModel();
     mount('config', withConfig({ date: FIXED_DATE, multiple: false }));
     el.querySelector('button[data-slot="slot-picker-cell"]').click();
     expect(el.querySelectorAll('button[data-slot="slot-picker-cell"].bg-primary').length).toBe(1);
@@ -157,6 +179,7 @@ describe('h-slot-picker', () => {
   });
 
   it('multiple mode: can select multiple slots', () => {
+    withModel();
     mount('config', withConfig({ date: FIXED_DATE, multiple: true }));
     el.querySelector('button[data-slot="slot-picker-cell"]').click();
     Array.from(el.querySelectorAll('button[data-slot="slot-picker-cell"]'))[1].click();
@@ -164,6 +187,7 @@ describe('h-slot-picker', () => {
   });
 
   it('slot-click detail reports selected: true after clicking', () => {
+    withModel();
     mount('config', withConfig({ date: FIXED_DATE }));
     const handler = vi.fn();
     el.addEventListener('slot-click', handler);
@@ -172,6 +196,7 @@ describe('h-slot-picker', () => {
   });
 
   it('slot-click detail reports selected: false when deselecting', () => {
+    withModel();
     mount('config', withConfig({ date: FIXED_DATE }));
     const handler = vi.fn();
     el.addEventListener('slot-click', handler);
@@ -412,7 +437,8 @@ describe('h-slot-picker', () => {
       expect(col.getAttribute('aria-labelledby')).toBe(header.id);
     });
 
-    it('slot buttons expose aria-pressed and a day + time label', () => {
+    it('slot buttons expose aria-pressed and a day + time label when selectable', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE }));
       const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
       expect(btn.getAttribute('aria-pressed')).toBe('false');
@@ -420,6 +446,7 @@ describe('h-slot-picker', () => {
     });
 
     it('sets aria-pressed true on the selected slot', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE }));
       const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
       btn.click();
@@ -437,6 +464,7 @@ describe('h-slot-picker', () => {
 
   describe('in-place selection', () => {
     it('updates the clicked cell in place instead of rebuilding it', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE }));
       const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
       btn.click();
@@ -447,6 +475,7 @@ describe('h-slot-picker', () => {
     });
 
     it('keeps focus on the slot after selection', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE }));
       const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
       btn.focus();
@@ -455,6 +484,7 @@ describe('h-slot-picker', () => {
     });
 
     it('moves selection between cells in place in single mode', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE }));
       const [first, second] = el.querySelectorAll('button[data-slot="slot-picker-cell"]');
       first.click();
@@ -462,6 +492,74 @@ describe('h-slot-picker', () => {
       expect(first.isConnected).toBe(true);
       expect(first.getAttribute('aria-pressed')).toBe('false');
       expect(second.getAttribute('aria-pressed')).toBe('true');
+    });
+  });
+
+  describe('selection requires a model', () => {
+    // Without a bound x-model the slots are plain action buttons: clickable and
+    // event-emitting, but never selectable and carrying no aria-pressed.
+    it('dispatches slot-click with selected: false when no model is bound', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const handler = vi.fn();
+      el.addEventListener('slot-click', handler);
+      el.querySelector('button[data-slot="slot-picker-cell"]').click();
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler.mock.calls[0][0].detail.slot.selected).toBe(false);
+    });
+
+    it('never applies a selected style when no model is bound', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      el.querySelector('button[data-slot="slot-picker-cell"]').click();
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"].bg-primary').length).toBe(0);
+    });
+
+    it('adds no aria-pressed attribute to slots when no model is bound', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
+      expect(btn.hasAttribute('aria-pressed')).toBe(false);
+      btn.click();
+      expect(btn.hasAttribute('aria-pressed')).toBe(false);
+    });
+
+    it('repeated clicks never accumulate a selection without a model', () => {
+      mount('config', withConfig({ date: FIXED_DATE, multiple: true }));
+      const handler = vi.fn();
+      el.addEventListener('slot-click', handler);
+      const [first, second] = el.querySelectorAll('button[data-slot="slot-picker-cell"]');
+      first.click();
+      second.click();
+      first.click();
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"].bg-primary').length).toBe(0);
+      expect(handler).toHaveBeenCalledTimes(3);
+      handler.mock.calls.forEach((call) => expect(call[0].detail.slot.selected).toBe(false));
+    });
+
+    it('keeps available cells interactive (button with hover styling) without a model', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
+      expect(btn.tagName).toBe('BUTTON');
+      expect(btn.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    });
+
+    it('does not write the model when selection is off (guards the default path stays selectable)', () => {
+      withModel();
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const btn = el.querySelector('button[data-slot="slot-picker-cell"]');
+      btn.click();
+      expect(btn.getAttribute('aria-pressed')).toBe('true');
+      expect(el._x_model.get()).toBe('2026-06-22T08:00');
+    });
+
+    it('tiles honor the model gate', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '10:00', tiles: [{ description: 'Room A', available: true }] }];
+      mount('config', withConfig({ date: FIXED_DATE, slots }));
+      const handler = vi.fn();
+      el.addEventListener('slot-click', handler);
+      const tile = el.querySelector('button[data-slot="slot-picker-tile"]');
+      tile.click();
+      expect(handler.mock.calls[0][0].detail.slot.selected).toBe(false);
+      expect(tile.classList.contains('bg-primary')).toBe(false);
+      expect(tile.hasAttribute('aria-pressed')).toBe(false);
     });
   });
 
@@ -622,7 +720,7 @@ describe('h-slot-picker', () => {
       expect(btn.disabled).toBe(false);
     });
 
-    it('title control renders api.title with aria-live and updates reactively', () => {
+    it('title control renders api.title with aria-live, default styling, and updates reactively', () => {
       const api = withPicker({ title: 'June 22' });
       const h2 = document.createElement('h2');
       el.appendChild(h2);
@@ -630,6 +728,24 @@ describe('h-slot-picker', () => {
       expect(h2.textContent).toBe('June 22');
       expect(h2.getAttribute('aria-live')).toBe('polite');
       expect(h2.getAttribute('data-slot')).toBe('slot-picker-title');
+      ['flex-1', 'text-sm', 'font-semibold', 'text-center', 'leading-tight'].forEach((cls) => {
+        expect(h2.classList.contains(cls)).toBe(true);
+      });
+      api.title = 'June 27';
+      expect(h2.textContent).toBe('June 27');
+    });
+
+    it('title control with the text-only modifier applies no styling classes but keeps text, data-slot, and aria-live', () => {
+      const api = withPicker({ title: 'June 22' });
+      const h2 = document.createElement('h2');
+      el.appendChild(h2);
+      mountDirective(slotPickerPlugin, 'h-slot-picker-title', h2, { original: 'h-slot-picker-title', modifiers: ['text-only'] });
+      ['flex-1', 'text-sm', 'font-semibold', 'text-center', 'leading-tight'].forEach((cls) => {
+        expect(h2.classList.contains(cls)).toBe(false);
+      });
+      expect(h2.textContent).toBe('June 22');
+      expect(h2.getAttribute('data-slot')).toBe('slot-picker-title');
+      expect(h2.getAttribute('aria-live')).toBe('polite');
       api.title = 'June 27';
       expect(h2.textContent).toBe('June 27');
     });
@@ -658,10 +774,27 @@ describe('h-slot-picker', () => {
       expect(el.querySelectorAll('[data-slot="slot-picker-header"]').length).toBe(1);
     });
 
-    it('applies md:grid-cols-{days} to the day grid', () => {
+    it('does not collapse the day grid by default (no responsive classes)', () => {
       mount('config', withConfig({ date: FIXED_DATE, days: 5 }));
       const grid = el.querySelector('.grid');
+      // Always dayCount columns with vertical dividers, at every width.
+      expect(grid.classList.contains('grid-cols-5')).toBe(true);
+      expect(grid.classList.contains('divide-x')).toBe(true);
+      // No single-column collapse, no md: breakpoint switches.
+      expect(grid.classList.contains('grid-cols-1')).toBe(false);
+      expect(grid.classList.contains('md:grid-cols-5')).toBe(false);
+      expect(grid.classList.contains('divide-y')).toBe(false);
+    });
+
+    it('applies the responsive collapse classes when the responsive modifier is set', () => {
+      mountResponsive('config', withConfig({ date: FIXED_DATE, days: 5 }));
+      const grid = el.querySelector('.grid');
+      // Single-column base + md: switches to dayCount columns with vertical dividers.
+      expect(grid.classList.contains('grid-cols-1')).toBe(true);
       expect(grid.classList.contains('md:grid-cols-5')).toBe(true);
+      expect(grid.classList.contains('divide-y')).toBe(true);
+      expect(grid.classList.contains('md:divide-y-0')).toBe(true);
+      expect(grid.classList.contains('md:divide-x')).toBe(true);
     });
 
     it('moves the window by the configured number of days on next', () => {
@@ -730,12 +863,26 @@ describe('h-slot-picker', () => {
       expect(cell.classList.contains('border-dashed')).toBe(true);
     });
 
-    it('shows a color-matched ring on selection and keeps the color (no bg-primary/ring-primary)', () => {
+    it('carries a transparent border on an unselected filled colored slot', () => {
+      withModel();
+      mount('config', withConfig({ date: FIXED_DATE, slots }));
+      const cell = el.querySelector('button[data-slot="slot-picker-cell"]');
+      // The border width is present up front so selection only swaps the color
+      // (no layout shift); it starts transparent while unselected.
+      expect(cell.classList.contains('border')).toBe(true);
+      expect(cell.classList.contains('border-transparent')).toBe(true);
+      expect(cell.classList.contains('border-background')).toBe(false);
+    });
+
+    it('shows a color-matched ring and a contrasting border on selection (like the active step)', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE, slots }));
       const cell = el.querySelector('button[data-slot="slot-picker-cell"]');
       cell.click();
-      expect(cell.classList.contains('ring-2')).toBe(true);
+      expect(cell.classList.contains('ring-[calc(var(--spacing)*0.75)]')).toBe(true);
       expect(cell.classList.contains('ring-blue-500/50')).toBe(true);
+      expect(cell.classList.contains('border-background')).toBe(true);
+      expect(cell.classList.contains('border-transparent')).toBe(false);
       expect(cell.classList.contains('bg-blue-500')).toBe(true);
       expect(cell.classList.contains('bg-primary')).toBe(false);
       expect(cell.classList.contains('ring-primary')).toBe(false);
@@ -743,14 +890,41 @@ describe('h-slot-picker', () => {
       expect(cell.getAttribute('aria-pressed')).toBe('true');
     });
 
-    it('removes the ring on deselect', () => {
+    it('removes the ring and border color on deselect', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE, slots }));
       const cell = el.querySelector('button[data-slot="slot-picker-cell"]');
       cell.click();
       cell.click();
-      expect(cell.classList.contains('ring-2')).toBe(false);
+      expect(cell.classList.contains('ring-[calc(var(--spacing)*0.75)]')).toBe(false);
       expect(cell.classList.contains('ring-blue-500/50')).toBe(false);
+      expect(cell.classList.contains('border-background')).toBe(false);
+      expect(cell.classList.contains('border-transparent')).toBe(true);
       expect(cell.getAttribute('aria-pressed')).toBe('false');
+    });
+
+    it('adds the ring but not the border when selecting an unconfirmed colored slot', () => {
+      withModel();
+      const outlined = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true, color: 'blue', status: 'unconfirmed' }];
+      mount('config', withConfig({ date: FIXED_DATE, slots: outlined }));
+      const cell = el.querySelector('button[data-slot="slot-picker-cell"]');
+      cell.click();
+      expect(cell.classList.contains('ring-blue-500/50')).toBe(true);
+      // The outline keeps its own colored border; no border-background is added.
+      expect(cell.classList.contains('border-blue-500')).toBe(true);
+      expect(cell.classList.contains('border-background')).toBe(false);
+    });
+
+    it('adds the ring but not the border when selecting a rejected colored slot', () => {
+      withModel();
+      const rejected = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true, color: 'blue', status: 'rejected' }];
+      mount('config', withConfig({ date: FIXED_DATE, slots: rejected }));
+      const cell = el.querySelector('button[data-slot="slot-picker-cell"]');
+      cell.click();
+      expect(cell.classList.contains('ring-blue-500/50')).toBe(true);
+      expect(cell.classList.contains('border-blue-500')).toBe(true);
+      expect(cell.classList.contains('border-dashed')).toBe(true);
+      expect(cell.classList.contains('border-background')).toBe(false);
     });
 
     it('keeps the color on an unavailable slot instead of muting it', () => {
@@ -802,6 +976,7 @@ describe('h-slot-picker', () => {
     });
 
     it('reports a composite key and tileIndex on tile click', () => {
+      withModel();
       mount('config', withConfig({ date: FIXED_DATE, multiple: true, slots }));
       const handler = vi.fn();
       el.addEventListener('slot-click', handler);

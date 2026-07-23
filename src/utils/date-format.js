@@ -2,6 +2,8 @@
 // widget so the date picker, date-time picker and the `x-h-date-format`
 // directive can all share one implementation.
 
+import { resolveLocale } from './language';
+
 export const dateOrderMap = { Y: 'year', M: 'month', D: 'day' };
 
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -14,6 +16,12 @@ const REGEX_SPECIALS = /[.*+?^${}()|[\]\\]/g;
 function isoDateToParts(value) {
   const iso = ISO_DATE.exec(value);
   return iso ? new Date(parseInt(iso[1]), parseInt(iso[2]) - 1, parseInt(iso[3])) : null;
+}
+
+// A parsed `Date` is usable only when it is a real, non-`NaN` date. Shared by
+// the `x-h-date-format` directive and the `$dateFormat` magic.
+function valid(d) {
+  return d && !isNaN(d) ? d : undefined;
 }
 
 /**
@@ -177,16 +185,25 @@ export function createDateFormatter(config = {}) {
 }
 
 /**
- * `x-h-date-format` - render a date value (or the element's own text content)
- * as a locale-aware date string into the element's text content.
+ * Registers the date-format plugin surface:
  *
- * - Value source: the directive expression (a `Date`, timestamp, ISO string, or
- *   `{ start, end }` when `data-range="true"`); when there is no expression the
- *   element's current text content is used as the source value.
- * - Formatting is configured with `data-locale`, `data-order` (e.g. `DMY`),
+ * - `x-h-date-format` directive - render a date value (or the element's own
+ *   text content) as a locale-aware date string into the element's text
+ *   content. Value source: the directive expression (a `Date`, timestamp, ISO
+ *   string, or `{ start, end }` when `data-range="true"`); when there is no
+ *   expression the element's current text content is used as the source value.
+ *   Formatting is configured with `data-locale`, `data-order` (e.g. `DMY`),
  *   `data-delimiter`, `data-range`, `data-range-separator` and `data-options`
  *   (a JSON `Intl.DateTimeFormat` options object). Changing any of these
- *   re-renders.
+ *   re-renders. When `data-locale` is absent the locale falls back to the
+ *   document's `<html lang>` then the browser locale (see `resolveLocale`).
+ * - `$dateFormat` magic - the same formatting engine for use in Alpine
+ *   expressions. `$dateFormat(value, config?)` returns a formatted string (or
+ *   a formatted range when `value` is a `{ start, end }` object), and
+ *   `$dateFormat.with(config?)` returns the full formatter object (with
+ *   `format`/`parse`/`formatRange`/`parseRange`) for cases that also need to
+ *   parse input back into a `Date`. Both apply the same locale fallback when
+ *   `config.locale` is not set.
  */
 export default function (Alpine) {
   Alpine.directive('h-date-format', (el, { expression }, { effect, evaluateLater, cleanup }) => {
@@ -196,8 +213,7 @@ export default function (Alpine) {
 
     function build() {
       const config = {};
-      const locale = el.getAttribute('data-locale');
-      if (locale) config.locale = locale;
+      config.locale = resolveLocale(el.getAttribute('data-locale'));
       const order = el.getAttribute('data-order');
       if (order) config.order = order;
       if (el.hasAttribute('data-delimiter')) config.delimiter = el.getAttribute('data-delimiter');
@@ -211,10 +227,6 @@ export default function (Alpine) {
         }
       }
       return createDateFormatter(config);
-    }
-
-    function valid(d) {
-      return d && !isNaN(d) ? d : undefined;
     }
 
     function render(value) {
@@ -255,5 +267,21 @@ export default function (Alpine) {
     });
 
     cleanup(() => observer.disconnect());
+  });
+
+  Alpine.magic('dateFormat', () => {
+    const make = (config) => createDateFormatter({ ...config, locale: resolveLocale(config && config.locale) });
+    const fn = (value, config) => {
+      const formatter = make(config || {});
+      // A `{ start, end }` object formats as a range; anything else is a single date.
+      if (value && typeof value === 'object' && !(value instanceof Date) && 'start' in value) {
+        const start = valid(toDate(value.start));
+        return start ? (formatter.formatRange(start, valid(toDate(value.end))) ?? '') : '';
+      }
+      const d = valid(toDate(value));
+      return d ? formatter.format(d) : '';
+    };
+    fn.with = (config) => make(config || {});
+    return fn;
   });
 }

@@ -3,6 +3,7 @@ import { findAncestorState } from '../common/ancestor';
 import { disabledInputClasses, invalidInputClasses, pickerCellWrapperClasses, userInvalidInputClasses } from '../common/shared-classes';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, partsToValue24 } from '../common/time';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
+import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 import { Clock, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
@@ -26,7 +27,7 @@ export default function (Alpine) {
       controls: `htpc${uuidv4()}`,
       expanded: false,
       is12Hour: false,
-      locale: undefined,
+      locale: resolveLocale(),
       seconds: undefined,
       focusInput: undefined,
       close(focus = false) {
@@ -122,7 +123,7 @@ export default function (Alpine) {
       effect(() => {
         getConfig((config) => {
           if (config) {
-            if (config['locale']) el._h_timepicker.locale = config.locale;
+            el._h_timepicker.locale = resolveLocale(config['locale']);
             el._h_timepicker.seconds = config['seconds'];
             el._h_timepicker.is12Hour = config['is12Hour'] === true;
           }
@@ -352,14 +353,14 @@ export default function (Alpine) {
         timepicker._h_timepicker.close(true);
       } else if (event.target.tagName === 'LI') {
         let list;
-        let inHoursList = event.target.parentElement.dataset.type === 'hours';
+        let inHoursList = event.target.parentElement.getAttribute('data-type') === 'hours';
         if (inHoursList) {
           list = hoursList;
-        } else if (event.target.parentElement.dataset.type === 'minutes') {
+        } else if (event.target.parentElement.getAttribute('data-type') === 'minutes') {
           list = minutesList;
-        } else if (event.target.parentElement.dataset.type === 'seconds') {
+        } else if (event.target.parentElement.getAttribute('data-type') === 'seconds') {
           list = secondsList;
-        } else if (event.target.parentElement.dataset.type === 'period') {
+        } else if (event.target.parentElement.getAttribute('data-type') === 'period') {
           list = periodList;
         }
         switch (event.key) {
@@ -459,7 +460,7 @@ export default function (Alpine) {
         event.stopPropagation();
         event.preventDefault();
       } else if (event.key === 'Tab' && event.target.tagName === 'BUTTON') {
-        if (event.target.dataset.action === 'close' || (event.target.dataset.action === 'time' && event.target.nextElementSibling.disabled)) {
+        if (event.target.getAttribute('data-action') === 'close' || (event.target.getAttribute('data-action') === 'time' && event.target.nextElementSibling.disabled)) {
           if (selectedHour) {
             selectedHour.focus();
           } else {
@@ -475,13 +476,13 @@ export default function (Alpine) {
 
     function setTime(event) {
       if (event.target.tagName === 'LI') {
-        if (event.target.parentElement.dataset.type === 'hours') {
+        if (event.target.parentElement.getAttribute('data-type') === 'hours') {
           timepicker._h_time.parts.hour = event.target.innerText;
-        } else if (event.target.parentElement.dataset.type === 'minutes') {
+        } else if (event.target.parentElement.getAttribute('data-type') === 'minutes') {
           timepicker._h_time.parts.minute = event.target.innerText;
-        } else if (event.target.parentElement.dataset.type === 'seconds') {
+        } else if (event.target.parentElement.getAttribute('data-type') === 'seconds') {
           timepicker._h_time.parts.second = event.target.innerText;
-        } else if (event.target.parentElement.dataset.type === 'period') {
+        } else if (event.target.parentElement.getAttribute('data-type') === 'period') {
           timepicker._h_time.parts.period = event.target.innerText;
         }
         render();
@@ -500,7 +501,7 @@ export default function (Alpine) {
     hoursList.classList.add('flex-1', 'overflow-y-auto', '[scrollbar-width:thin]');
     hoursList.setAttribute('role', 'listbox');
     hoursList.setAttribute('tabindex', '-1');
-    hoursList.setAttribute('aria-label', el.dataset.labelHours ?? 'Select hour');
+    hoursList.setAttribute('aria-label', el.getAttribute('data-label-hours') ?? 'Select hour');
     hoursList.setAttribute('data-type', 'hours');
     timeContainer.appendChild(hoursList);
 
@@ -519,7 +520,7 @@ export default function (Alpine) {
     minutesList.classList.add('flex-1', 'overflow-y-auto', '[scrollbar-width:thin]');
     minutesList.setAttribute('role', 'listbox');
     minutesList.setAttribute('tabindex', '-1');
-    minutesList.setAttribute('aria-label', el.dataset.labelMinutes ?? 'Select minute');
+    minutesList.setAttribute('aria-label', el.getAttribute('data-label-minutes') ?? 'Select minute');
     minutesList.setAttribute('data-type', 'minutes');
     timeContainer.appendChild(minutesList);
 
@@ -541,7 +542,7 @@ export default function (Alpine) {
     }
     secondsList.setAttribute('role', 'listbox');
     secondsList.setAttribute('tabindex', '-1');
-    secondsList.setAttribute('aria-label', el.dataset.labelSeconds ?? 'Select second');
+    secondsList.setAttribute('aria-label', el.getAttribute('data-label-seconds') ?? 'Select second');
     secondsList.setAttribute('data-type', 'seconds');
     timeContainer.appendChild(secondsList);
 
@@ -563,7 +564,7 @@ export default function (Alpine) {
     }
     periodList.setAttribute('role', 'listbox');
     periodList.setAttribute('tabindex', '-1');
-    periodList.setAttribute('aria-label', el.dataset.labelMeridiem ?? 'Select meridiem');
+    periodList.setAttribute('aria-label', el.getAttribute('data-label-meridiem') ?? 'Select meridiem');
     periodList.setAttribute('data-type', 'period');
     timeContainer.appendChild(periodList);
 
@@ -592,7 +593,7 @@ export default function (Alpine) {
     nowButton.setAttribute(Alpine.prefixed('h-button'), '');
     nowButton.setAttribute('data-size', 'sm');
     nowButton.setAttribute('data-action', 'time');
-    nowButton.innerText = el.dataset.labelNow ?? 'Now';
+    nowButton.innerText = el.getAttribute('data-label-now') ?? 'Now';
     nowButton.addEventListener('click', getCurrentTime);
     footer.appendChild(nowButton);
 
@@ -602,7 +603,7 @@ export default function (Alpine) {
     okButton.setAttribute('data-variant', 'primary');
     okButton.setAttribute('data-size', 'sm');
     okButton.setAttribute('data-action', 'close');
-    okButton.innerText = el.dataset.labelOk ?? 'OK';
+    okButton.innerText = el.getAttribute('data-label-ok') ?? 'OK';
     okButton.disabled = true;
     okButton.addEventListener('click', timepicker._h_timepicker.close);
     footer.appendChild(okButton);

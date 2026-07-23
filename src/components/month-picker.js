@@ -5,6 +5,7 @@ import { createDateTimeFormatCache } from '../common/intl';
 import { setupPopover, setupTrigger } from '../common/picker-popover';
 import { disabledControlClasses, pickerCellWrapperClasses, pickerFieldWrapperClasses, pickerWrapperClasses } from '../common/shared-classes';
 import { pad2 } from '../common/time';
+import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
 // Month Picker. Reads and writes a single `YYYY-MM` string (e.g. "2025-06"),
@@ -13,11 +14,6 @@ import uuidv4 from '../utils/uuid';
 // of a year header plus a twelve-month grid.
 
 const MONTH_RE = /^(\d{4})-(\d{2})$/;
-
-function resolveLocale(config) {
-  if (config && config.locale) return config.locale;
-  return (typeof navigator !== 'undefined' && navigator.language) || 'en';
-}
 
 // The wrapper + input frame shared with the date picker (kept in sync with it).
 function applyFrameClasses(el, input, inTable) {
@@ -164,7 +160,7 @@ export default function (Alpine) {
       for (let c = 0; c < 3; c++) {
         const m = r * 3 + c;
         const cell = document.createElement('td');
-        cell.dataset.month = String(m);
+        cell.setAttribute('data-month', String(m));
         cell.setAttribute('role', 'gridcell');
         cell.setAttribute('tabindex', '-1');
         cell.classList.add(
@@ -257,7 +253,7 @@ export default function (Alpine) {
     }
 
     function monthClick(event) {
-      selectMonth(Number(event.target.dataset.month));
+      selectMonth(Number(event.target.getAttribute('data-month')));
     }
 
     function parseMonthValue(value) {
@@ -389,7 +385,7 @@ export default function (Alpine) {
       const getConfig = evaluateLater(expression);
       effect(() => {
         getConfig((config) => {
-          locale = resolveLocale(config);
+          locale = resolveLocale(config && config.locale);
           render();
           input.value = displayValue();
         });

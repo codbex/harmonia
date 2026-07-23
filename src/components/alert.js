@@ -16,9 +16,11 @@ export default function (Alpine) {
       'gap-y-0.5',
       'items-center',
       '[&>svg]:size-4',
-      '[&>svg]:text-current',
-      modifiers.includes('floating') ? 'shadow-lg' : undefined
+      '[&>svg]:text-current'
     );
+    if (modifiers.includes('floating')) {
+      el.classList.add('shadow-lg');
+    }
     el.setAttribute('data-slot', 'alert');
     el.setAttribute('role', 'alert');
 

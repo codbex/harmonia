@@ -15,6 +15,16 @@ Use tooltips to clarify controls, explain icons, or provide contextual hints. Ke
 - `x-h-tooltip`
 - `x-h-tooltip-trigger`
 
+## Keyboard Handling
+
+The tooltip is shown when the trigger is hovered or receives focus, so keyboard users reach it by tabbing to the trigger. Moving focus away (or the pointer leaving) hides it again.
+
+- `Esc` - Dismisses the tooltip while the trigger keeps focus.
+
+## Accessibility
+
+The trigger is linked to the tooltip through `aria-describedby`, so assistive technologies announce the tooltip content as a description of the trigger. The tooltip itself has `role="tooltip"`, and its show and hide transitions respect the user's `prefers-reduced-motion` setting.
+
 ## Examples
 
 ```html

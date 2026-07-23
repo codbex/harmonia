@@ -6,6 +6,16 @@ A small pop-up that provides additional information or context about an interfac
 
 Use tooltips to clarify controls, explain icons, or provide contextual hints. Keep the content concise and relevant, and avoid placing critical information exclusively in tooltips, as they may be inaccessible on touch devices or overlooked by users.
 
+## Keyboard Handling
+
+The tooltip is shown when the trigger is hovered or receives focus, so keyboard users reach it by tabbing to the trigger. Moving focus away (or the pointer leaving) hides it again.
+
+- `Esc` - Dismisses the tooltip while the trigger keeps focus.
+
+## Accessibility
+
+The trigger is linked to the tooltip through `aria-describedby`, so assistive technologies announce the tooltip content as a description of the trigger. The tooltip itself has `role="tooltip"`, and its show and hide transitions respect the user's `prefers-reduced-motion` setting.
+
 ## API Reference
 
 ### Component attribute(s)

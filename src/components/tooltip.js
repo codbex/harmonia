@@ -16,16 +16,36 @@ export default function (Alpine) {
     }
     if (!el.hasAttribute('aria-describedby')) el.setAttribute('aria-describedby', el._h_tooltip.controls);
 
+    function setVisibility(shown = false) {
+      el._h_tooltip.shown = shown;
+      if (shown) {
+        el.addEventListener('keydown', onKeyDown);
+        el.addEventListener('pointerleave', handler);
+        el.addEventListener('blur', handler);
+      } else {
+        el.removeEventListener('keydown', onKeyDown);
+        el.removeEventListener('pointerleave', handler);
+        el.removeEventListener('blur', handler);
+      }
+    }
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setVisibility(false);
+    };
+
     const handler = (event) => {
-      el._h_tooltip.shown = event.type === 'pointerenter';
+      setVisibility(event.type === 'pointerenter' || event.type === 'focus');
     };
 
     el.addEventListener('pointerenter', handler);
-    el.addEventListener('pointerleave', handler);
+    el.addEventListener('focus', handler);
 
     cleanup(() => {
       el.removeEventListener('pointerenter', handler);
+      el.removeEventListener('focus', handler);
       el.removeEventListener('pointerleave', handler);
+      el.removeEventListener('blur', handler);
+      el.removeEventListener('keydown', onKeyDown);
     });
   });
 
@@ -61,10 +81,12 @@ export default function (Alpine) {
       'hidden'
     );
     el.setAttribute('data-slot', 'tooltip');
+    el.setAttribute('role', 'tooltip');
     el.setAttribute('id', tooltip._h_tooltip.controls);
 
     const arrowEl = document.createElement('span');
     arrowEl.classList.add('absolute', 'bg-foreground', 'size-2.5', 'rotate-45');
+    arrowEl.setAttribute('aria-hidden', 'true');
     el.appendChild(arrowEl);
 
     function updatePosition() {

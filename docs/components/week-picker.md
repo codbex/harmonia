@@ -54,9 +54,9 @@ x-h-week-picker-popup
 
 You can pass a configuration object to the popup as an expression or as a value.
 
-| Key    | Description                                                                                                         |
-| ------ | ------------------------------------------------------------------------------------------------------------------- |
-| locale | The locale of the calendar as a BCP 47 language tag. If not provided, it is taken from the user's browser settings. |
+| Key    | Description                                                                                                                                         |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| locale | The locale of the calendar as a BCP 47 language tag. If not provided, it is taken from the page's `<html lang>` attribute, then the browser locale. |
 
 ### Model
 

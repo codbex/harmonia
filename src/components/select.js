@@ -25,6 +25,7 @@ export default function (Alpine) {
       search: '',
       focusSearch: undefined,
       filterType: FilterType['starts-with'],
+      includeDesc: false,
     });
     el._h_model = {
       set: undefined,
@@ -492,8 +493,9 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an h-select element`);
     } else {
       select._h_select.filterType = FilterType[el.getAttribute('data-filter')] ?? FilterType['starts-with'];
+      select._h_select.includeDesc = el.getAttribute('data-include-desc') === 'true';
     }
-    el.classList.add('flex', 'h-8', 'items-center', 'gap-2', 'border-b', 'px-2');
+    el.classList.add('flex', 'h-8', 'items-center', 'gap-2', 'border-b', 'px-2', 'mb-1');
     el.setAttribute('data-slot', 'select-search');
     el.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
     el.setAttribute('aria-controls', select._h_select.controls);
@@ -506,7 +508,7 @@ export default function (Alpine) {
     const searchInput = document.createElement('input');
     searchInput.setAttribute('type', 'text');
     searchInput.setAttribute('data-slot', 'select-input');
-    searchInput.classList.add('placeholder:text-muted-foreground', 'flex', 'h-10', 'w-full', 'rounded-md', 'bg-transparent', 'py-3', 'text-sm', 'outline-hidden', 'disabled:cursor-not-allowed', 'disabled:opacity-disabled');
+    searchInput.classList.add('placeholder:text-muted-foreground', 'size-full', 'bg-transparent', 'text-sm', 'outline-hidden', 'disabled:cursor-not-allowed', 'disabled:opacity-disabled');
     el.appendChild(searchIcon);
     el.appendChild(searchInput);
 
@@ -537,10 +539,11 @@ export default function (Alpine) {
 
     const observer = new MutationObserver(() => {
       select._h_select.filterType = FilterType[el.getAttribute('data-filter')] ?? FilterType['starts-with'];
+      select._h_select.includeDesc = el.getAttribute('data-include-desc') === 'true';
       el.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-filter'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-filter', 'data-include-desc'] });
 
     cleanup(() => {
       el.removeEventListener('click', onActivate);
@@ -586,10 +589,6 @@ export default function (Alpine) {
       'focus:text-primary-foreground',
       'hover:bg-secondary-hover',
       'hover:text-secondary-foreground',
-      "[&_svg:not([class*='text-'])]:text-muted-foreground",
-      "focus:[&_svg:not([class*='text-'])]:text-primary-foreground",
-      "hover:[&_svg:not([class*='text-'])]:text-secondary-foreground",
-      'relative',
       'flex',
       'w-full',
       'cursor-default',
@@ -597,17 +596,19 @@ export default function (Alpine) {
       'gap-2',
       'rounded-sm',
       'py-1.5',
-      'pr-8',
-      'pl-2',
+      'px-2',
       'text-sm',
       'outline-hidden',
       'select-none',
       'data-[disabled]:pointer-events-none',
       'data-[disabled]:opacity-disabled',
       'svg-defaults',
-      '*:[span]:last:flex',
-      '*:[span]:last:items-center',
-      '*:[span]:last:gap-2'
+      '[&>svg]:order-first',
+      '[&>svg]:text-inherit',
+      '[&>img]:order-first',
+      '[&>img:not([class*="size-"])]:size-4',
+      '[&>img]:shrink-0',
+      '[&>img]:pointer-events-none'
     );
     el.setAttribute('data-slot', 'select-option');
     el.setAttribute('tabindex', '-1');
@@ -617,15 +618,44 @@ export default function (Alpine) {
     el.setAttribute('aria-labelledby', id);
 
     const indicatorEl = document.createElement('span');
+    const textCol = document.createElement('span');
     const labelEl = document.createElement('span');
     labelEl.setAttribute('id', id);
-    indicatorEl.classList.add('absolute', 'right-2', 'flex', 'size-3.5', 'items-center', 'justify-center', 'invisible');
+    textCol.classList.add('flex', 'flex-col');
+    textCol.appendChild(labelEl);
+    indicatorEl.classList.add('order-last', 'ml-auto', 'flex', 'size-3.5', 'items-center', 'justify-center', 'invisible');
     indicatorEl.setAttribute('aria-hidden', 'true');
     const check = createSvg({ icon: Check, attrs: { 'aria-hidden': true, role: 'presentation' } });
     indicatorEl.appendChild(check);
 
     el.appendChild(indicatorEl);
-    el.appendChild(labelEl);
+    el.appendChild(textCol);
+
+    let descriptionEl;
+    const descriptionId = `hsod${uuidv4()}`;
+
+    function renderDescription() {
+      const text = el.getAttribute('data-description');
+      if (text) {
+        if (!descriptionEl) {
+          descriptionEl = document.createElement('span');
+          descriptionEl.setAttribute('id', descriptionId);
+          descriptionEl.classList.add('text-muted-foreground', 'text-xs', '[[data-slot=select-option]:focus_&]:text-primary-foreground/80');
+          textCol.appendChild(descriptionEl);
+          if (!el.hasAttribute('aria-describedby')) el.setAttribute('aria-describedby', descriptionId);
+        }
+        descriptionEl.textContent = text;
+      } else if (descriptionEl) {
+        if (el.getAttribute('aria-describedby') === descriptionId) el.removeAttribute('aria-describedby');
+        descriptionEl.remove();
+        descriptionEl = undefined;
+      }
+    }
+
+    renderDescription();
+
+    const descriptionObserver = new MutationObserver(renderDescription);
+    descriptionObserver.observe(el, { attributes: true, attributeFilter: ['data-description'] });
 
     function getValue() {
       return el.getAttribute('data-value');
@@ -642,18 +672,20 @@ export default function (Alpine) {
 
     effect(() => {
       if (select._h_select.search) {
+        const haystack = (select._h_select.includeDesc && descriptionEl ? `${labelEl.innerText} ${descriptionEl.innerText}` : labelEl.innerText).toLowerCase();
         if (select._h_select.filterType === FilterType['starts-with']) {
+          // starts-with always keys off the label, since a prefix match inside
+          // the description would be surprising.
           if (!labelEl.innerText.toLowerCase().startsWith(select._h_select.search)) {
             el.classList.add('hidden');
           } else el.classList.remove('hidden');
         } else if (select._h_select.filterType === FilterType.contains) {
-          if (!labelEl.innerText.toLowerCase().includes(select._h_select.search)) {
+          if (!haystack.includes(select._h_select.search)) {
             el.classList.add('hidden');
           } else el.classList.remove('hidden');
         } else if (select._h_select.filterType === FilterType['contains-each']) {
           const terms = select._h_select.search.split(' ');
-          const label = labelEl.innerText.toLowerCase();
-          if (!terms.every((term) => label.includes(term))) el.classList.add('hidden');
+          if (!terms.every((term) => haystack.includes(term))) el.classList.add('hidden');
           else el.classList.remove('hidden');
         } else {
           el.classList.remove('hidden');
@@ -703,6 +735,7 @@ export default function (Alpine) {
     cleanup(() => {
       el.removeEventListener('click', onActivate);
       el.removeEventListener('keydown', onActivate);
+      descriptionObserver.disconnect();
       const lIndex = select._h_select.listeners.indexOf(onModelChange);
       select._h_select.listeners.splice(lIndex, 1);
     });

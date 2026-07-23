@@ -183,3 +183,132 @@ describe('h-select-label', () => {
     expect(el.getAttribute('data-slot')).toBe('select-label');
   });
 });
+
+describe('h-select-option', () => {
+  // Mount a real h-select on a host so the option gets a genuine reactive
+  // _h_select ancestor state (findAncestorState walks parentElement).
+  function mountOption(bindings = {}, { description, children = [] } = {}) {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    mountDirective(selectPlugin, 'h-select', host, { modifiers: [] });
+    host._h_model = { get: () => '', set: () => {} };
+    host._h_select.refreshLabel = () => {};
+
+    const option = document.createElement('div');
+    if (description != null) option.setAttribute('data-description', description);
+    for (const child of children) option.appendChild(child);
+    host.appendChild(option);
+
+    const label = bindings.expression ? bindings.expression.replace(/^'|'$/g, '') : '';
+    const ctx = mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: bindings.expression ?? '', ...bindings }, { evaluateLater: () => (cb) => cb(label) });
+    return { host, option, state: host._h_select, ctx: ctx.ctx };
+  }
+
+  it('lays out the checkmark in flow on the right (order-last + ml-auto, no absolute)', () => {
+    const { option } = mountOption({ expression: "'Apple'" });
+    const indicator = option.querySelector('span[aria-hidden="true"]');
+    expect(indicator).toBeTruthy();
+    expect(indicator.classList.contains('order-last')).toBe(true);
+    expect(indicator.classList.contains('ml-auto')).toBe(true);
+    expect(indicator.classList.contains('absolute')).toBe(false);
+    expect(option.classList.contains('relative')).toBe(false);
+    expect(option.classList.contains('pr-8')).toBe(false);
+  });
+
+  it('pins a leading svg/img first and sizes an image', () => {
+    const { option } = mountOption({ expression: "'Apple'" });
+    expect(option.classList.contains('[&>svg]:order-first')).toBe(true);
+    expect(option.classList.contains('[&>img]:order-first')).toBe(true);
+    expect(option.classList.contains('[&>img:not([class*="size-"])]:size-4')).toBe(true);
+    expect(option.classList.contains('[&>img]:pointer-events-none')).toBe(true);
+  });
+
+  it('leaves consumer-authored media accessibility to the author', () => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const img = document.createElement('img');
+    const { option } = mountOption({ expression: "'Apple'" }, { children: [svg, img] });
+    // The component must not inject aria-hidden or alt onto author media.
+    expect(option.querySelector('svg').hasAttribute('aria-hidden')).toBe(false);
+    expect(option.querySelector('img').hasAttribute('aria-hidden')).toBe(false);
+    expect(option.querySelector('img').hasAttribute('alt')).toBe(false);
+  });
+
+  it('sets the accessible name from the label only', () => {
+    const { option } = mountOption({ expression: "'Apple'" }, { description: 'A red fruit' });
+    const labelledby = option.getAttribute('aria-labelledby');
+    const labelEl = option.querySelector(`#${labelledby}`);
+    expect(labelEl.innerText).toBe('Apple');
+    // The description must not leak into the label element.
+    expect(labelEl.innerText).not.toContain('red fruit');
+  });
+
+  it('renders a muted description and wires aria-describedby when data-description is set', () => {
+    const { option } = mountOption({ expression: "'Apple'" }, { description: 'A red fruit' });
+    const describedby = option.getAttribute('aria-describedby');
+    expect(describedby).toBeTruthy();
+    const descEl = option.querySelector(`#${describedby}`);
+    expect(descEl.textContent).toBe('A red fruit');
+    expect(descEl.classList.contains('text-muted-foreground')).toBe(true);
+    expect(descEl.classList.contains('text-xs')).toBe(true);
+  });
+
+  it('shifts the description color to primary-foreground when the option is focused', () => {
+    const { option } = mountOption({ expression: "'Apple'" }, { description: 'A red fruit' });
+    const descEl = option.querySelector(`#${option.getAttribute('aria-describedby')}`);
+    expect(descEl.classList.contains('[[data-slot=select-option]:focus_&]:text-primary-foreground/80')).toBe(true);
+  });
+
+  it('adds no description element or aria-describedby without data-description', () => {
+    const { option } = mountOption({ expression: "'Apple'" });
+    expect(option.hasAttribute('aria-describedby')).toBe(false);
+    expect(option.querySelector('.text-xs')).toBeNull();
+  });
+
+  it('updates the description when the data-description attribute changes', async () => {
+    const { option } = mountOption({ expression: "'Apple'" }, { description: 'Old' });
+    const describedby = option.getAttribute('aria-describedby');
+    option.setAttribute('data-description', 'New');
+    // MutationObserver callbacks are microtasks.
+    await new Promise((r) => setTimeout(r, 0));
+    expect(option.querySelector(`#${describedby}`).textContent).toBe('New');
+  });
+
+  it('filters on the label only when the search does not include descriptions', () => {
+    const { option, state } = mountOption({ expression: "'Apple'" }, { description: 'A tropical fruit' });
+    state.includeDesc = false;
+    state.filterType = 1; // contains
+    state.search = 'tropical';
+    expect(option.classList.contains('hidden')).toBe(true);
+    state.search = 'appl';
+    expect(option.classList.contains('hidden')).toBe(false);
+  });
+
+  it('filters on the description too when includeDesc is set (contains)', () => {
+    const { option, state } = mountOption({ expression: "'Apple'" }, { description: 'A tropical fruit' });
+    state.includeDesc = true;
+    state.filterType = 1; // contains
+    state.search = 'tropical';
+    expect(option.classList.contains('hidden')).toBe(false);
+  });
+
+  it('keeps starts-with keyed on the label even when includeDesc is set', () => {
+    const { option, state } = mountOption({ expression: "'Apple'" }, { description: 'tropical fruit' });
+    state.includeDesc = true;
+    state.filterType = 0; // starts-with
+    state.search = 'tropical';
+    expect(option.classList.contains('hidden')).toBe(true);
+    state.search = 'app';
+    expect(option.classList.contains('hidden')).toBe(false);
+  });
+
+  it('reads data-include-desc on the search element into reactive state', () => {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    mountDirective(selectPlugin, 'h-select', host, { modifiers: [] });
+    const search = document.createElement('div');
+    search.setAttribute('data-include-desc', 'true');
+    host.appendChild(search);
+    mountDirective(selectPlugin, 'h-select-search', search, { original: 'x-h-select-search' });
+    expect(host._h_select.includeDesc).toBe(true);
+  });
+});

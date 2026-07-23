@@ -58,6 +58,7 @@ import weekPicker from './components/week-picker';
 export { version } from '../package.json';
 export { getBreakpointListener } from './utils/breakpoint-listener';
 export { chartToImage, chartToSvg } from './utils/chart-export';
+export { createDateFormatter } from './utils/date-format';
 export { getLanguageStorageKey, setLanguageStorageKey } from './utils/language';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
@@ -66,6 +67,7 @@ import lucide from './plugins/lucide';
 import dateFormat from './utils/date-format';
 import focus from './utils/focus';
 import include from './utils/include';
+import responsive from './utils/responsive';
 import template from './utils/template';
 
 export {
@@ -109,6 +111,7 @@ export {
   radio as Radio,
   range as Range,
   rating as Rating,
+  responsive as Responsive,
   select as Select,
   separator as Separator,
   sheet as Sheet,
@@ -172,6 +175,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(radio);
   registerPlugin(range);
   registerPlugin(rating);
+  registerPlugin(responsive);
   registerPlugin(select);
   registerPlugin(separator);
   registerPlugin(sheet);

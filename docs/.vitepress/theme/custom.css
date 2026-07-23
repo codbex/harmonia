@@ -37,6 +37,10 @@
   --vp-button-brand-active-bg: var(--vp-c-brand-1);
 }
 
+.vp-doc :not(pre) > code {
+  text-wrap: nowrap;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

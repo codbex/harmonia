@@ -50,6 +50,27 @@ describe('h-tooltip-trigger', () => {
     const { ctx } = mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
     expect(ctx.cleanup).toHaveBeenCalled();
   });
+
+  it('dismisses on Escape while shown', () => {
+    const el = document.createElement('button');
+    mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
+    el.dispatchEvent(new Event('focus'));
+    expect(el._h_tooltip.shown).toBe(true);
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(el._h_tooltip.shown).toBe(false);
+  });
+
+  it('ignores other keys and only listens for keydown while shown', () => {
+    const el = document.createElement('button');
+    mountDirective(tooltipPlugin, 'h-tooltip-trigger', el);
+    // While hidden, Escape does nothing (no keydown listener attached yet).
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(el._h_tooltip.shown).toBe(false);
+    // While shown, non-Escape keys leave it open.
+    el.dispatchEvent(new Event('pointerenter'));
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(el._h_tooltip.shown).toBe(true);
+  });
 });
 
 describe('h-tooltip', () => {
@@ -79,14 +100,15 @@ describe('h-tooltip', () => {
     expect(tooltipEl.classList.contains('text-xs')).toBe(true);
   });
 
-  it('sets data-slot and id attributes', () => {
+  it('sets data-slot, role, and id attributes', () => {
     const { tooltipEl, trigger } = createTooltipSetup();
     mountDirective(tooltipPlugin, 'h-tooltip', tooltipEl, { original: 'x-h-tooltip' });
     expect(tooltipEl.getAttribute('data-slot')).toBe('tooltip');
+    expect(tooltipEl.getAttribute('role')).toBe('tooltip');
     expect(tooltipEl.getAttribute('id')).toBe(trigger._h_tooltip.controls);
   });
 
-  it('appends an arrow element', () => {
+  it('appends an arrow element marked aria-hidden', () => {
     const { tooltipEl } = createTooltipSetup();
     mountDirective(tooltipPlugin, 'h-tooltip', tooltipEl, { original: 'x-h-tooltip' });
     const arrow = tooltipEl.querySelector('span');
@@ -94,6 +116,7 @@ describe('h-tooltip', () => {
     expect(arrow.classList.contains('absolute')).toBe(true);
     expect(arrow.classList.contains('bg-foreground')).toBe(true);
     expect(arrow.classList.contains('rotate-45')).toBe(true);
+    expect(arrow.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('throws if no previous tooltip trigger found', () => {

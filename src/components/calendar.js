@@ -3,6 +3,7 @@ import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, 
 import { colorClasses } from '../common/event-colors';
 import { ChevronDown, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { createDateTimeFormatCache } from '../common/intl';
+import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
 export default function (Alpine) {
@@ -52,7 +53,7 @@ export default function (Alpine) {
     // Set when a keyboard action triggered the re-render, so we restore focus.
     let pendingFocus = false;
     let events = [];
-    let locale = navigator.language || 'en-US';
+    let locale = resolveLocale();
     let firstDay = 0;
     let showNowIndicator = true;
     let showViewSwitcher = true;
@@ -350,7 +351,7 @@ export default function (Alpine) {
     }
 
     function setConfig(config) {
-      locale = config.locale || navigator.language || 'en-US';
+      locale = resolveLocale(config.locale);
       if (config.firstDay !== undefined) firstDay = config.firstDay;
       if (config.showNowIndicator !== undefined) showNowIndicator = config.showNowIndicator;
       if (config.views !== undefined) {

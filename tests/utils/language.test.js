@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { getLanguageStorageKey, setLanguageStorageKey } from '../../src/utils/language';
+import { getLanguageStorageKey, resolveLocale, setLanguageStorageKey } from '../../src/utils/language';
 
 const DEFAULT_KEY = 'codbex.harmonia.language';
 
@@ -24,5 +24,28 @@ describe('language storage key', () => {
     expect(getLanguageStorageKey()).toBe(DEFAULT_KEY);
     setLanguageStorageKey(42);
     expect(getLanguageStorageKey()).toBe(DEFAULT_KEY);
+  });
+});
+
+describe('resolveLocale', () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute('lang');
+  });
+
+  it('returns the explicit locale when one is given', () => {
+    document.documentElement.setAttribute('lang', 'en-GB');
+    expect(resolveLocale('bg-BG')).toBe('bg-BG');
+  });
+
+  it('falls back to the document <html lang> when no explicit locale', () => {
+    document.documentElement.setAttribute('lang', 'de-DE');
+    expect(resolveLocale()).toBe('de-DE');
+    expect(resolveLocale(null)).toBe('de-DE');
+    expect(resolveLocale('')).toBe('de-DE');
+  });
+
+  it('falls back to navigator.language when there is no explicit locale or <html lang>', () => {
+    // happy-dom has no <html lang> by default here; navigator.language is defined.
+    expect(resolveLocale()).toBe(navigator.language);
   });
 });

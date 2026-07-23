@@ -46,17 +46,21 @@ Use the Select component without a search option when there are a limited number
 
 #### x-h-select-option
 
-| Attribute     | Type    | Required | Description                                                          |
-| ------------- | ------- | -------- | -------------------------------------------------------------------- |
-| `self`        | string  | false    | Sets the label of the option. Either a string literal or a variable. |
-| data-value    | string  | false    | Sets the value of the option.                                        |
-| data-disabled | boolean | false    | Disables the option.                                                 |
+| Attribute        | Type    | Required | Description                                                                                                                |
+| ---------------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `self`           | string  | false    | Sets the label of the option. Either a string literal or a variable.                                                       |
+| data-value       | string  | false    | Sets the value of the option.                                                                                              |
+| data-description | string  | false    | Sets a secondary line of text shown under the label in a muted color. Included in the search only when the search opts in. |
+| data-disabled    | boolean | false    | Disables the option.                                                                                                       |
+
+To show a leading icon or image, place an `<svg>` or `<img>` element directly inside the option. It is always positioned first, before the label. Set the appropriate accessibility attributes on it yourself (an empty `alt` for a decorative image, or an `aria-label` for a meaningful one).
 
 #### x-h-select-search
 
-| Attribute   | Type                                                           | Required | Description                                                                                                                                                                                   |
-| ----------- | -------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data-filter | `starts-with`<br />`contains`<br />`contains-each`<br />`none` | false    | Defines the search matching strategy. Use `none` to disable built-in filtering and implement custom search behavior. With the 'contains-each' filter, search terms are separated using space. |
+| Attribute         | Type                                                           | Required | Description                                                                                                                                                                                     |
+| ----------------- | -------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-filter       | `starts-with`<br />`contains`<br />`contains-each`<br />`none` | false    | Defines the search matching strategy. Use `none` to disable built-in filtering and implement custom search behavior. With the 'contains-each' filter, search terms are separated using space.   |
+| data-include-desc | boolean                                                        | false    | When set to `true`, the option descriptions are also matched against the search. Applies to the `contains` and `contains-each` filters. The `starts-with` filter always matches the label only. |
 
 ### Modifiers
 
@@ -128,6 +132,30 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
     },
   }));
 </script>
+```
+
+### With descriptions and icons
+
+Give an option a secondary line of text with `data-description`, and a leading icon by placing an `<svg>` (or `<img>`) directly inside it. Set `data-include-desc="true"` on the search to match the descriptions as well as the labels. Try searching for "monthly" or "instant".
+
+```html
+<div x-data="{ plan: 'pro' }">
+  <div x-h-select>
+    <input x-h-select-input placeholder="Select a plan" x-model="plan" />
+    <div x-h-select-content>
+      <div x-h-select-search data-filter="contains" data-include-desc="true"></div>
+      <div x-h-select-option="'Free'" data-value="free" data-description="For personal projects">
+        <svg x-h-icon data-icon="home" role="presentation"></svg>
+      </div>
+      <div x-h-select-option="'Pro'" data-value="pro" data-description="For small teams, billed monthly">
+        <svg x-h-icon data-icon="star" role="presentation"></svg>
+      </div>
+      <div x-h-select-option="'Enterprise'" data-value="enterprise" data-description="Instant onboarding and priority support">
+        <svg x-h-icon data-icon="bell" role="presentation"></svg>
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ### Clearable

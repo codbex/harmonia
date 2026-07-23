@@ -1,5 +1,52 @@
 # Changelog
 
+## v2.7.0
+
+A release that adds a new **Responsive** utility directive for container-query-style class toggling, opens up the date formatting engine through a `$dateFormat` magic and a public `createDateFormatter` function, and configures every date and time component to honor the page's `<html lang>`. It also brings a collapsed mode to the Step Indicator, richer options and search to the Select, keyboard support to the Tooltip, and a documented set of z-index utility classes. The breaking changes are all in the Slot Picker: its day grid no longer collapses to one column on its own, and a slot is now selectable only when you bind an `x-model`. See "Slot Picker" below to migrate.
+
+### New utility: Responsive
+
+- **Responsive** (`x-h-responsive`) - a behavior-only directive that adds or removes classes based on the element's **own** width rather than the viewport, so a component can adapt to the space it is actually given (a sidebar, a resized panel, a grid cell) without every combination needing a viewport-prefixed class in the bundle. Pass an array of `{ op, width, classes?, callback? }` conditions where `op` is one of `>=`, `>`, `<`, `<=`, `==` and `width` is a number of pixels. Conditions are independent predicates, so more than one can match at once, and the directive only ever touches the classes you list.
+- **A `callback` alternative to classes.** Each condition may carry a `callback` function instead of (or alongside) `classes`. It is called with a single boolean, `true` when the condition currently matches and `false` when it does not, once on mount with the initial state and then once each time that state flips, so it does not fire on every resize while the width stays on one side of the breakpoint. `classes` and `callback` are each optional, but every condition must have at least one of them.
+- **`.parent` modifier** measures the element's parent instead of itself, for when a toggled class collapses the element's own box (for example `hidden`, which would otherwise report a width of 0 and never recover).
+
+### Date Format
+
+- **New `$dateFormat` magic.** `$dateFormat(value, config?)` returns a formatted date string inline in Alpine expressions (for example inside `x-text` or `:title`), or a formatted range when `value` is a `{ start, end }` object, with empty or invalid input returning `''`. `$dateFormat.with(config?)` returns a reusable formatter object exposing `format`, `parse`, `formatRange`, and `parseRange` for cases that also need to parse a string back into a `Date`. The config accepts the same `locale`, `order`, `delimiter`, `options`, and `rangeSeparator` keys as the directive's `data-*` attributes.
+- **`createDateFormatter` is now public.** The formatting engine is exported from the package (`import { createDateFormatter } from '@codbex/harmonia'`) and exposed on the browser global (`Harmonia.createDateFormatter`), so it can be used outside Alpine, in application code or a build step. It returns the same reusable formatter as `$dateFormat.with`.
+- **Locale now follows `<html lang>`.** When no locale is set explicitly, the `x-h-date-format` directive and the `$dateFormat` magic now inherit the locale from the page's `<html lang>` attribute, then the browser locale, so declaring the page language once formats every date accordingly. The plain `createDateFormatter` function deliberately does not read `<html lang>` and defers directly to the JavaScript engine's default locale when no `locale` is given.
+
+### Component enhancements
+
+- **Slot Picker** - see the breaking changes below, plus a new `x-h-slot-picker.responsive` modifier that opts back into collapsing the day columns into a single stacked column below the `md` breakpoint, and a new `x-h-slot-picker-title.text-only` modifier that drops the built-in title styling (the text, `data-slot`, and `aria-live` region stay) so you can style the heading yourself.
+- **Select** - options gain a `data-description` attribute that renders a secondary muted line below the label (linked with `aria-describedby`), and an `<svg>` or `<img>` placed inside an option now renders as a leading icon before the label. The search control gains `data-include-desc="true"`, which extends matching to option descriptions for the `contains` and `contains-each` filters.
+- **Step Indicator** - a new collapsed mode, toggled with `data-collapsed="true"` on `x-h-step-indicator`, shows only the active step in a compact column and works in both orientations. Two new directives are visible only while collapsed: `x-h-step-indicator-counter` renders a "Step X of Y" label (localizable with `data-step-label` and `data-of-label`, totals counted automatically from the registered items) and `x-h-step-indicator-progress` renders a thin `role="progressbar"` bar filling to the current step.
+- **Toolbar** - a new `data-variant="clear"` paints the toolbar with the page background color instead of the header background, for a sticky toolbar layered over scrolling content.
+- **Tooltip** - the tooltip now shows on keyboard focus, not just pointer hover, and can be dismissed with `Escape` while keeping the trigger focused. Its element now carries `role="tooltip"` and the decorative arrow is `aria-hidden`.
+
+### Slot Picker
+
+- **Breaking: the day grid no longer collapses on its own.** The Slot Picker previously stacked its columns into one below the `md` breakpoint and expanded to the configured day count at `md` and above. It now always shows the configured number of columns (they simply shrink on narrow containers). To restore the old auto-stacking behavior, add the new `x-h-slot-picker.responsive` modifier.
+- **Breaking: a slot is selectable only with an `x-model`.** Selection is now opt-in: bind an `x-model` and slots become selectable (with `aria-pressed` and a selected state) as before. Without a model, slots are plain action buttons - they still fire the `slot-click` event but never enter a selected state, and `event.detail.slot.selected` is always `false`.
+
+### Locale
+
+- **Date and time components now honor `<html lang>`.** When no `locale` is configured, the Calendar, Inline Calendar, Date Picker, Month Picker, Week Picker, Time Picker, and Slot Picker now resolve their locale from the page's `<html lang>` attribute before falling back to the browser locale. A page marked `<html lang="de-DE">` on an English browser now renders German month and day names by default. Setting `locale` explicitly is unchanged.
+
+### New utility classes
+
+- New `z-1`, `z-10`, `z-50`, and `z-60` z-index utility classes are now shipped and documented on a new Z-Index utility classes page: `z-10` raises an element above normal flow, `z-50` matches the overlay layer used by popovers, dropdowns, and dialogs, and `z-60` sits above overlays for topmost elements such as notifications. As with any z-index, they only affect positioned elements.
+
+### Dependencies
+
+- Bumped `@floating-ui/dom` to `^1.8.0`.
+
+### Documentation
+
+- New Responsive utility page and a new Z-Index utility classes page, both added to the navigation.
+- The Date Format page documents the `$dateFormat` magic, the public `createDateFormatter` function, and the `<html lang>` locale fallback, with runnable examples for inline formatting, parsing through the factory, and plain-JS use.
+- The agent-readable skill that ships in the package was regenerated to match the updated docs.
+
 ## v2.6.0
 
 A release that rewrites the **Range** slider from scratch to drop the third-party `nouislider` dependency, so the slider is now a native-input-backed, Tailwind-styled control with a smaller footprint. It also brings invalid-state styling to more components, two newly exposed focus utility classes, and a bundle-size optimization that shrinks the JavaScript output. The only breaking change is the Range rewrite. See "Range" below to migrate.

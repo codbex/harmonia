@@ -5,15 +5,20 @@ import { createDateTimeFormatCache } from '../common/intl';
 import { eventInsidePicker, setupPopover } from '../common/picker-popover';
 import { minsToTime, timeToMins } from '../common/time';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
+import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-slot-picker', (el, { expression }, { effect, evaluateLater, cleanup, Alpine }) => {
+  Alpine.directive('h-slot-picker', (el, { expression, modifiers }, { effect, evaluateLater, cleanup, Alpine }) => {
     el.classList.add('relative', 'flex', 'flex-col', 'bg-background', 'text-foreground');
     el.setAttribute('data-slot', 'slot-picker');
     // Expose the picker as a labeled group; respect an author-provided aria-label.
     el.setAttribute('role', 'group');
     if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', 'Time slot picker');
+
+    // `.responsive` opts into collapsing the day columns into a single stacked
+    // column on narrow screens. Without it the columns never collapse.
+    const responsive = modifiers.includes('responsive');
 
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
@@ -25,7 +30,7 @@ export default function (Alpine) {
     let fillEmptyDays = false;
     let multiple = false;
     let selected = [];
-    let locale = undefined;
+    let locale = resolveLocale();
     let disabledDates = [];
     let disabledDays = [];
     let minDate = null;
@@ -171,19 +176,41 @@ export default function (Alpine) {
       return color && EVENT_COLORS[color] ? color : null;
     }
 
+    // A colored slot is "filled" (solid background) for any status other than the
+    // two outline statuses - the same split colorClasses() uses. Only filled
+    // colored slots get the selected border; outlined ones (unconfirmed/rejected)
+    // keep the ring alone.
+    function isFilledStatus(status) {
+      return status !== 'unconfirmed' && status !== 'rejected';
+    }
+
     // Selection state, applied to cells in place (no full re-render on click).
+
+    // Selection is opt-in: a slot is selectable only when the consumer bound an
+    // x-model. Without one, cells stay clickable action buttons (they still fire
+    // slot-click) but never enter a selected state. Read live so it does not
+    // depend on x-model's directive-init order relative to this one.
+    const hasModel = () => Object.prototype.hasOwnProperty.call(el, '_x_model');
 
     const SELECTED_UNCOLORED = ['bg-primary', 'text-primary-foreground', 'border-transparent', 'hover:bg-primary-hover'];
     const UNSELECTED_UNCOLORED = ['hover:bg-secondary-hover', 'hover:text-secondary-foreground'];
     const cellByKey = new Map();
 
     function setCellSelected(cell, isSelected) {
-      if (cell.dataset.colored === 'true') {
+      if (cell.getAttribute('data-colored') === 'true') {
         // Colored cells keep their fill/outline; selection is a color-matched
         // outset ring at 50% opacity (like the button's focus ring).
-        const ring = ['ring-2', ringClass(cell.dataset.color)];
+        const ring = ['ring-[calc(var(--spacing)*0.75)]', ringClass(cell.getAttribute('data-color'))];
         if (isSelected) cell.classList.add(...ring);
         else cell.classList.remove(...ring);
+        // Filled colored cells also gain a contrasting border on selection
+        // (like the step indicator's active marker: ring = fill, border = text).
+        // The transparent border is already on the cell (buildCell) so recoloring
+        // it causes no layout shift; outlined statuses keep their own border.
+        if (isFilledStatus(cell.getAttribute('data-status'))) {
+          cell.classList.toggle('border-transparent', !isSelected);
+          cell.classList.toggle('border-background', isSelected);
+        }
       } else if (isSelected) {
         cell.classList.remove(...UNSELECTED_UNCOLORED);
         cell.classList.add(...SELECTED_UNCOLORED);
@@ -201,6 +228,19 @@ export default function (Alpine) {
     }
 
     function selectSlot(key, payload) {
+      // Without a bound model the slot is a plain action button: announce the
+      // click but never track selection or write a model. `selected` is always
+      // false here because the slot can never enter the selection set.
+      if (!hasModel()) {
+        el.dispatchEvent(
+          new CustomEvent('slot-click', {
+            bubbles: true,
+            detail: { slot: { ...payload, key, selected: false } },
+          })
+        );
+        return;
+      }
+
       const prev = selected;
       if (!multiple) {
         selected = prev.includes(key) ? [] : [key];
@@ -218,7 +258,7 @@ export default function (Alpine) {
       });
 
       const modelVal = multiple ? [...selected] : (selected[0] ?? null);
-      if (el._x_model) el._x_model.set(modelVal);
+      el._x_model.set(modelVal);
 
       el.dispatchEvent(
         new CustomEvent('slot-click', {
@@ -245,17 +285,29 @@ export default function (Alpine) {
         // status: 'unconfirmed' outlines the cell, 'rejected' outlines it with a
         // dashed border, anything else fills it.
         cell.classList.add(...colorClasses(color, item.status));
-        cell.dataset.colored = 'true';
-        cell.dataset.color = color;
+        cell.setAttribute('data-colored', 'true');
+        cell.setAttribute('data-color', color);
+        cell.setAttribute('data-status', item.status || '');
+        // A filled colored cell has no border of its own; carry a transparent one
+        // so selection can recolor it (to border-background) without a layout
+        // shift. Outlined statuses already have their own border from colorClasses.
+        if (isFilledStatus(item.status)) cell.classList.add('border', 'border-transparent');
       } else {
         cell.classList.add('border');
       }
 
       if (available) {
         cell.type = 'button';
-        cell.classList.add('cursor-pointer', 'focus-visible:outline-none', 'focus-visible:ring-[calc(var(--spacing)*0.75)]', 'focus-visible:ring-ring', 'focus-visible:ring-inset');
+        cell.classList.add('bg-background', 'cursor-pointer', 'focus-visible:outline-none', 'focus-visible:ring-[calc(var(--spacing)*0.75)]', 'focus-visible:ring-ring/50');
         cell.setAttribute('aria-label', ariaLabel);
-        setCellSelected(cell, selected.includes(key));
+        if (hasModel()) {
+          setCellSelected(cell, selected.includes(key));
+        } else if (!color) {
+          // No model: a plain action button. Keep the interactive hover styling
+          // but add no aria-pressed and no selected fill/ring. Colored cells
+          // already carry their base color from colorClasses above.
+          cell.classList.add(...UNSELECTED_UNCOLORED);
+        }
         cellByKey.set(key, cell);
       } else {
         // Unavailable colored cells keep their status color (e.g. a booked slot);
@@ -327,7 +379,7 @@ export default function (Alpine) {
       const header = document.createElement('div');
       header.setAttribute('data-slot', 'slot-picker-slot-header');
       header.setAttribute('id', headerId);
-      header.classList.add('text-center', 'px-2', 'py-1', 'text-sm', 'font-medium');
+      header.classList.add('text-center', 'px-2', 'py-1.5', 'text-sm', 'font-medium', 'border-b');
 
       const headerTime = document.createElement('span');
       headerTime.textContent = slot.start;
@@ -343,7 +395,7 @@ export default function (Alpine) {
       const tileWrap = document.createElement('div');
       // Padding + gap give each tile's outset selection ring room inside the
       // group's overflow-hidden bounds.
-      tileWrap.classList.add('flex', 'flex-col', 'gap-1', 'p-1');
+      tileWrap.classList.add('flex', 'flex-col', 'gap-1.5', 'p-1.5');
 
       slot.tiles.forEach((tile, i) => {
         const key = tileKey(dateStr, slot.start, i);
@@ -447,7 +499,15 @@ export default function (Alpine) {
       state.title = days.length === 1 ? longFmt.format(days[0]) : `${shortFmt.format(days[0])} - ${longFmt.format(days[days.length - 1])}`;
 
       dayGrid.className = '';
-      dayGrid.classList.add('grid', 'grid-cols-1', `md:grid-cols-${dayCount}`, 'divide-y', 'md:divide-y-0', 'md:divide-x');
+      if (responsive) {
+        // Opt-in: collapse to a single stacked column below md, then dayCount
+        // columns at md and up (md: switches the dividers from horizontal to vertical).
+        dayGrid.classList.add('grid', 'grid-cols-1', `md:grid-cols-${dayCount}`, 'divide-y', 'md:divide-y-0', 'md:divide-x');
+      } else {
+        // Default: never collapse. Always dayCount columns with vertical dividers.
+        // Columns shrink to fit on a narrow container.
+        dayGrid.classList.add('grid', `grid-cols-${dayCount}`, 'divide-x');
+      }
 
       dayGrid.innerHTML = '';
       cellByKey.clear();
@@ -466,7 +526,7 @@ export default function (Alpine) {
 
         // Day header: 2 rows (day name + localized date)
         const hdr = document.createElement('div');
-        hdr.classList.add('sticky', 'top-0', 'border-b', 'p-2', 'text-center', 'bg-background', 'z-10');
+        hdr.classList.add('sticky', 'top-0', 'border-b', 'p-2', 'text-center', 'bg-background', 'z-1');
         hdr.setAttribute('data-slot', 'slot-picker-header');
         const headerId = `hsp${uuidv4()}`;
         hdr.setAttribute('id', headerId);
@@ -685,7 +745,7 @@ export default function (Alpine) {
       if (config.multiple !== undefined) multiple = !!config.multiple;
       if (config.showNowIndicator !== undefined) showNowIndicator = !!config.showNowIndicator;
       if (config.locale !== undefined) {
-        locale = config.locale;
+        locale = resolveLocale(config.locale);
         if (calWidget) calWidget.setConfig({ locale });
       }
       if (config.disabledDates !== undefined) disabledDates = Array.isArray(config.disabledDates) ? config.disabledDates : [];
@@ -719,7 +779,7 @@ export default function (Alpine) {
     // x-model: sync selection from an external value. A click already updates
     // cells in place and writes the model, so skip the rebuild when nothing changed.
     effect(() => {
-      if (!el._x_model) return;
+      if (!hasModel()) return;
       const val = el._x_model.get();
       const desired = val === null || val === undefined || val === '' ? [] : Array.isArray(val) ? val.map(String) : [String(val)];
       if (sameSelection(desired, selected)) return;
@@ -774,11 +834,13 @@ export default function (Alpine) {
     cleanup(() => el.removeEventListener('click', onClick));
   });
 
-  Alpine.directive('h-slot-picker-title', (el, { original }, { effect, Alpine }) => {
+  Alpine.directive('h-slot-picker-title', (el, { original, modifiers }, { effect, Alpine }) => {
     const host = findAncestorState(Alpine, el, '_h_slot_picker');
     if (!host) throw new Error(`${original} must be inside a slot picker`);
     const api = host._h_slot_picker;
-    el.classList.add('flex-1', 'text-sm', 'font-semibold', 'text-center');
+    // `.text-only` suppresses all built-in styling so the consumer can style the
+    // title (or its wrapper) themselves; text, data-slot, and aria-live remain.
+    if (!modifiers.includes('text-only')) el.classList.add('flex-1', 'text-sm', 'font-semibold', 'text-center', 'leading-tight', 'line-clamp-3');
     if (!el.hasAttribute('aria-live')) el.setAttribute('aria-live', 'polite');
     el.setAttribute('data-slot', 'slot-picker-title');
     effect(() => {

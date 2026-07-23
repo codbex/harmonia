@@ -93,7 +93,7 @@ Example:
 
 | Key      | Values  | Description                                                                                                                                                                            |
 | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| locale   | string  | The locale of the time picker as a BCP 47 language tag. If not provided, it's automatically set from the user preferences.                                                             |
+| locale   | string  | The locale of the time picker as a BCP 47 language tag. If not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                                 |
 | seconds  | boolean | Include seconds in the picker.                                                                                                                                                         |
 | is12Hour | boolean | Set to `true` to switch the popup to 12-hour display mode. The day periods (meridiem) are always displayed as `AM/PM`. Defaults to `false`. The model value remains in 24-hour format. |
 

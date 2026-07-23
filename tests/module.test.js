@@ -8,6 +8,7 @@ const NON_PLUGIN_EXPORTS = new Set([
   'default',
   'chartToImage',
   'chartToSvg',
+  'createDateFormatter',
   'getBreakpointListener',
   'getColorScheme',
   'getSystemColorScheme',

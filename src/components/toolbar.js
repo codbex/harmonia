@@ -18,6 +18,8 @@ export default function (Alpine) {
       'data-[size=md]:h-10',
       'data-[variant=transparent]:bg-transparent',
       'data-[variant=transparent]:text-foreground',
+      'data-[variant=clear]:bg-background',
+      'data-[variant=clear]:text-foreground',
       'data-[floating=true]:shadow-xs',
       'data-[floating=true]:rounded-lg',
       'data-[floating=true]:border'

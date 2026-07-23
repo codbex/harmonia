@@ -1,4 +1,5 @@
 import { createDateFormatter } from '../utils/date-format';
+import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, createSvg } from './icons';
 import { createDateTimeFormatCache } from './intl';
@@ -140,10 +141,10 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   let rangeEnd = undefined;
   let rangeSeparator = ' - ';
 
-  let locale = undefined;
+  let locale = resolveLocale();
   let delimiter = undefined;
   let dateOrder = undefined;
-  let dateFormatter = createDateFormatter();
+  let dateFormatter = createDateFormatter({ locale });
   // Memoized Intl.DateTimeFormat instances (keyed by locale+options), reused across renders.
   const dtf = createDateTimeFormatCache();
   let firstDay = 0;
@@ -398,7 +399,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
 
   function dayClick(event) {
     if (event.target.getAttribute('aria-disabled') === 'true') return;
-    focusedDay = new Date(event.target.dataset.year, event.target.dataset.month, event.target.dataset.day);
+    focusedDay = new Date(event.target.getAttribute('data-year'), event.target.getAttribute('data-month'), event.target.getAttribute('data-day'));
     selectDay(focusedDay, true);
     render();
   }
@@ -554,7 +555,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   function setConfig(config) {
     rangeMode = !!config.range;
     if (config.rangeSeparator !== undefined) rangeSeparator = config.rangeSeparator;
-    if (config.locale) locale = config.locale;
+    locale = resolveLocale(config.locale);
     if (config.delimiter !== undefined) delimiter = config.delimiter;
     if (config.order !== undefined) dateOrder = config.order;
     if (config.firstDay) firstDay = config.firstDay;

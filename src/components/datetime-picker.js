@@ -394,7 +394,7 @@ export default function (Alpine) {
         picker._h_datetimepicker.state.expanded = false;
         return;
       }
-      const type = event.target.dataset && event.target.dataset.part;
+      const type = event.target.getAttribute('data-part');
       if (!type) return;
       switch (event.key) {
         case 'Up':
@@ -461,7 +461,7 @@ export default function (Alpine) {
     // keydown) means it works with mobile virtual keyboards, where keydown is
     // unreliable. The native insertion is prevented; we apply our own logic.
     function onSegInput(event) {
-      const type = event.target.dataset && event.target.dataset.part;
+      const type = event.target.getAttribute('data-part');
       if (!type || type === 'period') return;
       event.preventDefault();
       if (event.inputType && event.inputType.indexOf('delete') === 0) {
@@ -482,14 +482,14 @@ export default function (Alpine) {
 
     // Start each segment visit with a clean digit buffer.
     function onSegFocusIn(event) {
-      const type = event.target.dataset && event.target.dataset.part;
+      const type = event.target.getAttribute('data-part');
       if (type && typeBuffers[type] !== undefined) typeBuffers[type] = '';
     }
     segGroup.addEventListener('focusin', onSegFocusIn);
 
     // Tapping the AM/PM segment toggles it (no keyboard needed on touch).
     function onSegClick(event) {
-      const type = event.target.dataset && event.target.dataset.part;
+      const type = event.target.getAttribute('data-part');
       if (type !== 'period') return;
       stepValue('period', 1);
       renderSegments();
