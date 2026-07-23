@@ -91,7 +91,7 @@ Pass a configuration object as an Alpine expression.
 | color       | string            | Status color: one of `blue`, `red`, `green`, `yellow`, `purple`, `pink`, `indigo`, `orange`, `gray`, `teal`. An unknown value leaves the slot uncolored.                                           |
 | status      | string            | For a colored slot, `confirmed` (default) renders it filled, `unconfirmed` renders it as an outline, and `rejected` renders it as an outline with a dashed border. Ignored when no `color` is set. |
 | icons       | `{ left, right }` | Badge images rendered in the cell's top corners. `left` and `right` are optional arrays of `{ url, alt }` objects, where `url` is the image path and `alt` is the alt text (defaults to `''`).     |
-| tiles       | Tile[]            | Sub-slots (see below). When present and non-empty, the slot renders as a labeled group and only its tiles are selectable; the slot's own `start` labels the group.                                 |
+| tiles       | Tile[]            | Sub-slots (see below). When present and non-empty, the slot renders as a labeled group and only its tiles are selectable. The slot's own `start` labels the group.                                 |
 
 #### Tile object (sub-slots)
 
@@ -104,7 +104,7 @@ A tile is an individually selectable sub-slot inside a slot's `tiles` array. It 
 | color       | string            | Status color, same values as a slot's `color`.                                                                                                                     |
 | status      | string            | For a colored tile, `confirmed` (default) renders it filled, `unconfirmed` renders it as an outline, and `rejected` renders it as an outline with a dashed border. |
 | available   | boolean           | When `false`, the tile is shown as unavailable and unclickable.                                                                                                    |
-| start       | string            | Optional own start time in `HH:MM`. When set, it is shown on the tile; otherwise the group time applies.                                                           |
+| start       | string            | Optional own start time in `HH:MM`. When set, it is shown on the tile, otherwise the group time applies.                                                           |
 | end         | string            | Optional own end time in `HH:MM`.                                                                                                                                  |
 | icons       | `{ left, right }` | Badge images in the tile's top corners, as on a slot.                                                                                                              |
 

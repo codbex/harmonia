@@ -202,3 +202,136 @@ describe('h-split gutter visibility', () => {
     expect(gutters(container).length).toBe(0);
   });
 });
+
+describe('h-split responsive percentage bounds', () => {
+  // Regression harness for the resize bug: a %-based min/max must be re-resolved
+  // against the live container width on every layout pass, not baked once to px.
+  // happy-dom never runs layout, so we (1) stub getBoundingClientRect to a fixed
+  // width, (2) run requestAnimationFrame synchronously so queueLayout's layout()
+  // fires inside the test, and (3) capture the ResizeObserver to fire it manually.
+  let observers;
+  let OriginalResizeObserver;
+
+  beforeEach(() => {
+    observers = [];
+    OriginalResizeObserver = global.ResizeObserver;
+    global.ResizeObserver = class {
+      constructor(cb) {
+        this.cb = cb;
+        this.observe = vi.fn();
+        this.disconnect = vi.fn();
+        observers.push(this);
+      }
+    };
+    vi.stubGlobal('requestAnimationFrame', (cb) => {
+      cb();
+      return 1;
+    });
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+  });
+
+  afterEach(() => {
+    global.ResizeObserver = OriginalResizeObserver;
+    vi.unstubAllGlobals();
+    document.body.innerHTML = '';
+  });
+
+  const widthOf = (el, width) => {
+    el.getBoundingClientRect = () => ({ width, height: 0, top: 0, left: 0, right: width, bottom: 0 });
+  };
+
+  // Mount a real h-split (width-stubbed) with real h-split-panel children. Only
+  // one panel is left visible (as in the reported scenario, details closed) so
+  // there are no gutters and usableSize() equals the stubbed container width.
+  const mountSplit = (width, panelAttrs) => {
+    const container = document.createElement('div');
+    container.setAttribute('data-orientation', 'horizontal'); // so containerSize() reads width
+    document.body.appendChild(container);
+    widthOf(container, width);
+    mountDirective(splitPlugin, 'h-split', container, {});
+
+    const panels = panelAttrs.map((attrs) => {
+      const panel = document.createElement('div');
+      Object.entries(attrs).forEach(([k, v]) => panel.setAttribute(k, v));
+      container.appendChild(panel);
+      mountDirective(splitPlugin, 'h-split-panel', panel, { original: 'x-h-split-panel' });
+      return panel;
+    });
+
+    // The last mounted panel's addPanel triggered a synchronous layout; find the
+    // matching panel state object via the container's shared panels array.
+    const state = (i) => container._h_split.panels[i];
+    return { container, panels, state };
+  };
+
+  it('resolves a percentage min to px against the initial width and writes the CSS floor var', () => {
+    const { panels, state } = mountSplit(1000, [{ 'data-min': '40%' }]);
+    expect(state(0).min).toBe(400);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-min')).toBe('400px');
+  });
+
+  it('re-resolves the percentage min when the container shrinks (the reported bug)', () => {
+    const { container, panels, state } = mountSplit(1000, [{ 'data-min': '40%' }]);
+    expect(state(0).min).toBe(400);
+
+    // Shrink the container and fire the ResizeObserver callback (queueLayout -> layout).
+    widthOf(container, 300);
+    observers[0].cb();
+
+    // Pre-fix this stayed 400px and pinned the panel, overflowing the container.
+    expect(state(0).min).toBe(120);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-min')).toBe('120px');
+  });
+
+  it('re-resolves a percentage max and updates the CSS ceiling var on resize', () => {
+    const { container, panels, state } = mountSplit(1000, [{ 'data-max': '50%' }]);
+    expect(state(0).max).toBe(500);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-max')).toBe('500px');
+
+    widthOf(container, 400);
+    observers[0].cb();
+
+    expect(state(0).max).toBe(200);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-max')).toBe('200px');
+  });
+
+  it('never leaves a stale max ceiling var when the panel has no data-max', () => {
+    const { container, panels, state } = mountSplit(1000, [{ 'data-min': '40%' }]);
+    expect(state(0).max).toBe(Infinity);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-max')).toBe('');
+
+    widthOf(container, 300);
+    observers[0].cb();
+
+    expect(state(0).max).toBe(Infinity);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-max')).toBe('');
+  });
+
+  it('passes a pixel min through unchanged across a resize', () => {
+    const { container, panels, state } = mountSplit(1000, [{ 'data-min': '120px' }]);
+    expect(state(0).min).toBe(120);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-min')).toBe('120px');
+
+    widthOf(container, 300);
+    observers[0].cb();
+
+    expect(state(0).min).toBe(120);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-min')).toBe('120px');
+  });
+
+  it('keeps declaredSize resolved-once (does not re-resolve its percentage on resize)', () => {
+    // Asymmetry guard: min/max track the container width, but declaredSize (from a
+    // percentage data-size) is resolved once at init and then superseded by
+    // persisted/dragged sizes. Re-resolving it every resize would fight persistence.
+    const { container, state } = mountSplit(1000, [{ 'data-size': '30%', 'data-min': '10%' }]);
+    expect(state(0).declaredSize).toBe(300);
+    expect(state(0).min).toBe(100);
+
+    widthOf(container, 500);
+    observers[0].cb();
+
+    // min re-resolved to the new width; declaredSize stayed at its init value.
+    expect(state(0).min).toBe(50);
+    expect(state(0).declaredSize).toBe(300);
+  });
+});

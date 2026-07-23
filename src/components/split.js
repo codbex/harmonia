@@ -64,17 +64,22 @@ export default function (Alpine) {
       return containerSize() - gutters * gutterSize();
     };
 
-    // Normalize a size value: number, percentage string, or null
-    const normalize = (value) => {
+    // Resolve a size spec (number, percentage string, or px string) to pixels
+    // against an explicit total, so a percentage can be re-resolved on resize
+    // without an extra usableSize() reflow (the caller already has the total).
+    const resolveSpec = (value, total) => {
       if (value == null) return null;
       if (typeof value === 'number') return value;
 
       if (value.endsWith('%')) {
-        return (parseFloat(value) / 100) * usableSize();
+        return (parseFloat(value) / 100) * total;
       }
 
       return parseFloat(value);
     };
+
+    // Public API: normalize a size value against the current usable size.
+    const normalize = (value) => resolveSpec(value, usableSize());
 
     // Resets only on structural changes (panel added/removed) and when a panel's show
     // handler calls resetInit(). Intentionally NOT reset when a panel is hidden - the
@@ -90,6 +95,11 @@ export default function (Alpine) {
       if (!visible.length) return;
 
       const total = usableSize();
+
+      // Re-resolve each panel's %-based min/max (and rewrite its CSS floor/ceiling
+      // vars) against the current total, so a shrinking container relaxes a stale
+      // pixel floor instead of pinning the panel and overflowing.
+      visible.forEach((p) => p.resolveBounds(total));
 
       if (!initialized) {
         initialized = true;
@@ -280,6 +290,7 @@ export default function (Alpine) {
         initialized = false;
       },
       normalize,
+      resolveSpec,
       saveSizes,
     };
 
@@ -445,6 +456,11 @@ export default function (Alpine) {
 
     const initialSize = split._h_split.normalize(el.getAttribute('data-size'));
 
+    // Raw min/max specs are kept so resolveBounds() can re-resolve a percentage
+    // against the live container size on every layout pass (see resolveBounds).
+    const minRaw = el.getAttribute('data-min');
+    const maxRaw = el.getAttribute('data-max');
+
     let handleSize = 0;
 
     let layoutFrame = null;
@@ -456,13 +472,36 @@ export default function (Alpine) {
       declaredSize: initialSize,
       size: initialSize,
       explicit: initialSize != null,
-      min: split._h_split.normalize(el.getAttribute('data-min')) ?? 0,
-      max: split._h_split.normalize(el.getAttribute('data-max')) ?? Infinity,
+      minRaw,
+      maxRaw,
+      min: split._h_split.normalize(minRaw) ?? 0,
+      max: split._h_split.normalize(maxRaw) ?? Infinity,
       collapsed: false,
       prevSize: null,
       prevHiddenFraction: null,
       savedFraction: null,
       restoreFraction: null,
+
+      // Re-resolve %-based min/max against the current total and write the CSS
+      // floor/ceiling vars from the fresh values. Called by the container's
+      // layout() every pass so a percentage tracks the container as it resizes
+      // (a fixed px baked in once would pin the panel and overflow on shrink).
+      // Only min/max are responsive; declaredSize is resolved once at init and
+      // thereafter superseded by persisted/dragged sizes (see the init block).
+      // Note: if authored % mins sum to > 100% the flex min floor still wins and
+      // content can overflow, but that is an authoring error and % already
+      // degrades better than fixed px (it scales down proportionally).
+      resolveBounds(total) {
+        this.min = split._h_split.resolveSpec(this.minRaw, total) ?? 0;
+        this.max = split._h_split.resolveSpec(this.maxRaw, total) ?? Infinity;
+        el.style.setProperty('--h-split-panel-min', `${this.min}px`);
+        if (this.max < Infinity) {
+          el.style.setProperty('--h-split-panel-max', `${this.max}px`);
+        } else {
+          // Remove (never leave stale) so max-w-(--h-split-panel-max) imposes nothing.
+          el.style.removeProperty('--h-split-panel-max');
+        }
+      },
 
       apply() {
         el.style.flexBasis = `${this.size.toFixed(2)}px`;
@@ -533,11 +572,6 @@ export default function (Alpine) {
         }
       },
     };
-
-    el.style.setProperty('--h-split-panel-min', `${panel.min}px`);
-    if (panel.max < Infinity) {
-      el.style.setProperty('--h-split-panel-max', `${panel.max}px`);
-    }
 
     split._h_split.addPanel(panel);
 

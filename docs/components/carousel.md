@@ -52,7 +52,7 @@ x-h-carousel-indicators
 | data-label       | string | false    | Accessible name for the indicator group (default: `"Choose slide"`).         |
 | data-slide-label | string | false    | Prefix for each dot's accessible name (default: `"Slide"`, as in `Slide 1`). |
 
-The `x-h-carousel-control` buttons take a default `aria-label` per direction; override it with your own `aria-label`.
+The `x-h-carousel-control` buttons take a default `aria-label` per direction. Override it with your own `aria-label`.
 
 ### Modifiers
 

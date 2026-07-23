@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.2
+
+Bugfix release
+
+### Fixed Split panel percentage min/max not tracking the container on resize
+
+A Split panel whose `data-min` or `data-max` was given as a percentage resolved that percentage to a fixed pixel size only once, at the width the page happened to have when the panel first rendered. Shrinking the window afterwards left the panel pinned at that stale floor, so it stopped shrinking with the container and overflowed horizontally (reloading at the narrow width appeared to fix it). Percentage `min` and `max` are now re-resolved against the current container size on every layout pass, so a panel keeps shrinking and growing with the space it is given.
+
 ## 2.7.1
 
 Bugfix release

@@ -7,9 +7,9 @@ This document explains the design decisions behind `src/components/split.js` for
 Two Alpine.js directives work together:
 
 - **`h-split`** - the container. Owns the shared `panels` array, runs the layout engine, and persists sizes to `localStorage`. All shared state lives here.
-- **`h-split-panel`** - a single panel. Creates and manages its gutter element, holds per-panel state, and communicates back to the container through the `el._h_split` API object.
+- **`h-split-panel`** - a single panel. Creates and manages its gutter element, holds per-panel state, owns its own `min`/`max`/CSS-var resolution via `resolveBounds()`, and communicates back to the container through the `el._h_split` API object.
 
-Data flows one way: each panel calls methods on `el._h_split`; the container never reaches into individual panels directly, it only iterates the `panels` array it owns.
+Data flows one way: each panel calls methods on `el._h_split`. The container never reaches into a panel's internals, it only iterates the `panels` array it owns and, per layout pass, calls each panel's own `resolveBounds(total)` so the panel re-derives its bounds against the total the container computed (the percentage specs and CSS vars stay panel-side).
 
 ```
 h-split (container)
@@ -33,21 +33,22 @@ h-split (container)
 Panel sizes are stored as absolute pixel values (`panel.size`). The engine runs inside a `requestAnimationFrame` callback (scheduled by `queueLayout`) and follows these steps every time:
 
 1. Compute `total = usableSize()` - the container width/height minus the combined width/height of all in-DOM gutters.
-2. Run the **init block** (once, or whenever `initialized === false`) to assign starting sizes.
-3. Clamp each panel's size to its `[min, max]` bounds.
-4. Compute `delta = total − sum(panel.size)`.
-5. Distribute `delta` equally among panels that still have room to grow or shrink. Panels that hit a bound drop out of the distribution; the remaining delta is shared again among the rest. This repeats until `delta < 0.01px` or no flexible panel remains.
-6. Call `panel.apply()` on each visible panel, writing the size to `el.style.flexBasis`.
-7. Record each panel's fraction (`savedFraction = size / total`).
+2. Call `panel.resolveBounds(total)` on each visible panel to re-resolve any percentage `min`/`max` against the current `total` and rewrite the `--h-split-panel-min` / `--h-split-panel-max` CSS vars. This runs every pass so a percentage bound tracks the container as it resizes (a fixed px baked in once would pin the panel and overflow on shrink).
+3. Run the **init block** (once, or whenever `initialized === false`) to assign starting sizes.
+4. Clamp each panel's size to its `[min, max]` bounds.
+5. Compute `delta = total − sum(panel.size)`.
+6. Distribute `delta` equally among panels that still have room to grow or shrink. Panels that hit a bound drop out of the distribution. The remaining delta is shared again among the rest. This repeats until `delta < 0.01px` or no flexible panel remains.
+7. Call `panel.apply()` on each visible panel, writing the size to `el.style.flexBasis`.
+8. Record each panel's fraction (`savedFraction = size / total`).
 
 ### When `initialized` resets
 
 `initialized = false` forces the init block on the next layout. It resets when:
 
-- A panel is **added or removed** (structural change; declared sizes must be re-assigned).
+- A panel is **added or removed** (structural change, declared sizes must be re-assigned).
 - `resetInit()` is called by a panel's **show handler** (panels being re-shown need their `restoreFraction` applied).
 
-It does **not** reset when a panel is hidden. The redistribution loop in step 4-5 already handles the remaining visible panels without needing a full re-init, and resetting would cause the init block to load stale `localStorage` sizes.
+It does **not** reset when a panel is hidden. The redistribution loop in step 5-6 already handles the remaining visible panels without needing a full re-init, and resetting would cause the init block to load stale `localStorage` sizes.
 
 ### Init block paths
 
@@ -58,6 +59,15 @@ The init block runs three paths in order:
 2. **Persisted path** - `data-key` is set and `localStorage` has a matching entry (same count as visible panels). Stored fractional sizes are applied directly.
 
 3. **Declared path** - panels with `data-size` set get their `declaredSize`. Auto panels (no `data-size`) share the remainder equally.
+
+### Percentage resolution: `min`/`max` vs `declaredSize`
+
+`data-min`, `data-max`, and `data-size` all accept a percentage. They are resolved to pixels differently, on purpose:
+
+- **`min` / `max` are re-resolved every layout pass** by `resolveBounds(total)` (step 2), because they drive the panel's CSS `min-width` / `max-width` floor and ceiling. If they were baked to pixels once at the initial width, shrinking the container below that stale floor would pin the panel and overflow horizontally (with a matching stale flat when growing). Keeping the raw spec string (`minRaw` / `maxRaw`) and re-deriving on resize makes a percentage track the container.
+- **`declaredSize` is resolved once at init** and thereafter superseded by persisted (`localStorage`) or dragged sizes. It only seeds the init block and the collapse fallback - the per-pass delta loop never reads it. Re-resolving it on every resize would fight the persisted-fraction restore path, so it is intentionally left static. Every percentage split in the repo also sets `data-key`, so persistence is the normal path, not an edge case.
+
+Residual limitation: if authored percentage `min`s sum to more than 100% of the container, the flex min floor still wins and content can overflow. That is an authoring error - a percentage already degrades better than a fixed px (it scales down proportionally), so no runtime handling is added.
 
 ---
 
