@@ -47,7 +47,7 @@ Pass a configuration object to the directive as an expression.
 | events           | Array of event objects. See Event object below.                                                                                             |
 | view             | Initial view: `"month"` (default), `"week"`, `"day"`, or `"year"`.                                                                                           |
 | date             | Initial focus date in `YYYY-MM-DD` format. Defaults to today.                                                                                                |
-| locale           | BCP 47 language tag for formatting. When not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                          |
+| locale           | BCP 47 language tag for formatting. When not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                         |
 | firstDay         | First day of the week. `0` = Sunday (default), `1` = Monday.                                                                                                 |
 | showNowIndicator | Show the current-time indicator in week and day views. Defaults to `true`. Set to `false` to hide it.                                                        |
 | views            | Show the view-switcher button group in the toolbar. Defaults to `true`. Set to `false` to lock the calendar to the view set in `view` and hide the switcher. |

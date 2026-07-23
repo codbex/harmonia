@@ -44,8 +44,8 @@ Use the Month Picker when a field represents a whole month (a reporting period, 
 
 You can pass a configuration object to the popup as an expression or as a value.
 
-| Key    | Description                                                                                                            |
-| ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| Key    | Description                                                                                                                                            |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | locale | The locale of the month names as a BCP 47 language tag. If not provided, it is taken from the page's `<html lang>` attribute, then the browser locale. |
 
 Some locales, such as `bg-BG`, conventionally abbreviate months numerically, so the popup grid shows numbers there. The text input is unaffected because it uses the full month name.

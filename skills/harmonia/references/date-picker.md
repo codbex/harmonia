@@ -48,7 +48,7 @@ You can pass a configuration object to the popup as an expression or as a value.
 
 | Key            | Description                                                                                                                                                                                                          |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| locale         | The locale of the calendar as a BCP 47 language tag. If not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                                                                    |
+| locale         | The locale of the calendar as a BCP 47 language tag. If not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                                                                  |
 | firstDay       | The start day of the week. `0` is Sunday.                                                                                                                                                                            |
 | min            | The earliest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                                                                       |
 | max            | The latest date selectable. Must be provided in the standard ISO 8601 format - `YYYY-MM-DD`.                                                                                                                         |

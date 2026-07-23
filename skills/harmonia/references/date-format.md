@@ -23,7 +23,7 @@ When no locale is set explicitly, the directive and the magic inherit it from th
 | Attribute              | Type                                    | Required | Description                                                                                                                                                |
 | ---------------------- | --------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | expression             | Date \| string \| number \| {start,end} | false    | The value to format (a `Date`, timestamp, ISO `YYYY-MM-DD` string, or a range object). When omitted, the element's own text content is used as the source. |
-| `data-locale`          | string                                  | false    | BCP-47 locale tag (e.g. `en-GB`). When omitted, the locale is taken from the page's `<html lang>` attribute, then the browser locale.                       |
+| `data-locale`          | string                                  | false    | BCP-47 locale tag (e.g. `en-GB`). When omitted, the locale is taken from the page's `<html lang>` attribute, then the browser locale.                      |
 | `data-order`           | string                                  | false    | Field order expressed with `Y`/`M`/`D`, e.g. `DMY`. Defaults to the locale's order.                                                                        |
 | `data-delimiter`       | string                                  | false    | Overrides the locale's field separator (e.g. `-`).                                                                                                         |
 | `data-options`         | string (JSON)                           | false    | An `Intl.DateTimeFormat` options object, as JSON (e.g. `{"dateStyle":"long"}`).                                                                            |
@@ -34,26 +34,26 @@ When no locale is set explicitly, the directive and the magic inherit it from th
 
 The utility also registers a [magic method](https://alpinejs.dev/globals/alpine-data#using-magic-properties) called `$dateFormat` for formatting dates inline in Alpine expressions.
 
-| Property             | Type     | Description                                                                                                                                                                     |
-| -------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$dateFormat`        | function | `$dateFormat(value, config?)` returns the formatted string for a date value, or a formatted range when `value` is a `{ start, end }` object. Empty or invalid input returns `''`. |
-| `$dateFormat.with`   | function | `$dateFormat.with(config?)` returns a reusable formatter object exposing `format`, `parse`, `formatRange` and `parseRange`, for cases that also need to parse input into a `Date`. |
+| Property           | Type     | Description                                                                                                                                                                        |
+| ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `$dateFormat`      | function | `$dateFormat(value, config?)` returns the formatted string for a date value, or a formatted range when `value` is a `{ start, end }` object. Empty or invalid input returns `''`.  |
+| `$dateFormat.with` | function | `$dateFormat.with(config?)` returns a reusable formatter object exposing `format`, `parse`, `formatRange` and `parseRange`, for cases that also need to parse input into a `Date`. |
 
 #### Arguments
 
 - `$dateFormat(value, config?)`
 
-| Argument | Type                                    | Required | Description                                                                                              |
-| -------- | --------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| value    | Date \| string \| number \| {start,end} | true     | The value to format (a `Date`, timestamp, ISO `YYYY-MM-DD` string, or a `{ start, end }` range object).  |
+| Argument | Type                                    | Required | Description                                                                                                                                                                                                                                                                       |
+| -------- | --------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| value    | Date \| string \| number \| {start,end} | true     | The value to format (a `Date`, timestamp, ISO `YYYY-MM-DD` string, or a `{ start, end }` range object).                                                                                                                                                                           |
 | config   | object                                  | false    | Formatting options: `locale`, `order`, `delimiter`, `options` (an `Intl.DateTimeFormat` options object) and `rangeSeparator`. Mirrors the directive's `data-*` attributes. When `locale` is omitted it falls back to the page's `<html lang>` attribute, then the browser locale. |
 
 ### Functions
 
 The formatting engine is also exported as a plain function, so it can be used outside Alpine (for example in application code or a build step). It returns the same reusable formatter object as `$dateFormat.with`.
 
-| Property            | Arguments | Returns | Description                                                                                                                                                     |
-| ------------------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Property            | Arguments | Returns | Description                                                                                                                                                      |
+| ------------------- | --------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | createDateFormatter | config    | object  | Returns a reusable formatter exposing `format`, `parse`, `formatRange` and `parseRange`. Import it from the package or read it off the global `Harmonia` object. |
 
 The `config` argument accepts the same keys described above (`locale`, `order`, `delimiter`, `options` and `rangeSeparator`). Unlike the directive and magic, this plain function does not read the page's `<html lang>`. When `locale` is omitted it defers directly to the JavaScript engine's default locale.
