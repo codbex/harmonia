@@ -6,44 +6,43 @@ Fade out the edges of an element with a mask, typically to hint that there is mo
 
 | Class  | Description                         |
 | ------ | ----------------------------------- |
-| h-mask | Fades out the left and right edges. |
-| v-mask | Fades out the top and bottom edges. |
+| fade-x | Fades out the left and right edges. |
+| fade-y | Fades out the top and bottom edges. |
+| fade-l | Fades out the left edge.            |
+| fade-r | Fades out the right edge.           |
+| fade-t | Fades out the top edge.             |
+| fade-b | Fades out the bottom edge.          |
 
 ## Examples
 
 ### Horizontal
 
-<LiveExample>
+<LiveExample data-class="p-0">
 
 ```html
-<div class="h-mask hbox w-3xs scrollbar-none gap-2 overflow-x-auto px-2 py-1">
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Apples</span>
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Bananas</span>
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Cherries</span>
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Grapes</span>
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Oranges</span>
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Peaches</span>
-  <span class="rounded-full bg-muted px-3 py-1 text-sm whitespace-nowrap">Strawberries</span>
-</div>
+<div class="fade-x w-full bg-primary p-4 text-sm whitespace-nowrap text-primary-foreground">Fade horizontally</div>
 ```
 
 </LiveExample>
 
 ### Vertical
 
-<LiveExample>
+<LiveExample data-class="p-0">
 
 ```html
-<div class="v-mask vbox w-3xs scrollbar-none gap-2 overflow-y-auto px-1 py-2" style="height: 10rem">
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Inbox</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Drafts</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Sent</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Archive</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Spam</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Trash</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Starred</span>
-  <span class="rounded-md bg-muted px-3 py-1 text-sm">Important</span>
-</div>
+<div class="fade-y w-full bg-primary p-4 text-sm whitespace-nowrap text-primary-foreground">Fade vertically</div>
+```
+
+</LiveExample>
+
+### Single edge
+
+Fade a single side with `fade-t`, `fade-b`, `fade-l` or `fade-r`. This example fades only the bottom, hinting at more content below while keeping the top edge sharp.
+
+<LiveExample data-class="p-0">
+
+```html
+<div class="fade-b w-full bg-primary p-4 text-sm whitespace-nowrap text-primary-foreground">Fade bottom</div>
 ```
 
 </LiveExample>

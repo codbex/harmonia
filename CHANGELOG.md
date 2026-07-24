@@ -1,6 +1,19 @@
 # Changelog
 
-## 2.7.2
+## v2.8.0
+
+A release that expands the utility classes with single-side edge fades and grid column-line placement. The one breaking change is the mask utilities rename covered below.
+
+### Mask utilities: renamed and expanded
+
+- **Breaking: `h-mask` and `v-mask` were renamed to `fade-x` and `fade-y`.** The old class names no longer ship. `fade-x` fades the left and right edges, `fade-y` the top and bottom, following the same `-x` / `-y` axis convention as the rest of the library. Replace any `h-mask` with `fade-x` and any `v-mask` with `fade-y`.
+- **New single-edge fades.** `fade-t`, `fade-b`, `fade-l`, and `fade-r` each fade a single edge (top, bottom, left, right), for hinting at more content in one direction while keeping the opposite edge sharp.
+
+### New grid utilities: column start and end
+
+- **`col-start-1-12` and `col-end-1-12`** position a grid item by the column line it starts and ends at (a four-column grid has lines 1 to 5), complementing the existing `col-span-*`. Both accept the `sm`, `md`, `lg`, and `xl` breakpoint prefixes.
+
+## v2.7.2
 
 Bugfix release
 
@@ -8,7 +21,7 @@ Bugfix release
 
 A Split panel whose `data-min` or `data-max` was given as a percentage resolved that percentage to a fixed pixel size only once, at the width the page happened to have when the panel first rendered. Shrinking the window afterwards left the panel pinned at that stale floor, so it stopped shrinking with the container and overflowed horizontally (reloading at the narrow width appeared to fix it). Percentage `min` and `max` are now re-resolved against the current container size on every layout pass, so a panel keeps shrinking and growing with the space it is given.
 
-## 2.7.1
+## v2.7.1
 
 Bugfix release
 
@@ -165,7 +178,7 @@ A release that adds two new date pickers - Month Picker and Week Picker - and ma
 
 - Focus rings across components (dialog, select, tree, calendar, time and slot pickers, table cells, and the pickers) now use a spacing-relative ring width, so the focus outline is consistent everywhere.
 
-## 2.3.1
+## v2.3.1
 
 Bugfix release
 

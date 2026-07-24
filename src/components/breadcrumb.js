@@ -10,7 +10,7 @@ export default function (Alpine) {
     const variants = {
       outline: ['border'],
     };
-    const allVariantClasses = [...Object.values(variants).flat(), 'h-mask'];
+    const allVariantClasses = [...Object.values(variants).flat(), 'fade-x'];
 
     const sizes = {
       default: ['h-9', 'px-3'],
@@ -27,7 +27,7 @@ export default function (Alpine) {
         el.classList.add(...variants[variant]);
         el.classList.add(...(sizes[size] ?? sizes.default));
       } else {
-        el.classList.add('px-2', 'h-mask');
+        el.classList.add('px-2', 'fade-x');
       }
     }
 

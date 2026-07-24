@@ -2,15 +2,17 @@
 
 ## Class names
 
-| Class            | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| grid             | `display: grid;`                               |
-| grid-cols-`1-12` | Number of grid columns. From 1 to 12.          |
-| col-span-`1-12`  | Number of columns an item spans. From 1 to 12. |
-| row-span-`1-12`  | Number of rows an item spans. From 1 to 12.    |
+| Class            | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| grid             | `display: grid;`                                  |
+| grid-cols-`1-12` | Number of grid columns. From 1 to 12.             |
+| col-span-`1-12`  | Number of columns an item spans. From 1 to 12.    |
+| col-start-`1-12` | Grid column line an item starts at. From 1 to 12. |
+| col-end-`1-12`   | Grid column line an item ends at. From 1 to 12.   |
+| row-span-`1-12`  | Number of rows an item spans. From 1 to 12.       |
 
 ::: info Responsive grid
-You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm`, `md`, `lg` and `xl` breakpoint prefixes to make the grid responsive.
+You can combine the `grid-cols-*`, `col-span-*`, `col-start-*` and `col-end-*` classes with the standard `sm`, `md`, `lg` and `xl` breakpoint prefixes to make the grid responsive.
 :::
 
 ### Justify grid items
@@ -158,6 +160,23 @@ You can combine the `grid-cols-*` and `col-span-*` classes with the standard `sm
   <span class="bg-primary p-2 text-primary-foreground">2</span>
   <span class="col-span-3 bg-primary p-2 text-primary-foreground">col-span-3</span>
   <span class="bg-primary p-2 text-primary-foreground">3</span>
+</div>
+```
+
+</LiveExample>
+
+### Column start and end
+
+Position an item on the grid by the column lines it starts and ends at. In a four-column grid the lines are numbered 1 to 5, so `col-start-2 col-end-4` places an item across the second and third columns.
+
+<LiveExample>
+
+```html
+<div class="grid grid-cols-4 gap-1">
+  <span class="col-start-2 col-end-4 bg-primary p-2 text-primary-foreground">col-start-2 col-end-4</span>
+  <span class="col-start-1 col-end-3 bg-primary p-2 text-primary-foreground">col-start-1 col-end-3</span>
+  <span class="col-start-3 bg-primary p-2 text-primary-foreground">col-start-3</span>
+  <span class="col-end-5 bg-primary p-2 text-primary-foreground">col-end-5</span>
 </div>
 ```
 
