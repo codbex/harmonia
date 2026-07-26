@@ -35,6 +35,9 @@
   --vp-button-brand-active-border: transparent;
   --vp-button-brand-active-text: var(--vp-c-white);
   --vp-button-brand-active-bg: var(--vp-c-brand-1);
+
+  /* Typography */
+  --vp-font-family-base: "Open Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .vp-doc :not(pre) > code {
@@ -153,7 +156,6 @@ h6:has(+ component-container) {
 
 .templates-intro {
   margin: 0 0 2rem;
-  max-width: 60ch;
   color: var(--vp-c-text-2);
 }
 

@@ -61,6 +61,7 @@
   --sidebar-secondary: oklch(0.9276 0.0058 264.5313);
   --sidebar-secondary-foreground: oklch(0.3211 0 0);
   --sidebar-border: oklch(0.9 0 0);
+  --sidebar-ring: oklch(0.6231 0.188 259.81 / 50%);
 
   --object-header: oklch(0.9754 0.0011 197.14);
   --object-header-foreground: oklch(0.3211 0 0);
@@ -143,6 +144,7 @@
   --sidebar-secondary: oklch(0.3 0 0);
   --sidebar-secondary-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.3 0 0);
+  --sidebar-ring: oklch(0.5768 0.1721 259.73 / 50%);
 
   --object-header: oklch(0.22 0 0);
   --object-header-foreground: oklch(1 0 0);
@@ -215,6 +217,7 @@
   --color-sidebar-secondary: var(--sidebar-secondary);
   --color-sidebar-secondary-foreground: var(--sidebar-secondary-foreground);
   --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
   --color-object-header: var(--object-header);
   --color-object-header-foreground: var(--object-header-foreground);

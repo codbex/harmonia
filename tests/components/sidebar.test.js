@@ -124,6 +124,119 @@ describe('h-sidebar-group', () => {
   });
 });
 
+describe('h-sidebar-group-label', () => {
+  function mountLabel(el, collapsable = false) {
+    const group = document.createElement('div');
+    group._h_sidebar_group = {
+      collapsable,
+      controlId: undefined,
+      controls: undefined,
+      state: { collapsed: false },
+    };
+    group.appendChild(el);
+    return mountDirective(sidebarPlugin, 'h-sidebar-group-label', el, { original: 'x-h-sidebar-group-label' });
+  }
+
+  it('applies base classes and data-slot', () => {
+    const el = document.createElement('div');
+    mountLabel(el);
+    expect(el.classList.contains('flex')).toBe(true);
+    expect(el.classList.contains('gap-1')).toBe(true);
+    expect(el.classList.contains('px-2')).toBe(true);
+    expect(el.classList.contains('group/sidebar-group-label')).toBe(true);
+    expect(el.getAttribute('data-slot')).toBe('sidebar-group-label');
+  });
+
+  it('tightens right padding when actions are present', () => {
+    const el = document.createElement('div');
+    mountLabel(el);
+    expect(el.classList.contains('has-[[data-slot=sidebar-group-actions]]:pr-1.5')).toBe(true);
+  });
+
+  it('throws when not placed inside a sidebar group', () => {
+    const el = document.createElement('div');
+    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-group-label', el, { original: 'x-h-sidebar-group-label' })).toThrow();
+  });
+});
+
+describe('h-sidebar-group-actions', () => {
+  it('applies base classes and data-slot', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-actions', el);
+    expect(el.classList.contains('ml-auto')).toBe(true);
+    expect(el.classList.contains('flex')).toBe(true);
+    expect(el.classList.contains('items-center')).toBe(true);
+    expect(el.classList.contains('gap-1')).toBe(true);
+    expect(el.getAttribute('data-slot')).toBe('sidebar-group-actions');
+  });
+
+  it('does not autohide without the modifier', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-actions', el, { modifiers: [] });
+    expect(el.classList.contains('pointer-fine:sr-only')).toBe(false);
+    expect(el.classList.contains('focus-within:not-sr-only')).toBe(false);
+  });
+
+  it('adds touch-safe autohide classes with the autohide modifier', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-actions', el, { modifiers: ['autohide'] });
+    expect(el.classList.contains('pointer-fine:sr-only')).toBe(true);
+    expect(el.classList.contains('focus-within:not-sr-only')).toBe(true);
+    expect(el.classList.contains('group-hover/sidebar-group-label:not-sr-only')).toBe(true);
+    // not-sr-only zeroes margin, so ml-auto is re-asserted in the revealed states to keep the actions right-aligned.
+    expect(el.classList.contains('focus-within:ml-auto')).toBe(true);
+    expect(el.classList.contains('group-hover/sidebar-group-label:ml-auto')).toBe(true);
+  });
+});
+
+describe('h-sidebar-group-action', () => {
+  it('applies base classes and data-slot', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-action', el);
+    expect(el.classList.contains('flex')).toBe(true);
+    expect(el.classList.contains('aspect-square')).toBe(true);
+    expect(el.classList.contains('shrink-0')).toBe(true);
+    expect(el.getAttribute('data-slot')).toBe('sidebar-group-action');
+  });
+
+  it('is not absolutely positioned', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-action', el);
+    expect(el.classList.contains('absolute')).toBe(false);
+    expect(el.classList.contains('top-3.5')).toBe(false);
+    expect(el.classList.contains('right-3')).toBe(false);
+  });
+
+  it('sets type=button on a button element', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-action', el);
+    expect(el.getAttribute('type')).toBe('button');
+  });
+
+  it('sets role=button on a non-button element', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-group-action', el);
+    expect(el.getAttribute('role')).toBe('button');
+  });
+});
+
+describe('h-sidebar-menu-action', () => {
+  it('uses a touch-safe autohide (pointer-fine, not md)', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-action', el, { modifiers: ['autohide'] });
+    expect(el.classList.contains('pointer-fine:opacity-0')).toBe(true);
+    expect(el.classList.contains('md:opacity-0')).toBe(false);
+    expect(el.classList.contains('group-hover/menu-item:opacity-100')).toBe(true);
+    expect(el.classList.contains('group-focus-within/menu-item:opacity-100')).toBe(true);
+  });
+
+  it('does not autohide without the modifier', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-action', el, { modifiers: [] });
+    expect(el.classList.contains('pointer-fine:opacity-0')).toBe(false);
+  });
+});
+
 describe('h-sidebar-menu', () => {
   it('applies base classes and data-slot', () => {
     const el = document.createElement('ul');

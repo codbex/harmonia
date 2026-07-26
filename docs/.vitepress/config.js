@@ -40,6 +40,7 @@ export default defineConfig({
           { text: 'Accordion', link: '/components/accordion' },
           { text: 'Alert', link: '/components/alert' },
           { text: 'Avatar', link: '/components/avatar' },
+          { text: 'Backdrop', link: '/components/backdrop' },
           { text: 'Badge', link: '/components/badge' },
           { text: 'Breadcrumb', link: '/components/breadcrumb' },
           { text: 'Bubble', link: '/components/bubble' },
@@ -191,7 +192,11 @@ export default defineConfig({
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-i18next.js`, type: 'text/javascript' }],
-    ['link', { href: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.css`, rel: 'stylesheet' }],
+    // harmonia.css is intentionally NOT loaded globally: its full ruleset clashes with
+    // VitePress's theme. Each live example loads it inside its own shadow root instead
+    // (docs/public/js/component-container.js), and that same file lifts Tailwind's
+    // document-scoped `@property --tw-*` registrations up to the page so the shadow
+    // examples' var(--tw-*)-driven utilities work.
     ['link', { href: `${basePath}fonts.css`, rel: 'stylesheet' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Harmonia' }],

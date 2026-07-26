@@ -103,6 +103,7 @@ This approach keeps theming lightweight, flexible, and easy to maintain.
 | --sidebar-secondary            | Secondary color used for sidebar elements.                                                  |
 | --sidebar-secondary-foreground | Foreground color for secondary sidebar elements.                                            |
 | --sidebar-border               | Border color used within the sidebar.                                                       |
+| --sidebar-ring                 | Color used for focus outlines within the sidebar.                                           |
 | --object-header                | Background color for object headers, toolbars, and tab bars.                                |
 | --object-header-foreground     | Foreground color used within object headers.                                                |
 | --table-header                 | Background color for table headers.                                                         |

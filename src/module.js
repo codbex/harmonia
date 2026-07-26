@@ -1,6 +1,7 @@
 import accordion from './components/accordion';
 import alert from './components/alert';
 import avatar from './components/avatar';
+import backdrop from './components/backdrop';
 import badge from './components/badge';
 import breadcrumb from './components/breadcrumb';
 import bubble from './components/bubble';
@@ -74,6 +75,7 @@ export {
   accordion as Accordion,
   alert as Alert,
   avatar as Avatar,
+  backdrop as Backdrop,
   badge as Badge,
   breadcrumb as Breadcrumb,
   bubble as Bubble,
@@ -140,6 +142,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(accordion);
   registerPlugin(alert);
   registerPlugin(avatar);
+  registerPlugin(backdrop);
   registerPlugin(badge);
   registerPlugin(breadcrumb);
   registerPlugin(bubble);

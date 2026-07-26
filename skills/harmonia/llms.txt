@@ -7,6 +7,7 @@
 - [Accordion](references/accordion.md): Organizes related content into expandable and collapsible sections, allowing users to reveal or hide information as needed while keeping the interface clean and compact.
 - [Alert](references/alert.md): Communicates important information to the user about a situation or task that requires attention.
 - [Avatar](references/avatar.md): Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic.
+- [Backdrop](references/backdrop.md): A full-screen overlay that dims the page and animates its content in and out.
 - [Badge](references/badge.md): Displays a short label used to convey the semantic status of an object.
 - [Breadcrumb](references/breadcrumb.md): Displays the current page's location within a navigational hierarchy, helping users understand where they are and navigate back to parent pages.
 - [Bubble](references/bubble.md): A chat message bubble with left and right alignment, semantic color variants, and optional previews for image, audio, file and link attachments.

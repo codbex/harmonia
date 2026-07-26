@@ -122,13 +122,16 @@ export default function (Alpine) {
       throw new Error(`${original} must be placed inside a sidebar group`);
     }
     el.classList.add(
+      'group/sidebar-group-label',
       'ring-sidebar-ring',
       'flex',
       'h-8',
       'shrink-0',
       'items-center',
+      'gap-1',
       'rounded-md',
       'px-2',
+      'has-[[data-slot=sidebar-group-actions]]:pr-1.5',
       'font-medium',
       'outline-hidden',
       'transition-[margin,opacity]',
@@ -181,32 +184,38 @@ export default function (Alpine) {
     }
   });
 
+  Alpine.directive('h-sidebar-group-actions', (el, { modifiers }) => {
+    el.classList.add('ml-auto', 'flex', 'items-center', 'gap-1', 'group-data-[collapsed=true]/sidebar:hidden');
+    if (modifiers.includes('autohide')) {
+      // Hide only for fine pointers (stays visible on touch); reveal on label hover or focus within.
+      // not-sr-only resets margin to 0, so re-assert ml-auto in the revealed states to keep the actions right-aligned.
+      el.classList.add('pointer-fine:sr-only', 'focus-within:not-sr-only', 'focus-within:ml-auto', 'group-hover/sidebar-group-label:not-sr-only', 'group-hover/sidebar-group-label:ml-auto');
+    }
+    el.setAttribute('data-slot', 'sidebar-group-actions');
+  });
+
   Alpine.directive('h-sidebar-group-action', (el) => {
     el.classList.add(
       'text-sidebar-foreground',
       'ring-sidebar-ring',
       'hover:bg-sidebar-secondary',
       'hover:text-sidebar-secondary-foreground',
-      'absolute',
-      'top-3.5',
-      'right-3',
+      'active:bg-sidebar-primary',
+      'active:text-sidebar-primary-foreground',
       'flex',
       'aspect-square',
       'w-5',
+      'shrink-0',
       'items-center',
       'justify-center',
-      'rounded-md',
+      'rounded-[30%]',
       'p-0',
       'outline-hidden',
       'transition-transform',
       'motion-reduce:transition-none',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       '[&>svg]:size-4',
-      '[&>svg]:shrink-0',
-      'after:absolute',
-      'after:-inset-2',
-      'md:after:hidden',
-      'group-data-[collapsed=true]/sidebar:hidden'
+      '[&>svg]:shrink-0'
     );
     if (el.tagName !== 'BUTTON') {
       el.setAttribute('role', 'button');
@@ -317,7 +326,7 @@ export default function (Alpine) {
     const sizes = {
       default: ['h-8', 'text-sm'],
       sm: ['h-7', 'text-xs'],
-      lg: ['h-12', 'text-sm', 'group-data-[collapsed=true]/sidebar:p-0!'],
+      lg: ['h-12', 'text-sm'],
     };
 
     function setSize(size) {
@@ -325,8 +334,6 @@ export default function (Alpine) {
         el.classList.add(...sizes[size]);
       }
     }
-
-    setSize(el.getAttribute('data-size') || 'default');
 
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-button');
 
@@ -353,10 +360,20 @@ export default function (Alpine) {
       if (el.getAttribute('data-logo') === 'true') {
         el.classList.add('[&>svg:first-child]:rounded-control', '[&>[data-slot=avatar]:first-child]:rounded-control', 'group-data-[collapsed=true]/sidebar:justify-center!');
         if (el.parentElement?.getAttribute('data-slot') !== 'sidebar-header') {
-          el.classList.add('pl-1', '[&>svg:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:text-xs', 'group-data-[collapsed=true]/sidebar:p-1');
+          el.classList.add('pl-1', 'group-data-[collapsed=true]/sidebar:p-1');
+          sizes.default.push('[&>[data-slot=avatar]:first-child]:text-xs', '[&>svg:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:size-6!');
+          sizes.sm.push('[&>[data-slot=avatar]:first-child]:text-xs', '[&>svg:first-child]:size-5.5!', '[&>[data-slot=avatar]:first-child]:size-5.5!');
+          sizes.lg.push(
+            '[&>svg:first-child]:size-10!',
+            '[&>[data-slot=avatar]:first-child]:size-10!',
+            'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!',
+            'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:text-xs'
+          );
         }
       }
     }
+
+    setSize(el.getAttribute('data-size') || 'default');
 
     if (menuItem && menuItem._h_sidebar_menu_item.collapsable) {
       if (el.hasAttribute('id')) {
@@ -399,19 +416,26 @@ export default function (Alpine) {
     el.classList.add(
       'text-sidebar-foreground',
       'ring-sidebar-ring',
+      'peer-data-[active=true]/menu-button:hover:border',
+      'peer-data-[active=true]/menu-button:hover:border-sidebar',
       'hover:bg-sidebar-secondary',
-      'active:bg-sidebar-secondary/70',
+      'peer-data-[active=true]/menu-button:focus-visible:border',
+      'peer-data-[active=true]/menu-button:focus-visible:border-sidebar',
+      'active:bg-sidebar-primary',
+      'active:text-sidebar-primary-foreground',
       'hover:text-sidebar-secondary-foreground',
       'peer-hover/menu-button:text-sidebar-secondary-foreground',
       'peer-active/menu-button:text-sidebar-primary-foreground',
       'peer-data-[active=true]/menu-button:text-sidebar-primary-foreground',
       'absolute',
-      'top-0.5',
+      'top-1/2',
+      '-translate-y-1/2',
       'right-0.5',
-      'bottom-0.5',
       'flex',
       'aspect-square',
-      'h-auto',
+      'h-full',
+      'max-h-7',
+      'peer-data-[size=sm]/menu-button:max-h-6',
       'items-center',
       'justify-center',
       'rounded-md',
@@ -422,13 +446,10 @@ export default function (Alpine) {
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       '[&>svg]:size-4',
       '[&>svg]:shrink-0',
-      'after:absolute',
-      'after:-inset-2',
-      'md:after:hidden',
       'group-data-[collapsed=true]/sidebar:hidden'
     );
     if (modifiers.includes('autohide')) {
-      el.classList.add('group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'aria-[expanded=true]:opacity-100', 'md:opacity-0');
+      el.classList.add('group-focus-within/menu-item:opacity-100', 'group-hover/menu-item:opacity-100', 'aria-[expanded=true]:opacity-100', 'pointer-fine:opacity-0');
     }
     if (el.tagName !== 'BUTTON') {
       el.setAttribute('role', 'button');

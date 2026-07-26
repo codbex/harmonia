@@ -60,6 +60,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Accordion | Organizes related content into expandable and collapsible sections, allowing users to reveal or hide information as needed while keeping the interface clean and compact. | [accordion](references/accordion.md) |
 | Alert | Communicates important information to the user about a situation or task that requires attention. | [alert](references/alert.md) |
 | Avatar | Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic. | [avatar](references/avatar.md) |
+| Backdrop | A full-screen overlay that dims the page and animates its content in and out. | [backdrop](references/backdrop.md) |
 | Badge | Displays a short label used to convey the semantic status of an object. | [badge](references/badge.md) |
 | Breadcrumb | Displays the current page's location within a navigational hierarchy, helping users understand where they are and navigate back to parent pages. | [breadcrumb](references/breadcrumb.md) |
 | Bubble | A chat message bubble with left and right alignment, semantic color variants, and optional previews for image, audio, file and link attachments. | [bubble](references/bubble.md) |

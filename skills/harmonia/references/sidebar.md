@@ -18,6 +18,7 @@ Use sidebars for main application navigation or other persistent content that be
 - `x-h-sidebar-content`
 - `x-h-sidebar-group`
 - `x-h-sidebar-group-label`
+- `x-h-sidebar-group-actions`
 - `x-h-sidebar-group-action`
 - `x-h-sidebar-group-content`
 - `x-h-sidebar-menu`
@@ -47,7 +48,7 @@ Use sidebars for main application navigation or other persistent content that be
 | Attribute   | Type                        | Required | Description                                                                                                                                                                                                          |
 | ----------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data-active | boolean                     | false    | Sets the menu button as active.                                                                                                                                                                                      |
-| data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button.                                                                                                                                                                                    |
+| data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button. Ignored when the sidebar is collapsed.                                                                                                                                             |
 | data-logo   | boolean                     | false    | When the sidebar is collapsed, removes the button padding and makes the icon or avatar fill the button. Use it on buttons that show a brand logo in the header or footer, or a user avatar elsewhere in the sidebar. |
 
 #### x-h-sidebar-header
@@ -83,11 +84,17 @@ Use sidebars for main application navigation or other persistent content that be
 | --------- | ------- | -------- | ------------------------------------------------------------------ |
 | collapsed | boolean | false    | Enables collapse/expand for the group content. Default is `false`. |
 
+#### x-h-sidebar-group-actions
+
+| Modifier | Description                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| autohide | The actions are hidden until the group label is hovered or a button inside them is focused. They stay visible on touch devices. |
+
 #### x-h-sidebar-menu-action
 
-| Modifier | Description                             |
-| -------- | --------------------------------------- |
-| autohide | The action will be shown only on hover. |
+| Modifier | Description                                                                                        |
+| -------- | -------------------------------------------------------------------------------------------------- |
+| autohide | The action is hidden until its menu item is hovered or focused. It stays visible on touch devices. |
 
 #### x-h-sidebar-menu-skeleton
 
@@ -514,6 +521,49 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
 </div>
 ```
 
+### Group actions
+
+A group label can carry one or more action buttons. Wrap them in `x-h-sidebar-group-actions` and place one `x-h-sidebar-group-action` button per action inside it. Each button needs its own accessible name, either an `aria-label` or an `sr-only` span. Group actions are not supported on a collapsable group label. Add the `autohide` modifier to keep the actions hidden until the group label is hovered or a button inside them is focused, while staying visible on touch devices.
+
+```html
+<div x-h-sidebar>
+  <div x-h-sidebar-content>
+    <div x-h-sidebar-group>
+      <div x-h-sidebar-group-label>
+        <span>Projects</span>
+        <div x-h-sidebar-group-actions.autohide>
+          <button x-h-sidebar-group-action aria-label="Add project">
+            <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+          </button>
+          <button x-h-sidebar-group-action aria-label="Sort projects">
+            <svg x-h-lucide role="presentation" data-lucide="arrow-up-down"></svg>
+          </button>
+          <button x-h-sidebar-group-action aria-label="More options">
+            <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
+          </button>
+        </div>
+      </div>
+      <div x-h-sidebar-group-content>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
+              <svg x-h-lucide role="presentation" data-lucide="folder"></svg>
+              <span>Harmonia</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <svg x-h-lucide role="presentation" data-lucide="folder"></svg>
+              <span>Website</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
 ### Full example
 
 ```html
@@ -531,9 +581,14 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
       <div x-h-sidebar-group>
         <div x-h-sidebar-group-label>
           <span>General</span>
-          <button x-h-sidebar-group-action aria-label="Add">
-            <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
-          </button>
+          <div x-h-sidebar-group-actions.autohide>
+            <button x-h-sidebar-group-action aria-label="Add">
+              <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+            </button>
+            <button x-h-sidebar-group-action aria-label="More">
+              <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
+            </button>
+          </div>
         </div>
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>

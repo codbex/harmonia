@@ -1,5 +1,25 @@
 # Changelog
 
+## v2.9.0
+
+A release that adds the new **Backdrop** component and reworks the Sidebar's group and menu actions, including a new `x-h-sidebar-group-actions` wrapper for multiple actions per group label. The one breaking change is in the Sidebar group actions, covered below.
+
+### New component: Backdrop
+
+- **Backdrop** (`x-h-backdrop`) - a full-screen scrim that dims the page and animates its content in and out, for use behind command palettes, custom modals, or any panel that should sit above the rest of the interface. Bind its `data-open` attribute to a boolean and the backdrop fades in and scales its content up when the value is true, then animates back out and hides itself when it is false. It provides only the dimmed layer and the show and hide animation, so you keep control of what it contains and of when it opens and closes, and its transitions honor `prefers-reduced-motion`.
+- **`x-h-backdrop-item`** marks each direct child that should animate, giving it the matching transition timing so its scale and fade stay in step with the scrim.
+
+### Sidebar
+
+- **Breaking: group action buttons must now be wrapped in `x-h-sidebar-group-actions`.** A `x-h-sidebar-group-action` can no longer be placed directly inside the group label. Wrap the button (or several buttons) in a new `x-h-sidebar-group-actions` element inside the label instead. The wrapper handles the right-alignment the button used to position itself, so a group label can now carry more than one action. To migrate, move each existing `x-h-sidebar-group-action` inside a `x-h-sidebar-group-actions` wrapper. Its `autohide` modifier keeps the actions hidden until the group label is hovered or a button inside them is focused, while leaving them visible on touch devices.
+- **`autohide` is now touch-aware.** Both `x-h-sidebar-group-actions` and `x-h-sidebar-menu-action` reveal their actions only for fine pointers under `autohide`, so the actions stay visible on touch devices instead of being permanently hidden. The menu action was also recentered vertically and now tracks the menu button height (including the `sm` size).
+- **`data-size` is ignored while collapsed.** A menu button's `data-size` (`default`, `sm`, `lg`) now applies only in the expanded sidebar, so a large logo button collapses to the same compact icon as the rest.
+- **New `--sidebar-ring` theme variable** sets the focus outline color used within the sidebar (light and dark), joining the other `--sidebar-*` tokens in the theme generator.
+
+### List
+
+- **List headers and items now round correctly at the top and bottom.** The top and bottom corner rounding is now applied to the first and last child of the listbox directly, so a leading `x-h-list-header` gets the rounded top and a trailing item gets the rounded bottom, matching the container's corners in more layouts.
+
 ## v2.8.0
 
 A release that expands the utility classes with single-side edge fades and grid column-line placement. The one breaking change is the mask utilities rename covered below.

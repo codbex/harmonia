@@ -14,9 +14,7 @@ export default function (Alpine) {
       ...disabledControlClasses,
       'disabled:cursor-not-allowed',
       'focus-ring',
-      ...invalidControlClasses,
-      '[&>ul:first-child>*:first-child]:rounded-t-control',
-      '[&>ul:last-child>*:last-child]:rounded-b-control'
+      ...invalidControlClasses
     );
     el.setAttribute('data-slot', 'listbox');
     el.setAttribute('role', 'listbox');
@@ -107,7 +105,18 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-list-header', (el, { original }, { Alpine }) => {
-    el.classList.add('font-medium', 'flex', 'items-center', 'p-2', 'gap-2', 'align-middle', 'bg-table-header', 'text-table-header-foreground');
+    el.classList.add(
+      'font-medium',
+      'flex',
+      'items-center',
+      'p-2',
+      'gap-2',
+      'align-middle',
+      'bg-table-header',
+      'text-table-header-foreground',
+      '[[data-slot=listbox]_&:first-of-type]:rounded-t-control',
+      '[[data-slot=listbox]_&:last-of-type]:rounded-b-control'
+    );
     el.setAttribute('role', 'presentation');
     el.setAttribute('data-slot', 'list-header');
     const list = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'list');
@@ -138,7 +147,9 @@ export default function (Alpine) {
         '[&[aria-selected=true]:hover]:bg-primary-hover',
         '[&[aria-selected=true]:hover]:text-primary-foreground',
         '[&[aria-selected=true]:focus]:bg-primary-hover',
-        '[&[aria-selected=true]:focus]:text-primary-foreground'
+        '[&[aria-selected=true]:focus]:text-primary-foreground',
+        '[[data-slot=listbox]_&:first-of-type]:rounded-t-control',
+        '[[data-slot=listbox]_&:last-of-type]:rounded-b-control'
       );
       el.setAttribute('tabindex', '0');
     }
