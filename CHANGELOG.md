@@ -2,63 +2,56 @@
 
 ## v2.9.0
 
-A release that adds the new **Backdrop**, **Bottom Navigation** and **Floating Action Button** components, rebuilds the **Tree** around a proper row, reworks the Sidebar's group and menu actions, including a new `x-h-sidebar-group-actions` wrapper for multiple actions per group label, and fixes how every component treats `aria-disabled`. The five breaking changes are the Tree rewrite, the Sidebar group actions, the `aria-disabled` keyboard behaviour, the removal of `data-disabled` from the Menu and the Select, and the removal of `data-label` in favor of `aria-label`, all covered below.
+A release that adds the new **Backdrop**, **Bottom Navigation**, **Floating Action Button** and **One-Time Password Input** components, rebuilds the **Tree** around a proper row, reworks the Sidebar's group and menu actions, and fixes how every component treats `aria-disabled`. The five breaking changes are the Tree rewrite, the Sidebar group actions, the `aria-disabled` keyboard behaviour, the removal of `data-disabled` from the Menu and the Select, and the removal of `data-label` in favor of `aria-label`, all covered below.
 
 ### New component: Bottom Navigation
 
-- **Bottom Navigation** (`x-h-bottom-nav`) - a bar of top-level destinations along the bottom of the screen, each an icon over a short label, for the primary navigation of an application on a phone. It is built from five directives - the `x-h-bottom-nav` bar itself (a `nav`), a `x-h-bottom-nav-list` (a `ul`), one `x-h-bottom-nav-item` (a `li`) per destination, a `x-h-bottom-nav-link` (an `a` or a `button`) as the tap target, and a `x-h-bottom-nav-label` for the text under the icon.
-- **One value drives the whole bar.** Give the bar an expression naming the current destination (`x-h-bottom-nav="tab"`) and each item its own value (`x-h-bottom-nav-item="'home'"`). The component compares the two, marks the matching destination with `data-active` and `aria-current="page"`, and writes the item's value back when it is tapped, so the same variable drives both the highlight and the navigation. A tapped destination also dispatches a bubbling `change` event carrying its value. Leave both expressions out and the bar makes no decisions, so `data-active` can come from a router instead.
-- **Positioning is opt-in.** Without `data-position` the bar stays in normal flow, so it can be the last row of an application layout. `data-position="sticky"` docks it to the bottom while keeping its place in the layout, so it reserves its own height and scrolling to the end of the content reveals the last row instead of leaving it trapped under the bar. It also stays put inside a scrollable panel. `data-position="fixed"` docks it by lifting it out of flow, for a bar that has to overlay the content or escape an ancestor that would clip it. Both docking modes reserve the area a phone keeps free for its home indicator.
-- **`data-floating="true"`** turns the bar into a detached card, trading the single top border for a full border, rounded corners and an elevation, the same floating treatment the toolbar and tab bar have. It is a visual treatment only, setting no position, offset or spacing of its own, so where a floating card sits and how far it is lifted off the edges it floats above are entirely yours to set. A floating bar fades as well as slides when it hides on scroll, since the component cannot know the offset it has to clear.
-- **`data-hide-on-scroll`** slides the bar out of view while the content scrolls down and brings it back on the first scroll up. Use `true` to follow the page or name the scrolling element with an expression (`data-hide-on-scroll="$refs.panel"`), which means it does not have to be an ancestor of the bar. The bar always returns at the top of the scroll range, and while it is out of view it leaves the tab order and the accessibility tree so nobody is sent to a destination they cannot see.
-- **`data-labels="false"`** hides the labels for an icon-only bar. Destinations then need an `aria-label` or `aria-labelledby`, and the component logs an error when one is missing. The bar itself requires an `aria-label`, since it is a navigation landmark.
-- Each destination anchors a badge indicator, so an unread count or a dot can sit on its icon.
-- **New `--bottom-nav-height` theme variable and `h-bottom-nav` utility class.** The bar sizes itself with the class, and the variable is there for the layout around it. Read `var(--bottom-nav-height)` to pad or offset anything that has to clear the bar, and the value stays right across themes and versions instead of being hard coded. Override the variable on `:root`, or on a wrapper for a single bar, to change the height.
+- **Bottom Navigation** (`x-h-bottom-nav`) - a bar of top-level destinations along the bottom of the screen, for the primary navigation of an application on a phone.
+- **New `--bottom-nav-height` theme variable and `h-bottom-nav` utility class**, so the layout around the bar can clear it without hard coding the value.
 
 ### New component: Floating Action Button
 
-- **Floating Action Button** (`x-h-fab`) - a prominent, elevated button for the single most important action of a screen. It comes in three icon-only sizes (`sm`, `default` and `lg`) plus an `extended` pill that pairs the icon with a visible label, scaling its icon with each step up, and accepts the same `data-variant` values as the regular button.
-- **`data-hide-on-scroll="true"`** slides the button out of view while the content scrolls down and brings it back on the first scroll up, so it stays out of the way while people read. Name the scrolling element with the directive expression (`x-h-fab="$refs.panel"`), which means it does not have to be an ancestor of the button, or leave the expression out to follow the page. The button always returns at the top and at the bottom of the scroll range, and while it is out of view it also leaves the tab order and the accessibility tree so nobody is sent to a button they cannot see.
-- **`data-shape="round"`** makes the button fully round, turning the icon-only sizes into circles and giving the `extended` size stadium ends.
-- **Positioning is opt-in.** Without `data-position` the button stays in normal flow, so it can be placed by the surrounding layout, for example absolutely inside a scrollable panel or a card. Set `data-position` to `bottom-right` or `bottom-left` to pin it to that corner of the viewport, 1rem from each edge, above page content but below dialogs, sheets and notifications. Every attribute is reactive, so a bound `data-position` moves the button between corners at runtime.
-- The icon-only sizes log an error when neither `aria-label` nor `aria-labelledby` is set. The `extended` size has a visible label and needs neither.
+- **Floating Action Button** (`x-h-fab`) - a prominent, elevated button for the single most important action of a screen.
 
 ### New component: Backdrop
 
-- **Backdrop** (`x-h-backdrop`) - a full-screen scrim that dims the page and animates its content in and out, for use behind command palettes, custom modals, or any panel that should sit above the rest of the interface. Bind its `data-open` attribute to a boolean and the backdrop fades in and scales its content up when the value is true, then animates back out and hides itself when it is false. It provides only the dimmed layer and the show and hide animation, so you keep control of what it contains and of when it opens and closes, and its transitions honor `prefers-reduced-motion`.
-- **`x-h-backdrop-item`** marks each direct child that should animate, giving it the matching transition timing so its scale and fade stay in step with the scrim.
+- **Backdrop** (`x-h-backdrop`) - a full-screen scrim that dims the page and animates its content in and out, for use behind command palettes, custom modals, or any panel that should sit above the rest of the interface.
+
+### New component: One-Time Password Input
+
+- **One-Time Password Input** (`x-h-otp`) - turns a native input into one or more groups of single-character cells for entering a verification code or PIN.
 
 ### Accessibility: `aria-disabled` no longer hides an item from the keyboard
 
-- **Breaking: an `aria-disabled` item now stays in the arrow order.** Listbox options, select options, menu items, submenu triggers, menubar triggers, tabs and tree items marked `aria-disabled="true"` are reached by the arrow keys, `Home`, `End` and typeahead, can hold the roving tab stop, and are announced as unavailable by assistive technology. They still cannot be selected, activated, expanded or collapsed. Previously they were skipped, which hid them from screen reader users, the opposite of what the attribute is for. The native `disabled` attribute is unchanged and still removes an element from navigation, so reach for it when the item should be hidden rather than announced. The date picker's calendar already behaved this way.
-- **Descendants of a disabled tree item are reachable too.** They are dimmed but still on screen, so skipping them hid them the same way. None of them can be activated, and a click on one does nothing.
-- **Breaking: `data-disabled` is gone from the Menu and the Select.** `x-h-menu-item`, `x-h-menu-sub` and `x-h-select-option` now read `aria-disabled="true"` like every other component. `data-disabled` had no meaning for assistive technology, so an option marked with it was announced as perfectly usable. To migrate, rename the attribute. `data-disabled` is unchanged on `x-h-input-group-addon` and `x-h-field`, where it is a styling hook on markup with no keyboard navigation of its own.
-- **A disabled submenu trigger is now genuinely inert.** `x-h-menu-sub` never checked its own disabled state, relying on `pointer-events-none` and the arrow filter to keep it unreachable. It is now announced as a submenu that cannot be opened, and neither hover, click, `ArrowRight` nor `Enter` opens it.
-- **Fixed: `Enter` and `Space` could activate a disabled menu item.** The menu dispatched a synthetic click without checking, and `pointer-events-none` does not stop one. Activating a disabled item is now a complete no-op, and it no longer closes the menu.
-- **Fixed: an `aria-disabled` tab was fully clickable.** Tabs never carried the disabled styling the other components have. They are now dimmed and pointer-inert, and a click or `Enter` no longer reaches the author's own selection handler.
+- **Breaking: an `aria-disabled` item now stays in the arrow order.** Listbox options, select options, menu items, submenu triggers, menubar triggers, tabs and tree items marked `aria-disabled="true"` are reached by the arrow keys, `Home`, `End` and typeahead, can hold the roving tab stop, and are announced as unavailable. They still cannot be selected, activated, expanded or collapsed. Previously they were skipped, which hid them from screen reader users. Use the native `disabled` attribute, which is unchanged, when an item should be hidden rather than announced.
+- Descendants of a disabled tree item are reachable too, and none of them can be activated.
+- **Breaking: `data-disabled` is gone from the Menu and the Select.** `x-h-menu-item`, `x-h-menu-sub` and `x-h-select-option` now read `aria-disabled="true"` like every other component. To migrate, rename the attribute. `data-disabled` is unchanged on `x-h-input-group-addon` and `x-h-field`, where it is a styling hook only.
+- **A disabled submenu trigger is now genuinely inert.** Neither hover, click, `ArrowRight` nor `Enter` opens it.
+- **Fixed: `Enter` and `Space` could activate a disabled menu item.** Activating one is now a complete no-op, and it no longer closes the menu.
+- **Fixed: an `aria-disabled` tab was fully clickable.** Tabs are now dimmed and pointer-inert, and a click or `Enter` no longer reaches the author's own selection handler.
 
 ### Rating
 
-- **Breaking: the Rating is locked with `aria-disabled="true"`.** The `disabled`, `data-disabled` and `data-readonly` attributes are gone, and the separate read-only state with them. ARIA expresses the state exactly, so the author's markup is now the single source of truth rather than a private attribute the component translated. It requires the explicit `"true"` value, which also fixes `data-readonly="false"` having made a rating read-only. Use `aria-disabled` for a display-only score such as an average: `aria-readonly` is not a supported property of the `slider` role, so no browser announces it, and a lock nobody hears is worse than none.
-- **Breaking: a locked Rating stays a focusable slider.** It used to become `role="img"` with every value attribute stripped and no tab stop, so a keyboard user could not reach it, and a disabled one carried the meaningless `role="img"` plus `aria-disabled` pairing. It now keeps `role="slider"`, its tab stop and its `aria-valuenow` / `aria-valuetext` in every state, and only refuses input.
-- **Fixed: a locked Rating destroyed the accessible name.** The score was written into `aria-label` on every render, so `aria-label="Average rating"` was overwritten and announced only as "4.5 of 5 stars". Worse, with `aria-labelledby` the score was never announced at all, since the referenced element still won the name. The score now stays in `aria-valuetext` and the name is never touched.
-- **New: `data-value-label` makes the announced score translatable.** It is a template with `{value}` and `{max}` substituted, defaulting to `{value} of {max} stars`, matching the OTP's `data-cell-label`. A template rather than separate words, so a translation can reorder the numbers.
+- **Breaking: the Rating is locked with `aria-disabled="true"`.** The `disabled`, `data-disabled` and `data-readonly` attributes are gone, and the separate read-only state with them. To migrate, replace them with `aria-disabled="true"`, which requires the explicit value. This also fixes `data-readonly="false"` having made a rating read-only.
+- **Breaking: a locked Rating stays a focusable slider.** It used to become `role="img"` with every value attribute stripped and no tab stop, so a keyboard user could not reach it. It now keeps `role="slider"`, its tab stop and its `aria-valuenow` / `aria-valuetext` in every state, and only refuses input.
+- **Fixed: a locked Rating destroyed the accessible name.** The score was written into `aria-label` on every render, overwriting the author's own name, and with `aria-labelledby` the score was never announced at all. The score now stays in `aria-valuetext` and the name is never touched.
+- **New: `data-value-label` makes the announced score translatable.** `{value}` and `{max}` are substituted, defaulting to `{value} of {max} stars`.
 
 ### Translatable generated text
 
-Strings that embed a number in English prose used to be hardcoded, while the static labels beside them were already overridable. Each is now a template in the style of the OTP's `data-cell-label`, with `{token}` placeholders substituted, so a translation can reorder the numbers rather than only replace words around them.
+Strings that embed a number in English prose used to be hardcoded. Each is now a template with `{token}` placeholders substituted, so a translation can reorder the numbers rather than only replace words around them.
 
-- **Carousel** - `data-item-label` on `x-h-carousel` names each slide. `{index}` and `{count}` are substituted, defaulting to `{index} of {count}`. An `aria-label` written on the slide itself still wins.
-- **Bubble** - `data-valuetext-label` on `x-h-bubble-audio` sets the position announced on the seek slider. `{current}` and `{duration}` are substituted, defaulting to `{current} of {duration}`. The visible `0:25 / 1:40` readout is unchanged, since a slash carries no words.
-- **Calendar** - `data-more-label` sets the month-view overflow button, whose visible text is also its accessible name. `{count}` is substituted, defaulting to `+{count} more`.
-- **Charts** - a new `seriesLabel` config key names a series that has no `name` of its own, `{index}` substituted, defaulting to `Series {index}`. A new `tableLabels` key sets the column headers of the hidden data table screen readers read, replacing the hardcoded `Category`, `Segment` and `Value`. Both are config keys rather than attributes, matching how every other chart option is set.
+- **Carousel** - `data-item-label` names each slide. `{index}` and `{count}` are substituted, defaulting to `{index} of {count}`.
+- **Bubble** - `data-valuetext-label` sets the position announced on the audio seek slider. `{current}` and `{duration}` are substituted, defaulting to `{current} of {duration}`.
+- **Calendar** - `data-more-label` sets the month-view overflow button. `{count}` is substituted, defaulting to `+{count} more`.
+- **Charts** - a new `seriesLabel` config key names a series that has no `name` of its own, defaulting to `Series {index}`. A new `tableLabels` key sets the column headers of the hidden data table, replacing the hardcoded `Category`, `Segment` and `Value`.
 
 ### Accessible names: `data-label` removed where `aria-label` already works
 
-- **Breaking: `data-label` is gone from the Rating, the Carousel, the carousel indicators, the reactions group and the dual Range.** Each of these directives sits on an element the author writes, so `aria-label` (or `aria-labelledby`) could always be set on it directly and `data-label` was a second, redundant way to say the same thing. Every default name is unchanged, so a component with no name of its own still announces as "Rating", "Carousel", "Choose slide", "Reactions" or "Range". To migrate, rename the attribute to `aria-label`.
-- **`data-label` stays where the element is generated.** A single Range names its handle with `data-label`, and the dual Range its two handles with `data-min-label` / `data-max-label`, because those handles are created by the directive and markup cannot reach them. On a dual Range `data-label` no longer names the group, so move that one to `aria-label`.
-- **Breaking: the audio seek slider is named with `data-seek-label`.** `x-h-bubble-audio` generates its own seek track, so the attribute stays, but it was called `data-label` while every sibling was already `data-play-label` / `data-pause-label`. Rename it to `data-seek-label`.
-- **Fixed: the Carousel ignored `aria-labelledby`.** It checked only for `aria-label` before applying its default, so naming a carousel with a reference to a visible heading was silently overwritten by "Carousel". It now honors either attribute, like every other component.
+- **Breaking: `data-label` is gone from the Rating, the Carousel, the carousel indicators, the reactions group and the dual Range.** Each sits on an element the author writes, so `aria-label` could always be set on it directly. To migrate, rename the attribute to `aria-label`. Every default name is unchanged.
+- **`data-label` stays where the element is generated**, for the single Range's handle and the dual Range's `data-min-label` / `data-max-label`. On a dual Range `data-label` no longer names the group, so move that one to `aria-label`.
+- **Breaking: the audio seek slider is named with `data-seek-label`**, matching its `data-play-label` / `data-pause-label` siblings. Rename it from `data-label`.
+- **Fixed: the Carousel ignored `aria-labelledby`**, overwriting it with the default name. It now honors either attribute.
 
 ### Tree
 
@@ -85,35 +78,34 @@ Strings that embed a number in English prose used to be hardcoded, while the sta
 </li>
 ```
 
-- **Rows align across the whole tree.** Every row starts with a chevron, kept as an invisible spacer on items without children, so chevrons, checkboxes, icons and labels line up on branch and leaf rows alike.
-- **Items detect their own children.** The `expanded` modifier is gone. An item finds its subtree in the DOM and keeps watching, so one added or removed by `x-if` or `x-for` updates the chevron and `aria-expanded` on its own, and a leaf never reports itself as collapsible. The expression now carries only the expanded state, where a literal `true` sets the initial value and any other expression is read and written back.
-- **Nested items are indented.** A nested `x-h-tree.sub` insets its items, and `data-line="true"` adds a line down its left side that connects them, aligned with the chevron of the item it belongs to.
-- **New: `x-h-tree-actions`** holds one or more buttons at the end of a row. Clicks inside it never reach the row, so an action never expands or collapses the item. Its `autohide` modifier reveals the buttons only on hover, focus or selection, while keeping them reachable by the keyboard.
-- **New: `x-h-tree-action`** is the icon button to put inside it, including as a dropdown menu trigger. It takes the row's colour at rest and its own on hover, and the row drops its highlight in return. It needs an `aria-label` or `aria-labelledby` and logs an error without one.
-- **New: `x-h-tree-indicator`** marks a row's status at its right edge, as a colour dot with `data-dot` or as a short badge such as `M` or `A`, in the four indicator colours. Both forms share a column, so dots and letters line up.
-- **New: a `tree-item-click` event**, dispatched on an item by click, `Enter` or `Space`, carrying its expanded state and depth, and bubbling to the tree. With `expand()`, `collapse()` and `toggle()` on the item state, it is how selection is driven. The tree keeps no selection model of its own and leaves `aria-selected` to you.
-- **New keyboard behaviour.** Typing letters moves focus to the next item whose label starts with what was typed. `Space` toggles the focused row's checkbox when it has one and otherwise activates the item, while `Enter` always activates.
+- **Breaking: the `expanded` modifier is gone.** Items now detect their own children, so one added or removed by `x-if` or `x-for` updates the chevron and `aria-expanded` on its own. The expression carries only the expanded state.
+- **Rows align across the whole tree**, with chevrons, checkboxes, icons and labels lining up on branch and leaf rows alike.
+- **Nested items are indented**, and `data-line="true"` on a nested `x-h-tree.sub` adds a connecting line down its left side.
+- **New: `x-h-tree-actions`** holds one or more buttons at the end of a row, with an `autohide` modifier. **`x-h-tree-action`** is the icon button to put inside it.
+- **New: `x-h-tree-indicator`** marks a row's status at its right edge, as a colour dot or a short badge.
+- **New: a `tree-item-click` event**, dispatched on an item by click, `Enter` or `Space` and bubbling to the tree. With `expand()`, `collapse()` and `toggle()` on the item state, it is how selection is driven. The tree keeps no selection model of its own.
+- **New keyboard behaviour.** Typing letters moves focus to the next matching item. `Space` toggles the focused row's checkbox when it has one and otherwise activates the item, while `Enter` always activates.
 - **Checkboxes are a size smaller inside a tree**, matching the density of a row.
 
 ### Sidebar
 
-- **Breaking: group action buttons must now be wrapped in `x-h-sidebar-group-actions`.** A `x-h-sidebar-group-action` can no longer be placed directly inside the group label. Wrap the button (or several buttons) in a new `x-h-sidebar-group-actions` element inside the label instead. The wrapper handles the right-alignment the button used to position itself, so a group label can now carry more than one action. To migrate, move each existing `x-h-sidebar-group-action` inside a `x-h-sidebar-group-actions` wrapper. Its `autohide` modifier keeps the actions hidden until the group label is hovered or a button inside them is focused, while leaving them visible on touch devices.
-- **`autohide` is now touch-aware.** Both `x-h-sidebar-group-actions` and `x-h-sidebar-menu-action` reveal their actions only for fine pointers under `autohide`, so the actions stay visible on touch devices instead of being permanently hidden. The menu action was also recentered vertically and now tracks the menu button height (including the `sm` size).
-- **`data-size` is ignored while collapsed.** A menu button's `data-size` (`default`, `sm`, `lg`) now applies only in the expanded sidebar, so a large logo button collapses to the same compact icon as the rest.
+- **Breaking: group action buttons must now be wrapped in `x-h-sidebar-group-actions`.** To migrate, move each existing `x-h-sidebar-group-action` inside a `x-h-sidebar-group-actions` wrapper in the group label. A group label can now carry more than one action.
+- **`autohide` is now touch-aware.** Both `x-h-sidebar-group-actions` and `x-h-sidebar-menu-action` reveal their actions only for fine pointers, so they stay visible on touch devices instead of being permanently hidden. The menu action was also recentered vertically and now tracks the menu button height.
+- **`data-size` is ignored while collapsed**, so a large logo button collapses to the same compact icon as the rest.
 - **New `--sidebar-ring` theme variable** sets the focus outline color used within the sidebar (light and dark), joining the other `--sidebar-*` tokens in the theme generator.
 
 ### Menu
 
-- **Disabling an item requires the explicit `"true"` value.** `x-h-menu-item` and `x-h-menu-sub` previously treated their disabled attribute as set whenever it was present, so a `"false"` value dimmed the item and dropped it from the arrow order. Both the behaviour and the styling now key on `"true"`, matching every other component. The attribute itself is now `aria-disabled`, covered above.
+- **Disabling an item requires the explicit `"true"` value.** `x-h-menu-item` and `x-h-menu-sub` previously treated the attribute as set whenever it was present, so a `"false"` value still disabled the item. The attribute itself is now `aria-disabled`, covered above.
 
 ### List
 
-- **List headers and items now round correctly at the top and bottom.** The top and bottom corner rounding is now applied to the first and last child of the listbox directly, so a leading `x-h-list-header` gets the rounded top and a trailing item gets the rounded bottom, matching the container's corners in more layouts.
-- **The listbox is now a single tab stop.** `Tab` moves into the listbox and then past it, and the arrow keys move between the options inside, instead of every option being its own tab stop. Focus starts on the selected option, or on the first one when nothing is selected.
-- **New: options can be disabled with `aria-disabled="true"`.** A disabled option is dimmed and cannot be selected by click or `Enter`, but the arrow keys, `Home`, `End` and typeahead still reach it so it stays announced. The explicit `"true"` value is required, so an attribute bound to a false expression leaves the option usable.
-- **New: typeahead.** Typing a character moves focus to the next option whose label starts with it, and typing the same character again moves to the following match.
+- **List headers and items now round correctly at the top and bottom**, matching the container's corners in more layouts.
+- **Breaking: the listbox is now a single tab stop.** `Tab` moves into the listbox and then past it, and the arrow keys move between the options inside, instead of every option being its own tab stop. Focus starts on the selected option, or on the first one when nothing is selected.
+- **New: options can be disabled with `aria-disabled="true"`.** A disabled option cannot be selected, but the arrow keys, `Home`, `End` and typeahead still reach it.
+- **New: typeahead.** Typing a character moves focus to the next option whose label starts with it.
 - **`Home` and `End` no longer scroll the page** while they move focus, and `PageUp` and `PageDown` now act as aliases for them instead of doing nothing.
-- **Arrow keys cross group boundaries reliably.** Navigation now walks the options themselves rather than DOM siblings, so moving between two `x-h-list` groups works with any markup between them, and focus can no longer land on a group header.
+- **Arrow keys cross group boundaries reliably**, and focus can no longer land on a group header.
 
 ## v2.8.0
 
