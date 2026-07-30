@@ -11,26 +11,30 @@
           <div x-h-toolbar-title>Warehouses</div>
         </div>
         <div class="flex-1 overflow-auto p-2">
-          <ul x-h-tree>
-            <li x-h-tree-item>
-              <button x-h-tree-button @click="pick(null)">
+          <!-- One listener on the tree rather than a click per row: Enter and
+               Space activate an item without dispatching a DOM click, so only
+               tree-item-click covers the keyboard as well as the mouse. -->
+          <ul x-h-tree aria-label="Warehouses" @tree-item-click="pick($event.target.dataset.warehouse || null, $event.target.dataset.category || null)">
+            <li x-h-tree-item :aria-selected="!warehouse">
+              <div x-h-tree-row>
                 <svg x-h-lucide role="presentation" data-lucide="warehouse"></svg>
-                <span>All warehouses</span>
-              </button>
+                <span x-h-tree-label>All warehouses</span>
+              </div>
             </li>
             <template x-for="node in tree" :key="node.name">
-              <li x-h-tree-item.expanded="true">
-                <button x-h-tree-button :data-indicator="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'negative' : 'positive'" @click="pick(node.name)">
+              <li x-h-tree-item="true" :data-warehouse="node.name" :aria-selected="warehouse === node.name && !category">
+                <div x-h-tree-row>
                   <svg x-h-lucide role="presentation" data-lucide="warehouse"></svg>
-                  <span x-text="node.name"></span>
-                </button>
-                <ul x-h-tree.sub data-border="true">
+                  <span x-h-tree-label x-text="node.name"></span>
+                  <span x-h-tree-indicator data-dot :data-indicator="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'negative' : 'positive'"></span>
+                </div>
+                <ul x-h-tree.sub>
                   <template x-for="categoryName in node.categories" :key="categoryName">
-                    <li x-h-tree-item>
-                      <button x-h-tree-button @click="pick(node.name, categoryName)">
+                    <li x-h-tree-item :data-warehouse="node.name" :data-category="categoryName" :aria-selected="warehouse === node.name && category === categoryName">
+                      <div x-h-tree-row>
                         <svg x-h-lucide role="presentation" data-lucide="box"></svg>
-                        <span x-text="categoryName"></span>
-                      </button>
+                        <span x-h-tree-label x-text="categoryName"></span>
+                      </div>
                     </li>
                   </template>
                 </ul>

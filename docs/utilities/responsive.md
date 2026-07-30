@@ -59,7 +59,7 @@ Below a width of 400px the container stacks its items vertically with a larger g
   >
     <button x-h-button data-variant="primary">Save</button>
     <button x-h-button data-variant="outline">Cancel</button>
-    <button x-h-button data-variant="ghost">Reset</button>
+    <button x-h-button data-variant="transparent">Reset</button>
   </div>
 </div>
 ```

@@ -416,8 +416,6 @@ export default function (Alpine) {
     el.classList.add(
       'text-sidebar-foreground',
       'ring-sidebar-ring',
-      'peer-data-[active=true]/menu-button:hover:border',
-      'peer-data-[active=true]/menu-button:hover:border-sidebar',
       'hover:bg-sidebar-secondary',
       'peer-data-[active=true]/menu-button:focus-visible:border',
       'peer-data-[active=true]/menu-button:focus-visible:border-sidebar',

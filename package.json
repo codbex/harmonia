@@ -10,7 +10,14 @@
   "main": "dist/harmonia.min.js",
   "module": "dist/harmonia.esm.min.js",
   "unpkg": "dist/harmonia.min.js",
-  "exports": "./dist/harmonia.esm.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/harmonia.esm.min.js",
+      "default": "./dist/harmonia.min.js"
+    },
+    "./dist/harmonia.css": "./dist/harmonia.css",
+    "./package.json": "./package.json"
+  },
   "keywords": [],
   "author": "StanGenchev",
   "license": "MIT",

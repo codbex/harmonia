@@ -1,7 +1,9 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { isDisabled } from '../common/disabled';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronRight, createSvg } from './../common/icons';
+import { getFirstChar, isPrintableCharacter } from './../common/typeahead';
 export default function (Alpine) {
   Alpine.directive('h-menu-trigger', (el, { modifiers }) => {
     el._h_menu_trigger = {
@@ -139,16 +141,6 @@ export default function (Alpine) {
 
     el._menu = { close };
 
-    function isPrintableCharacter(str) {
-      return str.length === 1 && /\S/.test(str);
-    }
-
-    function getFirstChar(text) {
-      const clean = text.replaceAll('\n', '').trim();
-      if (clean) return clean[0].toLowerCase();
-      return '';
-    }
-
     function findMatching(str, items) {
       for (let i = 0; i < items.length; i++) {
         if (getFirstChar(items[i].textContent).startsWith(str.toLowerCase())) {
@@ -157,6 +149,28 @@ export default function (Alpine) {
         }
       }
       return false;
+    }
+
+    // Every item is reachable, disabled ones included. aria-disabled announces
+    // the item as unavailable while leaving it focusable, so passing over it
+    // would hide it from the very users it is meant to inform. Activation is
+    // guarded instead, on the keys and on the item itself.
+    function getFocusableItems() {
+      return Array.from(el.querySelectorAll(':scope > [role^=menuitem]'));
+    }
+
+    // The focused item is the one Alpine's focus handlers moved to tabindex 0.
+    function moveFocus(offset) {
+      const items = getFocusableItems();
+      if (!items.length) return;
+      const current = items.findIndex((item) => item.getAttribute('tabindex') === '0');
+      // With nothing focused yet, stepping down starts at the first item and
+      // stepping up at the last.
+      if (current === -1) {
+        items[offset > 0 ? 0 : items.length - 1].focus();
+        return;
+      }
+      items[(current + offset + items.length) % items.length].focus();
     }
 
     function onClick(event) {
@@ -170,7 +184,6 @@ export default function (Alpine) {
 
     function onKeyDown(event) {
       if (!el.pauseKeyEvents) {
-        let menuitem;
         switch (event.key) {
           case 'Left':
           case 'ArrowLeft':
@@ -196,13 +209,18 @@ export default function (Alpine) {
             }
             close(undefined, true);
             break;
-          case 'Tab':
           case ' ':
-          case 'Enter':
-            if (event.key !== 'Tab') {
-              event.preventDefault();
-              event.target.click();
+          case 'Enter': {
+            event.preventDefault();
+            if (isDisabled(event.target.closest('[role^=menuitem]'))) break;
+            event.target.click();
+            close();
+            if (isSubmenu) {
+              menuSubItem._menu_sub.closeTree();
             }
+            break;
+          }
+          case 'Tab':
             close();
             if (isSubmenu) {
               menuSubItem._menu_sub.closeTree();
@@ -211,47 +229,34 @@ export default function (Alpine) {
           case 'Down':
           case 'ArrowDown':
             event.preventDefault();
-            menuitem = el.querySelector(':scope > [role^=menuitem][tabIndex="0"] ~ [role^=menuitem][tabIndex="-1"]');
-            if (!menuitem) menuitem = el.querySelector('[role^=menuitem][tabIndex="-1"]');
-            if (menuitem) {
-              menuitem.focus();
-            }
+            moveFocus(1);
             break;
           case 'Up':
-          case 'ArrowUp': {
+          case 'ArrowUp':
             event.preventDefault();
-            let menuitems = el.querySelectorAll(':scope > [role^=menuitem][tabIndex="-1"]:has(~ [role^=menuitem][tabIndex="0"])');
-            if (menuitems.length) {
-              menuitem = menuitems[menuitems.length - 1];
-            } else {
-              menuitem = el.querySelector(':scope > [role^=menuitem][tabIndex="-1"]:last-of-type');
-            }
-            if (menuitem) {
-              menuitem.focus();
-            }
+            moveFocus(-1);
+            break;
+          case 'Home':
+          case 'PageUp': {
+            event.preventDefault();
+            const items = getFocusableItems();
+            if (items.length) items[0].focus();
             break;
           }
-          case 'Home':
-          case 'PageUp':
-            event.preventDefault();
-            menuitem = el.querySelector(':scope > [role^=menuitem][tabIndex="-1"]:first-of-type');
-            if (menuitem) {
-              menuitem.focus();
-            }
-            break;
           case 'End':
-          case 'PageDown':
+          case 'PageDown': {
             event.preventDefault();
-            menuitem = el.querySelector(':scope > [role^=menuitem][tabIndex="-1"]:last-of-type');
-            if (menuitem) {
-              menuitem.focus();
-            }
+            const items = getFocusableItems();
+            if (items.length) items[items.length - 1].focus();
             break;
+          }
           default:
             if (isPrintableCharacter(event.key)) {
-              let items = el.querySelectorAll(':scope > [role^=menuitem][tabindex="0"] ~ [role^=menuitem]');
-              if (!findMatching(event.key, items)) {
-                items = el.querySelectorAll(':scope > [role^=menuitem][tabindex="-1"]');
+              // Search from after the focused item first, so repeating a letter
+              // cycles through the matches instead of sticking on the first.
+              const items = getFocusableItems();
+              const current = items.findIndex((item) => item.getAttribute('tabindex') === '0');
+              if (!findMatching(event.key, items.slice(current + 1))) {
                 findMatching(event.key, items);
               }
             }
@@ -304,6 +309,8 @@ export default function (Alpine) {
                 menuTrigger._h_menu_trigger.focusOnOpen = undefined;
                 let focusTarget = el;
                 if (focusOnOpen) {
+                  // A disabled item can take the initial focus, since it is
+                  // announced rather than hidden.
                   const items = el.querySelectorAll(':scope > [role^=menuitem]');
                   focusTarget = (focusOnOpen === 'last' ? items[items.length - 1] : items[0]) ?? el;
                 }
@@ -403,14 +410,10 @@ export default function (Alpine) {
       'data-[active=true]:text-primary',
       'data-[active=true]:focus:bg-primary/10',
       'data-[active=true]:hover:bg-primary/10',
-      'data-[active=true]:focus:text-primary',
-      'data-[active=true]:hover:text-primary',
       'data-[active=true]:*:[svg]:text-primary!',
       'data-[variant=negative]:text-negative',
       'data-[variant=negative]:focus:bg-negative/10',
       'data-[variant=negative]:hover:bg-negative/10',
-      'data-[variant=negative]:focus:text-negative',
-      'data-[variant=negative]:hover:text-negative',
       'data-[variant=negative]:*:[svg]:text-negative!',
       "[&_svg:not([class*='text-'])]:text-muted-foreground",
       'relative',
@@ -424,8 +427,9 @@ export default function (Alpine) {
       'text-sm',
       'outline-hidden',
       'select-none',
-      'data-[disabled]:pointer-events-none',
-      'data-[disabled]:opacity-disabled',
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:cursor-not-allowed',
+      'aria-disabled:opacity-disabled',
       'data-[inset=true]:pl-8',
       'svg-defaults',
       '[&>a]:no-underline',
@@ -491,8 +495,9 @@ export default function (Alpine) {
       'text-sm',
       'outline-hidden',
       'select-none',
-      'data-[disabled]:pointer-events-none',
-      'data-[disabled]:opacity-disabled',
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:cursor-not-allowed',
+      'aria-disabled:opacity-disabled',
       'data-[inset=true]:pl-8',
       'svg-defaults'
     );
@@ -565,6 +570,10 @@ export default function (Alpine) {
 
     function focusIn(event) {
       el.setAttribute('tabindex', '0');
+      // A disabled subitem keeps its place in the arrow order and its
+      // aria-haspopup, so it is announced as a submenu that cannot be opened.
+      // The tab stop above is set first, or focus would have nowhere to rest.
+      if (isDisabled(el)) return;
       if (event.type === 'click' && event.pointerType === 'touch' && (event.target === el || event.target.parentElement === el)) {
         el._menu_sub.open(el);
         el._menu_sub.expanded = true;
@@ -634,9 +643,9 @@ export default function (Alpine) {
       'text-sm',
       'outline-hidden',
       'select-none',
-      'aria-[disabled=true]:pointer-events-none',
-      'aria-[disabled=true]:cursor-not-allowed',
-      'aria-[disabled=true]:opacity-disabled',
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:cursor-not-allowed',
+      'aria-disabled:opacity-disabled',
       'transition-all',
       'motion-reduce:transition-none',
       'overflow-hidden',
@@ -658,6 +667,7 @@ export default function (Alpine) {
     }
 
     function onActivate() {
+      if (isDisabled(el)) return;
       el._x_model.set(!el._x_model.get());
       setState(el._x_model.get());
     }
@@ -715,9 +725,9 @@ export default function (Alpine) {
       'text-sm',
       'outline-hidden',
       'select-none',
-      'aria-[disabled=true]:pointer-events-none',
-      'aria-[disabled=true]:cursor-not-allowed',
-      'aria-[disabled=true]:opacity-disabled',
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:cursor-not-allowed',
+      'aria-disabled:opacity-disabled',
       'transition-all',
       'motion-reduce:transition-none',
       'overflow-hidden',
@@ -747,6 +757,7 @@ export default function (Alpine) {
     }
 
     function onActivate(event) {
+      if (isDisabled(el)) return;
       if (event.type === 'keydown') {
         if (event.key !== ' ' && event.key !== 'Enter') {
           return;

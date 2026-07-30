@@ -62,6 +62,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Avatar | Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic. | [avatar](references/avatar.md) |
 | Backdrop | A full-screen overlay that dims the page and animates its content in and out. | [backdrop](references/backdrop.md) |
 | Badge | Displays a short label used to convey the semantic status of an object. | [badge](references/badge.md) |
+| Bottom Navigation | A bar of top-level destinations along the bottom of the screen, each an icon over a short label, with the current one highlighted. | [bottom-nav](references/bottom-nav.md) |
 | Breadcrumb | Displays the current page's location within a navigational hierarchy, helping users understand where they are and navigate back to parent pages. | [breadcrumb](references/breadcrumb.md) |
 | Bubble | A chat message bubble with left and right alignment, semantic color variants, and optional previews for image, audio, file and link attachments. | [bubble](references/bubble.md) |
 | Button | Buttons can trigger an action or navigate the user to another location. | [button](references/button.md) |
@@ -75,6 +76,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Date Time Picker | Lets users pick a date and a time together. | [datetime-picker](references/datetime-picker.md) |
 | Dialog | A modal container that appears in response to a user action, temporarily interrupting the current workflow to request information or confirmation. | [dialog](references/dialog.md) |
 | Expansion Panel | The Expansion Panel is a container component that manages multiple collapsible panels within a layout. | [expansion-panel](references/expansion-panel.md) |
+| Floating Action Button | A floating action button presents the single most important action of a screen as a prominent, elevated button that can stay pinned to a bottom corner while the rest of the page scrolls beneath it. | [fab](references/fab.md) |
 | Fieldset | A container that groups related form elements, including labels, controls, and helper text, to create accessible and organized input sections. | [fieldset](references/fieldset.md) |
 | File Upload | Lets users choose one or more files for upload. | [file-upload](references/file-upload.md) |
 | Icon | Renders an SVG graphic, either from a link or a set of built-in icons, that can represent an action, status, or decorative element. | [icon](references/icon.md) |
@@ -91,6 +93,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Month Picker | Allows users to select a month and year, either by typing it directly or by choosing from a popup of a year header and a twelve-month grid. | [month-picker](references/month-picker.md) |
 | Navigation Menu | A horizontal navigation bar where items are either direct links or triggers that open a dropdown Menu. | [navigation-menu](references/navigation-menu.md) |
 | Notifications | The Notification component is used to present important system feedback, status updates, or contextual information to the user. | [notifications](references/notifications.md) |
+| One-Time Password Input | `x-h-otp` turns a native input into one or more groups of single-character cells for entering a verification code or PIN. | [otp](references/otp.md) |
 | Pagination | Divides content into discrete pages, allowing users to navigate large datasets or collections more easily. | [pagination](references/pagination.md) |
 | Popover | Displays supplementary information or content in a compact overlay without navigating away from the current page. | [popover](references/popover.md) |
 | Progress | Visually represents the completion status of an ongoing operation, providing users with feedback on progress and expected duration. | [progress](references/progress.md) |
@@ -122,13 +125,14 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 
 | Name | Description | Reference |
 | ---- | ----------- | --------- |
+| Area Chart | `x-h-chart-area` draws an area chart from a single reactive configuration object. | [area](references/area.md) |
 | Bar Chart | `x-h-chart-bar` draws a bar chart from a single reactive configuration object. | [bar](references/bar.md) |
 | Doughnut Chart | `x-h-chart-doughnut` draws a doughnut chart (a pie with a hole in the middle) from a single reactive configuration object. | [doughnut](references/doughnut.md) |
 | Line Chart | `x-h-chart-line` draws a line chart from a single reactive configuration object. | [line](references/line.md) |
 | Pie Chart | `x-h-chart-pie` draws a pie chart from a single reactive configuration object. | [pie](references/pie.md) |
 | Polar Area Chart | `x-h-chart-polar-area` draws a polar area chart from a single reactive configuration object. | [polar-area](references/polar-area.md) |
 | Radar Chart | `x-h-chart-radar` draws a radar chart from a single reactive configuration object. | [radar](references/radar.md) |
-| Scatter Chart | `x-h-chart-scatter` draws a scatter chart from a single reactive configuration object: the same plot as a line chart, but with only the points and no connecting lines. | [scatter](references/scatter.md) |
+| Scatter Chart | `x-h-chart-scatter` draws a scatter chart from a single reactive configuration object. | [scatter](references/scatter.md) |
 
 ### Layouts
 

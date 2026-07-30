@@ -6,6 +6,33 @@ Organizes content into multiple sections, displaying only one section at a time 
 
 Use tabs to group related content or functionality, allowing users to switch between sections without leaving the current view.
 
+A tab can carry one action, such as a close button, by placing `x-h-tab-action` on a `<span>` inside it.
+
+## Keyboard Handling
+
+The tab list is a single Tab stop that lands on the selected tab, so reaching the content does not mean tabbing past every other tab. Once a tab has focus:
+
+- `Right` / `Left` - Moves focus to the next or previous tab, wrapping around at both ends. Horizontal orientation only.
+- `Down` / `Up` - Moves focus to the next or previous tab, wrapping around at both ends. Vertical orientation only.
+- `Home` / `End` - Moves focus to the first or last tab.
+- `Enter` / `Space` - Activates the focused tab.
+
+Tabs disabled with the native `disabled` attribute are skipped. Tabs with `aria-disabled="true"` are still reached by the arrows, `Home` and `End`, and are announced as unavailable, but neither a click nor `Enter` activates them. Moving focus does not change the selection, so the tabs can be looked through before one is activated.
+
+A tab action shares its tab's place in the tab order, so `Tab` from the focused tab moves to its action, where `Enter` / `Space` activates it. Only the action of the tab holding the tab stop is reachable this way, which keeps the tab list a single Tab stop.
+
+## Accessibility
+
+The tab list, tabs and panels get their `tablist`, `tab` and `tabpanel` roles automatically, and the list mirrors `data-orientation` as `aria-orientation` so the navigation axis is announced correctly.
+
+Selection stays yours to drive. Bind `aria-selected` on each tab and `hidden` on each panel to the same value. A tab written without `aria-selected` is announced as not selected. The roving tab stop follows the selected tab, so Tab always enters the widget at the tab whose panel is showing.
+
+Each tab needs an `id` and an `aria-controls` pointing at its panel, and each panel an `id` and an `aria-labelledby` pointing back at its tab, which is what pairs the two for a screen reader. A tab must also live inside a tab list, and a tab list inside a tabs root. The component throws when any of this is missing.
+
+A tab action holds only whatever you put inside it, usually an icon, so it needs its own `aria-label` or `aria-labelledby` to be announced as anything more than a button. Activating it does not change the selection.
+
+Panels are focusable by default, so Tab moves from the selected tab into its panel and the panel shows a focus ring. That stop is what makes a panel with no focusable content of its own reachable. When your panel already contains something focusable, that element is the way in, so set `tabindex="-1"` on the panel to avoid a redundant stop.
+
 ## API Reference
 
 ### Component attribute(s)
@@ -36,11 +63,36 @@ x-h-tabs-content
 | data-floating | boolean                       | false    | Floating style tab list.                                                                    |
 | data-size     | `default`<br />`sm`<br />`lg` | false    | Height of the tab bar. Ignored when the tab bar is floating or the orientation is vertical. |
 
+#### x-h-tab
+
+| Attribute     | Type    | Required | Description                                                                                                                |
+| ------------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| id            | string  | true     | Identifies the tab. The panel's `aria-labelledby` must point at it.                                                        |
+| aria-controls | string  | true     | The `id` of the tab content this tab shows.                                                                                |
+| aria-selected | boolean | false    | Marks the tab as selected. Bind it to your own state. Defaults to `false` when it is left out.                             |
+| aria-disabled | boolean | false    | Marks the tab unavailable while keeping it focusable and announced. It can be reached with the keyboard but not activated. |
+
+#### x-h-tab-action
+
+> Must be applied to a `<span>` element. A tab can only have one action.
+
+| Attribute       | Type   | Required | Description                                        |
+| --------------- | ------ | -------- | -------------------------------------------------- |
+| aria-label      | string | true\*   | Accessible label for the action                    |
+| aria-labelledby | string | true\*   | References an element whose text labels the action |
+
+::: info
+One of `aria-label` or `aria-labelledby` is required.
+:::
+
 #### x-h-tabs-content
 
-| Attribute | Type    | Required | Description               |
-| --------- | ------- | -------- | ------------------------- |
-| hidden    | boolean | false    | Show/hide the tab content |
+| Attribute       | Type    | Required | Description                                                                                                                             |
+| --------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| id              | string  | true     | The `id` the tab's `aria-controls` points at.                                                                                           |
+| aria-labelledby | string  | true     | The `id` of the tab that labels this content.                                                                                           |
+| hidden          | boolean | false    | Show/hide the tab content                                                                                                               |
+| tabindex        | string  | false    | Defaults to `0` so the panel is reachable. Set it to `-1` when the panel already contains focusable content, to avoid a redundant stop. |
 
 #### x-h-tab-list-action
 
@@ -99,20 +151,24 @@ x-h-tabs-content
 
 ### Disabled tabs
 
+`Tab 2` uses the native `disabled` attribute, so the arrow keys step straight over it. `Tab 3` uses `aria-disabled`, so the arrows land on it and it is announced as unavailable, but it cannot be activated.
+
 <LiveExample data-class="p-0" data-exclude="generator">
 
 ```html
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button id="dt1" x-h-tab aria-controls="dt1c" aria-selected="true">Tab 1</button>
-      <button id="dt2" x-h-tab aria-controls="dt2c" disabled>Tab 2</button>
-      <button id="dt3" x-h-tab aria-controls="dt3c">Tab 3</button>
+      <button id="dis1" x-h-tab aria-controls="dis1c" aria-selected="true">Tab 1</button>
+      <button id="dis2" x-h-tab aria-controls="dis2c" disabled>Tab 2</button>
+      <button id="dis3" x-h-tab aria-controls="dis3c" aria-disabled="true">Tab 3</button>
+      <button id="dis4" x-h-tab aria-controls="dis4c">Tab 4</button>
     </div>
   </div>
-  <div x-h-tabs-content id="dt1c" aria-labelledby="dt1"></div>
-  <div x-h-tabs-content id="dt2c" aria-labelledby="dt2" hidden></div>
-  <div x-h-tabs-content id="dt3c" aria-labelledby="dt3" hidden></div>
+  <div x-h-tabs-content id="dis1c" aria-labelledby="dis1"></div>
+  <div x-h-tabs-content id="dis2c" aria-labelledby="dis2" hidden></div>
+  <div x-h-tabs-content id="dis3c" aria-labelledby="dis3" hidden></div>
+  <div x-h-tabs-content id="dis4c" aria-labelledby="dis4" hidden></div>
 </div>
 ```
 
@@ -171,41 +227,37 @@ x-h-tabs-content
 <LiveExample data-class="p-0">
 
 ```html
-<div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hib1' }">
+<div
+  x-h-tabs
+  data-orientation="horizontal"
+  x-data="{
+    tabs: [{ id: 'hib1', title: 'Tab 1' }, { id: 'hib2', title: 'Tab 2' }, { id: 'hib3', title: 'Tab 3' }],
+    activeTabId: 'hib1',
+    close(id) {
+      const index = this.tabs.findIndex((tab) => tab.id === id);
+      this.tabs.splice(index, 1);
+      if (this.activeTabId === id) this.activeTabId = this.tabs[Math.min(index, this.tabs.length - 1)]?.id;
+    },
+  }"
+>
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="hib1" aria-controls="hib1c" :aria-selected="activeTabId === 'hib1'" @click="activeTabId = 'hib1'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 1
-        <span x-h-tab-action>
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="hib2" aria-controls="hib2c" :aria-selected="activeTabId === 'hib2'" @click="activeTabId = 'hib2'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 2
-        <span x-h-tab-action>
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="hib3" aria-controls="hib3c" :aria-selected="activeTabId === 'hib3'" @click="activeTabId = 'hib3'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 3
-        <span x-h-tab-action>
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+      <template x-for="tab in tabs" :key="tab.id">
+        <button x-h-tab :id="tab.id" :aria-controls="`${tab.id}c`" :aria-selected="activeTabId === tab.id" @click="activeTabId = tab.id">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          <span x-text="tab.title"></span>
+          <span x-h-tab-action :aria-label="`close ${tab.title}`" @click="close(tab.id)">
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
+          </span>
+        </button>
+      </template>
     </div>
   </div>
-  <div x-h-tabs-content id="hib1c" aria-labelledby="hib1" :hidden="activeTabId !== 'hib1'">
-    <div class="p-2">Tab 1 Content</div>
-  </div>
-  <div x-h-tabs-content id="hib2c" aria-labelledby="hib2" :hidden="activeTabId !== 'hib2'">
-    <div class="p-2">Tab 2 Content</div>
-  </div>
-  <div x-h-tabs-content id="hib3c" aria-labelledby="hib3" :hidden="activeTabId !== 'hib3'">
-    <div class="p-2">Tab 3 Content</div>
-  </div>
+  <template x-for="tab in tabs" :key="tab.id">
+    <div x-h-tabs-content :id="`${tab.id}c`" :aria-labelledby="tab.id" :hidden="activeTabId !== tab.id">
+      <div class="p-2" x-text="`${tab.title} Content`"></div>
+    </div>
+  </template>
 </div>
 ```
 
@@ -221,7 +273,7 @@ x-h-tabs-content
     <div x-h-tab-list>
       <button x-h-tab id="hitwa1" aria-controls="hitwa1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -250,7 +302,7 @@ x-h-tabs-content
     <div x-h-tab-list>
       <button x-h-tab id="hitwae1" aria-controls="hitwae1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -332,21 +384,21 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="hbt1" aria-controls="hbt1c" :aria-selected="activeTabId === 'hbt1'" @click="activeTabId = 'hbt1'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="hbt2" aria-controls="hbt2c" :aria-selected="activeTabId === 'hbt2'" @click="activeTabId = 'hbt2'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="hbt3" aria-controls="hbt3c" :aria-selected="activeTabId === 'hbt3'" @click="activeTabId = 'hbt3'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -376,7 +428,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
     <div x-h-tab-list>
       <button x-h-tab id="hftwa1" aria-controls="hftwa1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -405,7 +457,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
     <div x-h-tab-list>
       <button x-h-tab id="hftwae1" aria-controls="hftwae1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -462,21 +514,21 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="vib1" aria-controls="vib1c" :aria-selected="activeTabId === 'vib1'" @click="activeTabId = 'vib1'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vib2" aria-controls="vib2c" :aria-selected="activeTabId === 'vib2'" @click="activeTabId = 'vib2'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vib3" aria-controls="vib3c" :aria-selected="activeTabId === 'vib3'" @click="activeTabId = 'vib3'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -506,7 +558,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
     <div x-h-tab-list>
       <button x-h-tab id="vitwa1" aria-controls="vitwa1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -535,7 +587,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
     <div x-h-tab-list>
       <button x-h-tab id="vitwae1" aria-controls="vitwae1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -592,21 +644,21 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
       <button x-h-tab id="vbt1" aria-controls="vbt1c" :aria-selected="activeTabId === 'vbt1'" @click="activeTabId = 'vbt1'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vbt2" aria-controls="vbt2c" :aria-selected="activeTabId === 'vbt2'" @click="activeTabId = 'vbt2'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 2
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
       <button x-h-tab id="vbt3" aria-controls="vbt3c" :aria-selected="activeTabId === 'vbt3'" @click="activeTabId = 'vbt3'">
         <svg x-h-lucide role="presentation" data-lucide="file"></svg>
         Tab 3
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -636,7 +688,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
     <div x-h-tab-list>
       <button x-h-tab id="vftwa1" aria-controls="vftwa1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>
@@ -665,7 +717,7 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
     <div x-h-tab-list>
       <button x-h-tab id="vftwae1" aria-controls="vftwae1c" aria-selected="true">
         Tab 1
-        <span x-h-tab-action>
+        <span x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
         </span>
       </button>

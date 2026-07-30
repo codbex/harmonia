@@ -57,6 +57,7 @@ export default function (Alpine) {
     let firstDay = 0;
     let showNowIndicator = true;
     let showViewSwitcher = true;
+    let scrollTo = 'now';
     let currentTrimAll = null;
 
     el.classList.add('flex', 'flex-col', 'h-full', 'overflow-hidden');
@@ -105,7 +106,7 @@ export default function (Alpine) {
       { key: 'year', label: el.getAttribute('data-year-label') || 'Year' },
     ];
 
-    // View switcher: a dropdown built from the h-menu directive.
+    // The view switcher is a dropdown built from the h-menu directive.
     const viewSwitcher = document.createElement('div');
 
     const viewTriggerLabel = document.createElement('span');
@@ -334,7 +335,11 @@ export default function (Alpine) {
       more.type = 'button';
       more.classList.add('text-xs', 'text-muted-foreground', 'px-1', 'text-left', 'w-full', 'rounded', 'hover:text-foreground', 'cursor-pointer', 'outline-ring/50', 'focus-outline');
       more.setAttribute('data-slot', 'overflow-more-btn');
-      more.textContent = `+${hiddenCount} more`;
+      // The button has no aria-label, so this text is also its accessible name.
+      const setMoreLabel = (count) => {
+        more.textContent = (el.getAttribute('data-more-label') || '+{count} more').replace('{count}', String(count));
+      };
+      setMoreLabel(hiddenCount);
       more.addEventListener('click', (e) => {
         e.stopPropagation();
         showOverflowPopover(more, day, dayEvs);
@@ -346,7 +351,7 @@ export default function (Alpine) {
       if (cell.clientHeight > 0 && more.getBoundingClientRect().bottom > cellBottom && overflowIdx > 0) {
         pills[overflowIdx - 1].classList.add('hidden');
         hiddenCount++;
-        more.textContent = `+${hiddenCount} more`;
+        setMoreLabel(hiddenCount);
       }
     }
 
@@ -354,6 +359,7 @@ export default function (Alpine) {
       locale = resolveLocale(config.locale);
       if (config.firstDay !== undefined) firstDay = config.firstDay;
       if (config.showNowIndicator !== undefined) showNowIndicator = config.showNowIndicator;
+      if (config.scrollTo !== undefined && ['now', 'first-event'].includes(config.scrollTo)) scrollTo = config.scrollTo;
       if (config.views !== undefined) {
         showViewSwitcher = config.views;
         viewSwitcher.classList.toggle('hidden', !showViewSwitcher);
@@ -432,7 +438,7 @@ export default function (Alpine) {
       });
       viewArea.appendChild(weekdayHeader);
 
-      // 6×7 day grid: role=grid with 6 role=row, each 7 role=gridcell
+      // 6×7 day grid. 'role=grid' with 6 role=row, each 7 role=gridcell
       const grid = document.createElement('div');
       grid.classList.add('flex', 'flex-col', 'flex-1', 'border-t', 'overflow-hidden');
       grid.setAttribute('role', 'grid');
@@ -736,9 +742,22 @@ export default function (Alpine) {
       scrollArea.appendChild(colsGrid);
       viewArea.appendChild(scrollArea);
 
-      // Scroll to current time (−60min buffer) or 8 am on other days
+      // Scroll to the earliest timed event, the current time (-60min buffer), or 8 am
       const hasToday = days.some((d) => isTodayDate(d));
-      const scrollTarget = hasToday ? Math.max((nowMins - 60) * (HOUR_H / 60), 0) : 8 * HOUR_H;
+      let anchorMins = null;
+      if (scrollTo === 'first-event') {
+        days.forEach((day) => {
+          const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0);
+          events
+            .filter((ev) => !ev.allDay && eventSpansDay(ev, day))
+            .forEach((ev) => {
+              const mins = Math.max((ev.startDate - dayStart) / 60000, 0);
+              if (anchorMins === null || mins < anchorMins) anchorMins = mins;
+            });
+        });
+      }
+      if (anchorMins === null && hasToday) anchorMins = nowMins;
+      const scrollTarget = anchorMins === null ? 8 * HOUR_H : Math.max((anchorMins - 60) * (HOUR_H / 60), 0);
       requestAnimationFrame(() => {
         scrollArea.scrollTop = scrollTarget;
       });

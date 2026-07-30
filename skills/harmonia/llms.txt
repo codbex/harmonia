@@ -9,6 +9,7 @@
 - [Avatar](references/avatar.md): Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic.
 - [Backdrop](references/backdrop.md): A full-screen overlay that dims the page and animates its content in and out.
 - [Badge](references/badge.md): Displays a short label used to convey the semantic status of an object.
+- [Bottom Navigation](references/bottom-nav.md): A bar of top-level destinations along the bottom of the screen, each an icon over a short label, with the current one highlighted.
 - [Breadcrumb](references/breadcrumb.md): Displays the current page's location within a navigational hierarchy, helping users understand where they are and navigate back to parent pages.
 - [Bubble](references/bubble.md): A chat message bubble with left and right alignment, semantic color variants, and optional previews for image, audio, file and link attachments.
 - [Button](references/button.md): Buttons can trigger an action or navigate the user to another location.
@@ -22,6 +23,7 @@
 - [Date Time Picker](references/datetime-picker.md): Lets users pick a date and a time together.
 - [Dialog](references/dialog.md): A modal container that appears in response to a user action, temporarily interrupting the current workflow to request information or confirmation.
 - [Expansion Panel](references/expansion-panel.md): The Expansion Panel is a container component that manages multiple collapsible panels within a layout.
+- [Floating Action Button](references/fab.md): A floating action button presents the single most important action of a screen as a prominent, elevated button that can stay pinned to a bottom corner while the rest of the page scrolls beneath it.
 - [Fieldset](references/fieldset.md): A container that groups related form elements, including labels, controls, and helper text, to create accessible and organized input sections.
 - [File Upload](references/file-upload.md): Lets users choose one or more files for upload.
 - [Icon](references/icon.md): Renders an SVG graphic, either from a link or a set of built-in icons, that can represent an action, status, or decorative element.
@@ -38,6 +40,7 @@
 - [Month Picker](references/month-picker.md): Allows users to select a month and year, either by typing it directly or by choosing from a popup of a year header and a twelve-month grid.
 - [Navigation Menu](references/navigation-menu.md): A horizontal navigation bar where items are either direct links or triggers that open a dropdown Menu.
 - [Notifications](references/notifications.md): The Notification component is used to present important system feedback, status updates, or contextual information to the user.
+- [One-Time Password Input](references/otp.md): `x-h-otp` turns a native input into one or more groups of single-character cells for entering a verification code or PIN.
 - [Pagination](references/pagination.md): Divides content into discrete pages, allowing users to navigate large datasets or collections more easily.
 - [Popover](references/popover.md): Displays supplementary information or content in a compact overlay without navigating away from the current page.
 - [Progress](references/progress.md): Visually represents the completion status of an ongoing operation, providing users with feedback on progress and expected duration.
@@ -67,13 +70,14 @@
 
 ## Charts
 
+- [Area Chart](references/area.md): `x-h-chart-area` draws an area chart from a single reactive configuration object.
 - [Bar Chart](references/bar.md): `x-h-chart-bar` draws a bar chart from a single reactive configuration object.
 - [Doughnut Chart](references/doughnut.md): `x-h-chart-doughnut` draws a doughnut chart (a pie with a hole in the middle) from a single reactive configuration object.
 - [Line Chart](references/line.md): `x-h-chart-line` draws a line chart from a single reactive configuration object.
 - [Pie Chart](references/pie.md): `x-h-chart-pie` draws a pie chart from a single reactive configuration object.
 - [Polar Area Chart](references/polar-area.md): `x-h-chart-polar-area` draws a polar area chart from a single reactive configuration object.
 - [Radar Chart](references/radar.md): `x-h-chart-radar` draws a radar chart from a single reactive configuration object.
-- [Scatter Chart](references/scatter.md): `x-h-chart-scatter` draws a scatter chart from a single reactive configuration object: the same plot as a line chart, but with only the points and no connecting lines.
+- [Scatter Chart](references/scatter.md): `x-h-chart-scatter` draws a scatter chart from a single reactive configuration object.
 
 ## Layouts
 

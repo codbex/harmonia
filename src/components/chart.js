@@ -10,6 +10,14 @@ function labelChart(root, defaultLabel) {
   return root.getAttribute('aria-label');
 }
 
+// Column headers for the hidden data table. Every string a screen reader hears
+// is overridable, so each header falls back to English only when the config
+// leaves it out.
+function tableHeader(cfg, key, defaultLabel) {
+  const labels = cfg.tableLabels;
+  return labels && typeof labels[key] === 'string' ? labels[key] : defaultLabel;
+}
+
 // Chart text presets selectable with `data-font-size` on the chart element.
 // `fallback` is the size used when computed styles are unavailable.
 const FONT_SIZES = {
@@ -167,7 +175,7 @@ function buildLegendSvg(svg, items, width, height, text) {
 // pixel row (unsnapped strokes antialias across two rows and look faded).
 const crisp = (v) => Math.round(v) + 0.5;
 
-// Cartesian scaffold: numeric ticks, category labels, gridlines, and the two
+// Cartesian scaffold - numeric ticks, category labels, gridlines, and the two
 // plot borders. Returns the plot rectangle and the group shapes render into.
 function buildCartesianSvg(svg, { width, height, scale, categories, horizontal, axes, gridlines, format, text }) {
   const showCats = categories.some((c) => c);
@@ -384,14 +392,14 @@ function renderBar(root, cfg, ctx) {
   out.appendChild(
     buildDataTable(
       ariaLabel,
-      ['Category', ...series.map((s) => s.name)],
+      [tableHeader(cfg, 'category', 'Category'), ...series.map((s) => s.name)],
       categories.map((c, i) => [c || String(i + 1), ...series.map((s) => (typeof s.data[i] === 'number' && !Number.isNaN(s.data[i]) ? format(s.data[i]) : ''))])
     )
   );
   return out;
 }
 
-function renderLine(root, cfg, ctx, scatter = false) {
+function renderLine(root, cfg, ctx, scatter = false, area = false) {
   const { palette, legend, tooltip, format } = commonOptions(cfg);
   const showAxes = cfg.axes !== false;
   const showGrid = cfg.gridlines !== false;
@@ -399,7 +407,7 @@ function renderLine(root, cfg, ctx, scatter = false) {
   const tickCount = Number.isInteger(cfg.tickCount) ? cfg.tickCount : 5;
   const labels = Array.isArray(cfg.labels) ? cfg.labels : [];
   const series = normalizeSeries(cfg, palette);
-  const ariaLabel = labelChart(root, scatter ? 'Scatter chart' : 'Line chart');
+  const ariaLabel = labelChart(root, area ? 'Area chart' : scatter ? 'Scatter chart' : 'Line chart');
 
   const out = make('div', ['flex', 'flex-col', 'flex-1', 'min-h-0']);
 
@@ -411,7 +419,7 @@ function renderLine(root, cfg, ctx, scatter = false) {
 
   const catCount = Math.max(labels.length, ...series.map((s) => s.data.length));
   const categories = Array.from({ length: catCount }, (_, i) => (labels[i] != null ? String(labels[i]) : ''));
-  const scale = niceScale(Math.min(...values), Math.max(...values), tickCount);
+  const scale = niceScale(area ? Math.min(0, ...values) : Math.min(...values), Math.max(...values), tickCount);
   const text = chartText(root);
   const svg = chartSvg(ctx.width, ctx.height, text);
 
@@ -434,6 +442,17 @@ function renderLine(root, cfg, ctx, scatter = false) {
       v,
       k,
     }));
+
+    if (area && points.length > 1) {
+      const baseline = py + ph - (valueToPct(Math.max(scale.min, 0), scale) / 100) * ph;
+      const coords = points.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
+      plot.appendChild(
+        makeSvg('polygon', [fillClass(s.color), 'pointer-events-none'], {
+          slot: 'chart-area',
+          attrs: { points: `${points[0].x.toFixed(2)},${baseline.toFixed(2)} ${coords} ${points[points.length - 1].x.toFixed(2)},${baseline.toFixed(2)}`, opacity: '0.2' },
+        })
+      );
+    }
 
     if (!scatter && points.length > 1) {
       plot.appendChild(
@@ -462,7 +481,7 @@ function renderLine(root, cfg, ctx, scatter = false) {
   out.appendChild(
     buildDataTable(
       ariaLabel,
-      ['Category', ...series.map((s) => s.name)],
+      [tableHeader(cfg, 'category', 'Category'), ...series.map((s) => s.name)],
       categories.map((c, i) => [c || String(i + 1), ...series.map((s) => (typeof s.data[i] === 'number' && !Number.isNaN(s.data[i]) ? format(s.data[i]) : ''))])
     )
   );
@@ -538,7 +557,7 @@ function renderPie(root, cfg, ctx, doughnut = false) {
   out.appendChild(
     buildDataTable(
       ariaLabel,
-      ['Segment', 'Value'],
+      [tableHeader(cfg, 'segment', 'Segment'), tableHeader(cfg, 'value', 'Value')],
       slices.map((s) => [s.label, format(s.value)])
     )
   );
@@ -629,7 +648,7 @@ function renderPolarArea(root, cfg, ctx) {
   out.appendChild(
     buildDataTable(
       ariaLabel,
-      ['Segment', 'Value'],
+      [tableHeader(cfg, 'segment', 'Segment'), tableHeader(cfg, 'value', 'Value')],
       slices.map((s) => [s.label, format(s.value)])
     )
   );
@@ -737,14 +756,14 @@ function renderRadar(root, cfg, ctx) {
   out.appendChild(
     buildDataTable(
       ariaLabel,
-      ['Category', ...series.map((s) => s.name)],
+      [tableHeader(cfg, 'category', 'Category'), ...series.map((s) => s.name)],
       categories.map((c, i) => [c || String(i + 1), ...series.map((s) => (typeof s.data[i] === 'number' && !Number.isNaN(s.data[i]) ? format(s.data[i]) : ''))])
     )
   );
   return out;
 }
 
-// Shared directive wiring: host setup, reactive config, full re-render on
+// Shared directive wiring. Host setup, reactive config, full re-render on
 // config change or container resize, teardown.
 function defineChart(Alpine, name, render) {
   Alpine.directive(name, (el, { expression }, { effect, evaluateLater, cleanup }) => {
@@ -828,6 +847,7 @@ export default function (Alpine) {
   defineChart(Alpine, 'h-chart-bar', renderBar);
   defineChart(Alpine, 'h-chart-line', renderLine);
   defineChart(Alpine, 'h-chart-scatter', (root, cfg, ctx) => renderLine(root, cfg, ctx, true));
+  defineChart(Alpine, 'h-chart-area', (root, cfg, ctx) => renderLine(root, cfg, ctx, false, true));
   defineChart(Alpine, 'h-chart-pie', renderPie);
   defineChart(Alpine, 'h-chart-doughnut', (root, cfg, ctx) => renderPie(root, cfg, ctx, true));
   defineChart(Alpine, 'h-chart-polar-area', renderPolarArea);

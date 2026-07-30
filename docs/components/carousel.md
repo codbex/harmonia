@@ -19,7 +19,7 @@ The previous/next controls and indicator dots are ordinary buttons and are reach
 
 ## Accessibility
 
-The carousel exposes `role="region"` with `aria-roledescription="carousel"` and a default accessible name of "Carousel", which you can localize with `data-label` or override with your own `aria-label`. Each slide is a `role="group"` with `aria-roledescription="slide"` and a default "N of M" label, and is marked `aria-hidden` while off screen. The controls get default names ("Previous slide" / "Next slide") and the generated indicator dots ("Slide N", localizable with `data-slide-label`). The active dot carries `aria-current`. Autoplay pauses while the carousel is hovered or focused so users are not rushed. The slide animation is disabled when the user prefers reduced motion.
+The carousel exposes `role="region"` with `aria-roledescription="carousel"` and a default accessible name of "Carousel", which you can override with your own `aria-label` or `aria-labelledby`. Each slide is a `role="group"` with `aria-roledescription="slide"` and a default "N of M" label, and is marked `aria-hidden` while off screen. The controls get default names ("Previous slide" / "Next slide") and the generated indicator dots ("Slide N", localizable with `data-slide-label`). The indicator group is named "Choose slide" by default, which you can override the same way. The active dot carries `aria-current`. Autoplay pauses while the carousel is hovered or focused so users are not rushed. The slide animation is disabled when the user prefers reduced motion.
 
 ## API Reference
 
@@ -37,20 +37,19 @@ x-h-carousel-indicators
 
 #### x-h-carousel
 
-| Attribute     | Type    | Required | Description                                                                                       |
-| ------------- | ------- | -------- | ------------------------------------------------------------------------------------------------- |
-| data-autoplay | boolean | false    | Auto-advances the slides. Pauses on hover and focus.                                              |
-| data-interval | number  | false    | Milliseconds between auto-advances (default: `5000`). Only applies with `data-autoplay`.          |
-| data-loop     | boolean | false    | Wraps around at the ends. On by default. Set `data-loop="false"` to stop at the first/last slide. |
-| data-start    | number  | false    | Zero-based index of the slide shown first (default: `0`).                                         |
-| data-label    | string  | false    | Accessible name for the carousel region (default: `"Carousel"`).                                  |
+| Attribute       | Type    | Required | Description                                                                                                                                                     |
+| --------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-autoplay   | boolean | false    | Auto-advances the slides. Pauses on hover and focus.                                                                                                            |
+| data-interval   | number  | false    | Milliseconds between auto-advances (Defaults to `5000`). Only applies with `data-autoplay`.                                                                     |
+| data-loop       | boolean | false    | Wraps around at the ends. On by default. Set `data-loop="false"` to stop at the first/last slide.                                                               |
+| data-start      | number  | false    | Zero-based index of the slide shown first (Defaults to `0`).                                                                                                    |
+| data-item-label | string  | false    | Template for each slide's accessible name. `{index}` and `{count}` are substituted. Defaults to `{index} of {count}`. An `aria-label` on the slide itself wins. |
 
 #### x-h-carousel-indicators
 
-| Attribute        | Type   | Required | Description                                                                  |
-| ---------------- | ------ | -------- | ---------------------------------------------------------------------------- |
-| data-label       | string | false    | Accessible name for the indicator group (default: `"Choose slide"`).         |
-| data-slide-label | string | false    | Prefix for each dot's accessible name (default: `"Slide"`, as in `Slide 1`). |
+| Attribute        | Type   | Required | Description                                                                     |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------- |
+| data-slide-label | string | false    | Prefix for each dot's accessible name (Defaults to `"Slide"`, as in `Slide 1`). |
 
 The `x-h-carousel-control` buttons take a default `aria-label` per direction. Override it with your own `aria-label`.
 
@@ -106,7 +105,7 @@ Photos by ignartonosbg via Pixabay.
 
 ### Autoplay
 
-<LiveExample  data-exclude="generator">
+<LiveExample data-exclude="generator">
 
 ```html
 <div id="carousel-autoplay" x-h-carousel data-autoplay data-interval="3000" class="rounded-lg">
@@ -133,7 +132,7 @@ Photos by ignartonosbg via Pixabay.
 
 With `data-loop="false"` the carousel stops at the first and last slide, and the controls disable themselves at the ends.
 
-<LiveExample  data-exclude="generator">
+<LiveExample data-exclude="generator">
 
 ```html
 <div id="carousel-no-loop" x-h-carousel data-loop="false" class="rounded-lg">

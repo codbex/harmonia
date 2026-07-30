@@ -83,7 +83,7 @@ describe('h-range', () => {
     });
 
     it('honors label overrides', () => {
-      const { el, handles } = createRange({ 'data-label': 'Price', 'data-min-label': 'From', 'data-max-label': 'To' }, ['dual']);
+      const { el, handles } = createRange({ 'aria-label': 'Price', 'data-min-label': 'From', 'data-max-label': 'To' }, ['dual']);
       expect(el.getAttribute('aria-label')).toBe('Price');
       expect(handles[0].getAttribute('aria-label')).toBe('From');
       expect(handles[1].getAttribute('aria-label')).toBe('To');

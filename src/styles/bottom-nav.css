@@ -1,0 +1,8 @@
+:root,
+:host {
+  --bottom-nav-height: calc(var(--spacing) * 16);
+}
+
+.h-bottom-nav {
+  height: var(--bottom-nav-height);
+}

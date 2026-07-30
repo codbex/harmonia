@@ -22,19 +22,20 @@ x-h-chart-doughnut
 
 ### Configuration
 
-| Key             | Type                              | Default       | Description                                                                         |
-| --------------- | --------------------------------- | ------------- | ----------------------------------------------------------------------------------- |
-| `slices`        | `{ label, value, color? }[]`      | required      | The slices to draw. Only positive values are shown.                                 |
-| `series`        | `{ data: number[] }[]` + `labels` | required      | Alternative to `slices`: the first series' values become slices, named by `labels`. |
-| `cutout`        | number                            | `0.6`         | Hole size as a fraction of the radius (clamped to `0.2`-`0.9`).                     |
-| `legend`        | boolean                           | `true`        | Show the color/label key.                                                           |
-| `tooltip`       | boolean                           | `true`        | Show a tooltip on hover and emit interaction events.                                |
-| `dataLabels`    | boolean                           | `true`        | Draw each slice's percentage on the ring (hidden for slices under 5%).              |
-| `labelPosition` | `'inside'` \| `'outside'`         | `'inside'`    | Place the percentage labels on the ring or just outside the edge.                   |
-| `valueFormat`   | `(value) => string`               | locale number | Formats values in tooltips.                                                         |
-| `palette`       | string[]                          | theme tokens  | Color tokens cycled for slices without an explicit `color`.                         |
+| Key             | Type                              | Default          | Description                                                                         |
+| --------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------------------- |
+| `slices`        | `{ label, value, color? }[]`      | required         | The slices to draw. Only positive values are shown.                                 |
+| `series`        | `{ data: number[] }[]` + `labels` | required         | Alternative to `slices`. Тhe first series' values become slices, named by `labels`. |
+| `cutout`        | number                            | `0.6`            | Hole size as a fraction of the radius (clamped to `0.2`-`0.9`).                     |
+| `legend`        | boolean                           | `true`           | Show the color/label key.                                                           |
+| `tooltip`       | boolean                           | `true`           | Show a tooltip on hover and emit interaction events.                                |
+| `dataLabels`    | boolean                           | `true`           | Draw each slice's percentage on the ring (hidden for slices under 5%).              |
+| `labelPosition` | `'inside'` \| `'outside'`         | `'inside'`       | Place the percentage labels on the ring or just outside the edge.                   |
+| `valueFormat`   | `(value) => string`               | locale number    | Formats values in tooltips.                                                         |
+| `palette`       | string[]                          | theme tokens     | Color tokens cycled for slices without an explicit `color`.                         |
+| `tableLabels`   | `{ segment?, value? }`            | English defaults | Column headers of the hidden data table read by screen readers.                     |
 
-A slice `color` (and the `palette` entries) is one of the standard color names: `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
+A slice `color` (and the `palette` entries) is one of the standard color names - `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
 
 ### Accessibility
 

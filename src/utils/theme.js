@@ -1,7 +1,15 @@
 let colorSchemeKey = 'codbex.harmonia.colorMode';
-let savedScheme = localStorage.getItem(colorSchemeKey);
 
 const callbacks = [];
+
+// True only in a browser. Guarded so this module can be imported by a server
+// bundle (Astro, Next, SvelteKit) without touching a browser API at load time.
+const hasDom = () => typeof window !== 'undefined' && typeof document !== 'undefined';
+
+const readSavedScheme = () => {
+  if (typeof localStorage === 'undefined') return null;
+  return localStorage.getItem(colorSchemeKey);
+};
 
 const onColorSchemeChange = (scheme) => {
   for (let i = 0; i < callbacks.length; i++) {
@@ -58,6 +66,7 @@ const onStorage = (event) => {
 };
 
 const initColorScheme = () => {
+  const savedScheme = readSavedScheme();
   if (savedScheme === 'dark') {
     document.documentElement.classList.add('dark');
   } else if (savedScheme === 'light') {
@@ -72,17 +81,18 @@ const initColorScheme = () => {
 };
 
 const setColorScheme = (mode) => {
+  if (!hasDom()) return;
   applyMode(mode, true);
 };
 
 const getColorScheme = () => {
-  const theme = localStorage.getItem(colorSchemeKey);
+  const theme = readSavedScheme();
   if (theme) return theme;
   return 'auto';
 };
 
 const getSystemColorScheme = () => {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  if (hasDom() && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'dark';
   }
   return 'light';
@@ -101,6 +111,6 @@ const removeColorSchemeListener = (callback) => {
   }
 };
 
-initColorScheme();
+if (hasDom()) initColorScheme();
 
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme };

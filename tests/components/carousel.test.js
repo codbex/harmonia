@@ -42,13 +42,16 @@ describe('h-carousel', () => {
     expect(root.getAttribute('aria-label')).toBe('Carousel');
   });
 
-  it('honors data-label and a custom aria-label', () => {
-    const { root: a } = makeRoot({ 'data-label': 'Photos' });
-    expect(a.getAttribute('aria-label')).toBe('Photos');
+  it('keeps an author aria-label or aria-labelledby', () => {
+    const a = document.createElement('div');
+    a.setAttribute('aria-label', 'Own name');
+    mountDirective(carouselPlugin, 'h-carousel', a);
+    expect(a.getAttribute('aria-label')).toBe('Own name');
+
     const b = document.createElement('div');
-    b.setAttribute('aria-label', 'Own name');
+    b.setAttribute('aria-labelledby', 'heading');
     mountDirective(carouselPlugin, 'h-carousel', b);
-    expect(b.getAttribute('aria-label')).toBe('Own name');
+    expect(b.hasAttribute('aria-label')).toBe(false);
   });
 
   it('creates reactive state with active and count plus navigation helpers', () => {
@@ -161,6 +164,29 @@ describe('h-carousel-item', () => {
     expect(first.getAttribute('aria-hidden')).toBe('false');
     expect(second.getAttribute('aria-hidden')).toBe('true');
     expect(first.getAttribute('aria-label')).toBe('1 of 2');
+  });
+
+  it('builds the slide label from data-item-label on the carousel', () => {
+    const { root } = makeRoot({ 'data-item-label': 'Folie {index} von {count}' });
+    const first = addItem(root);
+    addItem(root);
+    expect(first.getAttribute('aria-label')).toBe('Folie 1 von 2');
+  });
+
+  it('lets a template reorder the numbers', () => {
+    const { root } = makeRoot({ 'data-item-label': '{count} 中 {index}' });
+    const first = addItem(root);
+    addItem(root);
+    expect(first.getAttribute('aria-label')).toBe('2 中 1');
+  });
+
+  it('leaves an author-written aria-label alone', () => {
+    const { root } = makeRoot({ 'data-item-label': 'Folie {index} von {count}' });
+    const item = document.createElement('div');
+    item.setAttribute('aria-label', 'Product photo');
+    root.appendChild(item);
+    mountDirective(carouselPlugin, 'h-carousel-item', item, { original: 'x-h-carousel-item' });
+    expect(item.getAttribute('aria-label')).toBe('Product photo');
   });
 
   it('reacts to the active index', () => {
@@ -293,12 +319,19 @@ describe('h-carousel-indicators', () => {
     expect(el.querySelectorAll('button').length).toBe(3);
   });
 
-  it('honors data-label and data-slide-label', () => {
+  it('keeps an author aria-label and honors data-slide-label', () => {
     const { root } = makeRoot();
     addItem(root);
-    const { el } = mountIndicators(root, { 'data-label': 'Pick a photo', 'data-slide-label': 'Photo' });
+    const { el } = mountIndicators(root, { 'aria-label': 'Pick a photo', 'data-slide-label': 'Photo' });
     expect(el.getAttribute('aria-label')).toBe('Pick a photo');
     expect(el.querySelector('button').getAttribute('aria-label')).toBe('Photo 1');
+  });
+
+  it('does not set aria-label when aria-labelledby is present', () => {
+    const { root } = makeRoot();
+    addItem(root);
+    const { el } = mountIndicators(root, { 'aria-labelledby': 'heading' });
+    expect(el.hasAttribute('aria-label')).toBe(false);
   });
 
   it('throws without a carousel ancestor', () => {

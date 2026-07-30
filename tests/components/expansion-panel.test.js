@@ -77,6 +77,62 @@ describe('h-exp-panel-item', () => {
     expect(el._h_expPanelItem.expanded).toBe(true);
     expect(el.classList.contains('flex-[1_1_0]')).toBe(true);
   });
+
+  it('reports a non-assignable expression instead of failing with a bare SyntaxError', () => {
+    const expression = 'ready ? open : false';
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    // The read disagrees with the item's own state, so without the check the
+    // directive would attempt the write-back.
+    let first = true;
+    const evaluated = [];
+    const evaluate = vi.fn((expr) => {
+      evaluated.push(expr);
+      if (first) {
+        first = false;
+        return true;
+      }
+      return false;
+    });
+
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-item', el, { expression, original: 'x-h-exp-panel-item' }, { evaluate });
+
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    const message = consoleErrorSpy.mock.calls[0][0];
+    expect(message).toContain('x-h-exp-panel-item');
+    expect(message).toContain(expression);
+    // The invalid assignment must never reach the evaluator, since Alpine would
+    // rethrow the SyntaxError asynchronously where nothing can catch it.
+    expect(evaluated.some((expr) => expr.includes(' = '))).toBe(false);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('writes back through an assignable expression', () => {
+    const evaluated = [];
+    let first = true;
+    const evaluate = vi.fn((expr) => {
+      evaluated.push(expr);
+      if (first) {
+        first = false;
+        return true;
+      }
+      return false;
+    });
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-item', el, { expression: 'panel.open', original: 'x-h-exp-panel-item' }, { evaluate });
+
+    expect(evaluated).toContain('panel.open = true');
+  });
+
+  it('never writes back when the item owns its own state', () => {
+    const evaluated = [];
+    const evaluate = vi.fn((expr) => {
+      evaluated.push(expr);
+      return true;
+    });
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-item', el, { expression: 'true' }, { evaluate });
+
+    expect(evaluated.some((expr) => expr.includes('='))).toBe(false);
+  });
 });
 
 describe('h-exp-panel-trigger', () => {

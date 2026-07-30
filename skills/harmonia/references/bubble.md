@@ -39,21 +39,16 @@ Every part of the bubble is optional. Place any combination of `x-h-bubble-heade
 
 Apply to an `<audio>` element with a `src` (or a `<source>` child). It renders a custom player (play/pause button, seek slider and time readout) and hides the native controls.
 
-| Attribute        | Type   | Required | Description                                                        |
-| ---------------- | ------ | -------- | ------------------------------------------------------------------ |
-| data-play-label  | string | false    | Accessible name for the play button. Defaults to `Play`.           |
-| data-pause-label | string | false    | Accessible name for the button while playing. Defaults to `Pause`. |
-| data-label       | string | false    | Accessible name for the seek slider. Defaults to `Seek`.           |
-
-#### x-h-bubble-reactions
-
-| Attribute  | Type   | Required | Description                                                       |
-| ---------- | ------ | -------- | ----------------------------------------------------------------- |
-| data-label | string | false    | Accessible name for the reactions group. Defaults to `Reactions`. |
+| Attribute            | Type   | Required | Description                                                                                                                                  |
+| -------------------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-play-label      | string | false    | Accessible name for the play button. Defaults to `Play`.                                                                                     |
+| data-pause-label     | string | false    | Accessible name for the button while playing. Defaults to `Pause`.                                                                           |
+| data-seek-label      | string | false    | Accessible name for the seek slider. Defaults to `Seek`.                                                                                     |
+| data-valuetext-label | string | false    | Template for the position announced on the seek slider. `{current}` and `{duration}` are substituted. Defaults to `{current} of {duration}`. |
 
 ## Accessibility
 
-The bubble itself is a plain container and gets no role. Give the surrounding message list `role="log"` with `aria-live="polite"` so new messages are announced, and use `<time datetime="...">` for timestamps. The reactions element defaults to `role="group"` with an accessible name of "Reactions", which you can localize with `data-label` or override with your own `aria-label`. Images must carry an `alt` attribute. Audio attachments render a custom player: the play/pause button and the seek slider (`role="slider"`, operable with the arrow, Home and End keys) get accessible names you can localize with `data-play-label`, `data-pause-label` and `data-label`.
+The bubble itself is a plain container and gets no role. Give the surrounding message list `role="log"` with `aria-live="polite"` so new messages are announced, and use `<time datetime="...">` for timestamps. The reactions element defaults to `role="group"` with an accessible name of "Reactions", which you can override with your own `aria-label` or `aria-labelledby`. Images must carry an `alt` attribute. Audio attachments render a custom player. The play/pause button and the seek slider (`role="slider"`, operable with the arrow, Home and End keys) get accessible names you can localize with `data-play-label`, `data-pause-label` and `data-seek-label`.
 
 ## Examples
 
@@ -216,7 +211,7 @@ When a message carries more photos than the four shown, wrap the fourth tile in 
   </div>
   <div x-h-bubble data-align="right" data-variant="primary">
     <div x-h-bubble-content>Congratulations team!</div>
-    <div x-h-bubble-reactions data-label="Reactions to your message">
+    <div x-h-bubble-reactions aria-label="Reactions to your message">
       <button>❤️ 2</button>
     </div>
   </div>

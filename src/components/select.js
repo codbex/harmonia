@@ -1,9 +1,11 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { findAncestorState } from '../common/ancestor';
+import { isDisabled } from '../common/disabled';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronDown, Search, createSvg } from './../common/icons';
 import { sizeObserver } from './../common/input-size';
+import { getFirstChar, isPrintableCharacter } from './../common/typeahead';
 const FilterType = Object.freeze({
   'starts-with': 0,
   contains: 1,
@@ -202,87 +204,77 @@ export default function (Alpine) {
       select._h_select.expanded = false;
       removeDismiss(el, 'click', close);
       el.parentElement.removeEventListener('keydown', onKeyDown);
-      options = null;
       if (focusSelect) fakeTrigger.focus();
     };
 
     let content;
-    let options;
+
+    // An option the search has filtered out is not on screen, so the keyboard
+    // passes over it. A disabled one is on screen and stays reachable, since
+    // aria-disabled announces it as unavailable rather than hiding it, and
+    // onActivate is what refuses to act on it. Read per keypress, so options
+    // added or filtered while the list is open are picked up.
+    function getFocusableOptions() {
+      if (!content) return [];
+      return Array.from(content.querySelectorAll('[role=option]')).filter((option) => !option.classList.contains('hidden'));
+    }
+
+    // Options find "the current one" through the roving tabindex, so the stop
+    // has to be moved explicitly rather than just followed by focus.
+    function clearTabStop() {
+      const current = content?.querySelector('[role=option][tabindex="0"]');
+      if (current) current.setAttribute('tabindex', '-1');
+    }
+
+    function moveFocus(target) {
+      if (!target) return;
+      clearTabStop();
+      target.setAttribute('tabindex', '0');
+      target.focus();
+    }
+
+    function findMatching(str, candidates) {
+      for (const option of candidates) {
+        if (getFirstChar(option.textContent).startsWith(str.toLowerCase())) {
+          moveFocus(option);
+          return true;
+        }
+      }
+      return false;
+    }
 
     const onKeyDown = (event) => {
       switch (event.key) {
         case 'Down':
         case 'ArrowDown': {
           event.preventDefault();
-          let nextIndex = 0;
-          for (let o = 0; o < options.length; o++) {
-            if (options[o].getAttribute('tabindex') === '0') {
-              options[o].setAttribute('tabindex', '-1');
-              if (o < options.length - 1) nextIndex = o + 1;
-              break;
-            }
-          }
-          if (options[nextIndex].getAttribute('data-disabled') === 'true') {
-            if (nextIndex === options.length - 1) nextIndex = 0;
-            for (let o = nextIndex; o < options.length; o++) {
-              if (options[o].getAttribute('data-disabled') !== 'true') {
-                nextIndex = o;
-                break;
-              }
-            }
-          }
-          options[nextIndex].setAttribute('tabindex', '0');
-          options[nextIndex].focus();
+          const options = getFocusableOptions();
+          if (!options.length) break;
+          const current = options.findIndex((option) => option.getAttribute('tabindex') === '0');
+          moveFocus(current === -1 ? options[0] : options[(current + 1) % options.length]);
           break;
         }
         case 'Up':
         case 'ArrowUp': {
           event.preventDefault();
-          let prevIndex = options.length - 1;
-          for (let o = options.length - 1; o >= 0; o--) {
-            if (options[o].getAttribute('tabindex') === '0') {
-              options[o].setAttribute('tabindex', '-1');
-              if (o !== 0) prevIndex = o - 1;
-              break;
-            }
-          }
-          if (options[prevIndex].getAttribute('data-disabled') === 'true') {
-            if (prevIndex === 0) prevIndex = options.length - 1;
-            for (let o = prevIndex; o >= 0; o--) {
-              if (options[o].getAttribute('data-disabled') !== 'true') {
-                prevIndex = o;
-                break;
-              }
-            }
-          }
-          options[prevIndex].setAttribute('tabindex', '0');
-          options[prevIndex].focus();
+          const options = getFocusableOptions();
+          if (!options.length) break;
+          const current = options.findIndex((option) => option.getAttribute('tabindex') === '0');
+          moveFocus(current === -1 ? options[options.length - 1] : options[(current - 1 + options.length) % options.length]);
           break;
         }
         case 'Home':
         case 'PageUp':
           event.preventDefault();
-          for (let o = 0; o < options.length; o++) {
-            if (options[o].getAttribute('tabindex') === '0') {
-              options[o].setAttribute('tabindex', '-1');
-              break;
-            }
-          }
-          options[0].setAttribute('tabindex', '0');
-          options[0].focus();
+          moveFocus(getFocusableOptions()[0]);
           break;
         case 'End':
-        case 'PageDown':
+        case 'PageDown': {
           event.preventDefault();
-          for (let o = 0; o < options.length; o++) {
-            if (options[o].getAttribute('tabindex') === '0') {
-              options[o].setAttribute('tabindex', '-1');
-              break;
-            }
-          }
-          options[options.length - 1].setAttribute('tabindex', '0');
-          options[options.length - 1].focus();
+          const options = getFocusableOptions();
+          moveFocus(options[options.length - 1]);
           break;
+        }
         case ' ':
         case 'Enter':
           event.preventDefault();
@@ -303,22 +295,24 @@ export default function (Alpine) {
           break;
         default:
           if (select._h_select.focusSearch) {
-            for (let o = 0; o < options.length; o++) {
-              if (options[o].getAttribute('tabindex') === '0') {
-                options[o].setAttribute('tabindex', '-1');
-                break;
-              }
-            }
+            clearTabStop();
             select._h_select.focusSearch();
+          } else if (isPrintableCharacter(event.key)) {
+            // Search from after the current option first, so repeating a letter
+            // cycles through the matches instead of sticking on the first.
+            const options = getFocusableOptions();
+            const current = options.findIndex((option) => option.getAttribute('tabindex') === '0');
+            if (!findMatching(event.key, options.slice(current + 1))) {
+              findMatching(event.key, options);
+            }
           }
       }
     };
 
     const onClick = () => {
       select._h_select.expanded = !select._h_select.expanded;
-      if (select._h_select.expanded) {
-        if (!content) content = select.querySelector(`#${select._h_select.controls}`);
-        options = content.querySelectorAll('[role=option]');
+      if (select._h_select.expanded && !content) {
+        content = select.querySelector(`#${select._h_select.controls}`);
       }
       Alpine.nextTick(() => {
         if (select._h_select.expanded) {
@@ -327,7 +321,6 @@ export default function (Alpine) {
         } else {
           removeDismiss(el, 'click', close);
           el.parentElement.removeEventListener('keydown', onKeyDown);
-          options = null;
         }
       });
     };
@@ -600,8 +593,9 @@ export default function (Alpine) {
       'text-sm',
       'outline-hidden',
       'select-none',
-      'data-[disabled]:pointer-events-none',
-      'data-[disabled]:opacity-disabled',
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:opacity-disabled',
+      'aria-disabled:cursor-not-allowed',
       'svg-defaults',
       '[&>svg]:order-first',
       '[&>svg]:text-inherit',
@@ -711,6 +705,9 @@ export default function (Alpine) {
     select._h_select.listeners.push(onModelChange);
 
     const onActivate = (event) => {
+      // Read at event time so a bound aria-disabled that toggles is honoured.
+      // pointer-events-none blocks the mouse but never a key press.
+      if (isDisabled(el)) return;
       if ((event.type === 'keydown' && (event.key === 'Enter' || event.key === ' ')) || event.type === 'click') {
         if (select._h_select.multiple) {
           event.stopPropagation();

@@ -1,4 +1,6 @@
+import { isDisabled } from '../common/disabled';
 import { disabledControlClasses, invalidControlClasses } from '../common/shared-classes';
+import { getFirstChar, isPrintableCharacter } from '../common/typeahead';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-listbox', (el, _, { cleanup }) => {
@@ -19,79 +21,104 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'listbox');
     el.setAttribute('role', 'listbox');
 
-    function focusFirstOption(elem) {
-      const firstOption = elem.querySelector('[role="option"]');
-      if (firstOption) firstOption.focus();
+    // Every option is reachable, disabled ones included. aria-disabled announces
+    // the option as unavailable while leaving it focusable but inert.
+    function getFocusableOptions() {
+      return [...el.querySelectorAll('[role=option]')];
     }
 
-    function focusLastOption(elem) {
-      const itemList = elem.querySelectorAll('[role="option"]');
-      if (itemList.length) {
-        itemList[itemList.length - 1].focus();
+    // Options find "the current one" through the roving tabindex, so the stop
+    // has to be moved explicitly rather than just followed by focus.
+    function moveFocus(target) {
+      if (!target) return;
+      const current = el.querySelector('[role=option][tabindex="0"]');
+      if (current) current.setAttribute('tabindex', '-1');
+      target.setAttribute('tabindex', '0');
+      target.focus();
+    }
+
+    function findMatching(str, candidates) {
+      for (const option of candidates) {
+        if (getFirstChar(option.textContent).startsWith(str.toLowerCase())) {
+          moveFocus(option);
+          return true;
+        }
       }
+      return false;
     }
 
     function selectOption(option) {
+      if (isDisabled(option)) return;
       const selected = el.querySelector('[aria-selected="true"]');
       if (selected) selected.removeAttribute('aria-selected');
       if (selected !== option) option.setAttribute('aria-selected', 'true');
     }
 
     function onKeyDown(event) {
+      const options = getFocusableOptions();
+      const index = options.findIndex((option) => option.getAttribute('tabindex') === '0');
       switch (event.key) {
-        case 'PageUp':
-        case 'PageDown':
+        case 'Up':
+        case 'ArrowUp':
           event.preventDefault();
+          // Stepping with no stop yet enters from the near end, and the ends
+          // clamp rather than wrap so the listbox has a discoverable start.
+          moveFocus(index === -1 ? options[options.length - 1] : options[index - 1]);
+          break;
+        case 'Down':
+        case 'ArrowDown':
+          event.preventDefault();
+          moveFocus(index === -1 ? options[0] : options[index + 1]);
           break;
         case 'Home':
-          focusFirstOption(el);
+        case 'PageUp':
+          event.preventDefault();
+          moveFocus(options[0]);
           break;
         case 'End':
-          focusLastOption(el);
-          break;
-        case 'Up':
-        case 'ArrowUp': {
+        case 'PageDown':
           event.preventDefault();
-          let prevElem = event.target.previousElementSibling;
-          if (prevElem && prevElem.getAttribute('data-slot') !== 'list-header') {
-            prevElem.focus();
-          } else {
-            prevElem = event.target.parentElement.previousElementSibling;
-            if (prevElem && prevElem.tagName === 'UL') {
-              focusLastOption(prevElem);
-            }
-          }
+          moveFocus(options[options.length - 1]);
           break;
-        }
-        case 'Down':
-        case 'ArrowDown': {
-          event.preventDefault();
-          let nextElem = event.target.nextElementSibling;
-          if (nextElem) {
-            nextElem.focus();
-          } else {
-            nextElem = event.target.parentElement.nextElementSibling;
-            if (nextElem && nextElem.tagName === 'UL') {
-              focusFirstOption(nextElem);
-            }
-          }
-          break;
-        }
         case ' ':
-        case 'Enter':
-          selectOption(event.target);
+        case 'Enter': {
+          const option = event.target.closest('[role=option]');
+          if (!option) break;
+          event.preventDefault();
+          selectOption(option);
           break;
+        }
         default:
-          break;
+          if (isPrintableCharacter(event.key)) {
+            // Search from after the current option first, so repeating a letter
+            // cycles through the matches instead of sticking on the first.
+            if (!findMatching(event.key, options.slice(index + 1))) {
+              findMatching(event.key, options);
+            }
+          }
       }
     }
 
     function onClick(event) {
-      if (event.target.getAttribute('data-slot') === 'list-item') selectOption(event.target);
+      const option = event.target.closest('[role=option]');
+      if (option) selectOption(option);
     }
 
     el.addEventListener('click', onClick);
     el.addEventListener('keydown', onKeyDown);
+
+    // Which option holds the tab stop cannot be decided by the items
+    // themselves, since an item cannot see whether an earlier one already
+    // claimed it. Wait for them all to mount, then give the stop to the
+    // selected option, or to the first one. A disabled option can hold the stop,
+    // since it is still announced, just not selectable.
+    queueMicrotask(() => {
+      if (el.querySelector('[role=option][tabindex="0"]')) return;
+      const options = getFocusableOptions();
+      const target = options.find((option) => option.getAttribute('aria-selected') === 'true') ?? options[0];
+      if (target) target.setAttribute('tabindex', '0');
+    });
+
     cleanup(() => {
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
@@ -101,7 +128,11 @@ export default function (Alpine) {
   Alpine.directive('h-list', (el) => {
     el.classList.add('divide-solid', 'divide-y');
     el.setAttribute('data-slot', 'list');
-    el.setAttribute('role', 'group');
+    // A listbox only permits option and group children, so a list nested in one
+    // is a group. Standalone it keeps the native list role, which is what makes
+    // a screen reader announce the item count.
+    const listbox = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'listbox');
+    if (listbox) el.setAttribute('role', 'group');
   });
 
   Alpine.directive('h-list-header', (el, { original }, { Alpine }) => {
@@ -114,8 +145,8 @@ export default function (Alpine) {
       'align-middle',
       'bg-table-header',
       'text-table-header-foreground',
-      '[[data-slot=listbox]_&:first-of-type]:rounded-t-control',
-      '[[data-slot=listbox]_&:last-of-type]:rounded-b-control'
+      '[[data-slot=listbox]>*:first-of-type_&:first-of-type]:rounded-t-control',
+      '[[data-slot=listbox]>*:last-of-type_&:last-of-type]:rounded-b-control'
     );
     el.setAttribute('role', 'presentation');
     el.setAttribute('data-slot', 'list-header');
@@ -130,7 +161,7 @@ export default function (Alpine) {
     list.setAttribute('aria-labelledby', el.getAttribute('id'));
   });
 
-  Alpine.directive('h-list-item', (el, { modifiers }) => {
+  Alpine.directive('h-list-item', (el, { modifiers }, { cleanup }) => {
     el.classList.add('min-h-11', 'flex', 'items-center', 'p-2', 'gap-2', 'align-middle', 'outline-none');
     el.setAttribute('data-slot', 'list-item');
     const listbox = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'listbox');
@@ -144,23 +175,42 @@ export default function (Alpine) {
         'active:text-table-active-foreground',
         'aria-selected:bg-primary',
         'aria-selected:text-primary-foreground',
-        '[&[aria-selected=true]:hover]:bg-primary-hover',
-        '[&[aria-selected=true]:hover]:text-primary-foreground',
-        '[&[aria-selected=true]:focus]:bg-primary-hover',
-        '[&[aria-selected=true]:focus]:text-primary-foreground',
-        '[[data-slot=listbox]_&:first-of-type]:rounded-t-control',
-        '[[data-slot=listbox]_&:last-of-type]:rounded-b-control'
+        'hover:aria-selected:bg-primary-hover',
+        'hover:aria-selected:text-primary-foreground',
+        'focus:aria-selected:bg-primary-hover',
+        'focus:aria-selected:text-primary-foreground',
+        '[[data-slot=listbox]>*:first-of-type_&:first-of-type]:rounded-t-control',
+        '[[data-slot=listbox]>*:last-of-type_&:last-of-type]:rounded-b-control',
+        'aria-disabled:opacity-disabled',
+        'aria-disabled:pointer-events-none',
+        'aria-disabled:cursor-not-allowed'
       );
-      el.setAttribute('tabindex', '0');
     }
     if (listbox) {
       setInteractive();
       el.setAttribute('role', 'option');
-      el.setAttribute('tabindex', '0');
+      // The listbox is a single tab stop, so options start out unreachable and
+      // it hands the stop to one of them once they have all mounted.
+      el.setAttribute('tabindex', '-1');
     } else if (modifiers.includes('interactive')) {
       setInteractive();
-    } else {
-      el.setAttribute('tabindex', '-1');
+      // Each interactive item is its own control rather than part of a
+      // composite widget, so it takes a tab stop and Tab moves between them
+      // the same way it moves between buttons.
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      // A native button activates on both Enter and Space, so an element only
+      // playing one has to forward those keys itself.
+      const onKeyDown = (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        if (isDisabled(el)) return;
+        // Space scrolls the page and Enter submits a surrounding form, neither
+        // of which a button press should do here.
+        event.preventDefault();
+        el.click();
+      };
+      el.addEventListener('keydown', onKeyDown);
+      cleanup(() => el.removeEventListener('keydown', onKeyDown));
     }
   });
 }

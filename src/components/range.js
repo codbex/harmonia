@@ -74,11 +74,11 @@ export default function (Alpine) {
     if (dual) {
       el.setAttribute('role', 'group');
       if (!el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby')) {
-        el.setAttribute('aria-label', el.getAttribute('data-label') || 'Range');
+        el.setAttribute('aria-label', 'Range');
       }
     }
 
-    // The input stays validatable but invisible: display:none would stop the
+    // The input stays validatable but invisible. 'display:none' would stop the
     // browser from focusing it on a failed submit.
     input.setAttribute('data-slot', 'range-input');
     input.classList.add('absolute', 'inset-0', 'opacity-0', 'pointer-events-none');
@@ -161,7 +161,7 @@ export default function (Alpine) {
       el.dispatchEvent(new CustomEvent(type, { detail: modelValue(), bubbles: true }));
     }
 
-    // aria-invalid mirroring: the hidden input is not announced, so the
+    // aria-invalid mirroring - the hidden input is not announced, so the
     // focusable role=slider handles carry it. An explicit aria-invalid on the
     // input is owned by the consumer and wins over tracked native validity.
     let nativeInvalid = false;

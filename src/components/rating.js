@@ -1,4 +1,5 @@
 import { resolveColor, textColorClass } from '../common/colors';
+import { isDisabled } from '../common/disabled';
 import { Star, StarHalf, StarHollow, createSvg } from '../common/icons';
 
 const sizeClasses = { sm: 'size-4', default: 'size-5', lg: 'size-6' };
@@ -10,9 +11,9 @@ export default function (Alpine) {
     const step = precision === 'half' ? 0.5 : 1;
     const starSize = sizeClasses[el.getAttribute('data-size')] || sizeClasses.default;
     const fillColor = textColorClass(resolveColor(el.getAttribute('data-color'), 'yellow'));
-    const isDisabled = () => el.hasAttribute('disabled') || el.getAttribute('data-disabled') === 'true';
-    const isReadonly = () => isDisabled() || el.hasAttribute('data-readonly') || el.getAttribute('data-readonly') === 'true';
-    const isInteractive = () => !isReadonly();
+    // A disabled rating stays focusable and announced, so the rating is always a
+    // slider and only editing is disabled.
+    const isEditable = () => !isDisabled(el);
 
     function clamp(v) {
       if (isNaN(v)) return 0;
@@ -23,39 +24,36 @@ export default function (Alpine) {
     let value = clamp(parseFloat(el.getAttribute('data-value')));
     let preview = null;
 
-    el.classList.add('inline-flex', 'w-fit', 'items-center', 'gap-0.5', 'outline-none');
+    // The focus ring belongs with the tab stop, which every state now has, so it
+    // sits here rather than with the editing-only classes below.
+    el.classList.add('inline-flex', 'w-fit', 'items-center', 'gap-0.5', 'outline-none', 'rounded-control', 'focus-visible:ring-ring/50', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
     el.setAttribute('data-slot', 'rating');
     if (!el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby')) {
-      el.setAttribute('aria-label', el.getAttribute('data-label') || 'Rating');
+      el.setAttribute('aria-label', 'Rating');
     }
 
-    const interactiveClasses = ['cursor-pointer', 'rounded-control', 'focus-visible:ring-ring/50', 'focus-visible:ring-[calc(var(--spacing)*0.75)]'];
+    const interactiveClasses = ['cursor-pointer'];
 
     function applyState() {
-      const disabled = isDisabled();
-      if (isInteractive()) {
-        el.setAttribute('role', 'slider');
-        el.setAttribute('tabindex', disabled ? '-1' : '0');
-        el.setAttribute('aria-valuemin', '0');
-        el.setAttribute('aria-valuemax', String(max));
-        el.setAttribute('aria-orientation', 'horizontal');
+      // The slider role, the tab stop and the value bounds hold in every state.
+      // A locked rating still has a value worth announcing, and dropping it from
+      // the tab order would leave a keyboard user unable to discover it at all.
+      el.setAttribute('role', 'slider');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-valuemin', '0');
+      el.setAttribute('aria-valuemax', String(max));
+      el.setAttribute('aria-orientation', 'horizontal');
+      if (isEditable()) {
         el.classList.add(...interactiveClasses);
       } else {
         preview = null;
-        el.setAttribute('role', 'img');
-        el.removeAttribute('tabindex');
-        el.removeAttribute('aria-valuemin');
-        el.removeAttribute('aria-valuemax');
-        el.removeAttribute('aria-valuenow');
-        el.removeAttribute('aria-valuetext');
-        el.removeAttribute('aria-orientation');
         el.classList.remove(...interactiveClasses);
       }
-      if (disabled) {
-        el.setAttribute('aria-disabled', 'true');
+      // aria-disabled is the author's to set, so the component only reads it.
+      // Dimming is the one thing it adds on top.
+      if (isDisabled(el)) {
         el.classList.add('opacity-disabled', 'cursor-not-allowed');
       } else {
-        el.removeAttribute('aria-disabled');
         el.classList.remove('opacity-disabled', 'cursor-not-allowed');
       }
       render();
@@ -71,7 +69,10 @@ export default function (Alpine) {
 
     function valueText(v) {
       if (v === 0) return el.getAttribute('data-aria-empty') || 'No rating';
-      return `${v} of ${max} stars`;
+      // A whole template rather than separate words, so a translation can put the
+      // numbers wherever its language needs them.
+      const template = el.getAttribute('data-value-label') || '{value} of {max} stars';
+      return template.replace('{value}', String(v)).replace('{max}', String(max));
     }
 
     function render() {
@@ -97,12 +98,10 @@ export default function (Alpine) {
         stars[i].setAttribute('data-state', state);
         stars[i].replaceChildren(createSvg({ icon, classes: `${starSize} ${colorClass}`, attrs: { 'aria-hidden': true, role: 'presentation' } }));
       }
-      if (isInteractive()) {
-        el.setAttribute('aria-valuenow', String(value));
-        el.setAttribute('aria-valuetext', valueText(value));
-      } else {
-        el.setAttribute('aria-label', valueText(value));
-      }
+      // The value goes in the value attributes, never in aria-label, so whatever
+      // name the author gave the rating survives.
+      el.setAttribute('aria-valuenow', String(value));
+      el.setAttribute('aria-valuetext', valueText(value));
     }
 
     function setValue(v) {
@@ -132,23 +131,23 @@ export default function (Alpine) {
     }
 
     const onPointerMove = (event) => {
-      if (!isInteractive()) return;
+      if (!isEditable()) return;
       preview = clamp(valueFromPointer(event));
       render();
     };
     const onPointerLeave = () => {
-      if (!isInteractive()) return;
+      if (!isEditable()) return;
       preview = null;
       render();
     };
     const onClick = (event) => {
-      if (!isInteractive()) return;
+      if (!isEditable()) return;
       const picked = clamp(valueFromPointer(event));
       // Clicking the current value again clears the rating.
       setValue(picked === value ? 0 : picked);
     };
     const onKeyDown = (event) => {
-      if (!isInteractive()) return;
+      if (!isEditable()) return;
       let handled = true;
       switch (event.key) {
         case 'ArrowRight':
@@ -179,7 +178,7 @@ export default function (Alpine) {
     applyState();
 
     const stateObserver = new MutationObserver(applyState);
-    stateObserver.observe(el, { attributeFilter: ['disabled', 'data-disabled', 'data-readonly'] });
+    stateObserver.observe(el, { attributeFilter: ['aria-disabled'] });
 
     // Sync from an external x-model value (the effect runs after Alpine has wired
     // x-model, so el._x_model is available here).

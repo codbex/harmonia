@@ -67,14 +67,19 @@ function resolveColor(color, palette, index) {
   return KNOWN_COLORS.includes(color) ? color : palette[index % palette.length];
 }
 
-/** Canonicalize bar/line config into `[{ name, color, data: number[] }]`. */
+/**
+ * Canonicalize bar/line config into `[{ name, color, data: number[] }]`.
+ * A series without a name falls back to `cfg.seriesLabel` with `{index}`
+ * substituted, so the generated name can be translated.
+ */
 export function normalizeSeries(cfg, palette) {
   let series = Array.isArray(cfg.series) ? cfg.series : [];
   if (!series.length && Array.isArray(cfg.data)) series = [{ data: cfg.data }];
+  const template = typeof cfg.seriesLabel === 'string' ? cfg.seriesLabel : 'Series {index}';
   return series
     .filter((s) => s && Array.isArray(s.data))
     .map((s, i) => ({
-      name: s.name != null ? String(s.name) : `Series ${i + 1}`,
+      name: s.name != null ? String(s.name) : template.replace('{index}', String(i + 1)),
       color: resolveColor(s.color, palette, i),
       data: s.data.map((v) => (typeof v === 'number' && !Number.isNaN(v) ? v : 0)),
     }));

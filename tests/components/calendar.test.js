@@ -150,6 +150,20 @@ describe('h-calendar', () => {
     expect(moreEl.textContent).toBe('+2 more');
   });
 
+  it('builds the overflow label from data-more-label', () => {
+    const events = Array.from({ length: 5 }, (_, i) => ({
+      id: String(i),
+      title: `Event ${i}`,
+      start: '2026-06-18T10:00:00',
+      end: '2026-06-18T11:00:00',
+      color: 'blue',
+    }));
+    el.setAttribute('data-more-label', 'noch {count}');
+    mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2026-06-18', events }) });
+    const moreEl = el.querySelector('[data-slot="overflow-more-btn"]');
+    expect(moreEl.textContent).toBe('noch 2');
+  });
+
   it('dispatches event-click with event detail when an event pill is clicked', () => {
     const events = [{ id: 'e1', title: 'Clickable', start: '2026-06-18T09:00:00', end: '2026-06-18T10:00:00', color: 'blue' }];
     mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2026-06-18', events }) });
@@ -200,6 +214,62 @@ describe('h-calendar', () => {
     expect(title).toBeTruthy();
     title.click();
     expect(el.querySelectorAll('time').length).toBe(42);
+  });
+
+  describe('initial scroll position', () => {
+    // The scrollable time grid is the only flex-1 overflow-y-auto container in
+    // week/day views (the all-day strip above it is max-h-18 flex-none).
+    function scrollTop() {
+      return el.querySelector('.overflow-y-auto.flex-1').scrollTop;
+    }
+
+    function mountGrid(config) {
+      const raf = vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      try {
+        mount('calConfig', { evaluateLater: () => (cb) => cb(config) });
+      } finally {
+        raf.mockRestore();
+      }
+    }
+
+    it('defaults to 8 am when the range has no today and scrollTo is absent', () => {
+      mountGrid({ view: 'day', date: '2020-06-18', events: [{ title: 'Standup', start: '2020-06-18T10:00' }] });
+      expect(scrollTop()).toBe(8 * 60);
+    });
+
+    it('scrollTo "first-event" anchors on the earliest event minus a 60min buffer', () => {
+      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Standup', start: '2020-06-18T10:00' }] });
+      expect(scrollTop()).toBe(540);
+    });
+
+    it('scrollTo "first-event" in week view picks the earliest across all visible days', () => {
+      mountGrid({
+        view: 'week',
+        date: '2020-06-18',
+        scrollTo: 'first-event',
+        events: [
+          { title: 'Late', start: '2020-06-18T16:00' },
+          { title: 'Early', start: '2020-06-16T09:30' },
+          { title: 'Mid', start: '2020-06-17T13:00' },
+        ],
+      });
+      expect(scrollTop()).toBe(510);
+    });
+
+    it('scrollTo "first-event" ignores all-day events and falls back', () => {
+      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Holiday', start: '2020-06-18', allDay: true }] });
+      expect(scrollTop()).toBe(8 * 60);
+    });
+
+    it('scrollTo "first-event" clamps an early-morning event to the top', () => {
+      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Redeye', start: '2020-06-18T00:15' }] });
+      expect(scrollTop()).toBe(0);
+    });
+
+    it('ignores an invalid scrollTo value', () => {
+      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'bogus', events: [{ title: 'Standup', start: '2020-06-18T10:00' }] });
+      expect(scrollTop()).toBe(8 * 60);
+    });
   });
 
   describe('accessibility', () => {

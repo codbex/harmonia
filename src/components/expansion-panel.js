@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { isAssignable } from '../common/assignable';
 import { ChevronDown, createSvg } from '../common/icons';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
@@ -7,7 +8,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'exp-panel');
   });
 
-  Alpine.directive('h-exp-panel-item', (el, { expression }, { evaluate, evaluateLater, effect, Alpine }) => {
+  Alpine.directive('h-exp-panel-item', (el, { original, expression }, { evaluate, evaluateLater, effect, Alpine }) => {
     el.classList.add(
       'flex',
       'flex-col',
@@ -58,8 +59,18 @@ export default function (Alpine) {
         });
       });
 
+      // The expression is interpolated onto the left of an assignment to write
+      // the state back, which only works for a reference. Checked up front
+      // because Alpine rethrows the resulting SyntaxError asynchronously, so it
+      // would otherwise surface as a bare uncaught error with nothing pointing
+      // at the directive that caused it.
+      const canWriteExpanded = isAssignable(expression);
+      if (!canWriteExpanded) {
+        console.error(`${original}: the expression "${expression}" cannot be assigned to, so the expanded state cannot be written back. Use a property such as "panelOpen".`, el);
+      }
+
       effect(() => {
-        if (evaluate(expression) !== el._h_expPanelItem.expanded) {
+        if (canWriteExpanded && evaluate(expression) !== el._h_expPanelItem.expanded) {
           evaluate(`${expression} = ${el._h_expPanelItem.expanded}`);
         }
       });

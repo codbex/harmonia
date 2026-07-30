@@ -5,6 +5,7 @@
 @import "./radio.css";
 @import "./calendar.css";
 @import "./bubble.css";
+@import "./bottom-nav.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 @source not "../../docs/";
 @source not "../../tests/";
