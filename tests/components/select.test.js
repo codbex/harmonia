@@ -491,6 +491,37 @@ describe('h-select-input keyboard navigation', () => {
       keydown(root, 'ArrowDown');
       expect(document.activeElement).toBe(options[1]);
     });
+
+    // The stop has to leave with the option. Left on something hidden it sits
+    // outside the navigable list, and the arrows lose their place.
+    it('drops the tab stop from an option the search hides', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'ArrowDown');
+      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
+      state.search = 'b';
+      expect(options[0].classList.contains('hidden')).toBe(true);
+      expect(options[0].getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('resumes from the first visible option after the focused one is filtered out', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      state.search = 'b';
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    // Filtering, then narrowing again without an arrow press in between. The
+    // stop is never cleared, so it comes back on an option nobody focused.
+    it('does not restore a stale tab stop when the search is cleared', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      state.search = 'b';
+      state.search = '';
+      expect(tabIndexes(options)).toEqual(['-1', '-1', '-1']);
+    });
   });
 
   describe('typeahead', () => {
@@ -600,6 +631,23 @@ describe('h-select-input keyboard navigation', () => {
       expect(document.activeElement).toBe(options[1]);
       keydown(options[1], 'Enter');
       expect(set).not.toHaveBeenCalled();
+    });
+
+    // Activating a disabled option is a complete no-op. Closing the list would
+    // read as though the key had done something.
+    it('leaves the list open on Enter and Space over a disabled option', () => {
+      for (const key of ['Enter', ' ']) {
+        const { options, set, state } = setupWithModel({ count: 2, disabled: [1] });
+        keydown(options[1], key);
+        expect(set).not.toHaveBeenCalled();
+        expect(state.expanded).toBe(true);
+      }
+    });
+
+    it('still closes the list on Enter over an enabled option', () => {
+      const { options, state } = setupWithModel({ count: 2 });
+      keydown(options[0], 'Enter');
+      expect(state.expanded).toBe(false);
     });
   });
 });

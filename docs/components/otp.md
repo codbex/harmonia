@@ -101,7 +101,7 @@ By default this control shows native-constraint errors only after the user attem
 </div>
 ```
 
-</LiveExample data-exclude="generator">
+</LiveExample>
 
 ### PIN
 

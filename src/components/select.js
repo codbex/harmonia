@@ -278,6 +278,9 @@ export default function (Alpine) {
         case ' ':
         case 'Enter':
           event.preventDefault();
+          // Activating a disabled option is a complete no-op, so the list does
+          // not even close. onActivate has already refused to select it.
+          if (isDisabled(event.target.closest('[role=option]'))) break;
           if (!select._h_select.multiple) {
             close(true);
           }
@@ -664,27 +667,30 @@ export default function (Alpine) {
       });
     });
 
+    // A hidden option is out of the arrow order, so it cannot keep the stop.
+    // Left behind it would come back when the search clears, on an option
+    // nobody focused.
+    function setHidden(hidden) {
+      el.classList.toggle('hidden', hidden);
+      if (hidden) el.setAttribute('tabindex', '-1');
+    }
+
     effect(() => {
       if (select._h_select.search) {
         const haystack = (select._h_select.includeDesc && descriptionEl ? `${labelEl.innerText} ${descriptionEl.innerText}` : labelEl.innerText).toLowerCase();
         if (select._h_select.filterType === FilterType['starts-with']) {
           // starts-with always keys off the label, since a prefix match inside
           // the description would be surprising.
-          if (!labelEl.innerText.toLowerCase().startsWith(select._h_select.search)) {
-            el.classList.add('hidden');
-          } else el.classList.remove('hidden');
+          setHidden(!labelEl.innerText.toLowerCase().startsWith(select._h_select.search));
         } else if (select._h_select.filterType === FilterType.contains) {
-          if (!haystack.includes(select._h_select.search)) {
-            el.classList.add('hidden');
-          } else el.classList.remove('hidden');
+          setHidden(!haystack.includes(select._h_select.search));
         } else if (select._h_select.filterType === FilterType['contains-each']) {
           const terms = select._h_select.search.split(' ');
-          if (!terms.every((term) => haystack.includes(term))) el.classList.add('hidden');
-          else el.classList.remove('hidden');
+          setHidden(!terms.every((term) => haystack.includes(term)));
         } else {
-          el.classList.remove('hidden');
+          setHidden(false);
         }
-      } else el.classList.remove('hidden');
+      } else setHidden(false);
     });
 
     function setSelectedState(selected) {

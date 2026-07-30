@@ -505,6 +505,28 @@ describe('h-menubar-trigger', () => {
       expect(blocked).not.toHaveBeenCalled();
     });
 
+    // The same move, but arrowed from the trigger itself rather than from
+    // inside an open menu. Focus sits on a trigger with a sibling menu still
+    // open after Escape, or right after a click opened one.
+    it('arrowing along an open bar lands on an aria-disabled trigger without opening its menu', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [1] });
+      const blocked = vi.fn();
+      const closed = vi.fn();
+      buttons[1]._h_menu_trigger.openMenu = blocked;
+      buttons[0]._h_menu_trigger.closeMenu = closed;
+      // Mark the bar as having an open menu, which is what makes the arrow
+      // carry it along.
+      buttons[0]._h_menu_trigger.setOpen(true);
+      buttons[0].focus();
+      keydown(buttons[0], 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[1]);
+      expect(blocked).not.toHaveBeenCalled();
+      expect(buttons[1]._h_menu_trigger.focusOnOpen).toBeUndefined();
+      // The menu being left has to close on its own here. Nothing else will,
+      // since the disabled trigger's setOpen never runs.
+      expect(closed).toHaveBeenCalled();
+    });
+
     it('Home focuses the first enabled trigger', () => {
       const { buttons } = createMenubar({ triggers: 4, disabled: [0] });
       buttons[2].focus();
@@ -588,6 +610,31 @@ describe('h-menubar-trigger', () => {
       const { buttons } = createMenubar({ triggers: 2, ariaDisabled: [0] });
       keydown(buttons[0], 'Enter');
       expect(buttons[0]._h_menu_trigger.focusOnOpen).toBeUndefined();
+    });
+
+    // The browser turns Enter and Space on a button into a click, and
+    // pointer-events-none does not stop a keyboard-generated one. Ignoring the
+    // key is not enough, it has to be swallowed or the menu still opens.
+    it('swallows Enter and Space on an aria-disabled trigger, so no click is synthesized', () => {
+      const { buttons } = createMenubar({ triggers: 2, ariaDisabled: [0] });
+      const openMenu = vi.fn();
+      buttons[0]._h_menu_trigger.openMenu = openMenu;
+      for (const key of ['Enter', ' ']) {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        buttons[0].dispatchEvent(event);
+        expect(event.defaultPrevented).toBe(true);
+      }
+      expect(openMenu).not.toHaveBeenCalled();
+    });
+
+    // An enabled trigger must keep relying on the native click, so the key is
+    // deliberately left alone there.
+    it('does not swallow Enter on an enabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 2 });
+      const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      buttons[0].dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(false);
+      expect(buttons[0]._h_menu_trigger.focusOnOpen).toBe('first');
     });
 
     it('applies the aria-disabled styling classes', () => {

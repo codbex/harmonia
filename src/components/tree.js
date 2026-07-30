@@ -425,7 +425,6 @@ export default function (Alpine) {
       // An open dropdown stays lit, so the row it belongs to is obvious.
       'aria-[expanded=true]:bg-secondary-active',
       'aria-[expanded=true]:text-secondary-foreground',
-      'outline-hidden',
       'outline-ring/50',
       'focus-outline',
       'transition-colors',

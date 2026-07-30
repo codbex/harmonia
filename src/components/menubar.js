@@ -205,18 +205,30 @@ export default function (Alpine) {
       // The arrows still move focus off it, but nothing else acts on it. A native
       // disabled button never receives keydown at all, so this is only for the
       // aria case.
-      if (isDisabled(el) && !navigationKeys.includes(event.key)) return;
+      if (isDisabled(el) && !navigationKeys.includes(event.key)) {
+        // Swallowed, not just ignored. The browser turns them into a click, and
+        // pointer-events-none does not block a keyboard-generated one.
+        if (event.key === ' ' || event.key === 'Enter') event.preventDefault();
+        return;
+      }
       switch (event.key) {
         case 'Right':
         case 'ArrowRight':
         case 'Left':
         case 'ArrowLeft': {
           event.preventDefault();
-          const wasOpen = state.open !== null;
+          const open = state.open;
           const next = moveFocus(event.key === 'Right' || event.key === 'ArrowRight' ? 'next' : 'previous');
-          if (wasOpen && next !== el) {
-            next._h_menu_trigger.focusOnOpen = 'first';
-            next._h_menu_trigger.openMenu?.();
+          // As in moveInBar - an open menu travels with the focus, but a
+          // disabled trigger has none to carry. Closing the old one here rather
+          // than leaving it to the next trigger's setOpen, which never runs
+          // when that trigger is disabled.
+          if (open && next !== el) {
+            open._h_menu_trigger.closeMenu?.();
+            if (!isDisabled(next)) {
+              next._h_menu_trigger.focusOnOpen = 'first';
+              next._h_menu_trigger.openMenu?.();
+            }
           }
           break;
         }

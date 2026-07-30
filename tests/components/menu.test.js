@@ -366,6 +366,121 @@ describe('h-menu', () => {
       expect(document.activeElement).toBe(items[1]);
     });
   });
+
+  // The docs "Disabled items" example, which mixes every item type with
+  // separators between them. It used to lock focus on the checkbox, skip the
+  // submenu going up, and collapse into a three-item orbit, because each item
+  // wrote its own tab stop and a stop left behind decided where the arrows
+  // thought they were.
+  describe('mixed item types navigate as one list', () => {
+    const key = (el, k) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+    async function openMixedMenu() {
+      const container = document.createElement('div');
+      const trigger = document.createElement('button');
+      trigger._h_menu_trigger = { isDropdown: true, navItem: true, openMenu: undefined, closeMenu: undefined, setOpen: vi.fn() };
+      trigger.setAttribute('id', 'mixed-trigger-id');
+      const menu = document.createElement('ul');
+      menu.setAttribute('aria-label', 'Mixed menu');
+
+      // Matches docs/components/menu.md "Disabled items" one for one.
+      const spec = [
+        { kind: 'item', text: 'Rename' },
+        { kind: 'item', text: 'Duplicate', disabled: true },
+        { kind: 'sub', text: 'Move to', disabled: true },
+        { kind: 'separator' },
+        { kind: 'checkbox', text: 'Auto-Save', disabled: true },
+        { kind: 'separator' },
+        { kind: 'radio', text: 'Everyone' },
+        { kind: 'radio', text: 'Admins only', disabled: true },
+        { kind: 'separator' },
+        { kind: 'item', text: 'Delete', disabled: true },
+      ];
+
+      const built = [];
+      const mounts = [];
+      for (const entry of spec) {
+        const tag = entry.kind === 'checkbox' || entry.kind === 'separator' ? 'div' : 'li';
+        const node = document.createElement(tag);
+        if (entry.text) node.textContent = entry.text;
+        if (entry.disabled) node.setAttribute('aria-disabled', 'true');
+        menu.appendChild(node);
+        if (entry.kind === 'separator') {
+          mounts.push(['h-menu-separator', node]);
+          continue;
+        }
+        const directive = { item: 'h-menu-item', sub: 'h-menu-sub', checkbox: 'h-menu-checkbox-item', radio: 'h-menu-radio-item' }[entry.kind];
+        mounts.push([directive, node]);
+        built.push(node);
+      }
+
+      container.appendChild(trigger);
+      container.appendChild(menu);
+      document.body.appendChild(container);
+      mountDirective(menuPlugin, 'h-menu', menu, { original: 'x-h-menu', modifiers: [] });
+      for (const [directive, node] of mounts) {
+        mountDirective(menuPlugin, directive, node, { original: `x-${directive}`, modifiers: [], expression: '' });
+      }
+      trigger._h_menu_trigger.openMenu();
+      await flush();
+      return { menu, items: built };
+    }
+
+    // The invariant whose absence let the bug through - a second item holding the
+    // stop is what made the arrows lose their place.
+    const stops = (menu) => menu.querySelectorAll(':scope > [role^=menuitem][tabindex="0"]').length;
+
+    it('ArrowDown reaches every item in order and wraps', async () => {
+      const { menu, items } = await openMixedMenu();
+      expect(items).toHaveLength(7);
+      key(menu, 'ArrowDown');
+      for (let i = 0; i < items.length; i++) {
+        expect(document.activeElement).toBe(items[i]);
+        expect(stops(menu)).toBe(1);
+        key(document.activeElement, 'ArrowDown');
+      }
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('ArrowUp reaches every item in reverse and wraps', async () => {
+      const { menu, items } = await openMixedMenu();
+      key(menu, 'ArrowUp');
+      for (let i = items.length - 1; i >= 0; i--) {
+        expect(document.activeElement).toBe(items[i]);
+        expect(stops(menu)).toBe(1);
+        key(document.activeElement, 'ArrowUp');
+      }
+      expect(document.activeElement).toBe(items[items.length - 1]);
+    });
+
+    // The checkbox is where focus used to lock, so it gets its own assertion
+    // that arrowing off it actually leaves.
+    it('moves off the disabled checkbox item', async () => {
+      const { menu, items } = await openMixedMenu();
+      const checkbox = items.find((item) => item.getAttribute('role') === 'menuitemcheckbox');
+      checkbox.focus();
+      key(checkbox, 'ArrowDown');
+      expect(document.activeElement).not.toBe(checkbox);
+      expect(document.activeElement).toBe(items[items.indexOf(checkbox) + 1]);
+    });
+
+    // The disabled submenu is what left a permanent stop behind, so passing
+    // over it in both directions is the direct regression check.
+    it('passes over the disabled submenu item in both directions', async () => {
+      const { menu, items } = await openMixedMenu();
+      const sub = items.find((item) => item.getAttribute('aria-haspopup') === 'true');
+      const index = items.indexOf(sub);
+      sub.focus();
+      key(sub, 'ArrowDown');
+      expect(document.activeElement).toBe(items[index + 1]);
+      sub.focus();
+      key(sub, 'ArrowUp');
+      expect(document.activeElement).toBe(items[index - 1]);
+      expect(sub.getAttribute('aria-expanded')).toBe('false');
+      expect(stops(menu)).toBe(1);
+    });
+  });
 });
 
 describe('h-menu-item', () => {
@@ -536,11 +651,25 @@ describe('h-menu-sub', () => {
     expect(sub.getAttribute('aria-expanded')).toBe('false');
   });
 
+  // The parent menu owns the roving stop, so the subitem no longer writes its
+  // own. What matters here is that it stays a reachable menuitem announced as a
+  // submenu, which is what keeps it in the arrow order.
   it('stays focusable when disabled, so it is still announced', () => {
     const { sub } = createSubSetup({ disabled: true });
     sub.dispatchEvent(new FocusEvent('focus'));
-    expect(sub.getAttribute('tabindex')).toBe('0');
+    expect(sub.getAttribute('role')).toBe('menuitem');
+    expect(sub.hasAttribute('tabindex')).toBe(true);
     expect(sub.getAttribute('aria-haspopup')).toBe('true');
+  });
+
+  it('swallows the expand keys when disabled, so they never reach the menu', () => {
+    const { sub } = createSubSetup({ disabled: true });
+    sub.dispatchEvent(new FocusEvent('focus'));
+    for (const key of ['ArrowRight', 'Enter', ' ']) {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+      sub.dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(true);
+    }
   });
 
   it('still opens on mouseenter when enabled', () => {

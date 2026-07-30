@@ -126,6 +126,7 @@ export default function (Alpine) {
       removeDismiss(el, 'contextmenu', onClick);
       removeDismiss(el, 'click', onClick);
       el.removeEventListener('keydown', onKeyDown);
+      el.removeEventListener('focusin', onFocusIn);
       if (isSubmenu) {
         if (closeParent) {
           menuSubItem._menu_sub.closeTree();
@@ -144,7 +145,7 @@ export default function (Alpine) {
     function findMatching(str, items) {
       for (let i = 0; i < items.length; i++) {
         if (getFirstChar(items[i].textContent).startsWith(str.toLowerCase())) {
-          items[i].focus();
+          focusItem(items[i]);
           return true;
         }
       }
@@ -159,18 +160,46 @@ export default function (Alpine) {
       return Array.from(el.querySelectorAll(':scope > [role^=menuitem]'));
     }
 
-    // The focused item is the one Alpine's focus handlers moved to tabindex 0.
-    function moveFocus(offset) {
+    // Writes the stop across every item. Two items holding tabindex 0 would
+    // collapse the arrow order onto whichever comes first.
+    function setTabStop(target) {
+      for (const item of getFocusableItems()) {
+        item.setAttribute('tabindex', item === target ? '0' : '-1');
+      }
+    }
+
+    // The only way focus moves between items, so the stop cannot drift.
+    function focusItem(target) {
+      if (!target) return;
+      setTabStop(target);
+      target.focus();
+    }
+
+    // Returns -1 while the menu itself still holds focus, which the callers
+    // treat as "nothing focused yet".
+    function currentItem(event, items) {
+      const item = event.target.closest?.('[role^=menuitem]');
+      return item && items.includes(item) ? items.indexOf(item) : -1;
+    }
+
+    function moveFocus(event, offset) {
       const items = getFocusableItems();
       if (!items.length) return;
-      const current = items.findIndex((item) => item.getAttribute('tabindex') === '0');
+      const current = currentItem(event, items);
       // With nothing focused yet, stepping down starts at the first item and
       // stepping up at the last.
       if (current === -1) {
-        items[offset > 0 ? 0 : items.length - 1].focus();
+        focusItem(items[offset > 0 ? 0 : items.length - 1]);
         return;
       }
-      items[(current + offset + items.length) % items.length].focus();
+      focusItem(items[(current + offset + items.length) % items.length]);
+    }
+
+    // Focus also arrives by click and by hover, so the stop follows it there
+    // too. 'focus' does not bubble, hence focusin.
+    function onFocusIn(event) {
+      const item = event.target.closest?.('[role^=menuitem]');
+      if (item && item.parentElement === el) setTabStop(item);
     }
 
     function onClick(event) {
@@ -229,25 +258,25 @@ export default function (Alpine) {
           case 'Down':
           case 'ArrowDown':
             event.preventDefault();
-            moveFocus(1);
+            moveFocus(event, 1);
             break;
           case 'Up':
           case 'ArrowUp':
             event.preventDefault();
-            moveFocus(-1);
+            moveFocus(event, -1);
             break;
           case 'Home':
           case 'PageUp': {
             event.preventDefault();
             const items = getFocusableItems();
-            if (items.length) items[0].focus();
+            focusItem(items[0]);
             break;
           }
           case 'End':
           case 'PageDown': {
             event.preventDefault();
             const items = getFocusableItems();
-            if (items.length) items[items.length - 1].focus();
+            focusItem(items[items.length - 1]);
             break;
           }
           default:
@@ -255,7 +284,7 @@ export default function (Alpine) {
               // Search from after the focused item first, so repeating a letter
               // cycles through the matches instead of sticking on the first.
               const items = getFocusableItems();
-              const current = items.findIndex((item) => item.getAttribute('tabindex') === '0');
+              const current = currentItem(event, items);
               if (!findMatching(event.key, items.slice(current + 1))) {
                 findMatching(event.key, items);
               }
@@ -311,16 +340,19 @@ export default function (Alpine) {
                 if (focusOnOpen) {
                   // A disabled item can take the initial focus, since it is
                   // announced rather than hidden.
-                  const items = el.querySelectorAll(':scope > [role^=menuitem]');
+                  const items = getFocusableItems();
                   focusTarget = (focusOnOpen === 'last' ? items[items.length - 1] : items[0]) ?? el;
                 }
-                Alpine.nextTick(() => focusTarget.focus());
+                // Opening onto an item seeds the stop there, onto the menu
+                // leaves every item at -1.
+                Alpine.nextTick(() => (focusTarget === el ? el.focus() : focusItem(focusTarget)));
                 listenForTrigger(false);
               }
               Alpine.nextTick(() => {
                 addDismiss(el, 'contextmenu', onClick);
                 addDismiss(el, 'click', onClick);
                 el.addEventListener('keydown', onKeyDown);
+                el.addEventListener('focusin', onFocusIn);
               });
             }
             Object.assign(el.style, {
@@ -394,6 +426,7 @@ export default function (Alpine) {
       removeDismiss(el, 'click', onClick);
       removeDismiss(el, 'contextmenu', onClick);
       el.removeEventListener('keydown', onKeyDown);
+      el.removeEventListener('focusin', onFocusIn);
       el.removeEventListener('transitionend', onTransitionEnd);
     });
   });
@@ -442,19 +475,17 @@ export default function (Alpine) {
 
     const menu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
 
-    function focusOut(event) {
-      el.setAttribute('tabindex', '-1');
-      if (event.type === 'mouseleave') menu.focus();
+    // Hovering moves the real focus and the menu's focusin handler follows it.
+    function onMouseEnter() {
+      el.focus();
     }
 
-    function focusIn() {
-      el.setAttribute('tabindex', '0');
-      el.addEventListener('blur', focusOut);
-      el.addEventListener('mouseleave', focusOut);
+    function onMouseLeave() {
+      menu.focus();
     }
 
-    el.addEventListener('mouseenter', focusIn);
-    el.addEventListener('focus', focusIn);
+    el.addEventListener('mouseenter', onMouseEnter);
+    el.addEventListener('mouseleave', onMouseLeave);
 
     function syncActive() {
       if (el.hasAttribute('data-active')) {
@@ -470,10 +501,8 @@ export default function (Alpine) {
     observer.observe(el, { attributes: true, attributeFilter: ['data-active'] });
 
     cleanup(() => {
-      el.removeEventListener('mouseenter', focusIn);
-      el.removeEventListener('focus', focusIn);
-      el.removeEventListener('blur', focusOut);
-      el.removeEventListener('mouseleave', focusOut);
+      el.removeEventListener('mouseenter', onMouseEnter);
+      el.removeEventListener('mouseleave', onMouseLeave);
       observer.disconnect();
     });
   });
@@ -534,10 +563,14 @@ export default function (Alpine) {
 
     function onKeyDown(event) {
       if (keyEvents.includes(event.key)) {
+        // Consumed even when disabled, or the key would fall through to the
+        // parent menu and act there.
         event.stopPropagation();
         event.preventDefault();
+        if (isDisabled(el)) return;
         el.removeEventListener('keydown', onKeyDown);
-        const submenuitem = el.querySelector('[role^=menuitem][tabIndex="-1"]:first-of-type');
+        const submenu = el.querySelector(':scope > [role=menu]');
+        const submenuitem = submenu?.querySelector(':scope > [role^=menuitem]');
         if (submenuitem) {
           el.setAttribute('aria-expanded', 'true');
           el._menu_sub.open(el);
@@ -552,11 +585,13 @@ export default function (Alpine) {
     }
 
     function focusOut(event) {
-      el.setAttribute('tabindex', '-1');
       if (event.type === 'mouseleave') {
-        el._menu_sub.close();
-        el._menu_sub.expanded = false;
-        el.setAttribute('aria-expanded', false);
+        // A disabled subitem never opened, so there is nothing to close.
+        if (!isDisabled(el)) {
+          el._menu_sub.close();
+          el._menu_sub.expanded = false;
+          el.setAttribute('aria-expanded', false);
+        }
         parentMenu.pauseKeyEvents = false;
         parentMenu.focus();
       } else if (el._menu_sub.expanded) {
@@ -569,11 +604,13 @@ export default function (Alpine) {
     }
 
     function focusIn(event) {
-      el.setAttribute('tabindex', '0');
-      // A disabled subitem keeps its place in the arrow order and its
-      // aria-haspopup, so it is announced as a submenu that cannot be opened.
-      // The tab stop above is set first, or focus would have nowhere to rest.
-      if (isDisabled(el)) return;
+      // A disabled subitem is announced as a submenu that cannot be opened. It
+      // still listens, to swallow the expand keys and to hand focus back.
+      if (isDisabled(el)) {
+        if (event.type === 'focus') el.addEventListener('keydown', onKeyDown);
+        else if (event.type === 'mouseenter') el.addEventListener('mouseleave', focusOut);
+        return;
+      }
       if (event.type === 'click' && event.pointerType === 'touch' && (event.target === el || event.target.parentElement === el)) {
         el._menu_sub.open(el);
         el._menu_sub.expanded = true;
@@ -680,29 +717,25 @@ export default function (Alpine) {
 
     const menu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
 
-    function focusOut(event) {
-      el.setAttribute('tabindex', '-1');
-      if (event.type === 'mouseleave') menu.focus();
+    // Hovering moves the real focus and the menu's focusin handler follows it.
+    function onMouseEnter() {
+      el.focus();
     }
 
-    function focusIn() {
-      el.setAttribute('tabindex', '0');
-      el.addEventListener('blur', focusOut);
-      el.addEventListener('mouseleave', focusOut);
+    function onMouseLeave() {
+      menu.focus();
     }
 
-    el.addEventListener('mouseenter', focusIn);
-    el.addEventListener('focus', focusIn);
+    el.addEventListener('mouseenter', onMouseEnter);
+    el.addEventListener('mouseleave', onMouseLeave);
 
     cleanup(() => {
       if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
         el.removeEventListener('click', onActivate);
         el.removeEventListener('keydown', onActivate);
       }
-      el.removeEventListener('mouseenter', focusIn);
-      el.removeEventListener('focus', focusIn);
-      el.removeEventListener('blur', focusOut);
-      el.removeEventListener('mouseleave', focusOut);
+      el.removeEventListener('mouseenter', onMouseEnter);
+      el.removeEventListener('mouseleave', onMouseLeave);
     });
   });
 
@@ -781,29 +814,25 @@ export default function (Alpine) {
 
     const menu = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('role') === 'menu');
 
-    function focusOut(event) {
-      el.setAttribute('tabindex', '-1');
-      if (event.type === 'mouseleave') menu.focus();
+    // Hovering moves the real focus and the menu's focusin handler follows it.
+    function onMouseEnter() {
+      el.focus();
     }
 
-    function focusIn() {
-      el.setAttribute('tabindex', '0');
-      el.addEventListener('blur', focusOut);
-      el.addEventListener('mouseleave', focusOut);
+    function onMouseLeave() {
+      menu.focus();
     }
 
-    el.addEventListener('mouseenter', focusIn);
-    el.addEventListener('focus', focusIn);
+    el.addEventListener('mouseenter', onMouseEnter);
+    el.addEventListener('mouseleave', onMouseLeave);
 
     cleanup(() => {
       if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
         el.removeEventListener('click', onActivate);
         el.removeEventListener('keydown', onActivate);
       }
-      el.removeEventListener('mouseenter', focusIn);
-      el.removeEventListener('focus', focusIn);
-      el.removeEventListener('blur', focusOut);
-      el.removeEventListener('mouseleave', focusOut);
+      el.removeEventListener('mouseenter', onMouseEnter);
+      el.removeEventListener('mouseleave', onMouseLeave);
     });
   });
 }

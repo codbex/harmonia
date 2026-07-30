@@ -51,7 +51,7 @@ const COMBINED = {
   },
   inputs: {
     label: 'Inputs & Labels',
-    sources: ['components/input.md', 'components/label.md', 'components/input-group.md', 'components/input-number.md', 'components/textarea.md'],
+    sources: ['components/input.md', 'components/label.md', 'components/input-group.md', 'components/input-number.md', 'components/otp.md', 'components/textarea.md'],
   },
   list: { label: 'List & Listbox', sources: ['components/list.md', 'components/listbox.md'] },
   menus: { label: 'Menus & Dropdowns', sources: ['components/menu.md', 'components/menubar.md', 'components/navigation-menu.md'] },

@@ -28,7 +28,7 @@ Use tree components for file systems, category hierarchies, or any dataset with 
 
 | Attribute            | Type    | Required | Description                                                                                              |
 | -------------------- | ------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| data-multiselectable | boolean | false    | Announces the tree as multi-selectable. Set it when the items carry checkboxes.                          |
+| aria-multiselectable | boolean | false    | Announces the tree as multi-selectable. Set it when the items carry checkboxes.                          |
 | data-line            | boolean | false    | On a nested tree, draws the line on its left side that connects the items inside it. Default is `false`. |
 
 #### x-h-tree-item
@@ -355,7 +355,7 @@ Listen for `tree-item-click` on the tree and decide what selected means. Here ea
 Place a checkbox in the row and bind its checked state yourself. The disabled item shows the cascade, since its checkbox is disabled by the item rather than by hand.
 
 ```html
-<ul x-h-tree aria-label="Documents" data-multiselectable="true" x-data="{ selected: ['readme'] }">
+<ul x-h-tree aria-label="Documents" aria-multiselectable="true" x-data="{ selected: ['readme'] }">
   <li x-h-tree-item="true">
     <div x-h-tree-row>
       <span x-h-checkbox.tree>
@@ -396,7 +396,7 @@ A parent checkbox that reflects its children is a matter of driving the native `
 <ul
   x-h-tree
   aria-label="Permissions"
-  data-multiselectable="true"
+  aria-multiselectable="true"
   x-data="{
     children: ['read', 'write', 'delete'],
     selected: ['read'],
@@ -496,7 +496,7 @@ Render a tree of any depth from JSON by pairing `x-for` with the template direct
 ### Everything together
 
 ```html
-<ul x-h-tree aria-label="Repository" data-multiselectable="true" x-data="{ selected: [], active: 'tree.js' }" @tree-item-click="active = $event.target.dataset.value">
+<ul x-h-tree aria-label="Repository" aria-multiselectable="true" x-data="{ selected: [], active: 'tree.js' }" @tree-item-click="active = $event.target.dataset.value">
   <li x-h-tree-item="true" data-value="src">
     <div x-h-tree-row>
       <span x-h-checkbox.tree>
