@@ -63,24 +63,12 @@
             <p class="text-base font-medium">Date format</p>
             <p x-h-text.muted>Applied to due dates, uploads, and activity entries.</p>
           </div>
-          <div class="vbox gap-2">
-            <div class="hbox items-center gap-2">
-              <span x-h-radio>
-                <input type="radio" name="dateFormat" id="df-mdy" value="mdy" x-model="$store.erp.settings.dateFormat" />
-              </span>
-              <label class="text-base" for="df-mdy">Jul 3, 2026</label>
-            </div>
-            <div class="hbox items-center gap-2">
-              <span x-h-radio>
-                <input type="radio" name="dateFormat" id="df-dmy" value="dmy" x-model="$store.erp.settings.dateFormat" />
-              </span>
-              <label class="text-base" for="df-dmy">3 Jul 2026</label>
-            </div>
-            <div class="hbox items-center gap-2">
-              <span x-h-radio>
-                <input type="radio" name="dateFormat" id="df-iso" value="iso" x-model="$store.erp.settings.dateFormat" />
-              </span>
-              <label class="text-base" for="df-iso">2026-07-03</label>
+          <div x-h-select class="flex-1" style="max-width: 11rem">
+            <input x-h-select-input aria-label="Date format" x-model="$store.erp.settings.dateFormat" />
+            <div x-h-select-content>
+              <div x-h-select-option="'Jul 3, 2026'" data-value="mdy"></div>
+              <div x-h-select-option="'3 Jul 2026'" data-value="dmy"></div>
+              <div x-h-select-option="'2026-07-03'" data-value="iso"></div>
             </div>
           </div>
         </li>
@@ -142,14 +130,14 @@
 
     <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
       <ul x-h-list>
-        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+        <li x-h-list-item class="gap-3 px-4 py-3">
           <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
           <label class="w-full text-base font-medium" for="sw-invoice-emails">Invoice emails</label>
           <span x-h-switch>
             <input type="checkbox" id="sw-invoice-emails" x-model="$store.erp.settings.notifications.invoiceEmails" />
           </span>
         </li>
-        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+        <li x-h-list-item class="gap-3 px-4 py-3">
           <svg x-h-icon data-icon="bell" class="size-5" role="presentation"></svg>
           <div class="vbox w-full">
             <label class="text-base font-medium" for="sw-approval-alerts">Approval alerts</label>
@@ -159,14 +147,14 @@
             <input type="checkbox" id="sw-approval-alerts" x-model="$store.erp.settings.notifications.approvalAlerts" />
           </span>
         </li>
-        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+        <li x-h-list-item class="gap-3 px-4 py-3">
           <svg x-h-icon data-icon="calendar" class="size-5" role="presentation"></svg>
           <label class="w-full text-base font-medium" for="sw-weekly-digest">Weekly digest</label>
           <span x-h-switch>
             <input type="checkbox" id="sw-weekly-digest" x-model="$store.erp.settings.notifications.weeklyDigest" />
           </span>
         </li>
-        <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+        <li x-h-list-item class="gap-3 px-4 py-3">
           <svg x-h-lucide role="presentation" data-lucide="package-open" class="size-5"></svg>
           <div class="vbox w-full">
             <label class="text-base font-medium" for="sw-low-stock">Low stock alerts</label>

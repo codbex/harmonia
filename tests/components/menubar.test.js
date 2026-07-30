@@ -26,7 +26,7 @@ function keydown(el, key) {
   el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
 }
 
-function createMenubar({ triggers = 2 } = {}) {
+function createMenubar({ triggers = 2, disabled = [], ariaDisabled = [] } = {}) {
   const bar = document.createElement('ul');
   bar.setAttribute('aria-label', 'Application');
   document.body.appendChild(bar);
@@ -39,12 +39,18 @@ function createMenubar({ triggers = 2 } = {}) {
     mountDirective(menubarPlugin, 'h-menubar-item', li, { original: 'x-h-menubar-item' });
     const button = document.createElement('button');
     button.textContent = labels[i] ?? `Menu ${i}`;
+    // Set before mounting: the directive reads the disabled state to decide
+    // which trigger takes the initial tab stop.
+    if (disabled.includes(i)) button.disabled = true;
+    if (ariaDisabled.includes(i)) button.setAttribute('aria-disabled', 'true');
     li.appendChild(button);
     mountDirective(menubarPlugin, 'h-menubar-trigger', button, { original: 'x-h-menubar-trigger' });
     buttons.push(button);
   }
   return { bar, buttons };
 }
+
+const tabIndexes = (buttons) => buttons.map((button) => button.getAttribute('tabindex'));
 
 // ---------------------------------------------------------------------------
 // h-menubar
@@ -402,6 +408,241 @@ describe('h-menubar-trigger', () => {
     keydown(button, 'ArrowDown');
     expect(openMenu).not.toHaveBeenCalled();
   });
+
+  // A natively disabled button cannot be focused, so a tab stop parked on one
+  // takes the whole bar out of the tab order and no arrow key can escape it. An
+  // aria-disabled trigger is focusable and announced, so it keeps its place.
+  describe('disabled triggers', () => {
+    it('never gives the initial tab stop to a disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [0] });
+      expect(tabIndexes(buttons)).toEqual(['-1', '0', '-1']);
+    });
+
+    it('gives the initial tab stop to an aria-disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [0] });
+      expect(tabIndexes(buttons)).toEqual(['0', '-1', '-1']);
+    });
+
+    it('hands the stop to the first enabled trigger past several disabled ones', () => {
+      const { buttons } = createMenubar({ triggers: 4, disabled: [0, 1] });
+      expect(tabIndexes(buttons)).toEqual(['-1', '-1', '0', '-1']);
+    });
+
+    it('leaves the whole bar out of the tab order when every trigger is disabled', () => {
+      const { buttons } = createMenubar({ triggers: 2, disabled: [0, 1] });
+      expect(tabIndexes(buttons)).toEqual(['-1', '-1']);
+    });
+
+    it('keeps the stop on the first trigger when it is enabled', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [2] });
+      expect(tabIndexes(buttons)).toEqual(['0', '-1', '-1']);
+    });
+
+    it('ArrowRight skips a disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [1] });
+      buttons[0].focus();
+      keydown(buttons[0], 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[2]);
+      expect(tabIndexes(buttons)).toEqual(['-1', '-1', '0']);
+    });
+
+    it('ArrowRight moves onto an aria-disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [1] });
+      buttons[0].focus();
+      keydown(buttons[0], 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[1]);
+      expect(tabIndexes(buttons)).toEqual(['-1', '0', '-1']);
+    });
+
+    it('ArrowLeft skips a disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [1] });
+      buttons[2].focus();
+      keydown(buttons[2], 'ArrowLeft');
+      expect(document.activeElement).toBe(buttons[0]);
+    });
+
+    it('wraps past a disabled trigger at the end of the bar', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [2] });
+      buttons[1].focus();
+      keydown(buttons[1], 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[0]);
+    });
+
+    // The original bug: focus could never move past a disabled trigger, because
+    // the failed focus left the keydown firing from the same element every time.
+    it('does not deadlock when arrowing repeatedly past a disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [1] });
+      buttons[0].focus();
+      keydown(document.activeElement, 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[2]);
+      keydown(document.activeElement, 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[0]);
+      keydown(document.activeElement, 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[2]);
+    });
+
+    it('does not throw on arrows when every trigger is disabled', () => {
+      const { buttons } = createMenubar({ triggers: 2, disabled: [0, 1] });
+      expect(() => keydown(buttons[0], 'ArrowRight')).not.toThrow();
+      expect(() => keydown(buttons[0], 'ArrowLeft')).not.toThrow();
+    });
+
+    it('arrows move off an aria-disabled trigger normally', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [0] });
+      buttons[0].focus();
+      keydown(buttons[0], 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[1]);
+    });
+
+    // Arrowing along an open bar carries the open menu with it, but a disabled
+    // trigger has no menu to carry.
+    it('moveInBar lands on an aria-disabled trigger without opening its menu', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [1] });
+      const blocked = vi.fn();
+      buttons[1]._h_menu_trigger.openMenu = blocked;
+      buttons[0]._h_menu_trigger.moveInBar('next');
+      expect(document.activeElement).toBe(buttons[1]);
+      expect(blocked).not.toHaveBeenCalled();
+    });
+
+    // The same move, but arrowed from the trigger itself rather than from
+    // inside an open menu. Focus sits on a trigger with a sibling menu still
+    // open after Escape, or right after a click opened one.
+    it('arrowing along an open bar lands on an aria-disabled trigger without opening its menu', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [1] });
+      const blocked = vi.fn();
+      const closed = vi.fn();
+      buttons[1]._h_menu_trigger.openMenu = blocked;
+      buttons[0]._h_menu_trigger.closeMenu = closed;
+      // Mark the bar as having an open menu, which is what makes the arrow
+      // carry it along.
+      buttons[0]._h_menu_trigger.setOpen(true);
+      buttons[0].focus();
+      keydown(buttons[0], 'ArrowRight');
+      expect(document.activeElement).toBe(buttons[1]);
+      expect(blocked).not.toHaveBeenCalled();
+      expect(buttons[1]._h_menu_trigger.focusOnOpen).toBeUndefined();
+      // The menu being left has to close on its own here. Nothing else will,
+      // since the disabled trigger's setOpen never runs.
+      expect(closed).toHaveBeenCalled();
+    });
+
+    it('Home focuses the first enabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 4, disabled: [0] });
+      buttons[2].focus();
+      keydown(buttons[2], 'Home');
+      expect(document.activeElement).toBe(buttons[1]);
+      expect(buttons[1].getAttribute('tabindex')).toBe('0');
+    });
+
+    it('End focuses the last enabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 4, disabled: [3] });
+      buttons[0].focus();
+      keydown(buttons[0], 'End');
+      expect(document.activeElement).toBe(buttons[2]);
+      expect(buttons[2].getAttribute('tabindex')).toBe('0');
+    });
+
+    it('does not throw on Home or End when every trigger is disabled', () => {
+      const { buttons } = createMenubar({ triggers: 2, disabled: [0, 1] });
+      expect(() => keydown(buttons[0], 'Home')).not.toThrow();
+      expect(() => keydown(buttons[0], 'End')).not.toThrow();
+    });
+
+    it('arrows do not open a disabled trigger menu', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [1] });
+      const skipped = vi.fn();
+      const opened = vi.fn();
+      buttons[1]._h_menu_trigger.openMenu = skipped;
+      buttons[2]._h_menu_trigger.openMenu = opened;
+      buttons[0]._h_menu_trigger.setOpen(true);
+      buttons[0].focus();
+      keydown(buttons[0], 'ArrowRight');
+      expect(skipped).not.toHaveBeenCalled();
+      expect(opened).toHaveBeenCalledOnce();
+    });
+
+    it('moveInBar skips a disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, disabled: [1] });
+      const skipped = vi.fn();
+      const opened = vi.fn();
+      buttons[1]._h_menu_trigger.openMenu = skipped;
+      buttons[2]._h_menu_trigger.openMenu = opened;
+      buttons[0]._h_menu_trigger.moveInBar('next');
+      expect(document.activeElement).toBe(buttons[2]);
+      expect(buttons[2]._h_menu_trigger.focusOnOpen).toBe('first');
+      expect(skipped).not.toHaveBeenCalled();
+      expect(opened).toHaveBeenCalledOnce();
+    });
+
+    // moveFocus returns el when there is nowhere to go, so the caller's
+    // `next !== el` check makes this a no-op rather than a crash.
+    it('moveInBar closes the menu and stays put when no other trigger is enabled', () => {
+      const { buttons } = createMenubar({ triggers: 2, disabled: [1] });
+      const closeMenu = vi.fn(() => buttons[0]._h_menu_trigger.setOpen(false));
+      const skipped = vi.fn();
+      buttons[0]._h_menu_trigger.closeMenu = closeMenu;
+      buttons[1]._h_menu_trigger.openMenu = skipped;
+      buttons[0]._h_menu_trigger.setOpen(true);
+      expect(() => buttons[0]._h_menu_trigger.moveInBar('next')).not.toThrow();
+      expect(closeMenu).toHaveBeenCalledOnce();
+      expect(skipped).not.toHaveBeenCalled();
+    });
+
+    it('Home and End land on an aria-disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 3, ariaDisabled: [0, 2] });
+      buttons[1].focus();
+      keydown(buttons[1], 'End');
+      expect(document.activeElement).toBe(buttons[2]);
+      keydown(buttons[2], 'Home');
+      expect(document.activeElement).toBe(buttons[0]);
+    });
+
+    it('does not open an aria-disabled trigger own menu on ArrowDown', () => {
+      const { buttons } = createMenubar({ triggers: 2, ariaDisabled: [0] });
+      const openMenu = vi.fn();
+      buttons[0]._h_menu_trigger.openMenu = openMenu;
+      keydown(buttons[0], 'ArrowDown');
+      expect(openMenu).not.toHaveBeenCalled();
+    });
+
+    it('does not set focusOnOpen from Enter on an aria-disabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 2, ariaDisabled: [0] });
+      keydown(buttons[0], 'Enter');
+      expect(buttons[0]._h_menu_trigger.focusOnOpen).toBeUndefined();
+    });
+
+    // The browser turns Enter and Space on a button into a click, and
+    // pointer-events-none does not stop a keyboard-generated one. Ignoring the
+    // key is not enough, it has to be swallowed or the menu still opens.
+    it('swallows Enter and Space on an aria-disabled trigger, so no click is synthesized', () => {
+      const { buttons } = createMenubar({ triggers: 2, ariaDisabled: [0] });
+      const openMenu = vi.fn();
+      buttons[0]._h_menu_trigger.openMenu = openMenu;
+      for (const key of ['Enter', ' ']) {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        buttons[0].dispatchEvent(event);
+        expect(event.defaultPrevented).toBe(true);
+      }
+      expect(openMenu).not.toHaveBeenCalled();
+    });
+
+    // An enabled trigger must keep relying on the native click, so the key is
+    // deliberately left alone there.
+    it('does not swallow Enter on an enabled trigger', () => {
+      const { buttons } = createMenubar({ triggers: 2 });
+      const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      buttons[0].dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(false);
+      expect(buttons[0]._h_menu_trigger.focusOnOpen).toBe('first');
+    });
+
+    it('applies the aria-disabled styling classes', () => {
+      const { buttons } = createMenubar({ triggers: 1 });
+      expect(buttons[0].classList.contains('aria-disabled:pointer-events-none')).toBe(true);
+      expect(buttons[0].classList.contains('aria-disabled:opacity-disabled')).toBe(true);
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -409,11 +650,12 @@ describe('h-menubar-trigger', () => {
 // ---------------------------------------------------------------------------
 
 describe('h-menubar-trigger + h-menu', () => {
-  function createIntegratedMenubar() {
-    const { bar, buttons } = createMenubar({ triggers: 2 });
+  function createIntegratedMenubar({ triggers = 2, disabled = [] } = {}) {
+    const { bar, buttons } = createMenubar({ triggers, disabled });
     const itemLabels = [
       ['New', 'Open'],
       ['Undo', 'Redo'],
+      ['Zoom In', 'Zoom Out'],
     ];
     const menus = buttons.map((button, index) => {
       const menu = document.createElement('ul');
@@ -497,6 +739,21 @@ describe('h-menubar-trigger + h-menu', () => {
     expect(buttons[0].getAttribute('data-state')).toBe('closed');
     expect(buttons[1].getAttribute('data-state')).toBe('open');
     expect(document.activeElement).toBe(menus[1].children[0]);
+  });
+
+  // The whole chain: menu keydown -> moveInBar -> moveFocus -> openMenu ->
+  // focusOnOpen. A disabled trigger has to be stepped over without its menu
+  // opening and without focus stalling.
+  it('ArrowRight inside an open menu skips a disabled trigger', async () => {
+    const { buttons, menus } = createIntegratedMenubar({ triggers: 3, disabled: [1] });
+    buttons[0]._h_menu_trigger.openMenu();
+    await flush();
+    keydown(menus[0], 'ArrowRight');
+    await flush();
+    expect(buttons[0].getAttribute('data-state')).toBe('closed');
+    expect(buttons[1].getAttribute('data-state')).toBe('closed');
+    expect(buttons[2].getAttribute('data-state')).toBe('open');
+    expect(document.activeElement).toBe(menus[2].children[0]);
   });
 
   it('reopens a menu that is still fading out after close', async () => {

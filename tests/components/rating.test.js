@@ -89,61 +89,71 @@ describe('h-rating', () => {
     expect(el._x_model.set).toHaveBeenCalledWith(3.5);
   });
 
-  it('renders as a non-interactive image when read-only', () => {
-    const el = build({ 'data-readonly': 'true', 'data-value': '4' });
+  // A disabled rating still has a value worth announcing, so it stays a focusable
+  // slider and only refuses input. Dropping it from the tab order, as it once
+  // did, left a keyboard user unable to discover it at all.
+  it('stays an announced slider when disabled', () => {
+    const el = build({ 'aria-disabled': 'true', 'data-value': '1' });
     mount(el);
-    expect(el.getAttribute('role')).toBe('img');
-    expect(el.hasAttribute('tabindex')).toBe(false);
-    expect(el.getAttribute('aria-label')).toBe('4 of 5 stars');
-  });
-
-  it('marks disabled state', () => {
-    const el = build({ disabled: '', 'data-value': '1' });
-    mount(el);
-    expect(el.getAttribute('aria-disabled')).toBe('true');
+    expect(el.getAttribute('role')).toBe('slider');
+    expect(el.getAttribute('tabindex')).toBe('0');
+    expect(el.getAttribute('aria-valuenow')).toBe('1');
+    expect(el.getAttribute('aria-valuetext')).toBe('1 of 5 stars');
     expect(el.classList.contains('opacity-disabled')).toBe(true);
   });
 
-  it('reacts to the disabled attribute being toggled after init', async () => {
+  it('refuses input while disabled', () => {
+    const el = build({ 'aria-disabled': 'true', 'data-value': '2' });
+    mount(el);
+    key(el, 'ArrowRight');
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(el.getAttribute('aria-valuenow')).toBe('2');
+  });
+
+  // The value used to be written into aria-label, which destroyed whatever name
+  // the author had given the rating.
+  it('never overwrites the accessible name with the value', async () => {
+    const el = build({ 'aria-disabled': 'true', 'data-value': '4.5', 'aria-label': 'Average rating' });
+    mount(el);
+    expect(el.getAttribute('aria-label')).toBe('Average rating');
+
+    const labelled = build({ 'aria-labelledby': 'heading-id', 'data-value': '3' });
+    mount(labelled);
+    labelled.setAttribute('aria-disabled', 'true');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    // No competing aria-label, so the referenced heading still names it and the
+    // value is announced from aria-valuetext instead.
+    expect(labelled.hasAttribute('aria-label')).toBe(false);
+    expect(labelled.getAttribute('aria-valuetext')).toBe('3 of 5 stars');
+  });
+
+  it('reacts to aria-disabled being toggled after init', async () => {
     const el = build({ 'data-value': '2' });
     mount(el);
     expect(el.getAttribute('role')).toBe('slider');
 
-    el.setAttribute('disabled', '');
+    el.setAttribute('aria-disabled', 'true');
     await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(el.getAttribute('aria-disabled')).toBe('true');
     expect(el.classList.contains('opacity-disabled')).toBe(true);
-    expect(el.getAttribute('role')).toBe('img');
+    expect(el.getAttribute('role')).toBe('slider');
     key(el, 'ArrowRight');
     expect(states(el)).toEqual(['full', 'full', 'empty', 'empty', 'empty']);
 
-    el.removeAttribute('disabled');
+    el.removeAttribute('aria-disabled');
     await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(el.hasAttribute('aria-disabled')).toBe(false);
     expect(el.classList.contains('opacity-disabled')).toBe(false);
     expect(el.getAttribute('role')).toBe('slider');
     key(el, 'ArrowRight');
     expect(el.getAttribute('aria-valuenow')).toBe('2.5');
   });
 
-  it('reacts to data-readonly being toggled after init', async () => {
-    const el = build({ 'data-value': '3' });
+  it('requires the explicit "true" value to lock the rating', () => {
+    // A bound attribute renders the literal string "false", so a presence check
+    // would lock exactly the rating the author meant to keep usable.
+    const el = build({ 'aria-disabled': 'false', 'data-value': '2' });
     mount(el);
-
-    el.setAttribute('data-readonly', 'true');
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(el.getAttribute('role')).toBe('img');
-    expect(el.hasAttribute('tabindex')).toBe(false);
-    expect(el.getAttribute('aria-label')).toBe('3 of 5 stars');
     key(el, 'ArrowRight');
-    expect(states(el)).toEqual(['full', 'full', 'full', 'empty', 'empty']);
-
-    el.removeAttribute('data-readonly');
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(el.getAttribute('role')).toBe('slider');
-    expect(el.getAttribute('tabindex')).toBe('0');
-    key(el, 'ArrowRight');
-    expect(el.getAttribute('aria-valuenow')).toBe('3.5');
+    expect(el.getAttribute('aria-valuenow')).toBe('2.5');
   });
 
   it('uses a default accessible name unless one is provided', () => {
@@ -154,6 +164,42 @@ describe('h-rating', () => {
     const labelled = build({ 'aria-label': 'Movie score' });
     mount(labelled);
     expect(labelled.getAttribute('aria-label')).toBe('Movie score');
+
+    const referenced = build({ 'aria-labelledby': 'heading-id' });
+    mount(referenced);
+    expect(referenced.hasAttribute('aria-label')).toBe(false);
+  });
+
+  it('sets a horizontal orientation and hides the star icons', () => {
+    const el = build({ 'data-value': '3' });
+    mount(el);
+    expect(el.getAttribute('aria-orientation')).toBe('horizontal');
+    for (const svg of el.querySelectorAll('svg')) {
+      expect(svg.getAttribute('aria-hidden')).toBe('true');
+      expect(svg.getAttribute('role')).toBe('presentation');
+    }
+  });
+
+  it('announces the zero state, overridable with data-aria-empty', () => {
+    const el = build();
+    mount(el);
+    expect(el.getAttribute('aria-valuetext')).toBe('No rating');
+
+    const custom = build({ 'data-aria-empty': 'Keine Bewertung' });
+    mount(custom);
+    expect(custom.getAttribute('aria-valuetext')).toBe('Keine Bewertung');
+  });
+
+  // A whole template rather than separate words, so a translation can put the
+  // numbers wherever its language needs them.
+  it('builds the value text from data-value-label', () => {
+    const el = build({ 'data-value-label': '{value} von {max} Sternen', 'data-value': '2.5' });
+    mount(el);
+    expect(el.getAttribute('aria-valuetext')).toBe('2.5 von 5 Sternen');
+
+    const reordered = build({ 'data-value-label': '{max} 中 {value}', 'data-value': '3' });
+    mount(reordered);
+    expect(reordered.getAttribute('aria-valuetext')).toBe('5 中 3');
   });
 
   it('fills stars with yellow by default and honors data-color', () => {

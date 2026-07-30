@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
@@ -310,5 +310,344 @@ describe('h-select-option', () => {
     host.appendChild(search);
     mountDirective(selectPlugin, 'h-select-search', search, { original: 'x-h-select-search' });
     expect(host._h_select.includeDesc).toBe(true);
+  });
+});
+
+describe('h-select-input keyboard navigation', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  function keydown(el, key) {
+    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+    el.dispatchEvent(event);
+    return event;
+  }
+
+  // onKeyDown is registered on the select root inside onClick, so the whole
+  // chain has to be mounted and the trigger clicked before keys do anything.
+  function createOpenSelect({ count = 5, disabled = [], bareDisabled = [], hidden = [], descriptions = {}, labels, search = false } = {}) {
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    mountDirective(selectPlugin, 'h-select', root, { modifiers: [] });
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    root.appendChild(input);
+    mountDirective(selectPlugin, 'h-select-input', input, { original: 'x-h-select-input', expression: '' });
+
+    const content = document.createElement('div');
+    content.setAttribute('id', root._h_select.controls);
+    root.appendChild(content);
+    mountDirective(selectPlugin, 'h-select-content', content, { original: 'x-h-select-content' });
+
+    if (search) {
+      const searchEl = document.createElement('div');
+      content.appendChild(searchEl);
+      mountDirective(selectPlugin, 'h-select-search', searchEl, { original: 'x-h-select-search' });
+    }
+
+    const options = [];
+    for (let i = 0; i < count; i++) {
+      const option = document.createElement('div');
+      const label = labels?.[i] ?? `Option ${i + 1}`;
+      if (disabled.includes(i)) option.setAttribute('aria-disabled', 'true');
+      if (bareDisabled.includes(i)) option.setAttribute('aria-disabled', '');
+      if (descriptions[i] != null) option.setAttribute('data-description', descriptions[i]);
+      content.appendChild(option);
+      mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: `'${label}'` }, { evaluateLater: () => (cb) => cb(label) });
+      // After mounting: the option's filter effect clears `hidden` while the
+      // search is empty, so a class set earlier would be stripped.
+      if (hidden.includes(i)) option.classList.add('hidden');
+      options.push(option);
+    }
+
+    // Open with Enter on the trigger rather than a click, and without bubbling:
+    // the mock's nextTick is synchronous, so a click would still be propagating
+    // when the outside-dismiss listener lands on the document and would close
+    // the list again, and a bubbling Enter would reach the root's own handler.
+    root._h_select.trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
+    return { root, content, options, input, state: root._h_select };
+  }
+
+  const tabIndexes = (options) => options.map((option) => option.getAttribute('tabindex'));
+
+  describe('arrow keys', () => {
+    it('ArrowDown focuses the first option when nothing is focused yet', () => {
+      const { root, options } = createOpenSelect({ count: 3 });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
+    });
+
+    it('ArrowUp focuses the last option when nothing is focused yet', () => {
+      const { root, options } = createOpenSelect({ count: 3 });
+      keydown(root, 'ArrowUp');
+      expect(document.activeElement).toBe(options[2]);
+      expect(tabIndexes(options)).toEqual(['-1', '-1', '0']);
+    });
+
+    it('moves the roving tab stop forward and clears the old one', () => {
+      const { root, options } = createOpenSelect({ count: 3 });
+      keydown(root, 'ArrowDown');
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+      expect(tabIndexes(options)).toEqual(['-1', '0', '-1']);
+    });
+
+    it('wraps from the last option to the first and back', () => {
+      const { root, options } = createOpenSelect({ count: 3 });
+      keydown(root, 'ArrowUp');
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      keydown(root, 'ArrowUp');
+      expect(document.activeElement).toBe(options[2]);
+    });
+  });
+
+  describe('disabled options', () => {
+    it('ArrowDown lands on a disabled option in the middle', () => {
+      const { root, options } = createOpenSelect({ count: 3, disabled: [1] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    it('ArrowDown wraps instead of landing on a trailing run of hidden options', () => {
+      // Browser-verified regression: the old scan-and-wrap left focus on the
+      // first skipped option when the skipped run reached the end.
+      const { root, options } = createOpenSelect({ count: 5, hidden: [3, 4] });
+      const visited = [];
+      for (let i = 0; i < 4; i++) {
+        keydown(root, 'ArrowDown');
+        visited.push(options.indexOf(document.activeElement));
+      }
+      expect(visited).toEqual([0, 1, 2, 0]);
+    });
+
+    it('ArrowUp wraps instead of landing on a leading run of hidden options', () => {
+      const { root, options } = createOpenSelect({ count: 5, hidden: [0, 1] });
+      const visited = [];
+      for (let i = 0; i < 4; i++) {
+        keydown(root, 'ArrowUp');
+        visited.push(options.indexOf(document.activeElement));
+      }
+      expect(visited).toEqual([4, 3, 2, 4]);
+    });
+
+    it('Home and End land on the first and last option, disabled or not', () => {
+      const { root, options } = createOpenSelect({ count: 5, disabled: [0, 4] });
+      keydown(root, 'End');
+      expect(document.activeElement).toBe(options[4]);
+      expect(tabIndexes(options)).toEqual(['-1', '-1', '-1', '-1', '0']);
+      keydown(root, 'Home');
+      expect(document.activeElement).toBe(options[0]);
+      expect(tabIndexes(options)).toEqual(['0', '-1', '-1', '-1', '-1']);
+    });
+
+    it('PageUp and PageDown land on the first and last option, disabled or not', () => {
+      const { root, options } = createOpenSelect({ count: 5, disabled: [0, 4] });
+      keydown(root, 'PageDown');
+      expect(document.activeElement).toBe(options[4]);
+      keydown(root, 'PageUp');
+      expect(document.activeElement).toBe(options[0]);
+    });
+
+    it('keeps every option reachable when they are all disabled', () => {
+      const { root, options } = createOpenSelect({ count: 3, disabled: [0, 1, 2] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      keydown(root, 'End');
+      expect(document.activeElement).toBe(options[2]);
+    });
+  });
+
+  describe('filtered options', () => {
+    it('ArrowDown skips an option hidden by the search', () => {
+      const { root, options } = createOpenSelect({ count: 3, hidden: [1] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[2]);
+    });
+
+    it('Home and End ignore hidden options at the ends', () => {
+      const { root, options } = createOpenSelect({ count: 5, hidden: [0, 4] });
+      keydown(root, 'Home');
+      expect(document.activeElement).toBe(options[1]);
+      keydown(root, 'End');
+      expect(document.activeElement).toBe(options[3]);
+    });
+
+    it('walks only the options that survive a live search term', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      state.search = 'b';
+      expect(options[0].classList.contains('hidden')).toBe(true);
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[2]);
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    // The stop has to leave with the option. Left on something hidden it sits
+    // outside the navigable list, and the arrows lose their place.
+    it('drops the tab stop from an option the search hides', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'ArrowDown');
+      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
+      state.search = 'b';
+      expect(options[0].classList.contains('hidden')).toBe(true);
+      expect(options[0].getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('resumes from the first visible option after the focused one is filtered out', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      state.search = 'b';
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    // Filtering, then narrowing again without an arrow press in between. The
+    // stop is never cleared, so it comes back on an option nobody focused.
+    it('does not restore a stale tab stop when the search is cleared', () => {
+      const { root, options, state } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[0]);
+      state.search = 'b';
+      state.search = '';
+      expect(tabIndexes(options)).toEqual(['-1', '-1', '-1']);
+    });
+  });
+
+  describe('typeahead', () => {
+    it('moves focus to the next option whose label starts with the key', () => {
+      const { root, options } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Cherry'] });
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(options[1]);
+      expect(tabIndexes(options)).toEqual(['-1', '0', '-1']);
+    });
+
+    it('cycles through repeated matches instead of sticking on the first', () => {
+      const { root, options } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'] });
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(options[1]);
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(options[2]);
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    it('matches case-insensitively', () => {
+      const { root, options } = createOpenSelect({ count: 2, labels: ['Apple', 'Banana'] });
+      keydown(root, 'B');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    it('matches a disabled option', () => {
+      const { root, options } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'], disabled: [1] });
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(options[1]);
+    });
+
+    it('skips a hidden option', () => {
+      const { root, options } = createOpenSelect({ count: 3, labels: ['Apple', 'Banana', 'Blueberry'], hidden: [1] });
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(options[2]);
+    });
+
+    it('does not match on the description text', () => {
+      const { root } = createOpenSelect({ count: 2, labels: ['Apple', 'Cherry'], descriptions: { 0: 'Banana flavoured' } });
+      const before = document.activeElement;
+      keydown(root, 'b');
+      expect(document.activeElement).toBe(before);
+    });
+
+    it('does nothing when no label matches', () => {
+      const { root } = createOpenSelect({ count: 2, labels: ['Apple', 'Cherry'] });
+      const before = document.activeElement;
+      keydown(root, 'z');
+      expect(document.activeElement).toBe(before);
+    });
+
+    it('forwards printable keys to the search input when the select has one', () => {
+      const { root, options, state } = createOpenSelect({ count: 2, labels: ['Apple', 'Banana'], search: true });
+      const focusSearch = vi.fn();
+      state.focusSearch = focusSearch;
+      keydown(root, 'ArrowDown');
+      keydown(root, 'b');
+      expect(focusSearch).toHaveBeenCalled();
+      // The stop is released so the search input owns focus.
+      expect(tabIndexes(options)).toEqual(['-1', '-1']);
+    });
+  });
+
+  describe('activation guard', () => {
+    function setupWithModel(options) {
+      const setup = createOpenSelect(options);
+      const set = vi.fn();
+      setup.root._h_model.set = set;
+      setup.root._h_model.get = () => '';
+      return { ...setup, set };
+    }
+
+    it('does not select a disabled option on Enter', () => {
+      const { options, set } = setupWithModel({ count: 2, disabled: [1] });
+      keydown(options[1], 'Enter');
+      expect(set).not.toHaveBeenCalled();
+    });
+
+    it('does not select a disabled option on click', () => {
+      const { options, set } = setupWithModel({ count: 2, disabled: [1] });
+      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      expect(set).not.toHaveBeenCalled();
+    });
+
+    it('still selects an enabled option on Enter and on click', () => {
+      const { options, set } = setupWithModel({ count: 2 });
+      keydown(options[0], 'Enter');
+      expect(set).toHaveBeenCalled();
+      set.mockClear();
+      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      expect(set).toHaveBeenCalled();
+    });
+
+    it('requires the explicit "true" value, so a bare aria-disabled is selectable', () => {
+      const { options, set } = setupWithModel({ count: 3, bareDisabled: [1] });
+      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      expect(set).toHaveBeenCalled();
+    });
+
+    // The whole point of aria-disabled over the native attribute. Focus lands on
+    // the option so it is announced, and Enter then does nothing.
+    it('is reachable by the arrow keys but still cannot be selected', () => {
+      const { root, options, set } = setupWithModel({ count: 2, disabled: [1] });
+      keydown(root, 'ArrowDown');
+      keydown(root, 'ArrowDown');
+      expect(document.activeElement).toBe(options[1]);
+      keydown(options[1], 'Enter');
+      expect(set).not.toHaveBeenCalled();
+    });
+
+    // Activating a disabled option is a complete no-op. Closing the list would
+    // read as though the key had done something.
+    it('leaves the list open on Enter and Space over a disabled option', () => {
+      for (const key of ['Enter', ' ']) {
+        const { options, set, state } = setupWithModel({ count: 2, disabled: [1] });
+        keydown(options[1], key);
+        expect(set).not.toHaveBeenCalled();
+        expect(state.expanded).toBe(true);
+      }
+    });
+
+    it('still closes the list on Enter over an enabled option', () => {
+      const { options, state } = setupWithModel({ count: 2 });
+      keydown(options[0], 'Enter');
+      expect(state.expanded).toBe(false);
+    });
   });
 });

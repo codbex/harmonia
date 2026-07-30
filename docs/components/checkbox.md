@@ -14,6 +14,14 @@ Use checkboxes for independent options where multiple selections are allowed. Fo
 x-h-checkbox
 ```
 
+### Modifiers
+
+#### x-h-checkbox
+
+| Modifier | Description                                                                                                                                                     |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tree     | Used when the checkbox is inside a [Tree](/components/tree) item. The checkbox is then disabled automatically whenever its item is. Throws when used elsewhere. |
+
 ## Examples
 
 ### Unchecked

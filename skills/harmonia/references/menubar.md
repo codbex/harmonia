@@ -31,6 +31,12 @@ Place a `x-h-menubar-trigger` button next to a `x-h-menu` inside each `x-h-menub
 | data-variant | `outline`<br/>`default`     | false    | Changes the visual style of the menubar.                                    |
 | data-size    | `sm`<br/>`md`<br/>`default` | false    | Changes the size of the menubar triggers. The sizes match the button sizes. |
 
+#### x-h-menubar-trigger
+
+| Attribute     | Type    | Required | Description                                                                                            |
+| ------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| aria-disabled | boolean | false    | Marks the top-level item unavailable while keeping it focusable and announced. Its menu will not open. |
+
 ## Keyboard Handling
 
 The menubar is a single Tab stop. Once it has focus, the top-level items are operated with the keys below:
@@ -39,6 +45,8 @@ The menubar is a single Tab stop. Once it has focus, the top-level items are ope
 - `Down` / `Enter` / `Space` - Opens the focused item's menu and moves focus to its first item.
 - `Up` - Opens the focused item's menu and moves focus to its last item.
 - `Home` / `End` - Moves focus to the first or last top-level item.
+
+The two ways to disable a top-level item behave differently. The native `disabled` attribute takes the item out of the arrow order and the Tab stop cannot land on it. `aria-disabled` leaves it in both, so screen readers still announce it, but its menu does not open.
 
 Once a menu is open, the full Menu keyboard handling applies:
 
@@ -55,6 +63,8 @@ Once a menu is open, the full Menu keyboard handling applies:
 ## Accessibility
 
 The menubar follows the WAI-ARIA menubar pattern. The bar has `role="menubar"` with horizontal orientation, every trigger is a `menuitem` that reports its popup state through `aria-haspopup` and `aria-expanded`, and a roving tab stop keeps the whole bar a single entry in the page's Tab order.
+
+A trigger disabled with the native `disabled` attribute is left out of the roving tab stop and the arrow order. A trigger with `aria-disabled="true"` keeps its place in both, so it is still announced, but its menu will not open. Both are dimmed to match. Prefer `aria-disabled` when the item should stay discoverable by screen readers.
 
 ## Binding
 
@@ -226,6 +236,34 @@ The `data-size` attribute changes the height of the triggers and matches the but
       <div x-h-menu-separator></div>
       <li x-h-menu-item>Zoom In <span x-h-menu-item-secondary>Ctrl++</span></li>
       <li x-h-menu-item>Zoom Out <span x-h-menu-item-secondary>Ctrl+-</span></li>
+    </ul>
+  </li>
+</ul>
+```
+
+### Disabled items
+
+The first item uses the native `disabled` attribute, so the Tab stop starts on `Edit` and the arrow keys step straight over `File`. The last item uses `aria-disabled`, so the arrows do land on it and it is announced as unavailable, but its menu will not open.
+
+```html
+<ul x-h-menubar aria-label="Text editor" data-variant="outline">
+  <li x-h-menubar-item>
+    <button x-h-menubar-trigger disabled>File</button>
+    <ul x-h-menu>
+      <li x-h-menu-item>New File</li>
+    </ul>
+  </li>
+  <li x-h-menubar-item>
+    <button x-h-menubar-trigger>Edit</button>
+    <ul x-h-menu>
+      <li x-h-menu-item>Undo</li>
+      <li x-h-menu-item>Redo</li>
+    </ul>
+  </li>
+  <li x-h-menubar-item>
+    <button x-h-menubar-trigger aria-disabled="true">Help</button>
+    <ul x-h-menu>
+      <li x-h-menu-item>About</li>
     </ul>
   </li>
 </ul>

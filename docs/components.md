@@ -35,6 +35,13 @@ outline: deep
       <p class="text">Compact indicator used to highlight numeric values, statuses, or labels.</p>
     </div>
   </a>
+  <a href="./components/bottom-nav" class="card">
+    <svg-icon class="card-media" src="./images/bottom-nav.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Bottom Navigation</h3>
+      <p class="text">Bar of top-level destinations along the bottom of the screen, each an icon over a short label.</p>
+    </div>
+  </a>
   <a href="./components/breadcrumb" class="card">
   <svg-icon class="card-media" src="./images/breadcrumb.svg"></svg-icon>
     <div class="card-content">
@@ -175,6 +182,13 @@ outline: deep
       <p class="text">Input for choosing one or more files, showing the selected files as tags inside the field.</p>
     </div>
   </a>
+  <a href="./components/fab" class="card">
+    <svg-icon class="card-media" src="./images/fab.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Floating Action Button</h3>
+      <p class="text">Prominent, elevated button that carries the primary action of a screen and can pin itself to a corner.</p>
+    </div>
+  </a>
   <a href="./components/icon" class="card">
     <svg-icon class="card-media" src="./images/icon.svg"></svg-icon>
     <div class="card-content">
@@ -257,6 +271,13 @@ outline: deep
     <div class="card-content">
       <h3>Notifications</h3>
       <p class="text">Displays system feedback, status updates, or alerts as toast-style or inline notifications.</p>
+    </div>
+  </a>
+  <a href="./components/otp" class="card">
+    <svg-icon class="card-media" src="./images/otp.svg"></svg-icon>
+    <div class="card-content">
+      <h3>One-Time Password</h3>
+      <p class="text">Row of single-character cells for entering a verification code or PIN, with paste and autofill support.</p>
     </div>
   </a>
   <a href="./components/pagination" class="card">

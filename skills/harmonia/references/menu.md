@@ -38,16 +38,16 @@ Use menus to present a set of related actions or navigation links. Menu items sh
 | Attribute     | Type       | Required | Description                                                                                                         |
 | ------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
 | data-variant  | `negative` | false    | Semantic color of the item.                                                                                         |
-| data-disabled | boolean    | false    | Disables the item.                                                                                                  |
+| aria-disabled | boolean    | false    | Marks the item unavailable while keeping it focusable and announced.                                                |
 | data-inset    | boolean    | false    | Adds padding to the item in order to align it with ones which have an icon.                                         |
 | data-active   | boolean    | false    | Marks the item as active. Sets `aria-current="page"` and applies active styling. Use only inside a navigation menu. |
 
 #### x-h-menu-sub
 
-| Attribute     | Type    | Required | Description                                                                    |
-| ------------- | ------- | -------- | ------------------------------------------------------------------------------ |
-| data-disabled | boolean | false    | Disabled the subitem.                                                          |
-| data-inset    | boolean | false    | Adds padding to the subitem in order to align it with ones which have an icon. |
+| Attribute     | Type    | Required | Description                                                                                        |
+| ------------- | ------- | -------- | -------------------------------------------------------------------------------------------------- |
+| aria-disabled | boolean | false    | Marks the subitem unavailable while keeping it focusable and announced. Its submenu will not open. |
+| data-inset    | boolean | false    | Adds padding to the subitem in order to align it with ones which have an icon.                     |
 
 #### x-h-menu-label
 
@@ -55,11 +55,18 @@ Use menus to present a set of related actions or navigation links. Menu items sh
 | ---------- | ------- | -------- | --------------------------------------------------------------------------------------- |
 | data-inset | boolean | false    | Adds padding to the label in order to align it with items and subitems that have icons. |
 
+#### x-h-menu-checkbox-item
+
+| Attribute     | Type    | Required | Description                                                          |
+| ------------- | ------- | -------- | -------------------------------------------------------------------- |
+| aria-disabled | boolean | false    | Marks the item unavailable while keeping it focusable and announced. |
+
 #### x-h-menu-radio-item
 
-| Attribute | Type | Required | Description                                                               |
-| --------- | ---- | -------- | ------------------------------------------------------------------------- |
-| `self`    | any  | true     | Sets the value of the radio item. Expects a string literal or a variable. |
+| Attribute     | Type    | Required | Description                                                               |
+| ------------- | ------- | -------- | ------------------------------------------------------------------------- |
+| `self`        | any     | true     | Sets the value of the radio item. Expects a string literal or a variable. |
+| aria-disabled | boolean | false    | Marks the item unavailable while keeping it focusable and announced.      |
 
 ### Modifiers
 
@@ -118,6 +125,31 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
   <li x-h-menu-item>Invite users</li>
   <div x-h-menu-separator></div>
   <li x-h-menu-item data-variant="negative">Log out</li>
+</ul>
+```
+
+### Disabled items
+
+Every kind of item is disabled with `aria-disabled="true"`. It needs the explicit value, so an attribute bound to a false expression leaves the item usable. A disabled item is dimmed and cannot be clicked or activated, but the arrow keys and typeahead still reach it so screen readers announce it as unavailable. A disabled subitem is announced as a submenu that never opens.
+
+```html
+<button x-h-button x-h-menu-trigger.dropdown>Disabled items</button>
+<ul x-h-menu x-data="{ checkbox: { autosave: true }, radioSelected: 'r1' }">
+  <li x-h-menu-item>Rename</li>
+  <li x-h-menu-item aria-disabled="true">Duplicate</li>
+  <li x-h-menu-sub aria-disabled="true">
+    <span>Move to</span>
+    <ul x-h-menu.sub>
+      <li x-h-menu-item>Archive</li>
+    </ul>
+  </li>
+  <div x-h-menu-separator></div>
+  <div x-h-menu-checkbox-item x-model="checkbox.autosave" aria-disabled="true">Auto-Save</div>
+  <div x-h-menu-separator></div>
+  <li x-h-menu-radio-item="'r1'" name="dg1" x-model="radioSelected">Everyone</li>
+  <li x-h-menu-radio-item="'r2'" name="dg1" x-model="radioSelected" aria-disabled="true">Admins only</li>
+  <div x-h-menu-separator></div>
+  <li x-h-menu-item data-variant="negative" aria-disabled="true">Delete</li>
 </ul>
 ```
 

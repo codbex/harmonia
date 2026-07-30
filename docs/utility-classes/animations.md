@@ -4,6 +4,12 @@ Classes for animating elements. In addition to Alpine's [`x-transition`](https:/
 
 ## Class names
 
+| Class         | Description                                |
+| ------------- | ------------------------------------------ |
+| animate-pulse | Fades in and out, for loading placeholders |
+| animate-ping  | Scales out and fades, for attention dots   |
+| animate-spin  | Rotates continuously, for busy indicators  |
+
 | Class     | Description        |
 | --------- | ------------------ |
 | scale-95  | `scale: 95% 95%`   |
@@ -42,6 +48,20 @@ Classes for animating elements. In addition to Alpine's [`x-transition`](https:/
 | motion-reduce:transition-none | Disables all transitions when the "Reduce Motion" accessibility setting is enabled                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 ## Examples
+
+### Looping animations
+
+These three run continuously on their own, with no state to drive them. `animate-pulse` is what the [Skeleton](/components/skeleton) component uses for its loading placeholders, `animate-spin` is what the [Spinner](/components/spinner) uses, and `animate-ping` suits a dot drawing attention to something new.
+
+<LiveExample data-class="hbox items-center gap-8">
+
+```html
+<div class="h-4 w-3xs animate-pulse rounded-md bg-primary"></div>
+<svg x-h-icon class="size-8 animate-spin text-primary" data-icon="refresh" role="presentation"></svg>
+<div class="size-3 animate-ping rounded-full bg-primary"></div>
+```
+
+</LiveExample>
 
 ### Scale and Opacity
 

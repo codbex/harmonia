@@ -1,7 +1,9 @@
 import accordion from './components/accordion';
 import alert from './components/alert';
 import avatar from './components/avatar';
+import backdrop from './components/backdrop';
 import badge from './components/badge';
+import bottomNav from './components/bottom-nav';
 import breadcrumb from './components/breadcrumb';
 import bubble from './components/bubble';
 import button from './components/button';
@@ -15,6 +17,7 @@ import datepicker from './components/date-picker';
 import datetimePicker from './components/datetime-picker';
 import dialog from './components/dialog';
 import expansionPanel from './components/expansion-panel';
+import fab from './components/fab';
 import fieldset from './components/fieldset';
 import fileUpload from './components/file-upload';
 import icon from './components/icon';
@@ -27,6 +30,7 @@ import menubar from './components/menubar';
 import monthPicker from './components/month-picker';
 import navigationMenu from './components/navigation-menu';
 import notifications from './components/notifications';
+import otp from './components/otp';
 import pagination from './components/pagination';
 import popover from './components/popover';
 import progress from './components/progress';
@@ -74,7 +78,9 @@ export {
   accordion as Accordion,
   alert as Alert,
   avatar as Avatar,
+  backdrop as Backdrop,
   badge as Badge,
+  bottomNav as BottomNav,
   breadcrumb as Breadcrumb,
   bubble as Bubble,
   button as Button,
@@ -89,6 +95,7 @@ export {
   datetimePicker as DateTimePicker,
   dialog as Dialog,
   expansionPanel as ExpansionPanel,
+  fab as Fab,
   fieldset as Fieldset,
   fileUpload as FileUpload,
   focus as Focus,
@@ -105,6 +112,7 @@ export {
   monthPicker as MonthPicker,
   navigationMenu as NavigationMenu,
   notifications as Notifications,
+  otp as Otp,
   pagination as Pagination,
   popover as Popover,
   progress as Progress,
@@ -140,7 +148,9 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(accordion);
   registerPlugin(alert);
   registerPlugin(avatar);
+  registerPlugin(backdrop);
   registerPlugin(badge);
+  registerPlugin(bottomNav);
   registerPlugin(breadcrumb);
   registerPlugin(bubble);
   registerPlugin(button);
@@ -155,6 +165,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(datetimePicker);
   registerPlugin(dialog);
   registerPlugin(expansionPanel);
+  registerPlugin(fab);
   registerPlugin(fieldset);
   registerPlugin(fileUpload);
   registerPlugin(focus);
@@ -169,6 +180,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(monthPicker);
   registerPlugin(navigationMenu);
   registerPlugin(notifications);
+  registerPlugin(otp);
   registerPlugin(pagination);
   registerPlugin(popover);
   registerPlugin(progress);

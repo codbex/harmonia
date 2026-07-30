@@ -40,7 +40,9 @@ export default defineConfig({
           { text: 'Accordion', link: '/components/accordion' },
           { text: 'Alert', link: '/components/alert' },
           { text: 'Avatar', link: '/components/avatar' },
+          { text: 'Backdrop', link: '/components/backdrop' },
           { text: 'Badge', link: '/components/badge' },
+          { text: 'Bottom Navigation', link: '/components/bottom-nav' },
           { text: 'Breadcrumb', link: '/components/breadcrumb' },
           { text: 'Bubble', link: '/components/bubble' },
           { text: 'Button', link: '/components/button' },
@@ -62,11 +64,13 @@ export default defineConfig({
           { text: 'Expansion Panel', link: '/components/expansion-panel' },
           { text: 'Fieldset', link: '/components/fieldset' },
           { text: 'File Upload', link: '/components/file-upload' },
+          { text: 'Floating Action Button', link: '/components/fab' },
           { text: 'Icon', link: '/components/icon' },
           { text: 'Info Page', link: '/components/info-page' },
           { text: 'Input', link: '/components/input' },
           { text: 'Input Group', link: '/components/input-group' },
           { text: 'Input Number', link: '/components/input-number' },
+          { text: 'Input OTP', link: '/components/otp' },
           { text: 'Label', link: '/components/label' },
           { text: 'List', link: '/components/list' },
           { text: 'Listbox', link: '/components/listbox' },
@@ -105,6 +109,7 @@ export default defineConfig({
         items: [
           { text: 'Bar', link: '/charts/bar' },
           { text: 'Line', link: '/charts/line' },
+          { text: 'Area', link: '/charts/area' },
           { text: 'Scatter', link: '/charts/scatter' },
           { text: 'Pie', link: '/charts/pie' },
           { text: 'Doughnut', link: '/charts/doughnut' },
@@ -191,7 +196,11 @@ export default defineConfig({
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-i18next.js`, type: 'text/javascript' }],
-    ['link', { href: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.css`, rel: 'stylesheet' }],
+    // harmonia.css is intentionally NOT loaded globally: its full ruleset clashes with
+    // VitePress's theme. Each live example loads it inside its own shadow root instead
+    // (docs/public/js/component-container.js), and that same file lifts Tailwind's
+    // document-scoped `@property --tw-*` registrations up to the page so the shadow
+    // examples' var(--tw-*)-driven utilities work.
     ['link', { href: `${basePath}fonts.css`, rel: 'stylesheet' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Harmonia' }],

@@ -179,7 +179,7 @@ Set `data-collapsed="true"` for a compact summary that keeps a constant footprin
   </div>
   <div class="hbox justify-between gap-2">
     <button x-h-button data-variant="outline" @click="step = Math.max(step - 1, 1)" :disabled="step === 1">Back</button>
-    <button x-h-button data-variant="ghost" @click="collapsed = !collapsed" x-text="collapsed ? 'Expand' : 'Collapse'"></button>
+    <button x-h-button data-variant="transparent" @click="collapsed = !collapsed" x-text="collapsed ? 'Expand' : 'Collapse'"></button>
     <button x-h-button data-variant="primary" @click="step = Math.min(step + 1, total)" :disabled="step === total">Next</button>
   </div>
 </div>

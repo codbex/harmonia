@@ -1,3 +1,25 @@
+// Tailwind v4 emits `@property --tw-*` rules at the end of harmonia.css. Those
+// registrations are document-scoped and are ignored when the stylesheet lives only
+// inside a shadow root, which collapses every var(--tw-*)-driven utility (scale,
+// translate, shadow, ring, gradient) inside the shadow examples. Lift ONLY those
+// rules out of the already-loaded shadow stylesheet and inject them once into the
+// main document, so the registrations take effect without putting Harmonia's visual
+// styles on the page (which would clash with VitePress).
+let propsRegistered = false;
+
+function registerTailwindProperties(sheet) {
+  if (propsRegistered || !sheet) return;
+  let cssText = '';
+  for (const rule of sheet.cssRules) {
+    if (rule instanceof CSSPropertyRule) cssText += rule.cssText;
+  }
+  if (!cssText) return;
+  const style = document.createElement('style');
+  style.textContent = cssText;
+  document.head.appendChild(style);
+  propsRegistered = true;
+}
+
 class ComponentContainer extends HTMLElement {
   constructor() {
     super();
@@ -6,6 +28,8 @@ class ComponentContainer extends HTMLElement {
     const style = document.createElement('link');
     style.rel = 'stylesheet';
     style.href = '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css';
+    // The `load` event is the reliable signal that `style.sheet.cssRules` is populated.
+    style.addEventListener('load', () => registerTailwindProperties(style.sheet));
     this.shadowRoot.appendChild(style);
     this.container = document.createElement('div');
     this.container.classList.add('bg-background', 'text-foreground', 'border', 'rounded-md');

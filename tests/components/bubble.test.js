@@ -368,7 +368,7 @@ describe('h-bubble-audio', () => {
   it('honors localized play/pause and seek labels', () => {
     el.setAttribute('data-play-label', 'Lecture');
     el.setAttribute('data-pause-label', 'Pause audio');
-    el.setAttribute('data-label', 'Position');
+    el.setAttribute('data-seek-label', 'Position');
     mountDirective(bubblePlugin, 'h-bubble-audio', el);
     const button = player().querySelector('button');
     expect(button.getAttribute('aria-label')).toBe('Lecture');
@@ -389,6 +389,21 @@ describe('h-bubble-audio', () => {
     expect(player().querySelector('span').textContent).toBe('0:25 / 1:40');
     expect(track.getAttribute('aria-valuenow')).toBe('25');
     expect(track.getAttribute('aria-valuemax')).toBe('100');
+    expect(track.getAttribute('aria-valuetext')).toBe('0:25 of 1:40');
+  });
+
+  it('builds aria-valuetext from data-valuetext-label', () => {
+    Object.defineProperty(el, 'duration', { configurable: true, get: () => 100 });
+    el.setAttribute('data-valuetext-label', '{current} von {duration}');
+    mountDirective(bubblePlugin, 'h-bubble-audio', el);
+    dispatch('loadedmetadata');
+    el.currentTime = 25;
+    dispatch('timeupdate');
+
+    const track = player().querySelector('[role="slider"]');
+    expect(track.getAttribute('aria-valuetext')).toBe('0:25 von 1:40');
+    // The visible readout keeps its separator, which carries no words.
+    expect(player().querySelector('span').textContent).toBe('0:25 / 1:40');
   });
 
   it('seeks with the keyboard', () => {
@@ -485,12 +500,6 @@ describe('h-bubble-reactions', () => {
     mountDirective(bubblePlugin, 'h-bubble-reactions', el);
     expect(el.getAttribute('role')).toBe('group');
     expect(el.getAttribute('aria-label')).toBe('Reactions');
-  });
-
-  it('uses data-label for the accessible name', () => {
-    el.setAttribute('data-label', 'Reaktionen');
-    mountDirective(bubblePlugin, 'h-bubble-reactions', el);
-    expect(el.getAttribute('aria-label')).toBe('Reaktionen');
   });
 
   it('preserves an author-set aria-label and role', () => {

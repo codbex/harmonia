@@ -138,7 +138,7 @@ export default function (Alpine) {
     const track = document.createElement('div');
     track.setAttribute('role', 'slider');
     track.setAttribute('tabindex', '0');
-    track.setAttribute('aria-label', el.getAttribute('data-label') || 'Seek');
+    track.setAttribute('aria-label', el.getAttribute('data-seek-label') || 'Seek');
     track.setAttribute('aria-valuemin', '0');
     track.classList.add('relative', 'h-1.5', 'flex-1', 'rounded-full', 'bg-current/20', 'cursor-pointer', 'outline-ring/50', 'focus-outline');
 
@@ -259,6 +259,9 @@ export default function (Alpine) {
 
     const playLabel = () => el.getAttribute('data-play-label') || 'Play';
     const pauseLabel = () => el.getAttribute('data-pause-label') || 'Pause';
+    // Read once rather than per tick, since the effect below runs several times
+    // a second while the audio plays.
+    const valueTextLabel = el.getAttribute('data-valuetext-label') || '{current} of {duration}';
 
     // State -> UI
     effect(() => {
@@ -273,7 +276,7 @@ export default function (Alpine) {
       thumb.style.left = pct;
       track.setAttribute('aria-valuemax', String(Math.floor(state.duration)));
       track.setAttribute('aria-valuenow', String(Math.floor(state.current)));
-      track.setAttribute('aria-valuetext', `${formatDuration(state.current)} of ${formatDuration(state.duration)}`);
+      track.setAttribute('aria-valuetext', valueTextLabel.replace('{current}', formatDuration(state.current)).replace('{duration}', formatDuration(state.duration)));
       time.textContent = `${formatDuration(state.current)} / ${formatDuration(state.duration)}`;
     });
 
@@ -320,7 +323,7 @@ export default function (Alpine) {
       el.setAttribute('role', 'group');
     }
     if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
-      el.setAttribute('aria-label', el.getAttribute('data-label') || 'Reactions');
+      el.setAttribute('aria-label', 'Reactions');
     }
   });
 }

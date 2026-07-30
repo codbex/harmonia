@@ -3,13 +3,15 @@ import { disabledControlClasses } from '../common/shared-classes';
 import { ChevronLeft, ChevronRight, createSvg } from './../common/icons';
 
 export default function (Alpine) {
-  Alpine.directive('h-carousel', (el, _binding, { cleanup, effect, Alpine }) => {
+  Alpine.directive('h-carousel', (el, _, { cleanup, effect, Alpine }) => {
     el.classList.add('relative', 'overflow-hidden', 'outline-ring/50', 'focus-outline');
     el.setAttribute('data-slot', 'carousel');
     el.setAttribute('role', 'region');
     el.setAttribute('aria-roledescription', 'carousel');
     if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
-    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.getAttribute('data-label') || 'Carousel');
+    if (!el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby')) {
+      el.setAttribute('aria-label', 'Carousel');
+    }
 
     const loop = el.getAttribute('data-loop') !== 'false';
     const autoplay = el.hasAttribute('data-autoplay');
@@ -127,6 +129,9 @@ export default function (Alpine) {
     el.setAttribute('aria-roledescription', 'slide');
 
     const hasLabel = el.hasAttribute('aria-label');
+    // One template for the whole carousel, so it lives on the root rather than
+    // on every slide. An aria-label written on the slide itself still wins.
+    const itemLabel = root.getAttribute('data-item-label') || '{index} of {count}';
 
     effect(() => {
       const active = root._h_carousel.active;
@@ -134,7 +139,9 @@ export default function (Alpine) {
       const isActive = active === index;
       el.setAttribute('aria-hidden', String(!isActive));
       el.setAttribute('data-active', String(isActive));
-      if (!hasLabel) el.setAttribute('aria-label', `${index + 1} of ${count}`);
+      // The count grows as later slides register, so the label is rebuilt on
+      // every run rather than substituted once.
+      if (!hasLabel) el.setAttribute('aria-label', itemLabel.replace('{index}', String(index + 1)).replace('{count}', String(count)));
     });
   });
 
@@ -205,7 +212,9 @@ export default function (Alpine) {
     el.classList.add('absolute', 'bottom-3', 'left-1/2', '-translate-x-1/2', 'z-10', 'flex', 'gap-2');
     el.setAttribute('data-slot', 'carousel-indicators');
     el.setAttribute('role', 'group');
-    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.getAttribute('data-label') || 'Choose slide');
+    if (!el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby')) {
+      el.setAttribute('aria-label', 'Choose slide');
+    }
 
     const slideLabel = el.getAttribute('data-slide-label') || 'Slide';
 

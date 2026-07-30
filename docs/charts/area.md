@@ -1,0 +1,79 @@
+# Area Chart
+
+`x-h-chart-area` draws an area chart from a single reactive configuration object. Each series is a line with the space beneath it filled in, and multiple series are overlaid on a shared axis. Charts inherit the active theme colors and adapt to light and dark mode automatically.
+
+## Usage
+
+Give the chart a container with an explicit height (charts fill their parent). Provide one or more `series`, each a list of numeric `data` points, and a matching `labels` array naming the points along the axis. Use an area chart to show a trend across an ordered sequence while emphasizing the magnitude beneath it. The value axis always includes zero so the filled region reads as the area under the curve. For the trend alone without the fill use a [Line Chart](/charts/line), and to compare discrete categories use a [Bar Chart](/charts/bar).
+
+## API Reference
+
+### Component attribute(s)
+
+```
+x-h-chart-area
+```
+
+### Attributes
+
+| Attribute      | Type                                 | Required | Description                                                                                       |
+| -------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| data-font-size | `xs`<br />`sm`<br />`base`<br />`lg` | false    | Changes the size of all chart text, such as labels, axis ticks, and the legend. Defaults to `xs`. |
+
+### Configuration
+
+| Key           | Type                                  | Default          | Description                                                            |
+| ------------- | ------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
+| `series`      | `{ name?, color?, data: number[] }[]` | `[]`             | One entry per area. Multiple series are overlaid.                      |
+| `labels`      | string[]                              | `[]`             | Label for each data index.                                             |
+| `legend`      | boolean                               | `true`           | Show the color/label key.                                              |
+| `axes`        | boolean                               | `true`           | Show the numeric axis ticks and labels.                                |
+| `gridlines`   | boolean                               | `true`           | Show gridlines behind the areas.                                       |
+| `tooltip`     | boolean                               | `true`           | Show a tooltip on hover and emit interaction events.                   |
+| `dataLabels`  | boolean                               | `false`          | Draw each point's value next to it.                                    |
+| `tickCount`   | number                                | `5`              | Target number of numeric axis ticks.                                   |
+| `valueFormat` | `(value) => string`                   | locale number    | Formats values in tooltips and numeric axis ticks.                     |
+| `palette`     | string[]                              | theme tokens     | Color tokens cycled for series without an explicit `color`.            |
+| `seriesLabel` | string                                | `Series {index}` | Template naming a series that has no `name`. `{index}` is substituted. |
+| `tableLabels` | `{ category? }`                       | English defaults | Column headers of the hidden data table read by screen readers.        |
+
+A series `color` (and the `palette` entries) is one of the standard color names: `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
+
+### Accessibility
+
+The chart is exposed to assistive technologies as a `figure` with a visually-hidden data table of its values, so screen-reader users get the underlying numbers (the visual areas, axes, and legend are marked decorative). It defaults to the accessible name "Area chart". Set an `aria-label` attribute on the element to give it a more meaningful name.
+
+### Events
+
+When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEvent`s on the chart element - `chart-hover`, `chart-leave`, and `chart-click`. See [the events reference](/charts/pie#events) for the shared `detail` shape.
+
+## Examples
+
+### Basic
+
+<LiveExample>
+
+```html
+<div style="height: 20rem" x-h-chart-area="{ labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [{ name: 'Visitors', data: [120, 200, 150, 280, 240] }] }"></div>
+```
+
+</LiveExample>
+
+### Multiple series
+
+<LiveExample>
+
+```html
+<div
+  style="height: 20rem"
+  x-h-chart-area="{
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [
+      { name: 'Visitors', data: [120, 200, 150, 280, 240] },
+      { name: 'Signups', data: [40, 60, 55, 90, 80] }
+    ]
+  }"
+></div>
+```
+
+</LiveExample>

@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { isDisabled } from '../common/disabled';
 import { disabledControlClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
 
@@ -35,8 +36,14 @@ const menubarTriggerClasses = [
   'data-[state=open]:bg-secondary-hover',
   'data-[state=open]:text-secondary-foreground',
   ...disabledControlClasses,
+  'aria-disabled:pointer-events-none',
+  'aria-disabled:opacity-disabled',
   'svg-defaults',
 ];
+
+// The keys that only move focus. They stay live on an aria-disabled trigger so a
+// keyboard user is never stranded on one.
+const navigationKeys = ['Right', 'ArrowRight', 'Left', 'ArrowLeft', 'Home', 'End'];
 
 export default function (Alpine) {
   Alpine.directive('h-menubar', (el, { original }, { Alpine, cleanup }) => {
@@ -108,27 +115,60 @@ export default function (Alpine) {
     el.setAttribute('aria-expanded', 'false');
     el.setAttribute('data-state', 'closed');
     el.setAttribute('data-slot', 'menubar-trigger');
-    el.setAttribute('tabindex', menubar.querySelector('[data-slot=menubar-trigger][tabindex="0"]') ? '-1' : '0');
     el.classList.add(...menubarTriggerClasses);
 
     function getTriggers() {
       return Array.from(menubar.querySelectorAll('[data-slot=menubar-trigger]'));
     }
 
+    // Only triggers a user can reach take part in the tab stop and the arrow
+    // order. A disabled button cannot be focused at all, so leaving it in would
+    // park the bar's only tabindex="0" somewhere focus can never land.
+    // aria-disabled is the opposite. The trigger stays focusable and announced,
+    // so it keeps its place in the order and onKeyDown blocks opening instead.
+    function getFocusableTriggers() {
+      return getTriggers().filter((trigger) => !trigger.disabled);
+    }
+
+    // Writes the stop across every trigger, not just the focusable ones.
+    // A trigger that held the stop and then became disabled has to be reset too,
+    // or the bar would end up with two tabindex="0".
     function setTabStop(target) {
       for (const trigger of getTriggers()) {
         trigger.setAttribute('tabindex', trigger === target ? '0' : '-1');
       }
     }
 
+    // Runs as each trigger mounts. A trigger cannot see siblings that have not
+    // mounted yet, so re-syncing on every mount is what lets a later sibling
+    // claim a stop that an earlier disabled one could not hold.
+    function syncTabStop() {
+      const triggers = getFocusableTriggers();
+      if (!triggers.length) return;
+      if (triggers.some((trigger) => trigger.getAttribute('tabindex') === '0')) return;
+      setTabStop(triggers[0]);
+    }
+
     function moveFocus(direction) {
-      const triggers = getTriggers();
+      const triggers = getFocusableTriggers();
+      // Returning el rather than undefined keeps the callers' `next !== el`
+      // checks working, so nothing tries to open a menu that is not there.
+      if (!triggers.length) return el;
+      // indexOf can only be -1 for a natively disabled trigger, which never
+      // receives a keydown, so in practice el is always in the list. Next then
+      // lands on the first trigger and previous on the last.
       const index = triggers.indexOf(el);
       const next = direction === 'next' ? triggers[(index + 1) % triggers.length] : triggers[(index - 1 + triggers.length) % triggers.length];
       setTabStop(next);
       next.focus();
       return next;
     }
+
+    // Default out of the tab order first. If syncTabStop finds the stop already
+    // taken it returns early, and a button left without a tabindex would be a
+    // second tab stop.
+    el.setAttribute('tabindex', '-1');
+    syncTabStop();
 
     el._h_menu_trigger = {
       isDropdown: true,
@@ -139,7 +179,9 @@ export default function (Alpine) {
       moveInBar(direction) {
         el._h_menu_trigger.closeMenu?.();
         const next = moveFocus(direction);
-        if (next !== el) {
+        // Arrowing along an open bar carries the open menu with it, but a
+        // disabled trigger has no menu to carry, so focus lands and stops there.
+        if (next !== el && !isDisabled(next)) {
           next._h_menu_trigger.focusOnOpen = 'first';
           next._h_menu_trigger.openMenu?.();
         }
@@ -159,17 +201,34 @@ export default function (Alpine) {
     };
 
     function onKeyDown(event) {
+      // An aria-disabled trigger stays focusable, so it can still receive keys.
+      // The arrows still move focus off it, but nothing else acts on it. A native
+      // disabled button never receives keydown at all, so this is only for the
+      // aria case.
+      if (isDisabled(el) && !navigationKeys.includes(event.key)) {
+        // Swallowed, not just ignored. The browser turns them into a click, and
+        // pointer-events-none does not block a keyboard-generated one.
+        if (event.key === ' ' || event.key === 'Enter') event.preventDefault();
+        return;
+      }
       switch (event.key) {
         case 'Right':
         case 'ArrowRight':
         case 'Left':
         case 'ArrowLeft': {
           event.preventDefault();
-          const wasOpen = state.open !== null;
+          const open = state.open;
           const next = moveFocus(event.key === 'Right' || event.key === 'ArrowRight' ? 'next' : 'previous');
-          if (wasOpen && next !== el) {
-            next._h_menu_trigger.focusOnOpen = 'first';
-            next._h_menu_trigger.openMenu?.();
+          // As in moveInBar - an open menu travels with the focus, but a
+          // disabled trigger has none to carry. Closing the old one here rather
+          // than leaving it to the next trigger's setOpen, which never runs
+          // when that trigger is disabled.
+          if (open && next !== el) {
+            open._h_menu_trigger.closeMenu?.();
+            if (!isDisabled(next)) {
+              next._h_menu_trigger.focusOnOpen = 'first';
+              next._h_menu_trigger.openMenu?.();
+            }
           }
           break;
         }
@@ -188,7 +247,8 @@ export default function (Alpine) {
         case 'Home':
         case 'End': {
           event.preventDefault();
-          const triggers = getTriggers();
+          const triggers = getFocusableTriggers();
+          if (!triggers.length) break;
           const target = event.key === 'Home' ? triggers[0] : triggers[triggers.length - 1];
           setTabStop(target);
           target.focus();

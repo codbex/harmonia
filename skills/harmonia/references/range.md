@@ -26,7 +26,7 @@ The element must contain a native `<input>` as a direct child. The slider hides 
 | data-value     | number            | false    | Initial value when no `x-model` is bound. In dual mode, two comma-separated values (e.g. `"20,80"`).         |
 | data-tooltips  | `true`<br/>`auto` | false    | Shows the current value in a tooltip at each handle. With `auto`, only while a handle is dragged or focused. |
 | data-unit      | string            | false    | Suffix appended to tooltip text and `aria-valuetext` (e.g. `"%"`).                                           |
-| data-label     | string            | false    | Accessible name for the handle (default: `"Value"`), or for the group in dual mode (default: `"Range"`).     |
+| data-label     | string            | false    | Accessible name for the handle in single mode (Defaults to `"Value"`). Ignored in dual mode.                 |
 | data-min-label | string            | false    | Accessible name for the lower handle in dual mode (default: `"Minimum"`).                                    |
 | data-max-label | string            | false    | Accessible name for the upper handle in dual mode (default: `"Maximum"`).                                    |
 
@@ -66,7 +66,7 @@ In dual mode the two handles cannot cross, so `Home` on the upper handle stops a
 
 ## Accessibility
 
-Every handle exposes `role="slider"` with `aria-valuemin` / `aria-valuemax` / `aria-valuenow` and `aria-orientation`. When `data-unit` is set, a matching `aria-valuetext` (e.g. "42%") is announced as well. In dual mode the element itself becomes a `role="group"` named by `data-label`, and the handles receive the `data-min-label` / `data-max-label` names. While the inner input is invalid (or carries `aria-invalid`), the handles are marked `aria-invalid` so the state is announced. Pointer dragging, track clicks, and full keyboard operation are all supported, and pressing the track moves the nearest handle.
+Every handle exposes `role="slider"` with `aria-valuemin` / `aria-valuemax` / `aria-valuenow` and `aria-orientation`. When `data-unit` is set, a matching `aria-valuetext` (e.g. "42%") is announced as well. In dual mode the element itself becomes a `role="group"` named "Range" by default, which you can override with your own `aria-label` or `aria-labelledby`, and the handles receive the `data-min-label` / `data-max-label` names. While the inner input is invalid (or carries `aria-invalid`), the handles are marked `aria-invalid` so the state is announced. Pointer dragging, track clicks, and full keyboard operation are all supported, and pressing the track moves the nearest handle.
 
 ## Binding
 
@@ -89,7 +89,7 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 
 ```html
 <div x-data="{ price: [20, 80] }" class="flex items-center gap-4">
-  <div x-h-range.dual x-model="price" data-label="Price range">
+  <div x-h-range.dual x-model="price" aria-label="Price range">
     <input type="text" name="price" />
   </div>
   <span class="w-12 text-right" x-text="price[0] + '-' + price[1]"></span>
@@ -102,7 +102,7 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 <div x-h-range.vertical data-value="30" data-label="Balance" style="height: 10rem">
   <input type="text" name="balance" />
 </div>
-<div x-h-range.vertical.dual data-value="20,60" data-label="Working hours" style="height: 10rem">
+<div x-h-range.vertical.dual data-value="20,60" aria-label="Working hours" style="height: 10rem">
   <input type="text" name="hours" />
 </div>
 ```
@@ -115,7 +115,7 @@ Set `data-tooltips="true"` for always-visible value tooltips, or `data-tooltips=
 <div x-h-range data-value="40" data-tooltips="true" data-unit="%" data-label="Humidity">
   <input type="text" name="humidity" />
 </div>
-<div x-h-range.dual data-value="20,80" data-tooltips="auto" data-unit="%" data-label="Brightness range">
+<div x-h-range.dual data-value="20,80" data-tooltips="auto" data-unit="%" aria-label="Brightness range">
   <input type="text" name="brightness" />
 </div>
 ```

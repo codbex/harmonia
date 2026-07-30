@@ -16,16 +16,17 @@ Use `x-h-calendar` when users need to view and navigate a schedule - appointment
 
 ### Attributes
 
-| Attribute        | Values | Required | Description                                                                  |
-| ---------------- | ------ | -------- | ---------------------------------------------------------------------------- |
-| data-aria-prev   | string | false    | Sets the `aria-label` for the previous-period navigation button.             |
-| data-aria-next   | string | false    | Sets the `aria-label` for the next-period navigation button.                 |
-| data-aria-views  | string | false    | Sets the `aria-label` for the view switcher menu (default: `"Change view"`). |
-| data-today-label | string | false    | Sets the text label for the Today button (default: `"Today"`).               |
-| data-day-label   | string | false    | Sets the label for the Day view option (default: `"Day"`).                   |
-| data-week-label  | string | false    | Sets the label for the Week view option (default: `"Week"`).                 |
-| data-month-label | string | false    | Sets the label for the Month view option (default: `"Month"`).               |
-| data-year-label  | string | false    | Sets the label for the Year view option (default: `"Year"`).                 |
+| Attribute        | Values | Required | Description                                                                                         |
+| ---------------- | ------ | -------- | --------------------------------------------------------------------------------------------------- |
+| data-aria-prev   | string | false    | Sets the `aria-label` for the previous-period navigation button.                                    |
+| data-aria-next   | string | false    | Sets the `aria-label` for the next-period navigation button.                                        |
+| data-aria-views  | string | false    | Sets the `aria-label` for the view switcher menu (Defaults to `"Change view"`).                     |
+| data-today-label | string | false    | Sets the text label for the Today button (Defaults to `"Today"`).                                   |
+| data-more-label  | string | false    | Template for the month-view overflow button. `{count}` is substituted. Defaults to `+{count} more`. |
+| data-day-label   | string | false    | Sets the label for the Day view option (Defaults to `"Day"`).                                       |
+| data-week-label  | string | false    | Sets the label for the Week view option (Defaults to `"Week"`).                                     |
+| data-month-label | string | false    | Sets the label for the Month view option (Defaults to `"Month"`).                                   |
+| data-year-label  | string | false    | Sets the label for the Year view option (Defaults to `"Year"`).                                     |
 
 ### Events
 
@@ -42,30 +43,31 @@ Pass a configuration object to the directive as an expression.
 <div x-h-calendar="calConfig" style="height: 600px"></div>
 ```
 
-| Key              | Description                                                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| events           | Array of event objects. See Event object below.                                                                                             |
-| view             | Initial view: `"month"` (default), `"week"`, `"day"`, or `"year"`.                                                                                           |
-| date             | Initial focus date in `YYYY-MM-DD` format. Defaults to today.                                                                                                |
-| locale           | BCP 47 language tag for formatting. When not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                         |
-| firstDay         | First day of the week. `0` = Sunday (default), `1` = Monday.                                                                                                 |
-| showNowIndicator | Show the current-time indicator in week and day views. Defaults to `true`. Set to `false` to hide it.                                                        |
-| views            | Show the view-switcher button group in the toolbar. Defaults to `true`. Set to `false` to lock the calendar to the view set in `view` and hide the switcher. |
+| Key              | Description                                                                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| events           | Array of event objects. See Event object below.                                                                                                                                  |
+| view             | Initial view. The options are `"month"` (default), `"week"`, `"day"`, or `"year"`.                                                                                                                |
+| date             | Initial focus date in `YYYY-MM-DD` format. Defaults to today.                                                                                                                                     |
+| locale           | BCP 47 language tag for formatting. When not provided, it is taken from the page's `<html lang>` attribute, then the browser locale.                                                              |
+| firstDay         | First day of the week. `0` = Sunday (default), `1` = Monday.                                                                                                                                      |
+| showNowIndicator | Show the current-time indicator in week and day views. Defaults to `true`. Set to `false` to hide it.                                                                                             |
+| views            | Show the view-switcher button group in the toolbar. Defaults to `true`. Set to `false` to lock the calendar to the view set in `view` and hide the switcher.                                      |
+| scrollTo         | Where week and day views scroll to on load - `"now"` anchors on the current time, `"first-event"` anchors on the earliest event in view. Falls back to `"now"` when the view has no timed events. |
 
 ### Event object
 
 Each item in the `events` array supports the following fields:
 
-| Field       | Type    | Required | Description                                                                                                                                                    |
-| ----------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id          | string  | false    | Unique identifier for the event. Auto-generated if omitted.                                                                                                    |
-| title       | string  | true     | Display title of the event.                                                                                                                                    |
-| start       | string  | true     | Start datetime as an ISO string (`"YYYY-MM-DDTHH:MM:SS"`) or date (`"YYYY-MM-DD"` for all-day).                                                                |
-| end         | string  | false    | End datetime. Defaults to `start`. For all-day events, defaults to end of the start day.                                                                       |
-| allDay      | boolean | false    | When `true`, the event appears in the all-day strip of week/day views. Defaults to `false`.                                                                    |
-| color       | string  | false    | Color key: `blue` (default), `red`, `green`, `yellow`, `purple`, `pink`, `indigo`, `orange`, `gray`, `teal`.                                                   |
-| status      | string  | false    | Pill style: `confirmed` (default) renders a filled pill, `unconfirmed` renders an outlined pill, and `rejected` renders an outlined pill with a dashed border. |
-| description | string  | false    | Shown as a tooltip on event pills.                                                                                                                             |
+| Field       | Type                                                                                                                       | Required | Description                                                                                                                                                    |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id          | string                                                                                                                     | false    | Unique identifier for the event. Auto-generated if omitted.                                                                                                    |
+| title       | string                                                                                                                     | true     | Display title of the event.                                                                                                                                    |
+| start       | string                                                                                                                     | true     | Start datetime as an ISO string (`"YYYY-MM-DDTHH:MM:SS"`) or date (`"YYYY-MM-DD"` for all-day).                                                                |
+| end         | string                                                                                                                     | false    | End datetime. Defaults to `start`. For all-day events, defaults to end of the start day.                                                                       |
+| allDay      | boolean                                                                                                                    | false    | When `true`, the event appears in the all-day strip of week/day views. Defaults to `false`.                                                                    |
+| color       | `blue`<br />`red`<br />`green`<br />`yellow`<br />`purple`<br />`pink`<br />`indigo`<br />`orange`<br />`gray`<br />`teal` | false    | Color key.                                                                                                                                                     |
+| status      | string                                                                                                                     | false    | Pill style. `confirmed` (default) renders a filled pill, `unconfirmed` renders an outlined pill, and `rejected` renders an outlined pill with a dashed border. |
+| description | string                                                                                                                     | false    | Shown as a tooltip on event pills.                                                                                                                             |
 
 ## Keyboard Handling
 
@@ -75,7 +77,7 @@ In the month view (and within each year-view mini-month) the day cells form an A
 - `Left` / `Right` - Move focus to the previous/next day (crossing month boundaries).
 - `Home` / `End` - Move focus to the first/last day of the month.
 - `PageUp` / `PageDown` - Move focus to the previous/next month.
-- `Enter` / `Space` - Fire `date-click` for the focused day (year view: open that day in day view).
+- `Enter` / `Space` - Fire `date-click` for the focused day (year view - open that day in day view).
 
 Events are buttons in the tab order. Activate them to fire `event-click`. In the month view, the "+N more" overflow opens a dialog that moves focus to its event list and returns focus to the trigger on `Escape`.
 
@@ -124,6 +126,7 @@ The calendar is a labeled `group` (default name "Calendar", overridable with an 
     const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10);
     this.cal = {
       view: 'week',
+      scrollTo: 'first-event',
       events: [
         { id: '1', title: 'Team Sync', start: today + 'T09:00:00', end: today + 'T10:00:00', color: 'blue' },
         { id: '2', title: 'Design Review', start: today + 'T09:30:00', end: today + 'T10:30:00', color: 'purple' },

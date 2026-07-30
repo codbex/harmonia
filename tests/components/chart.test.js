@@ -34,6 +34,7 @@ describe('chart directives', () => {
     expect(alpine._directives['h-chart-bar']).toBeDefined();
     expect(alpine._directives['h-chart-line']).toBeDefined();
     expect(alpine._directives['h-chart-scatter']).toBeDefined();
+    expect(alpine._directives['h-chart-area']).toBeDefined();
     expect(alpine._directives['h-chart-pie']).toBeDefined();
     expect(alpine._directives['h-chart-doughnut']).toBeDefined();
     expect(alpine._directives['h-chart-polar-area']).toBeDefined();
@@ -146,6 +147,45 @@ describe('chart directives', () => {
       mount('h-chart-line', { series: [{ data: [1, 2] }, { data: [3, 4] }] }, el);
       expect(slot(el, 'chart-point').length).toBe(4);
       expect(slot(el, 'chart-segment').length).toBe(2);
+    });
+  });
+
+  describe('area', () => {
+    it('fills under the line and keeps the polyline and points', () => {
+      mount('h-chart-area', { series: [{ data: [1, 2, 3] }] }, el);
+      const areas = slot(el, 'chart-area');
+      expect(areas.length).toBe(1);
+      expect(areas[0].tagName.toLowerCase()).toBe('polygon');
+      expect(areas[0].classList.contains('fill-blue-500')).toBe(true);
+      // The three data points plus the two baseline corners that close the shape.
+      expect(areas[0].getAttribute('points').split(' ').length).toBe(5);
+      expect(slot(el, 'chart-segment').length).toBe(1);
+      expect(slot(el, 'chart-point').length).toBe(3);
+    });
+
+    it('closes the fill on the zero line and anchors the scale there', () => {
+      mount('h-chart-area', { series: [{ data: [50, 60, 70] }] }, el);
+      expect(texts(el)).toContain('0');
+      const coords = slot(el, 'chart-area')[0]
+        .getAttribute('points')
+        .split(' ')
+        .map((p) => Number(p.split(',')[1]));
+      // Both baseline corners sit at the same y, below every data point.
+      expect(coords[0]).toBe(coords[coords.length - 1]);
+      expect(coords[0]).toBeGreaterThan(Math.max(...coords.slice(1, -1)));
+    });
+
+    it('draws no area for a single point', () => {
+      mount('h-chart-area', { series: [{ data: [5] }] }, el);
+      expect(slot(el, 'chart-area').length).toBe(0);
+      expect(slot(el, 'chart-point').length).toBe(1);
+    });
+
+    it('overlays one fill per series without blocking pointer events', () => {
+      mount('h-chart-area', { series: [{ data: [1, 2] }, { data: [3, 4] }] }, el);
+      const areas = slot(el, 'chart-area');
+      expect(areas.length).toBe(2);
+      expect(Array.from(areas).every((a) => a.classList.contains('pointer-events-none'))).toBe(true);
     });
   });
 
@@ -539,10 +579,41 @@ describe('chart directives', () => {
       expect(el2.getAttribute('aria-label')).toBe('Traffic sources');
     });
 
+    it('labels the area chart and renders its data table', () => {
+      mount('h-chart-area', { labels: ['Jan', 'Feb'], series: [{ name: 'Revenue', data: [12, 19] }] }, el);
+      expect(el.getAttribute('aria-label')).toBe('Area chart');
+      const table = slot(el, 'chart-table')[0];
+      expect(Array.from(table.querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Category', 'Revenue']);
+      expect(Array.from(table.querySelectorAll('tbody tr')[0].children).map((c) => c.textContent)).toEqual(['Jan', '12']);
+    });
+
     it('hides the visual layer and tooltip from assistive tech', () => {
       mount('h-chart-bar', { labels: ['A'], series: [{ data: [1] }] }, el);
       expect(slot(el, 'chart-tooltip')[0].getAttribute('aria-hidden')).toBe('true');
       expect(slot(el, 'chart-svg')[0].getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('names an unnamed series "Series N", overridable with seriesLabel', () => {
+      mount('h-chart-bar', { labels: ['A'], series: [{ data: [1] }, { data: [2] }] }, el);
+      expect(Array.from(slot(el, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Category', 'Series 1', 'Series 2']);
+
+      const el2 = makeEl();
+      mount('h-chart-bar', { labels: ['A'], series: [{ data: [1] }], seriesLabel: 'Serie {index}' }, el2);
+      expect(Array.from(slot(el2, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Category', 'Serie 1']);
+
+      // A series that names itself is untouched by the template.
+      const el3 = makeEl();
+      mount('h-chart-bar', { labels: ['A'], series: [{ name: 'Revenue', data: [1] }], seriesLabel: 'Serie {index}' }, el3);
+      expect(Array.from(slot(el3, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Category', 'Revenue']);
+    });
+
+    it('translates the data table headers with tableLabels', () => {
+      mount('h-chart-bar', { labels: ['Jan'], series: [{ name: 'Umsatz', data: [12] }], tableLabels: { category: 'Kategorie' } }, el);
+      expect(Array.from(slot(el, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Kategorie', 'Umsatz']);
+
+      const el2 = makeEl();
+      mount('h-chart-pie', { slices: [{ label: 'A', value: 5 }], tableLabels: { segment: 'Segment A', value: 'Wert' } }, el2);
+      expect(Array.from(slot(el2, 'chart-table')[0].querySelectorAll('thead th')).map((th) => th.textContent)).toEqual(['Segment A', 'Wert']);
     });
 
     it('renders a hidden data table of the values (bar/line)', () => {

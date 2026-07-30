@@ -23,6 +23,13 @@ Harmonia includes a small set of themeable charts that inherit the active theme 
       <p class="text">Plots one or more series over a shared axis to highlight trends and changes over time.</p>
     </div>
   </a>
+  <a href="./charts/area" class="card">
+    <svg-icon class="card-media" src="./images/area.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Area Chart</h3>
+      <p class="text">Fills the space beneath one or more series to emphasize magnitude alongside the trend.</p>
+    </div>
+  </a>
   <a href="./charts/scatter" class="card">
     <svg-icon class="card-media" src="./images/scatter.svg"></svg-icon>
     <div class="card-content">

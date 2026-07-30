@@ -1,29 +1,79 @@
+import { findAncestorState } from '../common/ancestor';
+import { isDisabled } from '../common/disabled';
 import { disabledControlClasses } from '../common/shared-classes';
 import { buttonVariants, setButtonClasses } from './button';
 
+// Orientation and floating cross rather than layer, so each combination gets its
+// own class list. Any property written by more than one state lives entirely in
+// these maps. The classes have equal specificity, so a half-static property would
+// be decided by stylesheet order instead of by the state.
+const stateKey = (vertical, floating) => `${vertical ? 'vertical' : 'horizontal'}-${floating ? 'floating' : 'docked'}`;
+
+// Removes every state first, so the element cannot accumulate a stale set.
+function applyStateClasses(el, classes, vertical, floating) {
+  for (const set of Object.values(classes)) {
+    el.classList.remove(...set);
+  }
+  el.classList.add(...classes[stateKey(vertical, floating)]);
+}
+
+// data-size only affects the docked horizontal bar, so the size variants appear
+// on that key alone rather than being excluded by a selector.
+const tabBarStateClasses = {
+  'horizontal-docked': ['flex-row', 'h-10', 'min-h-10', 'data-[size=sm]:h-8', 'data-[size=sm]:min-h-8', 'data-[size=lg]:h-12', 'data-[size=lg]:min-h-12', 'inset-shadow-[0_-.063rem_var(--border)]'],
+  'vertical-docked': ['flex-col', 'inset-shadow-[-.063rem_0_var(--border)]'],
+  'horizontal-floating': ['flex-row'],
+  'vertical-floating': ['flex-col'],
+};
+
+const tabStateClasses = {
+  'horizontal-docked': ['border-0', 'px-2', 'h-full', 'hover:inset-shadow-[0_-.188rem_var(--border)]', 'aria-selected:inset-shadow-[0_-.125rem_var(--primary)]', 'hover:aria-selected:inset-shadow-[0_-.188rem_var(--primary)]'],
+  'vertical-docked': ['border-0', 'px-3', 'w-full', 'h-8', 'hover:inset-shadow-[-.188rem_0_var(--border)]', 'aria-selected:inset-shadow-[-.125rem_0_var(--primary)]', 'hover:aria-selected:inset-shadow-[-.188rem_0_var(--primary)]'],
+  'horizontal-floating': ['rounded-md', 'border', 'border-transparent', 'px-2', 'h-full', 'hover:bg-background', 'hover:border-border', 'aria-selected:bg-background', 'aria-selected:border-border'],
+  'vertical-floating': ['rounded-md', 'border', 'border-transparent', 'px-2', 'w-full', 'h-8', 'hover:bg-background', 'hover:border-border', 'aria-selected:bg-background', 'aria-selected:border-border'],
+};
+
+const tabListActionsEndClasses = {
+  'horizontal-docked': ['ml-auto', 'mr-1.5'],
+  'vertical-docked': ['mt-auto', 'mb-1.5'],
+  'horizontal-floating': ['ml-auto'],
+  'vertical-floating': ['mt-auto'],
+};
+
+// The radius is repeated on every key rather than left to setButtonClasses'
+// rounded-control, so that a single class owns it here too and the two never race.
+const tabListActionStateClasses = {
+  'horizontal-docked': ['rounded-md', 'aspect-square', 'w-auto', 'h-[75%]'],
+  'vertical-docked': ['rounded-md', 'h-9', 'w-[80%]'],
+  'horizontal-floating': ['rounded-md', 'aspect-square', 'w-auto', 'h-full'],
+  'vertical-floating': ['rounded-md', 'h-9', 'w-full'],
+};
+
 export default function (Alpine) {
-  Alpine.directive('h-tabs', (el) => {
-    el.classList.add('group/tabs', 'flex', 'data-[orientation=horizontal]:flex-col', 'data-[orientation=vertical]:flex-row');
+  Alpine.directive('h-tabs', (el, _, { Alpine, cleanup }) => {
+    el.classList.add('flex', 'data-[orientation=horizontal]:flex-col', 'data-[orientation=vertical]:flex-row');
     el.setAttribute('data-slot', 'tabs');
+
+    // Selection stays with the consumer, so orientation is the only state the root
+    // owns. Anything other than 'vertical' is horizontal, resolved here so the rule
+    // lives in one place.
+    el._h_tabs = Alpine.reactive({ vertical: el.getAttribute('data-orientation') === 'vertical' });
+
+    const observer = new MutationObserver(() => {
+      el._h_tabs.vertical = el.getAttribute('data-orientation') === 'vertical';
+    });
+
+    observer.observe(el, { attributes: true, attributeFilter: ['data-orientation'] });
+
+    cleanup(() => observer.disconnect());
   });
 
-  Alpine.directive('h-tab-bar', (el) => {
+  Alpine.directive('h-tab-bar', (el, _, { Alpine, effect, cleanup }) => {
     el.classList.add(
-      'group/tab-bar',
       'flex',
       'gap-1',
       'bg-object-header',
       'text-object-header-foreground',
-      'group-data-[orientation=horizontal]/tabs:flex-row',
-      'group-data-[orientation=vertical]/tabs:flex-col',
-      '[&:not([data-floating=true])]:group-data-[orientation=horizontal]/tabs:inset-shadow-[0_-.063rem_var(--border)]',
-      '[&:not([data-floating=true])]:group-data-[orientation=vertical]/tabs:inset-shadow-[-.063rem_0_var(--border)]',
-      '[&:not([data-floating=true])]:group-data-[orientation=horizontal]/tabs:h-10',
-      '[&:not([data-floating=true])]:group-data-[orientation=horizontal]/tabs:min-h-10',
-      '[&:not([data-floating=true])]:data-[size=sm]:group-data-[orientation=horizontal]/tabs:h-8',
-      '[&:not([data-floating=true])]:data-[size=sm]:group-data-[orientation=horizontal]/tabs:min-h-8',
-      '[&:not([data-floating=true])]:data-[size=lg]:group-data-[orientation=horizontal]/tabs:h-12',
-      '[&:not([data-floating=true])]:data-[size=lg]:group-data-[orientation=horizontal]/tabs:min-h-12',
       'data-[floating=true]:border',
       'data-[floating=true]:shadow-xs',
       'data-[floating=true]:z-1',
@@ -31,115 +81,325 @@ export default function (Alpine) {
       'data-[floating=true]:p-[calc(var(--spacing)*0.75)]'
     );
     el.setAttribute('data-slot', 'tab-bar');
+
+    // Only the literal 'true' floats, so a bar without the attribute is docked,
+    // matching how a tab list with no bar above it reads.
+    el._h_tab_bar = Alpine.reactive({ floating: el.getAttribute('data-floating') === 'true' });
+
+    const observer = new MutationObserver(() => {
+      el._h_tab_bar.floating = el.getAttribute('data-floating') === 'true';
+    });
+
+    observer.observe(el, { attributes: true, attributeFilter: ['data-floating'] });
+
+    const root = findAncestorState(Alpine, el, '_h_tabs');
+
+    effect(() => applyStateClasses(el, tabBarStateClasses, root?._h_tabs.vertical === true, el._h_tab_bar.floating));
+
+    cleanup(() => observer.disconnect());
   });
 
-  Alpine.directive('h-tab-list', (el) => {
-    el.classList.add(
-      'text-muted-foreground',
-      'flex',
-      'items-start',
-      'justify-start',
-      'scrollbar-none',
-      'group-data-[orientation=horizontal]/tabs:overflow-x-scroll',
-      'group-data-[orientation=vertical]/tabs:overflow-y-scroll',
-      'group-data-[orientation=horizontal]/tabs:flex-row',
-      'group-data-[orientation=vertical]/tabs:flex-col',
-      'group-data-[orientation=vertical]/tabs:h-fit',
-      'gap-2',
-      'group-data-[floating=true]/tab-bar:gap-1'
-    );
+  Alpine.directive('h-tab-list', (el, { original }, { Alpine, effect, cleanup }) => {
+    const root = findAncestorState(Alpine, el, '_h_tabs');
+    if (!root) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tabs')} element`);
+    }
+    const tabsState = root._h_tabs;
+    // Optional. The root is looked up directly, so a list that skips the bar still
+    // works and reads as docked.
+    const bar = findAncestorState(Alpine, el, '_h_tab_bar');
+
+    el.classList.add('text-muted-foreground', 'flex', 'items-start', 'justify-start', 'scrollbar-none');
     el.setAttribute('role', 'tablist');
     el.setAttribute('data-slot', 'tab-list');
+
+    // The axis classes and aria-orientation share one effect rather than reading
+    // the same state twice.
+    effect(() => {
+      const vertical = tabsState.vertical;
+      el.classList.remove(vertical ? 'flex-row' : 'flex-col', vertical ? 'overflow-x-scroll' : 'overflow-y-scroll');
+      el.classList.add(vertical ? 'flex-col' : 'flex-row', vertical ? 'overflow-y-scroll' : 'overflow-x-scroll');
+      if (vertical) {
+        el.classList.add('h-fit');
+      } else {
+        el.classList.remove('h-fit');
+      }
+      el.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal');
+    });
+
+    // Floating only tightens the gap here, so it stays separate from the axis
+    // classes above instead of multiplying out into a four-key map.
+    effect(() => {
+      const floating = bar?._h_tab_bar.floating === true;
+      el.classList.remove(floating ? 'gap-2' : 'gap-1');
+      el.classList.add(floating ? 'gap-1' : 'gap-2');
+    });
+
+    // Tabs register themselves rather than being queried, so the set is never read
+    // mid-render. Registration is in mount order, which x-for and later insertions
+    // make differ from visual order, so navigation order is recovered on read.
+    const tabs = [];
+
+    function orderedTabs() {
+      return [...tabs].sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+    }
+
+    // A native disabled button cannot be focused at all, so it leaves the order. An
+    // aria-disabled one can, and is announced as unavailable, so it keeps its place.
+    function focusableTabs() {
+      return orderedTabs().filter((tab) => !tab.disabled);
+    }
+
+    // A tab's action shares its place in the tab order, so Tab reaches the action
+    // of the tab that holds the stop and no other.
+    function setTabStop(target) {
+      for (const tab of tabs) {
+        const stop = tab === target ? '0' : '-1';
+        tab.setAttribute('tabindex', stop);
+        tab._h_tab?.action?.setAttribute('tabindex', stop);
+      }
+    }
+
+    // The stop follows the selected tab, so Tab from outside lands on the tab whose
+    // panel is showing. The first selected tab wins, falling back to the first tab.
+    function syncTabStop() {
+      const focusable = focusableTabs();
+      if (!focusable.length) return;
+      setTabStop(focusable.find((tab) => tab.getAttribute('aria-selected') === 'true') ?? focusable[0]);
+    }
+
+    function moveFocus(target) {
+      if (!target) return;
+      setTabStop(target);
+      target.focus();
+    }
+
+    el._h_tab_list = {
+      register(tab) {
+        if (!tabs.includes(tab)) tabs.push(tab);
+        syncTabStop();
+      },
+      unregister(tab) {
+        const index = tabs.indexOf(tab);
+        if (index !== -1) tabs.splice(index, 1);
+        syncTabStop();
+      },
+      // A tab calls this when its own aria-selected (or disabled state) changed,
+      // so the stop follows selection without the list watching the DOM.
+      selectionChanged: syncTabStop,
+    };
+
+    function onKeyDown(event) {
+      const tab = event.target.closest?.('[data-slot=tab]');
+      if (!tab || !tabs.includes(tab)) return;
+
+      const vertical = tabsState.vertical;
+      const nextKeys = vertical ? ['Down', 'ArrowDown'] : ['Right', 'ArrowRight'];
+      const previousKeys = vertical ? ['Up', 'ArrowUp'] : ['Left', 'ArrowLeft'];
+      const focusable = focusableTabs();
+      const index = focusable.indexOf(tab);
+
+      if (nextKeys.includes(event.key)) {
+        event.preventDefault();
+        if (index !== -1) moveFocus(focusable[(index + 1) % focusable.length]);
+      } else if (previousKeys.includes(event.key)) {
+        event.preventDefault();
+        if (index !== -1) moveFocus(focusable[(index - 1 + focusable.length) % focusable.length]);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        moveFocus(focusable[0]);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        moveFocus(focusable[focusable.length - 1]);
+      }
+      // Enter and Space are left alone. The tabs are native buttons, so the browser
+      // already fires the author's click handler. Arrows only move focus.
+    }
+
+    // Focus can also arrive by click or by Tab, so the stop is re-synced to
+    // wherever it actually landed. 'focus' does not bubble, hence focusin.
+    function onFocusIn(event) {
+      const tab = event.target.closest?.('[data-slot=tab]');
+      if (tab && tabs.includes(tab)) setTabStop(tab);
+    }
+
+    el.addEventListener('keydown', onKeyDown);
+    el.addEventListener('focusin', onFocusIn);
+
+    cleanup(() => {
+      el.removeEventListener('keydown', onKeyDown);
+      el.removeEventListener('focusin', onFocusIn);
+    });
   });
 
-  Alpine.directive('h-tab', (el, { original }) => {
+  Alpine.directive('h-tab', (el, { original }, { Alpine, effect, cleanup }) => {
+    const list = findAncestorState(Alpine, el, '_h_tab_list');
+    if (!list) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab-list')} element`);
+    }
+    const root = findAncestorState(Alpine, el, '_h_tabs');
+    if (!root) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tabs')} element`);
+    }
+    // Optional, like on the tab list. No bar reads as docked.
+    const bar = findAncestorState(Alpine, el, '_h_tab_bar');
+
     el.classList.add(
       'cursor-pointer',
       'focus-visible:border-ring',
-      'focus-visible:ring-ring/50',
-      'focus-visible:outline-ring',
+      'focus-visible:inset-ring-ring/50',
+      'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
+      'outline-none',
       'text-muted-foreground',
       'hover:text-foreground',
       'aria-selected:text-foreground',
       'inline-flex',
-      'group-data-[orientation=vertical]/tabs:w-full',
-      'group-data-[orientation=vertical]/tabs:h-8',
-      'group-data-[orientation=horizontal]/tabs:h-full',
       'items-center',
       'justify-start',
       'gap-1.5',
-      'px-2',
       'py-1',
       'text-sm',
       'font-medium',
       'whitespace-nowrap',
       'transition-[color,box-shadow]',
       'motion-reduce:transition-none',
-      'group-data-[floating=true]/tab-bar:rounded-md',
-      'group-data-[floating=true]/tab-bar:border',
-      'group-data-[floating=true]/tab-bar:border-transparent',
-      'group-data-[floating=true]/tab-bar:aria-selected:bg-background',
-      'group-data-[floating=true]/tab-bar:aria-selected:border-border',
-      'group-data-[floating=true]/tab-bar:hover:bg-background',
-      'group-data-[floating=true]/tab-bar:hover:border-border',
-      'group-[&:not([data-floating=true])]/tab-bar:border-0',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:hover:inset-shadow-[0_-.188rem_var(--border)]',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:aria-selected:inset-shadow-[0_-.125rem_var(--primary)]',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:hover:aria-selected:inset-shadow-[0_-.188rem_var(--primary)]',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:px-3',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:hover:inset-shadow-[-.188rem_0_var(--border)]',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:aria-selected:inset-shadow-[-.125rem_0_var(--primary)]',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:hover:aria-selected:inset-shadow-[-.188rem_0_var(--primary)]',
-      'focus-visible:ring-[3px]',
-      'focus-visible:outline-1',
       ...disabledControlClasses,
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:opacity-disabled',
+      'aria-disabled:cursor-not-allowed',
       'svg-defaults'
     );
+
+    effect(() => applyStateClasses(el, tabStateClasses, root._h_tabs.vertical, bar?._h_tab_bar.floating === true));
+
     el.setAttribute('role', 'tab');
     el.setAttribute('data-slot', 'tab');
     if (!el.hasAttribute('id')) throw new Error(`${original}: Tabs must have an id`);
     if (!el.hasAttribute('aria-controls')) throw new Error(`${original}: aria-controls must be set to the tab-content id.`);
+
+    // Defaulted so a tab written without the attribute is still announced as
+    // not selected.
+    if (!el.hasAttribute('aria-selected')) el.setAttribute('aria-selected', 'false');
+    // Starts out of the tab order and register() hands the stop to the selected tab.
+    el.setAttribute('tabindex', '-1');
+
+    // pointer-events-none blocks a real click but never the synthetic one Enter and
+    // Space fire on a button, so the author's handler is stopped here in the capture
+    // phase, before any handler bound on the tab itself.
+    const blockDisabledActivation = (event) => {
+      if (!isDisabled(el)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+    el.addEventListener('click', blockDisabledActivation, true);
+
+    // The list reads this so the action shares the tab's place in the tab order. It
+    // has to exist before register(), which syncs the tab stop straight away.
+    el._h_tab = { action: null };
+
+    list._h_tab_list.register(el);
+
+    // Only this tab knows when its own aria-selected changed. tabindex is
+    // deliberately not observed, so writing the tab stop cannot feed back in here.
+    const observer = new MutationObserver(() => list._h_tab_list.selectionChanged());
+
+    observer.observe(el, { attributes: true, attributeFilter: ['aria-selected', 'disabled', 'aria-disabled'] });
+
+    cleanup(() => {
+      el.removeEventListener('click', blockDisabledActivation, true);
+      observer.disconnect();
+      list._h_tab_list.unregister(el);
+    });
   });
 
-  Alpine.directive('h-tab-action', (el) => {
-    el.classList.add('cursor-pointer', 'ml-auto', 'rounded-md', 'text-foreground', 'hover:bg-secondary', 'hover:text-secondary-foreground', 'active:bg-secondary-active');
+  Alpine.directive('h-tab-action', (el, { original }, { Alpine, cleanup }) => {
+    // A span, since the action sits inside the tab's own button where nested
+    // interactive content would be invalid. Same reason as h-chip-close.
+    if (el.tagName !== 'SPAN') {
+      throw new Error(`${original} must be a span element`);
+    }
+    const tab = findAncestorState(Alpine, el, '_h_tab');
+    if (!tab) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab')} element`);
+    }
+    // The tab stop is keyed off the single action slot, so a second action would
+    // leave the first stranded out of the tab order.
+    if (tab._h_tab.action) {
+      throw new Error(`${original}: a tab can only have one action`);
+    }
+
+    el.classList.add('p-0.5', 'cursor-pointer', 'ml-auto', 'rounded-md', 'text-foreground', 'hover:bg-secondary', 'hover:text-secondary-foreground', 'active:bg-secondary-active', 'outline-ring/50', 'focus-outline');
     el.setAttribute('role', 'button');
     el.setAttribute('data-slot', 'tab-action');
+    // Copied rather than assumed to be -1. The tab mounts first and may already
+    // hold the stop.
+    el.setAttribute('tabindex', tab.getAttribute('tabindex') ?? '-1');
+
+    // The action's content is whatever the author put there, so only they can name it.
+    if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
+      console.error(`${original}: Must have an "aria-label" or "aria-labelledby" attribute`, el);
+    }
+
+    tab._h_tab.action = el;
+
+    // The action lives inside the tab's button, so without this every activation
+    // would also select the tab.
+    function onClick(event) {
+      event.stopPropagation();
+    }
+
+    // A span gets no native activation, so Enter and Space route through click,
+    // keeping the keyboard and the mouse on one path including the stop above.
+    function onKeyDown(event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      el.click();
+    }
+
+    el.addEventListener('click', onClick);
+    el.addEventListener('keydown', onKeyDown);
+
+    cleanup(() => {
+      el.removeEventListener('click', onClick);
+      el.removeEventListener('keydown', onKeyDown);
+      tab._h_tab.action = null;
+    });
   });
 
-  Alpine.directive('h-tab-list-actions', (el, { modifiers }) => {
+  Alpine.directive('h-tab-list-actions', (el, { modifiers }, { Alpine, effect }) => {
     el.classList.add('flex', 'gap-1.5', 'items-center', 'justify-center');
-    if (modifiers.includes('end'))
-      el.classList.add(
-        'group-data-[orientation=horizontal]/tabs:ml-auto',
-        'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:mr-1.5',
-        'group-data-[orientation=vertical]/tabs:mt-auto',
-        'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:mb-1.5'
-      );
+    // Only the end alignment depends on the surrounding state, so the default case
+    // needs no ancestor lookup and no effect.
+    if (modifiers.includes('end')) {
+      const root = findAncestorState(Alpine, el, '_h_tabs');
+      const bar = findAncestorState(Alpine, el, '_h_tab_bar');
+      effect(() => applyStateClasses(el, tabListActionsEndClasses, root?._h_tabs.vertical === true, bar?._h_tab_bar.floating === true));
+    }
     el.setAttribute('data-slot', 'tab-list-actions');
   });
 
-  Alpine.directive('h-tab-list-action', (el) => {
+  Alpine.directive('h-tab-list-action', (el, { original }, { Alpine, effect }) => {
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button element`);
+    }
     setButtonClasses(el);
-    el.classList.add(
-      'group-data-[floating=true]/tab-bar:rounded-md',
-      'group-data-[orientation=horizontal]/tabs:aspect-square',
-      'group-data-[orientation=horizontal]/tabs:w-auto',
-      'group-data-[floating=true]/tab-bar:group-data-[orientation=horizontal]/tabs:h-full',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=horizontal]/tabs:h-[75%]',
-      'group-data-[orientation=vertical]/tabs:h-9',
-      'group-data-[floating=true]/tab-bar:group-data-[orientation=vertical]/tabs:w-full',
-      'group-[&:not([data-floating=true])]/tab-bar:group-data-[orientation=vertical]/tabs:w-[80%]'
-    );
     el.classList.add(...buttonVariants[el.getAttribute('data-variant') ?? 'outline']);
-    el.setAttribute('role', 'button');
     el.setAttribute('data-slot', 'tab-list-action');
+
+    // Both ancestors are optional, and their falsy defaults are exactly the
+    // horizontal docked state, so no extra branch is needed.
+    const root = findAncestorState(Alpine, el, '_h_tabs');
+    const bar = findAncestorState(Alpine, el, '_h_tab_bar');
+
+    effect(() => applyStateClasses(el, tabListActionStateClasses, root?._h_tabs.vertical === true, bar?._h_tab_bar.floating === true));
   });
 
   Alpine.directive('h-tabs-content', (el, { original }) => {
-    el.classList.add('flex-1', 'outline-none');
+    el.classList.add('flex-1', 'outline-none', 'focus-visible:inset-ring-ring/50', 'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]');
     el.setAttribute('role', 'tabpanel');
-    el.setAttribute('tabindex', '0');
+    // The ARIA tabs pattern only wants this when the panel has no focusable child
+    // of its own, so authors with focusable content opt out with tabindex="-1".
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
     el.setAttribute('data-slot', 'tabs-content');
     if (!el.hasAttribute('id')) throw new Error(`${original}: Tab content must have an id`);
     if (!el.hasAttribute('aria-labelledby')) throw new Error(`${original}: aria-labelledby must be set to the tab id.`);

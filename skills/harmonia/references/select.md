@@ -51,7 +51,7 @@ Use the Select component without a search option when there are a limited number
 | `self`           | string  | false    | Sets the label of the option. Either a string literal or a variable.                                                       |
 | data-value       | string  | false    | Sets the value of the option.                                                                                              |
 | data-description | string  | false    | Sets a secondary line of text shown under the label in a muted color. Included in the search only when the search opts in. |
-| data-disabled    | boolean | false    | Disables the option.                                                                                                       |
+| aria-disabled    | boolean | false    | Marks the option unavailable while keeping it focusable and announced.                                                     |
 
 To show a leading icon or image, place an `<svg>` or `<img>` element directly inside the option. It is always positioned first, before the label. Set the appropriate accessibility attributes on it yourself (an empty `alt` for a decorative image, or an `aria-label` for a meaningful one).
 
@@ -80,7 +80,15 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Enter` / `Space` - Selects the focused option. If the list is closed, opens it.
 - `Esc` - Closes the list without changing the current selection.
 - `Tab` - Closes the list and moves focus to the next focusable element.
-- `Character keys (A-Z)` - Moves focus to the next option whose label starts with the typed character.
+- `Character keys (A-Z)` - Moves focus to the next option starting with the typed character, cycling through the matches when the same character is repeated. When the select has a search, the character goes to the search input instead.
+
+Options the search has filtered out are skipped, since they are not on screen. Disabled options stay reachable and are announced as unavailable, but they cannot be chosen.
+
+## Accessibility
+
+The select follows the WAI-ARIA listbox pattern. The trigger is a `combobox` that reports its popup state through `aria-haspopup` and `aria-expanded`, the list is a `listbox`, and each option is an `option` whose accessible name comes from its label. A roving tab stop moves between the options while the list is open.
+
+An option disabled with `aria-disabled="true"` keeps its place in the arrow order so screen readers announce it as unavailable, but it cannot be selected by keyboard or by mouse.
 
 ## Binding
 
@@ -230,7 +238,7 @@ The input automatically switches modes based on the model. If you want to select
     <div x-h-select-option="'Option 1'" data-value="1"></div>
     <div x-h-select-option="'Option 2'" data-value="2"></div>
     <div x-h-select-option="'Option 3'" data-value="3"></div>
-    <div x-h-select-option="'Option 4'" data-value="4" data-disabled="true"></div>
+    <div x-h-select-option="'Option 4'" data-value="4" aria-disabled="true"></div>
     <div x-h-select-option="'Option 5'" data-value="5"></div>
   </div>
 </div>
@@ -253,7 +261,7 @@ Reacts to the native invalid state or to the `aria-invalid` attribute.
 
 ### Disabled
 
-Set the native `disabled` attribute on the `x-h-select-input` input to disable the whole select. To disable a single option, use `data-disabled="true"` on it instead.
+Set the native `disabled` attribute on the `x-h-select-input` input to disable the whole select. To disable a single option, use `aria-disabled="true"` on it instead. A disabled option is dimmed and cannot be chosen, but the arrow keys still reach it so screen readers announce it as unavailable.
 
 ```html
 <div x-h-select>
@@ -261,6 +269,14 @@ Set the native `disabled` attribute on the `x-h-select-input` input to disable t
   <div x-h-select-content>
     <div x-h-select-option="'Option 1'" data-value="1"></div>
     <div x-h-select-option="'Option 2'" data-value="2"></div>
+    <div x-h-select-option="'Option 3'" data-value="3"></div>
+  </div>
+</div>
+<div x-h-select>
+  <input x-h-select-input placeholder="Select" />
+  <div x-h-select-content>
+    <div x-h-select-option="'Option 1'" data-value="1"></div>
+    <div x-h-select-option="'Option 2'" data-value="2" aria-disabled="true"></div>
     <div x-h-select-option="'Option 3'" data-value="3"></div>
   </div>
 </div>

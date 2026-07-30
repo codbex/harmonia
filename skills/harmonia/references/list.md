@@ -18,13 +18,34 @@ Use lists to present multiple related items, such as options, tasks, or entries.
 
 ## API
 
+### Attributes
+
+#### x-h-list-item
+
+| Attribute     | Type    | Required | Description                                                                                                              |
+| ------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| aria-disabled | boolean | false    | Marks an interactive item unavailable while keeping it focusable and announced. Has no effect on a non-interactive item. |
+
 ### Modifiers
 
 #### x-h-list-item
 
-| Modifier    | Description                                     |
-| ----------- | ----------------------------------------------- |
-| interactive | Makes the list item interactive and selectable. |
+| Modifier    | Description                                                                                                             |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| interactive | Turns the item into a button, so it gains a tab stop, activates on click, `Enter`, and `Space`, and is styled to match. |
+
+## Keyboard Handling
+
+An interactive item is a control in its own right, so `Tab` moves between interactive items the same way it moves between buttons, and the arrow keys are not used. For a group that `Tab` enters once and the arrow keys move through, use the Listbox component instead.
+
+- `Tab` / `Shift+Tab` - Moves focus to the next or previous interactive item.
+- `Enter` / `Space` - Activates the focused item.
+
+Selection state stays yours to manage. Bind `aria-selected` to mark a row as selected, since the list never changes it.
+
+## Accessibility
+
+An item without the `interactive` modifier is display-only and takes no part in the tab order. A plain list of them is announced as a list, with its item count.
 
 ## Examples
 
@@ -36,13 +57,13 @@ Use lists to present multiple related items, such as options, tasks, or entries.
 </ul>
 ```
 
-### Interactive
+### Interactive with disabled items
 
 ```html
-<ul x-h-list>
-  <li x-h-list-item.interactive>List Item 1</li>
-  <li x-h-list-item.interactive>List Item 2</li>
-  <li x-h-list-item.interactive aria-selected="true">List Item 3</li>
+<ul x-h-list x-data="{ selected: 3 }">
+  <template x-for="item in [1, 2, 3, 4, 5]" :key="item">
+    <li x-h-list-item.interactive :aria-selected="selected === item" @click="selected = item" :aria-disabled="item === 4 || item === 2" x-text="'List Item ' + item"></li>
+  </template>
 </ul>
 ```
 
@@ -73,7 +94,7 @@ Use lists to present multiple related items, such as options, tasks, or entries.
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
     List Item 2
   </li>
-  <li x-h-list-item aria-selected="true">
+  <li x-h-list-item>
     <svg x-h-icon class="size-6" data-link="/harmonia/logo/harmonia-symbolic.svg" role="presentation"></svg>
     List Item 3
   </li>

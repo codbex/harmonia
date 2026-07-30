@@ -157,7 +157,7 @@ describe('h-menu', () => {
     expect(typeof trigger._h_menu_trigger.closeMenu).toBe('function');
   });
 
-  function createOpenableMenuSetup() {
+  function createOpenableMenuSetup({ items = 1, disabled = [] } = {}) {
     const container = document.createElement('div');
     const trigger = document.createElement('button');
     trigger._h_menu_trigger = {
@@ -170,15 +170,22 @@ describe('h-menu', () => {
     trigger.setAttribute('id', 'openable-trigger-id');
     const menu = document.createElement('ul');
     menu.setAttribute('aria-label', 'Openable menu');
-    const item = document.createElement('li');
-    item.textContent = 'First item';
-    menu.appendChild(item);
+    const built = [];
+    for (let i = 0; i < items; i++) {
+      const item = document.createElement('li');
+      item.textContent = i === 0 ? 'First item' : `Item ${i}`;
+      if (disabled.includes(i)) item.setAttribute('aria-disabled', 'true');
+      menu.appendChild(item);
+      built.push(item);
+    }
     container.appendChild(trigger);
     container.appendChild(menu);
     document.body.appendChild(container);
     mountDirective(menuPlugin, 'h-menu', menu, { original: 'x-h-menu', modifiers: [] });
-    mountDirective(menuPlugin, 'h-menu-item', item, { original: 'x-h-menu-item', modifiers: [] });
-    return { trigger, menu, item };
+    for (const item of built) {
+      mountDirective(menuPlugin, 'h-menu-item', item, { original: 'x-h-menu-item', modifiers: [] });
+    }
+    return { trigger, menu, item: built[0], items: built };
   }
 
   const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -199,6 +206,280 @@ describe('h-menu', () => {
     await flush();
     expect(menu.classList.contains('hidden')).toBe(false);
     expect(trigger._h_menu_trigger.setOpen).not.toHaveBeenCalled();
+  });
+
+  it('focusOnOpen lands on a disabled first item', async () => {
+    const { trigger, items } = createOpenableMenuSetup({ items: 3, disabled: [0] });
+    trigger._h_menu_trigger.focusOnOpen = 'first';
+    trigger._h_menu_trigger.openMenu();
+    await flush();
+    expect(document.activeElement).toBe(items[0]);
+  });
+
+  it('focusOnOpen lands on a disabled last item', async () => {
+    const { trigger, items } = createOpenableMenuSetup({ items: 3, disabled: [2] });
+    trigger._h_menu_trigger.focusOnOpen = 'last';
+    trigger._h_menu_trigger.openMenu();
+    await flush();
+    expect(document.activeElement).toBe(items[2]);
+  });
+
+  it('focusOnOpen still reaches the items when every one is disabled', async () => {
+    const { trigger, items } = createOpenableMenuSetup({ items: 2, disabled: [0, 1] });
+    trigger._h_menu_trigger.focusOnOpen = 'first';
+    trigger._h_menu_trigger.openMenu();
+    await flush();
+    expect(document.activeElement).toBe(items[0]);
+  });
+
+  // A disabled item is dimmed and inert, but aria-disabled announces it rather
+  // than hiding it, so the keyboard still reaches it and activation is what
+  // refuses to act.
+  describe('keyboard navigation reaches disabled items', () => {
+    const key = (el, k) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+
+    async function openMenu(options) {
+      const setup = createOpenableMenuSetup(options);
+      setup.trigger._h_menu_trigger.openMenu();
+      await flush();
+      return setup;
+    }
+
+    it('ArrowDown steps onto a disabled item', async () => {
+      const { menu, items } = await openMenu({ items: 4, disabled: [1] });
+      key(menu, 'ArrowDown');
+      expect(document.activeElement).toBe(items[0]);
+      key(document.activeElement, 'ArrowDown');
+      expect(document.activeElement).toBe(items[1]);
+    });
+
+    it('ArrowDown wraps from a disabled last item', async () => {
+      const { menu, items } = await openMenu({ items: 3, disabled: [2] });
+      key(menu, 'ArrowDown');
+      key(document.activeElement, 'ArrowDown');
+      key(document.activeElement, 'ArrowDown');
+      expect(document.activeElement).toBe(items[2]);
+      key(document.activeElement, 'ArrowDown');
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('ArrowUp steps onto a disabled item', async () => {
+      const { menu, items } = await openMenu({ items: 4, disabled: [2] });
+      key(menu, 'ArrowUp');
+      expect(document.activeElement).toBe(items[3]);
+      key(document.activeElement, 'ArrowUp');
+      expect(document.activeElement).toBe(items[2]);
+    });
+
+    it('ArrowUp wraps onto a disabled first item', async () => {
+      const { menu, items } = await openMenu({ items: 3, disabled: [0] });
+      key(menu, 'ArrowUp');
+      expect(document.activeElement).toBe(items[2]);
+      key(document.activeElement, 'ArrowUp');
+      expect(document.activeElement).toBe(items[1]);
+      key(document.activeElement, 'ArrowUp');
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('Home focuses the first item, disabled or not', async () => {
+      const { menu, items } = await openMenu({ items: 4, disabled: [0] });
+      key(menu, 'Home');
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('End focuses the last item, disabled or not', async () => {
+      const { menu, items } = await openMenu({ items: 4, disabled: [3] });
+      key(menu, 'End');
+      expect(document.activeElement).toBe(items[3]);
+    });
+
+    it('does not click a disabled item on Enter, and leaves the menu open', async () => {
+      const { menu, items } = await openMenu({ items: 3, disabled: [1] });
+      const activate = vi.fn();
+      items[1].addEventListener('click', activate);
+      key(menu, 'ArrowDown');
+      key(document.activeElement, 'ArrowDown');
+      expect(document.activeElement).toBe(items[1]);
+      key(items[1], 'Enter');
+      expect(activate).not.toHaveBeenCalled();
+      expect(menu.classList.contains('hidden')).toBe(false);
+    });
+
+    it('still clicks an enabled item on Enter', async () => {
+      const { menu, items } = await openMenu({ items: 2 });
+      const activate = vi.fn();
+      items[0].addEventListener('click', activate);
+      key(items[0], 'Enter');
+      expect(activate).toHaveBeenCalledOnce();
+      expect(menu.classList.contains('scale-95')).toBe(true);
+    });
+
+    it('treats aria-disabled="false" as enabled, not as a bare attribute', async () => {
+      // A bound attribute renders the literal string "false", so a presence
+      // check would disable exactly the item the author meant to keep usable.
+      const { items } = await openMenu({ items: 3 });
+      items[1].setAttribute('aria-disabled', 'false');
+      const activate = vi.fn();
+      items[1].addEventListener('click', activate);
+      key(items[1], 'Enter');
+      expect(activate).toHaveBeenCalledOnce();
+    });
+
+    it('ignores a valueless aria-disabled, since the value carries the meaning', async () => {
+      const { items } = await openMenu({ items: 3 });
+      items[1].setAttribute('aria-disabled', '');
+      const activate = vi.fn();
+      items[1].addEventListener('click', activate);
+      key(items[1], 'Enter');
+      expect(activate).toHaveBeenCalledOnce();
+    });
+
+    it('typeahead matches a disabled item', async () => {
+      const { menu, items } = await openMenu({ items: 3, disabled: [1] });
+      items[1].textContent = 'Zebra disabled';
+      items[2].textContent = 'Zebra enabled';
+      key(menu, 'z');
+      expect(document.activeElement).toBe(items[1]);
+    });
+
+    // Repeating a letter has to advance through the matches, not stick on the
+    // first one, and wrap back round at the end.
+    it('typeahead cycles through repeated matches', async () => {
+      const { menu, items } = await openMenu({ items: 3 });
+      items[0].textContent = 'Zebra one';
+      items[1].textContent = 'Zebra two';
+      items[2].textContent = 'Other';
+      key(menu, 'z');
+      expect(document.activeElement).toBe(items[0]);
+      key(document.activeElement, 'z');
+      expect(document.activeElement).toBe(items[1]);
+      key(document.activeElement, 'z');
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('still moves focus when every item is disabled', async () => {
+      const { menu, items } = await openMenu({ items: 2, disabled: [0, 1] });
+      menu.focus();
+      key(menu, 'ArrowDown');
+      expect(document.activeElement).toBe(items[0]);
+      key(menu, 'End');
+      expect(document.activeElement).toBe(items[1]);
+    });
+  });
+
+  // The docs "Disabled items" example, which mixes every item type with
+  // separators between them. It used to lock focus on the checkbox, skip the
+  // submenu going up, and collapse into a three-item orbit, because each item
+  // wrote its own tab stop and a stop left behind decided where the arrows
+  // thought they were.
+  describe('mixed item types navigate as one list', () => {
+    const key = (el, k) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+    async function openMixedMenu() {
+      const container = document.createElement('div');
+      const trigger = document.createElement('button');
+      trigger._h_menu_trigger = { isDropdown: true, navItem: true, openMenu: undefined, closeMenu: undefined, setOpen: vi.fn() };
+      trigger.setAttribute('id', 'mixed-trigger-id');
+      const menu = document.createElement('ul');
+      menu.setAttribute('aria-label', 'Mixed menu');
+
+      // Matches docs/components/menu.md "Disabled items" one for one.
+      const spec = [
+        { kind: 'item', text: 'Rename' },
+        { kind: 'item', text: 'Duplicate', disabled: true },
+        { kind: 'sub', text: 'Move to', disabled: true },
+        { kind: 'separator' },
+        { kind: 'checkbox', text: 'Auto-Save', disabled: true },
+        { kind: 'separator' },
+        { kind: 'radio', text: 'Everyone' },
+        { kind: 'radio', text: 'Admins only', disabled: true },
+        { kind: 'separator' },
+        { kind: 'item', text: 'Delete', disabled: true },
+      ];
+
+      const built = [];
+      const mounts = [];
+      for (const entry of spec) {
+        const tag = entry.kind === 'checkbox' || entry.kind === 'separator' ? 'div' : 'li';
+        const node = document.createElement(tag);
+        if (entry.text) node.textContent = entry.text;
+        if (entry.disabled) node.setAttribute('aria-disabled', 'true');
+        menu.appendChild(node);
+        if (entry.kind === 'separator') {
+          mounts.push(['h-menu-separator', node]);
+          continue;
+        }
+        const directive = { item: 'h-menu-item', sub: 'h-menu-sub', checkbox: 'h-menu-checkbox-item', radio: 'h-menu-radio-item' }[entry.kind];
+        mounts.push([directive, node]);
+        built.push(node);
+      }
+
+      container.appendChild(trigger);
+      container.appendChild(menu);
+      document.body.appendChild(container);
+      mountDirective(menuPlugin, 'h-menu', menu, { original: 'x-h-menu', modifiers: [] });
+      for (const [directive, node] of mounts) {
+        mountDirective(menuPlugin, directive, node, { original: `x-${directive}`, modifiers: [], expression: '' });
+      }
+      trigger._h_menu_trigger.openMenu();
+      await flush();
+      return { menu, items: built };
+    }
+
+    // The invariant whose absence let the bug through - a second item holding the
+    // stop is what made the arrows lose their place.
+    const stops = (menu) => menu.querySelectorAll(':scope > [role^=menuitem][tabindex="0"]').length;
+
+    it('ArrowDown reaches every item in order and wraps', async () => {
+      const { menu, items } = await openMixedMenu();
+      expect(items).toHaveLength(7);
+      key(menu, 'ArrowDown');
+      for (let i = 0; i < items.length; i++) {
+        expect(document.activeElement).toBe(items[i]);
+        expect(stops(menu)).toBe(1);
+        key(document.activeElement, 'ArrowDown');
+      }
+      expect(document.activeElement).toBe(items[0]);
+    });
+
+    it('ArrowUp reaches every item in reverse and wraps', async () => {
+      const { menu, items } = await openMixedMenu();
+      key(menu, 'ArrowUp');
+      for (let i = items.length - 1; i >= 0; i--) {
+        expect(document.activeElement).toBe(items[i]);
+        expect(stops(menu)).toBe(1);
+        key(document.activeElement, 'ArrowUp');
+      }
+      expect(document.activeElement).toBe(items[items.length - 1]);
+    });
+
+    // The checkbox is where focus used to lock, so it gets its own assertion
+    // that arrowing off it actually leaves.
+    it('moves off the disabled checkbox item', async () => {
+      const { menu, items } = await openMixedMenu();
+      const checkbox = items.find((item) => item.getAttribute('role') === 'menuitemcheckbox');
+      checkbox.focus();
+      key(checkbox, 'ArrowDown');
+      expect(document.activeElement).not.toBe(checkbox);
+      expect(document.activeElement).toBe(items[items.indexOf(checkbox) + 1]);
+    });
+
+    // The disabled submenu is what left a permanent stop behind, so passing
+    // over it in both directions is the direct regression check.
+    it('passes over the disabled submenu item in both directions', async () => {
+      const { menu, items } = await openMixedMenu();
+      const sub = items.find((item) => item.getAttribute('aria-haspopup') === 'true');
+      const index = items.indexOf(sub);
+      sub.focus();
+      key(sub, 'ArrowDown');
+      expect(document.activeElement).toBe(items[index + 1]);
+      sub.focus();
+      key(sub, 'ArrowUp');
+      expect(document.activeElement).toBe(items[index - 1]);
+      expect(sub.getAttribute('aria-expanded')).toBe('false');
+      expect(stops(menu)).toBe(1);
+    });
   });
 });
 
@@ -327,5 +608,74 @@ describe('h-menu-radio-item', () => {
         expression: '"option1"',
       })
     ).toThrow();
+  });
+});
+
+describe('h-menu-sub', () => {
+  function createSubSetup({ disabled = false } = {}) {
+    const container = document.createElement('div');
+    const menu = document.createElement('ul');
+    menu.setAttribute('role', 'menu');
+    const sub = document.createElement('li');
+    if (disabled) sub.setAttribute('aria-disabled', 'true');
+    menu.appendChild(sub);
+    container.appendChild(menu);
+    document.body.appendChild(container);
+    mountDirective(menuPlugin, 'h-menu-sub', sub, { original: 'x-h-menu-sub' });
+    // The nested x-h-menu claims these when it mounts. Stubbing them keeps the
+    // test to the trigger, which is where the disabled guard lives.
+    const open = vi.fn();
+    sub._menu_sub.open = open;
+    sub._menu_sub.close = vi.fn();
+    return { menu, sub, open };
+  }
+
+  // A disabled subitem is announced as a submenu that cannot be opened, so it
+  // keeps aria-haspopup and the tab stop but never expands.
+  it('does not open on mouseenter, click or focus when disabled', () => {
+    const { sub, open } = createSubSetup({ disabled: true });
+    sub.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    sub.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    sub.dispatchEvent(new FocusEvent('focus'));
+    expect(open).not.toHaveBeenCalled();
+    expect(sub.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('does not open on ArrowRight or Enter when disabled', () => {
+    const { sub, open } = createSubSetup({ disabled: true });
+    sub.dispatchEvent(new FocusEvent('focus'));
+    for (const key of ['ArrowRight', 'Enter', ' ']) {
+      sub.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+    }
+    expect(open).not.toHaveBeenCalled();
+    expect(sub.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  // The parent menu owns the roving stop, so the subitem no longer writes its
+  // own. What matters here is that it stays a reachable menuitem announced as a
+  // submenu, which is what keeps it in the arrow order.
+  it('stays focusable when disabled, so it is still announced', () => {
+    const { sub } = createSubSetup({ disabled: true });
+    sub.dispatchEvent(new FocusEvent('focus'));
+    expect(sub.getAttribute('role')).toBe('menuitem');
+    expect(sub.hasAttribute('tabindex')).toBe(true);
+    expect(sub.getAttribute('aria-haspopup')).toBe('true');
+  });
+
+  it('swallows the expand keys when disabled, so they never reach the menu', () => {
+    const { sub } = createSubSetup({ disabled: true });
+    sub.dispatchEvent(new FocusEvent('focus'));
+    for (const key of ['ArrowRight', 'Enter', ' ']) {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+      sub.dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(true);
+    }
+  });
+
+  it('still opens on mouseenter when enabled', () => {
+    const { sub, open } = createSubSetup();
+    sub.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    expect(open).toHaveBeenCalledOnce();
+    expect(sub.getAttribute('aria-expanded')).toBe('true');
   });
 });

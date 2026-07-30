@@ -1,6 +1,6 @@
 # Scatter Chart
 
-`x-h-chart-scatter` draws a scatter chart from a single reactive configuration object: the same plot as a line chart, but with only the points and no connecting lines. Multiple series are overlaid on a shared axis. Charts inherit the active theme colors and adapt to light and dark mode automatically.
+`x-h-chart-scatter` draws a scatter chart from a single reactive configuration object. It is the same plot as a line chart, but with no connecting lines. Multiple series are overlaid on a shared axis. Charts inherit the active theme colors and adapt to light and dark mode automatically.
 
 Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-` prefix.
 
@@ -22,20 +22,22 @@ Give the chart a container with an explicit height (charts fill their parent). P
 
 ### Configuration
 
-| Key           | Type                                  | Default       | Description                                                 |
-| ------------- | ------------------------------------- | ------------- | ----------------------------------------------------------- |
-| `series`      | `{ name?, color?, data: number[] }[]` | `[]`          | One entry per series. Multiple series are overlaid.         |
-| `labels`      | string[]                              | `[]`          | Label for each data index.                                  |
-| `legend`      | boolean                               | `true`        | Show the color/label key.                                   |
-| `axes`        | boolean                               | `true`        | Show the numeric axis ticks and labels.                     |
-| `gridlines`   | boolean                               | `true`        | Show gridlines behind the points.                           |
-| `tooltip`     | boolean                               | `true`        | Show a tooltip on hover and emit interaction events.        |
-| `dataLabels`  | boolean                               | `false`       | Draw each point's value next to it.                         |
-| `tickCount`   | number                                | `5`           | Target number of numeric axis ticks.                        |
-| `valueFormat` | `(value) => string`                   | locale number | Formats values in tooltips and numeric axis ticks.          |
-| `palette`     | string[]                              | theme tokens  | Color tokens cycled for series without an explicit `color`. |
+| Key           | Type                                  | Default          | Description                                                            |
+| ------------- | ------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
+| `series`      | `{ name?, color?, data: number[] }[]` | `[]`             | One entry per series. Multiple series are overlaid.                    |
+| `labels`      | string[]                              | `[]`             | Label for each data index.                                             |
+| `legend`      | boolean                               | `true`           | Show the color/label key.                                              |
+| `axes`        | boolean                               | `true`           | Show the numeric axis ticks and labels.                                |
+| `gridlines`   | boolean                               | `true`           | Show gridlines behind the points.                                      |
+| `tooltip`     | boolean                               | `true`           | Show a tooltip on hover and emit interaction events.                   |
+| `dataLabels`  | boolean                               | `false`          | Draw each point's value next to it.                                    |
+| `tickCount`   | number                                | `5`              | Target number of numeric axis ticks.                                   |
+| `valueFormat` | `(value) => string`                   | locale number    | Formats values in tooltips and numeric axis ticks.                     |
+| `palette`     | string[]                              | theme tokens     | Color tokens cycled for series without an explicit `color`.            |
+| `seriesLabel` | string                                | `Series {index}` | Template naming a series that has no `name`. `{index}` is substituted. |
+| `tableLabels` | `{ category? }`                       | English defaults | Column headers of the hidden data table read by screen readers.        |
 
-A series `color` (and the `palette` entries) is one of the standard color names: `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
+A series `color` (and the `palette` entries) is one of the standard color names - `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
 
 ### Accessibility
 
@@ -43,7 +45,7 @@ The chart is exposed to assistive technologies as a `figure` with a visually-hid
 
 ### Events
 
-When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEvent`s on the chart element: `chart-hover`, `chart-leave`, and `chart-click`. See the events reference for the shared `detail` shape.
+When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEvent`s on the chart element - `chart-hover`, `chart-leave`, and `chart-click`. See the events reference for the shared `detail` shape.
 
 ## Examples
 

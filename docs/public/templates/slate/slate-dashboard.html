@@ -224,7 +224,7 @@
               <div x-h-card-content>
                 <div x-h-table-container>
                   <table x-h-table>
-                    <thead x-h-table-header>
+                    <thead x-h-table-header data-bordered="true">
                       <tr x-h-table-row>
                         <th x-h-table-head scope="col">Customer</th>
                         <th x-h-table-head scope="col">Status</th>
@@ -498,14 +498,14 @@
 
               <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
                 <ul x-h-list>
-                  <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4 py-3">
                     <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
                     <label class="w-full text-base font-medium" for="sw-email">Email notifications</label>
                     <span x-h-switch>
                       <input type="checkbox" id="sw-email" checked />
                     </span>
                   </li>
-                  <li x-h-list-item.interactive class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4 py-3">
                     <svg x-h-icon data-icon="bell" class="size-5" role="presentation"></svg>
                     <div class="vbox w-full">
                       <label class="text-base font-medium" for="sw-push">Push notifications</label>

@@ -44,7 +44,7 @@
               </div>
             </td>
             <td x-h-table-cell>
-              <div x-h-rating data-readonly="true" :data-value="vendor.rating" data-size="sm" :data-label="'Rating for ' + vendor.name"></div>
+              <div x-h-rating aria-disabled="true" :data-value="vendor.rating" data-size="sm" :aria-label="'Rating for ' + vendor.name"></div>
             </td>
             <td x-h-table-cell class="text-right">
               <span x-h-switch>

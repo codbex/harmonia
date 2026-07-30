@@ -35,7 +35,7 @@ describe('h-template directive', () => {
     expect(alpine._directives['h-template']).toBeTypeOf('function');
   });
 
-  it('inserts cloned template content before el when x-data is present', () => {
+  it('inserts cloned template content after el when x-data is present', () => {
     const parent = document.createElement('div');
     const el = document.createElement('div');
     el.setAttribute('x-data', '{}');
@@ -45,7 +45,31 @@ describe('h-template directive', () => {
     const fakeTemplate = createTemplateElement('<span id="tpl-child"></span>');
     invokeDirective(el, 'myTemplate', fakeTemplate);
 
-    expect(parent.querySelector('#tpl-child')).not.toBeNull();
+    const clone = parent.querySelector('#tpl-child');
+    expect(clone).not.toBeNull();
+    // x-for relocates a rendered sibling only when it follows its anchor, the
+    // same placement x-if uses.
+    expect(el.nextElementSibling).toBe(clone);
+
+    document.body.removeChild(parent);
+  });
+
+  it('points the anchor at the clone so x-for carries it when the list reorders', () => {
+    const parent = document.createElement('div');
+    const el = document.createElement('div');
+    el.setAttribute('x-data', '{}');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+
+    const fakeTemplate = createTemplateElement('<span id="tracked"></span>');
+    const { ctx } = invokeDirective(el, 'myTemplate', fakeTemplate);
+
+    expect(el._x_currentIfEl).toBe(parent.querySelector('#tracked'));
+
+    // The backref must not outlive the clone, or x-for would move a node that
+    // is no longer in the document.
+    ctx.cleanup.mock.calls[0][0]();
+    expect(el._x_currentIfEl).toBeUndefined();
 
     document.body.removeChild(parent);
   });

@@ -1,5 +1,112 @@
 # Changelog
 
+## v2.9.0
+
+A release that adds the new **Backdrop**, **Bottom Navigation**, **Floating Action Button** and **One-Time Password Input** components, rebuilds the **Tree** around a proper row, reworks the Sidebar's group and menu actions, and fixes how every component treats `aria-disabled`. The five breaking changes are the Tree rewrite, the Sidebar group actions, the `aria-disabled` keyboard behaviour, the removal of `data-disabled` from the Menu and the Select, and the removal of `data-label` in favor of `aria-label`, all covered below.
+
+### New component: Bottom Navigation
+
+- **Bottom Navigation** (`x-h-bottom-nav`) - a bar of top-level destinations along the bottom of the screen, for the primary navigation of an application on a phone.
+- **New `--bottom-nav-height` theme variable and `h-bottom-nav` utility class**, so the layout around the bar can clear it without hard coding the value.
+
+### New component: Floating Action Button
+
+- **Floating Action Button** (`x-h-fab`) - a prominent, elevated button for the single most important action of a screen.
+
+### New component: Backdrop
+
+- **Backdrop** (`x-h-backdrop`) - a full-screen scrim that dims the page and animates its content in and out, for use behind command palettes, custom modals, or any panel that should sit above the rest of the interface.
+
+### New component: One-Time Password Input
+
+- **One-Time Password Input** (`x-h-otp`) - turns a native input into one or more groups of single-character cells for entering a verification code or PIN.
+
+### Accessibility: `aria-disabled` no longer hides an item from the keyboard
+
+- **Breaking: an `aria-disabled` item now stays in the arrow order.** Listbox options, select options, menu items, submenu triggers, menubar triggers, tabs and tree items marked `aria-disabled="true"` are reached by the arrow keys, `Home`, `End` and typeahead, can hold the roving tab stop, and are announced as unavailable. They still cannot be selected, activated, expanded or collapsed. Previously they were skipped, which hid them from screen reader users. Use the native `disabled` attribute, which is unchanged, when an item should be hidden rather than announced.
+- Descendants of a disabled tree item are reachable too, and none of them can be activated.
+- **Breaking: `data-disabled` is gone from the Menu and the Select.** `x-h-menu-item`, `x-h-menu-sub` and `x-h-select-option` now read `aria-disabled="true"` like every other component. To migrate, rename the attribute. `data-disabled` is unchanged on `x-h-input-group-addon` and `x-h-field`, where it is a styling hook only.
+- **A disabled submenu trigger is now genuinely inert.** Neither hover, click, `ArrowRight` nor `Enter` opens it.
+- **Fixed: `Enter` and `Space` could activate a disabled menu item.** Activating one is now a complete no-op, and it no longer closes the menu.
+- **Fixed: an `aria-disabled` tab was fully clickable.** Tabs are now dimmed and pointer-inert, and a click or `Enter` no longer reaches the author's own selection handler.
+
+### Rating
+
+- **Breaking: the Rating is locked with `aria-disabled="true"`.** The `disabled`, `data-disabled` and `data-readonly` attributes are gone, and the separate read-only state with them. To migrate, replace them with `aria-disabled="true"`, which requires the explicit value. This also fixes `data-readonly="false"` having made a rating read-only.
+- **Breaking: a locked Rating stays a focusable slider.** It used to become `role="img"` with every value attribute stripped and no tab stop, so a keyboard user could not reach it. It now keeps `role="slider"`, its tab stop and its `aria-valuenow` / `aria-valuetext` in every state, and only refuses input.
+- **Fixed: a locked Rating destroyed the accessible name.** The score was written into `aria-label` on every render, overwriting the author's own name, and with `aria-labelledby` the score was never announced at all. The score now stays in `aria-valuetext` and the name is never touched.
+- **New: `data-value-label` makes the announced score translatable.** `{value}` and `{max}` are substituted, defaulting to `{value} of {max} stars`.
+
+### Translatable generated text
+
+Strings that embed a number in English prose used to be hardcoded. Each is now a template with `{token}` placeholders substituted, so a translation can reorder the numbers rather than only replace words around them.
+
+- **Carousel** - `data-item-label` names each slide. `{index}` and `{count}` are substituted, defaulting to `{index} of {count}`.
+- **Bubble** - `data-valuetext-label` sets the position announced on the audio seek slider. `{current}` and `{duration}` are substituted, defaulting to `{current} of {duration}`.
+- **Calendar** - `data-more-label` sets the month-view overflow button. `{count}` is substituted, defaulting to `+{count} more`.
+- **Charts** - a new `seriesLabel` config key names a series that has no `name` of its own, defaulting to `Series {index}`. A new `tableLabels` key sets the column headers of the hidden data table, replacing the hardcoded `Category`, `Segment` and `Value`.
+
+### Accessible names: `data-label` removed where `aria-label` already works
+
+- **Breaking: `data-label` is gone from the Rating, the Carousel, the carousel indicators, the reactions group and the dual Range.** Each sits on an element the author writes, so `aria-label` could always be set on it directly. To migrate, rename the attribute to `aria-label`. Every default name is unchanged.
+- **`data-label` stays where the element is generated**, for the single Range's handle and the dual Range's `data-min-label` / `data-max-label`. On a dual Range `data-label` no longer names the group, so move that one to `aria-label`.
+- **Breaking: the audio seek slider is named with `data-seek-label`**, matching its `data-play-label` / `data-pause-label` siblings. Rename it from `data-label`.
+- **Fixed: the Carousel ignored `aria-labelledby`**, overwriting it with the default name. It now honors either attribute.
+
+### Tree
+
+- **Breaking: the tree has been rebuilt around a row element and `x-h-tree-button` is gone.** An item is now a `li` holding a `x-h-tree-row`, with the label in a `x-h-tree-label`. To migrate, replace the `button x-h-tree-button` with a `div x-h-tree-row`, wrap the label text in a `span x-h-tree-label`, and move the checkbox inside the row. Icons stay plain `svg` children and the subtree stays where it was, a sibling of the row inside the same `li`.
+
+```html
+<!-- Before -->
+<li x-h-tree-item.expanded="true">
+  <span x-h-checkbox.tree><input type="checkbox" /></span>
+  <button x-h-tree-button data-indicator="warning">
+    <svg x-h-lucide data-lucide="folder"></svg>
+    <span>src</span>
+  </button>
+</li>
+
+<!-- After -->
+<li x-h-tree-item="true">
+  <div x-h-tree-row>
+    <span x-h-checkbox.tree><input type="checkbox" /></span>
+    <svg x-h-lucide data-lucide="folder"></svg>
+    <span x-h-tree-label>src</span>
+    <span x-h-tree-indicator data-indicator="warning" data-dot></span>
+  </div>
+</li>
+```
+
+- **Breaking: the `expanded` modifier is gone.** Items now detect their own children, so one added or removed by `x-if` or `x-for` updates the chevron and `aria-expanded` on its own. The expression carries only the expanded state.
+- **Rows align across the whole tree**, with chevrons, checkboxes, icons and labels lining up on branch and leaf rows alike.
+- **Nested items are indented**, and `data-line="true"` on a nested `x-h-tree.sub` adds a connecting line down its left side.
+- **New: `x-h-tree-actions`** holds one or more buttons at the end of a row, with an `autohide` modifier. **`x-h-tree-action`** is the icon button to put inside it.
+- **New: `x-h-tree-indicator`** marks a row's status at its right edge, as a colour dot or a short badge.
+- **New: a `tree-item-click` event**, dispatched on an item by click, `Enter` or `Space` and bubbling to the tree. With `expand()`, `collapse()` and `toggle()` on the item state, it is how selection is driven. The tree keeps no selection model of its own.
+- **New keyboard behaviour.** Typing letters moves focus to the next matching item. `Space` toggles the focused row's checkbox when it has one and otherwise activates the item, while `Enter` always activates.
+- **Checkboxes are a size smaller inside a tree**, matching the density of a row.
+
+### Sidebar
+
+- **Breaking: group action buttons must now be wrapped in `x-h-sidebar-group-actions`.** To migrate, move each existing `x-h-sidebar-group-action` inside a `x-h-sidebar-group-actions` wrapper in the group label. A group label can now carry more than one action.
+- **`autohide` is now touch-aware.** Both `x-h-sidebar-group-actions` and `x-h-sidebar-menu-action` reveal their actions only for fine pointers, so they stay visible on touch devices instead of being permanently hidden. The menu action was also recentered vertically and now tracks the menu button height.
+- **`data-size` is ignored while collapsed**, so a large logo button collapses to the same compact icon as the rest.
+- **New `--sidebar-ring` theme variable** sets the focus outline color used within the sidebar (light and dark), joining the other `--sidebar-*` tokens in the theme generator.
+
+### Menu
+
+- **Disabling an item requires the explicit `"true"` value.** `x-h-menu-item` and `x-h-menu-sub` previously treated the attribute as set whenever it was present, so a `"false"` value still disabled the item. The attribute itself is now `aria-disabled`, covered above.
+
+### List
+
+- **List headers and items now round correctly at the top and bottom**, matching the container's corners in more layouts.
+- **Breaking: the listbox is now a single tab stop.** `Tab` moves into the listbox and then past it, and the arrow keys move between the options inside, instead of every option being its own tab stop. Focus starts on the selected option, or on the first one when nothing is selected.
+- **New: options can be disabled with `aria-disabled="true"`.** A disabled option cannot be selected, but the arrow keys, `Home`, `End` and typeahead still reach it.
+- **New: typeahead.** Typing a character moves focus to the next option whose label starts with it.
+- **`Home` and `End` no longer scroll the page** while they move focus, and `PageUp` and `PageDown` now act as aliases for them instead of doing nothing.
+- **Arrow keys cross group boundaries reliably**, and focus can no longer land on a group header.
+
 ## v2.8.0
 
 A release that expands the utility classes with single-side edge fades and grid column-line placement. The one breaking change is the mask utilities rename covered below.
