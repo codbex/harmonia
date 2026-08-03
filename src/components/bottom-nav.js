@@ -7,8 +7,8 @@ import { FAB_SCROLL_THRESHOLD, fabScrollOffset, fabScrollTiming, isFabScrollTarg
 // its own height and survives a transformed ancestor, so it is the default choice.
 // 'fixed' is for a bar that has to escape an ancestor clipping it.
 export const bottomNavPositions = {
-  sticky: ['sticky', 'z-10', 'bottom-0'],
-  fixed: ['fixed', 'z-50', 'inset-x-0', 'bottom-0'],
+  sticky: ['sticky', 'bottom-0'],
+  fixed: ['fixed', 'inset-x-0', 'bottom-0'],
   static: [],
 };
 

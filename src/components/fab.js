@@ -10,8 +10,8 @@ export const fabSizes = {
 //  Positioning is opt-in. Without data-position the button stays in
 // normal flow so a surrounding layout can place it.
 export const fabPositions = {
-  'bottom-left': ['fixed', 'bottom-4', 'left-4', 'z-50'],
-  'bottom-right': ['fixed', 'bottom-4', 'right-4', 'z-50'],
+  'bottom-left': ['fixed', 'bottom-4', 'left-4', 'z-10'],
+  'bottom-right': ['fixed', 'bottom-4', 'right-4', 'z-10'],
   static: [],
 };
 

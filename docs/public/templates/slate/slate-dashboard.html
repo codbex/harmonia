@@ -73,10 +73,13 @@
 
       <div x-h-sidebar-footer data-borderless="true">
         <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
-          <div x-h-avatar>JD</div>
+          <div x-h-avatar>
+            <img x-h-avatar-image src="/harmonia/avatars/person-02-bg.svg" alt="Jane Doe" />
+            <div x-h-avatar-fallback>JD</div>
+          </div>
           <div class="vbox min-w-0 text-left">
-            <span class="truncate">John Doe</span>
-            <span class="truncate text-sm font-normal">john@codbex.com</span>
+            <span class="truncate">Jane Doe</span>
+            <span class="truncate text-sm font-normal">jane@codbex.com</span>
           </div>
           <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
         </button>

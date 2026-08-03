@@ -15,7 +15,8 @@
           <template x-if="conversation && isDm">
             <div class="hbox min-w-0 flex-1 items-center gap-2">
               <div x-h-avatar class="relative size-6 rounded-control text-xs" :data-color="partner?.color">
-                <span x-text="partner?.initials"></span>
+                <img x-h-avatar-image :src="partner?.avatar" :alt="partner?.name" />
+                <span x-h-avatar-fallback x-text="partner?.initials"></span>
                 <span x-h-badge-indicator data-dot="true" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'"></span>
               </div>
               <span class="font-semibold text-nowrap" x-text="partner?.name"></span>
@@ -46,7 +47,10 @@
                          whenever one of its (always focusable) buttons has focus. -->
                     <div class="group relative hbox items-start gap-3 px-4 hover:bg-muted" :class="item.compact ? 'py-1' : 'pt-3 pb-1'">
                       <template x-if="!item.compact">
-                        <div x-h-avatar class="size-8 flex-none rounded-control text-xs" :data-color="$store.chat.userById(item.message.userId)?.color" x-text="$store.chat.userById(item.message.userId)?.initials || '?'"></div>
+                        <div x-h-avatar class="size-8 flex-none rounded-control text-xs" :data-color="$store.chat.userById(item.message.userId)?.color">
+                          <img x-h-avatar-image :src="$store.chat.userById(item.message.userId)?.avatar" :alt="$store.chat.displayName(item.message.userId)" />
+                          <span x-h-avatar-fallback x-text="$store.chat.userById(item.message.userId)?.initials || '?'"></span>
+                        </div>
                       </template>
                       <template x-if="item.compact">
                         <span class="w-8 flex-none" role="presentation"></span>
@@ -218,7 +222,8 @@
                   <template x-for="member in members" :key="member.id">
                     <li x-h-list-item class="gap-3 py-1">
                       <div x-h-avatar class="relative size-8 rounded-control text-xs" :data-color="member.color">
-                        <span x-text="member.initials"></span>
+                        <img x-h-avatar-image :src="member.avatar" :alt="member.name" />
+                        <span x-h-avatar-fallback x-text="member.initials"></span>
                         <span x-h-badge-indicator data-dot="true" x-show="member.status !== 'offline'" :data-variant="member.status === 'online' ? 'positive' : 'warning'"></span>
                       </div>
                       <div class="vbox min-w-0">
@@ -239,7 +244,8 @@
           <template x-if="conversation && isDm">
             <div class="vbox items-center gap-3 pt-4 text-center">
               <div x-h-avatar class="relative size-12 rounded-control text-lg" :data-color="partner?.color">
-                <span x-text="partner?.initials"></span>
+                <img x-h-avatar-image :src="partner?.avatar" :alt="partner?.name" />
+                <span x-h-avatar-fallback x-text="partner?.initials"></span>
                 <span x-h-badge-indicator data-dot="true" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'"></span>
               </div>
               <div class="vbox gap-1">

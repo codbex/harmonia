@@ -19,7 +19,8 @@
       <div x-h-tile data-variant="outline">
         <div x-h-tile-media>
           <div x-h-avatar class="relative size-10 rounded-control" :data-color="person.color">
-            <span x-text="person.initials"></span>
+            <img x-h-avatar-image :src="person.avatar" :alt="person.name" />
+            <span x-h-avatar-fallback x-text="person.initials"></span>
             <span x-h-badge-indicator data-dot="true" x-show="person.status !== 'offline'" :data-variant="person.status === 'online' ? 'positive' : 'warning'"></span>
           </div>
         </div>

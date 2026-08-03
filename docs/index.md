@@ -29,7 +29,7 @@ hero:
 
 features:
   - icon: <svg-icon class="feature-icon" src="./icons/components.svg"></svg-icon>
-    title: 65+ Production-Ready Components
+    title: 70+ Production-Ready Components
     details: From buttons, inputs, and dialogs to calendars, data tables, and charts, Harmonia ships a comprehensive toolkit for building rich interfaces, so you never have to stitch together mismatched third-party widgets.
     link: /components
     linkText: Browse all components
@@ -184,6 +184,12 @@ features:
 **pages/not-found.html**
 
 <<< @/public/templates/onyx-chat/pages/not-found.html
+
+</TemplateShowcase>
+
+<TemplateShowcase title="Ember Habits" src="/harmonia/templates/ember/ember-habits.html" desc="A single-file, mobile-first habit tracker with bottom navigation, a quick-add floating action button, progress rings, and a completion calendar.">
+
+<<< @/public/templates/ember/ember-habits.html
 
 </TemplateShowcase>
 

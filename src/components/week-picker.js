@@ -362,25 +362,28 @@ export default function (Alpine) {
       input.value = displayValue();
     }
 
-    function prevMonthClick(event) {
-      event.stopPropagation();
-      viewMonth -= 1;
-      if (viewMonth < 0) {
-        viewMonth = 11;
+    // Move the visible month by `delta`, rolling the year over, and redraw.
+    function stepViewMonth(delta) {
+      viewMonth += delta;
+      while (viewMonth < 0) {
+        viewMonth += 12;
         viewYear -= 1;
       }
-      renderHeader();
-      renderGrid();
-    }
-    function nextMonthClick(event) {
-      event.stopPropagation();
-      viewMonth += 1;
-      if (viewMonth > 11) {
-        viewMonth = 0;
+      while (viewMonth > 11) {
+        viewMonth -= 12;
         viewYear += 1;
       }
       renderHeader();
       renderGrid();
+    }
+
+    function prevMonthClick(event) {
+      event.stopPropagation();
+      stepViewMonth(-1);
+    }
+    function nextMonthClick(event) {
+      event.stopPropagation();
+      stepViewMonth(1);
     }
     prevBtn.addEventListener('click', prevMonthClick);
     nextBtn.addEventListener('click', nextMonthClick);
@@ -418,6 +421,21 @@ export default function (Alpine) {
         selectWeek({ year: Number(row.getAttribute('data-year')), week: Number(row.getAttribute('data-week')) });
         return;
       }
+      // A month step moves the view, keeping focus on the same row, the way the
+      // month picker's own PageUp/PageDown does. Stepping the focused date by a
+      // month instead would be snapped back to an ISO Monday below, which can
+      // undo the step and leave the visible month unchanged.
+      if (event.key === 'PageUp' || event.key === 'PageDown') {
+        event.stopPropagation();
+        event.preventDefault();
+        const index = weekRows.indexOf(row);
+        stepViewMonth(event.key === 'PageDown' ? 1 : -1);
+        const target = weekRows[index];
+        focusedMonday = mondayOfIsoWeek(Number(target.getAttribute('data-year')), Number(target.getAttribute('data-week')));
+        renderGrid();
+        target.focus();
+        return;
+      }
       const monday = mondayOfIsoWeek(Number(row.getAttribute('data-year')), Number(row.getAttribute('data-week')));
       const next = new Date(monday);
       switch (event.key) {
@@ -426,12 +444,6 @@ export default function (Alpine) {
           break;
         case 'ArrowDown':
           next.setDate(next.getDate() + 7);
-          break;
-        case 'PageUp':
-          next.setMonth(next.getMonth() - 1);
-          break;
-        case 'PageDown':
-          next.setMonth(next.getMonth() + 1);
           break;
         case 'Home':
           next.setTime(mondayOfIsoWeek(Number(weekRows[0].getAttribute('data-year')), Number(weekRows[0].getAttribute('data-week'))).getTime());

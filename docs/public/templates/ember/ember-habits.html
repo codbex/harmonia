@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en" class="size-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ember Habits | Harmonia</title>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.min.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body class="vbox size-full bg-background" x-data="HabitsController">
+    <!-- `relative` anchors the floating action button, which is positioned against
+         the app rather than the viewport so it stays inside an embedding frame. -->
+    <div class="relative vbox size-full overflow-hidden">
+      <div x-h-toolbar data-variant="transparent">
+        <span x-h-toolbar-title x-text="viewTitle"></span>
+        <div x-h-toolbar-spacer></div>
+        <button x-h-button data-variant="transparent" data-size="icon" class="relative" aria-label="Reminders" x-h-popover-trigger="remindersShown">
+          <svg x-h-lucide role="presentation" data-lucide="bell"></svg>
+          <span x-show="reminders.length" x-h-badge-indicator data-dot="true" data-variant="primary"></span>
+        </button>
+        <div x-h-popover data-align="bottom-end" data-max-w="xs">
+          <ol x-h-notification-list>
+            <template x-for="r in reminders" :key="r.id">
+              <li x-h-notification class="hbox items-center">
+                <div x-h-notification-media class="w-10">
+                  <div x-h-avatar class="rounded-lg" :data-variant="r.variant">
+                    <svg x-h-lucide role="presentation" :data-lucide="r.icon"></svg>
+                  </div>
+                </div>
+                <div class="vbox flex-1 gap-1">
+                  <h1 x-h-notification-title x-text="r.title"></h1>
+                  <p x-h-notification-description x-text="r.description"></p>
+                </div>
+                <div x-h-notification-actions data-orientation="vertical">
+                  <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Dismiss reminder" @click="dismissReminder(r.id)">
+                    <svg x-h-icon data-icon="close" role="presentation"></svg>
+                  </button>
+                </div>
+              </li>
+            </template>
+            <template x-if="!reminders.length">
+              <li x-h-info-page>
+                <div x-h-info-page-header>
+                  <div x-h-info-page-media.icon>
+                    <svg x-h-icon class="size-4" data-icon="check" role="presentation"></svg>
+                  </div>
+                  <div x-h-info-page-title>No reminders left</div>
+                </div>
+              </li>
+            </template>
+          </ol>
+        </div>
+      </div>
+
+      <!-- The one scrolling element. Both the bottom nav and the FAB watch it, so they
+           slide away together while you read and come back on the way up. -->
+      <div class="vbox flex-1 overflow-y-auto" style="padding-bottom: var(--bottom-nav-height)" x-ref="panel">
+        <!-- ==================== TODAY ==================== -->
+        <div x-show="view === 'today'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
+          <div class="hbox items-center gap-4">
+            <div class="relative shrink-0">
+              <div x-h-progress="donePercent" data-type="circle" :data-variant="donePercent === 100 ? 'positive' : undefined" style="width: 5rem"></div>
+              <span class="position-center absolute text-lg font-medium" x-text="donePercent + '%'"></span>
+            </div>
+            <div class="vbox gap-1">
+              <h2 x-h-text.h5 x-text="greeting"></h2>
+              <p x-h-text.muted x-text="doneCount + ' of ' + habits.length + ' habits done today'"></p>
+              <div class="hbox items-center gap-1">
+                <svg x-h-lucide class="size-4 text-warning" role="presentation" data-lucide="flame"></svg>
+                <span class="text-sm font-medium" x-text="bestStreak + ' day best streak'"></span>
+              </div>
+            </div>
+          </div>
+
+          <div x-h-card class="overflow-hidden py-0!">
+            <ul x-h-list>
+              <template x-for="habit in habits" :key="habit.id">
+                <li x-h-list-item class="gap-3 px-4 py-3">
+                  <span x-h-checkbox>
+                    <input type="checkbox" :id="'habit-' + habit.id" :checked="habit.doneToday" @change="toggleHabit(habit)" />
+                  </span>
+                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" :data-lucide="habit.icon"></svg>
+                  <label class="vbox min-w-0 flex-1" :for="'habit-' + habit.id">
+                    <span class="truncate text-base font-medium" :class="habit.doneToday && 'text-muted-foreground line-through'" x-text="habit.name"></span>
+                    <span x-h-text.muted x-text="habit.target"></span>
+                  </label>
+                  <span x-h-badge :data-variant="habit.streak >= 7 ? 'positive' : 'outline'">
+                    <svg x-h-lucide role="presentation" data-lucide="flame"></svg>
+                    <span x-text="habit.streak"></span>
+                  </span>
+                </li>
+              </template>
+            </ul>
+          </div>
+
+          <div x-h-alert x-show="donePercent === 100" data-variant="positive">
+            <svg x-h-lucide role="presentation" data-lucide="party-popper"></svg>
+            <div x-h-alert-title>Every habit done</div>
+            <div x-h-alert-description>That is another day on the streak. See you tomorrow.</div>
+          </div>
+
+          <div x-h-card>
+            <div x-h-card-header>
+              <div x-h-card-title>This week</div>
+              <div x-h-card-description>How many habits you closed out each day</div>
+            </div>
+            <div x-h-card-content class="vbox gap-3">
+              <template x-for="day in week" :key="day.label">
+                <div class="hbox items-center gap-3">
+                  <span class="w-8 shrink-0 text-sm text-muted-foreground" x-text="day.label"></span>
+                  <div x-h-progress="Math.round((day.done / habits.length) * 100)" class="flex-1" :data-variant="day.done === habits.length ? 'positive' : undefined"></div>
+                  <span class="w-8 shrink-0 text-right text-sm font-medium" x-text="day.done + '/' + habits.length"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div x-h-card>
+            <div x-h-card-header>
+              <div x-h-card-title>Up next</div>
+              <div x-h-card-description x-text="habits.length - doneCount ? 'Still open for today' : 'Nothing left today'"></div>
+            </div>
+            <div x-h-card-content class="vbox gap-2">
+              <template x-for="habit in habits.filter((h) => !h.doneToday)" :key="habit.id">
+                <div class="hbox items-center gap-3">
+                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" :data-lucide="habit.icon"></svg>
+                  <div class="vbox min-w-0 flex-1">
+                    <span class="truncate text-sm font-medium" x-text="habit.name"></span>
+                    <span x-h-text.muted x-text="habit.target"></span>
+                  </div>
+                  <button x-h-button data-variant="outline" data-size="sm" @click="toggleHabit(habit)">Done</button>
+                </div>
+              </template>
+              <template x-if="!habits.filter((h) => !h.doneToday).length">
+                <p x-h-text.muted>Every habit is checked off. Enjoy the rest of your day.</p>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== HISTORY ==================== -->
+        <div x-show="view === 'history'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
+          <p x-h-text.muted>Every habit you have completed, day by day. Tap a day to see what you finished.</p>
+          <div x-h-card class="overflow-hidden p-0!">
+            <div x-h-calendar="calendar" style="height: 32rem" @date-click="openDay($event.detail.date)" @event-click="openDay($event.detail.event.start)"></div>
+          </div>
+        </div>
+
+        <!-- ==================== STATS ==================== -->
+        <div x-show="view === 'stats'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
+          <div x-h-tabs data-orientation="horizontal">
+            <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
+              <div x-h-tab-list>
+                <button id="range-tab-week" x-h-tab aria-controls="range-panel-week" :aria-selected="range === 'week'" @click="range = 'week'">Week</button>
+                <button id="range-tab-month" x-h-tab aria-controls="range-panel-month" :aria-selected="range === 'month'" @click="range = 'month'">Month</button>
+              </div>
+            </div>
+            <div class="pt-4" x-h-tabs-content id="range-panel-week" aria-labelledby="range-tab-week" :hidden="range !== 'week'">
+              <div style="height: 14rem" x-h-chart-bar="weekChart" aria-label="Habits completed per day this week"></div>
+            </div>
+            <div class="pt-4" x-h-tabs-content id="range-panel-month" aria-labelledby="range-tab-month" :hidden="range !== 'month'">
+              <div style="height: 14rem" x-h-chart-line="monthChart" aria-label="Completion rate per week this month"></div>
+            </div>
+          </div>
+
+          <div x-h-card>
+            <div x-h-card-header>
+              <div x-h-card-title>Consistency</div>
+              <div x-h-card-description>How often you hit each habit this month</div>
+            </div>
+            <div x-h-card-content class="grid grid-cols-2 gap-4">
+              <template x-for="habit in habits" :key="habit.id">
+                <div class="vbox items-center gap-2">
+                  <div class="relative">
+                    <div x-h-progress="habit.rate" data-type="circle" :data-variant="rateVariant(habit.rate)" style="width: 4.5rem"></div>
+                    <span class="position-center absolute text-sm font-medium" x-text="habit.rate + '%'"></span>
+                  </div>
+                  <span x-h-text.muted class="text-center" x-text="habit.name"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div x-h-card>
+              <div x-h-card-header>
+                <div x-h-card-description>Longest streak</div>
+                <div x-h-card-title class="text-2xl" x-text="bestStreak + ' days'"></div>
+              </div>
+            </div>
+            <div x-h-card>
+              <div x-h-card-header>
+                <div x-h-card-description>Completed all time</div>
+                <div x-h-card-title class="text-2xl" x-text="totalCompletions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== PROFILE ==================== -->
+        <div x-show="view === 'profile'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
+          <div class="vbox items-center gap-2 pt-2">
+            <div x-h-avatar class="text-xl" style="width: 6rem; height: 6rem">
+              <img x-h-avatar-image src="/harmonia/avatars/person-03-bg.svg" alt="Nora Bennett" />
+              <div x-h-avatar-fallback>NB</div>
+            </div>
+            <div class="vbox items-center">
+              <p class="text-base font-medium">Nora Bennett</p>
+              <p x-h-text.muted>nora@codbex.com</p>
+            </div>
+          </div>
+
+          <section class="vbox w-full">
+            <h3 x-h-text.h6>Preferences</h3>
+            <div x-h-card class="mt-2 w-full overflow-hidden py-0!">
+              <ul x-h-list>
+                <li x-h-list-item class="gap-3 px-4 py-3">
+                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="bell"></svg>
+                  <label class="w-full text-base font-medium" for="sw-reminders">Daily reminders</label>
+                  <span x-h-switch>
+                    <input type="checkbox" id="sw-reminders" checked />
+                  </span>
+                </li>
+                <li x-h-list-item class="gap-3 px-4 py-3">
+                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="clock"></svg>
+                  <label class="flex-1 text-base font-medium" for="reminder-time">Reminder time</label>
+                  <div x-h-time-picker style="max-width: 8rem">
+                    <input type="text" id="reminder-time" x-model="settings.reminderTime" x-h-time-picker-input />
+                    <div x-h-time-picker-popup data-align="bottom-end"></div>
+                  </div>
+                </li>
+                <li x-h-list-item class="gap-3 px-4 py-3">
+                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="calendar"></svg>
+                  <label class="flex-1 text-base font-medium" for="week-start">Week starts on</label>
+                  <div x-h-select style="max-width: 8rem">
+                    <input x-h-select-input id="week-start" x-model="settings.firstDay" placeholder="Select" />
+                    <div x-h-select-content>
+                      <div x-h-select-option="'Sunday'" data-value="0"></div>
+                      <div x-h-select-option="'Monday'" data-value="1"></div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="vbox w-full">
+            <h3 x-h-text.h6>Appearance</h3>
+            <div x-h-card class="mt-2 w-full overflow-hidden py-0!">
+              <ul x-h-list>
+                <li x-h-list-item class="gap-3 px-4 py-3">
+                  <div class="vbox w-full">
+                    <p class="text-base font-medium">Theme</p>
+                    <p x-h-text.muted>Choose how the app looks.</p>
+                  </div>
+                  <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+                    <!-- svg placeholders on purpose: x-h-lucide renders them in place,
+                           so the x-show bindings keep switching the visible icon. -->
+                    <svg x-h-lucide x-show="settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
+                    <span x-show="settings.theme === 'light'">Light</span>
+                    <svg x-h-lucide x-show="settings.theme === 'dark'" role="presentation" data-lucide="moon"></svg>
+                    <span x-show="settings.theme === 'dark'">Dark</span>
+                    <svg x-h-lucide x-show="settings.theme === 'auto'" role="presentation" data-lucide="sun-moon"></svg>
+                    <span x-show="settings.theme === 'auto'">Auto</span>
+                    <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
+                  </button>
+                  <ul x-h-menu data-align="bottom-end" aria-label="Theme">
+                    <li x-h-menu-item @click="setTheme('light')">
+                      <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
+                      <span>Light</span>
+                      <span x-h-menu-item-secondary x-show="settings.theme === 'light'">
+                        <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      </span>
+                    </li>
+                    <li x-h-menu-item @click="setTheme('dark')">
+                      <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
+                      <span>Dark</span>
+                      <span x-h-menu-item-secondary x-show="settings.theme === 'dark'">
+                        <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      </span>
+                    </li>
+                    <li x-h-menu-item @click="setTheme('auto')">
+                      <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
+                      <span>Auto</span>
+                      <span x-h-menu-item-secondary x-show="settings.theme === 'auto'">
+                        <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      </span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="vbox w-full">
+            <h3 x-h-text.h6>Security</h3>
+            <div x-h-card class="mt-2 w-full overflow-hidden py-0!">
+              <ul x-h-list>
+                <li x-h-list-item class="gap-3 px-4 py-3">
+                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="smartphone"></svg>
+                  <div class="vbox flex-1">
+                    <p class="text-base font-medium">This device</p>
+                    <p x-h-text.muted x-text="deviceVerified ? 'Verified' : 'Not verified yet'"></p>
+                  </div>
+                  <template x-if="deviceVerified">
+                    <span x-h-badge data-variant="positive">
+                      <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      Verified
+                    </span>
+                  </template>
+                  <template x-if="!deviceVerified">
+                    <button x-h-button data-variant="outline" data-size="sm" @click="openVerify()">Verify</button>
+                  </template>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <button x-h-button data-variant="outline" class="mt-2 w-full">
+            <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+
+      <!-- Outside the scrolling panel and fixed, so sliding it out of the way cannot
+           grow that panel's scroll range and let you scroll it back into view. -->
+      <nav x-h-bottom-nav="view" data-position="fixed" data-hide-on-scroll="$refs.panel" aria-label="Main">
+        <ul x-h-bottom-nav-list>
+          <li x-h-bottom-nav-item="'today'">
+            <button x-h-bottom-nav-link>
+              <span class="relative">
+                <svg x-h-lucide role="presentation" data-lucide="circle-check-big"></svg>
+                <span x-show="habits.length - doneCount" x-h-badge-indicator x-text="habits.length - doneCount"></span>
+              </span>
+              <span x-h-bottom-nav-label>Today</span>
+            </button>
+          </li>
+          <li x-h-bottom-nav-item="'history'">
+            <button x-h-bottom-nav-link>
+              <svg x-h-lucide role="presentation" data-lucide="calendar-days"></svg>
+              <span x-h-bottom-nav-label>History</span>
+            </button>
+          </li>
+          <li x-h-bottom-nav-item="'stats'">
+            <button x-h-bottom-nav-link>
+              <svg x-h-lucide role="presentation" data-lucide="chart-no-axes-combined"></svg>
+              <span x-h-bottom-nav-label>Stats</span>
+            </button>
+          </li>
+          <li x-h-bottom-nav-item="'profile'">
+            <button x-h-bottom-nav-link>
+              <svg x-h-lucide role="presentation" data-lucide="circle-user"></svg>
+              <span x-h-bottom-nav-label>Profile</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Quick-add, offset so it clears the bar. Both it and the bar watch $refs.panel. -->
+      <button
+        x-h-fab="$refs.panel"
+        data-hide-on-scroll="true"
+        x-show="view === 'today'"
+        class="absolute"
+        style="right: 1rem; bottom: calc(var(--bottom-nav-height) + 1rem)"
+        data-variant="primary"
+        data-shape="round"
+        aria-label="Add habit"
+        @click="openAddHabit()"
+      >
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+      </button>
+    </div>
+
+    <!-- Dialogs live at the top level, so a view's x-show never hides them -->
+    <div x-h-dialog-overlay :data-open="showAddHabit" class="backdrop-blur-xs">
+      <div x-h-dialog>
+        <div x-h-dialog-header>
+          <h2 x-h-dialog-title>New habit</h2>
+          <p x-h-dialog-description>Something small you can repeat every day.</p>
+          <button x-h-dialog-close aria-label="Close dialog" @click="showAddHabit = false">
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
+          </button>
+        </div>
+        <form id="add-habit-form" x-ref="addHabitForm" @submit.prevent="addHabit()" @input="newHabitValid = $el.checkValidity()">
+          <fieldset x-h-fieldset>
+            <div x-h-field-group class="gap-4!">
+              <div x-h-field>
+                <label x-h-label for="nh-name">Name</label>
+                <input x-h-input x-h-focus="showAddHabit" id="nh-name" x-model="newHabit.name" placeholder="Read before bed" required />
+                <p x-h-field-error>Give the habit a name.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="nh-target">Target</label>
+                <input x-h-input id="nh-target" x-model="newHabit.target" placeholder="20 minutes" required />
+                <p x-h-field-error>Describe what counts as done.</p>
+              </div>
+              <div x-h-field>
+                <label x-h-label for="nh-icon">Icon</label>
+                <div x-h-select>
+                  <input x-h-select-input id="nh-icon" x-model="newHabit.icon" placeholder="Select an icon" />
+                  <div x-h-select-content>
+                    <template x-for="option in iconOptions" :key="option.value">
+                      <div x-h-select-option="option.label" :data-value="option.value"></div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div x-h-dialog-footer>
+          <button x-h-button data-variant="outline" @click="showAddHabit = false">Cancel</button>
+          <button x-h-button data-variant="primary" type="submit" form="add-habit-form" :disabled="!newHabitValid">Add habit</button>
+        </div>
+      </div>
+    </div>
+
+    <div x-h-dialog-overlay :data-open="showDay" class="backdrop-blur-xs">
+      <div x-h-dialog>
+        <div x-h-dialog-header>
+          <h2 x-h-dialog-title x-text="dayDetail.label"></h2>
+          <p x-h-dialog-description x-text="dayDetail.summary + ' habits completed'"></p>
+          <button x-h-dialog-close aria-label="Close dialog" @click="showDay = false">
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
+          </button>
+        </div>
+        <ul x-h-list>
+          <template x-for="name in dayDetail.names" :key="name">
+            <li x-h-list-item class="gap-3">
+              <svg x-h-lucide class="size-4 shrink-0 text-positive" role="presentation" data-lucide="check"></svg>
+              <span x-text="name"></span>
+            </li>
+          </template>
+          <template x-if="!dayDetail.names.length">
+            <li x-h-info-page>
+              <div x-h-info-page-header>
+                <div x-h-info-page-title>Nothing completed that day</div>
+              </div>
+            </li>
+          </template>
+        </ul>
+        <div x-h-dialog-footer>
+          <button x-h-button data-variant="outline" @click="showDay = false">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div x-h-dialog-overlay :data-open="showVerify" class="backdrop-blur-xs">
+      <div x-h-dialog>
+        <div x-h-dialog-header>
+          <h2 x-h-dialog-title>Verify this device</h2>
+          <p x-h-dialog-description>We sent a six digit code to your phone. Enter it to trust this device.</p>
+          <button x-h-dialog-close aria-label="Close dialog" @click="showVerify = false">
+            <svg x-h-icon data-icon="close" role="presentation"></svg>
+          </button>
+        </div>
+        <div class="vbox items-center gap-4 py-2">
+          <div x-h-otp @complete="verifyDevice($event.detail.value)">
+            <input name="verification" aria-label="Verification code" x-model="verifyCode" />
+            <div x-h-otp-group data-length="3"></div>
+            <div x-h-otp-separator>-</div>
+            <div x-h-otp-group data-length="3"></div>
+          </div>
+          <p x-h-text.muted>Any six digits will do in this demo.</p>
+        </div>
+        <div x-h-dialog-footer>
+          <button x-h-button data-variant="outline" @click="showVerify = false">Not now</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("HabitsController", () => ({
+          // active view, also the bottom nav's value
+          view: "today",
+
+          remindersShown: false,
+          reminders: [
+            { id: 1, icon: "footprints", variant: "information", title: "Evening walk", description: "Your usual time is in 30 minutes." },
+            { id: 2, icon: "flame", variant: "warning", title: "Keep the streak", description: "Two habits left to finish today." },
+          ],
+
+          habits: [
+            { id: 1, name: "Morning run", icon: "footprints", target: "3 km", streak: 12, doneToday: true, rate: 86 },
+            { id: 2, name: "Strength training", icon: "dumbbell", target: "30 minutes", streak: 5, doneToday: true, rate: 64 },
+            { id: 3, name: "Drink water", icon: "glass-water", target: "2 litres", streak: 23, doneToday: false, rate: 93 },
+            { id: 4, name: "Read", icon: "book-open", target: "20 pages", streak: 8, doneToday: false, rate: 71 },
+            { id: 5, name: "Meditate", icon: "brain", target: "10 minutes", streak: 3, doneToday: false, rate: 48 },
+          ],
+
+          week: [
+            { label: "Mon", done: 5 },
+            { label: "Tue", done: 4 },
+            { label: "Wed", done: 5 },
+            { label: "Thu", done: 3 },
+            { label: "Fri", done: 5 },
+            { label: "Sat", done: 2 },
+            { label: "Sun", done: 4 },
+          ],
+
+          iconOptions: [
+            { label: "Run", value: "footprints" },
+            { label: "Strength", value: "dumbbell" },
+            { label: "Water", value: "glass-water" },
+            { label: "Read", value: "book-open" },
+            { label: "Meditate", value: "brain" },
+            { label: "Sleep", value: "moon" },
+            { label: "Cycle", value: "bike" },
+          ],
+
+          // history
+          calendar: {},
+          showDay: false,
+          dayDetail: { label: "", names: [], summary: "" },
+
+          // stats
+          range: "week",
+          weekChart: {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            series: [{ name: "Habits done", color: "teal", data: [5, 4, 5, 3, 5, 2, 4] }],
+          },
+          monthChart: {
+            labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+            series: [{ name: "Completion rate", color: "green", data: [68, 74, 81, 77] }],
+          },
+          totalCompletions: 412,
+
+          // add-habit dialog
+          showAddHabit: false,
+          newHabit: { name: "", target: "", icon: "footprints" },
+          newHabitValid: false,
+
+          // verify-device dialog
+          showVerify: false,
+          verifyCode: "",
+          deviceVerified: false,
+
+          settings: {
+            reminderTime: "07:30",
+            firstDay: "1",
+            // Seed from Harmonia's current color scheme ("auto" | "light" | "dark").
+            theme: Harmonia.getColorScheme(),
+          },
+
+          get viewTitle() {
+            return { today: "Today", history: "History", stats: "Stats", profile: "Profile" }[this.view];
+          },
+          get doneCount() {
+            return this.habits.filter((h) => h.doneToday).length;
+          },
+          get donePercent() {
+            return this.habits.length ? Math.round((this.doneCount / this.habits.length) * 100) : 0;
+          },
+          get bestStreak() {
+            return this.habits.reduce((best, h) => Math.max(best, h.streak), 0);
+          },
+          get greeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return "Good morning, Nora";
+            if (hour < 18) return "Good afternoon, Nora";
+            return "Good evening, Nora";
+          },
+          rateVariant(rate) {
+            if (rate >= 80) return "positive";
+            if (rate >= 60) return "information";
+            return "warning";
+          },
+          toggleHabit(habit) {
+            habit.doneToday = !habit.doneToday;
+            habit.streak += habit.doneToday ? 1 : -1;
+            this.totalCompletions += habit.doneToday ? 1 : -1;
+            this.buildCalendar();
+          },
+          openAddHabit() {
+            this.newHabit = { name: "", target: "", icon: "footprints" };
+            // Clear any :user-invalid state from a previous attempt so the errors
+            // do not show on a freshly opened, empty form.
+            this.$refs.addHabitForm?.reset();
+            this.newHabitValid = this.$refs.addHabitForm?.checkValidity() ?? false;
+            this.showAddHabit = true;
+          },
+          addHabit() {
+            const name = this.newHabit.name.trim();
+            const target = this.newHabit.target.trim();
+            if (!name || !target) return;
+            const id = this.habits.length ? Math.max(...this.habits.map((h) => h.id)) + 1 : 1;
+            this.habits.push({ id, name, icon: this.newHabit.icon, target, streak: 0, doneToday: false, rate: 0 });
+            this.showAddHabit = false;
+          },
+          openVerify() {
+            this.verifyCode = "";
+            this.showVerify = true;
+          },
+          verifyDevice(code) {
+            if (code.length < 6) return;
+            this.deviceVerified = true;
+            this.showVerify = false;
+          },
+          openDay(date) {
+            const iso = this.isoDate(new Date(date));
+            const event = this.calendar.events.find((e) => e.start === iso);
+            this.dayDetail = {
+              label: new Date(date).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" }),
+              names: event ? event.description.split(", ") : [],
+              summary: event ? event.title : "0 of " + this.habits.length,
+            };
+            this.showDay = true;
+          },
+          dismissReminder(id) {
+            this.reminders = this.reminders.filter((r) => r.id !== id);
+          },
+          setTheme(mode) {
+            this.settings.theme = mode;
+            Harmonia.setColorScheme(mode);
+          },
+          isoDate(date) {
+            return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+          },
+          // One all-day event per day, summarising how much of that day was completed.
+          // A month cell only has room for a single pill, so a per-habit event would
+          // collapse the whole grid into nothing but "+N more".
+          buildCalendar() {
+            const events = [];
+            const today = new Date();
+            for (let back = 0; back < 35; back++) {
+              const day = new Date(today);
+              day.setDate(today.getDate() - back);
+              const iso = this.isoDate(day);
+              const done = back === 0 ? this.doneCount : this.habits.filter((h) => (back * 7 + h.id * 13) % 100 < h.rate).length;
+              if (!done) continue;
+              const names = back === 0 ? this.habits.filter((h) => h.doneToday) : this.habits.filter((h) => (back * 7 + h.id * 13) % 100 < h.rate);
+              events.push({
+                id: "day-" + iso,
+                title: done + " of " + this.habits.length,
+                description: names.map((h) => h.name).join(", "),
+                start: iso,
+                allDay: true,
+                color: done === this.habits.length ? "green" : done >= this.habits.length / 2 ? "teal" : "orange",
+              });
+            }
+            this.calendar = {
+              view: this.calendar.view || "month",
+              date: this.calendar.date,
+              views: true,
+              firstDay: Number(this.settings.firstDay),
+              events,
+            };
+          },
+
+          init() {
+            this.buildCalendar();
+            this.$watch("settings.firstDay", () => this.buildCalendar());
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>

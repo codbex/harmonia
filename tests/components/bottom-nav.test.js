@@ -101,16 +101,22 @@ describe('bottomNavPositions', () => {
   });
 
   it('keeps a sticky bar in flow, so it needs no horizontal inset', () => {
-    expect(bottomNavPositions.sticky).toEqual(['sticky', 'z-10', 'bottom-0']);
+    expect(bottomNavPositions.sticky).toEqual(['sticky', 'bottom-0']);
   });
 
-  it('stacks a sticky bar over the content it scrolls past, but below overlays', () => {
-    expect(bottomNavPositions.sticky).toContain('z-10');
-    expect(bottomNavPositions.sticky).not.toContain('z-50');
+  // The bar claims no stacking level of its own, so it layers by DOM order and
+  // anything with a z-index of its own (overlays, a floating action button) wins.
+  it('sets no z-index in either docking mode', () => {
+    for (const mode of bottomNavDockedPositions) {
+      expect(
+        bottomNavPositions[mode].filter((cls) => cls.startsWith('z-')),
+        mode
+      ).toEqual([]);
+    }
   });
 
   it('docks the bar to the bottom edge across the full width', () => {
-    expect(bottomNavPositions.fixed).toEqual(['fixed', 'z-50', 'inset-x-0', 'bottom-0']);
+    expect(bottomNavPositions.fixed).toEqual(['fixed', 'inset-x-0', 'bottom-0']);
   });
 
   it('applies no positioning at all for static', () => {
@@ -320,7 +326,6 @@ describe('h-bottom-nav directive', () => {
     const nav = makeNav({ position: 'fixed' });
     mount('h-bottom-nav', nav, {});
     expect(nav.classList.contains('fixed')).toBe(true);
-    expect(nav.classList.contains('z-50')).toBe(true);
     expect(nav.classList.contains('inset-x-0')).toBe(true);
     expect(nav.classList.contains('bottom-0')).toBe(true);
     expect(nav.classList.contains('sticky')).toBe(false);
@@ -334,12 +339,10 @@ describe('h-bottom-nav directive', () => {
     expect(nav.classList.contains('fixed')).toBe(true);
     expect(nav.classList.contains('inset-x-0')).toBe(true);
     expect(nav.classList.contains('sticky')).toBe(false);
-    expect(nav.classList.contains('z-10')).toBe(false);
     nav.setAttribute('data-position', 'sticky');
     await flush();
     expect(nav.classList.contains('sticky')).toBe(true);
     expect(nav.classList.contains('fixed')).toBe(false);
-    expect(nav.classList.contains('z-50')).toBe(false);
     expect(nav.classList.contains('inset-x-0')).toBe(false);
   });
 
@@ -385,7 +388,6 @@ describe('h-bottom-nav directive', () => {
     expect(nav.classList.contains('fixed')).toBe(false);
     expect(nav.classList.contains('bottom-0')).toBe(false);
     expect(nav.classList.contains('inset-x-0')).toBe(false);
-    expect(nav.classList.contains('z-50')).toBe(false);
   });
 
   it('exposes the active expression for its items', () => {

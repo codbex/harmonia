@@ -110,6 +110,8 @@ export default function (Alpine) {
       'hover:underline',
       'hover:text-primary-hover',
       'active:text-primary-active',
+      'outline-ring/50',
+      'focus-outline',
       '[&>svg]:size-4',
       '[&>svg]:text-current'
     );

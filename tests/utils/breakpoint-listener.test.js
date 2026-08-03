@@ -23,17 +23,16 @@ describe('getBreakpointListener', () => {
     mockMql = createMockMql(false);
     originalMatchMedia = window.matchMedia;
     window.matchMedia = vi.fn().mockReturnValue(mockMql);
-    // In happy-dom top === window, so both paths use the same mock
   });
 
   afterEach(() => {
     window.matchMedia = originalMatchMedia;
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
   it('calls matchMedia with the correct query for default breakpoint', () => {
     const handler = vi.fn();
-    // frame=false (default) uses top.matchMedia; in happy-dom top === window
     getBreakpointListener(handler);
     expect(window.matchMedia).toHaveBeenCalledWith('(width <= 768px)');
   });
@@ -110,10 +109,47 @@ describe('getBreakpointListener', () => {
     expect(removedCb).toBe(registeredCb);
   });
 
-  it('uses window.matchMedia when frame=true (same as top in happy-dom)', () => {
+  it('uses the top frame when topFrame=true', () => {
     const handler = vi.fn();
-    // frame=true uses window.matchMedia; in happy-dom top === window so both paths hit the same mock
+    const topMql = createMockMql(false);
+    const topMatchMedia = vi.fn().mockReturnValue(topMql);
+    vi.stubGlobal('top', { matchMedia: topMatchMedia });
+
     getBreakpointListener(handler, 768, true);
+
+    expect(topMatchMedia).toHaveBeenCalledWith('(width <= 768px)');
+    expect(window.matchMedia).not.toHaveBeenCalled();
+  });
+
+  // A cross-origin ancestor makes `top` a restricted proxy: reading `matchMedia` off
+  // it throws. happy-dom iframes are same-origin, so the throw has to be stubbed.
+  const stubCrossOriginTop = () =>
+    vi.stubGlobal('top', {
+      get matchMedia() {
+        throw new DOMException('Permission denied to access property "matchMedia" on cross-origin object', 'SecurityError');
+      },
+    });
+
+  it('never touches the top frame by default, so a cross-origin ancestor cannot throw', () => {
+    const handler = vi.fn();
+    stubCrossOriginTop();
+
+    expect(() => getBreakpointListener(handler)).not.toThrow();
     expect(window.matchMedia).toHaveBeenCalledWith('(width <= 768px)');
+    expect(handler).toHaveBeenCalledWith(false);
+  });
+
+  it('falls back to this frame when topFrame=true but the top frame is cross-origin', () => {
+    const handler = vi.fn();
+    stubCrossOriginTop();
+
+    const listener = getBreakpointListener(handler, 1024, true);
+
+    expect(window.matchMedia).toHaveBeenCalledWith('(width <= 1024px)');
+    expect(mockMql.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    expect(handler).toHaveBeenCalledWith(false);
+    // still a working listener, not a half-built one
+    listener.remove();
+    expect(mockMql.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
   });
 });

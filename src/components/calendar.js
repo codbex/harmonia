@@ -95,7 +95,7 @@ export default function (Alpine) {
     navGroup.append(prevBtn, todayBtn, nextBtn);
 
     const periodLabel = document.createElement('h2');
-    periodLabel.classList.add('flex-1', 'text-xs', 'md:text-sm', 'font-semibold', 'text-center', 'leading-tight', 'line-clamp-3');
+    periodLabel.classList.add('flex-1', 'text-xs', 'md:text-sm', 'font-semibold', 'text-center', 'leading-snug', 'line-clamp-2');
     periodLabel.setAttribute('aria-live', 'polite');
     periodLabel.setAttribute('id', `hcl${uuidv4()}`);
 

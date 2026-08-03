@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.10.0
+
+A release that fixes a crash when a Harmonia page runs inside an iframe belonging to another origin and corrects the Week Picker's month navigation. The one breaking change is the frame `getBreakpointListener` measures. See "Breakpoint listener" below to migrate.
+
+### Breakpoint listener
+
+- **Breaking: `getBreakpointListener` now measures the current frame by default.** Its third argument is renamed from `frame` to `topFrame` and its meaning is inverted: leaving it out measures the frame the listener runs in, and passing `true` measures the topmost frame. To migrate, pass `true` as the third argument wherever you relied on the old default. The new default matches the CSS breakpoint variants a handler is usually paired with, which resolve against the current frame, so the two no longer disagree inside an iframe.
+- **Fixed: a page inside an iframe from another origin crashed on load.** The listener read `matchMedia` off the topmost frame, which is a restricted proxy when the embedding page belongs to another origin, so the read threw `Permission denied to access property "matchMedia" on cross-origin object`. Because Alpine does not trap the error, it aborted the rest of the initialization and left every component after it dead. The topmost frame is now only read when asked for, and falls back to the current frame when it is unreachable.
+
+### Week Picker
+
+- **Fixed: `PageUp` and `PageDown` did not reliably move a whole month.** The focused week's Monday was stepped by a month and then snapped back to the start of its ISO week, which could land inside the month already on screen, leaving the header unchanged and moving focus to a different row. `PageDown` was affected on roughly 37% of dates and `PageUp` on 22%, where it could skip a month outright. Both now move the visible month by exactly one and keep focus on the same row.
+
 ## v2.9.0
 
 A release that adds the new **Backdrop**, **Bottom Navigation**, **Floating Action Button** and **One-Time Password Input** components, rebuilds the **Tree** around a proper row, reworks the Sidebar's group and menu actions, and fixes how every component treats `aria-disabled`. The five breaking changes are the Tree rewrite, the Sidebar group actions, the `aria-disabled` keyboard behaviour, the removal of `data-disabled` from the Menu and the Select, and the removal of `data-label` in favor of `aria-label`, all covered below.

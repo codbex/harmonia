@@ -304,28 +304,84 @@ describe('h-week-picker-popup', () => {
   });
 
   it('ArrowUp from the first row moves the visible month back', () => {
-    const { popup } = createPopupSetup();
-    mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
-    const labelBefore = popup.querySelector('h2').textContent;
-    const first = bodyRows(popup)[0];
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 3, 12, 0, 0));
+    try {
+      const { popup } = createPopupSetup();
+      mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
+      const first = bodyRows(popup)[0];
 
-    first.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
-    bodyRows(popup)[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+      first.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+      bodyRows(popup)[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
 
-    expect(popup.querySelector('h2').textContent).not.toBe(labelBefore);
-    expect(bodyRows(popup).some((row) => row.getAttribute('tabindex') === '0')).toBe(true);
+      expect(popup.querySelector('h2').textContent).toBe('July 2026');
+      expect(bodyRows(popup).some((row) => row.getAttribute('tabindex') === '0')).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
+  // Pinned to a date whose current week is the second row of the grid. A month
+  // step from there used to be snapped back into the same visible month, so the
+  // header never advanced.
   it('PageDown moves the visible month forward keeping a focused week', () => {
-    const { popup } = createPopupSetup();
-    mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
-    const labelBefore = popup.querySelector('h2').textContent;
-    const focused = bodyRows(popup).find((row) => row.getAttribute('tabindex') === '0');
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 3, 12, 0, 0));
+    try {
+      const { popup } = createPopupSetup();
+      mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
+      const before = bodyRows(popup).findIndex((row) => row.getAttribute('tabindex') === '0');
+      const focused = bodyRows(popup)[before];
 
-    focused.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', bubbles: true }));
+      focused.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', bubbles: true }));
 
-    expect(popup.querySelector('h2').textContent).not.toBe(labelBefore);
-    expect(bodyRows(popup).filter((row) => row.getAttribute('tabindex') === '0').length).toBe(1);
+      expect(popup.querySelector('h2').textContent).toBe('September 2026');
+      const focusedRows = bodyRows(popup).filter((row) => row.getAttribute('tabindex') === '0');
+      expect(focusedRows).toHaveLength(1);
+      expect(bodyRows(popup).indexOf(focusedRows[0])).toBe(before);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('PageUp moves the visible month back keeping a focused week', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 3, 12, 0, 0));
+    try {
+      const { popup } = createPopupSetup();
+      mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
+      const before = bodyRows(popup).findIndex((row) => row.getAttribute('tabindex') === '0');
+      const focused = bodyRows(popup)[before];
+
+      focused.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageUp', bubbles: true }));
+
+      expect(popup.querySelector('h2').textContent).toBe('July 2026');
+      const focusedRows = bodyRows(popup).filter((row) => row.getAttribute('tabindex') === '0');
+      expect(focusedRows).toHaveLength(1);
+      expect(bodyRows(popup).indexOf(focusedRows[0])).toBe(before);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('repeated PageDown steps one month at a time', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 3, 12, 0, 0));
+    try {
+      const { popup } = createPopupSetup();
+      mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
+      const labels = [];
+
+      for (let i = 0; i < 3; i++) {
+        const focused = bodyRows(popup).find((row) => row.getAttribute('tabindex') === '0');
+        focused.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageDown', bubbles: true }));
+        labels.push(popup.querySelector('h2').textContent);
+      }
+
+      expect(labels).toEqual(['September 2026', 'October 2026', 'November 2026']);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('Enter on a focused week row selects it and closes the popup', () => {

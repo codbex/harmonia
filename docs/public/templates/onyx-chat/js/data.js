@@ -19,17 +19,21 @@ window.OnyxData = {
   // palette color except black and white, matched to an initial where one shares
   // a letter with the color name (Gonzalez green, Olivia orange, Ivan indigo,
   // Brown blue, Petrova pink).
+  // Only half the roster has a picture, the way a real team rarely all do, and each
+  // one is paired with the avatar whose clothing is closest to that user's color.
+  // Those with `avatar: null` fall back to initials on their color, which is also
+  // what any of them shows if its image fails to load.
   users: [
-    { id: 'you', name: 'John Doe', initials: 'JD', color: 'teal', title: 'Product Engineer', email: 'john@onyx.example', status: 'online' },
-    { id: 'maria', name: 'Maria Gonzalez', initials: 'MG', color: 'green', title: 'Design Lead', email: 'maria@onyx.example', status: 'online' },
-    { id: 'olivia', name: 'Olivia Davis', initials: 'OD', color: 'orange', title: 'Frontend Engineer', email: 'olivia@onyx.example', status: 'online' },
-    { id: 'ivan', name: 'Ivan Strashimechkarov', initials: 'IS', color: 'indigo', title: 'Backend Engineer', email: 'ivan@onyx.example', status: 'away' },
-    { id: 'liam', name: 'Liam Smith', initials: 'LS', color: 'yellow', title: 'Product Manager', email: 'liam@onyx.example', status: 'online' },
-    { id: 'noah', name: 'Noah Brown', initials: 'NB', color: 'blue', title: 'QA Engineer', email: 'noah@onyx.example', status: 'offline' },
-    { id: 'anna', name: 'Anna Petrova', initials: 'AP', color: 'pink', title: 'Support Lead', email: 'anna@onyx.example', status: 'online' },
-    { id: 'emma', name: 'Emma Johnson', initials: 'EJ', color: 'red', title: 'Data Analyst', email: 'emma@onyx.example', status: 'away' },
-    { id: 'william', name: 'William Wilson', initials: 'WW', color: 'gray', title: 'DevOps Engineer', email: 'william@onyx.example', status: 'offline' },
-    { id: 'sophia', name: 'Sophia Moore', initials: 'SM', color: 'purple', title: 'Engineering Manager', email: 'sophia@onyx.example', status: 'online' },
+    { id: 'you', name: 'Jane Doe', initials: 'JD', color: 'teal', avatar: '/harmonia/avatars/person-01-bg.svg', title: 'Product Engineer', email: 'jane@onyx.example', status: 'online' },
+    { id: 'maria', name: 'Maria Gonzalez', initials: 'MG', color: 'green', avatar: '/harmonia/avatars/person-02-bg.svg', title: 'Design Lead', email: 'maria@onyx.example', status: 'online' },
+    { id: 'olivia', name: 'Olivia Davis', initials: 'OD', color: 'orange', avatar: '/harmonia/avatars/person-04-bg.svg', title: 'Frontend Engineer', email: 'olivia@onyx.example', status: 'online' },
+    { id: 'ivan', name: 'Ivan Strashimechkarov', initials: 'IS', color: 'indigo', avatar: null, title: 'Backend Engineer', email: 'ivan@onyx.example', status: 'away' },
+    { id: 'liam', name: 'Liam Smith', initials: 'LS', color: 'yellow', avatar: null, title: 'Product Manager', email: 'liam@onyx.example', status: 'online' },
+    { id: 'noah', name: 'Noah Brown', initials: 'NB', color: 'blue', avatar: null, title: 'QA Engineer', email: 'noah@onyx.example', status: 'offline' },
+    { id: 'anna', name: 'Anna Petrova', initials: 'AP', color: 'pink', avatar: '/harmonia/avatars/person-03-bg.svg', title: 'Support Lead', email: 'anna@onyx.example', status: 'online' },
+    { id: 'emma', name: 'Emma Johnson', initials: 'EJ', color: 'red', avatar: '/harmonia/avatars/person-05-bg.svg', title: 'Data Analyst', email: 'emma@onyx.example', status: 'away' },
+    { id: 'william', name: 'William Wilson', initials: 'WW', color: 'gray', avatar: null, title: 'DevOps Engineer', email: 'william@onyx.example', status: 'offline' },
+    { id: 'sophia', name: 'Sophia Moore', initials: 'SM', color: 'purple', avatar: null, title: 'Engineering Manager', email: 'sophia@onyx.example', status: 'online' },
   ],
 
   channels: [
@@ -61,7 +65,7 @@ window.OnyxData = {
           edited: false,
           mentions: [],
         },
-        { id: 'gen-09', userId: 'sophia', text: '@John can you take a quick look at the beta signup flow before the Thursday review?', ts: minutesAgo(170), reactions: [], edited: false, mentions: ['you'] },
+        { id: 'gen-09', userId: 'sophia', text: '@Jane can you take a quick look at the beta signup flow before the Thursday review?', ts: minutesAgo(170), reactions: [], edited: false, mentions: ['you'] },
         { id: 'gen-10', userId: 'emma', text: 'Weekly metrics digest is out, activation is trending up nicely.', ts: minutesAgo(120), reactions: [], edited: false, mentions: [] },
         { id: 'gen-11', userId: 'noah', text: 'Regression suite is green on the release branch.', ts: minutesAgo(45), reactions: [], edited: false, mentions: [] },
         { id: 'gen-12', userId: 'anna', text: 'Customer call in 20 minutes, join if you want raw feedback on search.', ts: minutesAgo(12), reactions: [], edited: false, mentions: [] },
@@ -79,7 +83,7 @@ window.OnyxData = {
         { id: 'des-01', userId: 'maria', text: 'New spacing scale proposal is in Figma, comments welcome until Wednesday.', ts: at(2, 11, 20), reactions: [], edited: false, mentions: [] },
         { id: 'des-02', userId: 'olivia', text: 'Left a few notes on the table density variants.', ts: at(2, 11, 50), reactions: [], edited: false, mentions: [] },
         { id: 'des-03', userId: 'you', text: 'Uploaded interaction mockups for the empty states.', ts: at(1, 9, 40), reactions: [{ emoji: '👍', userIds: ['olivia', 'maria'] }], edited: false, mentions: [] },
-        { id: 'des-04', userId: 'maria', text: '@John these are great, the search empty state especially.', ts: at(1, 9, 42), reactions: [], edited: false, mentions: ['you'] },
+        { id: 'des-04', userId: 'maria', text: '@Jane these are great, the search empty state especially.', ts: at(1, 9, 42), reactions: [], edited: false, mentions: ['you'] },
         { id: 'des-05', userId: 'liam', text: 'Can we align the chip colors with the new palette before the sprint demo?', ts: at(1, 14, 20), reactions: [], edited: false, mentions: [] },
         { id: 'des-06', userId: 'maria', text: 'Yes, the palette tokens land tomorrow.', ts: at(1, 14, 26), reactions: [], edited: false, mentions: [] },
         { id: 'des-07', userId: 'emma', text: 'The dashboard heatmaps could use the same treatment.', ts: at(1, 17, 5), reactions: [], edited: false, mentions: [] },
@@ -101,7 +105,7 @@ window.OnyxData = {
         { id: 'eng-02', userId: 'william', text: "Nice, deploying the patch with tonight's build.", ts: at(2, 10, 30), reactions: [], edited: false, mentions: [] },
         { id: 'eng-03', userId: 'olivia', text: 'Refactored the composer state handling, PR is up.', ts: at(2, 15, 15), reactions: [], edited: false, mentions: [] },
         { id: 'eng-04', userId: 'noah', text: 'Found a flaky test in the websocket suite, quarantined it for now.', ts: at(1, 9, 25), reactions: [], edited: false, mentions: [] },
-        { id: 'eng-05', userId: 'ivan', text: '@John the presence service API you asked about is documented in the wiki now.', ts: at(1, 13, 40), reactions: [], edited: false, mentions: ['you'] },
+        { id: 'eng-05', userId: 'ivan', text: '@Jane the presence service API you asked about is documented in the wiki now.', ts: at(1, 13, 40), reactions: [], edited: false, mentions: ['you'] },
         { id: 'eng-06', userId: 'sophia', text: 'Good milestone everyone, the reconnect logic is much cleaner.', ts: at(1, 13, 55), reactions: [], edited: false, mentions: [] },
         { id: 'eng-07', userId: 'you', text: 'Agreed, huge thanks to Ivan for the groundwork.', ts: at(1, 14, 2), reactions: [{ emoji: '❤️', userIds: ['ivan'] }], edited: false, mentions: [] },
         { id: 'eng-08', userId: 'william', text: 'Build times are down 40 percent after the cache change.', ts: minutesAgo(260), reactions: [{ emoji: '🎉', userIds: ['you', 'olivia'] }], edited: false, mentions: [] },
@@ -206,14 +210,14 @@ window.OnyxData = {
   replyScripts: {
     general: [
       { userId: 'liam', text: 'Good point, adding it to the roadmap notes.' },
-      { userId: 'sophia', text: 'Thanks for flagging this. @John let us sync on it after standup.', mentionYou: true },
+      { userId: 'sophia', text: 'Thanks for flagging this. @Jane let us sync on it after standup.', mentionYou: true },
       { userId: 'anna', text: 'I will pass that along to the support team.' },
       { userId: 'emma', text: 'The numbers back that up, I will share a chart shortly.' },
     ],
     design: [
       { userId: 'maria', text: 'Love it. I will fold that into the next Figma pass.' },
       { userId: 'olivia', text: 'Agreed, that also simplifies the component states.' },
-      { userId: 'maria', text: '@John want to pair on this tomorrow morning?', mentionYou: true },
+      { userId: 'maria', text: '@Jane want to pair on this tomorrow morning?', mentionYou: true },
     ],
     engineering: [
       { userId: 'ivan', text: 'Makes sense. I will sketch the API change today.' },

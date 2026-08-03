@@ -10,11 +10,11 @@ Use `getBreakpointListener` to respond to changes in screen width, such as adjus
 
 ### Arguments
 
-| Argument   | Type            | Required | Description                                                                                                                  |
-| ---------- | --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| handler    | function        | true     | Handler function that will be called when the breakpoint threshold has been met\*. Called immediately after initialization.  |
-| breakpoint | integer\|string | false    | The desired breakpoint. If a number is given, it will be treated as pixels. By default, it's 768px.                          |
-| frame      | boolean         | false    | By default, the listener will be attached to the topmost frame (window). This sets the current frame (iframe) as the target. |
+| Argument   | Type            | Required | Description                                                                                                                                                                      |
+| ---------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| handler    | function        | true     | Handler function that will be called when the breakpoint threshold has been met\*. Called immediately after initialization.                                                      |
+| breakpoint | integer\|string | false    | The desired breakpoint. If a number is given, it will be treated as pixels. By default, it's 768px.                                                                              |
+| topFrame   | boolean         | false    | By default, the listener measures the current frame. This attaches it to the topmost frame instead, falling back to the current frame when that frame belongs to another origin. |
 
 ::: info Threshold event
 The handler function is invoked only when the window width crosses the specified breakpoint, either becoming narrower or wider, rather than on every resize event. A boolean value is passed as the first argument, indicating the direction of the change.

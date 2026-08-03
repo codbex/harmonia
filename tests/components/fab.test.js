@@ -91,8 +91,17 @@ describe('fabPositions', () => {
   });
 
   it('pins each corner above content with a 16dp offset', () => {
-    expect(fabPositions['bottom-right']).toEqual(['fixed', 'bottom-4', 'right-4', 'z-50']);
-    expect(fabPositions['bottom-left']).toEqual(['fixed', 'bottom-4', 'left-4', 'z-50']);
+    expect(fabPositions['bottom-right']).toEqual(['fixed', 'bottom-4', 'right-4', 'z-10']);
+    expect(fabPositions['bottom-left']).toEqual(['fixed', 'bottom-4', 'left-4', 'z-10']);
+  });
+
+  // The button rides in the in-page chrome tier, not the overlay tier that dialogs,
+  // sheets, menus and tooltips share, so anything modal draws over it.
+  it('stays below the overlay tier', () => {
+    for (const corner of ['bottom-left', 'bottom-right']) {
+      expect(fabPositions[corner], corner).toContain('z-10');
+      expect(fabPositions[corner], corner).not.toContain('z-50');
+    }
   });
 
   it('applies no positioning at all for static', () => {
@@ -281,7 +290,7 @@ describe('h-fab directive', () => {
     mount(el);
     expect(el.classList.contains('fixed')).toBe(false);
     expect(el.classList.contains('bottom-4')).toBe(false);
-    expect(el.classList.contains('z-50')).toBe(false);
+    expect(el.classList.contains('z-10')).toBe(false);
   });
 
   it('pins itself to the requested corner', () => {
@@ -290,7 +299,7 @@ describe('h-fab directive', () => {
     expect(el.classList.contains('fixed')).toBe(true);
     expect(el.classList.contains('bottom-4')).toBe(true);
     expect(el.classList.contains('left-4')).toBe(true);
-    expect(el.classList.contains('z-50')).toBe(true);
+    expect(el.classList.contains('z-10')).toBe(true);
   });
 
   it('calls cleanup', () => {
@@ -393,7 +402,7 @@ describe('h-fab reactivity', () => {
     await flush();
     expect(el.classList.contains('fixed')).toBe(false);
     expect(el.classList.contains('bottom-4')).toBe(false);
-    expect(el.classList.contains('z-50')).toBe(false);
+    expect(el.classList.contains('z-10')).toBe(false);
   });
 
   it('rounds itself when data-shape changes', async () => {
