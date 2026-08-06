@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @import "./harmonia.css";
 @import "./common.css";
 @import "./checkbox.css";
@@ -7,8 +7,6 @@
 @import "./bubble.css";
 @import "./bottom-nav.css";
 @source "../**/*.{ts,tsx,js,jsx}";
-@source not "../../docs/";
-@source not "../../tests/";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

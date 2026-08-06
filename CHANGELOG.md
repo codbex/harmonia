@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.11.0
+
+A release that adds `harmonia-extend.css`, letting a project compile the Tailwind utility classes Harmonia does not ship without duplicating what it already provides.
+
+### Extend Utility Classes
+
+- **New: `dist/harmonia-extend.css`**, a Tailwind CSS v4 entry a project imports into its own stylesheet to generate exactly the utility classes Harmonia is missing - listed explicitly or found by scanning the project - with nothing Harmonia already ships generated a second time. See [Extend Utility Classes](docs/extend-utility-classes.md) for usage.
+
 ## v2.10.0
 
 A release that fixes a crash when a Harmonia page runs inside an iframe belonging to another origin and corrects the Week Picker's month navigation. The one breaking change is the frame `getBreakpointListener` measures. See "Breakpoint listener" below to migrate.

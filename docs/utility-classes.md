@@ -7,3 +7,5 @@ outline: deep
 Harmonia is built on **TailwindCSS**, which means you have access to a familiar set of utility classes for styling your components. Most classes either directly map to those in Tailiwnd or work in a very similar way, so you can quickly apply spacing, typography, colors, and other styles without writing custom CSS from scratch.
 
 This approach gives you the best of both worlds: **the flexibility of Tailwind** with the **ready-to-use, pre-styled components of Harmonia**, letting you build consistent, responsive interfaces faster.
+
+Harmonia ships a curated subset of Tailwind, so a class that is not documented in this section does not exist at runtime. When you need one that is missing, see [Extend Utility Classes](/extend-utility-classes) - it generates a small supplementary stylesheet with only the classes Harmonia does not provide.
