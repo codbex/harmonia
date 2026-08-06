@@ -98,6 +98,11 @@ describe('h-step-indicator-item', () => {
     expect(registry).not.toContain(el._h_step_indicator_item);
   });
 
+  it('stretches only while another step item follows it', () => {
+    mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '1' });
+    expect(el.classList.contains('has-[~[data-slot=step-indicator-item]]:flex-1')).toBe(true);
+  });
+
   it('carries the collapse-mode visibility classes', () => {
     mountDirective(stepIndicatorPlugin, 'h-step-indicator-item', el, { expression: '1' });
     expect(el.classList.contains('group-data-[collapsed=true]/step-indicator:data-[state=inactive]:hidden')).toBe(true);

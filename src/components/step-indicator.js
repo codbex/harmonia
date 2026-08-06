@@ -48,7 +48,7 @@ export default function (Alpine) {
     el.classList.add(
       'group/step-item',
       'flex',
-      'not-last:flex-1',
+      'has-[~[data-slot=step-indicator-item]]:flex-1',
       'group-data-[orientation=horizontal]/step-indicator:flex-row',
       'group-data-[orientation=horizontal]/step-indicator:items-center',
       'group-data-[orientation=horizontal]/step-indicator:gap-2',
