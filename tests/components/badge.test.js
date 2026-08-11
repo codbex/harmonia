@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import badgePlugin from '../../src/components/badge.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -235,5 +235,79 @@ describe('h-badge-indicator', () => {
   it('calls cleanup', () => {
     const { ctx } = mountDirective(badgePlugin, 'h-badge-indicator', el);
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe('h-badge-indicator cut-out', () => {
+  // happy-dom never runs layout, so the boxes are stubbed and the ResizeObserver
+  // is captured to be fired by hand.
+  let observers;
+  let OriginalResizeObserver;
+  let host;
+  let el;
+
+  const boxOf = (node, left, top, width, height) => {
+    node.getBoundingClientRect = () => ({ left, top, width, height });
+  };
+
+  beforeEach(() => {
+    observers = [];
+    OriginalResizeObserver = global.ResizeObserver;
+    global.ResizeObserver = class {
+      constructor(cb) {
+        this.cb = cb;
+        this.observe = vi.fn();
+        this.disconnect = vi.fn();
+        observers.push(this);
+      }
+    };
+    host = document.createElement('button');
+    document.body.appendChild(host);
+    el = document.createElement('span');
+    host.appendChild(el);
+    boxOf(host, 100, 100, 32, 32);
+    boxOf(el, 123, 97, 12, 12);
+  });
+
+  afterEach(() => {
+    global.ResizeObserver = OriginalResizeObserver;
+    document.body.innerHTML = '';
+  });
+
+  it('carves a gap out of the host around the indicator', () => {
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    observers[0].cb();
+    const clip = host.style.clipPath;
+    // Kept region, then the outer stadium and the inner one that gives the dot back.
+    expect(clip.match(/M/g)).toHaveLength(3);
+    expect(clip).toContain('M-10000 -10000H10032V10032H-10000Z');
+    expect(clip).toContain('M29 -5A8 8 0 0 0 29 11');
+    expect(clip).toContain('M29 -3H29A6 6 0 0 1 29 9');
+  });
+
+  it('leaves the host uncarved while the indicator is hidden', () => {
+    boxOf(el, 0, 0, 0, 0);
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    observers[0].cb();
+    expect(host.style.clipPath).toBe('');
+  });
+
+  it('carves one gap per indicator sharing a host', () => {
+    const second = document.createElement('span');
+    host.appendChild(second);
+    boxOf(second, 97, 123, 12, 12);
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    mountDirective(badgePlugin, 'h-badge-indicator', second);
+    observers[0].cb();
+    expect(host.style.clipPath.match(/M/g)).toHaveLength(5);
+  });
+
+  it('restores the host on cleanup', () => {
+    const { ctx } = mountDirective(badgePlugin, 'h-badge-indicator', el);
+    observers[0].cb();
+    expect(host.style.clipPath).not.toBe('');
+    ctx.cleanup.mock.calls[0][0]();
+    expect(observers[0].disconnect).toHaveBeenCalled();
+    expect(host.style.clipPath).toBe('');
   });
 });
