@@ -76,6 +76,17 @@ const THEME_NOTE = `/* Tailwind's default theme has to be the first \`@theme\` i
    still wins - no duplicated tokens, no self-referential \`var()\` cycles and no
    overriding of \`.dark\`.
 
+   That rule is expected to hold a few tokens: Tailwind emits every default-theme
+   key a generated utility actually reads. \`--spacing\` is the one a consumer sees
+   most often, since any spacing-derived class (\`h-80\`, \`gap-20\`, \`md:pt-12\`)
+   compiles to \`calc(var(--spacing) * n)\` and marks the key used. Seeing it in the
+   output is not a duplicate of Harmonia's own token - it is Tailwind's value, in
+   the weakest layer, losing to harmonia.css at runtime.
+
+   The import is deliberately NOT \`reference\`. Suppressing the emission would
+   also suppress the default-theme vars Harmonia does not ship, and a consumer's
+   \`bg-lime-500\` would then reference a \`--color-lime-500\` that nothing defines.
+
    \`source(none)\` turns off automatic source detection, which would otherwise
    scan the whole working directory: the output then holds exactly what the
    importing stylesheet asks for, and nothing else. */`;

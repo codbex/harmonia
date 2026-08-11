@@ -4,10 +4,13 @@ import { formatDuration } from '../common/time';
 export const bubbleVariants = {
   primary: ['bg-primary', 'text-primary-foreground', 'fill-primary-foreground'],
   secondary: ['bg-secondary', 'text-secondary-foreground', 'fill-secondary-foreground'],
-  warning: ['bg-warning', 'text-warning-foreground', 'fill-warning-foreground'],
+  positive: ['bg-positive', 'text-positive-foreground', 'fill-positive-foreground'],
   negative: ['bg-negative', 'text-negative-foreground', 'fill-negative-foreground'],
+  warning: ['bg-warning', 'text-warning-foreground', 'fill-warning-foreground'],
+  information: ['bg-information', 'text-information-foreground', 'fill-information-foreground'],
   outline: ['border', 'bg-background', 'text-foreground', 'fill-foreground'],
   transparent: ['bg-transparent', 'text-foreground', 'fill-foreground'],
+  custom: ['bg-(--bg-bubble)', 'text-(--fg-bubble)', 'fill-(--fg-bubble)'],
 };
 
 const bubbleAligns = {

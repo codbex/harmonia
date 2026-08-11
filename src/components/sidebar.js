@@ -32,16 +32,27 @@ export default function (Alpine) {
       }
     };
 
-    setFloating();
+    const setElevated = () => {
+      if (el.getAttribute('data-elevated') === 'true') {
+        el.classList.add('border-x', 'shadow-sm');
+      } else {
+        el.classList.remove('border-x', 'shadow-sm');
+      }
+    };
+
+    if (el.hasAttribute('data-floating')) setFloating();
+    else if (el.hasAttribute('data-elevated')) setElevated();
+    else if (el.hasAttribute('data-borderless')) setBorder();
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'data-floating') setFloating();
+        if (mutation.attributeName === 'data-elevated') setElevated();
+        else if (mutation.attributeName === 'data-floating') setFloating();
         else setBorder();
       });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-floating', 'data-borderless'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-floating', 'data-elevated', 'data-borderless'] });
 
     cleanup(() => {
       observer.disconnect();

@@ -42,6 +42,15 @@ const UTILITY_LABEL = 'Utility classes';
 // (per-component "Full docs" link) and from the SKILL.md / llms.txt headers.
 const DOCS_URL = 'https://www.codbex.com/harmonia';
 
+// Breaking changes only, extracted from the root CHANGELOG.md, so a coding
+// agent migrating between versions gets signal without wading through every
+// feature and bug fix. Requires every breaking-change bullet in the changelog
+// to use the exact `- **Breaking: ...**` prefix (see references/migration.md
+// generation below).
+const CHANGELOG_PATH = path.join(ROOT, 'CHANGELOG.md');
+const CHANGELOG_URL = 'https://github.com/codbex/harmonia/blob/main/CHANGELOG.md';
+const MIGRATION_LABEL = 'Migration';
+
 // Doc subdirectories to transcribe, in index order. `requireDirectives` marks
 // the directive-bearing groups where a missing directive block signals drift.
 const SOURCES = [
@@ -567,6 +576,81 @@ function renderLlms(groups) {
 }
 
 // ---------------------------------------------------------------------------
+// Migration reference, parsed from CHANGELOG.md
+// ---------------------------------------------------------------------------
+
+// Splits CHANGELOG.md into per-version blocks (newest first, matching the
+// file), then keeps only the `- **Breaking: ...**` bullets in each block -
+// every other bullet is a feature or a fix, irrelevant to migrating between
+// versions. A bullet immediately followed by a fenced code block (a before/
+// after snippet) keeps that block, since it is part of the same explanation.
+// Returns [{ version, warning, bullets: [string] }], versions with zero
+// bullets omitted from the reference but still checked for the `breaking`
+// keyword so a mislabeled future entry produces a build warning instead of
+// silently vanishing from the generated reference.
+function extractBreakingChanges(text) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const versionStarts = [];
+  lines.forEach((line, i) => {
+    const m = line.match(/^## (v\S+)/);
+    if (m) versionStarts.push({ version: m[1], start: i });
+  });
+
+  const versions = [];
+  for (let v = 0; v < versionStarts.length; v++) {
+    const { version, start } = versionStarts[v];
+    const end = v + 1 < versionStarts.length ? versionStarts[v + 1].start : lines.length;
+    const body = lines.slice(start, end);
+
+    const bullets = [];
+    for (let i = 0; i < body.length; i++) {
+      if (!/^-\s+\*\*Breaking:/.test(body[i])) continue;
+      let bullet = body[i];
+      let next = i + 1;
+      while (next < body.length && body[next].trim() === '') next++;
+      if (next < body.length && /^\s*```/.test(body[next])) {
+        const fenceLines = [body[next]];
+        let j = next + 1;
+        while (j < body.length && !/^\s*```/.test(body[j])) fenceLines.push(body[j++]);
+        if (j < body.length) fenceLines.push(body[j]);
+        bullet += '\n\n' + fenceLines.join('\n');
+      }
+      bullets.push(bullet);
+    }
+
+    const mentionsBreaking = /\bbreaking\b/i.test(body.join('\n')) && !/\bno breaking\b/i.test(body.join('\n'));
+    const warning = bullets.length === 0 && mentionsBreaking ? `CHANGELOG.md ${version} mentions "breaking" but has no "- **Breaking:**" bullet - migration.md will miss it` : null;
+
+    if (bullets.length) versions.push({ version, bullets });
+    else if (warning) versions.push({ version, bullets: [], warning });
+  }
+  return versions;
+}
+
+function renderMigration(versions) {
+  const out = [];
+  out.push('# Migration');
+  out.push('');
+  out.push(`Breaking changes only, grouped by version (newest first). For the full history including features and fixes, see [CHANGELOG.md](${CHANGELOG_URL}).`);
+  out.push('');
+  for (const v of versions) {
+    if (!v.bullets.length) continue;
+    out.push(`## ${v.version}`);
+    out.push('');
+    for (const bullet of v.bullets) {
+      out.push(bullet);
+      out.push('');
+    }
+  }
+  return (
+    out
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trimEnd() + '\n'
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Utility-class allowlist, parsed from src/styles/harmonia.css
 // ---------------------------------------------------------------------------
 
@@ -774,7 +858,7 @@ function transform(inputs) {
   const seen = new Map();
   const groupsByLabel = new Map();
 
-  const componentInputs = inputs.filter((i) => i.category !== 'utility-css');
+  const componentInputs = inputs.filter((i) => i.category !== 'utility-css' && i.category !== 'changelog');
   const ordered = [...componentInputs].sort((a, b) => (a.category === b.category ? a.slug.localeCompare(b.slug) : 0));
 
   for (const input of ordered) {
@@ -821,6 +905,27 @@ function transform(inputs) {
           title: 'Utility classes',
           summary: 'The complete allowlist of Tailwind utility classes available in harmonia.css (not the full Tailwind set).',
           href: 'references/utility-classes.md',
+        },
+      ],
+    });
+  }
+
+  // Migration reference: breaking changes only, parsed from CHANGELOG.md.
+  const changelog = inputs.find((i) => i.category === 'changelog');
+  if (changelog) {
+    const versions = extractBreakingChanges(changelog.text);
+    files['references/migration.md'] = renderMigration(versions);
+    for (const v of versions) {
+      if (v.warning) warnings.push(v.warning);
+    }
+    groups.push({
+      label: MIGRATION_LABEL,
+      entries: [
+        {
+          slug: 'migration',
+          title: 'Migration',
+          summary: 'Breaking changes only, grouped by version - read before upgrading to a newer Harmonia version.',
+          href: 'references/migration.md',
         },
       ],
     });
@@ -891,6 +996,9 @@ function readInputs() {
   }
   if (fs.existsSync(HARMONIA_CSS)) {
     inputs.push({ category: 'utility-css', slug: 'utility-classes', text: fs.readFileSync(HARMONIA_CSS, 'utf8') });
+  }
+  if (fs.existsSync(CHANGELOG_PATH)) {
+    inputs.push({ category: 'changelog', slug: 'migration', text: fs.readFileSync(CHANGELOG_PATH, 'utf8') });
   }
   return inputs;
 }

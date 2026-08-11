@@ -95,7 +95,7 @@ describe('agent docs (skills/harmonia)', () => {
 
   it('links every reference to its docs-site page', () => {
     for (const [rel, content] of Object.entries(files)) {
-      if (!rel.startsWith('references/') || rel === 'references/utility-classes.md') continue;
+      if (!rel.startsWith('references/') || rel === 'references/utility-classes.md' || rel === 'references/migration.md') continue;
       expect(content, `skills/harmonia/${rel} has no docs-site link`).toContain(`Full docs: ${DOCS_URL}/`);
     }
     expect(files['references/select.md']).toContain(`Full docs: ${DOCS_URL}/components/select.html`);

@@ -4,7 +4,7 @@ outline: deep
 
 # Extend Utility Classes
 
-Harmonia ships a **curated subset** of Tailwind utility classes, not all of Tailwind. That keeps `harmonia.css` small, but sooner or later a project needs a class that is not in it - `md:size-6`, `h-80`, `gap-20`. Adding it to Harmonia only makes sense for classes everyone needs, and running a full Tailwind build in your project would duplicate everything Harmonia already ships: the base styles, the theme variables and the whole utility subset.
+Harmonia ships a **curated subset** of Tailwind utility classes, not all of Tailwind. That keeps `harmonia.css` small, but sooner or later a project needs a class that is not in it (like `md:size-6`, `h-80` or `gap-20`). Adding classes to Harmonia only makes sense for classes everyone needs, and running a full Tailwind build in your project would duplicate everything Harmonia already ships like the base styles, the theme variables and the whole utility subset.
 
 Harmonia solves this with `harmonia-extend.css`, a Tailwind entry that knows exactly what `harmonia.css` provides. Compile it and you get a small **supplementary stylesheet holding only the classes you are missing** - nothing is generated twice.
 
@@ -44,6 +44,12 @@ The order matters. Both files put their classes in the same cascade layer, so a 
 The output of the example above is well under 1 KB, because everything Harmonia already ships is excluded:
 
 ```css
+@layer theme {
+  :root,
+  :host {
+    --spacing: 0.25rem;
+  }
+}
 @layer utilities {
   .h-80 {
     height: calc(var(--spacing) * 80);
@@ -94,8 +100,22 @@ The entry carries the theme Harmonia adds on top of Tailwind's, so a generated c
 
 Theme values are **referenced, not redefined**: `harmonia.css` remains the single place where they live, so your custom theme applies to the generated classes too, without you configuring anything. It also means the supplement never changes how an existing class behaves - it only adds the ones you are missing.
 
+You will still see a small `@layer theme` block in the output, like the `--spacing` in the example above. Those are Tailwind's own defaults for the variables your generated classes read - `h-80` compiles to `calc(var(--spacing) * 80)`, so the variable has to resolve even if you load the stylesheet on its own. They are emitted into `@layer theme`, the weakest layer, while Harmonia declares its tokens unlayered, so `harmonia.css` always wins and your theme is unaffected. Nothing needs to be done about them.
+
 ## Limitations
 
 - **Do not `@apply` a class Harmonia ships.** Because those classes are excluded on purpose, `@apply p-4` in your stylesheet fails the build with `Cannot apply utility class`. Use the class in your markup, or `@apply` a class Harmonia does not ship.
 - **Harmonia's own utilities are not extendable this way.** `hbox`, `vbox`, `focus-ring`, `opacity-disabled` and `svg-defaults` are defined in `harmonia.css`, so the entry cannot generate new variants of them. The responsive forms that are commonly needed, such as `md:hbox`, already ship.
 - **The documented utility classes are not the whole exclusion list.** Harmonia's components use around 1500 more classes than the [utility classes](/utility-classes) pages document, and those ship in `harmonia.css` too. They are all excluded, so you never get a class twice - which also means a class missing from the generated stylesheet is one Harmonia already provides.
+
+## Editor warnings
+
+Once `harmonia-extend.css` is imported, the VS Code Tailwind CSS IntelliSense extension may flag ordinary classes in your markup with a warning like `The class "items-center" will not be generated as it has been blocklisted`. This comes from the extension's own `usedBlocklistedClass` lint rule, not from the Tailwind build - it has no effect on the compiled CSS. It fires because the entry excludes everything `harmonia.css` already ships, which covers most common classes, so ordinary markup trips the rule constantly.
+
+To silence it, add this to the project's `.vscode/settings.json`:
+
+```json
+{
+  "tailwindCSS.lint.usedBlocklistedClass": "ignore"
+}
+```

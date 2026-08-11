@@ -12,6 +12,8 @@ Classes for adding a border or border radius to an element.
 | border         | Border on all 4 sides, 1px.                              |
 | border-0       | No border.                                               |
 | border-`2..12` | Border width from 2 to 12px. `border-width: <number>px;` |
+| border-x       | Left and right side border.                              |
+| border-y       | Top and bottom side border.                              |
 | border-t       | Top border.                                              |
 | border-r       | Right border.                                            |
 | border-b       | Bottom border.                                           |
@@ -27,8 +29,10 @@ Classes for adding a border or border radius to an element.
 <LiveExample>
 
 ```html
-<div class="grid grid-cols-3 gap-5 md:grid-cols-5">
+<div class="grid grid-cols-3 gap-5">
   <div class="border text-center">Border</div>
+  <div class="border-x text-center">Left & Right</div>
+  <div class="border-y text-center">Top & Bottom</div>
   <div class="border-l text-center">Left</div>
   <div class="border-t text-center">Top</div>
   <div class="border-b text-center">Bottom</div>

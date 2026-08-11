@@ -102,3 +102,7 @@
 ## Utility classes
 
 - [Utility classes](references/utility-classes.md): The complete allowlist of Tailwind utility classes available in harmonia.css (not the full Tailwind set).
+
+## Migration
+
+- [Migration](references/migration.md): Breaking changes only, grouped by version - read before upgrading to a newer Harmonia version.

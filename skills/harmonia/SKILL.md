@@ -165,3 +165,9 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Name | Description | Reference |
 | ---- | ----------- | --------- |
 | Utility classes | The complete allowlist of Tailwind utility classes available in harmonia.css (not the full Tailwind set). | [utility-classes](references/utility-classes.md) |
+
+### Migration
+
+| Name | Description | Reference |
+| ---- | ----------- | --------- |
+| Migration | Breaking changes only, grouped by version - read before upgrading to a newer Harmonia version. | [migration](references/migration.md) |

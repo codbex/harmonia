@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import sidebarPlugin from '../../src/components/sidebar.js';
 import { mountDirective } from '../test-utils.js';
 
+// happy-dom delivers MutationObserver records asynchronously, so an attribute-driven
+// class change is only visible after a macrotask.
+const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
 describe('h-sidebar', () => {
   it('applies base classes', () => {
     const el = document.createElement('aside');
@@ -27,6 +31,58 @@ describe('h-sidebar', () => {
     const el = document.createElement('aside');
     mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: ['right'] });
     expect(el.classList.contains('border-l')).toBe(true);
+  });
+
+  it('adds border-x and shadow-sm when data-elevated=true is set before mount', () => {
+    const el = document.createElement('aside');
+    el.setAttribute('data-elevated', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
+    expect(el.classList.contains('border-x')).toBe(true);
+    expect(el.classList.contains('shadow-sm')).toBe(true);
+  });
+
+  it('does not add border-x or shadow-sm without data-elevated', () => {
+    const el = document.createElement('aside');
+    mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
+    expect(el.classList.contains('border-x')).toBe(false);
+    expect(el.classList.contains('shadow-sm')).toBe(false);
+  });
+
+  it('does not add border-x or shadow-sm when data-elevated=false', () => {
+    const el = document.createElement('aside');
+    el.setAttribute('data-elevated', 'false');
+    mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
+    expect(el.classList.contains('border-x')).toBe(false);
+    expect(el.classList.contains('shadow-sm')).toBe(false);
+  });
+
+  it('prefers data-floating over data-elevated when both are set before mount', () => {
+    const el = document.createElement('aside');
+    el.setAttribute('data-floating', 'true');
+    el.setAttribute('data-elevated', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
+    expect(el.classList.contains('border')).toBe(true);
+    expect(el.classList.contains('rounded-lg')).toBe(true);
+    expect(el.classList.contains('border-x')).toBe(false);
+  });
+
+  it('adds border-x and shadow-sm when data-elevated is set to true after mount', async () => {
+    const el = document.createElement('aside');
+    mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
+    el.setAttribute('data-elevated', 'true');
+    await flush();
+    expect(el.classList.contains('border-x')).toBe(true);
+    expect(el.classList.contains('shadow-sm')).toBe(true);
+  });
+
+  it('removes border-x and shadow-sm when data-elevated is set to false after mount', async () => {
+    const el = document.createElement('aside');
+    el.setAttribute('data-elevated', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
+    el.setAttribute('data-elevated', 'false');
+    await flush();
+    expect(el.classList.contains('border-x')).toBe(false);
+    expect(el.classList.contains('shadow-sm')).toBe(false);
   });
 
   it('calls cleanup', () => {

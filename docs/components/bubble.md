@@ -32,10 +32,17 @@ x-h-bubble-reactions
 
 #### x-h-bubble
 
-| Attribute    | Type                                                                                        | Required | Description                                                             |
-| ------------ | ------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------- |
-| data-align   | `left`<br />`right`                                                                         | false    | Message side. Defaults to `left` (received). Use `right` for sent ones. |
-| data-variant | `primary`<br />`secondary`<br />`warning`<br />`negative`<br />`outline`<br />`transparent` | false    | Semantic color style. Defaults to `secondary`.                          |
+| Attribute    | Type                                                                                                                                         | Required | Description                                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| data-align   | `left`<br />`right`                                                                                                                          | false    | Message side. Defaults to `left` (received). Use `right` for sent ones.                                            |
+| data-variant | `primary`<br />`secondary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline`<br />`transparent`<br />`custom` | false    | Semantic color style. Defaults to `secondary`. See [CSS Variables](#css-variables) below for the `custom` variant. |
+
+### CSS Variables
+
+| Variable    | Default | Description                                                                                                                       |
+| ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| --bg-bubble | none    | Background color used when `data-variant` is set to `custom`. Set it on the bubble itself, an ancestor, or in the theme CSS file. |
+| --fg-bubble | none    | Text/icon color used when `data-variant` is set to `custom`. Set it on the bubble itself, an ancestor, or in the theme CSS file.  |
 
 #### x-h-bubble-audio
 
@@ -85,11 +92,17 @@ Apply to an `<audio>` element with a `src` (or a `<source>` child). It renders a
   <div x-h-bubble>
     <div x-h-bubble-content>Secondary (default)</div>
   </div>
-  <div x-h-bubble data-variant="warning">
-    <div x-h-bubble-content>Warning</div>
+  <div x-h-bubble data-variant="positive">
+    <div x-h-bubble-content>Positive</div>
   </div>
   <div x-h-bubble data-variant="negative">
     <div x-h-bubble-content>Negative</div>
+  </div>
+  <div x-h-bubble data-variant="warning">
+    <div x-h-bubble-content>Warning</div>
+  </div>
+  <div x-h-bubble data-variant="information">
+    <div x-h-bubble-content>Information</div>
   </div>
   <div x-h-bubble data-variant="outline">
     <div x-h-bubble-content>Outline</div>
@@ -97,6 +110,18 @@ Apply to an `<audio>` element with a `src` (or a `<source>` child). It renders a
   <div x-h-bubble data-variant="transparent">
     <div x-h-bubble-content>Transparent</div>
   </div>
+</div>
+```
+
+</LiveExample>
+
+### Custom color
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-h-bubble data-variant="custom" style="--bg-bubble: #E9AE76;--fg-bubble: #000;">
+  <div x-h-bubble-content>Custom</div>
 </div>
 ```
 

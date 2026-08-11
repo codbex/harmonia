@@ -2,11 +2,32 @@
 
 ## v2.11.0
 
-A release that adds `harmonia-extend.css`, letting a project compile the Tailwind utility classes Harmonia does not ship without duplicating what it already provides.
+A release that adds `harmonia-extend.css`, letting a project compile the Tailwind utility classes Harmonia does not ship without duplicating what it already provides. It also gives the Bubble three more color variants including one painted from your own CSS variables, adds an elevated Sidebar style, ships the `border-x` and `border-y` utility classes, and fixes the last step of a Step Indicator stretching. There are no breaking changes.
 
 ### Extend Utility Classes
 
 - **New: `dist/harmonia-extend.css`**, a Tailwind CSS v4 entry a project imports into its own stylesheet to generate exactly the utility classes Harmonia is missing - listed explicitly or found by scanning the project - with nothing Harmonia already ships generated a second time. See [Extend Utility Classes](docs/extend-utility-classes.md) for usage.
+
+### Bubble
+
+- **New `positive` and `information` variants**, so `data-variant` now covers the same semantic colors as the rest of the library alongside the existing `primary`, `secondary`, `warning`, `negative`, `outline` and `transparent`.
+- **New `custom` variant**, painted from the `--bg-bubble` and `--fg-bubble` CSS variables instead of a semantic token, for a bubble colored per conversation or per participant. Set them on the bubble itself, on an ancestor, or in your theme CSS file.
+
+### Sidebar
+
+- **New `data-elevated` attribute** styles the sidebar with a border on its left and right plus a shadow. Like `data-floating` it is reactive, so toggling the attribute at runtime updates the sidebar. When both are set, `data-floating` wins.
+
+### New utility classes
+
+- **`border-x` and `border-y`** are now shipped and documented, adding a border on the left and right or the top and bottom.
+
+### Step Indicator
+
+- **Fixed: the last step stretched to fill the remaining space.** A step grew unless it was the last child of the indicator, so the collapsed-mode `x-h-step-indicator-counter` and `x-h-step-indicator-progress`, which sit after the last step, made that step grow too. A step now grows only when another step follows it.
+
+### Coding agents
+
+- **New Migration reference in the agent-readable skill** that ships in the package and in the Claude Code plugin. It lists the breaking changes only, grouped by version, so an agent upgrading a project between Harmonia versions gets the changes it has to act on without reading through every feature and fix.
 
 ## v2.10.0
 
@@ -296,7 +317,7 @@ A release that adds two new date pickers - Month Picker and Week Picker - and ma
 
 ### Utility classes
 
-- The custom `position-fit` class has been removed in favor of the standard `inset-0` utility, which produces the same `top: 0; right: 0; bottom: 0; left: 0;`. Replace any `position-fit` with `inset-0`.
+- **Breaking: the custom `position-fit` class has been removed in favor of the standard `inset-0` utility.** It produces the same `top: 0; right: 0; bottom: 0; left: 0;`. Replace any `position-fit` with `inset-0`.
 
 ### Documentation
 
@@ -456,11 +477,11 @@ A major release that grows the component set, adds first-class charting, ships a
 
 ### Breaking changes
 
-- **Date/time pickers refactored to use standard model values** instead of custom formats, so `x-model` bindings behave predictably across the picker family.
-- **Icon rendering changed from a modifier to the reactive `data-icon` attribute.** `x-h-icon.home` becomes `x-h-icon data-icon="home"`. The icon now switches dynamically when `data-icon` changes at runtime.
-- **Utility class `absolute-fit` renamed to `position-fit`.**
-- **Built-in icons renamed:** `info.svg` -> `circle-info.svg`, `warning.svg` -> `circle-warning.svg`.
-- **Form validation now defers to `:user-invalid` instead of `:invalid`.** Inputs, input-groups, and fieldsets no longer show error styling on initial load; they show it only after interaction/submit. Opt back into immediate on-load validation with `data-validate="immediate"` on an ancestor.
+- **Breaking: date/time pickers refactored to use standard model values** instead of custom formats, so `x-model` bindings behave predictably across the picker family.
+- **Breaking: icon rendering changed from a modifier to the reactive `data-icon` attribute.** `x-h-icon.home` becomes `x-h-icon data-icon="home"`. The icon now switches dynamically when `data-icon` changes at runtime.
+- **Breaking: utility class `absolute-fit` renamed to `position-fit`.**
+- **Breaking: built-in icons renamed:** `info.svg` -> `circle-info.svg`, `warning.svg` -> `circle-warning.svg`.
+- **Breaking: form validation now defers to `:user-invalid` instead of `:invalid`.** Inputs, input-groups, and fieldsets no longer show error styling on initial load; they show it only after interaction/submit. Opt back into immediate on-load validation with `data-validate="immediate"` on an ancestor.
 
 ### New components
 

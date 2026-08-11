@@ -35,11 +35,12 @@ x-h-sidebar-footer
 
 #### x-h-sidebar
 
-| Attribute       | Type    | Required | Description                             |
-| --------------- | ------- | -------- | --------------------------------------- |
-| data-collapsed  | boolean | false    | Collapses the sidebar to an icon width. |
-| data-floating   | boolean | false    | Adds border and shadow to the sidebar.  |
-| data-borderless | boolean | false    | Removes the side border (left/right).   |
+| Attribute       | Type    | Required | Description                                            |
+| --------------- | ------- | -------- | ------------------------------------------------------ |
+| data-collapsed  | boolean | false    | Collapses the sidebar to an icon width.                |
+| data-floating   | boolean | false    | Adds border and shadow to the sidebar.                 |
+| data-elevated   | boolean | false    | Adds left and right border, and shadow to the sidebar. |
+| data-borderless | boolean | false    | Removes the side border (left/right).                  |
 
 #### x-h-sidebar-menu-button
 
@@ -99,6 +100,12 @@ x-h-sidebar-footer
 | Modifier | Description                                                                      |
 | -------- | -------------------------------------------------------------------------------- |
 | icon     | Adds an icon shape to the skeleton to indicate that the items will have an icon. |
+
+### CSS Variables
+
+| Variable        | Default | Description                                                                                                 |
+| --------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| --sidebar-width | 16rem   | Width of the sidebar when not collapsed. Set it on the sidebar itself, an ancestor, or in a theme CSS file. |
 
 ## Examples
 
@@ -317,6 +324,84 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
 
 </LiveExample>
 
+### Floating sidebar
+
+<LiveExample data-style="height:16rem">
+
+```html
+<div x-h-sidebar data-floating="true">
+  <div x-h-sidebar-content>
+    <div x-h-sidebar-group>
+      <div x-h-sidebar-group-label>Application</div>
+      <div x-h-sidebar-group-content>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <svg x-h-lucide role="presentation" data-lucide="house"></svg>
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
+              <span>Documents</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
+              <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
+              <span>Extensions</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+</LiveExample>
+
+### Elevated sidebar
+
+<LiveExample data-class="py-0" data-style="height:16rem">
+
+```html
+<div x-h-sidebar data-elevated="true">
+  <div x-h-sidebar-content>
+    <div x-h-sidebar-group>
+      <div x-h-sidebar-group-label>Application</div>
+      <div x-h-sidebar-group-content>
+        <ul x-h-sidebar-menu>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <svg x-h-lucide role="presentation" data-lucide="house"></svg>
+              <span>Home</span>
+              <span x-h-sidebar-menu-badge>11</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="false">
+              <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
+              <span>Documents</span>
+            </button>
+          </li>
+          <li x-h-sidebar-menu-item>
+            <button x-h-sidebar-menu-button data-active="true">
+              <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
+              <span>Extensions</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+</LiveExample>
+
 ### Sidebar content
 
 <LiveExample data-class="p-0" data-style="height:16rem">
@@ -361,35 +446,81 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
 <LiveExample data-class="p-0" data-style="height:16rem" data-exclude="generator">
 
 ```html
-<div x-h-sidebar.right class="float-right">
-  <div x-h-sidebar-content>
-    <div x-h-sidebar-group>
-      <div x-h-sidebar-group-label>Application</div>
-      <div x-h-sidebar-group-content>
-        <ul x-h-sidebar-menu>
-          <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <svg x-h-lucide role="presentation" data-lucide="house"></svg>
-              <span>Home</span>
-              <span x-h-sidebar-menu-badge>11</span>
-            </button>
-          </li>
-          <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
-              <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
-              <span>Documents</span>
-            </button>
-          </li>
-          <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="true">
-              <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
-              <span>Extensions</span>
-            </button>
-          </li>
-        </ul>
+<div class="hbox size-full">
+  <main class="size-full"></main>
+  <div x-h-sidebar.right>
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Application</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <svg x-h-lucide role="presentation" data-lucide="house"></svg>
+                <span>Home</span>
+                <span x-h-sidebar-menu-badge>11</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
+                <span>Documents</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="true">
+                <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
+                <span>Extensions</span>
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+</div>
+```
+
+</LiveExample>
+
+### Sidebar and main section width
+
+<LiveExample data-style="height:16rem" data-exclude="generator">
+
+```html
+<div class="hbox size-full" style="--sidebar-width: 10rem;">
+  <div x-h-sidebar>
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Application</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <svg x-h-lucide role="presentation" data-lucide="house"></svg>
+                <span>Home</span>
+                <span x-h-sidebar-menu-badge>11</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="false">
+                <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
+                <span>Documents</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-active="true">
+                <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
+                <span>Extensions</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="w-full border-y border-r" style="max-width: calc(100% - var(--sidebar-width));"></main>
 </div>
 ```
 
