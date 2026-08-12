@@ -26,26 +26,35 @@ function stadium(x, y, w, h, clockwise) {
 // indicator reads as a hole and stays legible on a host of its own color.
 // Only the gap is removed, never the indicator itself, which sits inside the
 // hole's inner edge and so survives its own parent's clip.
+// Measured from the layout box, never getBoundingClientRect: clip-path
+// coordinates live in the host's own untransformed space, so a scaled ancestor
+// (the dialog opens its panel at scale(0.95)) would skew a rect-derived hole,
+// and a transform resizes nothing, so the resize observer would never correct it.
 function updateCutout(host) {
-  const hostRect = host.getBoundingClientRect();
   const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
   const gap = CUTOUT_GAP * rootSize;
   let holes = '';
-  if (hostRect.width && hostRect.height) {
+  if (host.offsetWidth && host.offsetHeight) {
     for (const indicator of host._h_badge_cutout) {
-      const rect = indicator.getBoundingClientRect();
-      // A hidden indicator (x-show) measures 0x0 and leaves the host intact.
-      if (!rect.width || !rect.height) continue;
-      const x = rect.left - hostRect.left;
-      const y = rect.top - hostRect.top;
-      holes += stadium(x - gap, y - gap, rect.width + gap * 2, rect.height + gap * 2, false) + stadium(x, y, rect.width, rect.height, true);
+      // Null offsetParent covers a hidden indicator (x-show) and a host that is
+      // not the element the indicator is positioned against, where offsetLeft
+      // would be measured from the wrong origin.
+      if (indicator.offsetParent !== host) continue;
+      const w = indicator.offsetWidth;
+      const h = indicator.offsetHeight;
+      if (!w || !h) continue;
+      // offsetLeft/offsetTop start at the host's padding box, clip-path's
+      // reference box at its border box.
+      const x = indicator.offsetLeft + host.clientLeft;
+      const y = indicator.offsetTop + host.clientTop;
+      holes += stadium(x - gap, y - gap, w + gap * 2, h + gap * 2, false) + stadium(x, y, w, h, true);
     }
   }
   if (!holes) {
     host.style.clipPath = '';
     return;
   }
-  const outer = `M${-CUTOUT_REACH} ${-CUTOUT_REACH}H${round(hostRect.width + CUTOUT_REACH)}V${round(hostRect.height + CUTOUT_REACH)}H${-CUTOUT_REACH}Z`;
+  const outer = `M${-CUTOUT_REACH} ${-CUTOUT_REACH}H${round(host.offsetWidth + CUTOUT_REACH)}V${round(host.offsetHeight + CUTOUT_REACH)}H${-CUTOUT_REACH}Z`;
   host.style.clipPath = `path("${outer}${holes}")`;
 }
 

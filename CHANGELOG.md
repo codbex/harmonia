@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.11.1
+
+A bugfix release that fixes the Badge Indicator's cut-out inside a dialog or any other scaled container, and lets a Sidebar menu button or header item truncate a label split across two lines. There are no breaking changes.
+
+### Badge
+
+- **Fixed: the indicator's cut-out sat slightly off the indicator inside a dialog.** The gap was measured from client rectangles, which an ancestor's `transform` scales, while the cut-out is drawn in the host's untransformed coordinates - so a panel opening at `scale(0.95)` measured 5% small, and no resize followed to correct it. The geometry now comes from the layout box, which no transform touches.
+
+### Sidebar
+
+- **Fixed: a menu button or header item could not truncate a label wrapped in an element.** Wrapping two lines in a `div` left it at the flex default of `min-width: auto`, so it refused to shrink and the text ran past the button's edge without an ellipsis, pushing an `x-h-sidebar-menu-badge` out of view. Both slots now clear the minimum width of a direct `div` child, so `truncate` works on a nested line with no extra classes. Markup that already sets `min-w-0` by hand is unaffected.
+
 ## v2.11.0
 
 A release that adds `harmonia-extend.css`, letting a project compile the Tailwind utility classes Harmonia does not ship without duplicating what it already provides. It also gives the Bubble three more color variants including one painted from your own CSS variables, adds an elevated Sidebar style, ships the `border-x` and `border-y` utility classes, and fixes the last step of a Step Indicator stretching. There are no breaking changes.

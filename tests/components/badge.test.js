@@ -246,9 +246,15 @@ describe('h-badge-indicator cut-out', () => {
   let host;
   let el;
 
-  const boxOf = (node, left, top, width, height) => {
-    node.getBoundingClientRect = () => ({ left, top, width, height });
+  // happy-dom exposes the offset properties as prototype getters and has no
+  // offsetParent at all, so both have to be defined as own properties.
+  const define = (node, props) => {
+    for (const [key, value] of Object.entries(props)) {
+      Object.defineProperty(node, key, { value, configurable: true });
+    }
   };
+  const hostBox = (node, width, height) => define(node, { offsetWidth: width, offsetHeight: height, clientLeft: 0, clientTop: 0 });
+  const indicatorBox = (node, parent, left, top, width, height) => define(node, { offsetParent: parent, offsetLeft: left, offsetTop: top, offsetWidth: width, offsetHeight: height });
 
   beforeEach(() => {
     observers = [];
@@ -265,8 +271,8 @@ describe('h-badge-indicator cut-out', () => {
     document.body.appendChild(host);
     el = document.createElement('span');
     host.appendChild(el);
-    boxOf(host, 100, 100, 32, 32);
-    boxOf(el, 123, 97, 12, 12);
+    hostBox(host, 32, 32);
+    indicatorBox(el, host, 23, -3, 12, 12);
   });
 
   afterEach(() => {
@@ -286,16 +292,42 @@ describe('h-badge-indicator cut-out', () => {
   });
 
   it('leaves the host uncarved while the indicator is hidden', () => {
-    boxOf(el, 0, 0, 0, 0);
+    // x-show sets display:none, which nulls offsetParent and zeroes the box.
+    indicatorBox(el, null, 0, 0, 0, 0);
     mountDirective(badgePlugin, 'h-badge-indicator', el);
     observers[0].cb();
     expect(host.style.clipPath).toBe('');
   });
 
+  it('ignores an indicator positioned against something other than the host', () => {
+    indicatorBox(el, document.body, 23, -3, 12, 12);
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    observers[0].cb();
+    expect(host.style.clipPath).toBe('');
+  });
+
+  it('measures the layout box, not the transformed one', () => {
+    // A scaled ancestor (the dialog opens its panel at scale(0.95)) skews every
+    // client rect but no layout box, and never fires the resize observer again.
+    host.getBoundingClientRect = () => ({ left: 100, top: 100, width: 30.4, height: 30.4 });
+    el.getBoundingClientRect = () => ({ left: 121.85, top: 97.15, width: 11.4, height: 11.4 });
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    observers[0].cb();
+    expect(host.style.clipPath).toContain('M-10000 -10000H10032V10032H-10000Z');
+    expect(host.style.clipPath).toContain('M29 -3H29A6 6 0 0 1 29 9');
+  });
+
+  it('offsets the hole by the host border, since offsetLeft starts at the padding box', () => {
+    define(host, { clientLeft: 2, clientTop: 2 });
+    mountDirective(badgePlugin, 'h-badge-indicator', el);
+    observers[0].cb();
+    expect(host.style.clipPath).toContain('M31 -1H31A6 6 0 0 1 31 11');
+  });
+
   it('carves one gap per indicator sharing a host', () => {
     const second = document.createElement('span');
     host.appendChild(second);
-    boxOf(second, 97, 123, 12, 12);
+    indicatorBox(second, host, -3, 23, 12, 12);
     mountDirective(badgePlugin, 'h-badge-indicator', el);
     mountDirective(badgePlugin, 'h-badge-indicator', second);
     observers[0].cb();

@@ -86,6 +86,7 @@ export default function (Alpine) {
       'align-middle',
       '[&>span]:align-middle',
       '[&>span]:truncate',
+      '[&>div]:min-w-0',
       'svg-defaults',
       '[&>svg:not(:first-child):last-child]:ml-auto',
       'group-data-[collapsed=true]/sidebar:has-[>svg:first-child]:p-0!',
@@ -331,6 +332,7 @@ export default function (Alpine) {
       'data-[active=true]:bg-sidebar-primary',
       'data-[active=true]:text-sidebar-primary-foreground',
       '[&>span]:truncate',
+      '[&>div]:min-w-0',
       'svg-defaults'
     );
 

@@ -118,6 +118,12 @@ describe('h-sidebar-header-item', () => {
     expect(el.getAttribute('data-slot')).toBe('sidebar-header-item');
   });
 
+  it('lets a wrapper holding truncated lines shrink', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    expect(el.classList.contains('[&>div]:min-w-0')).toBe(true);
+  });
+
   it('throws when set on a button or an anchor element', () => {
     const button = document.createElement('button');
     expect(() => mountDirective(sidebarPlugin, 'h-sidebar-header-item', button, { original: 'x-h-sidebar-header-item' })).toThrow();
@@ -345,6 +351,13 @@ describe('h-sidebar-menu-button', () => {
     expect(el.getAttribute('type')).toBe('button');
     expect(el.getAttribute('data-slot')).toBe('sidebar-menu-button');
     expect(el.classList.contains('flex')).toBe(true);
+  });
+
+  it('lets a wrapper holding truncated lines shrink', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    // Without this a wrapper keeps min-width:auto and its text overflows instead of truncating.
+    expect(el.classList.contains('[&>div]:min-w-0')).toBe(true);
   });
 
   it('keeps a first-child avatar visible but padded when collapsed', () => {

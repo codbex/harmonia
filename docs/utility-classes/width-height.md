@@ -69,7 +69,7 @@ The minimum width class names start with `min-w`.
 | min-w-9xl    | `min-width: var(--container-9xl); /* 96rem (1536px) */`   | No          |
 | min-w-10xl   | `min-width: var(--container-10xl); /* 100rem (1600px) */` | No          |
 
-The maximum width class names start with `min-w`.
+The maximum width class names start with `max-w`.
 
 | Class        | Description                                               | `!` support |
 | ------------ | --------------------------------------------------------- | ----------- |

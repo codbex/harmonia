@@ -195,7 +195,7 @@ Use a large menu button in the header as a product switcher. Has an SVG icon or 
     <div x-h-sidebar-header>
       <button x-h-sidebar-menu-button data-logo="true" data-size="lg" x-h-menu-trigger.dropdown>
         <svg x-h-icon class="size-9 rounded-control" :data-link="product.logo" role="presentation"></svg>
-        <div class="vbox min-w-0 text-left">
+        <div class="vbox text-left">
           <span class="truncate font-medium" x-text="product.name"></span>
           <span class="truncate text-xs font-normal" x-text="product.brand"></span>
         </div>
@@ -557,7 +557,7 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
         <div x-h-avatar class="rounded-control" data-variant="primary">
           <svg x-h-lucide role="img" aria-label="Onyx Chat Logo" data-lucide="messages-square"></svg>
         </div>
-        <div class="vbox min-w-0">
+        <div class="vbox">
           <span class="truncate">Onyx Chat</span>
           <span class="truncate text-sm font-normal">Onyx Labs</span>
         </div>
@@ -591,6 +591,76 @@ A leading avatar in a header item or menu button behaves like a leading icon - i
             </li>
             <li x-h-sidebar-menu-item>
               <button x-h-sidebar-menu-button data-logo="true">
+                <div x-h-avatar data-color="green">LC</div>
+                <span>Liam Chen</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div x-h-sidebar-footer data-borderless="true">
+      <button x-h-sidebar-menu-button @click="collapsed = !collapsed">
+        <svg x-h-icon :data-icon="collapsed ? 'chevron-right' : 'chevron-left'" role="presentation"></svg>
+        <span x-text="collapsed ? 'Expand' : 'Collapse'"></span>
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+### Big Avatars with secondary text
+
+Same as the previous one but with `data-size="lg"` applied to the menu elements and with a secondary text below the label.
+
+```html
+<div class="hbox size-full gap-2" x-data="{ collapsed: false }">
+  <div x-h-sidebar :data-collapsed="collapsed">
+    <div x-h-sidebar-header>
+      <div x-h-sidebar-header-item>
+        <div x-h-avatar class="rounded-control" data-variant="primary">
+          <svg x-h-lucide role="img" aria-label="Onyx Chat Logo" data-lucide="messages-square"></svg>
+        </div>
+        <div class="vbox">
+          <span class="truncate">Onyx Chat</span>
+          <span class="truncate text-sm font-normal">Onyx Labs</span>
+        </div>
+      </div>
+    </div>
+    <div x-h-sidebar-content>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Channels</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-size="lg" data-logo="true">
+                <svg x-h-icon data-link="/harmonia/logo/harmonia-square.svg" role="presentation"></svg>
+                <div class="vbox">
+                  <span class="truncate">Harmonia</span>
+                  <span class="truncate opacity-75">Main channel</span>
+                </div>
+                <span x-h-sidebar-menu-badge>1</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div x-h-sidebar-group>
+        <div x-h-sidebar-group-label>Direct messages</div>
+        <div x-h-sidebar-group-content>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-size="lg" data-logo="true" data-active="true">
+                <div x-h-avatar data-color="orange">AM</div>
+                <div class="vbox">
+                  <span class="truncate">Ava Morgan</span>
+                  <span class="truncate opacity-75">Secondary informaton (can be anything)</span>
+                </div>
+                <span x-h-sidebar-menu-badge>3</span>
+              </button>
+            </li>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-button data-size="lg" data-logo="true">
                 <div x-h-avatar data-color="green">LC</div>
                 <span>Liam Chen</span>
               </button>
