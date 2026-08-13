@@ -9,10 +9,12 @@
       <div x-h-select style="max-width: 13rem">
         <input x-h-select-input aria-label="Filter by vendor" placeholder="All vendors" x-model="vendor" />
         <div x-h-select-content>
-          <div x-h-select-option="'All vendors'" data-value="all"></div>
-          <template x-for="name in vendorNames" :key="name">
-            <div x-h-select-option="name" :data-value="name"></div>
-          </template>
+          <div x-h-select-list>
+            <div x-h-select-option="'All vendors'" data-value="all"></div>
+            <template x-for="name in vendorNames" :key="name">
+              <div x-h-select-option="name" :data-value="name"></div>
+            </template>
+          </div>
         </div>
       </div>
     </div>

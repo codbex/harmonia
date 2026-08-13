@@ -131,11 +131,13 @@
               <div x-h-field>
                 <label x-h-label for="ni-customer">Customer</label>
                 <div x-h-select>
-                  <input x-h-select-input id="ni-customer" placeholder="Select customer" required x-model="newInvoice.customer" />
+                  <input x-h-select-input data-id="ni-customer" placeholder="Select customer" required x-model="newInvoice.customer" />
                   <div x-h-select-content>
-                    <template x-for="customer in $store.erp.customers" :key="customer.id">
-                      <div x-h-select-option="customer.name" :data-value="customer.name"></div>
-                    </template>
+                    <div x-h-select-list>
+                      <template x-for="customer in $store.erp.customers" :key="customer.id">
+                        <div x-h-select-option="customer.name" :data-value="customer.name"></div>
+                      </template>
+                    </div>
                   </div>
                 </div>
                 <p x-h-field-error>Choose a customer.</p>

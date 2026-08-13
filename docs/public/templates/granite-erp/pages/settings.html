@@ -52,9 +52,11 @@
           <div x-h-select class="flex-1" style="max-width: 11rem">
             <input x-h-select-input aria-label="Currency" x-model="$store.erp.settings.currency" />
             <div x-h-select-content>
-              <div x-h-select-option="'USD - US Dollar'" data-value="usd"></div>
-              <div x-h-select-option="'EUR - Euro'" data-value="eur"></div>
-              <div x-h-select-option="'GBP - British Pound'" data-value="gbp"></div>
+              <div x-h-select-list>
+                <div x-h-select-option="'USD - US Dollar'" data-value="usd"></div>
+                <div x-h-select-option="'EUR - Euro'" data-value="eur"></div>
+                <div x-h-select-option="'GBP - British Pound'" data-value="gbp"></div>
+              </div>
             </div>
           </div>
         </li>
@@ -66,9 +68,11 @@
           <div x-h-select class="flex-1" style="max-width: 11rem">
             <input x-h-select-input aria-label="Date format" x-model="$store.erp.settings.dateFormat" />
             <div x-h-select-content>
-              <div x-h-select-option="'Jul 3, 2026'" data-value="mdy"></div>
-              <div x-h-select-option="'3 Jul 2026'" data-value="dmy"></div>
-              <div x-h-select-option="'2026-07-03'" data-value="iso"></div>
+              <div x-h-select-list>
+                <div x-h-select-option="'Jul 3, 2026'" data-value="mdy"></div>
+                <div x-h-select-option="'3 Jul 2026'" data-value="dmy"></div>
+                <div x-h-select-option="'2026-07-03'" data-value="iso"></div>
+              </div>
             </div>
           </div>
         </li>

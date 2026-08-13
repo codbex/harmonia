@@ -61,6 +61,10 @@ Text size classes also support responsive prefixes `sm:`, `md:`, `lg:`, and `xl:
 | leading-7       | `line-height: calc(var(--spacing) * 7)`          | Yes         |
 | leading-8       | `line-height: calc(var(--spacing) * 8)`          | Yes         |
 
+| Class          | Description                                                            |
+| -------------- | ---------------------------------------------------------------------- |
+| tracking-tight | `letter-spacing: var(--tracking-tight);` - less space between letters. |
+
 | Class               | Description                                                                                                                          |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | italic              | Renders text in italic style.                                                                                                        |

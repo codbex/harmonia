@@ -1,6 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { findAncestorState } from '../common/ancestor';
 import { isDisabled } from '../common/disabled';
+import { invalidInputClasses, userInvalidInputClasses } from '../common/shared-classes';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronDown, Search, createSvg } from './../common/icons';
@@ -17,6 +18,8 @@ export default function (Alpine) {
   Alpine.directive('h-select', (el, { modifiers }, { Alpine, cleanup }) => {
     el._h_select = Alpine.reactive({
       fieldLabelId: undefined,
+      ariaLabelledby: undefined,
+      ariaLabel: undefined,
       trigger: undefined,
       controls: `hsc${uuidv4()}`,
       expanded: false,
@@ -52,15 +55,8 @@ export default function (Alpine) {
         'has-focus-visible:border-ring',
         'has-focus-visible:ring-[calc(var(--spacing)*0.75)]',
         'has-focus-visible:ring-ring/50',
-        'dark:has-[input[aria-invalid=true]]:ring-negative/40',
-        'has-[input[aria-invalid=true]]:border-negative',
-        'has-[input[aria-invalid=true]]:ring-negative/20',
-        'dark:has-[input:user-invalid]:ring-negative/40',
-        'has-[input:user-invalid]:border-negative',
-        'has-[input:user-invalid]:ring-negative/20',
-        'dark:[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/40',
-        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
-        '[[data-validate=immediate]_&:has(input:invalid)]:ring-negative/20',
+        ...invalidInputClasses,
+        ...userInvalidInputClasses,
         '[&>[data-slot="select-input"]]:hover:bg-secondary-hover',
         '[&>[data-slot="select-input"]]:hover:text-secondary-foreground',
         '[&>[data-slot="select-input"]]:active:bg-secondary-active',
@@ -129,17 +125,82 @@ export default function (Alpine) {
       select._h_model.get = () => el.value;
     }
 
-    el.classList.add('hidden');
+    // The input stays validatable but invisible. "display:none" would stop the
+    // browser from focusing it on a failed submit. It is out of the tab order
+    // and the accessibility tree because the trigger stands in for it.
+    el.classList.add('sr-only', 'pointer-events-none');
     el.setAttribute('type', 'text');
+    el.setAttribute('tabindex', '-1');
+    el.setAttribute('aria-hidden', 'true');
 
-    const fakeTrigger = document.createElement('span');
+    const fakeTrigger = document.createElement('button');
     const displayValue = document.createElement('span');
     displayValue.classList.add('text-left', 'truncate', 'w-full');
     fakeTrigger.appendChild(displayValue);
     fakeTrigger.setAttribute('data-slot', 'select-value');
-    fakeTrigger.setAttribute('tabindex', '0');
+    fakeTrigger.setAttribute('type', 'button');
     fakeTrigger.classList.add('flex', 'items-center', 'justify-between', 'gap-2', 'outline-none', 'pl-3', 'pr-2', 'size-full', '[&[aria-expanded=true]>svg]:rotate-180');
     select._h_select.trigger = fakeTrigger;
+
+    // The trigger stands in for the input in the accessibility tree, so what the
+    // user writes on the hidden input has to be applied to the trigger instead.
+    // A field label is only the fallback, since an explicit aria-labelledby says
+    // more about what the user meant.
+    function applyLabel() {
+      const labelledby = el.getAttribute('aria-labelledby') || select._h_select.fieldLabelId;
+      const ariaLabel = el.getAttribute('aria-label');
+      select._h_select.ariaLabelledby = labelledby;
+      select._h_select.ariaLabel = ariaLabel;
+      if (labelledby) fakeTrigger.setAttribute('aria-labelledby', labelledby);
+      else fakeTrigger.removeAttribute('aria-labelledby');
+      if (ariaLabel) fakeTrigger.setAttribute('aria-label', ariaLabel);
+      else fakeTrigger.removeAttribute('aria-label');
+    }
+
+    // The input keeps its own id for the user to use, so the trigger gets a
+    // separate one. It is what a "<label for>" or a programmatic click can target.
+    function applyId() {
+      const id = el.getAttribute('data-id');
+      if (id) fakeTrigger.setAttribute('id', id);
+      else fakeTrigger.removeAttribute('id');
+    }
+
+    // aria-invalid mirroring. The input is not announced, so the trigger carries
+    // it. An explicit aria-invalid on the input is owned by the consumer and wins
+    // over tracked native validity.
+    let nativeInvalid = false;
+    function renderInvalid() {
+      const explicit = el.getAttribute('aria-invalid');
+      const invalid = explicit != null ? explicit : nativeInvalid ? 'true' : null;
+      if (invalid == null) fakeTrigger.removeAttribute('aria-invalid');
+      else fakeTrigger.setAttribute('aria-invalid', invalid);
+    }
+
+    // :user-invalid is not observable from JS, so only clear on valid or set
+    // when an ancestor opted into immediate validation. The invalid event below
+    // covers the submit-attempt case.
+    function syncValidity() {
+      if (el.validity.valid) nativeInvalid = false;
+      else if (el.closest('[data-validate=immediate]')) nativeInvalid = true;
+      renderInvalid();
+    }
+
+    const onInvalid = () => {
+      nativeInvalid = true;
+      renderInvalid();
+    };
+
+    el.addEventListener('invalid', onInvalid);
+
+    // A natively disabled button is unreachable and announced as disabled, which
+    // is what disabling the input asks for. It also refuses clicks, so nothing
+    // else has to guard against activating a disabled select.
+    function applyState() {
+      fakeTrigger.disabled = el.disabled;
+      if (el.required) fakeTrigger.setAttribute('aria-required', 'true');
+      else fakeTrigger.removeAttribute('aria-required');
+      renderInvalid();
+    }
 
     let labelObserver;
 
@@ -148,14 +209,18 @@ export default function (Alpine) {
         label.setAttribute('id', `hsil${uuidv4()}`);
       }
       select._h_select.fieldLabelId = label.getAttribute('id');
-      fakeTrigger.setAttribute('aria-labelledby', label.getAttribute('id'));
 
       labelObserver = new MutationObserver(() => {
         select._h_select.fieldLabelId = label.getAttribute('id');
+        applyLabel();
       });
 
       labelObserver.observe(label, { attributes: true, attributeFilter: ['id'] });
     }
+
+    applyLabel();
+    applyId();
+    applyState();
 
     function getPlaceholder() {
       if (!el.value) {
@@ -172,11 +237,16 @@ export default function (Alpine) {
 
     getPlaceholder();
 
-    const observer = new MutationObserver(() => {
-      getPlaceholder();
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'placeholder') getPlaceholder();
+        else if (mutation.attributeName === 'data-id') applyId();
+        else if (mutation.attributeName === 'aria-label' || mutation.attributeName === 'aria-labelledby') applyLabel();
+        else applyState();
+      });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['placeholder'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['placeholder', 'aria-label', 'aria-labelledby', 'data-id', 'disabled', 'aria-invalid', 'required'] });
 
     effect(() => {
       if (select._h_select.label.length === 1) {
@@ -193,7 +263,6 @@ export default function (Alpine) {
     fakeTrigger.setAttribute('data-slot', 'select-input');
     fakeTrigger.setAttribute('aria-controls', select._h_select.controls);
     fakeTrigger.setAttribute('aria-haspopup', 'listbox');
-    fakeTrigger.setAttribute('aria-autocomplete', 'none');
     fakeTrigger.setAttribute('role', 'combobox');
 
     effect(() => {
@@ -207,7 +276,7 @@ export default function (Alpine) {
       if (focusSelect) fakeTrigger.focus();
     };
 
-    let content;
+    let list;
 
     // An option the search has filtered out is not on screen, so the keyboard
     // passes over it. A disabled one is on screen and stays reachable, since
@@ -215,14 +284,14 @@ export default function (Alpine) {
     // onActivate is what refuses to act on it. Read per keypress, so options
     // added or filtered while the list is open are picked up.
     function getFocusableOptions() {
-      if (!content) return [];
-      return Array.from(content.querySelectorAll('[role=option]')).filter((option) => !option.classList.contains('hidden'));
+      if (!list) return [];
+      return Array.from(list.querySelectorAll('[role=option]')).filter((option) => !option.classList.contains('hidden'));
     }
 
     // Options find "the current one" through the roving tabindex, so the stop
     // has to be moved explicitly rather than just followed by focus.
     function clearTabStop() {
-      const current = content?.querySelector('[role=option][tabindex="0"]');
+      const current = list?.querySelector('[role=option][tabindex="0"]');
       if (current) current.setAttribute('tabindex', '-1');
     }
 
@@ -314,8 +383,8 @@ export default function (Alpine) {
 
     const onClick = () => {
       select._h_select.expanded = !select._h_select.expanded;
-      if (select._h_select.expanded && !content) {
-        content = select.querySelector(`#${select._h_select.controls}`);
+      if (select._h_select.expanded && !list) {
+        list = select.querySelector(`#${select._h_select.controls}`);
       }
       Alpine.nextTick(() => {
         if (select._h_select.expanded) {
@@ -362,6 +431,9 @@ export default function (Alpine) {
           select._h_select.label.push(label);
         }
       }
+      // After the labels, so a consumer change handler calling setCustomValidity
+      // on the input has already run.
+      syncValidity();
     };
 
     select._h_select.refreshLabel = onInputChange;
@@ -374,6 +446,7 @@ export default function (Alpine) {
       el.parentElement.removeEventListener('keydown', onKeyDown);
       removeDismiss(el, 'click', close);
       el.removeEventListener('change', onInputChange);
+      el.removeEventListener('invalid', onInvalid);
       observer.disconnect();
       if (labelObserver) {
         labelObserver.disconnect();
@@ -391,13 +464,13 @@ export default function (Alpine) {
       'bg-popover',
       'text-popover-foreground',
       'hidden',
-      'p-1',
       'top-0',
       'left-0',
       'z-50',
       'min-w-[1rem]',
-      'overflow-x-hidden',
-      'overflow-y-auto',
+      'flex',
+      'flex-col',
+      'overflow-hidden',
       'rounded-md',
       'border',
       'shadow-md',
@@ -409,9 +482,6 @@ export default function (Alpine) {
       'scale-95'
     );
     el.setAttribute('data-slot', 'select-content');
-    el.setAttribute('role', 'listbox');
-    el.setAttribute('id', select._h_select.controls);
-    el.setAttribute('tabindex', '-1');
 
     if (!select._h_select.trigger) {
       throw new Error(`${original}: trigger not found`);
@@ -443,10 +513,6 @@ export default function (Alpine) {
         el.classList.remove('scale-95', 'opacity-0');
       });
     }
-
-    effect(() => {
-      el.setAttribute('aria-labelledby', select._h_select.fieldLabelId);
-    });
 
     effect(() => {
       if (select._h_select.expanded) {
@@ -483,6 +549,35 @@ export default function (Alpine) {
     });
   });
 
+  Alpine.directive('h-select-list', (el, { original }, { effect, Alpine }) => {
+    const select = findAncestorState(Alpine, el, '_h_select');
+    if (!select) {
+      throw new Error(`${original} must be inside a select element`);
+    }
+
+    el.classList.add('p-1', 'min-h-0', 'overflow-x-hidden', 'overflow-y-auto');
+    el.setAttribute('data-slot', 'select-list');
+    el.setAttribute('role', 'listbox');
+    el.setAttribute('id', select._h_select.controls);
+    el.setAttribute('tabindex', '-1');
+
+    // The listbox carries the same name as the trigger, so it has to be left
+    // nameless when there is none. Writing the missing value would point
+    // aria-labelledby at an id that does not exist.
+    effect(() => {
+      const { ariaLabelledby, ariaLabel } = select._h_select;
+      if (ariaLabelledby) el.setAttribute('aria-labelledby', ariaLabelledby);
+      else el.removeAttribute('aria-labelledby');
+      if (!ariaLabelledby && ariaLabel) el.setAttribute('aria-label', ariaLabel);
+      else el.removeAttribute('aria-label');
+    });
+
+    effect(() => {
+      if (select._h_select.multiple) el.setAttribute('aria-multiselectable', 'true');
+      else el.removeAttribute('aria-multiselectable');
+    });
+  });
+
   Alpine.directive('h-select-search', (el, { original }, { effect, cleanup, Alpine }) => {
     const select = findAncestorState(Alpine, el, '_h_select');
     if (!select) {
@@ -491,19 +586,23 @@ export default function (Alpine) {
       select._h_select.filterType = FilterType[el.getAttribute('data-filter')] ?? FilterType['starts-with'];
       select._h_select.includeDesc = el.getAttribute('data-include-desc') === 'true';
     }
-    el.classList.add('flex', 'h-8', 'items-center', 'gap-2', 'border-b', 'px-2', 'mb-1');
+    // The row supplies its own inset now that the popup has no padding, so the
+    // icon lines up with the option labels one level down.
+    el.classList.add('flex', 'items-center', 'gap-2', 'border-b', 'py-1.5', 'px-3');
     el.setAttribute('data-slot', 'select-search');
-    el.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
-    el.setAttribute('aria-controls', select._h_select.controls);
-    el.setAttribute('aria-haspopup', 'listbox');
-    el.setAttribute('role', 'combobox');
-    el.setAttribute('autocomplete', 'off');
-    el.setAttribute('autocorrect', 'off');
-    el.setAttribute('spellcheck', 'false');
     const searchIcon = createSvg({ icon: Search, classes: 'size-4 shrink-0 opacity-50', attrs: { 'aria-hidden': true, role: 'presentation' } });
+    // The combobox semantics belong on the focusable input, not on the row.
     const searchInput = document.createElement('input');
     searchInput.setAttribute('type', 'text');
-    searchInput.setAttribute('data-slot', 'select-input');
+    searchInput.setAttribute('data-slot', 'select-search-input');
+    searchInput.setAttribute('aria-label', el.getAttribute('aria-label') || 'Search');
+    searchInput.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
+    searchInput.setAttribute('aria-controls', select._h_select.controls);
+    searchInput.setAttribute('aria-haspopup', 'listbox');
+    searchInput.setAttribute('role', 'combobox');
+    searchInput.setAttribute('autocomplete', 'off');
+    searchInput.setAttribute('autocorrect', 'off');
+    searchInput.setAttribute('spellcheck', 'false');
     searchInput.classList.add('placeholder:text-muted-foreground', 'size-full', 'bg-transparent', 'text-sm', 'outline-hidden', 'disabled:cursor-not-allowed', 'disabled:opacity-disabled');
     el.appendChild(searchIcon);
     el.appendChild(searchInput);
@@ -530,13 +629,13 @@ export default function (Alpine) {
 
     effect(() => {
       if (select._h_select.expanded) searchInput.focus({ preventScroll: true });
-      el.setAttribute('aria-expanded', select._h_select.expanded);
+      searchInput.setAttribute('aria-expanded', select._h_select.expanded);
     });
 
     const observer = new MutationObserver(() => {
       select._h_select.filterType = FilterType[el.getAttribute('data-filter')] ?? FilterType['starts-with'];
       select._h_select.includeDesc = el.getAttribute('data-include-desc') === 'true';
-      el.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
+      searchInput.setAttribute('aria-autocomplete', select._h_select.filterType === FilterType.none ? 'both' : 'list');
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-filter', 'data-include-desc'] });
@@ -551,6 +650,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-select-group', (el, _, { effect }) => {
     el.setAttribute('data-slot', 'select-group');
+    el.setAttribute('role', 'group');
     el._h_selectGroup = Alpine.reactive({
       labelledby: undefined,
     });

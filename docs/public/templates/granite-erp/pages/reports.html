@@ -34,8 +34,10 @@
             <div x-h-select data-size="sm" style="width: 9rem" x-show="tab === 'revenue'">
               <input x-h-select-input aria-label="Report range" x-model="range" />
               <div x-h-select-content>
-                <div x-h-select-option="'Last 6 months'" data-value="6m"></div>
-                <div x-h-select-option="'Last 12 months'" data-value="12m"></div>
+                <div x-h-select-list>
+                  <div x-h-select-option="'Last 6 months'" data-value="6m"></div>
+                  <div x-h-select-option="'Last 12 months'" data-value="12m"></div>
+                </div>
               </div>
             </div>
             <button x-h-button data-variant="outline" data-size="sm" @click="exportReport()">

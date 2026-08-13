@@ -23,9 +23,11 @@ To retrieve or manually configure the color scheme, use the [Theme](/utilities/t
   <div x-h-select>
     <input x-h-select-input placeholder="Select" x-model="mode" @change="themeChange()" />
     <div x-h-select-content>
-      <div x-h-select-option="'Auto'" data-value="auto"></div>
-      <div x-h-select-option="'Light'" data-value="light"></div>
-      <div x-h-select-option="'Dark'" data-value="dark"></div>
+      <div x-h-select-list>
+        <div x-h-select-option="'Auto'" data-value="auto"></div>
+        <div x-h-select-option="'Light'" data-value="light"></div>
+        <div x-h-select-option="'Dark'" data-value="dark"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -87,9 +89,11 @@ Changing the color scheme in one frame is automatically applied to every embedde
   <div x-h-select>
     <input x-h-select-input placeholder="Select" x-model="mode" @change="themeChange()" />
     <div x-h-select-content>
-      <div x-h-select-option="'Auto'" data-value="auto"></div>
-      <div x-h-select-option="'Light'" data-value="light"></div>
-      <div x-h-select-option="'Dark'" data-value="dark"></div>
+      <div x-h-select-list>
+        <div x-h-select-option="'Auto'" data-value="auto"></div>
+        <div x-h-select-option="'Light'" data-value="light"></div>
+        <div x-h-select-option="'Dark'" data-value="dark"></div>
+      </div>
     </div>
   </div>
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2">

@@ -2,6 +2,32 @@
 
 Breaking changes only, grouped by version (newest first). For the full history including features and fixes, see [CHANGELOG.md](https://github.com/codbex/harmonia/blob/main/CHANGELOG.md).
 
+## v2.12.0
+
+- **Breaking: the options must now be wrapped in `x-h-select-list`.** The popup keeps the positioning and the chrome, and the new element inside it is the `listbox` and the scroll container. That is what lets an `x-h-select-search` sit above it as a sibling instead of inside the listbox, where it was an invalid child that screen readers could not account for. It also means the search stays visible while the options scroll under it. To migrate, wrap everything inside `x-h-select-content` other than the search in a `x-h-select-list`.
+
+```html
+<!-- Before -->
+<div x-h-select-content>
+  <div x-h-select-search></div>
+  <div x-h-select-option="'Apple'" data-value="apple"></div>
+</div>
+
+<!-- After -->
+<div x-h-select-content>
+  <div x-h-select-search></div>
+  <div x-h-select-list>
+    <div x-h-select-option="'Apple'" data-value="apple"></div>
+  </div>
+</div>
+```
+
+- **Breaking: the trigger is a `button` instead of a `span`.** It is generated, so no markup changes, but a stylesheet selecting it by tag name has to select `[data-slot="select-input"]` instead. Being a button makes it labelable, so a `<label for="...">` pointing at `data-id` now both names it and opens the list when clicked, and it drops the `tabindex` it needed as a span.
+
+- **Breaking: the search's combobox semantics moved onto its input.** `role="combobox"`, `aria-expanded`, `aria-controls`, `aria-haspopup` and `aria-autocomplete` were on the wrapper element, which is neither focusable nor an input - the row itself is now a plain container. The generated input also has its own `data-slot="select-search-input"` rather than reusing the trigger's `select-input`, so a query for the trigger no longer finds the search first.
+
+- **Breaking: `data-id` on `x-h-select-input` is back**, and it sets the id of the generated trigger so the trigger can be referenced by a `<label for>` or reached programmatically. It is unrelated to the input's own `id`, which is left alone.
+
 ## v2.10.0
 
 - **Breaking: `getBreakpointListener` now measures the current frame by default.** Its third argument is renamed from `frame` to `topFrame` and its meaning is inverted: leaving it out measures the frame the listener runs in, and passing `true` measures the topmost frame. To migrate, pass `true` as the third argument wherever you relied on the old default. The new default matches the CSS breakpoint variants a handler is usually paired with, which resolve against the current frame, so the two no longer disagree inside an iframe.

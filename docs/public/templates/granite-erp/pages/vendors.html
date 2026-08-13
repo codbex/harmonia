@@ -83,15 +83,17 @@
             <div x-h-field>
               <label x-h-label for="nv-category">Category</label>
               <div x-h-select>
-                <input x-h-select-input id="nv-category" placeholder="Select category" required x-model="newVendor.category" />
+                <input x-h-select-input data-id="nv-category" placeholder="Select category" required x-model="newVendor.category" />
                 <div x-h-select-content>
-                  <div x-h-select-option="'Logistics'" data-value="Logistics"></div>
-                  <div x-h-select-option="'Software'" data-value="Software"></div>
-                  <div x-h-select-option="'Raw materials'" data-value="Raw materials"></div>
-                  <div x-h-select-option="'Utilities'" data-value="Utilities"></div>
-                  <div x-h-select-option="'Office'" data-value="Office"></div>
-                  <div x-h-select-option="'Marketing'" data-value="Marketing"></div>
-                  <div x-h-select-option="'Facilities'" data-value="Facilities"></div>
+                  <div x-h-select-list>
+                    <div x-h-select-option="'Logistics'" data-value="Logistics"></div>
+                    <div x-h-select-option="'Software'" data-value="Software"></div>
+                    <div x-h-select-option="'Raw materials'" data-value="Raw materials"></div>
+                    <div x-h-select-option="'Utilities'" data-value="Utilities"></div>
+                    <div x-h-select-option="'Office'" data-value="Office"></div>
+                    <div x-h-select-option="'Marketing'" data-value="Marketing"></div>
+                    <div x-h-select-option="'Facilities'" data-value="Facilities"></div>
+                  </div>
                 </div>
               </div>
               <p x-h-field-error>Choose a category.</p>

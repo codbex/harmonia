@@ -136,6 +136,7 @@
 .leading-tight\! {
   line-height: var(--leading-tight) !important;
 }
+@source inline("tracking-tight");
 @source inline("italic");
 @source inline("uppercase");
 @source inline("lowercase");
@@ -153,6 +154,7 @@
 @source inline("bg-{auto,contain,cover,repeat,repeat-x,repeat-y,no-repeat}");
 @source inline("float-right");
 @source inline("hidden");
+@source inline("hidden!");
 @source inline("block");
 @source inline("inline");
 @source inline("inline-block");

@@ -1,5 +1,45 @@
 # Changelog
 
+## v2.12.0
+
+An accessibility release for the Select. Its trigger is now a real button that can be named and referenced, the options moved into their own `x-h-select-list` so the search no longer sits inside the listbox, and the native input is no longer `display:none`, which is what stopped a `required` select from ever reporting itself. It also ships the `hidden!` and `tracking-tight` utility classes. There are breaking changes to the select's markup.
+
+### Select
+
+- **Breaking: the options must now be wrapped in `x-h-select-list`.** The popup keeps the positioning and the chrome, and the new element inside it is the `listbox` and the scroll container. That is what lets an `x-h-select-search` sit above it as a sibling instead of inside the listbox, where it was an invalid child that screen readers could not account for. It also means the search stays visible while the options scroll under it. To migrate, wrap everything inside `x-h-select-content` other than the search in a `x-h-select-list`.
+
+```html
+<!-- Before -->
+<div x-h-select-content>
+  <div x-h-select-search></div>
+  <div x-h-select-option="'Apple'" data-value="apple"></div>
+</div>
+
+<!-- After -->
+<div x-h-select-content>
+  <div x-h-select-search></div>
+  <div x-h-select-list>
+    <div x-h-select-option="'Apple'" data-value="apple"></div>
+  </div>
+</div>
+```
+
+- **Breaking: the trigger is a `button` instead of a `span`.** It is generated, so no markup changes, but a stylesheet selecting it by tag name has to select `[data-slot="select-input"]` instead. Being a button makes it labelable, so a `<label for="...">` pointing at `data-id` now both names it and opens the list when clicked, and it drops the `tabindex` it needed as a span.
+- **Breaking: the search's combobox semantics moved onto its input.** `role="combobox"`, `aria-expanded`, `aria-controls`, `aria-haspopup` and `aria-autocomplete` were on the wrapper element, which is neither focusable nor an input - the row itself is now a plain container. The generated input also has its own `data-slot="select-search-input"` rather than reusing the trigger's `select-input`, so a query for the trigger no longer finds the search first.
+- **Breaking: `data-id` on `x-h-select-input` is back**, and it sets the id of the generated trigger so the trigger can be referenced by a `<label for>` or reached programmatically. It is unrelated to the input's own `id`, which is left alone.
+- **Fixed: the select could not be given an accessible name.** The native input is kept out of the accessibility tree, so an `aria-label` or `aria-labelledby` written on it did nothing, and outside an `x-h-field` the trigger had no name at all. Both attributes are now applied to the trigger, with a field label as the fallback. `disabled`, `required` and `aria-invalid` are mirrored there too, so the select is announced as disabled, required or invalid.
+- **Fixed: a `required` select silently blocked form submission.** The native input was `display:none`, so the browser could not focus it to report the failed constraint and `:user-invalid` could never match. It is now visually hidden while still rendered, out of the tab order and the accessibility tree, so native validation behaves like every other control and the invalid styling appears after a submit attempt.
+- **Fixed: a disabled select could still be opened from the keyboard.** Disabling the input only removed pointer events, leaving the trigger focusable and operable with Enter. The trigger is now disabled with it.
+- **Fixed: an unnamed select left `aria-labelledby="undefined"` on the listbox**, pointing it at an id that cannot exist.
+- **Fixed: `x-h-select-group` was not exposed as a group.** It carried an `aria-labelledby` on an element with no role, so the listbox owned a generic element and the group's label was dropped.
+- **Fixed: a multiple select did not announce itself as one.** The listbox now carries `aria-multiselectable`.
+- **Fixed: the search input had no accessible name.** It is named "Search" by default, overridable with an `aria-label` on the `x-h-select-search` element.
+
+### New utility classes
+
+- **`hidden!`**, the `!important` form of `hidden`, for when a `display` rule cannot be outranked otherwise.
+- **`tracking-tight`**, tightening the letter spacing to `--tracking-tight`.
+
 ## v2.11.1
 
 A bugfix release that fixes the Badge Indicator's cut-out inside a dialog or any other scaled container, and lets a Sidebar menu button or header item truncate a label split across two lines. There are no breaking changes.

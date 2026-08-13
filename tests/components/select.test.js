@@ -49,11 +49,13 @@ describe('h-select', () => {
 });
 
 describe('h-select-input', () => {
-  function createSelectInputSetup() {
+  function createSelectInputSetup({ field = false } = {}) {
     const container = document.createElement('div');
     const selectEl = document.createElement('div');
     selectEl._h_select = {
       fieldLabelId: undefined,
+      ariaLabelledby: undefined,
+      ariaLabel: undefined,
       trigger: undefined,
       controls: 'hsc-test',
       expanded: false,
@@ -69,19 +71,54 @@ describe('h-select-input', () => {
     const input = document.createElement('input');
     input.type = 'text';
     selectEl.appendChild(input);
+    let fieldLabel;
+    if (field) {
+      container.setAttribute('data-slot', 'field');
+      fieldLabel = document.createElement('label');
+      fieldLabel.setAttribute('data-slot', 'field-label');
+      container.appendChild(fieldLabel);
+    }
     container.appendChild(selectEl);
     document.body.appendChild(container);
-    return { container, selectEl, input };
+    return { container, selectEl, input, fieldLabel };
   }
 
-  it('applies hidden class and type=text to input', () => {
+  // display:none would stop the browser focusing the input on a failed submit,
+  // so it stays rendered and only visually hidden.
+  it('hides the input without display:none and keeps it out of the a11y tree', () => {
     const { input } = createSelectInputSetup();
     mountDirective(selectPlugin, 'h-select-input', input, {
       original: 'x-h-select-input',
       expression: '',
     });
-    expect(input.classList.contains('hidden')).toBe(true);
+    expect(input.classList.contains('hidden')).toBe(false);
+    expect(input.classList.contains('sr-only')).toBe(true);
+    expect(input.classList.contains('pointer-events-none')).toBe(true);
+    expect(input.getAttribute('tabindex')).toBe('-1');
+    expect(input.getAttribute('aria-hidden')).toBe('true');
     expect(input.getAttribute('type')).toBe('text');
+  });
+
+  it('mirrors a failed native constraint onto the trigger', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+    input.dispatchEvent(new Event('invalid'));
+    expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('lets an explicit aria-invalid win over tracked native validity', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    input.setAttribute('aria-invalid', 'false');
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    input.dispatchEvent(new Event('invalid'));
+    expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('false');
   });
 
   it('creates a fake trigger with data-slot=select-input', () => {
@@ -93,6 +130,104 @@ describe('h-select-input', () => {
     const trigger = selectEl.querySelector('[data-slot="select-input"]');
     expect(trigger).toBeTruthy();
     expect(trigger.getAttribute('role')).toBe('combobox');
+    // A button so it is labelable by a "<label for>" and focusable without a
+    // tabindex, with type=button so it never submits a surrounding form.
+    expect(trigger.tagName).toBe('BUTTON');
+    expect(trigger.getAttribute('type')).toBe('button');
+  });
+
+  it('forwards aria-label and aria-labelledby from the input to the trigger', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    input.setAttribute('aria-label', 'Country');
+    input.setAttribute('aria-labelledby', 'outside-label');
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.getAttribute('aria-label')).toBe('Country');
+    expect(selectEl._h_select.trigger.getAttribute('aria-labelledby')).toBe('outside-label');
+  });
+
+  it('leaves the trigger unnamed when the author names nothing', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.hasAttribute('aria-label')).toBe(false);
+    expect(selectEl._h_select.trigger.hasAttribute('aria-labelledby')).toBe(false);
+  });
+
+  it('names the trigger from a field label', () => {
+    const { input, selectEl, fieldLabel } = createSelectInputSetup({ field: true });
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(fieldLabel.getAttribute('id')).toMatch(/^hsil/);
+    expect(selectEl._h_select.trigger.getAttribute('aria-labelledby')).toBe(fieldLabel.getAttribute('id'));
+  });
+
+  it('prefers an author aria-labelledby over the field label', () => {
+    const { input, selectEl } = createSelectInputSetup({ field: true });
+    input.setAttribute('aria-labelledby', 'my-label');
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.getAttribute('aria-labelledby')).toBe('my-label');
+  });
+
+  it('sets the trigger id from data-id and leaves the input id alone', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    input.setAttribute('data-id', 'country-trigger');
+    input.setAttribute('id', 'country-value');
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.getAttribute('id')).toBe('country-trigger');
+    expect(input.getAttribute('id')).toBe('country-value');
+  });
+
+  it('mirrors aria-invalid and required onto the trigger', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    input.setAttribute('aria-invalid', 'true');
+    input.required = true;
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+    expect(selectEl._h_select.trigger.getAttribute('aria-required')).toBe('true');
+  });
+
+  it('disables the trigger with the input, so it cannot be opened', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    input.disabled = true;
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.trigger.disabled).toBe(true);
+    selectEl._h_select.trigger.click();
+    expect(selectEl._h_select.expanded).toBe(false);
+  });
+
+  it('keeps the trigger in sync when the input attributes change', async () => {
+    const { input, selectEl } = createSelectInputSetup();
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    input.setAttribute('aria-label', 'Country');
+    input.setAttribute('data-id', 'country-trigger');
+    input.disabled = true;
+    // MutationObserver callbacks are asynchronous.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(selectEl._h_select.trigger.getAttribute('aria-label')).toBe('Country');
+    expect(selectEl._h_select.trigger.getAttribute('id')).toBe('country-trigger');
+    expect(selectEl._h_select.trigger.disabled).toBe(true);
   });
 
   it('throws if element is not an input', () => {
@@ -115,26 +250,32 @@ describe('h-select-input', () => {
   });
 });
 
-describe('h-select-content', () => {
-  function createSelectContentSetup() {
-    const container = document.createElement('div');
-    const selectEl = document.createElement('div');
-    const fakeTrigger = document.createElement('span');
-    selectEl._h_select = {
-      fieldLabelId: undefined,
-      trigger: fakeTrigger,
-      controls: 'hsc-test',
-      expanded: false,
-    };
-    const content = document.createElement('div');
-    selectEl.appendChild(content);
-    container.appendChild(selectEl);
-    document.body.appendChild(container);
-    return { container, selectEl, content };
-  }
+function createSelectPopupSetup(stateOverrides = {}) {
+  const container = document.createElement('div');
+  const selectEl = document.createElement('div');
+  const fakeTrigger = document.createElement('button');
+  selectEl._h_select = {
+    fieldLabelId: undefined,
+    ariaLabelledby: undefined,
+    ariaLabel: undefined,
+    trigger: fakeTrigger,
+    controls: 'hsc-test',
+    expanded: false,
+    multiple: false,
+    ...stateOverrides,
+  };
+  const content = document.createElement('div');
+  const list = document.createElement('div');
+  content.appendChild(list);
+  selectEl.appendChild(content);
+  container.appendChild(selectEl);
+  document.body.appendChild(container);
+  return { container, selectEl, content, list };
+}
 
+describe('h-select-content', () => {
   it('applies base classes', () => {
-    const { content } = createSelectContentSetup();
+    const { content } = createSelectPopupSetup();
     mountDirective(selectPlugin, 'h-select-content', content, {
       original: 'x-h-select-content',
     });
@@ -143,23 +284,93 @@ describe('h-select-content', () => {
     expect(content.classList.contains('hidden')).toBe(true);
   });
 
-  it('sets role, tabindex, data-slot, and id attributes', () => {
-    const { content, selectEl } = createSelectContentSetup();
+  // The popup is a plain container: the list inside it owns the listbox role and
+  // does the scrolling, so a search row above it never scrolls away.
+  it('is a column that does not scroll and carries no padding', () => {
+    const { content } = createSelectPopupSetup();
     mountDirective(selectPlugin, 'h-select-content', content, {
       original: 'x-h-select-content',
     });
-    expect(content.getAttribute('role')).toBe('listbox');
-    expect(content.getAttribute('tabindex')).toBe('-1');
+    expect(content.classList.contains('flex')).toBe(true);
+    expect(content.classList.contains('flex-col')).toBe(true);
+    expect(content.classList.contains('overflow-hidden')).toBe(true);
+    expect(content.classList.contains('overflow-y-auto')).toBe(false);
+    expect(content.classList.contains('p-1')).toBe(false);
+  });
+
+  it('sets data-slot and takes no listbox semantics', () => {
+    const { content } = createSelectPopupSetup();
+    mountDirective(selectPlugin, 'h-select-content', content, {
+      original: 'x-h-select-content',
+    });
     expect(content.getAttribute('data-slot')).toBe('select-content');
-    expect(content.getAttribute('id')).toBe(selectEl._h_select.controls);
+    expect(content.hasAttribute('role')).toBe(false);
+    expect(content.hasAttribute('id')).toBe(false);
+    expect(content.hasAttribute('tabindex')).toBe(false);
+    expect(content.hasAttribute('aria-labelledby')).toBe(false);
+    expect(content.hasAttribute('aria-multiselectable')).toBe(false);
   });
 
   it('calls cleanup', () => {
-    const { content } = createSelectContentSetup();
+    const { content } = createSelectPopupSetup();
     const { ctx } = mountDirective(selectPlugin, 'h-select-content', content, {
       original: 'x-h-select-content',
     });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe('h-select-list', () => {
+  const mountList = (list) => mountDirective(selectPlugin, 'h-select-list', list, { original: 'x-h-select-list' });
+
+  it('is the listbox and the scroll container', () => {
+    const { list, selectEl } = createSelectPopupSetup();
+    mountList(list);
+    expect(list.getAttribute('data-slot')).toBe('select-list');
+    expect(list.getAttribute('role')).toBe('listbox');
+    expect(list.getAttribute('tabindex')).toBe('-1');
+    expect(list.getAttribute('id')).toBe(selectEl._h_select.controls);
+    expect(list.classList.contains('overflow-y-auto')).toBe(true);
+    expect(list.classList.contains('min-h-0')).toBe(true);
+    expect(list.classList.contains('p-1')).toBe(true);
+  });
+
+  // An unnamed select used to leave aria-labelledby="undefined" on the listbox,
+  // pointing it at an id that cannot exist.
+  it('leaves the listbox unnamed when the select has no label', () => {
+    const { list } = createSelectPopupSetup();
+    mountList(list);
+    expect(list.hasAttribute('aria-labelledby')).toBe(false);
+    expect(list.hasAttribute('aria-label')).toBe(false);
+  });
+
+  it('names the listbox from the resolved select label', () => {
+    const { list } = createSelectPopupSetup({ ariaLabelledby: 'label-id' });
+    mountList(list);
+    expect(list.getAttribute('aria-labelledby')).toBe('label-id');
+    expect(list.hasAttribute('aria-label')).toBe(false);
+  });
+
+  it('falls back to aria-label for the listbox name', () => {
+    const { list } = createSelectPopupSetup({ ariaLabel: 'Country' });
+    mountList(list);
+    expect(list.getAttribute('aria-label')).toBe('Country');
+    expect(list.hasAttribute('aria-labelledby')).toBe(false);
+  });
+
+  it('marks the listbox multiselectable only for a multiple select', () => {
+    const { list } = createSelectPopupSetup();
+    mountList(list);
+    expect(list.hasAttribute('aria-multiselectable')).toBe(false);
+
+    const multiple = createSelectPopupSetup({ multiple: true });
+    mountList(multiple.list);
+    expect(multiple.list.getAttribute('aria-multiselectable')).toBe('true');
+  });
+
+  it('throws outside a select', () => {
+    const el = document.createElement('div');
+    expect(() => mountList(el)).toThrow();
   });
 });
 
@@ -171,6 +382,17 @@ describe('h-select-separator', () => {
     expect(el.getAttribute('data-slot')).toBe('select-separator');
     expect(el.getAttribute('aria-hidden')).toBe('true');
     expect(el.getAttribute('role')).toBe('none');
+  });
+});
+
+describe('h-select-group', () => {
+  it('exposes the group role and data-slot', () => {
+    const el = document.createElement('div');
+    mountDirective(selectPlugin, 'h-select-group', el);
+    expect(el.getAttribute('data-slot')).toBe('select-group');
+    // Without the role the listbox owns a generic element and the group label is
+    // dropped.
+    expect(el.getAttribute('role')).toBe('group');
   });
 });
 
@@ -313,6 +535,43 @@ describe('h-select-option', () => {
   });
 });
 
+describe('h-select-search', () => {
+  function mountSearch(attrs = {}) {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    mountDirective(selectPlugin, 'h-select', host, { modifiers: [] });
+    const search = document.createElement('div');
+    for (const [name, value] of Object.entries(attrs)) search.setAttribute(name, value);
+    host.appendChild(search);
+    mountDirective(selectPlugin, 'h-select-search', search, { original: 'x-h-select-search' });
+    return { host, search, input: search.querySelector('input') };
+  }
+
+  // The combobox has to be the focusable input. On the wrapper the role sat on an
+  // element no keyboard user could reach.
+  it('puts the combobox semantics on the input, not on the row', () => {
+    const { host, search, input } = mountSearch();
+    expect(input.getAttribute('role')).toBe('combobox');
+    expect(input.getAttribute('aria-controls')).toBe(host._h_select.controls);
+    expect(input.getAttribute('aria-haspopup')).toBe('listbox');
+    expect(input.getAttribute('aria-autocomplete')).toBe('list');
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    expect(search.hasAttribute('role')).toBe(false);
+    expect(search.hasAttribute('aria-controls')).toBe(false);
+    expect(search.hasAttribute('aria-expanded')).toBe(false);
+    expect(search.getAttribute('data-slot')).toBe('select-search');
+  });
+
+  it('names the search input, overridably', () => {
+    expect(mountSearch().input.getAttribute('aria-label')).toBe('Search');
+    expect(mountSearch({ 'aria-label': 'Filter fruits' }).input.getAttribute('aria-label')).toBe('Filter fruits');
+  });
+
+  it('gives the search input its own data-slot so it cannot be mistaken for the trigger', () => {
+    expect(mountSearch().input.getAttribute('data-slot')).toBe('select-search-input');
+  });
+});
+
 describe('h-select-input keyboard navigation', () => {
   afterEach(() => {
     document.body.innerHTML = '';
@@ -337,7 +596,6 @@ describe('h-select-input keyboard navigation', () => {
     mountDirective(selectPlugin, 'h-select-input', input, { original: 'x-h-select-input', expression: '' });
 
     const content = document.createElement('div');
-    content.setAttribute('id', root._h_select.controls);
     root.appendChild(content);
     mountDirective(selectPlugin, 'h-select-content', content, { original: 'x-h-select-content' });
 
@@ -347,6 +605,12 @@ describe('h-select-input keyboard navigation', () => {
       mountDirective(selectPlugin, 'h-select-search', searchEl, { original: 'x-h-select-search' });
     }
 
+    // The list carries the id the trigger's aria-controls points at, so it is
+    // what the keyboard code resolves the options from.
+    const list = document.createElement('div');
+    content.appendChild(list);
+    mountDirective(selectPlugin, 'h-select-list', list, { original: 'x-h-select-list' });
+
     const options = [];
     for (let i = 0; i < count; i++) {
       const option = document.createElement('div');
@@ -354,7 +618,7 @@ describe('h-select-input keyboard navigation', () => {
       if (disabled.includes(i)) option.setAttribute('aria-disabled', 'true');
       if (bareDisabled.includes(i)) option.setAttribute('aria-disabled', '');
       if (descriptions[i] != null) option.setAttribute('data-description', descriptions[i]);
-      content.appendChild(option);
+      list.appendChild(option);
       mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: `'${label}'` }, { evaluateLater: () => (cb) => cb(label) });
       // After mounting: the option's filter effect clears `hidden` while the
       // search is empty, so a class set earlier would be stripped.
@@ -367,7 +631,7 @@ describe('h-select-input keyboard navigation', () => {
     // when the outside-dismiss listener lands on the document and would close
     // the list again, and a bubbling Enter would reach the root's own handler.
     root._h_select.trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
-    return { root, content, options, input, state: root._h_select };
+    return { root, content, list, options, input, state: root._h_select };
   }
 
   const tabIndexes = (options) => options.map((option) => option.getAttribute('tabindex'));

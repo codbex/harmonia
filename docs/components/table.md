@@ -524,9 +524,11 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
           <div x-h-select.table>
             <input x-h-select-input placeholder="Select" />
             <div x-h-select-content>
-              <div x-h-select-option="'Option 1'" data-value="1"></div>
-              <div x-h-select-option="'Option 2'" data-value="2"></div>
-              <div x-h-select-option="'Option 3'" data-value="3"></div>
+              <div x-h-select-list>
+                <div x-h-select-option="'Option 1'" data-value="1"></div>
+                <div x-h-select-option="'Option 2'" data-value="2"></div>
+                <div x-h-select-option="'Option 3'" data-value="3"></div>
+              </div>
             </div>
           </div>
         </td>

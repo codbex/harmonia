@@ -10,10 +10,12 @@
       <div x-h-select style="max-width: 12rem">
         <input x-h-select-input aria-label="Filter by segment" placeholder="All segments" x-model="segment" />
         <div x-h-select-content>
-          <div x-h-select-option="'All segments'" data-value="all"></div>
-          <div x-h-select-option="'Enterprise'" data-value="Enterprise"></div>
-          <div x-h-select-option="'Mid-market'" data-value="Mid-market"></div>
-          <div x-h-select-option="'Small business'" data-value="Small business"></div>
+          <div x-h-select-list>
+            <div x-h-select-option="'All segments'" data-value="all"></div>
+            <div x-h-select-option="'Enterprise'" data-value="Enterprise"></div>
+            <div x-h-select-option="'Mid-market'" data-value="Mid-market"></div>
+            <div x-h-select-option="'Small business'" data-value="Small business"></div>
+          </div>
         </div>
       </div>
       <div class="hbox gap-1">

@@ -238,10 +238,12 @@
                   <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="calendar"></svg>
                   <label class="flex-1 text-base font-medium" for="week-start">Week starts on</label>
                   <div x-h-select style="max-width: 8rem">
-                    <input x-h-select-input id="week-start" x-model="settings.firstDay" placeholder="Select" />
+                    <input x-h-select-input data-id="week-start" x-model="settings.firstDay" placeholder="Select" />
                     <div x-h-select-content>
-                      <div x-h-select-option="'Sunday'" data-value="0"></div>
-                      <div x-h-select-option="'Monday'" data-value="1"></div>
+                      <div x-h-select-list>
+                        <div x-h-select-option="'Sunday'" data-value="0"></div>
+                        <div x-h-select-option="'Monday'" data-value="1"></div>
+                      </div>
                     </div>
                   </div>
                 </li>
@@ -404,11 +406,13 @@
               <div x-h-field>
                 <label x-h-label for="nh-icon">Icon</label>
                 <div x-h-select>
-                  <input x-h-select-input id="nh-icon" x-model="newHabit.icon" placeholder="Select an icon" />
+                  <input x-h-select-input data-id="nh-icon" x-model="newHabit.icon" placeholder="Select an icon" />
                   <div x-h-select-content>
-                    <template x-for="option in iconOptions" :key="option.value">
-                      <div x-h-select-option="option.label" :data-value="option.value"></div>
-                    </template>
+                    <div x-h-select-list>
+                      <template x-for="option in iconOptions" :key="option.value">
+                        <div x-h-select-option="option.label" :data-value="option.value"></div>
+                      </template>
+                    </div>
                   </div>
                 </div>
               </div>
