@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 0, y: 0, placement: 'bottom' }),
@@ -10,7 +10,7 @@ vi.mock('@floating-ui/dom', () => ({
 }));
 
 import datepickerPlugin from '../../src/components/date-picker.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 function createDatePickerEl() {
   const el = document.createElement('div');
@@ -410,6 +410,55 @@ describe('h-date-picker-popup', () => {
     const { calEl } = createPopupSetup();
     const { ctx } = mountDirective(datepickerPlugin, 'h-date-picker-popup', calEl, { original: 'h-date-picker-popup', expression: '' });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  // The open/close mechanics live in the shared picker popover helper
+  // (src/common/picker-popover.js), exercised here through its consumer.
+  describe('open and close', () => {
+    function mountReactivePopup() {
+      const setup = createPopupSetup();
+      setup.wrapper._h_datepicker.state = createMockAlpine().reactive({ expanded: false });
+      mountDirective(datepickerPlugin, 'h-date-picker-popup', setup.calEl, { original: 'h-date-picker-popup', expression: '' });
+      return setup;
+    }
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('stops intercepting pointer events the moment the close starts', () => {
+      const { wrapper, calEl } = mountReactivePopup();
+      wrapper._h_datepicker.state.expanded = true;
+      expect(calEl.classList.contains('hidden')).toBe(false);
+      expect(calEl.classList.contains('pointer-events-none')).toBe(false);
+      wrapper._h_datepicker.state.expanded = false;
+      expect(calEl.classList.contains('pointer-events-none')).toBe(true);
+      expect(calEl.classList.contains('hidden')).toBe(false);
+      calEl.dispatchEvent(new Event('transitionend'));
+      expect(calEl.classList.contains('hidden')).toBe(true);
+    });
+
+    it('hides via the fallback timer when transitionend never fires', () => {
+      vi.useFakeTimers();
+      const { wrapper, calEl } = mountReactivePopup();
+      wrapper._h_datepicker.state.expanded = true;
+      wrapper._h_datepicker.state.expanded = false;
+      expect(calEl.classList.contains('hidden')).toBe(false);
+      vi.advanceTimersByTime(250);
+      expect(calEl.classList.contains('hidden')).toBe(true);
+    });
+
+    // A transitionend from the abandoned close used to pass the old opacity-0
+    // class guard and wedge the reopened popup hidden.
+    it('ignores a late transitionend when reopened mid-fade', () => {
+      const { wrapper, calEl } = mountReactivePopup();
+      wrapper._h_datepicker.state.expanded = true;
+      wrapper._h_datepicker.state.expanded = false;
+      wrapper._h_datepicker.state.expanded = true;
+      expect(calEl.classList.contains('pointer-events-none')).toBe(false);
+      calEl.dispatchEvent(new Event('transitionend'));
+      expect(calEl.classList.contains('hidden')).toBe(false);
+    });
   });
 
   it('parses manual input that includes a locale suffix (e.g. bg-BG "18.06.2027 г.")', () => {

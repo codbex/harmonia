@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
@@ -10,7 +10,7 @@ vi.mock('@floating-ui/dom', () => ({
 }));
 
 import popoverPlugin from '../../src/components/popover.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 describe('h-popover-trigger', () => {
   it('initializes _h_popover reactive state', () => {
@@ -170,5 +170,65 @@ describe('h-popover', () => {
     });
     expect(popoverEl.classList.contains('overflow-auto')).toBe(false);
     expect(popoverEl.classList.contains('overflow-hidden')).toBe(true);
+  });
+});
+
+describe('h-popover open and close', () => {
+  function mountReactivePopover() {
+    const container = document.createElement('div');
+    const trigger = document.createElement('button');
+    trigger._h_popover = createMockAlpine().reactive({
+      id: 'trigger-id',
+      controls: 'hpc-test-id',
+      expanded: false,
+      auto: true,
+    });
+    const popoverEl = document.createElement('div');
+    container.appendChild(trigger);
+    container.appendChild(popoverEl);
+    document.body.appendChild(container);
+    mountDirective(popoverPlugin, 'h-popover', popoverEl, {
+      original: 'x-h-popover',
+      modifiers: [],
+    });
+    return { trigger, popoverEl };
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('stops intercepting pointer events the moment the close starts', () => {
+    const { trigger, popoverEl } = mountReactivePopover();
+    trigger._h_popover.expanded = true;
+    expect(popoverEl.classList.contains('hidden')).toBe(false);
+    expect(popoverEl.classList.contains('pointer-events-none')).toBe(false);
+    trigger._h_popover.expanded = false;
+    expect(popoverEl.classList.contains('pointer-events-none')).toBe(true);
+    expect(popoverEl.classList.contains('hidden')).toBe(false);
+    popoverEl.dispatchEvent(new Event('transitionend'));
+    expect(popoverEl.classList.contains('hidden')).toBe(true);
+  });
+
+  it('hides via the fallback timer when transitionend never fires', () => {
+    vi.useFakeTimers();
+    const { trigger, popoverEl } = mountReactivePopover();
+    trigger._h_popover.expanded = true;
+    trigger._h_popover.expanded = false;
+    expect(popoverEl.classList.contains('hidden')).toBe(false);
+    vi.advanceTimersByTime(250);
+    expect(popoverEl.classList.contains('hidden')).toBe(true);
+  });
+
+  // A transitionend from the abandoned close used to pass the old opacity-0
+  // class guard and wedge the reopened popover hidden.
+  it('ignores a late transitionend when reopened mid-fade', () => {
+    const { trigger, popoverEl } = mountReactivePopover();
+    trigger._h_popover.expanded = true;
+    trigger._h_popover.expanded = false;
+    trigger._h_popover.expanded = true;
+    expect(popoverEl.classList.contains('pointer-events-none')).toBe(false);
+    popoverEl.dispatchEvent(new Event('transitionend'));
+    expect(popoverEl.classList.contains('hidden')).toBe(false);
   });
 });

@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { transitionClose } from '../common/transition-close';
 export default function (Alpine) {
   Alpine.directive('h-sheet-overlay', (el, { expression }, { effect, evaluate, evaluateLater, cleanup }) => {
     el._h_sheet_overlay = {
@@ -20,29 +21,34 @@ export default function (Alpine) {
       });
     });
 
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide an overlay reopened mid-fade.
+    const closer = transitionClose(el, () => {
+      if (!el._h_sheet_overlay.state.open) {
+        el.classList.add('hidden');
+      }
+    });
+
     effect(() => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         if (el._h_sheet_overlay.state.open) {
-          el.classList.remove('hidden', 'opacity-0');
+          closer.cancel();
+          el.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
         } else {
           el.classList.add('hidden', 'opacity-0');
         }
       } else if (el._h_sheet_overlay.state.open) {
-        el.classList.remove('hidden');
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         el.offsetHeight;
         el.classList.remove('opacity-0');
       } else {
-        el.classList.add('opacity-0');
+        // pointer-events-none from the first frame of the fade, so the
+        // invisible overlay stops swallowing clicks aimed at the page.
+        el.classList.add('opacity-0', 'pointer-events-none');
+        closer.schedule();
       }
     });
-
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains('opacity-0')) {
-        el.classList.add('hidden');
-      }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
 
     const onClick = (event) => {
       if (event.target.getAttribute('data-slot') === 'sheet-overlay') {
@@ -53,7 +59,7 @@ export default function (Alpine) {
     el.addEventListener('click', onClick);
     cleanup(() => {
       el.removeEventListener('click', onClick);
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
     });
   });
 
@@ -106,27 +112,32 @@ export default function (Alpine) {
     setSide(el.getAttribute('data-align'));
     el.classList.add(getTranslateClass(lastSide));
 
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains(getTranslateClass(lastSide))) {
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide a sheet reopened mid-slide.
+    const closer = transitionClose(el, () => {
+      if (!overlay._h_sheet_overlay.state.open) {
         el.classList.add('hidden');
       }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
+    });
 
     effect(() => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         if (overlay._h_sheet_overlay.state.open) {
-          el.classList.remove('hidden', getTranslateClass(lastSide));
+          closer.cancel();
+          el.classList.remove('hidden', getTranslateClass(lastSide), 'pointer-events-none');
         } else {
           el.classList.add('hidden', getTranslateClass(lastSide));
         }
       } else if (overlay._h_sheet_overlay.state.open) {
-        el.classList.remove('hidden');
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         el.offsetHeight;
         el.classList.remove(getTranslateClass(lastSide));
       } else {
-        el.classList.add(getTranslateClass(lastSide));
+        // pointer-events-none from the first frame of the slide, so the
+        // departing sheet stops swallowing clicks aimed at the page.
+        el.classList.add(getTranslateClass(lastSide), 'pointer-events-none');
+        closer.schedule();
       }
     });
 
@@ -134,7 +145,7 @@ export default function (Alpine) {
 
     cleanup(() => {
       observer.disconnect();
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
     });
   });
 }

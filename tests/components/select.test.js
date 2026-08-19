@@ -14,7 +14,7 @@ vi.mock('../../src/common/input-size.js', () => ({
 }));
 
 import selectPlugin from '../../src/components/select.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 describe('h-select', () => {
   it('initializes _h_select reactive state', () => {
@@ -240,6 +240,28 @@ describe('h-select-input', () => {
     ).toThrow();
   });
 
+  // The option's multiple-mode activation delegates the whole toggle to this
+  // setter, so its contract is what keeps the model array flat.
+  it('toggles an array model value in and out through _h_model.set and dispatches change', () => {
+    const { input, selectEl } = createSelectInputSetup();
+    const model = ['apple'];
+    input._x_model = { get: () => model, set: vi.fn() };
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(selectEl._h_select.multiple).toBe(true);
+    const onChange = vi.fn();
+    input.addEventListener('change', onChange);
+    selectEl._h_model.set('apple');
+    expect(model).toEqual([]);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    selectEl._h_model.set('banana');
+    expect(model).toEqual(['banana']);
+    expect(onChange).toHaveBeenCalledTimes(2);
+    input.removeEventListener('change', onChange);
+  });
+
   it('calls cleanup', () => {
     const { input } = createSelectInputSetup();
     const { ctx } = mountDirective(selectPlugin, 'h-select-input', input, {
@@ -317,6 +339,55 @@ describe('h-select-content', () => {
       original: 'x-h-select-content',
     });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  describe('open and close', () => {
+    function mountReactiveContent() {
+      const { selectEl, content } = createSelectPopupSetup();
+      selectEl._h_select = createMockAlpine().reactive(selectEl._h_select);
+      mountDirective(selectPlugin, 'h-select-content', content, {
+        original: 'x-h-select-content',
+      });
+      return { selectEl, content };
+    }
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('stops intercepting pointer events the moment the close starts', () => {
+      const { selectEl, content } = mountReactiveContent();
+      selectEl._h_select.expanded = true;
+      expect(content.classList.contains('hidden')).toBe(false);
+      expect(content.classList.contains('pointer-events-none')).toBe(false);
+      selectEl._h_select.expanded = false;
+      expect(content.classList.contains('pointer-events-none')).toBe(true);
+      expect(content.classList.contains('hidden')).toBe(false);
+      content.dispatchEvent(new Event('transitionend'));
+      expect(content.classList.contains('hidden')).toBe(true);
+    });
+
+    it('hides via the fallback timer when transitionend never fires', () => {
+      vi.useFakeTimers();
+      const { selectEl, content } = mountReactiveContent();
+      selectEl._h_select.expanded = true;
+      selectEl._h_select.expanded = false;
+      expect(content.classList.contains('hidden')).toBe(false);
+      vi.advanceTimersByTime(250);
+      expect(content.classList.contains('hidden')).toBe(true);
+    });
+
+    // A transitionend from the abandoned close used to pass the old opacity-0
+    // class guard and wedge the reopened popup hidden.
+    it('ignores a late transitionend when reopened mid-fade', () => {
+      const { selectEl, content } = mountReactiveContent();
+      selectEl._h_select.expanded = true;
+      selectEl._h_select.expanded = false;
+      selectEl._h_select.expanded = true;
+      expect(content.classList.contains('pointer-events-none')).toBe(false);
+      content.dispatchEvent(new Event('transitionend'));
+      expect(content.classList.contains('hidden')).toBe(false);
+    });
   });
 });
 
@@ -409,7 +480,7 @@ describe('h-select-label', () => {
 describe('h-select-option', () => {
   // Mount a real h-select on a host so the option gets a genuine reactive
   // _h_select ancestor state (findAncestorState walks parentElement).
-  function mountOption(bindings = {}, { description, children = [] } = {}) {
+  function mountOption(bindings = {}, { description, children = [], value } = {}) {
     const host = document.createElement('div');
     document.body.appendChild(host);
     mountDirective(selectPlugin, 'h-select', host, { modifiers: [] });
@@ -417,6 +488,7 @@ describe('h-select-option', () => {
     host._h_select.refreshLabel = () => {};
 
     const option = document.createElement('div');
+    if (value != null) option.setAttribute('data-value', value);
     if (description != null) option.setAttribute('data-description', description);
     for (const child of children) option.appendChild(child);
     host.appendChild(option);
@@ -521,6 +593,51 @@ describe('h-select-option', () => {
     expect(option.classList.contains('hidden')).toBe(true);
     state.search = 'app';
     expect(option.classList.contains('hidden')).toBe(false);
+  });
+
+  it('selects in multiple mode through _h_model.set with the raw value, not a direct push', () => {
+    const { host, option } = mountOption({ expression: "'Apple'" }, { value: 'apple' });
+    host._h_select.multiple = true;
+    const model = [];
+    const set = vi.fn();
+    host._h_model = { get: () => model, set };
+    option.click();
+    expect(set).toHaveBeenCalledTimes(1);
+    expect(set).toHaveBeenCalledWith('apple');
+    // The option must not touch the model array itself.
+    expect(model).toEqual([]);
+  });
+
+  it('deselects in multiple mode through _h_model.set, never splicing the model itself', () => {
+    const { host, option } = mountOption({ expression: "'Apple'" }, { value: 'apple' });
+    host._h_select.multiple = true;
+    const model = ['apple'];
+    const set = vi.fn();
+    host._h_model = { get: () => model, set };
+    option.click();
+    expect(set).toHaveBeenCalledTimes(1);
+    expect(set).toHaveBeenCalledWith('apple');
+    expect(model).toEqual(['apple']);
+  });
+
+  // Encodes the reported corruption: one deselect used to leave [['apple']] in the
+  // model (splice's return value pushed back in by set) instead of [].
+  it('round-trips select and deselect against the model toggle without nesting arrays', () => {
+    const { host, option } = mountOption({ expression: "'Apple'" }, { value: 'apple' });
+    host._h_select.multiple = true;
+    const model = ['apple'];
+    host._h_model = {
+      get: () => model,
+      set: (value) => {
+        const vIndex = model.indexOf(value);
+        if (vIndex > -1) model.splice(vIndex, 1);
+        else model.push(value);
+      },
+    };
+    option.click();
+    expect(model).toEqual([]);
+    option.click();
+    expect(model).toEqual(['apple']);
   });
 
   it('reads data-include-desc on the search element into reactive state', () => {

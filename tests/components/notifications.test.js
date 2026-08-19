@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import notificationsPlugin from '../../src/components/notifications.js';
 import { createMockAlpine, createMockContext } from '../test-utils.js';
 
@@ -142,6 +142,50 @@ describe('h-notification-overlay', () => {
       expect(list.classList.contains('overflow-visible')).toBe(true);
       expect(list.classList.contains('mask-[linear-gradient(to_top,black_85%,transparent)]')).toBe(true);
     }
+  });
+});
+
+describe('h-notification-overlay toast removal', () => {
+  function setupRemoval() {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const el = document.createElement('section');
+    document.body.appendChild(el);
+    alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, createMockContext(alpine));
+    const store = alpine.store('_h_notifications');
+    const listener = store.listeners[store.listeners.length - 1];
+    const toast = document.createElement('li');
+    toast.id = 'toast-1';
+    toast._h_animation_class = 'translate-x-full';
+    el.querySelector('ol').appendChild(toast);
+    return { alpine, listener, toast };
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('fades the toast out click-transparent and removes it on transitionend', () => {
+    const { alpine, listener, toast } = setupRemoval();
+    listener.removed('toast-1');
+    expect(toast.classList.contains('opacity-0')).toBe(true);
+    expect(toast.classList.contains('pointer-events-none')).toBe(true);
+    expect(toast.isConnected).toBe(true);
+    toast.dispatchEvent(new Event('transitionend'));
+    expect(toast.isConnected).toBe(false);
+    expect(alpine.destroyTree).toHaveBeenCalledWith(toast);
+  });
+
+  it('removes the toast via the fallback timer when transitionend never fires', () => {
+    vi.useFakeTimers();
+    const { alpine, listener, toast } = setupRemoval();
+    listener.removed('toast-1');
+    vi.advanceTimersByTime(250);
+    expect(toast.isConnected).toBe(false);
+    expect(alpine.destroyTree).toHaveBeenCalledTimes(1);
+    // The timer and the event are idempotent between each other.
+    toast.dispatchEvent(new Event('transitionend'));
+    expect(alpine.destroyTree).toHaveBeenCalledTimes(1);
   });
 });
 

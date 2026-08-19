@@ -37,7 +37,7 @@ rounded-none shadow-none
 Unique to Harmonia (not Tailwind):
 
 ```
-fade-b fade-l fade-r fade-t fade-x fade-y focus-outline focus-ring hbox leading-tight min-size-4 opacity-disabled position-center scrollbar-none tile-auto-lg tile-auto-md tile-auto-sm tile-auto-xl tile-double-lg tile-double-md tile-double-sm tile-double-xl tile-lg tile-md tile-sm tile-xl vbox
+fade-b-2 fade-b-4 fade-b-8 fade-l-2 fade-l-4 fade-l-8 fade-r-2 fade-r-4 fade-r-8 fade-t-2 fade-t-4 fade-t-8 fade-x-2 fade-x-4 fade-x-8 fade-y-2 fade-y-4 fade-y-8 focus-outline focus-ring hbox leading-tight min-size-4 opacity-disabled position-center scrollbar-none tile-auto-lg tile-auto-md tile-auto-sm tile-auto-xl tile-double-lg tile-double-md tile-double-sm tile-double-xl tile-lg tile-md tile-sm tile-xl vbox
 ```
 
 ## Tailwind utility subset

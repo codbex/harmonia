@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
@@ -155,6 +155,45 @@ describe('h-menu', () => {
 
     expect(typeof trigger._h_menu_trigger.openMenu).toBe('function');
     expect(typeof trigger._h_menu_trigger.closeMenu).toBe('function');
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('stops intercepting pointer events on close and hides via the fallback timer', async () => {
+    vi.useFakeTimers();
+    const { trigger, menu } = createMenuSetup();
+    mountDirective(menuPlugin, 'h-menu', menu, {
+      original: 'x-h-menu',
+      modifiers: [],
+    });
+    trigger.click();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(menu.classList.contains('hidden')).toBe(false);
+    expect(menu.classList.contains('pointer-events-none')).toBe(false);
+    menu._menu.close();
+    expect(menu.classList.contains('pointer-events-none')).toBe(true);
+    expect(menu.classList.contains('hidden')).toBe(false);
+    await vi.advanceTimersByTimeAsync(250);
+    expect(menu.classList.contains('hidden')).toBe(true);
+  });
+
+  // A transitionend from the abandoned close used to pass the old opacity-0
+  // class guard and wedge the reopened menu hidden.
+  it('ignores a late transitionend when reopened mid-fade', async () => {
+    const { trigger, menu } = createMenuSetup();
+    mountDirective(menuPlugin, 'h-menu', menu, {
+      original: 'x-h-menu',
+      modifiers: [],
+    });
+    trigger.click();
+    await new Promise((r) => setTimeout(r, 0));
+    menu._menu.close();
+    trigger.click();
+    expect(menu.classList.contains('pointer-events-none')).toBe(false);
+    menu.dispatchEvent(new Event('transitionend'));
+    expect(menu.classList.contains('hidden')).toBe(false);
   });
 
   function createOpenableMenuSetup({ items = 1, disabled = [] } = {}) {

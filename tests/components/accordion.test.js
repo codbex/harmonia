@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import accordionPlugin from '../../src/components/accordion.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 // happy-dom does not implement window.matchMedia
 vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: false, addListener: vi.fn(), removeListener: vi.fn() }));
@@ -178,5 +178,61 @@ describe('h-accordion-content', () => {
   it('calls cleanup', () => {
     const { ctx } = mountDirective(accordionPlugin, 'h-accordion-content', contentEl);
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe('h-accordion-content expand and collapse', () => {
+  let itemEl, contentEl;
+
+  function mountContent() {
+    const rootEl = document.createElement('div');
+    itemEl = document.createElement('div');
+    itemEl._h_accordionItem = createMockAlpine().reactive({ id: 'item-1', controls: 'content-1', expanded: false });
+    rootEl.appendChild(itemEl);
+    contentEl = document.createElement('div');
+    itemEl.appendChild(contentEl);
+    document.body.appendChild(rootEl);
+    mountDirective(accordionPlugin, 'h-accordion-content', contentEl);
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('stops intercepting pointer events the moment the collapse starts', () => {
+    mountContent();
+    itemEl._h_accordionItem.expanded = true;
+    expect(contentEl.classList.contains('hidden')).toBe(false);
+    expect(contentEl.classList.contains('pointer-events-none')).toBe(false);
+    itemEl._h_accordionItem.expanded = false;
+    expect(contentEl.classList.contains('pointer-events-none')).toBe(true);
+    expect(contentEl.classList.contains('hidden')).toBe(false);
+    contentEl.dispatchEvent(new Event('transitionend'));
+    expect(contentEl.classList.contains('hidden')).toBe(true);
+  });
+
+  it('hides via the fallback timer when transitionend never fires', () => {
+    vi.useFakeTimers();
+    mountContent();
+    itemEl._h_accordionItem.expanded = true;
+    itemEl._h_accordionItem.expanded = false;
+    expect(contentEl.classList.contains('hidden')).toBe(false);
+    vi.advanceTimersByTime(250);
+    expect(contentEl.classList.contains('hidden')).toBe(true);
+  });
+
+  // The expanded branch used to act only when hidden was already applied, so a
+  // reopen during the collapse fade did nothing and the late transitionend then
+  // wedged the expanded content hidden.
+  it('recovers when reopened mid-collapse and ignores the late transitionend', () => {
+    mountContent();
+    itemEl._h_accordionItem.expanded = true;
+    itemEl._h_accordionItem.expanded = false;
+    itemEl._h_accordionItem.expanded = true;
+    expect(contentEl.classList.contains('opacity-0')).toBe(false);
+    expect(contentEl.classList.contains('pointer-events-none')).toBe(false);
+    expect(contentEl.classList.contains('pb-4')).toBe(true);
+    contentEl.dispatchEvent(new Event('transitionend'));
+    expect(contentEl.classList.contains('hidden')).toBe(false);
   });
 });

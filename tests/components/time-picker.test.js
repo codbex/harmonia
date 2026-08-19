@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
@@ -14,7 +14,7 @@ vi.mock('../../src/common/input-size.js', () => ({
 }));
 
 import timepickerPlugin from '../../src/components/time-picker.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 describe('h-time-picker', () => {
   it('initializes _h_timepicker reactive state', () => {
@@ -316,5 +316,52 @@ describe('h-time-picker-popup', () => {
     const { popup } = createTimepickerPopupSetup();
     const { ctx } = mountDirective(timepickerPlugin, 'h-time-picker-popup', popup, {});
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  describe('open and close', () => {
+    function mountReactivePopup() {
+      const { timepicker, popup } = createTimepickerPopupSetup();
+      timepicker._h_timepicker = createMockAlpine().reactive(timepicker._h_timepicker);
+      mountDirective(timepickerPlugin, 'h-time-picker-popup', popup, {});
+      return { timepicker, popup };
+    }
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('stops intercepting pointer events the moment the close starts', () => {
+      const { timepicker, popup } = mountReactivePopup();
+      timepicker._h_timepicker.expanded = true;
+      expect(popup.classList.contains('hidden')).toBe(false);
+      expect(popup.classList.contains('pointer-events-none')).toBe(false);
+      timepicker._h_timepicker.expanded = false;
+      expect(popup.classList.contains('pointer-events-none')).toBe(true);
+      expect(popup.classList.contains('hidden')).toBe(false);
+      popup.dispatchEvent(new Event('transitionend'));
+      expect(popup.classList.contains('hidden')).toBe(true);
+    });
+
+    it('hides via the fallback timer when transitionend never fires', () => {
+      vi.useFakeTimers();
+      const { timepicker, popup } = mountReactivePopup();
+      timepicker._h_timepicker.expanded = true;
+      timepicker._h_timepicker.expanded = false;
+      expect(popup.classList.contains('hidden')).toBe(false);
+      vi.advanceTimersByTime(250);
+      expect(popup.classList.contains('hidden')).toBe(true);
+    });
+
+    // A transitionend from the abandoned close used to pass the old opacity-0
+    // class guard and wedge the reopened popup hidden.
+    it('ignores a late transitionend when reopened mid-fade', () => {
+      const { timepicker, popup } = mountReactivePopup();
+      timepicker._h_timepicker.expanded = true;
+      timepicker._h_timepicker.expanded = false;
+      timepicker._h_timepicker.expanded = true;
+      expect(popup.classList.contains('pointer-events-none')).toBe(false);
+      popup.dispatchEvent(new Event('transitionend'));
+      expect(popup.classList.contains('hidden')).toBe(false);
+    });
   });
 });

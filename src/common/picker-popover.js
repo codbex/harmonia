@@ -1,6 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import { Calendar, createSvg } from './icons';
+import { transitionClose } from './transition-close';
 
 // Shared trigger + popover mechanics for the date / date-time pickers. Each
 // picker keeps its own `_h_*` state object; these helpers are passed that object
@@ -177,9 +178,19 @@ export function setupPopover(el, { anchor, pickerState, Alpine, effect, cleanup,
     });
   }
 
+  // Guarded on the live state, not a class snapshot, so a late transitionend
+  // from an abandoned close cannot hide a popover reopened mid-fade.
+  const closer = transitionClose(el, () => {
+    if (!pickerState.state.expanded) {
+      el.classList.add('hidden');
+      Object.assign(el.style, { left: '0px', top: '0px' });
+    }
+  });
+
   effect(() => {
     if (pickerState.state.expanded) {
-      el.classList.remove('hidden');
+      closer.cancel();
+      el.classList.remove('hidden', 'pointer-events-none');
       if (autoUpdateCleanup) autoUpdateCleanup();
       autoUpdateCleanup = autoUpdate(anchor, el, updatePosition);
       Alpine.nextTick(() => {
@@ -190,22 +201,17 @@ export function setupPopover(el, { anchor, pickerState, Alpine, effect, cleanup,
         el.classList.add('hidden', 'scale-95', 'opacity-0');
         Object.assign(el.style, { left: '0px', top: '0px' });
       } else {
-        el.classList.add('scale-95', 'opacity-0');
+        // pointer-events-none from the first frame of the fade, so the
+        // invisible popover stops swallowing clicks aimed at the page.
+        el.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+        closer.schedule();
       }
       if (autoUpdateCleanup) autoUpdateCleanup();
     }
   });
 
-  const onTransitionEnd = (event) => {
-    if (event.target === el && event.target.classList.contains('opacity-0')) {
-      el.classList.add('hidden');
-      Object.assign(el.style, { left: '0px', top: '0px' });
-    }
-  };
-  el.addEventListener('transitionend', onTransitionEnd);
-
   cleanup(() => {
-    el.removeEventListener('transitionend', onTransitionEnd);
+    closer.dispose();
     if (autoUpdateCleanup) autoUpdateCleanup();
   });
 }

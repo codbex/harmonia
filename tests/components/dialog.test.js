@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import dialogPlugin from '../../src/components/dialog.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -46,6 +46,105 @@ describe('h-dialog-overlay', () => {
   it('calls cleanup', () => {
     const { ctx } = mountDirective(dialogPlugin, 'h-dialog-overlay', el);
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe('h-dialog-overlay open and close', () => {
+  let el;
+
+  beforeEach(() => {
+    el = document.createElement('div');
+    document.body.appendChild(el);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  // MutationObserver callbacks need a task turn to be delivered.
+  const flush = () => new Promise((r) => setTimeout(r, 0));
+
+  it('opens by removing hidden and hides again through transitionend', async () => {
+    mountDirective(dialogPlugin, 'h-dialog-overlay', el);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    expect(el.classList.contains('hidden')).toBe(false);
+    expect(el.classList.contains('opacity-0')).toBe(false);
+    el.setAttribute('data-open', 'false');
+    await flush();
+    expect(el.classList.contains('opacity-0')).toBe(true);
+    expect(el.classList.contains('hidden')).toBe(false);
+    el.dispatchEvent(new Event('transitionend'));
+    expect(el.classList.contains('hidden')).toBe(true);
+  });
+
+  it('stops intercepting pointer events the moment the close starts', async () => {
+    mountDirective(dialogPlugin, 'h-dialog-overlay', el);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    expect(el.classList.contains('pointer-events-none')).toBe(false);
+    el.setAttribute('data-open', 'false');
+    await flush();
+    // Immediately, not only once the fade has finished.
+    expect(el.classList.contains('pointer-events-none')).toBe(true);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    expect(el.classList.contains('pointer-events-none')).toBe(false);
+  });
+
+  it('hides via the fallback timer when transitionend never fires', async () => {
+    vi.useFakeTimers();
+    mountDirective(dialogPlugin, 'h-dialog-overlay', el);
+    el.setAttribute('data-open', 'true');
+    await vi.advanceTimersByTimeAsync(0);
+    el.setAttribute('data-open', 'false');
+    await vi.advanceTimersByTimeAsync(0);
+    expect(el.classList.contains('hidden')).toBe(false);
+    await vi.advanceTimersByTimeAsync(250);
+    expect(el.classList.contains('hidden')).toBe(true);
+  });
+
+  it('reopening cancels the pending fallback timer', async () => {
+    vi.useFakeTimers();
+    mountDirective(dialogPlugin, 'h-dialog-overlay', el);
+    el.setAttribute('data-open', 'true');
+    await vi.advanceTimersByTimeAsync(0);
+    el.setAttribute('data-open', 'false');
+    await vi.advanceTimersByTimeAsync(0);
+    el.setAttribute('data-open', 'true');
+    await vi.advanceTimersByTimeAsync(300);
+    expect(el.classList.contains('hidden')).toBe(false);
+  });
+
+  // A transitionend from the abandoned close arriving between the reopen and
+  // Alpine's nextTick (a real task boundary in Alpine) used to pass the old
+  // opacity-0 class guard and wedge the open overlay hidden.
+  it('ignores a late transitionend from an abandoned close after reopening', async () => {
+    const { alpine } = mountDirective(dialogPlugin, 'h-dialog-overlay', el);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    el.setAttribute('data-open', 'false');
+    await flush();
+    // Defer nextTick like real Alpine, so opacity-0 is still present when the
+    // late event lands.
+    const pending = [];
+    alpine.nextTick = (fn) => pending.push(fn);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    expect(el.classList.contains('opacity-0')).toBe(true);
+    el.dispatchEvent(new Event('transitionend'));
+    expect(el.classList.contains('hidden')).toBe(false);
+    pending.forEach((fn) => fn());
+    expect(el.classList.contains('opacity-0')).toBe(false);
+    expect(el.classList.contains('hidden')).toBe(false);
+  });
+
+  it('does not hide when the opening fade finishes', async () => {
+    mountDirective(dialogPlugin, 'h-dialog-overlay', el);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    el.dispatchEvent(new Event('transitionend'));
+    expect(el.classList.contains('hidden')).toBe(false);
   });
 });
 

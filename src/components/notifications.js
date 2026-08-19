@@ -1,4 +1,5 @@
 import { classListStartsWith } from '../common/class-list';
+import { transitionClose } from '../common/transition-close';
 import { getBreakpointListener } from '../utils/breakpoint-listener';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
@@ -198,15 +199,18 @@ export default function (Alpine) {
             Alpine.destroyTree(element);
             element.remove();
           } else {
-            element.addEventListener(
-              'transitionend',
-              () => {
+            // The isConnected guard makes finish idempotent between the fade's
+            // transitionend and the fallback timer, whichever comes second.
+            const closer = transitionClose(element, () => {
+              if (element.isConnected) {
                 Alpine.destroyTree(element);
                 element.remove();
-              },
-              { once: true }
-            );
-            element.classList.add(element._h_animation_class, 'opacity-0');
+              }
+            });
+            // pointer-events-none from the first frame of the fade, so the
+            // departing toast stops swallowing clicks aimed at the page.
+            element.classList.add(element._h_animation_class, 'opacity-0', 'pointer-events-none');
+            closer.schedule();
           }
         }
       },

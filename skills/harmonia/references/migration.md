@@ -2,6 +2,10 @@
 
 Breaking changes only, grouped by version (newest first). For the full history including features and fixes, see [CHANGELOG.md](https://github.com/codbex/harmonia/blob/main/CHANGELOG.md).
 
+## v2.13.0
+
+- **Breaking: the fade utilities take a size, and the bare names are gone.** `fade-x`, `fade-y`, `fade-t`, `fade-b`, `fade-l` and `fade-r` no longer exist. Each class now ends with a size on the spacing scale, shipped in `2`, `4` and `8` (a 0.5rem, 1rem or 2rem fade). To migrate, append `-2` to the old name, so `fade-x` becomes `fade-x-2` with the exact same 0.5rem fade.
+
 ## v2.12.0
 
 - **Breaking: the options must now be wrapped in `x-h-select-list`.** The popup keeps the positioning and the chrome, and the new element inside it is the `listbox` and the scroll container. That is what lets an `x-h-select-search` sit above it as a sibling instead of inside the listbox, where it was an invalid child that screen readers could not account for. It also means the search stays visible while the options scroll under it. To migrate, wrap everything inside `x-h-select-content` other than the search in a `x-h-select-list`.

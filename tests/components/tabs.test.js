@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import tabsPlugin from '../../src/components/tabs.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -690,6 +690,267 @@ describe('h-tab-list keyboard navigation', () => {
     tabs[0].focus();
     for (const key of ['ArrowRight', 'ArrowLeft', 'Home', 'End']) {
       expect(keydown(document.activeElement, key).defaultPrevented, key).toBe(true);
+    }
+  });
+});
+
+// happy-dom runs no layout, so the scroll metrics (prototype getters that always
+// return zero) are stubbed per element as own properties. scrollLeft/scrollTop
+// need no stub, since happy-dom's accessors store assigned values, but no scroll
+// event fires on assignment, so tests dispatch it themselves.
+const setMetrics = (el, props) => {
+  for (const [key, value] of Object.entries(props)) {
+    Object.defineProperty(el, key, { value, configurable: true });
+  }
+};
+
+const setRect = (el, rect) => {
+  const box = { top: 0, bottom: 0, left: 0, right: 0, ...rect };
+  box.width = box.right - box.left;
+  box.height = box.bottom - box.top;
+  el.getBoundingClientRect = () => box;
+};
+
+describe('h-tab-list overflow fade', () => {
+  const fadeClasses = ['fade-x-8', 'fade-l-8', 'fade-r-8', 'fade-y-8', 'fade-t-8', 'fade-b-8'];
+  let observers;
+  let OriginalResizeObserver;
+  let cancelFrame;
+
+  beforeEach(() => {
+    observers = [];
+    OriginalResizeObserver = global.ResizeObserver;
+    global.ResizeObserver = class {
+      constructor(callback) {
+        this.callback = callback;
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+        observers.push(this);
+      }
+    };
+    cancelFrame = vi.fn();
+    vi.stubGlobal('requestAnimationFrame', (callback) => {
+      callback();
+      return 1;
+    });
+    vi.stubGlobal('cancelAnimationFrame', cancelFrame);
+  });
+
+  afterEach(() => {
+    global.ResizeObserver = OriginalResizeObserver;
+    vi.unstubAllGlobals();
+  });
+
+  it('shows no fade when the list does not overflow', () => {
+    const { list } = createTabs();
+    setMetrics(list, { scrollWidth: 200, clientWidth: 200 });
+    list.dispatchEvent(new Event('scroll'));
+    for (const cls of fadeClasses) {
+      expect(list.classList.contains(cls), cls).toBe(false);
+    }
+  });
+
+  it('fades only the end edge at the start of an overflowing list', () => {
+    const { list } = createTabs();
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200 });
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-r-8')).toBe(true);
+    expect(list.classList.contains('fade-l-8')).toBe(false);
+    expect(list.classList.contains('fade-x-8')).toBe(false);
+  });
+
+  it('fades both edges with the single fade-x-8 class mid-scroll', () => {
+    const { list } = createTabs();
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200 });
+    list.scrollLeft = 100;
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-x-8')).toBe(true);
+    expect(list.classList.contains('fade-l-8')).toBe(false);
+    expect(list.classList.contains('fade-r-8')).toBe(false);
+  });
+
+  it('fades only the start edge at the end, within a one pixel epsilon', () => {
+    const { list } = createTabs();
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200 });
+    list.scrollLeft = 199.5;
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-l-8')).toBe(true);
+    expect(list.classList.contains('fade-x-8')).toBe(false);
+    expect(list.classList.contains('fade-r-8')).toBe(false);
+  });
+
+  it('uses the vertical fade classes when vertical', () => {
+    const { list } = createTabs({ orientation: 'vertical' });
+    setMetrics(list, { scrollHeight: 400, clientHeight: 200 });
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-b-8')).toBe(true);
+    list.scrollTop = 100;
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-y-8')).toBe(true);
+    expect(list.classList.contains('fade-b-8')).toBe(false);
+    list.scrollTop = 200;
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-t-8')).toBe(true);
+    expect(list.classList.contains('fade-y-8')).toBe(false);
+  });
+
+  it('recomputes the fades when the orientation changes at runtime', async () => {
+    const { root, list } = createTabs();
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200, scrollHeight: 400, clientHeight: 200 });
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-r-8')).toBe(true);
+    root.setAttribute('data-orientation', 'vertical');
+    await flush();
+    expect(list.classList.contains('fade-r-8')).toBe(false);
+    expect(list.classList.contains('fade-b-8')).toBe(true);
+  });
+
+  it('updates the fades when a tab registers and when one unregisters', () => {
+    const { list } = createTabs();
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200 });
+    const { mount } = mountTabInto(list, 'extra');
+    expect(list.classList.contains('fade-r-8')).toBe(true);
+    setMetrics(list, { scrollWidth: 200 });
+    mount.ctx.cleanup.mock.calls[0][0]();
+    expect(list.classList.contains('fade-r-8')).toBe(false);
+  });
+
+  it('observes the list and every tab for size changes', () => {
+    const { list, tabs, tabMounts } = createTabs();
+    expect(observers).toHaveLength(1);
+    expect(observers[0].observe).toHaveBeenCalledWith(list);
+    for (const tab of tabs) {
+      expect(observers[0].observe).toHaveBeenCalledWith(tab);
+    }
+    tabMounts[0].ctx.cleanup.mock.calls[0][0]();
+    expect(observers[0].unobserve).toHaveBeenCalledWith(tabs[0]);
+  });
+
+  it('updates the fades when the resize observer fires', () => {
+    const { list } = createTabs();
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200 });
+    observers[0].callback();
+    expect(list.classList.contains('fade-r-8')).toBe(true);
+  });
+
+  it('removes the scroll listener, cancels the pending frame and disconnects the observer on cleanup', () => {
+    const { list, listMount } = createTabs();
+    cancelFrame.mockClear();
+    listMount.ctx.cleanup.mock.calls[0][0]();
+    expect(observers[0].disconnect).toHaveBeenCalled();
+    expect(cancelFrame).toHaveBeenCalledWith(1);
+    setMetrics(list, { scrollWidth: 400, clientWidth: 200 });
+    list.dispatchEvent(new Event('scroll'));
+    expect(list.classList.contains('fade-r-8')).toBe(false);
+  });
+});
+
+describe('h-tab-list selected tab reveal', () => {
+  it('scrolls a newly selected tab into view at the nearest end edge', async () => {
+    const { list, tabs } = createTabs({ count: 4, selected: 0 });
+    setRect(list, { left: 0, right: 200 });
+    setRect(tabs[2], { left: 250, right: 310 });
+    tabs[0].setAttribute('aria-selected', 'false');
+    tabs[2].setAttribute('aria-selected', 'true');
+    await flush();
+    expect(list.scrollLeft).toBe(110);
+  });
+
+  it('scrolls a newly selected tab into view at the nearest start edge', async () => {
+    const { list, tabs } = createTabs({ count: 4, selected: 3 });
+    list.scrollLeft = 100;
+    setRect(list, { left: 0, right: 200 });
+    setRect(tabs[1], { left: -50, right: 10 });
+    tabs[3].setAttribute('aria-selected', 'false');
+    tabs[1].setAttribute('aria-selected', 'true');
+    await flush();
+    expect(list.scrollLeft).toBe(50);
+  });
+
+  it('does not scroll when the selected tab is already fully visible', async () => {
+    const { list, tabs } = createTabs({ count: 3, selected: 0 });
+    list.scrollLeft = 40;
+    setRect(list, { left: 0, right: 200 });
+    setRect(tabs[1], { left: 20, right: 80 });
+    tabs[0].setAttribute('aria-selected', 'false');
+    tabs[1].setAttribute('aria-selected', 'true');
+    await flush();
+    expect(list.scrollLeft).toBe(40);
+  });
+
+  it('does not move the scroll when a disabled toggle re-fires selectionChanged', async () => {
+    const { list, tabs } = createTabs({ count: 3, selected: 0 });
+    setRect(list, { left: 0, right: 200 });
+    setRect(tabs[0], { left: 250, right: 310 });
+    list.scrollLeft = 40;
+    tabs[1].disabled = true;
+    await flush();
+    expect(list.scrollLeft).toBe(40);
+  });
+
+  it('reveals a tab that mounts already selected', () => {
+    const { list } = createTabs({ count: 0 });
+    setRect(list, { left: 0, right: 200 });
+    const tab = document.createElement('button');
+    tab.setAttribute('id', 'late');
+    tab.setAttribute('aria-controls', 'late-panel');
+    tab.setAttribute('aria-selected', 'true');
+    setRect(tab, { left: 250, right: 310 });
+    list.appendChild(tab);
+    mountDirective(tabsPlugin, 'h-tab', tab, { original: 'x-h-tab' });
+    expect(list.scrollLeft).toBe(110);
+  });
+
+  it('reveals along the vertical axis when vertical', async () => {
+    const { list, tabs } = createTabs({ orientation: 'vertical', count: 4, selected: 0 });
+    setRect(list, { top: 0, bottom: 100 });
+    setRect(tabs[2], { top: 150, bottom: 180 });
+    tabs[0].setAttribute('aria-selected', 'false');
+    tabs[2].setAttribute('aria-selected', 'true');
+    await flush();
+    expect(list.scrollTop).toBe(80);
+  });
+
+  it('does nothing on deselection and reveals the same tab when it is selected again', async () => {
+    const { list, tabs } = createTabs({ count: 3, selected: 1 });
+    setRect(list, { left: 0, right: 200 });
+    setRect(tabs[1], { left: 250, right: 310 });
+    list.scrollLeft = 40;
+    tabs[1].setAttribute('aria-selected', 'false');
+    await flush();
+    expect(list.scrollLeft).toBe(40);
+    tabs[1].setAttribute('aria-selected', 'true');
+    await flush();
+    expect(list.scrollLeft).toBe(150);
+  });
+
+  it('finishes the initial reveal on the first resize when layout was not ready at mount, and only then', () => {
+    const observers = [];
+    const OriginalResizeObserver = global.ResizeObserver;
+    global.ResizeObserver = class {
+      constructor(callback) {
+        this.callback = callback;
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+        observers.push(this);
+      }
+    };
+    try {
+      const { list, tabs } = createTabs({ count: 3, selected: 2 });
+      // Every rect was zero at mount, so nothing scrolled.
+      expect(list.scrollLeft).toBe(0);
+      setRect(list, { left: 0, right: 200 });
+      setRect(tabs[2], { left: 250, right: 310 });
+      observers[0].callback();
+      expect(list.scrollLeft).toBe(110);
+      // Settled, so a later resize leaves the user's scroll position alone.
+      list.scrollLeft = 40;
+      observers[0].callback();
+      expect(list.scrollLeft).toBe(40);
+    } finally {
+      global.ResizeObserver = OriginalResizeObserver;
     }
   });
 });

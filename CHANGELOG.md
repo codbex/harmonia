@@ -1,5 +1,26 @@
 # Changelog
 
+## v2.13.0
+
+A release that makes the Tabs show where they overflow. The tab list now fades the edge that hides more tabs and keeps the selected tab in view, and the fade mask utilities behind it now take a size. It also fixes two multiple-select bugs, where deselecting an option corrupted the bound array and selecting one did not update the trigger, and makes closing animations across the library robust, so they can no longer swallow clicks or leave an invisible layer stuck over the page. There is a breaking change to the fade utility class names.
+
+### Tabs
+
+- **New: the tab list shows where it overflows.** When the tabs outgrow their list, the edge that hides more tabs fades out, updating as the list scrolls or resizes. The selected tab is also brought into view automatically, both when it first renders and when the selection changes.
+
+### Masks
+
+- **Breaking: the fade utilities take a size, and the bare names are gone.** `fade-x`, `fade-y`, `fade-t`, `fade-b`, `fade-l` and `fade-r` no longer exist. Each class now ends with a size on the spacing scale, shipped in `2`, `4` and `8` (a 0.5rem, 1rem or 2rem fade). To migrate, append `-2` to the old name, so `fade-x` becomes `fade-x-2` with the exact same 0.5rem fade.
+
+### Select
+
+- **Fixed: deselecting an option of a multiple select corrupted the bound array.** Instead of removing the value, each deselect pushed a nested one-element array into the model, so the array never shrank and anything gating on its length kept firing.
+- **Fixed: selecting an option of a multiple select did not update the trigger.** No `change` event was dispatched on select, so the trigger label and the validity state only caught up on the next deselect.
+
+### Closing animations
+
+- **Fixed: a closing overlay or popup could swallow clicks or get stuck invisible.** While a close animation ran, the element kept intercepting pointer events, so a click right after closing a dialog hit the still-fading overlay instead of the page. The class that hides the element was also only restored by the browser's `transitionend` event, which is not guaranteed to arrive (an interrupted animation or a hidden tab can drop it), leaving an invisible layer covering the page. And reopening during the fade could leave the element stuck hidden while its state said open. Closing now turns off pointer events immediately, a fallback finishes the close when the event never comes, and reopening mid-fade recovers cleanly. This applies to the dialog overlay, backdrop, sheet, menu, popover, select, the date and time pickers, tooltip, accordion and notifications.
+
 ## v2.12.0
 
 An accessibility release for the Select. Its trigger is now a real button that can be named and referenced, the options moved into their own `x-h-select-list` so the search no longer sits inside the listbox, and the native input is no longer `display:none`, which is what stopped a `required` select from ever reporting itself. It also ships the `hidden!` and `tracking-tight` utility classes. There are breaking changes to the select's markup.

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({
@@ -14,7 +14,7 @@ vi.mock('@floating-ui/dom', () => ({
 }));
 
 import tooltipPlugin from '../../src/components/tooltip.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 describe('h-tooltip-trigger', () => {
   it('initializes _h_tooltip reactive state', () => {
@@ -128,5 +128,61 @@ describe('h-tooltip', () => {
     const { tooltipEl } = createTooltipSetup();
     const { ctx } = mountDirective(tooltipPlugin, 'h-tooltip', tooltipEl, { original: 'x-h-tooltip' });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe('h-tooltip show and hide', () => {
+  function mountReactiveTooltip() {
+    const container = document.createElement('div');
+    const trigger = document.createElement('button');
+    trigger._h_tooltip = createMockAlpine().reactive({
+      id: 'trigger-id',
+      controls: 'htp-test-id',
+      shown: false,
+    });
+    const tooltipEl = document.createElement('div');
+    container.appendChild(trigger);
+    container.appendChild(tooltipEl);
+    document.body.appendChild(container);
+    mountDirective(tooltipPlugin, 'h-tooltip', tooltipEl, { original: 'x-h-tooltip' });
+    return { trigger, tooltipEl };
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('stops intercepting pointer events the moment the hide starts', () => {
+    const { trigger, tooltipEl } = mountReactiveTooltip();
+    trigger._h_tooltip.shown = true;
+    expect(tooltipEl.classList.contains('hidden')).toBe(false);
+    expect(tooltipEl.classList.contains('pointer-events-none')).toBe(false);
+    trigger._h_tooltip.shown = false;
+    expect(tooltipEl.classList.contains('pointer-events-none')).toBe(true);
+    expect(tooltipEl.classList.contains('hidden')).toBe(false);
+    tooltipEl.dispatchEvent(new Event('transitionend'));
+    expect(tooltipEl.classList.contains('hidden')).toBe(true);
+  });
+
+  it('hides via the fallback timer when transitionend never fires', () => {
+    vi.useFakeTimers();
+    const { trigger, tooltipEl } = mountReactiveTooltip();
+    trigger._h_tooltip.shown = true;
+    trigger._h_tooltip.shown = false;
+    expect(tooltipEl.classList.contains('hidden')).toBe(false);
+    vi.advanceTimersByTime(250);
+    expect(tooltipEl.classList.contains('hidden')).toBe(true);
+  });
+
+  // A transitionend from the abandoned hide used to pass the old opacity-0
+  // class guard and wedge the reshown tooltip hidden.
+  it('ignores a late transitionend when reshown mid-fade', () => {
+    const { trigger, tooltipEl } = mountReactiveTooltip();
+    trigger._h_tooltip.shown = true;
+    trigger._h_tooltip.shown = false;
+    trigger._h_tooltip.shown = true;
+    expect(tooltipEl.classList.contains('pointer-events-none')).toBe(false);
+    tooltipEl.dispatchEvent(new Event('transitionend'));
+    expect(tooltipEl.classList.contains('hidden')).toBe(false);
   });
 });

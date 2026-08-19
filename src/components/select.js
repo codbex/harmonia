@@ -2,6 +2,7 @@ import { autoUpdate, computePosition, flip, offset, shift, size } from '@floatin
 import { findAncestorState } from '../common/ancestor';
 import { isDisabled } from '../common/disabled';
 import { invalidInputClasses, userInvalidInputClasses } from '../common/shared-classes';
+import { transitionClose } from '../common/transition-close';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronDown, Search, createSvg } from './../common/icons';
@@ -514,9 +515,22 @@ export default function (Alpine) {
       });
     }
 
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide a popup reopened mid-fade.
+    const closer = transitionClose(el, () => {
+      if (!select._h_select.expanded) {
+        el.classList.add('hidden');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      }
+    });
+
     effect(() => {
       if (select._h_select.expanded) {
-        el.classList.remove('hidden');
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         autoUpdateCleanup = autoUpdate(select._h_select.trigger, el, updatePosition);
       } else {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -526,26 +540,17 @@ export default function (Alpine) {
             top: '0px',
           });
         } else {
-          el.classList.add('scale-95', 'opacity-0');
+          // pointer-events-none from the first frame of the fade, so the
+          // invisible popup stops swallowing clicks aimed at the page.
+          el.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+          closer.schedule();
         }
         if (autoUpdateCleanup) autoUpdateCleanup();
       }
     });
 
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains('opacity-0')) {
-        el.classList.add('hidden');
-        Object.assign(el.style, {
-          left: '0px',
-          top: '0px',
-        });
-      }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
-
     cleanup(() => {
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
     });
   });
 
@@ -817,13 +822,8 @@ export default function (Alpine) {
       if ((event.type === 'keydown' && (event.key === 'Enter' || event.key === ' ')) || event.type === 'click') {
         if (select._h_select.multiple) {
           event.stopPropagation();
-          const vIndex = select._h_model.get().indexOf(getValue());
-          if (vIndex > -1) {
-            const val = select._h_model.get().splice(vIndex, 1);
-            select._h_model.set(val);
-          } else {
-            select._h_model.get().push(getValue());
-          }
+          // The model setter is itself the toggle for the multiple case.
+          select._h_model.set(getValue());
         } else if (select._h_model.get() !== getValue()) {
           select._h_model.set(getValue());
         } else if (select.getAttribute('data-clearable') === 'true') {

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import backdropPlugin from '../../src/components/backdrop.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -54,6 +54,66 @@ describe('h-backdrop', () => {
     expect(removeSpy).toHaveBeenCalledWith('transitionend', expect.any(Function));
     disconnectSpy.mockRestore();
     removeSpy.mockRestore();
+  });
+});
+
+describe('h-backdrop open and close', () => {
+  let el;
+
+  beforeEach(() => {
+    el = document.createElement('div');
+    document.body.appendChild(el);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  // MutationObserver callbacks need a task turn to be delivered.
+  const flush = () => new Promise((r) => setTimeout(r, 0));
+
+  it('stops intercepting pointer events the moment the close starts', async () => {
+    mountDirective(backdropPlugin, 'h-backdrop', el);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    expect(el.classList.contains('pointer-events-none')).toBe(false);
+    el.setAttribute('data-open', 'false');
+    await flush();
+    expect(el.classList.contains('pointer-events-none')).toBe(true);
+    expect(el.classList.contains('hidden')).toBe(false);
+    el.dispatchEvent(new Event('transitionend'));
+    expect(el.classList.contains('hidden')).toBe(true);
+  });
+
+  it('hides via the fallback timer when transitionend never fires', async () => {
+    vi.useFakeTimers();
+    mountDirective(backdropPlugin, 'h-backdrop', el);
+    el.setAttribute('data-open', 'true');
+    await vi.advanceTimersByTimeAsync(0);
+    el.setAttribute('data-open', 'false');
+    await vi.advanceTimersByTimeAsync(0);
+    expect(el.classList.contains('hidden')).toBe(false);
+    await vi.advanceTimersByTimeAsync(250);
+    expect(el.classList.contains('hidden')).toBe(true);
+  });
+
+  // A transitionend from the abandoned close arriving between the reopen and
+  // Alpine's nextTick used to pass the old opacity-0 class guard and wedge the
+  // open backdrop hidden.
+  it('ignores a late transitionend from an abandoned close after reopening', async () => {
+    const { alpine } = mountDirective(backdropPlugin, 'h-backdrop', el);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    el.setAttribute('data-open', 'false');
+    await flush();
+    const pending = [];
+    alpine.nextTick = (fn) => pending.push(fn);
+    el.setAttribute('data-open', 'true');
+    await flush();
+    el.dispatchEvent(new Event('transitionend'));
+    expect(el.classList.contains('hidden')).toBe(false);
+    pending.forEach((fn) => fn());
+    expect(el.classList.contains('opacity-0')).toBe(false);
   });
 });
 

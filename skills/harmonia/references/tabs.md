@@ -8,7 +8,11 @@ Part of the Harmonia Alpine.js component library. Every directive uses the `x-h-
 
 Use tabs to group related content or functionality, allowing users to switch between sections without leaving the current view.
 
+## Behavior
+
 A tab can carry one action, such as a close button, by placing `x-h-tab-action` on a `<span>` inside it.
+
+When the tabs outgrow their list, the list scrolls in place with no visible scrollbar, and the edge that hides more tabs fades out to show where the overflow is. The selected tab is brought into view automatically, both when it first renders and when the selection changes.
 
 ## Directives
 
@@ -204,6 +208,65 @@ Panels are focusable by default, so Tab moves from the selected tab into its pan
   <div x-h-tabs-content id="hit3c" aria-labelledby="hit3" :hidden="activeTabId !== 'hit3'">
     <div class="p-2">Tab 3 Content</div>
   </div>
+</div>
+```
+
+### Overflowing tabs
+
+When the tabs do not fit, the list scrolls in place and the edge hiding more tabs fades out. Tab 8 starts selected, so the list opens scrolled to it.
+
+```html
+<div x-h-tabs data-orientation="horizontal" x-data="{ tabs: Array.from({ length: 12 }, (_, i) => `ovh${i + 1}`), activeTabId: 'ovh8' }">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <template x-for="(id, i) in tabs" :key="id">
+        <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+      </template>
+    </div>
+  </div>
+  <template x-for="(id, i) in tabs" :key="id">
+    <div x-h-tabs-content :id="`${id}c`" :aria-labelledby="id" :hidden="activeTabId !== id">
+      <div class="p-2" x-text="`Tab ${i + 1} Content`"></div>
+    </div>
+  </template>
+</div>
+```
+
+### Overflowing tabs with actions
+
+The action buttons keep their place in the bar while the list scrolls independently. Adding a tab selects it, so the list scrolls to reveal it.
+
+```html
+<div
+  x-h-tabs
+  data-orientation="horizontal"
+  x-data="{
+    count: 12,
+    tabs: Array.from({ length: 12 }, (_, i) => `ova${i + 1}`),
+    activeTabId: 'ova1',
+    add() {
+      this.tabs.push(`ova${++this.count}`);
+      this.activeTabId = `ova${this.count}`;
+    },
+  }"
+>
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <template x-for="(id, i) in tabs" :key="id">
+        <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+      </template>
+    </div>
+    <div x-h-tab-list-actions>
+      <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button" @click="add()">
+        <svg x-h-lucide role="presentation" data-lucide="plus"></svg>
+      </button>
+    </div>
+  </div>
+  <template x-for="(id, i) in tabs" :key="id">
+    <div x-h-tabs-content :id="`${id}c`" :aria-labelledby="id" :hidden="activeTabId !== id">
+      <div class="p-2" x-text="`Tab ${i + 1} Content`"></div>
+    </div>
+  </template>
 </div>
 ```
 
@@ -449,6 +512,27 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
   <div x-h-tabs-content id="vit3c" aria-labelledby="vit3" :hidden="activeTabId !== 'vit3'">
     <div class="p-2">Tab 3 Content</div>
   </div>
+</div>
+```
+
+### Overflowing vertical tabs
+
+A vertical list scrolls once something constrains its height, here a fixed height on the root. The edge hiding more tabs fades out, and Tab 6 starts selected, so the list opens scrolled to it.
+
+```html
+<div x-h-tabs data-orientation="vertical" style="height: 8rem" x-data="{ tabs: Array.from({ length: 10 }, (_, i) => `ovv${i + 1}`), activeTabId: 'ovv6' }">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <template x-for="(id, i) in tabs" :key="id">
+        <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+      </template>
+    </div>
+  </div>
+  <template x-for="(id, i) in tabs" :key="id">
+    <div x-h-tabs-content :id="`${id}c`" :aria-labelledby="id" :hidden="activeTabId !== id">
+      <div class="p-2" x-text="`Tab ${i + 1} Content`"></div>
+    </div>
+  </template>
 </div>
 ```
 

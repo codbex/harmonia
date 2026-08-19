@@ -294,10 +294,10 @@ function extractApi(lines, mask) {
 }
 
 // Verbatim body of the H2 section with the given name (`## Usage`,
-// `## Keyboard Handling`, `## Accessibility`, `## Examples` - the canonical
-// section set enforced by tests/docs-structure.test.js), normalized for a
-// standalone reference (internal links and VitePress wrappers removed).
-// Returns null when the section is missing or empty.
+// `## Behavior`, `## Keyboard Handling`, `## Accessibility`, `## Examples` -
+// the canonical section set enforced by tests/docs-structure.test.js),
+// normalized for a standalone reference (internal links and VitePress wrappers
+// removed). Returns null when the section is missing or empty.
 function extractSection(lines, mask, name) {
   const match = new RegExp(`^${name}$`, 'i');
   const start = findHeading(lines, mask, { level: 2, match });
@@ -339,6 +339,7 @@ function parseDoc(text) {
     directives,
     apiDetails,
     usage: extractSection(lines, mask, 'Usage'),
+    behavior: extractSection(lines, mask, 'Behavior'),
     keyboard: extractSection(lines, mask, 'Keyboard Handling'),
     accessibility: extractSection(lines, mask, 'Accessibility'),
     examples: extractSection(lines, mask, 'Examples'),
@@ -384,6 +385,13 @@ function renderReference(doc, docUrl) {
     out.push('## Usage');
     out.push('');
     out.push(doc.usage);
+    out.push('');
+  }
+
+  if (doc.behavior) {
+    out.push('## Behavior');
+    out.push('');
+    out.push(doc.behavior);
     out.push('');
   }
 
@@ -764,8 +772,23 @@ function parseUtilityCss(cssText) {
     if (isImportant) for (const cls of baseClasses) if (cls) important.add(cls);
   }
 
-  const utilRe = /@utility\s+([A-Za-z0-9_-]+)/g;
-  while ((m = utilRe.exec(cssText))) custom.add(m[1]);
+  // A functional utility (`@utility fade-x-*`) is not a class name itself. The
+  // classes that exist are its safelisted expansions, which belong with the
+  // Harmonia-specific names rather than the Tailwind subset.
+  const utilRe = /@utility\s+([A-Za-z0-9_-]+\*?)/g;
+  const functionalPrefixes = [];
+  while ((m = utilRe.exec(cssText))) {
+    if (m[1].endsWith('*')) functionalPrefixes.push(m[1].slice(0, -1));
+    else custom.add(m[1]);
+  }
+  for (const prefix of functionalPrefixes) {
+    for (const cls of [...tailwind]) {
+      if (cls.startsWith(prefix)) {
+        tailwind.delete(cls);
+        custom.add(cls);
+      }
+    }
+  }
 
   for (const line of cssText.split('\n')) {
     const trimmed = line.trim();

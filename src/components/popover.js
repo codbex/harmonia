@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+import { transitionClose } from '../common/transition-close';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
@@ -171,9 +172,22 @@ export default function (Alpine) {
       });
     }
 
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide a popover reopened mid-fade.
+    const closer = transitionClose(el, () => {
+      if (!popover._h_popover.expanded) {
+        el.classList.add('hidden');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      }
+    });
+
     effect(() => {
       if (popover._h_popover.expanded) {
-        el.classList.remove('hidden');
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         autoUpdateCleanup = autoUpdate(popover, el, updatePosition);
       } else {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -183,27 +197,18 @@ export default function (Alpine) {
             top: '0px',
           });
         } else {
-          el.classList.add('scale-95', 'opacity-0');
+          // pointer-events-none from the first frame of the fade, so the
+          // invisible popover stops swallowing clicks aimed at the page.
+          el.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+          closer.schedule();
         }
         if (autoUpdateCleanup) autoUpdateCleanup();
       }
     });
 
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains('opacity-0')) {
-        el.classList.add('hidden');
-        Object.assign(el.style, {
-          left: '0px',
-          top: '0px',
-        });
-      }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
-
     cleanup(() => {
       el.removeEventListener('click', stopPropagation);
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
     });
   });
 }

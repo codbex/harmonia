@@ -50,8 +50,7 @@ The minimum width class names start with `min-w`.
 
 | Class        | Description                                               | `!` support |
 | ------------ | --------------------------------------------------------- | ----------- |
-| min-w-0      | Minimum width of 0 px.                                    | No          |
-| min-w-`1-12` | Minimum width sizes 1 to 12.                              | No          |
+| min-w-`0-12` | Minimum width sizes, from 0 to 12.                        | No          |
 | min-w-3xs    | `min-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | min-w-2xs    | `min-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | min-w-xs     | `min-width: var(--container-xs); /* 20rem (320px) */`     | No          |
@@ -111,10 +110,10 @@ The height class names start with `h`.
 
 The minimum and maximum height class names start with `min-h` and `max-h`.
 
-| Class        | Description                   | `!` support |
-| ------------ | ----------------------------- | ----------- |
-| max-h-`1-12` | Maximum height sizes 1 to 12. | No          |
-| min-h-`1-12` | Minimum height sizes 1 to 12. | No          |
+| Class        | Description                         | `!` support |
+| ------------ | ----------------------------------- | ----------- |
+| max-h-`1-12` | Maximum height sizes, from 1 to 12. | No          |
+| min-h-`0-12` | Minimum height sizes, from 0 to 12. | No          |
 
 In case both width and height have to be applied and they must be the same, the `size-*` class can be used with a range from 1 to 12.
 

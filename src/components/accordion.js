@@ -1,4 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
+import { transitionClose } from '../common/transition-close';
 import uuidv4 from '../utils/uuid';
 import { ChevronDown, createSvg } from './../common/icons';
 export default function (Alpine) {
@@ -138,17 +139,28 @@ export default function (Alpine) {
     if (parent) {
       el.setAttribute('id', parent._h_accordionItem.controls);
       el.setAttribute('aria-labelledby', parent._h_accordionItem.id);
+      // Guarded on the live state, not a class snapshot, so a late transitionend
+      // from an abandoned collapse cannot hide content reopened mid-fade.
+      const closer = transitionClose(el, () => {
+        if (!parent._h_accordionItem.expanded) {
+          el.classList.add('hidden');
+        }
+      });
+
       effect(() => {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.style.removeProperty('max-height');
           if (parent._h_accordionItem.expanded) {
+            closer.cancel();
             el.classList.add('pb-4', '[[data-size=md]_&]:pb-3', '[[data-size=sm]_&]:pb-2');
-            el.classList.remove('hidden', 'pb-0', 'opacity-0');
+            el.classList.remove('hidden', 'pb-0', 'opacity-0', 'pointer-events-none');
           } else {
             el.classList.add('hidden', 'pb-0', 'opacity-0');
             el.classList.remove('pb-4', '[[data-size=md]_&]:pb-3', '[[data-size=sm]_&]:pb-2');
           }
         } else if (parent._h_accordionItem.expanded) {
+          closer.cancel();
+          el.classList.remove('pointer-events-none');
           if (el.classList.contains('hidden')) {
             el.classList.add('pb-4', '[[data-size=md]_&]:pb-3', '[[data-size=sm]_&]:pb-2');
             el.classList.remove('hidden', 'pb-0');
@@ -156,24 +168,25 @@ export default function (Alpine) {
               el.style.maxHeight = `${el.scrollHeight}px`;
               el.classList.remove('opacity-0');
             });
+          } else if (el.classList.contains('opacity-0')) {
+            // Reopened while the collapse fade was still running.
+            el.classList.add('pb-4', '[[data-size=md]_&]:pb-3', '[[data-size=sm]_&]:pb-2');
+            el.classList.remove('pb-0');
+            el.style.maxHeight = `${el.scrollHeight}px`;
+            el.classList.remove('opacity-0');
           }
         } else {
           el.style.maxHeight = '0px';
-          el.classList.add('opacity-0', 'pb-0');
+          // pointer-events-none from the first frame of the fade, so the
+          // collapsing content stops swallowing clicks aimed at the page.
+          el.classList.add('opacity-0', 'pb-0', 'pointer-events-none');
           el.classList.remove('pb-4', '[[data-size=md]_&]:pb-3', '[[data-size=sm]_&]:pb-2');
+          closer.schedule();
         }
       });
 
-      function onTransitionEnd(event) {
-        if (event.target === el && event.target.classList.contains('opacity-0')) {
-          el.classList.add('hidden');
-        }
-      }
-
-      el.addEventListener('transitionend', onTransitionEnd);
-
       cleanup(() => {
-        el.removeEventListener('transitionend', onTransitionEnd);
+        closer.dispose();
       });
     }
   });

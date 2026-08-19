@@ -49,6 +49,11 @@ const tabListActionStateClasses = {
   'vertical-floating': ['rounded-md', 'h-9', 'w-full'],
 };
 
+// The scrollbar is hidden, so overflow shows as a faded edge instead. mask-image
+// does not combine, so the both-ends case needs the single fade-x-8 or fade-y-8
+// class rather than the two one-edge classes at once.
+const tabListFadeClasses = ['fade-x-8', 'fade-l-8', 'fade-r-8', 'fade-y-8', 'fade-t-8', 'fade-b-8'];
+
 export default function (Alpine) {
   Alpine.directive('h-tabs', (el, _, { Alpine, cleanup }) => {
     el.classList.add('flex', 'data-[orientation=horizontal]:flex-col', 'data-[orientation=vertical]:flex-row');
@@ -125,6 +130,7 @@ export default function (Alpine) {
         el.classList.remove('h-fit');
       }
       el.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal');
+      updateFades();
     });
 
     // Floating only tightens the gap here, so it stays separate from the axis
@@ -133,7 +139,48 @@ export default function (Alpine) {
       const floating = bar?._h_tab_bar.floating === true;
       el.classList.remove(floating ? 'gap-2' : 'gap-1');
       el.classList.add(floating ? 'gap-1' : 'gap-2');
+      // The gap change moves scrollWidth without resizing the list box or any
+      // tab, so neither resize observer target would notice it.
+      updateFades();
     });
+
+    // The edge that hides more tabs fades out. Everything that can change the
+    // overflow re-checks it: the scroll listener, the two effects above,
+    // registration, and a resize observer watching the list and each tab, so a
+    // late size change (fonts loading, a renamed label) is caught even when the
+    // list box itself does not move.
+    function updateFades() {
+      const vertical = tabsState.vertical;
+      const position = vertical ? el.scrollTop : el.scrollLeft;
+      const overflow = vertical ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth;
+      const start = position > 1;
+      const end = position < overflow - 1;
+      el.classList.remove(...tabListFadeClasses);
+      if (start && end) el.classList.add(vertical ? 'fade-y-8' : 'fade-x-8');
+      else if (start) el.classList.add(vertical ? 'fade-t-8' : 'fade-l-8');
+      else if (end) el.classList.add(vertical ? 'fade-b-8' : 'fade-r-8');
+    }
+
+    let fadeFrame = 0;
+
+    // Coalesces a burst of triggers (an x-for mounting its tabs) into one layout read.
+    function scheduleFadeUpdate() {
+      if (typeof cancelAnimationFrame === 'function') cancelAnimationFrame(fadeFrame);
+      if (typeof requestAnimationFrame === 'function') fadeFrame = requestAnimationFrame(updateFades);
+      else updateFades();
+    }
+
+    // The initial reveal may have run before the stylesheet or fonts gave the
+    // list a box (every rect zero), so the first resize with real geometry
+    // finishes it. A settled reveal never re-runs, so later resizes cannot
+    // fight the user's scrolling.
+    function onResize() {
+      if (!revealSettled && revealedTab) revealTab(revealedTab);
+      scheduleFadeUpdate();
+    }
+
+    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(onResize);
+    resizeObserver?.observe(el);
 
     // Tabs register themselves rather than being queried, so the set is never read
     // mid-render. Registration is in mount order, which x-for and later insertions
@@ -174,19 +221,59 @@ export default function (Alpine) {
       target.focus();
     }
 
+    // The selected tab is brought into view only when a different element becomes
+    // selected, so attribute noise on the same selection (a disabled toggle
+    // re-firing selectionChanged) can never move the user's scroll position.
+    let revealedTab = null;
+    let revealSettled = false;
+
+    // Nearest-edge reveal: scrolls just enough for the tab to be fully visible,
+    // so the rest of the list stays where the user left it.
+    function revealTab(tab) {
+      const listRect = el.getBoundingClientRect();
+      if (!listRect.width && !listRect.height) return;
+      revealSettled = true;
+      const tabRect = tab.getBoundingClientRect();
+      if (tabsState.vertical) {
+        if (tabRect.top < listRect.top) el.scrollTop += tabRect.top - listRect.top;
+        else if (tabRect.bottom > listRect.bottom) el.scrollTop += tabRect.bottom - listRect.bottom;
+      } else if (tabRect.left < listRect.left) {
+        el.scrollLeft += tabRect.left - listRect.left;
+      } else if (tabRect.right > listRect.right) {
+        el.scrollLeft += tabRect.right - listRect.right;
+      }
+    }
+
+    // Reads the ordered rather than the focusable set, so a selected but natively
+    // disabled tab is still kept in view even though it cannot hold the tab stop.
+    function selectionChanged() {
+      syncTabStop();
+      const selected = orderedTabs().find((tab) => tab.getAttribute('aria-selected') === 'true') ?? null;
+      if (selected === revealedTab) return;
+      revealedTab = selected;
+      if (selected) revealTab(selected);
+    }
+
     el._h_tab_list = {
+      // Registration is the only hook that sees a tab mounting already selected,
+      // since x-bind writes aria-selected before the directive runs and the
+      // tab's observer never fires for it.
       register(tab) {
         if (!tabs.includes(tab)) tabs.push(tab);
-        syncTabStop();
+        resizeObserver?.observe(tab);
+        selectionChanged();
+        scheduleFadeUpdate();
       },
       unregister(tab) {
         const index = tabs.indexOf(tab);
         if (index !== -1) tabs.splice(index, 1);
-        syncTabStop();
+        resizeObserver?.unobserve(tab);
+        selectionChanged();
+        scheduleFadeUpdate();
       },
       // A tab calls this when its own aria-selected (or disabled state) changed,
       // so the stop follows selection without the list watching the DOM.
-      selectionChanged: syncTabStop,
+      selectionChanged,
     };
 
     function onKeyDown(event) {
@@ -225,10 +312,23 @@ export default function (Alpine) {
 
     el.addEventListener('keydown', onKeyDown);
     el.addEventListener('focusin', onFocusIn);
+    el.addEventListener('scroll', updateFades);
+
+    // By nextTick the whole tree has mounted, so the initially selected tab's
+    // reveal and the first fade state both see settled layout. The register-time
+    // reveal ran before the tab's own children (an icon, an action) mounted and
+    // padded it wider, hence this second pass on the already revealed tab.
+    Alpine.nextTick(() => {
+      if (revealedTab) revealTab(revealedTab);
+      updateFades();
+    });
 
     cleanup(() => {
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('focusin', onFocusIn);
+      el.removeEventListener('scroll', updateFades);
+      if (fadeFrame && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(fadeFrame);
+      resizeObserver?.disconnect();
     });
   });
 

@@ -2,6 +2,7 @@ import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/d
 import { findAncestorState } from '../common/ancestor';
 import { disabledInputClasses, invalidInputClasses, pickerCellWrapperClasses, userInvalidInputClasses } from '../common/shared-classes';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, partsToValue24 } from '../common/time';
+import { transitionClose } from '../common/transition-close';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
@@ -747,10 +748,23 @@ export default function (Alpine) {
       });
     }
 
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide a popup reopened mid-fade.
+    const closer = transitionClose(el, () => {
+      if (!timepicker._h_timepicker.expanded) {
+        el.classList.add('hidden');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      }
+    });
+
     effect(() => {
       if (timepicker._h_timepicker.expanded) {
         render();
-        el.classList.remove('hidden');
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         autoUpdateCleanup = autoUpdate(timepicker, el, updatePosition);
         if (selectedHour) scrollIntoCenter(selectedHour.parentElement, selectedHour);
         if (selectedMinute) scrollIntoCenter(selectedMinute.parentElement, selectedMinute);
@@ -763,30 +777,21 @@ export default function (Alpine) {
             top: '0px',
           });
         } else {
-          el.classList.add('scale-95', 'opacity-0');
+          // pointer-events-none from the first frame of the fade, so the
+          // invisible popup stops swallowing clicks aimed at the page.
+          el.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+          closer.schedule();
         }
         if (autoUpdateCleanup) autoUpdateCleanup();
         focusFirstItem = true;
       }
     });
 
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains('opacity-0')) {
-        el.classList.add('hidden');
-        Object.assign(el.style, {
-          left: '0px',
-          top: '0px',
-        });
-      }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
-
     cleanup(() => {
       if (autoUpdateCleanup) autoUpdateCleanup();
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
       okButton.removeEventListener('click', timepicker._h_timepicker.close);
       nowButton.removeEventListener('click', getCurrentTime);
       timeContainer.removeEventListener('click', setTime);

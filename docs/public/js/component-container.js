@@ -29,7 +29,17 @@ class ComponentContainer extends HTMLElement {
     style.rel = 'stylesheet';
     style.href = '/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css';
     // The `load` event is the reliable signal that `style.sheet.cssRules` is populated.
-    style.addEventListener('load', () => registerTailwindProperties(style.sheet));
+    // Rendering also waits on this promise, because directives that measure at init
+    // (e.g. the tab list revealing its selected tab) would otherwise read the layout
+    // of the unstyled flash. `error` resolves too, so a missing stylesheet degrades
+    // to the old behavior instead of never rendering.
+    this.styleReady = new Promise((resolve) => {
+      style.addEventListener('load', () => {
+        registerTailwindProperties(style.sheet);
+        resolve();
+      });
+      style.addEventListener('error', resolve);
+    });
     this.shadowRoot.appendChild(style);
     this.container = document.createElement('div');
     this.container.classList.add('bg-background', 'text-foreground', 'border', 'rounded-md');
@@ -128,6 +138,10 @@ class ComponentContainer extends HTMLElement {
     for (const oldScript of scripts) {
       await this.executeScript(oldScript);
     }
+
+    // Wait for the shadow stylesheet before Alpine sees the tree, since
+    // measurements taken against the unstyled flash would be meaningless.
+    await this.styleReady;
 
     // Initialize the new element with Alpine
     Alpine.initTree(this.container);

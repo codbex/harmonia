@@ -63,10 +63,10 @@ describe('documentation page structure', () => {
       expect(api, 'API Reference must come before Examples').toBeLessThan(examples);
     });
 
-    it('places Keyboard Handling and Accessibility between Usage and API Reference', () => {
+    it('places Behavior, Keyboard Handling and Accessibility between Usage and API Reference', () => {
       const usage = h2Index(headings, 'Usage');
       const api = h2Index(headings, 'API Reference');
-      for (const optional of ['Keyboard Handling', 'Accessibility']) {
+      for (const optional of ['Behavior', 'Keyboard Handling', 'Accessibility']) {
         const idx = h2Index(headings, optional);
         if (idx === -1) continue;
         expect(idx, `${optional} must come after Usage`).toBeGreaterThan(usage);

@@ -1,3 +1,4 @@
+import { transitionClose } from '../common/transition-close';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.directive('h-dialog-overlay', (el, _, { cleanup }) => {
@@ -5,12 +6,21 @@ export default function (Alpine) {
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'dialog-overlay');
 
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide an overlay reopened mid-fade.
+    const closer = transitionClose(el, () => {
+      if (el.getAttribute('data-open') !== 'true') {
+        el.classList.add('hidden');
+      }
+    });
+
     const observer = new MutationObserver(() => {
       if (el.getAttribute('data-open') === 'true') {
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          el.classList.remove('hidden', '*:scale-95', 'opacity-0');
+          el.classList.remove('*:scale-95', 'opacity-0');
         } else {
-          el.classList.remove('hidden');
           Alpine.nextTick(() => {
             // Reading 'offsetHeight' forces the browser to apply pending styles first.
             // This guarantees that the animation will always happen.
@@ -49,24 +59,19 @@ export default function (Alpine) {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.classList.add('hidden', '*:scale-95', 'opacity-0');
         } else {
-          el.classList.add('*:scale-95', 'opacity-0');
+          // pointer-events-none from the first frame of the fade, so the
+          // invisible overlay stops swallowing clicks aimed at the page.
+          el.classList.add('*:scale-95', 'opacity-0', 'pointer-events-none');
+          closer.schedule();
         }
       }
     });
-
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains('opacity-0')) {
-        el.classList.add('hidden');
-      }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-open'] });
 
     cleanup(() => {
       observer.disconnect();
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
     });
   });
 

@@ -1,5 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { isDisabled } from '../common/disabled';
+import { transitionClose } from '../common/transition-close';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
 import { Check, ChevronRight, createSvg } from './../common/icons';
@@ -121,7 +122,10 @@ export default function (Alpine) {
           top: '0px',
         });
       } else {
-        el.classList.add('scale-95', 'opacity-0');
+        // pointer-events-none from the first frame of the fade, so the
+        // invisible menu stops swallowing clicks aimed at the page.
+        el.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+        closer.schedule();
       }
       removeDismiss(el, 'contextmenu', onClick);
       removeDismiss(el, 'click', onClick);
@@ -296,10 +300,23 @@ export default function (Alpine) {
     let autoUpdateCleanup;
     let isOpen = false;
 
+    // Guarded on the live state, not a class snapshot, so a late transitionend
+    // from an abandoned close cannot hide a menu reopened mid-fade.
+    const closer = transitionClose(el, () => {
+      if (!isOpen) {
+        el.classList.add('hidden');
+        Object.assign(el.style, {
+          left: '0px',
+          top: '0px',
+        });
+      }
+    });
+
     function open(parent) {
       if (!isOpen) {
         isOpen = true;
-        el.classList.remove('hidden');
+        closer.cancel();
+        el.classList.remove('hidden', 'pointer-events-none');
         el.pauseKeyEvents = false;
         function getPlacement() {
           if (isSubmenu) {
@@ -408,18 +425,6 @@ export default function (Alpine) {
       listenForTrigger(true);
     }
 
-    function onTransitionEnd(event) {
-      if (event.target === el && event.target.classList.contains('opacity-0')) {
-        el.classList.add('hidden');
-        Object.assign(el.style, {
-          left: '0px',
-          top: '0px',
-        });
-      }
-    }
-
-    el.addEventListener('transitionend', onTransitionEnd);
-
     cleanup(() => {
       if (autoUpdateCleanup) autoUpdateCleanup();
       if (menuTrigger) listenForTrigger(false);
@@ -427,7 +432,7 @@ export default function (Alpine) {
       removeDismiss(el, 'contextmenu', onClick);
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('focusin', onFocusIn);
-      el.removeEventListener('transitionend', onTransitionEnd);
+      closer.dispose();
     });
   });
 

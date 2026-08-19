@@ -246,27 +246,28 @@
 [x-cloak] {
   display: none !important;
 }
-.fade-x {
-  -webkit-mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
-  mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
+@source inline("fade-{x,y,t,b,l,r}-{2,4,8}");
+@utility fade-x-* {
+  -webkit-mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * --value(number)), black calc(100% - calc(var(--spacing) * --value(number))), transparent 100%);
+  mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * --value(number)), black calc(100% - calc(var(--spacing) * --value(number))), transparent 100%);
 }
-.fade-y {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * 2), black calc(100% - calc(var(--spacing) * 2)), transparent 100%);
+@utility fade-y-* {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * --value(number)), black calc(100% - calc(var(--spacing) * --value(number))), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * --value(number)), black calc(100% - calc(var(--spacing) * --value(number))), transparent 100%);
 }
-.fade-t {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * 2));
-  mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * 2));
+@utility fade-t-* {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * --value(number)));
+  mask-image: linear-gradient(to bottom, transparent, black calc(var(--spacing) * --value(number)));
 }
-.fade-b {
-  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - calc(var(--spacing) * 2)), transparent);
-  mask-image: linear-gradient(to bottom, black calc(100% - calc(var(--spacing) * 2)), transparent);
+@utility fade-b-* {
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - calc(var(--spacing) * --value(number))), transparent);
+  mask-image: linear-gradient(to bottom, black calc(100% - calc(var(--spacing) * --value(number))), transparent);
 }
-.fade-l {
-  -webkit-mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * 2));
-  mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * 2));
+@utility fade-l-* {
+  -webkit-mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * --value(number)));
+  mask-image: linear-gradient(to right, transparent, black calc(var(--spacing) * --value(number)));
 }
-.fade-r {
-  -webkit-mask-image: linear-gradient(to right, black calc(100% - calc(var(--spacing) * 2)), transparent);
-  mask-image: linear-gradient(to right, black calc(100% - calc(var(--spacing) * 2)), transparent);
+@utility fade-r-* {
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - calc(var(--spacing) * --value(number))), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - calc(var(--spacing) * --value(number))), transparent);
 }
