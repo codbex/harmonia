@@ -77,7 +77,7 @@ Use tiles to create visually engaging entry points to content, functionality, or
     <p x-h-tile-description>A simple tile with title, description and a single action.</p>
   </div>
   <div x-h-tile-actions>
-    <button x-h-button class="relative" data-size="md" data-variant="outline">Action<span x-h-badge-indicator data-dot="true"></span></button>
+    <button x-h-button data-size="md" data-variant="outline">Action</button>
   </div>
 </div>
 
