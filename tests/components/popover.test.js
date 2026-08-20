@@ -131,6 +131,7 @@ describe('h-popover', () => {
     });
     expect(popoverEl.classList.contains('absolute')).toBe(true);
     expect(popoverEl.classList.contains('bg-popover')).toBe(true);
+    expect(popoverEl.classList.contains('[--badge-ring:var(--popover)]')).toBe(true);
     expect(popoverEl.classList.contains('hidden')).toBe(true);
     expect(popoverEl.classList.contains('rounded-md')).toBe(true);
   });

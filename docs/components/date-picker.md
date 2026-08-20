@@ -13,7 +13,7 @@ The user can use the following keyboard shortcuts in order to navigate trough th
 - `Up` / `Down` - Moves focus to the day above/below the current day.
 - `Right` - Moves focus to the next day.
 - `Left` - Moves focus to the previous day.
-- `Enter` / `Space` - Shows and moves focus the calendar. If already shown, selects the focused day.
+- `Enter` / `Space` - Shows and moves focus the calendar. If already shown, selects the focused day. Pressing it on the already selected day deselects it and clears the value (single date mode).
 - `Home` - Selects the first day of the month.
 - `End` - Selects the last day of the month.
 - `PageUp` - Selects the same or closest day of the previous month.
@@ -73,6 +73,8 @@ You can pass a configuration object to the popup as an expression or as a value.
 ### Model
 
 The date picker reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`), matching the value format of a native `<input type="date">`. The display format shown in the text input is separate and can be customised via the `options` key in the calendar config.
+
+To clear the value, delete the text in the input, click the already selected day in the calendar (single date mode), or set the bound model to an empty string. In range mode a cleared model has both `start` and `end` unset, and clicking a day of an existing range starts a new range instead of deselecting.
 
 ### Events
 

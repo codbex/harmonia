@@ -160,7 +160,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     } else {
       el.dispatchEvent(new CustomEvent('change', { detail: { date: selected } }));
       if (el._x_model) {
-        el._x_model.set(toDateString(selected));
+        el._x_model.set(selected ? toDateString(selected) : '');
       }
     }
     callbacks.onSelectionChanged(triggerInput);
@@ -376,7 +376,12 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   // false so it stays open). A partial range pick never triggers it.
   function selectDay(d, triggerInput) {
     if (!rangeMode) {
-      selected = new Date(d);
+      // Re-selecting the selected day deselects it and clears the value.
+      if (selected && sameDay(selected, d)) {
+        selected = undefined;
+      } else {
+        selected = new Date(d);
+      }
       modelChange(triggerInput);
       return;
     }
@@ -574,6 +579,16 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     render();
   }
 
+  // Clears the selection AND writes the empty value to the model, unlike
+  // clearSelected, which only follows a model that is already empty.
+  function clearSelectedAndSync() {
+    selected = undefined;
+    rangeStart = undefined;
+    rangeEnd = undefined;
+    render();
+    modelChange(false);
+  }
+
   function setSelectedAndSync(d) {
     if (rangeMode) {
       rangeStart = d && d.start ? d.start : undefined;
@@ -630,6 +645,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     setConfig,
     checkForModel,
     clearSelected,
+    clearSelectedAndSync,
     setSelectedAndSync,
     applyModel,
     formatSelectedDate,

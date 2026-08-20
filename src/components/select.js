@@ -97,7 +97,6 @@ export default function (Alpine) {
     if (!select) {
       throw new Error(`${original} must be inside a select element`);
     } else if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
-      select._h_select.multiple = Array.isArray(el._x_model.get());
       select._h_model.set = (value) => {
         if (select._h_select.multiple) {
           const vIndex = el._x_model.get().indexOf(value);
@@ -441,6 +440,17 @@ export default function (Alpine) {
 
     el.addEventListener('change', onInputChange);
 
+    // Programmatic writes to the bound property (a dialog swapping its record)
+    // never dispatch a change event, so the model itself is what has to be
+    // watched. The mode follows the model's type, so a property that only
+    // becomes an array after init still gets a multiple select.
+    if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
+      effect(() => {
+        select._h_select.multiple = Array.isArray(el._x_model.get());
+        onInputChange();
+      });
+    }
+
     cleanup(() => {
       fakeTrigger.removeEventListener('click', onClick);
       fakeTrigger.removeEventListener('keydown', onPress);
@@ -765,6 +775,16 @@ export default function (Alpine) {
 
     const getLabel = evaluateLater(expression);
 
+    // The value's own type decides the comparison, since an option can run
+    // against a model the mode flag has not caught up with yet.
+    const onModelChange = (value) => {
+      return setSelectedState(Array.isArray(value) ? value.includes(getValue()) : value === getValue());
+    };
+
+    // Registered before the label effect below, so its refreshLabel call
+    // resolves this option's own selected state too.
+    select._h_select.listeners.push(onModelChange);
+
     effect(() => {
       getLabel((label) => {
         labelEl.innerText = label;
@@ -808,12 +828,6 @@ export default function (Alpine) {
       el.setAttribute('aria-selected', 'false');
       return '';
     }
-
-    const onModelChange = (value) => {
-      return setSelectedState(select._h_select.multiple ? value.includes(getValue()) : value === getValue());
-    };
-
-    select._h_select.listeners.push(onModelChange);
 
     const onActivate = (event) => {
       // Read at event time so a bound aria-disabled that toggles is honoured.

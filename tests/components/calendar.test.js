@@ -432,6 +432,24 @@ describe('h-calendar-inline', () => {
     expect(handler).toHaveBeenCalled();
   });
 
+  it('clicking the selected day again deselects it and writes an empty model', () => {
+    let model;
+    Object.defineProperty(el, '_x_model', { value: { get: () => model, set: (v) => (model = v) }, configurable: true });
+    mountDirective(calendarPlugin, 'h-calendar-inline', el, { original: 'h-calendar-inline', expression: '' });
+    const changes = [];
+    el.addEventListener('change', (event) => changes.push(event.detail));
+    const cell = el.querySelector('td[data-day="10"]');
+
+    cell.click();
+    expect(model).toBeTruthy();
+    expect(cell.getAttribute('aria-selected')).toBe('true');
+
+    cell.click();
+    expect(model).toBe('');
+    expect(changes[1].date).toBeUndefined();
+    expect(cell.getAttribute('aria-selected')).toBe('false');
+  });
+
   it('exposes grid roles and is labelled by the month heading', () => {
     mountDirective(calendarPlugin, 'h-calendar-inline', el, { original: 'h-calendar-inline', expression: '' });
     const table = el.querySelector('table');

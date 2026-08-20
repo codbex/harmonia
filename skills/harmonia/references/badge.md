@@ -35,6 +35,12 @@ Use badges to highlight status, category, or state in a compact and non-intrusiv
 | data-dot      | `true`                                                                      | false    | Renders a small dot without content instead of a labelled badge       |
 | data-ping     | `true`                                                                      | false    | Adds a pulsing ping animation behind the indicator                    |
 
+### CSS Variables
+
+| Variable     | Default             | Description                                                                                                                                             |
+| ------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --badge-ring | `var(--background)` | The color of the gap ring around the indicator. Set it inline on the indicator when the badge sits on a surface the automatic detection does not cover. |
+
 ## Examples
 
 ### Badge

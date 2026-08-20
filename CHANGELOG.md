@@ -1,5 +1,43 @@
 # Changelog
 
+## v2.14.0
+
+A release that makes picker values deselectable and makes the Select follow its bound model. Emptying a date picker's input now clears the value instead of erroring, the already selected day, month or week can be clicked again to deselect it, and clearing a picker programmatically no longer leaves stale state behind. The Select's mode now tracks the model's type instead of being read once at init, so a property that only becomes an array after mount still gets a multiple select, and programmatic writes to the bound property are reflected without user interaction. The Badge indicator is no longer cut off in WebKit browsers, its gap is now drawn as a surface-colored ring. There are no breaking changes.
+
+### Select
+
+- **Fixed: a select whose bound model was not yet an array locked into single mode and could corrupt the model.** The mode was read once at init, so a reusable dialog whose record starts empty never became a multiple select even after the property was set to an array, the trigger and the checkmarks never reflected the new values, and a toggle then ran the single-select path, replacing the bound array with a plain string. The mode now follows the model's type, and any programmatic write to the bound property repaints the trigger, the checkmarks and the validity state immediately.
+
+### Date Picker
+
+- **New: deleting the input text clears the value.** Committing an emptied input used to be rejected with a console error, leaving the input blank while the model kept the old date and a stuck validation message blocked native `required` reporting. It now clears the model, and in range mode both ends are unset.
+- **New: clicking the already selected day deselects it and clears the value.** Single date mode only, a re-click in range mode keeps starting a new range. Works with `Enter` and `Space` too.
+- **Fixed: clearing the bound model programmatically left a stale "not a valid date" message**, so native validation could not report the now empty required field.
+
+### Badge
+
+- **Fixed: the badge indicator was cut off at its host's edge in WebKit browsers (Safari, GNOME Web).** WebKit limits a clip-path to the element's own bounds, so the cut-out that carved the gap around the indicator also discarded everything the indicator painted outside its host. The gap is now a ring painted in the surface color behind the indicator. It follows the surface automatically inside sidebars, toolbars, cards, popovers, muted tiles and the bottom navigation, including hover and active states of sidebar menu buttons and bottom navigation links, and the `--badge-ring` CSS variable overrides it on surfaces the detection does not cover.
+
+### Datetime Picker
+
+- **New: clicking the selected day deselects it.** The model returns to an empty string until a day is picked again, matching the existing `Backspace` segment clearing.
+
+### Inline Calendar
+
+- **New: clicking the selected day deselects it and writes an empty model.** The `change` event's `detail.date` is `undefined` after a deselect.
+
+### Month Picker
+
+- **New: clicking the already selected month deselects it and clears the value.** Deleting the input text has always cleared the value too, and is now documented.
+
+### Week Picker
+
+- **New: clicking the already selected week deselects it and clears the value.** Deleting the input text has always cleared the value too, and is now documented.
+
+### Time Picker
+
+- **Fixed: clearing the bound model left the popup stale.** The old hour and minute stayed highlighted with the OK button enabled, and the next pick recombined the stale parts into a full time. A cleared model now resets the selection.
+
 ## v2.13.0
 
 A release that makes the Tabs show where they overflow. The tab list now fades the edge that hides more tabs and keeps the selected tab in view, and the fade mask utilities behind it now take a size. It also fixes two multiple-select bugs, where deselecting an option corrupted the bound array and selecting one did not update the trigger, and makes closing animations across the library robust, so they can no longer swallow clicks or leave an invisible layer stuck over the page. There is a breaking change to the fade utility class names.

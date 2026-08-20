@@ -7,6 +7,7 @@ describe('h-toolbar', () => {
     const el = document.createElement('div');
     mountDirective(toolbarPlugin, 'h-toolbar', el, { modifiers: [] });
     expect(el.classList.contains('bg-object-header')).toBe(true);
+    expect(el.classList.contains('[--badge-ring:var(--object-header)]')).toBe(true);
     expect(el.classList.contains('text-object-header-foreground')).toBe(true);
     expect(el.classList.contains('hbox')).toBe(true);
     expect(el.classList.contains('items-center')).toBe(true);

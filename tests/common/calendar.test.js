@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createCalendarWidget, dateOrderMap, isDisabled, isoWeekParts, mondayOfIsoWeek, nextFocusDate, parseDateValue, sameDay, toDateString } from '../../src/common/calendar';
 import { createMockAlpine } from '../test-utils.js';
 
@@ -488,5 +488,101 @@ describe('createCalendarWidget range mode', () => {
     cell(el, 10).click();
     expect(widget.applyModel(undefined)).toBe(true);
     expect(widget.getSelected().start).toBeUndefined();
+  });
+});
+
+describe('createCalendarWidget deselect and clear', () => {
+  const now = new Date();
+  const ds = (day) => toDateString(new Date(now.getFullYear(), now.getMonth(), day));
+
+  function makeEl() {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    let val;
+    Object.defineProperty(el, '_x_model', {
+      value: {
+        get: () => val,
+        set: (v) => {
+          val = v;
+        },
+      },
+      configurable: true,
+    });
+    return { el, getModel: () => val };
+  }
+
+  const cell = (el, day) => el.querySelector(`td[data-day="${day}"]`);
+
+  it('clicking the selected day again deselects it and writes an empty model', () => {
+    const { el, getModel } = makeEl();
+    const widget = createCalendarWidget('test', el, defaultCallbacks);
+    widget.setConfig({});
+    const changes = [];
+    el.addEventListener('change', (event) => changes.push(event.detail));
+
+    cell(el, 10).click();
+    expect(getModel()).toBe(ds(10));
+    expect(cell(el, 10).getAttribute('aria-selected')).toBe('true');
+
+    cell(el, 10).click();
+    expect(getModel()).toBe('');
+    expect(widget.getSelected()).toBeUndefined();
+    expect(cell(el, 10).getAttribute('aria-selected')).toBe('false');
+    expect(changes[1].date).toBeUndefined();
+    // The deselected day stays the roving tab stop.
+    expect(cell(el, 10).getAttribute('tabindex')).toBe('0');
+  });
+
+  it('Enter on the selected day deselects it and keeps the tab stop', () => {
+    const { el, getModel } = makeEl();
+    const widget = createCalendarWidget('test', el, defaultCallbacks);
+    widget.setConfig({});
+
+    cell(el, 10).click();
+    cell(el, 10).dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(getModel()).toBe('');
+    expect(widget.getSelected()).toBeUndefined();
+    expect(cell(el, 10).getAttribute('tabindex')).toBe('0');
+  });
+
+  // Range mode must never toggle: the second pick on the same day completes a
+  // single-day range.
+  it('range mode still completes a single-day range on a same-day re-click', () => {
+    const { el, getModel } = makeEl();
+    const widget = createCalendarWidget('test', el, defaultCallbacks);
+    widget.setConfig({ range: true });
+
+    cell(el, 10).click();
+    cell(el, 10).click();
+    expect(getModel()).toEqual({ start: ds(10), end: ds(10) });
+  });
+
+  it('clearSelectedAndSync writes an empty single model and reports the change', () => {
+    const { el, getModel } = makeEl();
+    const onSelectionChanged = vi.fn();
+    const widget = createCalendarWidget('test', el, { ...defaultCallbacks, onSelectionChanged });
+    widget.setConfig({});
+
+    cell(el, 10).click();
+    onSelectionChanged.mockClear();
+    widget.clearSelectedAndSync();
+    expect(getModel()).toBe('');
+    expect(widget.getSelected()).toBeUndefined();
+    expect(cell(el, 10).getAttribute('aria-selected')).toBe('false');
+    expect(onSelectionChanged).toHaveBeenCalledWith(false);
+  });
+
+  it('clearSelectedAndSync writes an empty range model', () => {
+    const { el, getModel } = makeEl();
+    const widget = createCalendarWidget('test', el, { ...defaultCallbacks });
+    widget.setConfig({ range: true });
+
+    cell(el, 10).click();
+    cell(el, 12).click();
+    widget.clearSelectedAndSync();
+    expect(getModel()).toEqual({ start: undefined, end: undefined });
+    const sel = widget.getSelected();
+    expect(sel.start).toBeUndefined();
+    expect(sel.end).toBeUndefined();
   });
 });

@@ -246,7 +246,8 @@ export default function (Alpine) {
     }
 
     function selectMonth(m) {
-      selected = { year: viewYear, month: m + 1 };
+      // Re-selecting the selected month deselects it and clears the value.
+      selected = selected && selected.year === viewYear && selected.month === m + 1 ? null : { year: viewYear, month: m + 1 };
       focusedMonth = m;
       render();
       syncModel(true);

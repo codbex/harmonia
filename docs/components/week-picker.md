@@ -10,7 +10,7 @@ Use the Week Picker when a field represents a whole week (a timesheet week, a pl
 
 The user can use the following keyboard shortcuts in order to navigate through the week picker:
 
-- `Enter` / `Space` - Opens the popup, or selects the focused week when open.
+- `Enter` / `Space` - Opens the popup, or selects the focused week when open. Pressing it on the already selected week deselects it and clears the value.
 - `Up` / `Down` - Moves focus to the previous/next week, moving the visible month when needed.
 - `Home` / `End` - Moves focus to the first/last visible week.
 - `PageUp` / `PageDown` - Moves focus to the same week of the previous/next month.
@@ -61,6 +61,8 @@ You can pass a configuration object to the popup as an expression or as a value.
 ### Model
 
 The week picker reads and writes weeks as ISO 8601 `YYYY-Www` strings (e.g. `"2025-W23"`). The week-numbering year follows ISO 8601 (the week containing the year's first Thursday is week 1), so early-January and late-December weeks may carry the neighbouring year. The text input displays the selection as `Week <n>, <year>` by default. The `Week` text can be customised via `data-week-label` on the popup.
+
+To clear the value, delete the text in the input, click the already selected week in the popup, or set the bound model to an empty string.
 
 ### Events
 

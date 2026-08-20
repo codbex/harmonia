@@ -103,6 +103,7 @@ export default function (Alpine) {
     el.classList.add(
       'absolute',
       'bg-popover',
+      '[--badge-ring:var(--popover)]',
       'text-popover-foreground',
       'hidden',
       'top-0',

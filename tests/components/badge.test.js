@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import badgePlugin from '../../src/components/badge.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -238,108 +238,34 @@ describe('h-badge-indicator', () => {
   });
 });
 
-describe('h-badge-indicator cut-out', () => {
-  // happy-dom never runs layout, so the boxes are stubbed and the ResizeObserver
-  // is captured to be fired by hand.
-  let observers;
-  let OriginalResizeObserver;
+describe('h-badge-indicator gap ring', () => {
   let host;
   let el;
 
-  // happy-dom exposes the offset properties as prototype getters and has no
-  // offsetParent at all, so both have to be defined as own properties.
-  const define = (node, props) => {
-    for (const [key, value] of Object.entries(props)) {
-      Object.defineProperty(node, key, { value, configurable: true });
-    }
-  };
-  const hostBox = (node, width, height) => define(node, { offsetWidth: width, offsetHeight: height, clientLeft: 0, clientTop: 0 });
-  const indicatorBox = (node, parent, left, top, width, height) => define(node, { offsetParent: parent, offsetLeft: left, offsetTop: top, offsetWidth: width, offsetHeight: height });
-
   beforeEach(() => {
-    observers = [];
-    OriginalResizeObserver = global.ResizeObserver;
-    global.ResizeObserver = class {
-      constructor(cb) {
-        this.cb = cb;
-        this.observe = vi.fn();
-        this.disconnect = vi.fn();
-        observers.push(this);
-      }
-    };
     host = document.createElement('button');
     document.body.appendChild(host);
     el = document.createElement('span');
     host.appendChild(el);
-    hostBox(host, 32, 32);
-    indicatorBox(el, host, 23, -3, 12, 12);
   });
 
   afterEach(() => {
-    global.ResizeObserver = OriginalResizeObserver;
     document.body.innerHTML = '';
   });
 
-  it('carves a gap out of the host around the indicator', () => {
+  // The gap used to be carved out of the host with a clip-path, but WebKit
+  // limits a clip-path to the element's own bounds, which also cut away
+  // everything the indicator painted outside its host.
+  it('never sets a clip-path on the host', () => {
     mountDirective(badgePlugin, 'h-badge-indicator', el);
-    observers[0].cb();
-    const clip = host.style.clipPath;
-    // Kept region, then the outer stadium and the inner one that gives the dot back.
-    expect(clip.match(/M/g)).toHaveLength(3);
-    expect(clip).toContain('M-10000 -10000H10032V10032H-10000Z');
-    expect(clip).toContain('M29 -5A8 8 0 0 0 29 11');
-    expect(clip).toContain('M29 -3H29A6 6 0 0 1 29 9');
-  });
-
-  it('leaves the host uncarved while the indicator is hidden', () => {
-    // x-show sets display:none, which nulls offsetParent and zeroes the box.
-    indicatorBox(el, null, 0, 0, 0, 0);
-    mountDirective(badgePlugin, 'h-badge-indicator', el);
-    observers[0].cb();
     expect(host.style.clipPath).toBe('');
   });
 
-  it('ignores an indicator positioned against something other than the host', () => {
-    indicatorBox(el, document.body, 23, -3, 12, 12);
+  // The ring color is inherited from --badge-ring, which the surface
+  // components set next to their own background classes, so it follows the
+  // host's state exactly.
+  it('draws the gap as a ring reading the inherited --badge-ring', () => {
     mountDirective(badgePlugin, 'h-badge-indicator', el);
-    observers[0].cb();
-    expect(host.style.clipPath).toBe('');
-  });
-
-  it('measures the layout box, not the transformed one', () => {
-    // A scaled ancestor (the dialog opens its panel at scale(0.95)) skews every
-    // client rect but no layout box, and never fires the resize observer again.
-    host.getBoundingClientRect = () => ({ left: 100, top: 100, width: 30.4, height: 30.4 });
-    el.getBoundingClientRect = () => ({ left: 121.85, top: 97.15, width: 11.4, height: 11.4 });
-    mountDirective(badgePlugin, 'h-badge-indicator', el);
-    observers[0].cb();
-    expect(host.style.clipPath).toContain('M-10000 -10000H10032V10032H-10000Z');
-    expect(host.style.clipPath).toContain('M29 -3H29A6 6 0 0 1 29 9');
-  });
-
-  it('offsets the hole by the host border, since offsetLeft starts at the padding box', () => {
-    define(host, { clientLeft: 2, clientTop: 2 });
-    mountDirective(badgePlugin, 'h-badge-indicator', el);
-    observers[0].cb();
-    expect(host.style.clipPath).toContain('M31 -1H31A6 6 0 0 1 31 11');
-  });
-
-  it('carves one gap per indicator sharing a host', () => {
-    const second = document.createElement('span');
-    host.appendChild(second);
-    indicatorBox(second, host, -3, 23, 12, 12);
-    mountDirective(badgePlugin, 'h-badge-indicator', el);
-    mountDirective(badgePlugin, 'h-badge-indicator', second);
-    observers[0].cb();
-    expect(host.style.clipPath.match(/M/g)).toHaveLength(5);
-  });
-
-  it('restores the host on cleanup', () => {
-    const { ctx } = mountDirective(badgePlugin, 'h-badge-indicator', el);
-    observers[0].cb();
-    expect(host.style.clipPath).not.toBe('');
-    ctx.cleanup.mock.calls[0][0]();
-    expect(observers[0].disconnect).toHaveBeenCalled();
-    expect(host.style.clipPath).toBe('');
+    expect(el.classList.contains('shadow-[0_0_0_0.125rem_var(--badge-ring,var(--background))]')).toBe(true);
   });
 });

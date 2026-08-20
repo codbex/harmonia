@@ -13,7 +13,7 @@ The date is selected in the calendar. The time is set by focusing a segment (hou
 In the calendar grid:
 
 - `Up` / `Down` / `Left` / `Right` - Move the focused day.
-- `Enter` / `Space` - Select the focused day.
+- `Enter` / `Space` - Select the focused day. Pressing it on the already selected day deselects it.
 - `Home` / `End` - First / last day of the month.
 - `PageUp` / `PageDown` - Previous / next month.
 
@@ -80,7 +80,7 @@ When using `x-model`, the picker reads and writes a single ISO date-time string 
 '2025-06-25T14:30:00'; // with seconds
 ```
 
-The time is always stored in 24-hour form regardless of the display format. The model is set only when both a date and a complete time have been chosen. Until then it is an empty string.
+The time is always stored in 24-hour form regardless of the display format. The model is set only when both a date and a complete time have been chosen. Until then it is an empty string. Clicking the selected day in the calendar again deselects it, returning the model to an empty string until a day is picked again.
 
 ### Events
 

@@ -15,7 +15,7 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Up` / `Down` - Moves focus to the day above/below the current day.
 - `Right` - Moves focus to the next day.
 - `Left` - Moves focus to the previous day.
-- `Enter` / `Space` - Selects the focused day.
+- `Enter` / `Space` - Selects the focused day. Pressing it on the already selected day deselects it (single mode).
 - `Home` - Selects the first day of the month.
 - `End` - Selects the last day of the month.
 - `PageUp` - Selects the same or closest day of the previous month.
@@ -44,7 +44,7 @@ x-h-calendar-inline
 
 ### Model
 
-When using `x-model`, the calendar reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`). Set the bound variable to a `YYYY-MM-DD` string to pre-select a date, or to an empty string for no initial selection. On every selection the model is updated to the newly selected date in the same `YYYY-MM-DD` format.
+When using `x-model`, the calendar reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`). Set the bound variable to a `YYYY-MM-DD` string to pre-select a date, or to an empty string for no initial selection. On every selection the model is updated to the newly selected date in the same `YYYY-MM-DD` format. Clicking the selected day again deselects it and writes an empty string.
 
 Full ISO datetime strings (e.g. from `new Date().toISOString()`) are also accepted as input, but initialising with `YYYY-MM-DD` is recommended to avoid timezone-related date drift.
 
@@ -52,9 +52,9 @@ In [range mode](#range-selection-inline) the model is an object `{ start, end }`
 
 ### Events
 
-| Event  | Description                                                                                                                                                                                              |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| change | Triggered when the selection changes. In single mode the selected `Date` is passed in `event.detail.date`. In range mode the `Date` endpoints are passed in `event.detail.start` and `event.detail.end`. |
+| Event  | Description                                                                                                                                                                                                                               |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| change | Triggered when the selection changes. In single mode the selected `Date` is passed in `event.detail.date`, or `undefined` after a deselect. In range mode the `Date` endpoints are passed in `event.detail.start` and `event.detail.end`. |
 
 ### Configuration
 

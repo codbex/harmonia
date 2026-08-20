@@ -253,6 +253,7 @@ describe('h-bottom-nav directive', () => {
     const nav = makeNav();
     mount('h-bottom-nav', nav, {});
     expect(nav.classList.contains('bg-object-header')).toBe(true);
+    expect(nav.classList.contains('[--badge-ring:var(--object-header)]')).toBe(true);
     expect(nav.classList.contains('text-object-header-foreground')).toBe(true);
   });
 

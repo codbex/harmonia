@@ -326,7 +326,8 @@ export default function (Alpine) {
     }
 
     function selectWeek(weekParts) {
-      selected = weekParts;
+      // Re-selecting the selected week deselects it and clears the value.
+      selected = sameWeek(weekParts, selected) ? null : weekParts;
       focusedMonday = mondayOfIsoWeek(weekParts.year, weekParts.week);
       renderGrid();
       syncModel(true);

@@ -4,7 +4,7 @@ import uuidv4 from '../utils/uuid';
 import { ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-sidebar', (el, { modifiers }, { cleanup }) => {
-    el.classList.add('group/sidebar', 'bg-sidebar', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
+    el.classList.add('group/sidebar', 'bg-sidebar', '[--badge-ring:var(--sidebar)]', 'text-sidebar-foreground', 'border-sidebar-border', 'vbox', 'h-full', 'w-(--sidebar-width,16rem)', 'data-[collapsed=true]:w-min');
 
     function setBorder() {
       if (el.getAttribute('data-borderless') === 'true') {
@@ -322,14 +322,17 @@ export default function (Alpine) {
       'outline-hidden',
       'ring-sidebar-ring',
       'hover:bg-sidebar-secondary',
+      'hover:[--badge-ring:var(--sidebar-secondary)]',
       'hover:text-sidebar-secondary-foreground',
       'focus-visible:ring-[calc(var(--spacing)*0.75)]',
       'active:bg-sidebar-primary',
+      'active:[--badge-ring:var(--sidebar-primary)]',
       'active:text-sidebar-primary-foreground',
       ...disabledControlClasses,
       'aria-disabled:pointer-events-none',
       'aria-disabled:opacity-disabled',
       'data-[active=true]:bg-sidebar-primary',
+      'data-[active=true]:[--badge-ring:var(--sidebar-primary)]',
       'data-[active=true]:text-sidebar-primary-foreground',
       '[&>span]:truncate',
       '[&>div]:min-w-0',

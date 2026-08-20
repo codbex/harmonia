@@ -11,6 +11,7 @@ describe('h-sidebar', () => {
     const el = document.createElement('aside');
     mountDirective(sidebarPlugin, 'h-sidebar', el, { modifiers: [] });
     expect(el.classList.contains('bg-sidebar')).toBe(true);
+    expect(el.classList.contains('[--badge-ring:var(--sidebar)]')).toBe(true);
     expect(el.classList.contains('h-full')).toBe(true);
     expect(el.classList.contains('vbox')).toBe(true);
   });
@@ -351,6 +352,16 @@ describe('h-sidebar-menu-button', () => {
     expect(el.getAttribute('type')).toBe('button');
     expect(el.getAttribute('data-slot')).toBe('sidebar-menu-button');
     expect(el.classList.contains('flex')).toBe(true);
+  });
+
+  // The badge ring reads the inherited --badge-ring, so the button re-declares
+  // it alongside each of its own background states.
+  it('keeps the badge ring in step with its background states', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.classList.contains('hover:[--badge-ring:var(--sidebar-secondary)]')).toBe(true);
+    expect(el.classList.contains('active:[--badge-ring:var(--sidebar-primary)]')).toBe(true);
+    expect(el.classList.contains('data-[active=true]:[--badge-ring:var(--sidebar-primary)]')).toBe(true);
   });
 
   it('lets a wrapper holding truncated lines shrink', () => {

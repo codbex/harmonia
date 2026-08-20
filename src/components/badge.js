@@ -1,63 +1,3 @@
-// The cut-out is drawn with clip-path: path(), whose coordinates are unitless
-// user units, so this is the one piece of geometry that stays in px.
-const CUTOUT_GAP = 0.125;
-// How far past the host the kept region reaches. Large enough that nothing the
-// host paints outside itself (border, focus outline, shadow) and nothing it
-// contains is clipped away with it, so only the gap is ever removed.
-const CUTOUT_REACH = 10000;
-
-const round = (value) => Math.round(value * 100) / 100;
-
-// A stadium (a rectangle with semicircular ends) collapses into a circle when
-// w === h, so dots and count pills share one shape. The winding direction is
-// what turns the outer stadium into a hole. Under the default nonzero fill rule
-// a counter-clockwise subpath inside a clockwise one cancels it out.
-function stadium(x, y, w, h, clockwise) {
-  const r = Math.min(w, h) / 2;
-  const left = round(x + r);
-  const right = round(x + w - r);
-  const top = round(y);
-  const bottom = round(y + h);
-  const arc = `A${round(r)} ${round(r)} 0 0`;
-  return clockwise ? `M${left} ${top}H${right}${arc} 1 ${right} ${bottom}H${left}${arc} 1 ${left} ${top}Z` : `M${left} ${top}${arc} 0 ${left} ${bottom}H${right}${arc} 0 ${right} ${top}Z`;
-}
-
-// Carves a gap out of the host around every indicator it hosts, so the
-// indicator reads as a hole and stays legible on a host of its own color.
-// Only the gap is removed, never the indicator itself, which sits inside the
-// hole's inner edge and so survives its own parent's clip.
-// Measured from the layout box, never getBoundingClientRect: clip-path
-// coordinates live in the host's own untransformed space, so a scaled ancestor
-// (the dialog opens its panel at scale(0.95)) would skew a rect-derived hole,
-// and a transform resizes nothing, so the resize observer would never correct it.
-function updateCutout(host) {
-  const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-  const gap = CUTOUT_GAP * rootSize;
-  let holes = '';
-  if (host.offsetWidth && host.offsetHeight) {
-    for (const indicator of host._h_badge_cutout) {
-      // Null offsetParent covers a hidden indicator (x-show) and a host that is
-      // not the element the indicator is positioned against, where offsetLeft
-      // would be measured from the wrong origin.
-      if (indicator.offsetParent !== host) continue;
-      const w = indicator.offsetWidth;
-      const h = indicator.offsetHeight;
-      if (!w || !h) continue;
-      // offsetLeft/offsetTop start at the host's padding box, clip-path's
-      // reference box at its border box.
-      const x = indicator.offsetLeft + host.clientLeft;
-      const y = indicator.offsetTop + host.clientTop;
-      holes += stadium(x - gap, y - gap, w + gap * 2, h + gap * 2, false) + stadium(x, y, w, h, true);
-    }
-  }
-  if (!holes) {
-    host.style.clipPath = '';
-    return;
-  }
-  const outer = `M${-CUTOUT_REACH} ${-CUTOUT_REACH}H${round(host.offsetWidth + CUTOUT_REACH)}V${round(host.offsetHeight + CUTOUT_REACH)}H${-CUTOUT_REACH}Z`;
-  host.style.clipPath = `path("${outer}${holes}")`;
-}
-
 export default function (Alpine) {
   Alpine.directive('h-badge', (el, _, { cleanup }) => {
     el.classList.add(
@@ -125,6 +65,7 @@ export default function (Alpine) {
       'font-bold',
       'leading-none',
       'transform-gpu',
+      'shadow-[0_0_0_0.125rem_var(--badge-ring,var(--background))]',
       'data-[dot=true]:p-0',
       'data-[ping=true]:before:absolute',
       'data-[ping=true]:before:inline-flex',
@@ -179,36 +120,16 @@ export default function (Alpine) {
     setPosition(el.getAttribute('data-position') ?? 'top-right');
     setSize();
 
-    // Several indicators can share a host, so they register on it and the clip
-    // is rebuilt from all of them at once rather than each overwriting the last.
-    const host = el.parentElement;
-    let resizeObserver;
-    if (host) {
-      if (!host._h_badge_cutout) host._h_badge_cutout = new Set();
-      host._h_badge_cutout.add(el);
-      resizeObserver = new ResizeObserver(() => updateCutout(host));
-      resizeObserver.observe(host);
-      resizeObserver.observe(el);
-    }
-
     const observer = new MutationObserver(() => {
       setVariant(el.getAttribute('data-variant') ?? 'primary');
       setPosition(el.getAttribute('data-position') ?? 'top-right');
       setSize();
-      // A position change moves the indicator without resizing it, so the
-      // resize observer would not fire.
-      if (host) updateCutout(host);
     });
 
     observer.observe(el, { attributes: true, attributeFilter: ['data-variant', 'data-position', 'data-size', 'data-dot'] });
 
     cleanup(() => {
       observer.disconnect();
-      if (host) {
-        resizeObserver.disconnect();
-        host._h_badge_cutout.delete(el);
-        updateCutout(host);
-      }
     });
   });
 }

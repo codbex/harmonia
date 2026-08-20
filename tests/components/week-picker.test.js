@@ -546,4 +546,36 @@ describe('h-week-picker-popup', () => {
     expect(popup._x_model.value).toBe('');
     expect(wrapper._h_weekpicker.input.removeEventListener).toHaveBeenCalledWith('change', getHandler());
   });
+
+  it('clicking the selected week again deselects it and clears the value', () => {
+    const { wrapper, popup, input } = createPopupSetup();
+    withModel(popup);
+    wrapper._h_weekpicker.state.expanded = true;
+    mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
+    const row = bodyRows(popup)[2];
+
+    row.click();
+    expect(popup._x_model.value).toBe(`${row.dataset.year}-W${row.dataset.week.padStart(2, '0')}`);
+    expect(row.getAttribute('aria-selected')).toBe('true');
+
+    wrapper._h_weekpicker.state.expanded = true;
+    row.click();
+    expect(popup._x_model.value).toBe('');
+    expect(input.value).toBe('');
+    expect(row.getAttribute('aria-selected')).not.toBe('true');
+    expect(wrapper._h_weekpicker.state.expanded).toBe(false);
+    expect(input.setCustomValidity).toHaveBeenLastCalledWith('');
+  });
+
+  it('Enter on the selected week deselects it', () => {
+    const { popup } = createPopupSetup();
+    withModel(popup);
+    mountDirective(weekPickerPlugin, 'h-week-picker-popup', popup, { original: 'h-week-picker-popup' });
+    const row = bodyRows(popup)[2];
+
+    row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(popup._x_model.value).toBe(`${row.dataset.year}-W${row.dataset.week.padStart(2, '0')}`);
+    row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(popup._x_model.value).toBe('');
+  });
 });

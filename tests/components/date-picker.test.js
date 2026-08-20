@@ -584,6 +584,96 @@ describe('h-date-picker-popup', () => {
     consoleSpy.mockRestore();
   });
 
+  // Single-mode popup with a model harness, for the clear paths.
+  function createSingleModelPopup() {
+    const wrapper = document.createElement('div');
+    let inputChangeHandler;
+    const input = {
+      addEventListener: vi.fn((event, handler) => {
+        if (event === 'change') inputChangeHandler = handler;
+      }),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      value: '',
+      setCustomValidity: vi.fn(),
+    };
+    const state = { expanded: true };
+    wrapper._h_datepicker = { state, input, controls: 'ctrl-1' };
+    const calEl = document.createElement('div');
+    wrapper.appendChild(calEl);
+    document.body.appendChild(wrapper);
+
+    let model = '';
+    const modelSet = vi.fn((v) => (model = v));
+    Object.defineProperty(calEl, '_x_model', {
+      value: { get: () => model, set: modelSet },
+      configurable: true,
+    });
+
+    mountDirective(datepickerPlugin, 'h-date-picker-popup', calEl, { original: 'h-date-picker-popup', expression: '' });
+
+    const cell = (day) => calEl.querySelector(`td[data-day="${day}"]`);
+    return { calEl, input, state, modelSet, getModel: () => model, getHandler: () => inputChangeHandler, cell };
+  }
+
+  it('an emptied input clears the value instead of erroring', () => {
+    const { cell, input, getHandler, getModel } = createSingleModelPopup();
+    cell(12).click();
+    expect(getModel()).toBeTruthy();
+    input.value = '   ';
+    const consoleSpy = vi.spyOn(console, 'error');
+    getHandler()({ isTrusted: true });
+    expect(consoleSpy).not.toHaveBeenCalled();
+    expect(getModel()).toBe('');
+    expect(input.value).toBe('');
+    expect(input.setCustomValidity).toHaveBeenLastCalledWith('');
+    consoleSpy.mockRestore();
+  });
+
+  it('clicking the selected day again deselects it and clears the value', () => {
+    const { cell, input, state, getModel } = createSingleModelPopup();
+    cell(12).click();
+    expect(getModel()).toBeTruthy();
+    expect(state.expanded).toBe(false);
+    expect(input.value).not.toBe('');
+    state.expanded = true;
+    cell(12).click();
+    expect(getModel()).toBe('');
+    expect(input.value).toBe('');
+    expect(state.expanded).toBe(false);
+    expect(cell(12).getAttribute('aria-selected')).toBe('false');
+  });
+
+  it('a programmatic model clear blanks the input and resets validity', () => {
+    const wrapper = document.createElement('div');
+    const input = {
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      value: '',
+      setCustomValidity: vi.fn(),
+    };
+    wrapper._h_datepicker = { state: { expanded: false }, input, controls: 'ctrl-1' };
+    const calEl = document.createElement('div');
+    calEl.setAttribute('x-model', 'd');
+    wrapper.appendChild(calEl);
+    document.body.appendChild(wrapper);
+
+    const store = createMockAlpine().reactive({ value: '2026-06-10' });
+    Object.defineProperty(calEl, '_x_model', {
+      value: { get: () => store.value, set: (v) => (store.value = v) },
+      configurable: true,
+    });
+
+    mountDirective(datepickerPlugin, 'h-date-picker-popup', calEl, { original: 'h-date-picker-popup', expression: '' }, { evaluateLater: () => (cb) => cb(store.value) });
+    expect(input.value).not.toBe('');
+
+    store.value = '';
+    expect(input.value).toBe('');
+    expect(input.setCustomValidity).toHaveBeenLastCalledWith('');
+    expect(calEl.querySelector('td[aria-selected="true"]')).toBeNull();
+  });
+
   function createRangePopup() {
     const wrapper = document.createElement('div');
     let inputChangeHandler;
@@ -650,6 +740,19 @@ describe('h-date-picker-popup', () => {
     const consoleSpy = vi.spyOn(console, 'error');
     getHandler()({ isTrusted: true });
     expect(input.setCustomValidity).toHaveBeenCalledWith('Input value is not a valid date range.');
+    consoleSpy.mockRestore();
+  });
+
+  it('range mode: an emptied input clears both ends of the model', () => {
+    const { cell, input, getHandler, modelSet } = createRangePopup();
+    cell(5).click();
+    cell(9).click();
+    input.value = '';
+    const consoleSpy = vi.spyOn(console, 'error');
+    getHandler()({ isTrusted: true });
+    expect(consoleSpy).not.toHaveBeenCalled();
+    expect(modelSet).toHaveBeenLastCalledWith({ start: undefined, end: undefined });
+    expect(input.value).toBe('');
     consoleSpy.mockRestore();
   });
 });

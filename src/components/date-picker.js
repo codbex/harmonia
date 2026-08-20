@@ -126,6 +126,10 @@ export default function (Alpine) {
 
     const onInputChange = (event) => {
       if (event && !event.isTrusted) return;
+      if (input.value.trim() === '') {
+        widget.clearSelectedAndSync();
+        return;
+      }
       const parsed = widget.parseDisplayValue(input.value);
       if (widget.isRange()) {
         const { start, end } = parsed;
@@ -174,7 +178,10 @@ export default function (Alpine) {
 
       effect(() => {
         evaluateModel((value) => {
-          if (widget.applyModel(value)) input.value = '';
+          if (widget.applyModel(value)) {
+            input.value = '';
+            input.setCustomValidity('');
+          }
         });
       });
     }

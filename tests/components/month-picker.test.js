@@ -453,4 +453,36 @@ describe('h-month-picker-popup', () => {
     expect(getHandler()).toBeDefined();
     expect(wrapper._h_monthpicker.input.removeEventListener).toHaveBeenCalledWith('change', getHandler());
   });
+
+  it('clicking the selected month again deselects it and clears the value', () => {
+    const { wrapper, popup, input } = createPopupSetup();
+    withModel(popup);
+    wrapper._h_monthpicker.state.expanded = true;
+    mountDirective(monthPickerPlugin, 'h-month-picker-popup', popup, { original: 'h-month-picker-popup' });
+    const cells = [...popup.querySelectorAll('[data-month]')];
+
+    cells[3].click();
+    expect(popup._x_model.value).toMatch(/^\d{4}-04$/);
+    expect(cells[3].getAttribute('aria-selected')).toBe('true');
+
+    wrapper._h_monthpicker.state.expanded = true;
+    cells[3].click();
+    expect(popup._x_model.value).toBe('');
+    expect(input.value).toBe('');
+    expect(cells[3].getAttribute('aria-selected')).not.toBe('true');
+    expect(wrapper._h_monthpicker.state.expanded).toBe(false);
+    expect(input.setCustomValidity).toHaveBeenLastCalledWith('');
+  });
+
+  it('Enter on the selected month deselects it', () => {
+    const { wrapper, popup } = createPopupSetup();
+    withModel(popup);
+    mountDirective(monthPickerPlugin, 'h-month-picker-popup', popup, { original: 'h-month-picker-popup' });
+    const cells = [...popup.querySelectorAll('[data-month]')];
+
+    cells[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(popup._x_model.value).toMatch(/^\d{4}-04$/);
+    cells[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(popup._x_model.value).toBe('');
+  });
 });

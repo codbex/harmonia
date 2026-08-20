@@ -43,6 +43,7 @@ export default function (Alpine) {
       changed: undefined,
       model: undefined,
       setDisplay: undefined,
+      refresh: undefined,
       parts: {
         hour: null,
         minute: null,
@@ -184,7 +185,17 @@ export default function (Alpine) {
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       timepicker._h_time.model = el._x_model;
       effect(() => {
-        updateDisplay(el._x_model.get());
+        const value = el._x_model.get();
+        updateDisplay(value);
+        // A cleared model must also drop the selected parts, or the popup
+        // reopens on the old time and the next pick recombines with it.
+        if (!value) {
+          timepicker._h_time.parts.hour = null;
+          timepicker._h_time.parts.minute = null;
+          timepicker._h_time.parts.second = null;
+          timepicker._h_time.parts.period = null;
+          timepicker._h_time.refresh?.();
+        }
       });
     } else {
       timepicker._h_time.model = {
@@ -618,6 +629,12 @@ export default function (Alpine) {
     let selectedPeriod;
 
     function render() {
+      // Recomputed from scratch so a cleared part cannot leave a stale
+      // reference that the open effect would still focus and scroll to.
+      selectedHour = undefined;
+      selectedMinute = undefined;
+      selectedSecond = undefined;
+      selectedPeriod = undefined;
       if (timepicker._h_timepicker.is12Hour) {
         hoursList.firstChild.classList.add('hidden');
         for (let h = 1; h < 13; h++) {
@@ -715,6 +732,8 @@ export default function (Alpine) {
       }
     }
 
+    timepicker._h_time.refresh = render;
+
     const onClick = (event) => {
       event.stopPropagation();
     };
@@ -789,6 +808,7 @@ export default function (Alpine) {
 
     cleanup(() => {
       if (autoUpdateCleanup) autoUpdateCleanup();
+      timepicker._h_time.refresh = undefined;
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
       closer.dispose();

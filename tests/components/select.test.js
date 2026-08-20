@@ -272,6 +272,76 @@ describe('h-select-input', () => {
   });
 });
 
+// Programmatic writes to the bound property (a reusable dialog swapping its
+// record) dispatch no change event, so the select has to follow the model
+// itself. The stub's getter reads a reactive store so the directive's model
+// effect re-runs when the test reassigns it, like Alpine's scope would.
+describe('h-select-input model binding', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  function createModelSelect(initialValue) {
+    const store = createMockAlpine().reactive({ value: initialValue });
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    mountDirective(selectPlugin, 'h-select', root, { modifiers: [] });
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input._x_model = { get: () => store.value, set: (value) => (store.value = value) };
+    root.appendChild(input);
+    mountDirective(selectPlugin, 'h-select-input', input, { original: 'x-h-select-input', expression: '' });
+
+    const options = {};
+    for (const [label, value] of [
+      ['Apple', 'apple'],
+      ['Banana', 'banana'],
+    ]) {
+      const option = document.createElement('div');
+      option.setAttribute('data-value', value);
+      root.appendChild(option);
+      mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: `'${label}'` }, { evaluateLater: () => (cb) => cb(label) });
+      options[value] = option;
+    }
+    return { root, input, store, options, state: root._h_select };
+  }
+
+  const isSelected = (option) => option.getAttribute('aria-selected') === 'true' && !option.querySelector('span[aria-hidden]').classList.contains('invisible');
+
+  it('reflects a programmatic model replacement without any change event', () => {
+    const { store, options, state } = createModelSelect([]);
+    expect(state.label).toEqual([]);
+    store.value = ['apple'];
+    expect(state.label).toEqual(['Apple']);
+    expect(isSelected(options.apple)).toBe(true);
+    expect(isSelected(options.banana)).toBe(false);
+  });
+
+  // The mode used to be read once at init, so a property that only became an
+  // array later locked the select into single mode, and a toggle then replaced
+  // the consumer's array with a plain string.
+  it('recomputes multiple from the model type and appends on toggle', () => {
+    const { root, store, options, state } = createModelSelect(undefined);
+    expect(state.multiple).toBe(false);
+    store.value = ['apple'];
+    expect(state.multiple).toBe(true);
+    expect(state.label).toEqual(['Apple']);
+    expect(isSelected(options.apple)).toBe(true);
+    root._h_model.set('banana');
+    expect(store.value).toEqual(['apple', 'banana']);
+  });
+
+  // Each option registers its listener before its own label effect, so the last
+  // option to mount still resolves a preselected value pointing at it.
+  it('resolves a preselected value whose option registers last at mount', () => {
+    const { options, state } = createModelSelect('banana');
+    expect(state.label).toEqual(['Banana']);
+    expect(isSelected(options.banana)).toBe(true);
+    expect(isSelected(options.apple)).toBe(false);
+  });
+});
+
 function createSelectPopupSetup(stateOverrides = {}) {
   const container = document.createElement('div');
   const selectEl = document.createElement('div');

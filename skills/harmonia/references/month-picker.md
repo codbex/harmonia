@@ -54,6 +54,8 @@ Some locales, such as `bg-BG`, conventionally abbreviate months numerically, so 
 
 The month picker reads and writes months as `YYYY-MM` strings (e.g. `"2025-06"`). The text input displays the month using the user's locale (e.g. "June 2025"). The model value is unaffected by the display format.
 
+To clear the value, delete the text in the input, click the already selected month in the popup, or set the bound model to an empty string.
+
 ### Events
 
 | Event  | Description                                                                                                                                                                                                                                                                               |
@@ -70,7 +72,7 @@ By default this control shows native-constraint errors (for example `required`) 
 
 The user can use the following keyboard shortcuts in order to navigate through the month picker:
 
-- `Enter` / `Space` - Opens the popup, or selects the focused month when open.
+- `Enter` / `Space` - Opens the popup, or selects the focused month when open. Pressing it on the already selected month deselects it and clears the value.
 - `Left` / `Right` - Moves focus to the previous/next month, crossing into the previous/next year from January/December.
 - `Up` / `Down` - Moves focus one row (three months) up/down.
 - `Home` / `End` - Moves focus to January/December of the shown year.

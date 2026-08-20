@@ -242,6 +242,32 @@ describe('h-time-picker-input', () => {
     expect(events[0].bubbles).toBe(true);
     expect(events[0].target).toBe(input);
   });
+
+  // A cleared model must also drop the parts, or the popup reopens on the old
+  // time and the next pick recombines with it.
+  it('resets the selected parts when the model is cleared programmatically', () => {
+    const { input, timepicker } = createTimePickerInputSetup();
+    const store = createMockAlpine().reactive({ value: '10:30' });
+    Object.defineProperty(input, '_x_model', {
+      value: { get: () => store.value, set: (v) => (store.value = v) },
+      configurable: true,
+    });
+    mountDirective(timepickerPlugin, 'h-time-picker-input', input, {
+      original: 'x-h-time-picker-input',
+    });
+    expect(timepicker._h_time.parts.hour).not.toBeNull();
+    expect(timepicker._h_time.parts.minute).not.toBeNull();
+    const refresh = vi.fn();
+    timepicker._h_time.refresh = refresh;
+
+    store.value = '';
+    expect(timepicker._h_time.parts.hour).toBeNull();
+    expect(timepicker._h_time.parts.minute).toBeNull();
+    expect(timepicker._h_time.parts.second).toBeNull();
+    expect(timepicker._h_time.parts.period).toBeNull();
+    expect(refresh).toHaveBeenCalled();
+    expect(input.value).toBe('');
+  });
 });
 
 describe('h-time-picker-popup', () => {
@@ -316,6 +342,26 @@ describe('h-time-picker-popup', () => {
     const { popup } = createTimepickerPopupSetup();
     const { ctx } = mountDirective(timepickerPlugin, 'h-time-picker-popup', popup, {});
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  it('exposes a refresh hook that re-renders the lists from the parts', () => {
+    const { timepicker, popup } = createTimepickerPopupSetup();
+    mountDirective(timepickerPlugin, 'h-time-picker-popup', popup, {});
+    expect(typeof timepicker._h_time.refresh).toBe('function');
+    const okButton = popup.querySelector('button[data-action="close"]');
+
+    timepicker._h_time.parts.hour = '10';
+    timepicker._h_time.parts.minute = '30';
+    timepicker._h_time.refresh();
+    expect(popup.querySelectorAll('[aria-selected="true"]').length).toBe(2);
+    expect(okButton.disabled).toBe(false);
+
+    // The cleared-model state: no selection left and OK disabled again.
+    timepicker._h_time.parts.hour = null;
+    timepicker._h_time.parts.minute = null;
+    timepicker._h_time.refresh();
+    expect(popup.querySelectorAll('[aria-selected="true"]').length).toBe(0);
+    expect(okButton.disabled).toBe(true);
   });
 
   describe('open and close', () => {

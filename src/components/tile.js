@@ -58,7 +58,7 @@ export default function (Alpine) {
           el.classList.add('border', 'shadow-sm');
           break;
         case 'muted':
-          el.classList.add('bg-muted');
+          el.classList.add('bg-muted', '[--badge-ring:var(--muted)]');
           break;
         default:
           el.classList.add('border', 'bg-transparent', 'border-transparent');

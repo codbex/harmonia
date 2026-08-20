@@ -2,6 +2,7 @@ export default function (Alpine) {
   Alpine.directive('h-toolbar', (el, { modifiers }) => {
     el.classList.add(
       'bg-object-header',
+      '[--badge-ring:var(--object-header)]',
       'text-object-header-foreground',
       'hbox',
       'shrink-0',
@@ -17,8 +18,10 @@ export default function (Alpine) {
       'data-[size=sm]:h-8',
       'data-[size=md]:h-10',
       'data-[variant=transparent]:bg-transparent',
+      'data-[variant=transparent]:[--badge-ring:var(--background)]',
       'data-[variant=transparent]:text-foreground',
       'data-[variant=clear]:bg-background',
+      'data-[variant=clear]:[--badge-ring:var(--background)]',
       'data-[variant=clear]:text-foreground',
       'data-[floating=true]:shadow-xs',
       'data-[floating=true]:rounded-lg',

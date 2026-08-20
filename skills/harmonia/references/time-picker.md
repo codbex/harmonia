@@ -52,6 +52,8 @@ When using `x-model` on `x-h-time-picker-input`, the time picker reads and write
 
 The `is12Hour` option only affects the popup display - the model value is always in 24-hour format regardless of the display mode.
 
+Setting the bound model to an empty string clears the picker. The input goes blank and the popup selection is reset.
+
 ### Events
 
 | Event  | Description                                                                                                                                                                                                                                                          |

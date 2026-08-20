@@ -334,6 +334,25 @@ describe('h-datetime-picker-popup', () => {
     expect(wrapper._h_datetimepicker.state.expanded).toBe(true);
   });
 
+  it('clicking the selected day again deselects it and empties the model', () => {
+    const now = new Date();
+    const { wrapper, input, seg, dayCell, key, changeEvents, getModel } = createPopup({ model: '' });
+    wrapper._h_datetimepicker.state.expanded = true;
+    key(seg('hour'), 'ArrowUp');
+    key(seg('minute'), 'ArrowUp');
+    dayCell(20).click();
+    expect(getModel()).toBe(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-20T00:00`);
+    expect(changeEvents.length).toBe(1);
+
+    dayCell(20).click();
+    expect(getModel()).toBe('');
+    expect(changeEvents.length).toBe(2);
+    expect(dayCell(20).getAttribute('aria-selected')).toBe('false');
+    // The popover stays open and the main input degrades to the time only.
+    expect(wrapper._h_datetimepicker.state.expanded).toBe(true);
+    expect(input.value).toBe('00:00');
+  });
+
   it('Escape on a time segment closes the popover', () => {
     const { wrapper, seg, key } = createPopup({ model: '' });
     wrapper._h_datetimepicker.state.expanded = true;

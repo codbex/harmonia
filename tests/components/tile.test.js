@@ -53,6 +53,7 @@ describe('h-tile', () => {
     el.setAttribute('data-variant', 'muted');
     mountDirective(tilePlugin, 'h-tile', el);
     expect(el.classList.contains('bg-muted')).toBe(true);
+    expect(el.classList.contains('[--badge-ring:var(--muted)]')).toBe(true);
   });
 
   it('applies default transparent variant classes when no variant set', () => {

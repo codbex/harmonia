@@ -23,6 +23,7 @@ describe('h-card', () => {
   it('adds base classes', () => {
     mountDirective(cardPlugin, 'h-card', el);
     expect(el.classList.contains('bg-card')).toBe(true);
+    expect(el.classList.contains('[--badge-ring:var(--card)]')).toBe(true);
     expect(el.classList.contains('text-card-foreground')).toBe(true);
     expect(el.classList.contains('rounded-xl')).toBe(true);
     expect(el.classList.contains('border')).toBe(true);
