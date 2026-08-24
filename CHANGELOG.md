@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.14.1
+
+A bugfix release that makes the Time Picker follow programmatic model writes, completing the v2.14.0 fix that only covered clearing. There are no breaking changes.
+
+### Time Picker
+
+- **Fixed: setting the bound model programmatically did not update the popup selection.** Only the input text followed the model, while the popup kept its previous selection. Opening it showed the old time (or nothing) highlighted instead of the model's value, changing a single part was silently dropped because the selection never became complete, and once it was complete a pick recombined with the stale leftover parts, writing a time mixed from two values. The popup now re-reads the model on every write, so the selection always matches what the input shows.
+
 ## v2.14.0
 
 A release that makes picker values deselectable and makes the Select follow its bound model. Emptying a date picker's input now clears the value instead of erroring, the already selected day, month or week can be clicked again to deselect it, and clearing a picker programmatically no longer leaves stale state behind. The Select's mode now tracks the model's type instead of being read once at init, so a property that only becomes an array after mount still gets a multiple select, and programmatic writes to the bound property are reflected without user interaction. The Badge indicator is no longer cut off in WebKit browsers, its gap is now drawn as a surface-colored ring. There are no breaking changes.

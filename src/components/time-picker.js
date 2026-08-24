@@ -44,6 +44,7 @@ export default function (Alpine) {
       model: undefined,
       setDisplay: undefined,
       refresh: undefined,
+      lastModelValue: '',
       parts: {
         hour: null,
         minute: null,
@@ -182,20 +183,40 @@ export default function (Alpine) {
     };
     timepicker._h_time.setDisplay = updateDisplay;
 
+    const seedParts = (rawTime) => {
+      const { hour, minute, second, period } = getSelectedTime(rawTime, timepicker._h_timepicker.is12Hour);
+
+      if (timepicker._h_timepicker.seconds === undefined) {
+        timepicker._h_timepicker.seconds = !!second;
+      }
+
+      timepicker._h_time.parts.hour = hour;
+      timepicker._h_time.parts.minute = minute;
+      if (timepicker._h_timepicker.seconds) {
+        timepicker._h_time.parts.second = second ?? '00';
+      }
+      timepicker._h_time.parts.period = period;
+    };
+
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
       timepicker._h_time.model = el._x_model;
       effect(() => {
-        const value = el._x_model.get();
+        const value = el._x_model.get() || '';
         updateDisplay(value);
-        // A cleared model must also drop the selected parts, or the popup
-        // reopens on the old time and the next pick recombines with it.
+        // A model write must also re-seed the selected parts, or the popup
+        // keeps the old selection and the next pick recombines with it. The
+        // guard stops a pick committed through updateModel from re-entering.
+        if (value === timepicker._h_time.lastModelValue) return;
+        timepicker._h_time.lastModelValue = value;
         if (!value) {
           timepicker._h_time.parts.hour = null;
           timepicker._h_time.parts.minute = null;
           timepicker._h_time.parts.second = null;
           timepicker._h_time.parts.period = null;
-          timepicker._h_time.refresh?.();
+        } else {
+          seedParts(value);
         }
+        timepicker._h_time.refresh?.();
       });
     } else {
       timepicker._h_time.model = {
@@ -238,20 +259,7 @@ export default function (Alpine) {
     const rawTime = timepicker._h_time.model.get();
 
     if (rawTime) {
-      const { hour, minute, second, period } = getSelectedTime(rawTime, timepicker._h_timepicker.is12Hour);
-
-      if (timepicker._h_timepicker.seconds === undefined && !second) {
-        timepicker._h_timepicker.seconds = false;
-      } else if (timepicker._h_timepicker.seconds === undefined && second) {
-        timepicker._h_timepicker.seconds = true;
-      }
-
-      timepicker._h_time.parts.hour = hour;
-      timepicker._h_time.parts.minute = minute;
-      if (timepicker._h_timepicker.seconds) {
-        timepicker._h_time.parts.second = second ?? '00';
-      }
-      timepicker._h_time.parts.period = period;
+      seedParts(rawTime);
       updateDisplay(rawTime);
     }
 
@@ -337,6 +345,7 @@ export default function (Alpine) {
 
       const newValue = partsToValue24(timepicker._h_time.parts, { is12Hour: timepicker._h_timepicker.is12Hour, seconds: timepicker._h_timepicker.seconds });
 
+      timepicker._h_time.lastModelValue = newValue;
       timepicker._h_time.model.set(newValue);
       timepicker._h_time.setDisplay?.(newValue);
       timepicker._h_time.changed();

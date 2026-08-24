@@ -171,6 +171,7 @@ describe('h-time-picker-input', () => {
     timepicker._h_time = {
       changed: undefined,
       model: undefined,
+      lastModelValue: '',
       parts: { hour: null, minute: null, second: null, period: null },
     };
     const input = document.createElement('input');
@@ -268,6 +269,88 @@ describe('h-time-picker-input', () => {
     expect(refresh).toHaveBeenCalled();
     expect(input.value).toBe('');
   });
+
+  // A picker mounted with an empty model must pick up a later programmatic
+  // write, or the popup opens with nothing selected and an hour-only pick is
+  // silently dropped by updateModel's completeness check.
+  it('seeds the selected parts when the model is set programmatically after an empty init', () => {
+    const { input, timepicker } = createTimePickerInputSetup();
+    const store = createMockAlpine().reactive({ value: '' });
+    Object.defineProperty(input, '_x_model', {
+      value: { get: () => store.value, set: (v) => (store.value = v) },
+      configurable: true,
+    });
+    mountDirective(timepickerPlugin, 'h-time-picker-input', input, {
+      original: 'x-h-time-picker-input',
+    });
+    expect(timepicker._h_time.parts.hour).toBeNull();
+    const refresh = vi.fn();
+    timepicker._h_time.refresh = refresh;
+
+    store.value = '09:00';
+    expect(timepicker._h_time.parts.hour).toBe('09');
+    expect(timepicker._h_time.parts.minute).toBe('00');
+    expect(refresh).toHaveBeenCalled();
+    expect(input.value).toBe('09:00');
+  });
+
+  // Swapping the model to another record's value must replace the parts, or
+  // the next pick recombines with the previous record's stale parts.
+  it('re-seeds the selected parts when the model is replaced programmatically', () => {
+    const { input, timepicker } = createTimePickerInputSetup();
+    const store = createMockAlpine().reactive({ value: '10:00' });
+    Object.defineProperty(input, '_x_model', {
+      value: { get: () => store.value, set: (v) => (store.value = v) },
+      configurable: true,
+    });
+    mountDirective(timepickerPlugin, 'h-time-picker-input', input, {
+      original: 'x-h-time-picker-input',
+    });
+    expect(timepicker._h_time.parts.hour).toBe('10');
+    expect(timepicker._h_time.parts.minute).toBe('00');
+
+    store.value = '14:30';
+    expect(timepicker._h_time.parts.hour).toBe('14');
+    expect(timepicker._h_time.parts.minute).toBe('30');
+    expect(input.value).toBe('14:30');
+  });
+
+  it('seeds 12-hour parts from a programmatic 24-hour model write', () => {
+    const { input, timepicker } = createTimePickerInputSetup();
+    timepicker._h_timepicker.is12Hour = true;
+    const store = createMockAlpine().reactive({ value: '' });
+    Object.defineProperty(input, '_x_model', {
+      value: { get: () => store.value, set: (v) => (store.value = v) },
+      configurable: true,
+    });
+    mountDirective(timepickerPlugin, 'h-time-picker-input', input, {
+      original: 'x-h-time-picker-input',
+    });
+
+    store.value = '14:30';
+    expect(timepicker._h_time.parts.hour).toBe('02');
+    expect(timepicker._h_time.parts.minute).toBe('30');
+    expect(timepicker._h_time.parts.period).toBe('PM');
+    expect(input.value).toBe('02:30 PM');
+  });
+
+  it('auto-detects seconds from a programmatic write when unset at init', () => {
+    const { input, timepicker } = createTimePickerInputSetup();
+    timepicker._h_timepicker.seconds = undefined;
+    const store = createMockAlpine().reactive({ value: '' });
+    Object.defineProperty(input, '_x_model', {
+      value: { get: () => store.value, set: (v) => (store.value = v) },
+      configurable: true,
+    });
+    mountDirective(timepickerPlugin, 'h-time-picker-input', input, {
+      original: 'x-h-time-picker-input',
+    });
+
+    store.value = '09:00:30';
+    expect(timepicker._h_timepicker.seconds).toBe(true);
+    expect(timepicker._h_time.parts.second).toBe('30');
+    expect(input.value).toBe('09:00:30');
+  });
 });
 
 describe('h-time-picker-popup', () => {
@@ -285,6 +368,7 @@ describe('h-time-picker-popup', () => {
     timepicker._h_time = {
       changed: vi.fn(),
       model: { get: vi.fn().mockReturnValue(''), set: vi.fn() },
+      lastModelValue: '',
       parts: { hour: null, minute: null, second: null, period: null },
     };
     const popup = document.createElement('div');
@@ -362,6 +446,24 @@ describe('h-time-picker-popup', () => {
     timepicker._h_time.refresh();
     expect(popup.querySelectorAll('[aria-selected="true"]').length).toBe(0);
     expect(okButton.disabled).toBe(true);
+  });
+
+  // The committed value is recorded in lastModelValue so the input's model
+  // effect can tell a user pick from an external programmatic write.
+  it('records a committed pick in lastModelValue', () => {
+    const { timepicker, popup } = createTimepickerPopupSetup();
+    mountDirective(timepickerPlugin, 'h-time-picker-popup', popup, {});
+    const hours = popup.querySelectorAll('[data-type="hours"] [role="option"]');
+    const minutes = popup.querySelectorAll('[data-type="minutes"] [role="option"]');
+
+    hours[9].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    // An hour-only pick does not commit and must not record anything.
+    expect(timepicker._h_time.model.set).not.toHaveBeenCalled();
+    expect(timepicker._h_time.lastModelValue).toBe('');
+
+    minutes[30].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(timepicker._h_time.model.set).toHaveBeenCalledWith('09:30');
+    expect(timepicker._h_time.lastModelValue).toBe('09:30');
   });
 
   describe('open and close', () => {
