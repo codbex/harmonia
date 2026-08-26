@@ -272,6 +272,335 @@ describe('h-calendar', () => {
     });
   });
 
+  describe('drag and drop', () => {
+    const pointer = (target, type, coords = {}) => target.dispatchEvent(new MouseEvent(type, { bubbles: true, ...coords }));
+
+    function stubRect(node, rect) {
+      node.getBoundingClientRect = () => ({ left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, ...rect });
+    }
+
+    // The initial-scroll rAF is stubbed to run synchronously so scrollTop is
+    // stable before a drag starts.
+    function mountDrag(config) {
+      const raf = vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      try {
+        mount('calConfig', { evaluateLater: () => (cb) => cb(config) });
+      } finally {
+        raf.mockRestore();
+      }
+    }
+
+    function timedEl(title) {
+      return Array.from(el.querySelectorAll('.absolute')).find((p) => p.querySelector('.font-medium')?.textContent.trim() === title);
+    }
+
+    function scrollArea() {
+      return el.querySelector('.overflow-y-auto.flex-1');
+    }
+
+    const standup = { id: 'e1', title: 'Standup', start: '2026-06-18T09:00:00', end: '2026-06-18T10:00:00', color: 'blue' };
+
+    it('is inert when draggable is not enabled', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', events: [standup] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 400 });
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 400 });
+      expect(evEl.hasAttribute('data-dragging')).toBe(false);
+      expect(evEl.style.top).toBe('540px');
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('keeps sub-threshold moves as plain clicks', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('event-drop', drops);
+      el.addEventListener('event-click', clicks);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 51, clientY: 302 });
+      pointer(evEl, 'pointerup', { clientX: 51, clientY: 302 });
+      expect(evEl.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+      evEl.click();
+      expect(clicks).toHaveBeenCalledOnce();
+    });
+
+    it('moves a day-view event vertically in 15-minute steps and dispatches event-drop', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 365 });
+      // 65px rounds to the 60-minute step and the preview follows.
+      expect(evEl.getAttribute('data-dragging')).toBe('true');
+      expect(evEl.classList.contains('z-20')).toBe(true);
+      expect(evEl.style.top).toBe('600px');
+      expect(evEl.style.left).toBe('0.125rem');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 365 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.event.id).toBe('e1');
+      expect(detail.start).toBe('2026-06-18T10:00');
+      expect(detail.end).toBe('2026-06-18T11:00');
+      // Snap-back: the drop never mutates the calendar's own rendering.
+      expect(evEl.hasAttribute('data-dragging')).toBe(false);
+      expect(evEl.classList.contains('z-20')).toBe(false);
+      expect(evEl.style.top).toBe('540px');
+    });
+
+    it('snaps vertical moves to a configured dragStep', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, dragStep: 60, events: [standup] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 350 });
+      // 50px rounds to one 60-minute step (the default 15 would give 45 minutes).
+      expect(evEl.style.top).toBe('600px');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 350 });
+      expect(drops.mock.calls[0][0].detail.start).toBe('2026-06-18T10:00');
+    });
+
+    it('ignores a non-positive dragStep and keeps the 15-minute default', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, dragStep: 0, events: [standup] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 350 });
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 350 });
+      expect(drops.mock.calls[0][0].detail.start).toBe('2026-06-18T09:45');
+    });
+
+    it('suppresses the trailing click after a completed drag', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const clicks = vi.fn();
+      el.addEventListener('event-click', clicks);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 365 });
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 365 });
+      evEl.click();
+      expect(clicks).not.toHaveBeenCalled();
+      evEl.click();
+      expect(clicks).toHaveBeenCalledOnce();
+    });
+
+    it('moves an event across week columns and keeps its time', () => {
+      mountDrag({ view: 'week', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      const colsGrid = scrollArea().lastElementChild;
+      stubRect(colsGrid, { left: 0, width: 700 });
+      // Thu Jun 18 is column 4 of the Sun-Sat week; x 650 is column 6 (Sat).
+      pointer(evEl, 'pointerdown', { clientX: 450, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 650, clientY: 300 });
+      expect(evEl.style.transform).toBe('translateX(200px)');
+      pointer(evEl, 'pointerup', { clientX: 650, clientY: 300 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.start).toBe('2026-06-20T09:00');
+      expect(detail.end).toBe('2026-06-20T10:00');
+      expect(evEl.style.transform).toBe('');
+    });
+
+    it('does not dispatch when the event is dropped where it started', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('event-drop', drops);
+      el.addEventListener('event-click', clicks);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 305 });
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 305 });
+      expect(drops).not.toHaveBeenCalled();
+      expect(evEl.style.top).toBe('540px');
+      // The gesture was still a drag, not a click.
+      evEl.click();
+      expect(clicks).not.toHaveBeenCalled();
+    });
+
+    it('clamps vertical moves to the day', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: -400 });
+      expect(evEl.style.top).toBe('0px');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: -400 });
+      expect(drops.mock.calls[0][0].detail.start).toBe('2026-06-18T00:00');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 2300 });
+      expect(evEl.style.top).toBe('1380px');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 2300 });
+      expect(drops.mock.calls[1][0].detail.start).toBe('2026-06-18T23:00');
+      expect(drops.mock.calls[1][0].detail.end).toBe('2026-06-19T00:00');
+    });
+
+    it('never forces an event upward when its 30-minute visual floor passes midnight', () => {
+      const late = { id: 'e9', title: 'Late', start: '2026-06-18T23:55:00', end: '2026-06-18T23:59:00' };
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [late] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Late');
+      expect(evEl.style.top).toBe('1435px');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 1437 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 1537 });
+      expect(evEl.style.top).toBe('1435px');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 1537 });
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('locks segments continuing from an earlier day to day changes', () => {
+      const overnight = { id: 'e2', title: 'Overnight', start: '2026-06-17T22:00:00', end: '2026-06-18T02:00:00' };
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [overnight] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Overnight');
+      expect(evEl.style.top).toBe('0px');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 180 });
+      expect(evEl.getAttribute('data-dragging')).toBe('true');
+      expect(evEl.style.top).toBe('0px');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 180 });
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('moves a month-view event to the hovered day and keeps its time', () => {
+      mountDrag({ view: 'month', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('event-drop', drops);
+      el.addEventListener('event-click', clicks);
+      const grid = el.querySelector('[role="grid"]');
+      stubRect(grid, { left: 0, top: 0, width: 700, height: 600 });
+      const cells = el.querySelectorAll('[role="gridcell"]');
+      const pill = el.querySelector('.event-pill');
+      pointer(pill, 'pointerdown', { clientX: 450, clientY: 250 });
+      // Hover Jun 30 (row 4, col 2), then Jun 29 (row 4, col 1).
+      pointer(pill, 'pointermove', { clientX: 250, clientY: 450 });
+      expect(pill.getAttribute('data-dragging')).toBe('true');
+      expect(pill.classList.contains('opacity-50')).toBe(true);
+      expect(cells[30].getAttribute('data-drop-target')).toBe('true');
+      expect(cells[30].classList.contains('bg-muted/50')).toBe(true);
+      pointer(pill, 'pointermove', { clientX: 150, clientY: 450 });
+      expect(cells[30].hasAttribute('data-drop-target')).toBe(false);
+      expect(cells[29].getAttribute('data-drop-target')).toBe('true');
+      pointer(pill, 'pointerup', { clientX: 150, clientY: 450 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.start).toBe('2026-06-29T09:00');
+      expect(detail.end).toBe('2026-06-29T10:00');
+      expect(cells[29].hasAttribute('data-drop-target')).toBe(false);
+      expect(pill.classList.contains('opacity-50')).toBe(false);
+      pill.click();
+      expect(clicks).not.toHaveBeenCalled();
+    });
+
+    it('keeps date-only events date-only on a month drag', () => {
+      const holiday = { id: 'e3', title: 'Holiday', start: '2026-06-18', allDay: true };
+      mountDrag({ view: 'month', date: '2026-06-18', draggable: true, events: [holiday] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      stubRect(el.querySelector('[role="grid"]'), { left: 0, top: 0, width: 700, height: 600 });
+      const pill = el.querySelector('.event-pill');
+      pointer(pill, 'pointerdown', { clientX: 450, clientY: 250 });
+      pointer(pill, 'pointermove', { clientX: 550, clientY: 250 });
+      pointer(pill, 'pointerup', { clientX: 550, clientY: 250 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.start).toBe('2026-06-19');
+      expect(detail.end).toBeUndefined();
+    });
+
+    it('moves all-day events across days in the week strip', () => {
+      const holiday = { id: 'e4', title: 'Holiday', start: '2026-06-18', allDay: true };
+      mountDrag({ view: 'week', date: '2026-06-18', draggable: true, events: [holiday] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const allDayGrid = el.querySelector('.max-h-18').lastElementChild;
+      stubRect(allDayGrid, { left: 0, width: 700 });
+      const pill = allDayGrid.querySelector('button');
+      pointer(pill, 'pointerdown', { clientX: 450, clientY: 10 });
+      pointer(pill, 'pointermove', { clientX: 550, clientY: 10 });
+      expect(allDayGrid.children[5].getAttribute('data-drop-target')).toBe('true');
+      pointer(pill, 'pointerup', { clientX: 550, clientY: 10 });
+      expect(drops).toHaveBeenCalledOnce();
+      expect(drops.mock.calls[0][0].detail.start).toBe('2026-06-19');
+    });
+
+    it('respects a per-event draggable: false', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [{ ...standup, draggable: false }] });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 400 });
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 400 });
+      expect(evEl.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('aborts on pointercancel without dispatching or suppressing clicks', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('event-drop', drops);
+      el.addEventListener('event-click', clicks);
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 300 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 365 });
+      expect(evEl.style.top).toBe('600px');
+      pointer(evEl, 'pointercancel', {});
+      expect(evEl.style.top).toBe('540px');
+      expect(drops).not.toHaveBeenCalled();
+      evEl.click();
+      expect(clicks).toHaveBeenCalledOnce();
+    });
+
+    it('does not attach dragging to overflow-popover pills', () => {
+      const events = Array.from({ length: 5 }, (_, i) => ({
+        id: String(i),
+        title: `Event ${i}`,
+        start: '2026-06-18T10:00:00',
+        end: '2026-06-18T11:00:00',
+      }));
+      mountDrag({ view: 'month', date: '2026-06-18', draggable: true, events });
+      const drops = vi.fn();
+      el.addEventListener('event-drop', drops);
+      el.querySelector('[data-slot="overflow-more-btn"]').click();
+      const popover = Array.from(document.querySelectorAll('[role="dialog"]')).find((d) => !d.classList.contains('hidden'));
+      const pill = popover.querySelector('button');
+      pointer(pill, 'pointerdown', { clientX: 100, clientY: 100 });
+      pointer(pill, 'pointermove', { clientX: 300, clientY: 300 });
+      pointer(pill, 'pointerup', { clientX: 300, clientY: 300 });
+      expect(pill.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('nudges the scroll area when dragging near its edge', () => {
+      mountDrag({ view: 'day', date: '2026-06-18', draggable: true, events: [standup] });
+      const area = scrollArea();
+      const startScroll = area.scrollTop;
+      stubRect(area, { top: 0, bottom: 200, height: 200 });
+      const evEl = timedEl('Standup');
+      pointer(evEl, 'pointerdown', { clientX: 50, clientY: 100 });
+      pointer(evEl, 'pointermove', { clientX: 50, clientY: 190 });
+      expect(area.scrollTop).toBe(startScroll + 15);
+      // The scrolled distance feeds the vertical delta: 90px pointer + 15px scroll.
+      expect(evEl.style.top).toBe('645px');
+      pointer(evEl, 'pointerup', { clientX: 50, clientY: 190 });
+    });
+  });
+
   describe('accessibility', () => {
     it('exposes the calendar as a labeled group', () => {
       mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2026-06-18' }) });

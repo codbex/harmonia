@@ -8,9 +8,20 @@ Use the Slot Picker when users need to book or choose one or more time slots fro
 
 Set `days` to control how many day columns are shown (1 to 7). The picker renders only the day grid, so you build the toolbar yourself from the control directives (every example below includes one). The previous/next controls move by that number of days, and the calendar control jumps straight to any date. The chosen date becomes the first of the visible days, which avoids paging far ahead one step at a time. Set `showNowIndicator: true` to mark the current time in today's column with a red line that moves as time passes. By default every day column stays visible at every width, so a narrow container simply shows narrower columns. Add the `responsive` modifier (`x-h-slot-picker.responsive`) to make the columns stack into a single column on narrow screens instead.
 
+## Behavior
+
+Set `draggable: true` in the configuration to let users reorder slots within a day and move them to another visible day by dragging them. Dragging requires explicit `slots` (there must be an array to reorder), so generated slots (shorthand mode and `fillEmptyDays` fillers) never drag:
+
+- While a slot is dragged, a half-transparent copy of it follows the pointer, and the slot itself (dimmed) moves through the day lists live. The surrounding slots part around it by exactly its own space, always showing where the drop will land.
+- A pointer just past the grid's edge still targets the nearest day. Disabled and out-of-range days are never drop targets, and releasing the slot over one snaps it back. Days whose slots are generated still accept drops, but note that applying such a drop makes the target day explicit, replacing its generated schedule.
+- A slot with tiles drags as a whole. A press on a tile stays a tile interaction (click to select), so tiles cannot be dragged individually.
+- Dropping never changes the picker's data directly. The slot snaps back and a `slot-drop` event is dispatched with the proposed change, including a ready-to-use `slots` array. Assign `$event.detail.slots` to your `slots` config to accept the move, or ignore the event to reject it.
+- Individual slots can opt out with `draggable: false`, and unavailable slots never drag.
+- Dragging is a mouse or pen interaction, and a plain click still selects the slot (or fires `slot-click`).
+
 ## Accessibility
 
-The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. When selection is enabled (an `x-model` is bound), available slots are toggle buttons with a day + time `aria-label` and `aria-pressed` reflecting selection. Without an `x-model` they are plain action buttons with the same label and no `aria-pressed`. Unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The `x-h-slot-picker-calendar` control opens a `dialog` containing a fully keyboard-navigable date grid, and the dialog takes its accessible name from that control. The default month and year navigation buttons labels can be overridden using the `data-aria-*` attributes. Picking a date moves the visible range and returns focus to the control, and `Esc` closes it. Because you supply the toolbar, give each control button an accessible name (an `aria-label` on an icon-only button, or visible text).
+The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. When selection is enabled (an `x-model` is bound), available slots are toggle buttons with a day + time `aria-label` and `aria-pressed` reflecting selection. Without an `x-model` they are plain action buttons with the same label and no `aria-pressed`. Unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The `x-h-slot-picker-calendar` control opens a `dialog` containing a fully keyboard-navigable date grid, and the dialog takes its accessible name from that control. The default month and year navigation buttons labels can be overridden using the `data-aria-*` attributes. Picking a date moves the visible range and returns focus to the control, and `Esc` closes it. Because you supply the toolbar, give each control button an accessible name (an `aria-label` on an icon-only button, or visible text). Drag-and-drop moving is a pointer-only convenience, and every slot stays reachable through its button and `slot-click`.
 
 ## API Reference
 
@@ -77,6 +88,7 @@ Pass a configuration object as an Alpine expression.
 | minDate          | -           | Start day. When set, the user cannot page to any day before it. Accepts a `YYYY-MM-DD` string or a `Date`. Independent of `maxDate`.                                                                                      |
 | maxDate          | -           | End day. When set, the user cannot page to any day after it. Accepts a `YYYY-MM-DD` string or a `Date`. Independent of `minDate`.                                                                                         |
 | showNowIndicator | `false`     | When `true`, a current-time indicator is shown in today's column and moves on its own as time passes.                                                                                                                     |
+| draggable        | `false`     | Enable reordering slots within a day and moving them to another day by drag and drop. Requires explicit `slots`. See [Behavior](#behavior).                                                                               |
 
 #### Slot object (explicit mode)
 
@@ -92,6 +104,7 @@ Pass a configuration object as an Alpine expression.
 | status      | string            | For a colored slot, `confirmed` (default) renders it filled, `unconfirmed` renders it as an outline, and `rejected` renders it as an outline with a dashed border. Ignored when no `color` is set. |
 | icons       | `{ left, right }` | Badge images rendered in the cell's top corners. `left` and `right` are optional arrays of `{ url, alt }` objects, where `url` is the image path and `alt` is the alt text (defaults to `''`).     |
 | tiles       | Tile[]            | Sub-slots (see below). When present and non-empty, the slot renders as a labeled group and only its tiles are selectable. The slot's own `start` labels the group.                                 |
+| draggable   | boolean           | Set to `false` to exclude the slot from drag and drop when the picker has `draggable: true`.                                                                                                       |
 
 #### Tile object (sub-slots)
 
@@ -121,9 +134,10 @@ A selected sub-slot tile uses a composite key of the form `'YYYY-MM-DDTHH:MM#ind
 
 ### Events
 
-| Event      | Description                                                                                                                                                                                                                                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| slot-click | Dispatched on every slot click, including deselection and when no `x-model` is bound (in which case `selected` is always `false`). `event.detail.slot` contains `date`, `start`, `end`, `available`, `selected` (the new state after the click), `description`, `note`, `color`, `status`, `key`, and `tileIndex` (a number for a tile, `null` for a plain slot). |
+| Event      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| slot-click | Dispatched on every slot click, including deselection and when no `x-model` is bound (in which case `selected` is always `false`). `event.detail.slot` contains `date`, `start`, `end`, `available`, `selected` (the new state after the click), `description`, `note`, `color`, `status`, `key`, and `tileIndex` (a number for a tile, `null` for a plain slot).                                                                                                                                                                 |
+| slot-drop  | Dispatched when a dragged slot is dropped at a new position (requires the `draggable` option, dropping at the unchanged position dispatches nothing). `event.detail.slot` carries the same fields as `slot-click`'s detail without `selected`. `event.detail.date` is the target day as `YYYY-MM-DD` and `event.detail.index` the slot's new position within that day's slot list. `event.detail.slots` is a new array with the move applied, built without mutating yours - assign it to your `slots` config to accept the move. |
 
 ## Examples
 
@@ -673,6 +687,79 @@ Selection is enabled by binding `x-model`. Leave it off to use the picker purely
     </div>
   </div>
   <p class="border-t p-3 text-center text-sm text-muted-foreground">Last clicked: <span x-text="last" class="font-medium text-foreground"></span></p>
+</div>
+```
+
+</LiveExample>
+
+### Drag and drop
+
+Enable `draggable: true` and handle `slot-drop` to let users rearrange the schedule. While dragging, a half-transparent copy of the slot follows the pointer and the other slots part to show where it will land - within the same day (reorder) or on another day. The dragged slot snaps back until your handler applies the change. `$event.detail.slots` has the move applied but the slot keeps its original time, so a real handler adjusts it to the new position before assigning - that is the place for your own scheduling rules. Here `onDrop` preserves the slot's duration and starts it where its new predecessor ends (dropped at the top of a day, it ends where the next slot starts), so dragging the 11:00 Consultation after the 14:00 slot makes it start at 14:30. The gray "Fixed" slot opts out with `draggable: false`.
+
+<LiveExample data-class="p-0 overflow-visible">
+
+```html
+<div
+  x-h-slot-picker="config"
+  x-data="{
+    config: {},
+    selected: null,
+    init() {
+      const dateIn = (days) => {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().slice(0, 10);
+      };
+      this.config = {
+        date: dateIn(0),
+        draggable: true,
+        slots: [
+          { date: dateIn(0), start: '09:00', end: '09:30' },
+          { date: dateIn(0), start: '10:00', end: '10:30', description: 'Fixed', color: 'gray', draggable: false },
+          { date: dateIn(0), start: '11:00', end: '11:30', description: 'Consultation', color: 'blue' },
+          { date: dateIn(1), start: '09:30', end: '10:00', color: 'green' },
+          { date: dateIn(2), start: '14:00', end: '14:30' },
+        ],
+      };
+    },
+    onDrop({ date, index, slots }) {
+      const toMins = (t) => {
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+      };
+      const toTime = (mins) => String(Math.floor(mins / 60)).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0');
+      const day = slots.filter((s) => s.date === date);
+      const moved = day[index];
+      const duration = toMins(moved.end) - toMins(moved.start);
+      const prev = day[index - 1];
+      const next = day[index + 1];
+      if (prev || next) {
+        const start = prev ? toMins(prev.end) : toMins(next.start) - duration;
+        moved.start = toTime(start);
+        moved.end = toTime(start + duration);
+      }
+      this.config.slots = slots;
+    }
+  }"
+  x-model="selected"
+  class="rounded-md"
+  @slot-drop="onDrop($event.detail)"
+>
+  <div x-h-toolbar data-variant="transparent">
+    <div x-h-button-group>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+        <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+        <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+      </button>
+      <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+        <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+      </button>
+    </div>
+    <div x-h-slot-picker-title></div>
+    <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+  </div>
 </div>
 ```
 

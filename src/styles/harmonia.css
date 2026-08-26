@@ -202,7 +202,7 @@
 @source inline("animate-{pulse,ping,spin}");
 @source inline("motion-reduce:transition-none");
 @source inline("ease-{out,linear}");
-@source inline("z-{1,10,50,60}");
+@source inline("z-{1,10,20,50,60}");
 @source inline("fill-none");
 
 /* Ring width for the slot-picker's color-matched selection ring (the ring
