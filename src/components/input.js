@@ -257,6 +257,19 @@ export default function (Alpine) {
     input.classList.add('size-full', 'px-3', 'py-1', 'outline-none');
     if (inTable) input.classList.add('min-w-0', 'flex-1');
 
+    // While the native input is in badInput state (e.g. a decimal separator the browser's regional
+    // settings reject), it reports value === '' - letting that reach an immediate model binding
+    // (x-model.number) writes the empty value back and visibly WIPES everything the user has typed.
+    // Swallow input events at the capture phase on the wrapper until the content parses again; the
+    // model simply keeps its last good value while the user finishes or corrects the entry.
+    const badInputGuard = (e) => {
+      if (e.target === input && input.validity && input.validity.badInput) {
+        e.stopPropagation();
+      }
+    };
+    el.addEventListener('input', badInputGuard, true);
+    cleanup(() => el.removeEventListener('input', badInputGuard, true));
+
     const buildStepButton = (icon, label) => {
       const btn = document.createElement('button');
       btn.setAttribute('type', 'button');
