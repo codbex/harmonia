@@ -13,6 +13,8 @@ function reactive(obj) {
       return Reflect.get(target, key);
     },
     set(target, key, value) {
+      // Alpine's reactivity does not trigger effects when the value is unchanged.
+      if (Reflect.get(target, key) === value) return true;
       const result = Reflect.set(target, key, value);
       if (deps[key]) {
         for (const fn of [...deps[key]]) fn();

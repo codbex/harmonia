@@ -1,5 +1,31 @@
 # Changelog
 
+## v3.0.0
+
+A release that brings drag and drop to the Calendar and the Slot Picker. Calendar events can be rescheduled by dragging them to another time or day, and slot picker slots can be reordered within a day or moved to another day, in both cases with the change proposed through an event and applied by the consumer. The release also fixes single mode in the Accordion and makes accordion item ids dynamic. Items written without an explicit id all shared the same empty id, so an accordion in single mode never collapsed the previously open section. The item id is now evaluated as an Alpine expression, which is a breaking change for hard-coded ids but lets items rendered with `x-for` take their id from the iterated data.
+
+### Calendar
+
+- **New: events can be rescheduled by drag and drop.** Opt in to let users drag a timed event to a new time or day in the week and day views (the start time snaps to a configurable minute step and the duration is kept), move all-day pills between days, and change an event's day in the month view. Dropping never changes the calendar's data directly: the proposed change is dispatched as an event for the consumer to apply. Individual events can opt out, and every event stays reachable by keyboard, since dragging is a pointer-only convenience.
+
+### Slot Picker
+
+- **New: slots can be reordered and moved between days by drag and drop.** Opt in to let users drag a slot within its day to reorder it or onto another visible day to move it. While dragging, a half-transparent copy of the slot follows the pointer and the other slots part to show where it will land. Dropping never changes the picker's data directly: the proposed change is dispatched as an event for the consumer to apply. Individual slots can opt out, and unavailable slots never drag.
+
+### Z-Index
+
+- **New: `z-20` joins the shipped z-index utilities**, filling the gap between `z-10` and `z-50`.
+
+### Accordion
+
+- **Breaking: the accordion item id is now evaluated as an Alpine expression.** `x-h-accordion-item` and the optional default-expanded id on `x-h-accordion.single` used to take their value as a literal string. Both are now evaluated, matching `x-h-accordion-trigger`. To migrate, quote hard-coded ids, so `x-h-accordion-item="itemId1"` becomes `x-h-accordion-item="'itemId1'"` and `x-h-accordion.single="itemId2"` becomes `x-h-accordion.single="'itemId2'"`. This enables `x-h-accordion-item="entry.id"` inside an `x-for`, which previously gave every row the same literal id and broke single mode.
+- **Fixed: single mode never collapsed the previously open item.** Items written without an id all received the empty string as their id instead of a generated one, so the single-mode bookkeeping could not tell them apart and every clicked section stayed open. The same empty id also produced an empty `id` on every trigger button and an empty `aria-labelledby` on every content region, leaving the panels without an accessible name. Items without an id now each get a unique generated one.
+
+### Expansion Panel
+
+- **Fixed: every trigger button had the literal id `undefined`.** The generated buttons all shared that duplicate id instead of getting one of their own. Each button now gets a unique id, derived as `<item id>-trigger` when the panel item has an `id` attribute and generated otherwise.
+- **Fixed: the trigger's `aria-controls` did not point at the content.** It referenced the panel item wrapper when the item had an `id` attribute, and a nonexistent id otherwise. The content region now carries its own id (`<item id>-content` when the item has an `id` attribute, generated otherwise), `aria-controls` points at it, and the content names itself after its trigger with `aria-labelledby`, which it previously lacked entirely.
+
 ## v2.14.1
 
 A bugfix release that makes the Time Picker follow programmatic model writes, completing the v2.14.0 fix that only covered clearing. There are no breaking changes.

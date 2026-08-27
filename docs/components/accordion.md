@@ -27,9 +27,9 @@ x-h-accordion-content
 
 #### x-h-accordion-item
 
-| Attribute | Type   | Required | Description                                                             |
-| --------- | ------ | -------- | ----------------------------------------------------------------------- |
-| `self`    | string | false    | Sets the ID of the item. Useful when setting the default expanded item. |
+| Attribute | Type   | Required | Description                                                                                                                    |
+| --------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `self`    | string | false    | Sets the ID of the item. Expects a string literal or a reference to a variable. Useful when setting the default expanded item. |
 
 #### x-h-accordion-trigger
 
@@ -41,9 +41,9 @@ x-h-accordion-content
 
 #### x-h-accordion
 
-| Modifier | Type   | Required | Description                                                                                                                                 |
-| -------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| single   | string | false    | Used when the accordion must show only one section at a time. Optionally, the id of the item that should be expanded by default can be set. |
+| Modifier | Type   | Required | Description                                                                                                                                                                                        |
+| -------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| single   | string | false    | Used when the accordion must show only one section at a time. Optionally, the id of the item that should be expanded by default can be set. Expects a string literal or a reference to a variable. |
 
 #### x-h-accordion-item
 
@@ -58,21 +58,49 @@ x-h-accordion-content
 <LiveExample>
 
 ```html
-<div x-h-accordion.single="itemId2">
-  <div x-h-accordion-item="itemId1">
+<div x-h-accordion.single="'itemId2'">
+  <div x-h-accordion-item="'itemId1'">
     <h3 x-h-accordion-trigger="'Accordion Item 1'"></h3>
     <div x-h-accordion-content>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
       Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </div>
   </div>
-  <div x-h-accordion-item="itemId2">
+  <div x-h-accordion-item="'itemId2'">
     <h3 x-h-accordion-trigger="'Accordion Item 2'"></h3>
     <div x-h-accordion-content>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
       Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </div>
   </div>
+</div>
+```
+
+</LiveExample>
+
+### Dynamic items
+
+Because the item id is evaluated, items rendered with `x-for` can take their id from the iterated data, which keeps single mode working.
+
+<LiveExample>
+
+```html
+<div
+  x-data="{
+    faq: [
+      { id: 'faq-1', question: 'What is Harmonia?', answer: 'A UI component library for Alpine.js, built with Tailwind CSS.' },
+      { id: 'faq-2', question: 'How do I install it?', answer: 'Add the harmonia.js script and the harmonia.css stylesheet to your page, after Alpine.js.' },
+      { id: 'faq-3', question: 'Does it support dark mode?', answer: 'Yes, every component adapts to light and dark mode automatically.' }
+    ]
+  }"
+  x-h-accordion.single
+>
+  <template x-for="entry in faq" :key="entry.id">
+    <div x-h-accordion-item="entry.id">
+      <h3 x-h-accordion-trigger="entry.question"></h3>
+      <div x-h-accordion-content x-text="entry.answer"></div>
+    </div>
+  </template>
 </div>
 ```
 

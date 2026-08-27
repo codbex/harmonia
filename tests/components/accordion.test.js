@@ -36,9 +36,14 @@ describe('h-accordion', () => {
     expect(el._h_accordion.expandedId).toBe('');
   });
 
-  it('uses expression as initial expandedId when single', () => {
-    mountDirective(accordionPlugin, 'h-accordion', el, { modifiers: ['single'], expression: 'item-1' });
+  it('uses the evaluated expression as initial expandedId when single', () => {
+    mountDirective(accordionPlugin, 'h-accordion', el, { modifiers: ['single'], expression: 'ids.first' }, { evaluate: () => 'item-1' });
     expect(el._h_accordion.expandedId).toBe('item-1');
+  });
+
+  it('falls back to an empty expandedId when the expression evaluates to null', () => {
+    mountDirective(accordionPlugin, 'h-accordion', el, { modifiers: ['single'], expression: 'missing' }, { evaluate: () => null });
+    expect(el._h_accordion.expandedId).toBe('');
   });
 });
 
@@ -65,10 +70,30 @@ describe('h-accordion-item', () => {
   });
 
   it('creates reactive _h_accordionItem with id and controls', () => {
-    mountDirective(accordionPlugin, 'h-accordion-item', el, { expression: 'test-id' });
+    mountDirective(accordionPlugin, 'h-accordion-item', el, { expression: "'test-id'" }, { evaluate: () => 'test-id' });
     expect(el._h_accordionItem.id).toBe('test-id');
     expect(el._h_accordionItem.controls).toBeTruthy();
     expect(typeof el._h_accordionItem.expanded).toBe('boolean');
+  });
+
+  it('uses the evaluated expression as the id', () => {
+    mountDirective(accordionPlugin, 'h-accordion-item', el, { expression: 'item.id' }, { evaluate: () => 'row-1' });
+    expect(el._h_accordionItem.id).toBe('row-1');
+  });
+
+  it('generates distinct non-empty ids for items without an expression', () => {
+    const sibling = document.createElement('div');
+    parentEl.appendChild(sibling);
+    mountDirective(accordionPlugin, 'h-accordion-item', el);
+    mountDirective(accordionPlugin, 'h-accordion-item', sibling);
+    expect(el._h_accordionItem.id).toBeTruthy();
+    expect(sibling._h_accordionItem.id).toBeTruthy();
+    expect(el._h_accordionItem.id).not.toBe(sibling._h_accordionItem.id);
+  });
+
+  it('falls back to a generated id when the expression evaluates to null', () => {
+    mountDirective(accordionPlugin, 'h-accordion-item', el, { expression: 'missing' }, { evaluate: () => null });
+    expect(el._h_accordionItem.id).toBeTruthy();
   });
 
   it('throws if no accordion parent', () => {
@@ -139,6 +164,38 @@ describe('h-accordion-trigger', () => {
     const orphanHeader = document.createElement('h2');
     rootEl.appendChild(orphanHeader);
     expect(() => mountDirective(accordionPlugin, 'h-accordion-trigger', orphanHeader, { original: 'h-accordion-trigger', expression: '' })).toThrow();
+  });
+});
+
+describe('single mode', () => {
+  // Regression for #77: items without an expression all got the empty string
+  // as id, so opening a second item never collapsed the first.
+  it('collapses the previously open item when items have no explicit id', () => {
+    const rootEl = document.createElement('div');
+    document.body.appendChild(rootEl);
+    mountDirective(accordionPlugin, 'h-accordion', rootEl, { modifiers: ['single'] });
+
+    const items = [];
+    const triggers = [];
+    for (let i = 0; i < 2; i++) {
+      const itemEl = document.createElement('div');
+      rootEl.appendChild(itemEl);
+      mountDirective(accordionPlugin, 'h-accordion-item', itemEl);
+      const triggerEl = document.createElement('h3');
+      itemEl.appendChild(triggerEl);
+      mountDirective(accordionPlugin, 'h-accordion-trigger', triggerEl, { original: 'h-accordion-trigger', expression: '' });
+      items.push(itemEl);
+      triggers.push(triggerEl);
+    }
+
+    triggers[0].dispatchEvent(new Event('click'));
+    expect(items[0]._h_accordionItem.expanded).toBe(true);
+
+    triggers[1].dispatchEvent(new Event('click'));
+    expect(items[1]._h_accordionItem.expanded).toBe(true);
+    expect(items[0]._h_accordionItem.expanded).toBe(false);
+    expect(triggers[0].querySelector('button').getAttribute('aria-expanded')).toBe('false');
+    expect(triggers[1].querySelector('button').getAttribute('aria-expanded')).toBe('true');
   });
 });
 

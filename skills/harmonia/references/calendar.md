@@ -66,7 +66,7 @@ Pass a configuration object to the directive as an expression.
 | views            | Show the view-switcher button group in the toolbar. Defaults to `true`. Set to `false` to lock the calendar to the view set in `view` and hide the switcher.                                      |
 | scrollTo         | Where week and day views scroll to on load - `"now"` anchors on the current time, `"first-event"` anchors on the earliest event in view. Falls back to `"now"` when the view has no timed events. |
 | draggable        | Enable drag-and-drop rescheduling of events in the month, week, and day views. Defaults to `false`. See Behavior.                                                                    |
-| dragStep         | Minutes value, used as the step when a timed event is dragged vertically in the week and day views. Defaults to `15`.                                                                              |
+| dragStep         | Minutes value, used as a step when a timed event is dragged vertically in the week and day views. Defaults to `15`.                                                                               |
 
 ### Event object
 

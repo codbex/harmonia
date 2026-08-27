@@ -2,6 +2,10 @@
 
 Breaking changes only, grouped by version (newest first). For the full history including features and fixes, see [CHANGELOG.md](https://github.com/codbex/harmonia/blob/main/CHANGELOG.md).
 
+## v3.0.0
+
+- **Breaking: the accordion item id is now evaluated as an Alpine expression.** `x-h-accordion-item` and the optional default-expanded id on `x-h-accordion.single` used to take their value as a literal string. Both are now evaluated, matching `x-h-accordion-trigger`. To migrate, quote hard-coded ids, so `x-h-accordion-item="itemId1"` becomes `x-h-accordion-item="'itemId1'"` and `x-h-accordion.single="itemId2"` becomes `x-h-accordion.single="'itemId2'"`. This enables `x-h-accordion-item="entry.id"` inside an `x-for`, which previously gave every row the same literal id and broke single mode.
+
 ## v2.13.0
 
 - **Breaking: the fade utilities take a size, and the bare names are gone.** `fade-x`, `fade-y`, `fade-t`, `fade-b`, `fade-l` and `fade-r` no longer exist. Each class now ends with a size on the spacing scale, shipped in `2`, `4` and `8` (a 0.5rem, 1rem or 2rem fade). To migrate, append `-2` to the old name, so `fade-x` becomes `fade-x-2` with the exact same 0.5rem fade.
