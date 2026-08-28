@@ -24,14 +24,16 @@ export default function (Alpine) {
 
     // The model lives on the native input, so x-model is bound there. Without
     // one, the input's own value is the source of truth.
-    const model = Object.prototype.hasOwnProperty.call(input, '_x_model')
-      ? input._x_model
-      : {
-          get: () => input.value,
-          set: (value) => {
-            input.value = value;
-          },
-        };
+    const fallbackModel = {
+      get: () => input.value,
+      set: (value) => {
+        input.value = value;
+      },
+    };
+    // x-model initialises on the child input after this handler has run
+    // (Alpine walks the parent first), so the model is resolved on every
+    // access rather than captured here.
+    const model = () => (Object.prototype.hasOwnProperty.call(input, '_x_model') ? input._x_model : fallbackModel);
 
     const isDisabled = () => input.disabled;
     const isReadonly = () => input.readOnly;
@@ -139,12 +141,12 @@ export default function (Alpine) {
 
     function commit(chars) {
       const value = chars.join('');
-      if (value === model.get() && value === input.value) {
+      if (value === model().get() && value === input.value) {
         writeChars(chars);
         return false;
       }
       writeChars(chars);
-      model.set(value);
+      model().set(value);
       // Keep the input's own value in step when the model is external.
       if (input.value !== value) input.value = value;
       dispatch('input');
@@ -245,16 +247,31 @@ export default function (Alpine) {
       if (seeded || !cells.length) return;
       seeded = true;
       const attr = el.getAttribute('data-value');
-      const chars = charsFromString(attr != null ? attr : model.get() || input.value);
+      const chars = charsFromString(attr != null ? attr : model().get() || input.value);
       writeChars(chars);
       const value = chars.join('');
       input.value = value;
       input.defaultValue = value;
-      if (attr != null) model.set(value);
+      if (attr != null) model().set(value);
       applyState();
       maybeComplete(chars);
     };
-    queueMicrotask(seed);
+    let destroyed = false;
+    queueMicrotask(() => {
+      if (destroyed) return;
+      seed();
+      // Sync from an external model value. Registered after the directive walk
+      // so the read below tracks the real x-model, not the fallback.
+      effect(() => {
+        const raw = model().get();
+        if (!cells.length) return;
+        const next = charsFromString(raw);
+        if (next.join('') === readChars().join('')) return;
+        writeChars(next);
+        if (input.value !== next.join('')) input.value = next.join('');
+        maybeComplete(next);
+      });
+    });
 
     const sizeObserver = new MutationObserver(() => {
       state.size = el.getAttribute('data-size') === 'sm' ? 'sm' : 'default';
@@ -280,19 +297,8 @@ export default function (Alpine) {
     };
     if (formEl) formEl.addEventListener('reset', onFormReset);
 
-    // Sync from an external model value (the effect runs after Alpine has
-    // wired x-model, so input._x_model is available here).
-    effect(() => {
-      const raw = model.get();
-      if (!cells.length) return;
-      const next = charsFromString(raw);
-      if (next.join('') === readChars().join('')) return;
-      writeChars(next);
-      if (input.value !== next.join('')) input.value = next.join('');
-      maybeComplete(next);
-    });
-
     cleanup(() => {
+      destroyed = true;
       sizeObserver.disconnect();
       stateObserver.disconnect();
       clearTimeout(resetTimer);

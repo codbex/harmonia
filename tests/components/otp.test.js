@@ -1,10 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import otpPlugin from '../../src/components/otp.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 // Mounts a root, then its groups and separators in DOM order, mirroring how
 // Alpine walks the tree. Cells register with the root as each group initialises.
-function build({ groups = [6], attrs = {}, inputAttrs = {}, separators = true, model } = {}) {
+// `model` attaches _x_model before the root mounts, `lateModel` attaches it
+// between the root and the groups, which is the order real Alpine produces
+// (the parent handler runs before the child input's x-model).
+function build({ groups = [6], attrs = {}, inputAttrs = {}, separators = true, model, lateModel } = {}) {
   const el = document.createElement('div');
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   const input = document.createElement('input');
@@ -32,6 +35,9 @@ function build({ groups = [6], attrs = {}, inputAttrs = {}, separators = true, m
   });
 
   const mounted = mountDirective(otpPlugin, 'h-otp', el, { original: 'x-h-otp' });
+  if (lateModel) {
+    Object.defineProperty(input, '_x_model', { value: lateModel, configurable: true });
+  }
   for (const sep of separatorEls) mountDirective(otpPlugin, 'h-otp-separator', sep, { original: 'x-h-otp-separator' });
   for (const group of groupEls) mountDirective(otpPlugin, 'h-otp-group', group, { original: 'x-h-otp-group' });
 
@@ -369,5 +375,112 @@ describe('otp', () => {
   it('calls cleanup', () => {
     const { ctx } = build();
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  describe('x-model bound after the walk', () => {
+    // The reactive proxy shares the module-level effect tracking in
+    // test-utils, so external writes re-trigger the directive's sync effect.
+    function reactiveModel(initial = '') {
+      const data = createMockAlpine().reactive({ code: initial });
+      return {
+        data,
+        model: {
+          get: () => data.code,
+          set: (v) => {
+            data.code = v;
+          },
+        },
+      };
+    }
+
+    it('seeds the cells from a model attached after the root handler', async () => {
+      const { model } = reactiveModel('482913');
+      const { el, input } = build({ lateModel: model });
+      await flush();
+      expect(values(el)).toEqual(['4', '8', '2', '9', '1', '3']);
+      expect(input.value).toBe('482913');
+      expect(input.defaultValue).toBe('482913');
+    });
+
+    it('refills the cells when the model changes externally', async () => {
+      const { data, model } = reactiveModel();
+      const { el, input } = build({ lateModel: model });
+      await flush();
+      key(cells(el)[0], '1');
+      key(cells(el)[1], '2');
+      expect(values(el)).toEqual(['1', '2', '', '', '', '']);
+
+      data.code = '482913';
+      expect(values(el)).toEqual(['4', '8', '2', '9', '1', '3']);
+      expect(cells(el).every((c) => c.getAttribute('data-filled') === 'true')).toBe(true);
+      expect(input.value).toBe('482913');
+    });
+
+    it('clears the cells when the model is emptied externally', async () => {
+      const { data, model } = reactiveModel();
+      const { el, input } = build({ lateModel: model });
+      await flush();
+      key(cells(el)[0], '1');
+      key(cells(el)[1], '2');
+      expect(data.code).toBe('12');
+
+      data.code = '';
+      expect(values(el)).toEqual(['', '', '', '', '', '']);
+      expect(cells(el).every((c) => c.getAttribute('data-filled') === 'false')).toBe(true);
+      expect(input.value).toBe('');
+    });
+
+    it('writes typed characters through to a late-bound model', async () => {
+      let stored = '';
+      const model = { get: () => stored, set: vi.fn((v) => (stored = v)) };
+      const { el } = build({ lateModel: model });
+      await flush();
+      key(cells(el)[0], '7');
+      expect(stored).toBe('7');
+      expect(model.set).toHaveBeenCalledWith('7');
+    });
+
+    it('skips characters outside the charset on an external write', async () => {
+      const { data, model } = reactiveModel();
+      const { el, input } = build({ lateModel: model });
+      await flush();
+      data.code = '4a2-9';
+      expect(values(el)).toEqual(['4', '2', '9', '', '', '']);
+      expect(input.value).toBe('429');
+    });
+
+    it('fires complete once when an external write fills every cell', async () => {
+      const { data, model } = reactiveModel();
+      const { el } = build({ lateModel: model });
+      await flush();
+      const completions = [];
+      el.addEventListener('complete', (e) => completions.push(e.detail.value));
+      data.code = '482913';
+      expect(completions).toEqual(['482913']);
+      data.code = '482913';
+      expect(completions).toEqual(['482913']);
+    });
+
+    it('applies an external value to groups that register after the microtask', async () => {
+      const { data, model } = reactiveModel();
+      const { el } = build({ groups: [], lateModel: model });
+      await flush();
+      data.code = '482913';
+
+      const group = document.createElement('div');
+      group.setAttribute('data-length', '6');
+      el.appendChild(group);
+      mountDirective(otpPlugin, 'h-otp-group', group, { original: 'x-h-otp-group' });
+      expect(values(el)).toEqual(['4', '8', '2', '9', '1', '3']);
+    });
+
+    it('registers no sync effect when cleaned up before the microtask', async () => {
+      const { data, model } = reactiveModel();
+      const { el, ctx } = build({ lateModel: model });
+      ctx.cleanup.mock.calls.forEach(([fn]) => fn());
+      await flush();
+      data.code = '482913';
+      expect(values(el)).toEqual(['', '', '', '', '', '']);
+    });
   });
 });
