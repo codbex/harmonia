@@ -20,9 +20,9 @@ Decimal separators follow the browser's regional settings. When a typed separato
 
 ### Attributes
 
-| Attribute          | Values             | Required | Description                                                                                                                |
-| ------------------ | ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| data-size          | `sm`<br/>`default` | false    | Changes the size of the input.                                                                                             |
+| Attribute          | Values             | Required | Description                                                                                                                      |
+| ------------------ | ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| data-size          | `sm`<br/>`default` | false    | Changes the size of the input.                                                                                                   |
 | data-invalid-label | string             | false    | Message reported when a typed decimal separator is not recognized (Defaults to `A typed decimal separator was not recognized.`). |
 
 ### Modifiers
