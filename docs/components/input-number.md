@@ -6,6 +6,10 @@ Allows users to enter numeric values with built-in validation and step controls.
 
 Use the number input when users need to enter a bounded numeric value, such as a quantity, age, or step-based setting. Set `min`, `max`, and `step` on the native `<input type="number">` to constrain the value and drive the increment/decrement controls. Always pair it with a label so the expected value is clear.
 
+## Behavior
+
+Decimal separators follow the browser's regional settings. When a typed separator is not accepted there, the browser drops the keystroke without any signal, so the digits around it would silently merge into a different number. The component detects the dropped keystroke and marks the input as invalid until the entry is revised by deleting or otherwise changing the value, stepping, or entering a separator that is accepted. The invalid state uses native custom validity, so it shows through the invalid styling and blocks form submission. Grouping separators (for example the comma in `1,000`) are not supported by native number inputs and are treated the same way. The reported message can be changed with `data-invalid-label`.
+
 ## API Reference
 
 ### Component attribute(s)
@@ -16,15 +20,20 @@ x-h-input-number
 
 ### Attributes
 
-| Attribute | Values             | Required | Description                    |
-| --------- | ------------------ | -------- | ------------------------------ |
-| data-size | `sm`<br/>`default` | false    | Changes the size of the input. |
+| Attribute          | Values             | Required | Description                                                                                                                      |
+| ------------------ | ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| data-size          | `sm`<br/>`default` | false    | Changes the size of the input.                                                                                                   |
+| data-invalid-label | string             | false    | Message reported when a typed decimal separator is not recognized (Defaults to `A typed decimal separator was not recognized.`). |
 
 ### Modifiers
 
 | Modifier | Description                           |
 | -------- | ------------------------------------- |
 | table    | Used when the input is inside a table |
+
+### Model
+
+Bind a number with `x-model.number` on the inner native input. While an in-progress entry is not yet a valid number (for example a partially typed decimal), the browser exposes no value, so the model is `null` until the entry becomes valid. The text typed so far stays visible in the field.
 
 ## Examples
 
@@ -35,6 +44,21 @@ x-h-input-number
 ```html
 <div x-h-input-number>
   <input type="number" min="0" max="10" step="2" value="4" />
+</div>
+```
+
+</LiveExample>
+
+### With a model
+
+<LiveExample>
+
+```html
+<div x-data="{ amount: 4 }" class="flex flex-col gap-3">
+  <div x-h-input-number>
+    <input type="number" min="0" max="10" x-model.number="amount" />
+  </div>
+  <span x-text="amount"></span>
 </div>
 ```
 

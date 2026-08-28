@@ -135,7 +135,7 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 ### Binding a value
 
 ```html
-<div x-data="{ code: '' }">
+<div x-data="{ code: 587231 }">
   <div x-h-otp>
     <input name="verification" x-model="code" />
     <div x-h-otp-group data-length="3"></div>

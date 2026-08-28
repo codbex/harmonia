@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.14.2
+
+A bugfix release for the Number Input and the One-Time Password Input. A Number Input entry the browser cannot represent yet is no longer wiped mid-typing, and a separator keystroke the browser drops now marks the input as invalid instead of letting the digits silently merge into a different number. Mobile keyboards get a decimal key, and the step controls respect `min` and `max` with `step="any"`. The One-Time Password Input now refills its cells when the bound model is set externally. There are no breaking changes.
+
+### Number Input
+
+- **Fixed: an entry the browser could not represent yet was wiped mid-typing.** With `x-model.number` bound, a keystroke that put the field into an in-progress state, for example a decimal separator the browser's region settings reject, made the input report an empty value. The immediate model writeback then wrote the empty value back, and the browser discarded the visible text, so the whole entry disappeared under the user's cursor. The sync is now skipped while the focused field holds such an entry, the text survives, and the model stays `null` until the entry becomes a valid number, matching what a plain form would receive. Binding a model is now documented on the component page.
+- **New: a dropped decimal separator keystroke marks the input as invalid.** When the browser's region settings do not accept the typed separator, the keystroke is dropped without any signal, so typing `123,5` on a browser expecting dots silently became `1235`. The component now detects the dropped keystroke and reports it through native custom validity, which shows the invalid styling and blocks form submission until the entry is revised. Grouping separators are treated the same way, and `data-invalid-label` overrides the message.
+- **Fixed: decimals could not be typed on iOS.** The input now defaults to `inputmode="decimal"`, whose keypad includes the region's decimal separator key. The previous `numeric` keypad has no separator key on iOS at all. An author-set `inputmode` still wins.
+- **Fixed: the step controls ignored `min` and `max` when `step` is `any`.** The manual stepping used for `step="any"` now clamps to the bounds, like native stepping does for regular steps.
+- **Fixed: the increase button carried no `data-slot`.** The `step-up-trigger` slot was set on the decrease button instead, which already had `step-down-trigger`. Both buttons now expose their own hooks.
+
+### One-Time Password Input
+
+- **Fixed: setting the bound model externally never updated the cells.** The model was resolved once before the inner input's `x-model` had initialized, so the external direction was dead. The hidden input followed the model while the visible cells kept the old digits, most visibly when an app cleared the code after a rejected attempt and the stale digits stayed on screen. The cells now follow every external model write, as the documented model contract promises.
+
 ## v2.14.1
 
 A bugfix release that makes the Time Picker follow programmatic model writes, completing the v2.14.0 fix that only covered clearing. There are no breaking changes.

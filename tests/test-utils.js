@@ -3,7 +3,9 @@ import { vi } from 'vitest';
 let activeEffect = null;
 
 function reactive(obj) {
-  const deps = {};
+  // Null prototype so inherited keys like 'constructor' (read by array
+  // methods during tracking) are not mistaken for existing dep sets.
+  const deps = Object.create(null);
   return new Proxy(obj, {
     get(target, key) {
       if (activeEffect && typeof key === 'string') {

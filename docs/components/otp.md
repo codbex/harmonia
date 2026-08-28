@@ -151,7 +151,7 @@ By default this control shows native-constraint errors only after the user attem
 <LiveExample data-exclude="generator">
 
 ```html
-<div x-data="{ code: '' }">
+<div x-data="{ code: 587231 }">
   <div x-h-otp>
     <input name="verification" x-model="code" />
     <div x-h-otp-group data-length="3"></div>

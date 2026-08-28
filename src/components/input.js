@@ -240,8 +240,7 @@ export default function (Alpine) {
     if (!input || input.getAttribute('type') !== 'number') {
       throw new Error(`${original} must contain an input of type 'number'`);
     }
-    if (!input.hasAttribute('type')) input.setAttribute('type', 'number');
-    if (!input.hasAttribute('inputmode')) input.setAttribute('inputmode', 'numeric');
+    if (!input.hasAttribute('inputmode')) input.setAttribute('inputmode', 'decimal');
     if (!input.hasAttribute('aria-roledescription')) {
       input.setAttribute('aria-roledescription', 'Number field');
     }
@@ -256,6 +255,102 @@ export default function (Alpine) {
     input.setAttribute('data-slot', 'input-number-control');
     input.classList.add('size-full', 'px-3', 'py-1', 'outline-none');
     if (inTable) input.classList.add('min-w-0', 'flex-1');
+
+    let restoreForceModelUpdate = null;
+    let destroyed = false;
+    // x-model on the inner input initializes after this handler (parent-first
+    // walk). A microtask runs after the walk, the same timing Alpine's own
+    // x-modelable relies on.
+    queueMicrotask(() => {
+      if (destroyed) return;
+      const original = input._x_forceModelUpdate;
+      if (!original) return;
+      const wrapped = (value) => {
+        // While the browser holds a bad-input editing buffer (e.g. a typed
+        // decimal separator the number widget rejects), any value write would
+        // destroy the user's visible text. Skip only while the user is editing
+        // so an external model change after blur still heals the display.
+        if (input.validity.badInput && input.getRootNode().activeElement === input) return;
+        original(value);
+      };
+      input._x_forceModelUpdate = wrapped;
+      restoreForceModelUpdate = () => {
+        if (input._x_forceModelUpdate === wrapped) input._x_forceModelUpdate = original;
+      };
+    });
+
+    // The number widget silently drops a typed decimal separator it does not
+    // accept, so the field can end up holding a different number than the user
+    // typed (typing 123,5 can become 1235). The drop leaves no trace in the
+    // value or the validity state, but its beforeinput fires without a matching
+    // input event, so pair the two per keystroke and flag the input as invalid
+    // until the entry is revised.
+    let pendingSeparator = null;
+    let separatorTimer;
+    let valueBefore = input.value;
+    let flagged = false;
+
+    const disarm = () => {
+      clearTimeout(separatorTimer);
+      pendingSeparator = null;
+    };
+
+    // Only ever remove a message this directive installed, never a consumer's.
+    const clearFlag = () => {
+      if (!flagged) return;
+      input.setCustomValidity('');
+      flagged = false;
+    };
+
+    const flagDroppedSeparator = () => {
+      if (pendingSeparator === null) return;
+      input.setCustomValidity(el.getAttribute('data-invalid-label') || 'A typed decimal separator was not recognized.');
+      flagged = true;
+      pendingSeparator = null;
+    };
+
+    const onBeforeInput = (event) => {
+      // beforeinput fires before the value changes, so this read is always
+      // fresh even after Alpine rewrote the value without an input event.
+      valueBefore = input.value;
+      if (event.inputType !== 'insertText' || event.isComposing) return;
+      if (typeof event.data !== 'string' || !/[.,]/.test(event.data)) return;
+      if (input.readOnly || input.disabled) return;
+      // With a separator already held by the field a second one is dropped
+      // natively in every locale, which is not worth flagging. A blocked
+      // re-arm must leave an already armed timer alive.
+      if (input.validity.badInput || String(input.value).includes('.')) return;
+      clearTimeout(separatorTimer);
+      pendingSeparator = event.data;
+      // The keystroke's own input event runs in the same task while timers run
+      // in a later one, so an accepted separator always disarms this in time.
+      separatorTimer = setTimeout(flagDroppedSeparator);
+    };
+
+    const onInput = (event) => {
+      const isInsert = event instanceof InputEvent && event.inputType === 'insertText' && typeof event.data === 'string' && event.data.length > 0;
+      const pairedAccept = pendingSeparator !== null && isInsert && event.data === pendingSeparator;
+      // Digits appended right after a dropped separator are the corruption
+      // this guard exists for, the only edit that keeps the flag alive. Every
+      // other edit counts as a revision and clears, so unknown event shapes
+      // can never strand a stale flag.
+      const digitAppend = isInsert && !/[.,]/.test(event.data) && input.value.length > valueBefore.length;
+      if (pairedAccept || !digitAppend) {
+        disarm();
+        clearFlag();
+      }
+      valueBefore = input.value;
+    };
+
+    input.addEventListener('beforeinput', onBeforeInput);
+    input.addEventListener('input', onInput);
+
+    const form = input.form;
+    const onFormReset = () => {
+      disarm();
+      clearFlag();
+    };
+    if (form) form.addEventListener('reset', onFormReset);
 
     const buildStepButton = (icon, label) => {
       const btn = document.createElement('button');
@@ -300,7 +395,7 @@ export default function (Alpine) {
     const stepDown = buildStepButton(Minus, 'Decrease');
     stepDown.setAttribute('data-slot', 'step-down-trigger');
     const stepUp = buildStepButton(Plus, 'Increase');
-    stepDown.setAttribute('data-slot', 'step-up-trigger');
+    stepUp.setAttribute('data-slot', 'step-up-trigger');
 
     if (inTable) {
       // Stack the steppers into a single narrow column so they never overlap the
@@ -324,10 +419,25 @@ export default function (Alpine) {
       el.appendChild(stepUp);
     }
 
+    const attrNumber = (name) => {
+      const raw = input.getAttribute(name);
+      if (raw === null || raw === '' || raw === 'any') return null;
+      const parsed = parseFloat(raw);
+      return isNaN(parsed) ? null : parsed;
+    };
+
+    const clamp = (value) => {
+      const min = attrNumber('min');
+      const max = attrNumber('max');
+      if (min !== null && value < min) return min;
+      if (max !== null && value > max) return max;
+      return value;
+    };
+
     const onStepDown = () => {
       if (input.readOnly || input.disabled) return;
       if (input.step === 'any') {
-        input.value = (parseFloat(input.value) || 0) - 1;
+        input.value = clamp((parseFloat(input.value) || 0) - 1);
       } else input.stepDown();
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -338,7 +448,7 @@ export default function (Alpine) {
     const onStepUp = () => {
       if (input.readOnly || input.disabled) return;
       if (input.step === 'any') {
-        input.value = (parseFloat(input.value) || 0) + 1;
+        input.value = clamp((parseFloat(input.value) || 0) + 1);
       } else input.stepUp();
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -349,6 +459,13 @@ export default function (Alpine) {
     const observer = sizeObserver(el);
 
     cleanup(() => {
+      destroyed = true;
+      if (restoreForceModelUpdate) restoreForceModelUpdate();
+      disarm();
+      clearFlag();
+      input.removeEventListener('beforeinput', onBeforeInput);
+      input.removeEventListener('input', onInput);
+      if (form) form.removeEventListener('reset', onFormReset);
       observer.disconnect();
       stepDown.removeEventListener('click', onStepDown);
       stepUp.removeEventListener('click', onStepUp);
