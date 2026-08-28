@@ -55,7 +55,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "docDependencies": {
-    "alpinejs": "^3.15.12",
+    "alpinejs": "^3.16.3",
     "i18next": "^26.3.4",
     "lucide": "^1.20.0",
     "culori": "^4.0.2",
@@ -66,7 +66,7 @@
     "@eslint/js": "^10.0.1",
     "@tailwindcss/cli": "^4.3.3",
     "@vitest/coverage-v8": "^4.1.9",
-    "alpinejs": "^3.15.12",
+    "alpinejs": "^3.16.3",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
@@ -81,7 +81,7 @@
     "vitest": "^4.1.9"
   },
   "peerDependencies": {
-    "alpinejs": "^3.15.12"
+    "alpinejs": "^3.16.3"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0"
