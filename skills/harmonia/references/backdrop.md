@@ -21,23 +21,46 @@ Mark each direct child that should animate with `x-h-backdrop-item`. The backdro
 
 The backdrop is focusable through `tabindex="-1"`, and its show and hide transitions respect the user's `prefers-reduced-motion` setting. Because the surrounding component owns the open state, wire up your own dismissal (for example closing on a click of the scrim or on `Esc`) to match your use case.
 
+While it is open the backdrop keeps focus inside itself. `Tab` and `Shift+Tab` cycle through its own focusable content instead of reaching the page behind, and if focus is somewhere else when the user presses `Tab` it is brought in. Closing hands focus back to whatever had it when the backdrop opened, so a keyboard user returns to the button they came from. A backdrop with nothing focusable inside holds focus on itself.
+
+The backdrop stays a scrim rather than a dialog, so it sets no `role` or `aria-modal` of its own. If the content you put inside is a modal dialog, give that content the dialog semantics.
+
 ## Binding
 
 Binds through Alpine `x-model`. See the Examples for the expected value shape.
 
 ## Examples
 
-A command palette where a button opens the backdrop, the scrim closes it, and picking a command closes it too.
+A command palette where a button opens the backdrop and the scrim closes it. The results come from a Combobox, so typing filters them, the arrow keys move through them, and picking one closes the palette. `Enter` before any arrow key runs the first match.
 
 ```html
-<div x-data="{ open: false, query: '', commands: ['New File', 'Open Folder', 'Toggle Sidebar', 'Split Editor', 'Find in Files'] }">
+<div
+  x-data="{
+    open: false,
+    query: '',
+    commands: ['New File', 'Open Folder', 'Toggle Sidebar', 'Split Editor', 'Find in Files'],
+    get matches() { return this.commands.filter((c) => c.toLowerCase().includes(this.query.toLowerCase())) }
+  }"
+>
   <button x-h-button @click="open = true">Open command palette</button>
 
-  <div x-h-backdrop :data-open="open" @click.self="open = false" class="vbox items-center gap-4 p-12">
-    <input class="max-w-xl" x-h-input x-h-backdrop-item type="text" placeholder="Type a command..." x-model="query" x-h-focus="open" />
-    <div x-h-listbox class="w-full max-w-xl" x-h-backdrop-item>
+  <div x-h-backdrop :data-open="open" @click.self="open = false" class="vbox items-center gap-4 p-4 sm:p-12">
+    <input
+      class="max-w-xl"
+      x-h-input
+      x-h-backdrop-item
+      x-ref="query"
+      type="text"
+      placeholder="Type a command..."
+      aria-label="Type a command"
+      :aria-expanded="open"
+      x-model="query"
+      x-h-focus="open"
+      @keydown.enter.prevent="if (matches.length) open = false"
+    />
+    <div x-h-combobox="$refs.query" class="w-full max-w-xl" x-h-backdrop-item>
       <ul x-h-list>
-        <template x-for="command in commands.filter((c) => c.toLowerCase().includes(query.toLowerCase()))" :key="command">
+        <template x-for="command in matches" :key="command">
           <li x-h-list-item @click="open = false" x-text="command"></li>
         </template>
       </ul>

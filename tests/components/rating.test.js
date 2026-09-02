@@ -89,6 +89,25 @@ describe('h-rating', () => {
     expect(el._x_model.set).toHaveBeenCalledWith(3.5);
   });
 
+  it('dispatches a bubbling change event carrying the value', () => {
+    const el = build({ 'data-value': '2' });
+    mount(el);
+    const changes = [];
+    document.body.addEventListener('change', (event) => changes.push(event.detail));
+    key(el, 'ArrowRight');
+    expect(changes).toEqual([{ value: 2.5 }]);
+  });
+
+  // Alpine's .lazy listener would write the change event's detail object over
+  // the bound value, so the event modifiers are rejected at init.
+  it('rejects x-model event modifiers with a console error', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const el = build({ 'x-model.lazy': 'score' });
+    mount(el);
+    expect(error).toHaveBeenCalledWith('h-rating: x-model.lazy is not supported, the model always updates immediately', el);
+    error.mockRestore();
+  });
+
   // A disabled rating still has a value worth announcing, so it stays a focusable
   // slider and only refuses input. Dropping it from the tab order, as it once
   // did, left a keyboard user unable to discover it at all.

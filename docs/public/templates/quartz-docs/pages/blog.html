@@ -1,0 +1,45 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <h1 x-h-text.h1>Blog</h1>
+  <p x-h-text.lead>Release notes and the occasional note about why the cache behaves the way it does.</p>
+
+  <div class="vbox divide-y">
+    <template x-for="post in $store.quartz.posts" :key="post.route">
+      <article class="vbox gap-2 py-6">
+        <div class="hbox items-center gap-2">
+          <span class="text-sm text-muted-foreground" x-text="post.date"></span>
+          <span x-h-badge data-variant="outline" x-text="post.tag"></span>
+        </div>
+        <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+        <h2 x-h-text.h4>
+          <a class="no-underline" :href="post.route" x-text="post.title"></a>
+        </h2>
+        <p class="text-muted-foreground" x-text="post.excerpt"></p>
+        <div class="hbox items-center gap-2 pt-2">
+          <div x-h-avatar class="size-6! text-xs" aria-hidden="true" x-text="post.initials"></div>
+          <span class="text-sm text-muted-foreground" x-text="post.author"></span>
+        </div>
+      </article>
+    </template>
+  </div>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

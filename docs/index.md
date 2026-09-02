@@ -187,7 +187,63 @@ features:
 
 </TemplateShowcase>
 
-<TemplateShowcase title="Ember Habits" src="/harmonia/templates/ember/ember-habits.html" desc="A single-file, mobile-first habit tracker with bottom navigation, a quick-add floating action button, progress rings, and a completion calendar.">
+<TemplateShowcase title="Quartz Docs" src="/harmonia/templates/quartz-docs/index.html" desc="A multi-page documentation and blog site for a fictional JavaScript library, with a split sidebar layout, a command-palette search, and previous/next paging, split across one shell, two scripts, and ten page fragments, routed client-side with Pinecone Router.">
+
+**index.html**
+
+<<< @/public/templates/quartz-docs/index.html
+
+**js/app.js**
+
+<<< @/public/templates/quartz-docs/js/app.js
+
+**js/data.js**
+
+<<< @/public/templates/quartz-docs/js/data.js
+
+**pages/home.html**
+
+<<< @/public/templates/quartz-docs/pages/home.html
+
+**pages/guide-what-is-quartz.html**
+
+<<< @/public/templates/quartz-docs/pages/guide-what-is-quartz.html
+
+**pages/guide-getting-started.html**
+
+<<< @/public/templates/quartz-docs/pages/guide-getting-started.html
+
+**pages/guide-queries.html**
+
+<<< @/public/templates/quartz-docs/pages/guide-queries.html
+
+**pages/guide-caching.html**
+
+<<< @/public/templates/quartz-docs/pages/guide-caching.html
+
+**pages/api.html**
+
+<<< @/public/templates/quartz-docs/pages/api.html
+
+**pages/blog.html**
+
+<<< @/public/templates/quartz-docs/pages/blog.html
+
+**pages/blog-quartz-1-1.html**
+
+<<< @/public/templates/quartz-docs/pages/blog-quartz-1-1.html
+
+**pages/blog-announcing-quartz-1-0.html**
+
+<<< @/public/templates/quartz-docs/pages/blog-announcing-quartz-1-0.html
+
+**pages/not-found.html**
+
+<<< @/public/templates/quartz-docs/pages/not-found.html
+
+</TemplateShowcase>
+
+<TemplateShowcase title="Ember Habits" src="/harmonia/templates/ember/ember-habits.html" desc="A single-file, mobile-first habit tracker with bottom navigation, a quick-add floating action button, progress rings, and a completion calendar." mobile="true">
 
 <<< @/public/templates/ember/ember-habits.html
 

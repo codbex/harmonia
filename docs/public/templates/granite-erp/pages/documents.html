@@ -27,7 +27,10 @@
   </div>
 
   <template x-if="scanning">
-    <div class="vbox gap-2" aria-label="Scanning documents">
+    <!-- role="status" so the wait is announced. On a plain div the aria-label alone
+         would have been dropped, leaving the scan silent. -->
+    <div class="vbox gap-2" role="status">
+      <span class="sr-only">Scanning documents</span>
       <div x-h-skeleton class="h-10 w-full"></div>
       <div x-h-skeleton class="h-10 w-full"></div>
       <div x-h-skeleton class="h-10 w-9/10"></div>
@@ -38,6 +41,9 @@
   <template x-if="!scanning">
     <div x-h-table-container data-border="true">
       <table x-h-table data-borders="rows">
+        <caption class="sr-only">
+          Documents
+        </caption>
         <thead x-h-table-header>
           <tr x-h-table-row>
             <th x-h-table-head scope="col">Document</th>
@@ -86,14 +92,11 @@
   </template>
 
   <!-- Delete confirmation dialog -->
-  <div x-h-dialog-overlay :data-open="!!removeTarget" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="!!removeTarget" class="backdrop-blur-xs" @keydown.escape.window="removeTarget = null">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Delete document</h2>
         <p x-h-dialog-description x-text="removeTarget ? 'Remove ' + removeTarget.name + ' from the library? This cannot be undone.' : ''"></p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="removeTarget = null">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="removeTarget = null">Cancel</button>

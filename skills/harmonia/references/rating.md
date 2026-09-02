@@ -29,7 +29,7 @@ Use a Rating to capture or display a subjective score, such as a product review 
 
 ### Model
 
-Bind a number with `x-model`. The value updates on selection (click, drag, or keyboard) and is rounded to the configured precision. Clicking the current value again clears the rating to `0`.
+Bind a number with `x-model`. The value updates on selection (click, drag, or keyboard) and is rounded to the configured precision. Clicking the current value again clears the rating to `0`. `x-model`'s event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are not supported and log an error, the model always updates immediately.
 
 ### Events
 

@@ -90,7 +90,8 @@ describe('h-notification-overlay', () => {
     notificationsPlugin(alpine);
     const el = document.createElement('div');
     const ctx = createMockContext(alpine);
-    expect(() => alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, ctx)).toThrow();
+    // The message used to say "must be a button", which is not what is checked.
+    expect(() => alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, ctx)).toThrow(/must be a section element/);
   });
 
   it('applies base classes', () => {

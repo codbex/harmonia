@@ -1,5 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { isDisabled } from '../common/disabled';
+import { rejectModelEventModifiers } from '../common/model';
 import { transitionClose } from '../common/transition-close';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
 import uuidv4 from '../utils/uuid';
@@ -715,6 +716,7 @@ export default function (Alpine) {
     }
 
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
+      rejectModelEventModifiers(Alpine, el, original);
       setState(el._x_model.get(), false);
 
       el.addEventListener('click', onActivate);
@@ -775,7 +777,8 @@ export default function (Alpine) {
       'before:size-2',
       'before:rounded-full',
       'before:-translate-x-0.75',
-      'aria-[checked=true]:before:visible'
+      'aria-[checked=true]:before:visible',
+      'svg-defaults'
     );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('type', 'radio');
@@ -809,6 +812,7 @@ export default function (Alpine) {
     }
 
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
+      rejectModelEventModifiers(Alpine, el, original);
       effect(() => {
         setState(el._x_model.get() === value);
       });

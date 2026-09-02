@@ -44,6 +44,14 @@ describe('h-avatar', () => {
     expect(el.classList.contains('data-[variant="primary"]:border-primary')).toBe(true);
   });
 
+  it('recolors a variant avatar inside an active sidebar menu button', () => {
+    mountDirective(avatarPlugin, 'h-avatar', el);
+    expect(el.classList.contains('[[data-slot=sidebar-menu-button][data-active=true]_&[data-variant]]:bg-sidebar-primary-foreground/10')).toBe(true);
+    expect(el.classList.contains('[[data-slot=sidebar-menu-button][data-active=true]_&[data-variant]]:text-sidebar-primary-foreground')).toBe(true);
+    expect(el.classList.contains('[[data-slot=sidebar-menu-button]:active_&[data-variant]]:bg-sidebar-primary-foreground/10')).toBe(true);
+    expect(el.classList.contains('[[data-slot=sidebar-menu-button]:active_&[data-variant]]:text-sidebar-primary-foreground')).toBe(true);
+  });
+
   it('sets data-slot="avatar"', () => {
     mountDirective(avatarPlugin, 'h-avatar', el);
     expect(el.getAttribute('data-slot')).toBe('avatar');
@@ -88,17 +96,49 @@ describe('h-avatar', () => {
     expect(btn.classList.contains('hover:bg-secondary-hover')).toBe(false);
   });
 
-  it('adds cursor-pointer for button elements', () => {
+  it('skips secondary hover classes on an anchor when data-color is set', () => {
+    const anchor = document.createElement('a');
+    anchor.setAttribute('data-color', 'blue');
+    document.body.appendChild(anchor);
+    mountDirective(avatarPlugin, 'h-avatar', anchor);
+    expect(anchor.classList.contains('cursor-pointer')).toBe(true);
+    expect(anchor.classList.contains('bg-blue-500')).toBe(true);
+    expect(anchor.classList.contains('hover:bg-secondary-hover')).toBe(false);
+  });
+
+  it('adds cursor-pointer and a type for button elements', () => {
     const btn = document.createElement('button');
     document.body.appendChild(btn);
     mountDirective(avatarPlugin, 'h-avatar', btn);
     expect(btn.classList.contains('cursor-pointer')).toBe(true);
     expect(btn.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    expect(btn.getAttribute('type')).toBe('button');
   });
 
-  it('does not add cursor-pointer for non-button elements', () => {
+  it('keeps an author-set type on a button', () => {
+    const btn = document.createElement('button');
+    btn.setAttribute('type', 'submit');
+    document.body.appendChild(btn);
+    mountDirective(avatarPlugin, 'h-avatar', btn);
+    expect(btn.getAttribute('type')).toBe('submit');
+  });
+
+  it('makes an anchor interactive without giving it a type', () => {
+    const anchor = document.createElement('a');
+    document.body.appendChild(anchor);
+    mountDirective(avatarPlugin, 'h-avatar', anchor);
+    expect(anchor.classList.contains('cursor-pointer')).toBe(true);
+    expect(anchor.classList.contains('no-underline')).toBe(true);
+    expect(anchor.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    expect(anchor.classList.contains('active:bg-secondary-active')).toBe(true);
+    expect(anchor.hasAttribute('type')).toBe(false);
+  });
+
+  it('leaves any other element non-interactive', () => {
     mountDirective(avatarPlugin, 'h-avatar', el);
     expect(el.classList.contains('cursor-pointer')).toBe(false);
+    expect(el.classList.contains('no-underline')).toBe(false);
+    expect(el.hasAttribute('type')).toBe(false);
   });
 });
 

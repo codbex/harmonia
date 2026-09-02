@@ -19,6 +19,9 @@ Use tables to present datasets, lists, or records where a clear relationship bet
 - `x-h-table-cell`
 - `x-h-table-cell-button`
 - `x-h-table-body`
+- `x-h-table-group`
+- `x-h-table-group-row`
+- `x-h-table-group-button`
 - `x-h-table-row`
 - `x-h-table-caption`
 - `x-h-table-footer`
@@ -67,6 +70,12 @@ Use tables to present datasets, lists, or records where a clear relationship bet
 | -------------- | ------- | -------- | ------------------------- |
 | data-hoverable | boolean | false    | Makes the cell hoverable. |
 | data-activable | boolean | false    | Makes the cell activable. |
+
+#### x-h-table-group
+
+| Attribute | Type | Required | Description                                                                           |
+| --------- | ---- | -------- | ------------------------------------------------------------------------------------- |
+| `self`    | any  | false    | Expression holding the collapsed state. A literal `true` only sets the initial state. |
 
 ### Modifiers
 
@@ -542,6 +551,95 @@ You can use input, dropdown, select, date and time pickers inside a table by usi
       </tr>
     </tbody>
   </table>
+</div>
+```
+
+### Grouped rows
+
+Stack `x-h-table-group` on a `x-h-table-body` to turn that body into a collapsible group. Its first row is the group title. Give it `x-h-table-group-row`, a single `td` cell spanning all columns, and a `x-h-table-group-button` with the title as children (a `<span>` for example) rather than `x-text`, which would replace the collapse arrow. Set `x-h-table-group="true"` to start a group collapsed.
+
+```html
+<div x-h-table-container data-border="true">
+  <table x-h-table data-borders="rows">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Product</th>
+        <th x-h-table-head scope="col">Stock</th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body x-h-table-group>
+      <tr x-h-table-group-row>
+        <td x-h-table-cell colspan="2">
+          <button x-h-table-group-button><span>Fruits</span> <span class="text-xs font-normal text-muted-foreground">2 items</span></button>
+        </td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-cell>Apples</td>
+        <td x-h-table-cell>140</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-cell>Oranges</td>
+        <td x-h-table-cell>72</td>
+      </tr>
+    </tbody>
+    <tbody x-h-table-body x-h-table-group="true">
+      <tr x-h-table-group-row>
+        <td x-h-table-cell colspan="2">
+          <button x-h-table-group-button><span>Vegetables</span> <span class="text-xs font-normal text-muted-foreground">2 items</span></button>
+        </td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-cell>Carrots</td>
+        <td x-h-table-cell>56</td>
+      </tr>
+      <tr x-h-table-row>
+        <td x-h-table-cell>Potatoes</td>
+        <td x-h-table-cell>210</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+### Collapse all groups
+
+Bind the same expression to every group to drive them together, for example from a toolbar button. Clicking a group's own button still toggles just that group.
+
+```html
+<div x-data="{ allCollapsed: false }" class="vbox items-start gap-2">
+  <button x-h-button @click="allCollapsed = !allCollapsed" x-text="allCollapsed ? 'Expand all' : 'Collapse all'"></button>
+  <div x-h-table-container data-border="true">
+    <table x-h-table data-borders="rows">
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Product</th>
+          <th x-h-table-head scope="col">Stock</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body x-h-table-group="allCollapsed">
+        <tr x-h-table-group-row>
+          <td x-h-table-cell colspan="2">
+            <button x-h-table-group-button><span>Fruits</span></button>
+          </td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>Apples</td>
+          <td x-h-table-cell>140</td>
+        </tr>
+      </tbody>
+      <tbody x-h-table-body x-h-table-group="allCollapsed">
+        <tr x-h-table-group-row>
+          <td x-h-table-cell colspan="2">
+            <button x-h-table-group-button><span>Vegetables</span></button>
+          </td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>Carrots</td>
+          <td x-h-table-cell>56</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 ```
 

@@ -4,11 +4,13 @@ import { attachDayDrag, capturePointer, DRAG_THRESHOLD, releasePointer } from '.
 import { colorClasses } from '../common/event-colors';
 import { ChevronDown, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { createDateTimeFormatCache } from '../common/intl';
+import { findModelAttribute, rejectModelEventModifiers } from '../common/model';
 import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-calendar-inline', (el, { expression }, { effect, evaluateLater, cleanup }) => {
+  Alpine.directive('h-calendar-inline', (el, { original, expression }, { effect, evaluateLater, cleanup }) => {
+    rejectModelEventModifiers(Alpine, el, original);
     el.classList.add('gap-2', 'p-2', 'overflow-visible', 'data-[invalid=true]:inset-ring-negative/20', 'dark:data-[invalid=true]:inset-ring-negative/40');
     el.setAttribute('tabindex', '-1');
 
@@ -34,7 +36,7 @@ export default function (Alpine) {
     }
 
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
-      const modelExpression = el.getAttribute('x-model');
+      const modelExpression = findModelAttribute(Alpine, el)?.value;
       const evaluateModel = evaluateLater(modelExpression);
 
       effect(() => {

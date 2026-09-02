@@ -1,0 +1,42 @@
+<div class="mx-auto vbox w-full max-w-6xl gap-12 px-6 py-12">
+  <div class="vbox gap-8 lg:hbox">
+    <div class="vbox gap-4">
+      <h1 x-h-text.h1 class="sm:text-5xl">
+        <span class="text-primary">Quartz</span>
+        <br />
+        Data fetching in 2 kB
+      </h1>
+      <p x-h-text.lead>A stale while revalidate cache for the browser. Render what you have, refresh it in the background, and never write the same loading state twice.</p>
+      <div class="hbox flex-wrap gap-2 pt-2">
+        <!-- Real anchors on purpose: Pinecone Router intercepts plain-path links. -->
+        <a x-h-button data-variant="primary" href="/guide/getting-started">
+          Get started
+          <svg x-h-lucide role="presentation" data-lucide="arrow-right"></svg>
+        </a>
+        <a x-h-button data-variant="outline" href="/guide/what-is-quartz">What is Quartz?</a>
+      </div>
+    </div>
+
+    <!-- self-center works on both axes: horizontally centered while the hero is
+         a column, vertically centered once it becomes a row. -->
+    <div class="hbox shrink-0 items-center justify-center self-center rounded-full bg-muted" style="width: 14rem; height: 14rem">
+      <svg x-h-lucide role="presentation" class="text-primary" data-lucide="gem" style="width: 6rem; height: 6rem"></svg>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <template x-for="feature in $store.quartz.features" :key="feature.title">
+      <div x-h-card>
+        <div x-h-card-header class="gap-3">
+          <div x-h-avatar class="rounded-lg" data-variant="primary">
+            <svg x-h-lucide role="presentation" :data-lucide="feature.icon"></svg>
+          </div>
+          <div x-h-card-title x-text="feature.title"></div>
+          <div x-h-card-description x-text="feature.details"></div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <p class="text-center text-sm text-muted-foreground">Released under the MIT License. Quartz is a fictional library, written to demonstrate Harmonia.</p>
+</div>

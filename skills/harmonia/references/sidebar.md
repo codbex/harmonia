@@ -81,15 +81,21 @@ Use sidebars for main application navigation or other persistent content that be
 
 #### x-h-sidebar-group
 
-| Modifier  | Type    | Required | Description                                                        |
-| --------- | ------- | -------- | ------------------------------------------------------------------ |
-| collapsed | boolean | false    | Enables collapse/expand for the group content. Default is `false`. |
+| Modifier  | Type    | Required | Description                                                                                                                                                                                                                                                               |
+| --------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| collapsed | boolean | false    | Enables collapse/expand for the group content, and adds a collapse arrow to the group label. Because the arrow lives inside the label, give the label its text as a child (a `<span>` for example) rather than with `x-text`, which would replace it. Default is `false`. |
 
 #### x-h-sidebar-group-actions
 
 | Modifier | Description                                                                                                                     |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | autohide | The actions are hidden until the group label is hovered or a button inside them is focused. They stay visible on touch devices. |
+
+#### x-h-sidebar-menu-item
+
+| Modifier  | Type    | Required | Description                                                                                                                                                                                                                                                                                 |
+| --------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| collapsed | boolean | false    | Enables collapse/expand for the item's `x-h-sidebar-menu-sub`, and adds a collapse arrow to its menu button. Because the arrow lives inside the button, give the button its text as a child (a `<span>` for example) rather than with `x-text`, which would replace it. Default is `false`. |
 
 #### x-h-sidebar-menu-action
 
@@ -108,6 +114,16 @@ Use sidebars for main application navigation or other persistent content that be
 | Variable        | Default | Description                                                                                                 |
 | --------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
 | --sidebar-width | 16rem   | Width of the sidebar when not collapsed. Set it on the sidebar itself, an ancestor, or in a theme CSS file. |
+
+## Accessibility
+
+A menu button marked `data-active="true"` also gets `aria-current="page"`, so the destination the user is on is announced and not only coloured. The attribute is followed as it changes, which is what a bound `:data-active` needs.
+
+A `x-h-sidebar-group-label` inside a `x-h-sidebar-group.collapsed` is the control that collapses the group, so it is given the `button` role and a tab stop, and it answers `Enter` and `Space` the way a button does. Write it as a `<button>` instead and it is left alone, since it already is one. A label in a group that does not collapse stays plain text with no role and no tab stop.
+
+A `x-h-sidebar-header-item` is a control only when it is written as a `button` or an `a` element, so the element itself carries the role, the tab stop and the keyboard behaviour. On any other tag it stays plain text and is never given a role or a `tabindex` it cannot honour.
+
+The sidebar itself is a plain container and takes no landmark role, since only you know whether it holds the page's navigation. Wrap it, or the `x-h-sidebar-content` inside it, in a `<nav aria-label="...">` when it does.
 
 ## Examples
 
@@ -141,7 +157,7 @@ Use sidebars for main application navigation or other persistent content that be
 
 ### Sidebar header item
 
-Use a header item for a non-interactive branding or title row at the top of the sidebar, such as a logo. It lays out an icon and a label, and when the sidebar is collapsed everything except the leading icon or avatar is hidden. It must not be a `button` or `a` element (it will throw). For an interactive header row use `x-h-sidebar-menu-button` instead.
+Use a header item for a branding or title row at the top of the sidebar, such as a logo. It lays out an icon and a label, and when the sidebar is collapsed everything except the leading icon or avatar is hidden.
 
 ```html
 <div class="hbox size-full gap-2" x-data="{ collapsed: false }">
@@ -160,6 +176,22 @@ Use a header item for a non-interactive branding or title row at the top of the 
       </button>
     </div>
   </div>
+</div>
+```
+
+### Interactive sidebar header item
+
+Write the header item on a `button` or an `a` element to make it a control, such as a logo that links to the home page.
+
+```html
+<div x-h-sidebar>
+  <div x-h-sidebar-header>
+    <a x-h-sidebar-header-item href="#">
+      <svg x-h-lucide role="presentation" class="size-8" data-lucide="box"></svg>
+      <span>Harmonia</span>
+    </a>
+  </div>
+  <div x-h-sidebar-content></div>
 </div>
 ```
 

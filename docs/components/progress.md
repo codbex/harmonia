@@ -6,6 +6,14 @@ Visually represents the completion status of an ongoing operation, providing use
 
 Use progress bars to indicate the advancement of tasks such as uploads, downloads, or processing operations. Make sure the progress is updated in real time and, when possible, provide a percentage as an indicator of completion. Avoid using progress bars for indefinite tasks without feedback, as this can create uncertainty for users.
 
+## Accessibility
+
+The component gives the element the `progressbar` role and keeps `aria-valuenow` in step with the value, alongside the fixed `aria-valuemin="0"` and `aria-valuemax="100"` that make a percentage meaningful. The value is clamped to that range and rounded, so it is announced the same way it is drawn.
+
+With `data-loading` there is no value to announce, so `aria-valuenow` is dropped and `aria-busy="true"` takes its place. That is the difference between a screen reader saying the work is still running and it reading out a stalled zero. Toggling `data-loading` at runtime switches between the two.
+
+Give the element an accessible name with `aria-label` or `aria-labelledby` when what it measures is not already clear from the text next to it.
+
 ## API Reference
 
 ### Component attribute(s)

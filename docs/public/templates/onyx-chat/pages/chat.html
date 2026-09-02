@@ -14,17 +14,17 @@
           </template>
           <template x-if="conversation && isDm">
             <div class="hbox min-w-0 flex-1 items-center gap-2">
-              <div x-h-avatar class="relative size-6 rounded-control text-xs" :data-color="partner?.color">
-                <img x-h-avatar-image :src="partner?.avatar" :alt="partner?.name" />
+              <div x-h-avatar class="relative size-6! rounded-control text-xs" :data-color="partner?.color">
+                <img x-h-avatar-image :src="partner?.avatar" alt="" aria-hidden="true" />
                 <span x-h-avatar-fallback x-text="partner?.initials"></span>
-                <span x-h-badge-indicator data-dot="true" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'"></span>
+                <span x-h-badge-indicator data-dot="true" role="img" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'" :aria-label="partner?.status"></span>
               </div>
               <span class="font-semibold text-nowrap" x-text="partner?.name"></span>
               <span class="truncate text-sm text-muted-foreground" x-text="partner?.title"></span>
             </div>
           </template>
           <div x-h-toolbar-spacer></div>
-          <button x-show="conversation" x-h-button data-variant="transparent" data-size="icon-md" :data-toggled="detailsOpen" aria-label="Toggle conversation details" @click="detailsOpen = !detailsOpen">
+          <button x-show="conversation" x-h-button data-variant="transparent" data-size="icon-md" :aria-pressed="detailsOpen" aria-label="Toggle conversation details" @click="detailsOpen = !detailsOpen">
             <svg x-h-lucide role="presentation" data-lucide="info"></svg>
           </button>
         </div>
@@ -47,8 +47,8 @@
                          whenever one of its (always focusable) buttons has focus. -->
                     <div class="group relative hbox items-start gap-3 px-4 hover:bg-muted" :class="item.compact ? 'py-1' : 'pt-3 pb-1'">
                       <template x-if="!item.compact">
-                        <div x-h-avatar class="size-8 flex-none rounded-control text-xs" :data-color="$store.chat.userById(item.message.userId)?.color">
-                          <img x-h-avatar-image :src="$store.chat.userById(item.message.userId)?.avatar" :alt="$store.chat.displayName(item.message.userId)" />
+                        <div x-h-avatar class="flex-none rounded-control text-xs" :data-color="$store.chat.userById(item.message.userId)?.color">
+                          <img x-h-avatar-image :src="$store.chat.userById(item.message.userId)?.avatar" alt="" aria-hidden="true" />
                           <span x-h-avatar-fallback x-text="$store.chat.userById(item.message.userId)?.initials || '?'"></span>
                         </div>
                       </template>
@@ -81,21 +81,17 @@
                         </template>
                         <div class="hbox flex-wrap gap-1 pt-1" x-show="item.message.reactions.length">
                           <template x-for="reaction in item.message.reactions" :key="reaction.emoji">
-                            <button
-                              x-h-chip
-                              :data-variant="isMine(reaction) ? 'primary' : 'outline'"
-                              :aria-pressed="isMine(reaction)"
-                              :aria-label="'Toggle ' + reaction.emoji + ' reaction, ' + reaction.userIds.length + ' so far'"
-                              @click="react(item.message.id, reaction.emoji)"
-                            >
-                              <span x-text="reaction.emoji"></span>
-                              <span x-text="reaction.userIds.length"></span>
-                            </button>
+                            <div x-h-chip :data-variant="isMine(reaction) ? 'primary' : 'outline'">
+                              <button x-h-chip-button :aria-pressed="isMine(reaction)" :aria-label="'Toggle ' + reaction.emoji + ' reaction, ' + reaction.userIds.length + ' so far'" @click="react(item.message.id, reaction.emoji)">
+                                <span x-text="reaction.emoji"></span>
+                                <span x-text="reaction.userIds.length"></span>
+                              </button>
+                            </div>
                           </template>
                         </div>
                       </div>
                       <div class="absolute top-0 right-0 mr-2 hbox gap-1 rounded-md border bg-background p-1 opacity-0 shadow-sm transition-opacity group-focus-within:opacity-100 group-hover:opacity-100" style="margin-top: -0.75rem">
-                        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Add reaction" x-h-popover-trigger>
+                        <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Add reaction to the message from ' + $store.chat.displayName(item.message.userId)" x-h-popover-trigger>
                           <svg x-h-lucide role="presentation" data-lucide="smile-plus"></svg>
                         </button>
                         <div x-h-popover data-align="bottom-end">
@@ -109,10 +105,10 @@
                         </div>
                         <template x-if="item.message.userId === 'you'">
                           <div class="hbox gap-1">
-                            <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Message actions" x-h-menu-trigger.dropdown>
+                            <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })" x-h-menu-trigger.dropdown>
                               <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
                             </button>
-                            <ul x-h-menu aria-label="Message actions" data-align="bottom-end">
+                            <ul x-h-menu :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })" data-align="bottom-end">
                               <li x-h-menu-item @click="startEdit(item.message)">
                                 <svg x-h-lucide role="presentation" data-lucide="pencil"></svg>
                                 <span>Edit message</span>
@@ -141,7 +137,7 @@
               <div x-h-info-page>
                 <div x-h-info-page-header>
                   <div x-h-info-page-media.icon>
-                    <svg x-h-lucide role="img" data-lucide="message-circle"></svg>
+                    <svg x-h-lucide role="presentation" data-lucide="message-circle"></svg>
                   </div>
                   <div x-h-info-page-title>No messages yet</div>
                   <div x-h-info-page-description x-text="'Say hello and start the conversation with ' + label + '.'"></div>
@@ -154,7 +150,7 @@
               <div x-h-info-page>
                 <div x-h-info-page-header>
                   <div x-h-info-page-media.icon>
-                    <svg x-h-lucide role="img" data-lucide="compass"></svg>
+                    <svg x-h-lucide role="presentation" data-lucide="compass"></svg>
                   </div>
                   <div x-h-info-page-title>Conversation not found</div>
                   <div x-h-info-page-description>This channel or direct message does not exist, or you may have left it.</div>
@@ -171,7 +167,7 @@
 
         <div class="overflow-visible px-3 pb-3" x-show="conversation">
           <div x-h-input-group>
-            <textarea x-h-textarea.group rows="2" class="resize-none" x-model="draft" :placeholder="'Message ' + label" :aria-label="'Message ' + label" @keydown.enter="composerKeydown($event)"></textarea>
+            <textarea x-h-textarea.group rows="2" x-model="draft" :placeholder="'Message ' + label" :aria-label="'Message ' + label" @keydown.enter="composerKeydown($event)"></textarea>
             <div x-h-input-group-addon data-align="block-end" class="border-t">
               <button x-h-button.addon data-size="icon-sm" data-variant="outline" class="rounded-full" aria-label="Insert emoji" x-h-popover-trigger>
                 <svg x-h-lucide role="presentation" data-lucide="smile"></svg>
@@ -185,7 +181,7 @@
                   </template>
                 </div>
               </div>
-              <span x-h-input-group-text class="ml-auto hidden text-xs md:block">Enter to send, Shift+Enter for a new line</span>
+              <span x-h-input-group-text class="ml-auto hidden text-xs md:flex">Enter to send, Shift+Enter for a new line</span>
               <button x-h-button.addon data-size="icon-sm" data-variant="primary" class="rounded-full" aria-label="Send message" :disabled="!draft.trim()" @click="send()">
                 <svg x-h-lucide role="presentation" data-lucide="arrow-up"></svg>
               </button>
@@ -222,13 +218,13 @@
                   <template x-for="member in members" :key="member.id">
                     <li x-h-list-item class="gap-3 py-1">
                       <div x-h-avatar class="relative size-8 rounded-control text-xs" :data-color="member.color">
-                        <img x-h-avatar-image :src="member.avatar" :alt="member.name" />
+                        <img x-h-avatar-image :src="member.avatar" alt="" aria-hidden="true" />
                         <span x-h-avatar-fallback x-text="member.initials"></span>
-                        <span x-h-badge-indicator data-dot="true" x-show="member.status !== 'offline'" :data-variant="member.status === 'online' ? 'positive' : 'warning'"></span>
+                        <span x-h-badge-indicator data-dot="true" role="img" x-show="member.status !== 'offline'" :data-variant="member.status === 'online' ? 'positive' : 'warning'" :aria-label="member.status"></span>
                       </div>
                       <div class="vbox min-w-0">
                         <span class="truncate text-sm" x-text="member.name + (member.id === 'you' ? ' (you)' : '')"></span>
-                        <span class="truncate text-xs text-muted-foreground" x-text="member.title"></span>
+                        <span x-h-list-secondary class="truncate text-xs" x-text="member.title"></span>
                       </div>
                     </li>
                   </template>
@@ -243,8 +239,8 @@
           </template>
           <template x-if="conversation && isDm">
             <div class="vbox items-center gap-3 pt-4 text-center">
-              <div x-h-avatar class="relative size-12 rounded-control text-lg" :data-color="partner?.color">
-                <img x-h-avatar-image :src="partner?.avatar" :alt="partner?.name" />
+              <div x-h-avatar class="relative size-12 rounded-control text-lg!" :data-color="partner?.color">
+                <img x-h-avatar-image :src="partner?.avatar" alt="" aria-hidden="true" />
                 <span x-h-avatar-fallback x-text="partner?.initials"></span>
                 <span x-h-badge-indicator data-dot="true" x-show="partner?.status !== 'offline'" :data-variant="partner?.status === 'online' ? 'positive' : 'warning'"></span>
               </div>
@@ -266,14 +262,11 @@
   </div>
 
   <!-- Delete confirmation dialog -->
-  <div x-h-dialog-overlay :data-open="!!deleteTarget" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="!!deleteTarget" class="backdrop-blur-xs" @keydown.escape.window="deleteTarget = null">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Delete message</h2>
         <p x-h-dialog-description x-text="deleteTarget ? 'This will permanently remove the message: ' + (deleteTarget.text.length > 140 ? deleteTarget.text.slice(0, 140) + '...' : deleteTarget.text) : ''"></p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="deleteTarget = null">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="deleteTarget = null">Cancel</button>

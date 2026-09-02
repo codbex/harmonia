@@ -65,11 +65,7 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'sidebar-header');
   });
 
-  Alpine.directive('h-sidebar-header-item', (el, { original }) => {
-    if (el.tagName === 'A' || el.tagName === 'BUTTON') {
-      throw new Error(`${original} is non-interactive (for logos and titles) and must not be set on a "button" or "a" element. Use x-h-sidebar-menu-button for an interactive item.`);
-    }
-
+  Alpine.directive('h-sidebar-header-item', (el) => {
     el.classList.add(
       'hbox',
       'w-full',
@@ -95,6 +91,11 @@ export default function (Alpine) {
       'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-8!',
       'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!'
     );
+
+    if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+      if (el.tagName === 'BUTTON') el.setAttribute('type', 'button');
+      el.classList.add('cursor-pointer', 'outline-hidden', 'ring-sidebar-ring', 'focus-visible:ring-[calc(var(--spacing)*0.75)]');
+    }
 
     el.setAttribute('data-slot', 'sidebar-header-item');
   });
@@ -128,7 +129,7 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-sidebar-group-label', (el, { original }, { cleanup }) => {
+  Alpine.directive('h-sidebar-group-label', (el, { original }, { cleanup, effect }) => {
     const group = findAncestorState(Alpine, el, '_h_sidebar_group');
     if (!group) {
       throw new Error(`${original} must be placed inside a sidebar group`);
@@ -160,6 +161,16 @@ export default function (Alpine) {
     if (group._h_sidebar_group.collapsable) {
       el.classList.add('text-sidebar-foreground', 'text-sm', 'hover:bg-sidebar-secondary', 'hover:text-sidebar-secondary-foreground', 'active:bg-sidebar-secondary', 'active:text-sidebar-secondary-foreground');
 
+      // Only a collapsable group turns its label into a control. The plain label
+      // in the branch below stays text, with no role and no tab stop.
+      const isButton = el.tagName === 'BUTTON';
+      if (isButton) {
+        el.setAttribute('type', 'button');
+      } else {
+        el.setAttribute('role', 'button');
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      }
+
       if (el.hasAttribute('id')) {
         group._h_sidebar_group.controlId = el.getAttribute('id');
       } else {
@@ -168,11 +179,26 @@ export default function (Alpine) {
       }
       group._h_sidebar_group.controls = `sgc${uuidv4()}`;
       el.setAttribute('aria-controls', group._h_sidebar_group.controls);
-      el.setAttribute('aria-expanded', !group._h_sidebar_group.state.collapsed);
+
+      // Written through an effect rather than once, since a bound expression can
+      // collapse the group without the click handler ever running. The arrow
+      // turns off this attribute, so it would point the wrong way too.
+      effect(() => {
+        el.setAttribute('aria-expanded', !group._h_sidebar_group.state.collapsed);
+      });
 
       const handler = () => {
         group._h_sidebar_group.state.collapsed = !group._h_sidebar_group.state.collapsed;
-        el.setAttribute('aria-expanded', !group._h_sidebar_group.state.collapsed);
+      };
+
+      // A native button activates on both Enter and Space, so an element only
+      // playing one has to forward those keys itself.
+      const onKeyDown = (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        // Space scrolls the page and Enter submits a surrounding form, neither
+        // of which a button press should do here.
+        event.preventDefault();
+        el.click();
       };
 
       el.appendChild(
@@ -187,9 +213,11 @@ export default function (Alpine) {
       );
 
       el.addEventListener('click', handler);
+      if (!isButton) el.addEventListener('keydown', onKeyDown);
 
       cleanup(() => {
         el.removeEventListener('click', handler);
+        el.removeEventListener('keydown', onKeyDown);
       });
     } else {
       el.classList.add('text-sidebar-foreground/70', 'text-xs');
@@ -303,7 +331,7 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-sidebar-menu-button', (el, { original }, { cleanup, Alpine }) => {
+  Alpine.directive('h-sidebar-menu-button', (el, { original }, { cleanup, effect, Alpine }) => {
     if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
       throw new Error(`${original} must be a button or a link`);
     } else if (el.tagName === 'BUTTON') {
@@ -353,6 +381,23 @@ export default function (Alpine) {
 
     if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-button');
 
+    // 'data-active' is the styling flag, so on its own the current destination is
+    // marked by colour alone. 'aria-current' is what says so out loud, matching
+    // what the menu, the navigation menu and the bottom navigation already do.
+    function syncActive() {
+      if (el.getAttribute('data-active') === 'true') {
+        el.setAttribute('aria-current', 'page');
+      } else {
+        el.removeAttribute('aria-current');
+      }
+    }
+
+    syncActive();
+
+    const activeObserver = new MutationObserver(syncActive);
+    activeObserver.observe(el, { attributes: true, attributeFilter: ['data-active'] });
+    cleanup(() => activeObserver.disconnect());
+
     if (menuItem && menuItem._h_sidebar_menu_item.isSub) {
       el.classList.add('text-sidebar-foreground', 'h-7', 'min-w-0', '-translate-x-px', 'px-2', '[&>svg:not(:first-child):last-child]:ml-auto', 'group-data-[collapsed=true]/sidebar:hidden');
       if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-sub-button');
@@ -400,11 +445,16 @@ export default function (Alpine) {
       }
       menuItem._h_sidebar_menu_item.controls = `sgc${uuidv4()}`;
       el.setAttribute('aria-controls', menuItem._h_sidebar_menu_item.controls);
-      el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
+
+      // Written through an effect rather than once, since a bound expression can
+      // collapse the item without the click handler ever running. The arrow
+      // turns off this attribute, so it would point the wrong way too.
+      effect(() => {
+        el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
+      });
 
       const handler = () => {
         menuItem._h_sidebar_menu_item.state.collapsed = !menuItem._h_sidebar_menu_item.state.collapsed;
-        el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
       };
 
       el.appendChild(

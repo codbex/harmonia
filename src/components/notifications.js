@@ -75,7 +75,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-notification-overlay', (el, { original }, { cleanup, Alpine }) => {
     if (el.tagName !== 'SECTION') {
-      throw new Error(`${original} must be a button`);
+      throw new Error(`${original} must be a section element`);
     }
     const notificationTemplates = {};
     el.querySelectorAll('template').forEach((template) => {

@@ -55,6 +55,7 @@
 @source inline("h-{1..12}{!,}");
 @source inline("h-{dvh,lvh,svh}");
 @source inline("min-h-{1..12}");
+@source inline("min-h-{screen,dvh,lvh,svh}");
 @source inline("max-h-{1..12}");
 @source inline("w-{1..12}{!,}");
 @source inline("w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl}");

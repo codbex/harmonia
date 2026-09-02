@@ -145,6 +145,40 @@ describe('h-file-upload', () => {
     expect(tagGroup.querySelector('[data-slot="file-input-placeholder"]')).toBeTruthy();
   });
 
+  // A form reset was already covered, but the other way the file list changes
+  // with no event is `input.value = ''`, which is how the same file is picked
+  // twice. The tags used to go on naming files the input no longer held.
+  it('re-renders when the input is cleared programmatically', () => {
+    const { group, input, tagGroup } = build();
+    mount(group);
+    setFiles(input, ['a.png']);
+    input.dispatchEvent(new Event('change'));
+    expect(tagGroup.querySelectorAll('[data-file]').length).toBe(1);
+
+    // A real file input empties `files` on assignment; the stub above shadows
+    // that, so it is emptied by hand and the assignment alone is under test.
+    setFiles(input, []);
+    input.value = '';
+    expect(tagGroup.querySelectorAll('[data-file]').length).toBe(0);
+    expect(tagGroup.querySelector('[data-slot="file-input-placeholder"]')).toBeTruthy();
+  });
+
+  it('still reads through to the native value', () => {
+    const { group, input } = build();
+    mount(group);
+    expect(input.value).toBe('');
+    input.value = '';
+    expect(input.value).toBe('');
+  });
+
+  it('hands the value property back to the prototype on cleanup', () => {
+    const { group, input } = build();
+    const { ctx } = mount(group);
+    expect(Object.getOwnPropertyDescriptor(input, 'value')).toBeDefined();
+    for (const fn of ctx.cleanup.mock.calls.map(([fn]) => fn)) fn();
+    expect(Object.getOwnPropertyDescriptor(input, 'value')).toBeUndefined();
+  });
+
   it('destroys rendered tags before re-rendering and on cleanup', () => {
     const { group, input } = build({ multiple: true });
     const { ctx, alpine } = mount(group);

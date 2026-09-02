@@ -149,7 +149,9 @@ Full, self-contained example apps live under `docs/public/templates/`. They show
 
 - **granite-erp** - a multi-page ERP-style admin app (`index.html` + `pages/` + `js/`).
 - **onyx-chat** - a multi-page chat app (`index.html` + `pages/` + `js/`).
+- **quartz-docs** - a multi-page documentation and blog site (`index.html` + `pages/` + `js/`).
 - **slate** - a single-page dashboard.
+- **ember** - a single-page, mobile-first habit tracker.
 
 They are served by the docs site, so with `npm run docs:dev` running you can open them under the site's `/templates/` path (or open the HTML files directly in a browser).
 

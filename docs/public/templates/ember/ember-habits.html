@@ -17,27 +17,27 @@
          the app rather than the viewport so it stays inside an embedding frame. -->
     <div class="relative vbox size-full overflow-hidden">
       <div x-h-toolbar data-variant="transparent">
-        <span x-h-toolbar-title x-text="viewTitle"></span>
+        <h1 x-h-toolbar-title x-text="viewTitle"></h1>
         <div x-h-toolbar-spacer></div>
         <button x-h-button data-variant="transparent" data-size="icon" class="relative" aria-label="Reminders" x-h-popover-trigger="remindersShown">
           <svg x-h-lucide role="presentation" data-lucide="bell"></svg>
-          <span x-show="reminders.length" x-h-badge-indicator data-dot="true" data-variant="primary"></span>
+          <span x-show="reminders.length" x-h-badge-indicator data-dot="true"></span>
         </button>
-        <div x-h-popover data-align="bottom-end" data-max-w="xs">
+        <div x-h-popover data-align="bottom-end" data-innerclicks="true" data-max-w="xs">
           <ol x-h-notification-list>
             <template x-for="r in reminders" :key="r.id">
               <li x-h-notification class="hbox items-center">
                 <div x-h-notification-media class="w-10">
                   <div x-h-avatar class="rounded-lg" :data-variant="r.variant">
-                    <svg x-h-lucide role="presentation" :data-lucide="r.icon"></svg>
+                    <svg x-h-lucide role="img" :aria-label="r.variant" :data-lucide="r.icon"></svg>
                   </div>
                 </div>
                 <div class="vbox flex-1 gap-1">
-                  <h1 x-h-notification-title x-text="r.title"></h1>
+                  <div x-h-notification-title x-text="r.title"></div>
                   <p x-h-notification-description x-text="r.description"></p>
                 </div>
                 <div x-h-notification-actions data-orientation="vertical">
-                  <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Dismiss reminder" @click="dismissReminder(r.id)">
+                  <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Dismiss reminder: ' + r.title" @click="dismissReminder(r.id)">
                     <svg x-h-icon data-icon="close" role="presentation"></svg>
                   </button>
                 </div>
@@ -59,7 +59,10 @@
 
       <!-- The one scrolling element. Both the bottom nav and the FAB watch it, so they
            slide away together while you read and come back on the way up. -->
-      <div class="vbox flex-1 overflow-y-auto" style="padding-bottom: var(--bottom-nav-height)" x-ref="panel">
+      <!-- `relative` so this is the containing block for its content: sr-only
+           elements are absolutely positioned, and without it they anchor to the
+           page and stretch it past the frame once the content scrolls. -->
+      <main class="relative vbox flex-1 overflow-y-auto" style="padding-bottom: var(--bottom-nav-height)" x-ref="panel">
         <!-- ==================== TODAY ==================== -->
         <div x-show="view === 'today'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
           <div class="hbox items-center gap-4">
@@ -77,19 +80,19 @@
             </div>
           </div>
 
-          <div x-h-card class="overflow-hidden py-0!">
+          <div x-h-card class="overflow-hidden">
             <ul x-h-list>
               <template x-for="habit in habits" :key="habit.id">
                 <li x-h-list-item class="gap-3 px-4 py-3">
                   <span x-h-checkbox>
-                    <input type="checkbox" :id="'habit-' + habit.id" :checked="habit.doneToday" @change="toggleHabit(habit)" />
+                    <input type="checkbox" :id="'habit-' + habit.id" x-model="habit.doneToday" @change="onHabitToggled(habit)" />
                   </span>
-                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" :data-lucide="habit.icon"></svg>
+                  <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" :data-lucide="habit.icon"></svg>
                   <label class="vbox min-w-0 flex-1" :for="'habit-' + habit.id">
                     <span class="truncate text-base font-medium" :class="habit.doneToday && 'text-muted-foreground line-through'" x-text="habit.name"></span>
                     <span x-h-text.muted x-text="habit.target"></span>
                   </label>
-                  <span x-h-badge :data-variant="habit.streak >= 7 ? 'positive' : 'outline'">
+                  <span x-h-badge :data-variant="habit.streak >= 7 ? 'positive' : 'outline'" role="img" :aria-label="habit.streak + ' day streak'">
                     <svg x-h-lucide role="presentation" data-lucide="flame"></svg>
                     <span x-text="habit.streak"></span>
                   </span>
@@ -113,7 +116,7 @@
               <template x-for="day in week" :key="day.label">
                 <div class="hbox items-center gap-3">
                   <span class="w-8 shrink-0 text-sm text-muted-foreground" x-text="day.label"></span>
-                  <div x-h-progress="Math.round((day.done / habits.length) * 100)" class="flex-1" :data-variant="day.done === habits.length ? 'positive' : undefined"></div>
+                  <div x-h-progress="Math.round((day.done / habits.length) * 100)" class="flex-1" :data-variant="day.done === habits.length ? 'positive' : undefined" :aria-label="day.label + ': ' + day.done + ' of ' + habits.length + ' habits done'"></div>
                   <span class="w-8 shrink-0 text-right text-sm font-medium" x-text="day.done + '/' + habits.length"></span>
                 </div>
               </template>
@@ -144,11 +147,9 @@
         </div>
 
         <!-- ==================== HISTORY ==================== -->
-        <div x-show="view === 'history'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
-          <p x-h-text.muted>Every habit you have completed, day by day. Tap a day to see what you finished.</p>
-          <div x-h-card class="overflow-hidden p-0!">
-            <div x-h-calendar="calendar" style="height: 32rem" @date-click="openDay($event.detail.date)" @event-click="openDay($event.detail.event.start)"></div>
-          </div>
+        <div x-show="view === 'history'" class="mx-auto w-full max-w-2xl">
+          <p x-h-text.muted class="p-4">Every habit you have completed, day by day. Tap a day to see what you finished.</p>
+          <div x-h-calendar="calendar" class="border-y" style="height: 32rem" @date-click="openDay($event.detail.date)" @event-click="openDay($event.detail.event.startDate)"></div>
         </div>
 
         <!-- ==================== STATS ==================== -->
@@ -177,7 +178,7 @@
               <template x-for="habit in habits" :key="habit.id">
                 <div class="vbox items-center gap-2">
                   <div class="relative">
-                    <div x-h-progress="habit.rate" data-type="circle" :data-variant="rateVariant(habit.rate)" style="width: 4.5rem"></div>
+                    <div x-h-progress="habit.rate" data-type="circle" :data-variant="rateVariant(habit.rate)" style="width: 4.5rem" :aria-label="habit.name + ' consistency'"></div>
                     <span class="position-center absolute text-sm font-medium" x-text="habit.rate + '%'"></span>
                   </div>
                   <span x-h-text.muted class="text-center" x-text="habit.name"></span>
@@ -206,7 +207,7 @@
         <div x-show="view === 'profile'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
           <div class="vbox items-center gap-2 pt-2">
             <div x-h-avatar class="text-xl" style="width: 6rem; height: 6rem">
-              <img x-h-avatar-image src="/harmonia/avatars/person-03-bg.svg" alt="Nora Bennett" />
+              <img x-h-avatar-image src="/harmonia/avatars/person-03-bg.svg" alt="" aria-hidden="true" />
               <div x-h-avatar-fallback>NB</div>
             </div>
             <div class="vbox items-center">
@@ -216,18 +217,18 @@
           </div>
 
           <section class="vbox w-full">
-            <h3 x-h-text.h6>Preferences</h3>
-            <div x-h-card class="mt-2 w-full overflow-hidden py-0!">
+            <h2 x-h-text.h6>Preferences</h2>
+            <div x-h-card class="mt-2 w-full overflow-hidden">
               <ul x-h-list>
                 <li x-h-list-item class="gap-3 px-4 py-3">
-                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="bell"></svg>
+                  <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="bell"></svg>
                   <label class="w-full text-base font-medium" for="sw-reminders">Daily reminders</label>
                   <span x-h-switch>
                     <input type="checkbox" id="sw-reminders" checked />
                   </span>
                 </li>
                 <li x-h-list-item class="gap-3 px-4 py-3">
-                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="clock"></svg>
+                  <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="clock"></svg>
                   <label class="flex-1 text-base font-medium" for="reminder-time">Reminder time</label>
                   <div x-h-time-picker style="max-width: 8rem">
                     <input type="text" id="reminder-time" x-model="settings.reminderTime" x-h-time-picker-input />
@@ -235,10 +236,10 @@
                   </div>
                 </li>
                 <li x-h-list-item class="gap-3 px-4 py-3">
-                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="calendar"></svg>
-                  <label class="flex-1 text-base font-medium" for="week-start">Week starts on</label>
+                  <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="calendar"></svg>
+                  <label class="flex-1 text-base font-medium" id="week-start-label" for="week-start">Week starts on</label>
                   <div x-h-select style="max-width: 8rem">
-                    <input x-h-select-input data-id="week-start" x-model="settings.firstDay" placeholder="Select" />
+                    <input x-h-select-input data-id="week-start" aria-labelledby="week-start-label" x-model="settings.firstDay" placeholder="Select" />
                     <div x-h-select-content>
                       <div x-h-select-list>
                         <div x-h-select-option="'Sunday'" data-value="0"></div>
@@ -252,59 +253,39 @@
           </section>
 
           <section class="vbox w-full">
-            <h3 x-h-text.h6>Appearance</h3>
-            <div x-h-card class="mt-2 w-full overflow-hidden py-0!">
-              <ul x-h-list>
-                <li x-h-list-item class="gap-3 px-4 py-3">
-                  <div class="vbox w-full">
-                    <p class="text-base font-medium">Theme</p>
-                    <p x-h-text.muted>Choose how the app looks.</p>
+            <h2 x-h-text.h6 id="appearance-heading">Appearance</h2>
+            <div x-h-card class="mt-2 w-full overflow-hidden">
+              <!-- x-model keeps the choice, @change applies it: only setTheme
+                   reaches the library that repaints the app. -->
+              <div x-h-button-group x-model="settings.theme" class="w-full" data-borderless="true" aria-labelledby="appearance-heading" @change="setTheme($event.detail.value)">
+                <button x-h-button data-variant="transparent" class="h-auto flex-1 py-3" x-h-button-group-radio="'light'">
+                  <div class="vbox items-center gap-1">
+                    <svg x-h-lucide class="size-5" role="presentation" data-lucide="sun"></svg>
+                    <span class="font-normal">Light</span>
                   </div>
-                  <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
-                    <!-- svg placeholders on purpose: x-h-lucide renders them in place,
-                           so the x-show bindings keep switching the visible icon. -->
-                    <svg x-h-lucide x-show="settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
-                    <span x-show="settings.theme === 'light'">Light</span>
-                    <svg x-h-lucide x-show="settings.theme === 'dark'" role="presentation" data-lucide="moon"></svg>
-                    <span x-show="settings.theme === 'dark'">Dark</span>
-                    <svg x-h-lucide x-show="settings.theme === 'auto'" role="presentation" data-lucide="sun-moon"></svg>
-                    <span x-show="settings.theme === 'auto'">Auto</span>
-                    <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
-                  </button>
-                  <ul x-h-menu data-align="bottom-end" aria-label="Theme">
-                    <li x-h-menu-item @click="setTheme('light')">
-                      <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
-                      <span>Light</span>
-                      <span x-h-menu-item-secondary x-show="settings.theme === 'light'">
-                        <svg x-h-icon data-icon="check" role="presentation"></svg>
-                      </span>
-                    </li>
-                    <li x-h-menu-item @click="setTheme('dark')">
-                      <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
-                      <span>Dark</span>
-                      <span x-h-menu-item-secondary x-show="settings.theme === 'dark'">
-                        <svg x-h-icon data-icon="check" role="presentation"></svg>
-                      </span>
-                    </li>
-                    <li x-h-menu-item @click="setTheme('auto')">
-                      <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
-                      <span>Auto</span>
-                      <span x-h-menu-item-secondary x-show="settings.theme === 'auto'">
-                        <svg x-h-icon data-icon="check" role="presentation"></svg>
-                      </span>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+                </button>
+                <button x-h-button data-variant="transparent" class="h-auto flex-1 py-3" x-h-button-group-radio="'dark'">
+                  <div class="vbox items-center gap-1">
+                    <svg x-h-lucide class="size-5" role="presentation" data-lucide="moon"></svg>
+                    <span class="font-normal">Dark</span>
+                  </div>
+                </button>
+                <button x-h-button data-variant="transparent" class="h-auto flex-1 py-3" x-h-button-group-radio="'auto'">
+                  <div class="vbox items-center gap-1">
+                    <svg x-h-lucide class="size-5" role="presentation" data-lucide="sun-moon"></svg>
+                    <span class="font-normal">Auto</span>
+                  </div>
+                </button>
+              </div>
             </div>
           </section>
 
           <section class="vbox w-full">
-            <h3 x-h-text.h6>Security</h3>
-            <div x-h-card class="mt-2 w-full overflow-hidden py-0!">
+            <h2 x-h-text.h6>Security</h2>
+            <div x-h-card class="mt-2 w-full overflow-hidden">
               <ul x-h-list>
                 <li x-h-list-item class="gap-3 px-4 py-3">
-                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" data-lucide="smartphone"></svg>
+                  <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="smartphone"></svg>
                   <div class="vbox flex-1">
                     <p class="text-base font-medium">This device</p>
                     <p x-h-text.muted x-text="deviceVerified ? 'Verified' : 'Not verified yet'"></p>
@@ -316,7 +297,7 @@
                     </span>
                   </template>
                   <template x-if="!deviceVerified">
-                    <button x-h-button data-variant="outline" data-size="sm" @click="openVerify()">Verify</button>
+                    <button x-h-button data-variant="outline" @click="openVerify()">Verify</button>
                   </template>
                 </li>
               </ul>
@@ -328,7 +309,7 @@
             Sign out
           </button>
         </div>
-      </div>
+      </main>
 
       <!-- Outside the scrolling panel and fixed, so sliding it out of the way cannot
            grow that panel's scroll range and let you scroll it back into view. -->
@@ -338,7 +319,7 @@
             <button x-h-bottom-nav-link>
               <span class="relative">
                 <svg x-h-lucide role="presentation" data-lucide="circle-check-big"></svg>
-                <span x-show="habits.length - doneCount" x-h-badge-indicator x-text="habits.length - doneCount"></span>
+                <span x-show="habits.length - doneCount" x-h-badge-indicator role="img" :aria-label="habits.length - doneCount + ' habits left'" x-text="habits.length - doneCount"></span>
               </span>
               <span x-h-bottom-nav-label>Today</span>
             </button>
@@ -381,16 +362,13 @@
     </div>
 
     <!-- Dialogs live at the top level, so a view's x-show never hides them -->
-    <div x-h-dialog-overlay :data-open="showAddHabit" class="backdrop-blur-xs">
+    <div x-h-dialog-overlay :data-open="showAddHabit" class="backdrop-blur-xs" @keydown.escape.window="showAddHabit = false">
       <div x-h-dialog>
         <div x-h-dialog-header>
           <h2 x-h-dialog-title>New habit</h2>
           <p x-h-dialog-description>Something small you can repeat every day.</p>
-          <button x-h-dialog-close aria-label="Close dialog" @click="showAddHabit = false">
-            <svg x-h-icon data-icon="close" role="presentation"></svg>
-          </button>
         </div>
-        <form id="add-habit-form" x-ref="addHabitForm" @submit.prevent="addHabit()" @input="newHabitValid = $el.checkValidity()">
+        <form x-h-dialog-content id="add-habit-form" x-ref="addHabitForm" @submit.prevent="addHabit()" @input="newHabitValid = $el.checkValidity()">
           <fieldset x-h-fieldset>
             <div x-h-field-group class="gap-4!">
               <div x-h-field>
@@ -426,7 +404,7 @@
       </div>
     </div>
 
-    <div x-h-dialog-overlay :data-open="showDay" class="backdrop-blur-xs">
+    <div x-h-dialog-overlay :data-open="showDay" class="backdrop-blur-xs" @keydown.escape.window="showDay = false">
       <div x-h-dialog>
         <div x-h-dialog-header>
           <h2 x-h-dialog-title x-text="dayDetail.label"></h2>
@@ -435,7 +413,7 @@
             <svg x-h-icon data-icon="close" role="presentation"></svg>
           </button>
         </div>
-        <ul x-h-list>
+        <ul x-h-list x-h-dialog-content>
           <template x-for="name in dayDetail.names" :key="name">
             <li x-h-list-item class="gap-3">
               <svg x-h-lucide class="size-4 shrink-0 text-positive" role="presentation" data-lucide="check"></svg>
@@ -450,13 +428,10 @@
             </li>
           </template>
         </ul>
-        <div x-h-dialog-footer>
-          <button x-h-button data-variant="outline" @click="showDay = false">Close</button>
-        </div>
       </div>
     </div>
 
-    <div x-h-dialog-overlay :data-open="showVerify" class="backdrop-blur-xs">
+    <div x-h-dialog-overlay :data-open="showVerify" class="backdrop-blur-xs" @keydown.escape.window="showVerify = false">
       <div x-h-dialog>
         <div x-h-dialog-header>
           <h2 x-h-dialog-title>Verify this device</h2>
@@ -465,17 +440,14 @@
             <svg x-h-icon data-icon="close" role="presentation"></svg>
           </button>
         </div>
-        <div class="vbox items-center gap-4 py-2">
-          <div x-h-otp @complete="verifyDevice($event.detail.value)">
-            <input name="verification" aria-label="Verification code" x-model="verifyCode" />
+        <div x-h-dialog-content class="vbox items-center gap-4 py-2">
+          <div x-h-otp aria-label="Verification code" @complete="verifyDevice($event.detail.value)">
+            <input name="verification" x-model="verifyCode" />
             <div x-h-otp-group data-length="3"></div>
             <div x-h-otp-separator>-</div>
             <div x-h-otp-group data-length="3"></div>
           </div>
           <p x-h-text.muted>Any six digits will do in this demo.</p>
-        </div>
-        <div x-h-dialog-footer>
-          <button x-h-button data-variant="outline" @click="showVerify = false">Not now</button>
         </div>
       </div>
     </div>
@@ -579,6 +551,11 @@
           },
           toggleHabit(habit) {
             habit.doneToday = !habit.doneToday;
+            this.onHabitToggled(habit);
+          },
+          // The streak and total bookkeeping for a flipped habit, shared by the
+          // checkbox (which flips the model itself) and the "Done" buttons.
+          onHabitToggled(habit) {
             habit.streak += habit.doneToday ? 1 : -1;
             this.totalCompletions += habit.doneToday ? 1 : -1;
             this.buildCalendar();

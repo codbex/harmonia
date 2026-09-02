@@ -15,8 +15,6 @@ export default function (Alpine) {
       'has-[input:checked]:before:visible',
       'has-[input:disabled]:cursor-not-allowed',
       'has-[input:disabled]:opacity-disabled',
-      '[&:has(input:disabled)~label]:cursor-not-allowed',
-      '[&:has(input:disabled)~label]:opacity-disabled',
       'relative',
       'rounded-full',
       'shadow-input',

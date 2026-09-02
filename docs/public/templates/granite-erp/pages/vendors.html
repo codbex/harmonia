@@ -16,6 +16,9 @@
 
   <div x-h-table-container data-border="true">
     <table x-h-table data-borders="rows">
+      <caption class="sr-only">
+        Vendors
+      </caption>
       <thead x-h-table-header>
         <tr x-h-table-row>
           <th x-h-table-head scope="col">Vendor</th>
@@ -44,7 +47,7 @@
               </div>
             </td>
             <td x-h-table-cell>
-              <div x-h-rating aria-disabled="true" :data-value="vendor.rating" data-size="sm" :aria-label="'Rating for ' + vendor.name"></div>
+              <div x-h-rating aria-disabled="true" x-model="vendor.rating" data-size="sm" :aria-label="'Rating for ' + vendor.name"></div>
             </td>
             <td x-h-table-cell class="text-right">
               <span x-h-switch>
@@ -63,16 +66,13 @@
   </div>
 
   <!-- Add-vendor dialog -->
-  <div x-h-dialog-overlay :data-open="showAdd" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="showAdd" class="backdrop-blur-xs" @keydown.escape.window="showAdd = false">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Add vendor</h2>
         <p x-h-dialog-description>New vendors become available for purchase orders and bills.</p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="showAdd = false">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
-      <form id="add-vendor-form" x-ref="newVendorForm" @submit.prevent="newVendorValid && submitAdd()" @input="newVendorValid = $el.checkValidity()" @change="newVendorValid = $el.checkValidity()">
+      <form x-h-dialog-content id="add-vendor-form" x-ref="newVendorForm" @submit.prevent="newVendorValid && submitAdd()" @input="newVendorValid = $el.checkValidity()" @change="newVendorValid = $el.checkValidity()">
         <fieldset x-h-fieldset>
           <div x-h-field-group class="gap-4!">
             <div x-h-field>

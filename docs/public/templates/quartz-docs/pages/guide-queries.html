@@ -1,0 +1,98 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <h1 x-h-text.h1>Queries</h1>
+  <p x-h-text.lead>A query is a key, a fetcher, and the entry that binds them. Everything else in Quartz is a rule about when that entry is allowed to go out of date.</p>
+
+  <h2 id="query-keys" x-h-text.h2>Query keys</h2>
+  <p x-h-text>A key is any string. Two calls with the same key share one entry, one request, and one set of subscribers, no matter which part of the application made them.</p>
+  <p
+    x-h-text.code
+    x-text="`client.query('projects', fetchProjects)
+client.query('project:17', () => fetchProject(17))
+client.query('projects?team=core&archived=false', fetchProjects)`"
+  ></p>
+  <p x-h-text>
+    Keep the key derivable from the same inputs the fetcher uses. If a filter changes the response, it belongs in the key. The helper <code x-h-text.code-inline>key()</code> sorts object entries so two equivalent filter objects always
+    produce the same string.
+  </p>
+
+  <h2 id="reading-state" x-h-text.h2>Reading state</h2>
+  <p x-h-text>Every subscriber receives the same state object. The status tells you which of the other fields are meaningful.</p>
+
+  <div x-h-table-container>
+    <table x-h-table>
+      <caption class="sr-only">
+        Query states
+      </caption>
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Status</th>
+          <th x-h-table-head scope="col">Data</th>
+          <th x-h-table-head scope="col">Meaning</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-cell>loading</td>
+          <td x-h-table-cell>undefined</td>
+          <td x-h-table-cell>First request for this key is in flight.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>success</td>
+          <td x-h-table-cell>fresh</td>
+          <td x-h-table-cell>The value is present and within its time to live.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>stale</td>
+          <td x-h-table-cell>previous</td>
+          <td x-h-table-cell>The value is past its time to live and a refetch is running.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>error</td>
+          <td x-h-table-cell>previous</td>
+          <td x-h-table-cell>The last attempt failed after every retry. The old value is kept.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p x-h-text>
+    Because <code x-h-text.code-inline>stale</code> and <code x-h-text.code-inline>error</code> keep the previous value, a screen can show the data it already had next to a small refresh indicator instead of throwing the interface away
+    every time the network hiccups.
+  </p>
+
+  <h2 id="dependent-queries" x-h-text.h2>Dependent queries</h2>
+  <p x-h-text>
+    A query that needs the result of another one is expressed by passing <code x-h-text.code-inline>null</code> as the key until the input is ready. Quartz leaves a null key untouched, so no request goes out and the entry stays in the
+    loading state.
+  </p>
+  <p
+    x-h-text.code
+    x-text="`const user = client.query('user:me', fetchMe)
+
+const team = client.derive(user, (state) =>
+  state.data ? ['team:' + state.data.teamId, () => fetchTeam(state.data.teamId)] : null
+)`"
+  ></p>
+  <p x-h-text>The derived entry resubscribes whenever its source changes, which means a user switching teams moves the dependent query to a new key without any manual teardown.</p>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

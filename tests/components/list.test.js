@@ -6,7 +6,7 @@ describe('h-listbox', () => {
   it('applies base classes', () => {
     const el = document.createElement('div');
     mountDirective(listPlugin, 'h-listbox', el);
-    expect(el.classList.contains('bg-input-inner')).toBe(true);
+    expect(el.classList.contains('bg-background')).toBe(true);
     expect(el.classList.contains('rounded-control')).toBe(true);
     expect(el.classList.contains('outline-none')).toBe(true);
   });
@@ -50,6 +50,52 @@ describe('h-list', () => {
     listbox.appendChild(el);
     mountDirective(listPlugin, 'h-list', el);
     expect(el.getAttribute('role')).toBe('group');
+  });
+
+  it('sets role=group when inside a combobox', () => {
+    // A combobox popup is a listbox too, so a list inside it is a group.
+    const combobox = document.createElement('div');
+    combobox.setAttribute('data-slot', 'combobox');
+    const el = document.createElement('ul');
+    combobox.appendChild(el);
+    mountDirective(listPlugin, 'h-list', el);
+    expect(el.getAttribute('role')).toBe('group');
+  });
+});
+
+describe('h-list-secondary', () => {
+  it('applies base classes', () => {
+    const el = document.createElement('span');
+    mountDirective(listPlugin, 'h-list-secondary', el);
+    expect(el.classList.contains('text-muted-foreground')).toBe(true);
+    expect(el.classList.contains('[[aria-selected=true]_&]:text-primary-foreground/75')).toBe(true);
+  });
+
+  it('sets data-slot attribute', () => {
+    const el = document.createElement('span');
+    mountDirective(listPlugin, 'h-list-secondary', el);
+    expect(el.getAttribute('data-slot')).toBe('list-secondary');
+  });
+
+  it('recolors inside a selected item but not inside an unselected one', () => {
+    // The muted class outranks the item's own selected foreground, which is what
+    // made a hand written muted class illegible on a selected row. Asserting the
+    // override class is present is not enough, so match the selector it compiles
+    // to against a real selected item and a real unselected one.
+    const list = document.createElement('ul');
+    document.body.appendChild(list);
+    const secondaries = [true, false].map((selected) => {
+      const item = document.createElement('li');
+      item.setAttribute('aria-selected', String(selected));
+      list.appendChild(item);
+      mountDirective(listPlugin, 'h-list-item', item, { modifiers: ['interactive'] });
+      const secondary = document.createElement('span');
+      item.appendChild(secondary);
+      mountDirective(listPlugin, 'h-list-secondary', secondary);
+      return secondary;
+    });
+    expect([...list.querySelectorAll('[aria-selected=true] span')]).toEqual([secondaries[0]]);
+    list.remove();
   });
 });
 
@@ -173,6 +219,25 @@ describe('h-list-item', () => {
     mountDirective(listPlugin, 'h-list-item', item, { modifiers: [] });
     expect(item.getAttribute('role')).toBe('option');
     expect(item.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('sets role=option and tabindex -1 when inside a combobox', () => {
+    // A combobox holds the same options, reached from its text field rather
+    // than by Tab, so they stay out of the tab order for good.
+    const combobox = document.createElement('div');
+    combobox.setAttribute('data-slot', 'combobox');
+    const list = document.createElement('ul');
+    const item = document.createElement('li');
+    list.appendChild(item);
+    combobox.appendChild(list);
+
+    mountDirective(listPlugin, 'h-list-item', item, { modifiers: [] });
+    expect(item.getAttribute('role')).toBe('option');
+    expect(item.getAttribute('tabindex')).toBe('-1');
+    expect(item.classList.contains('hover:bg-table-hover')).toBe(true);
+    // The highlight the combobox moves with the arrow keys, standing in for the
+    // :focus styling a listbox option gets.
+    expect(item.classList.contains('data-[active=true]:bg-table-hover')).toBe(true);
   });
 
   it('applies disabled styling to interactive items', () => {
@@ -334,6 +399,34 @@ describe('h-listbox keyboard navigation', () => {
       // is what aria-disabled exists to avoid.
       const { options } = await createListbox({ groups: [2], disabled: [0, 1] });
       expect(tabIndexes(options)).toEqual(['0', '-1']);
+    });
+
+    it('claims a stop for options that mount after the listbox settled', async () => {
+      // A filtered list can render nothing at first, which used to leave the
+      // listbox permanently out of the tab order.
+      const { listbox } = await createListbox({ groups: [0] });
+      const list = listbox.querySelector('ul');
+      const late = document.createElement('li');
+      list.appendChild(late);
+      mountDirective(listPlugin, 'h-list-item', late, { modifiers: [] });
+      await flush();
+      expect(late.getAttribute('tabindex')).toBe('0');
+    });
+
+    it('re-establishes the stop when the options are replaced', async () => {
+      // Filtering an x-for swaps the whole option set, taking the stop with it.
+      const { listbox, options } = await createListbox({ groups: [3] });
+      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
+      const list = listbox.querySelector('ul');
+      list.replaceChildren();
+      const replacements = [1, 2].map(() => {
+        const item = document.createElement('li');
+        list.appendChild(item);
+        mountDirective(listPlugin, 'h-list-item', item, { modifiers: [] });
+        return item;
+      });
+      await flush();
+      expect(tabIndexes(replacements)).toEqual(['0', '-1']);
     });
   });
 

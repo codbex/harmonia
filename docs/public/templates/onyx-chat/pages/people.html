@@ -1,7 +1,7 @@
 <div x-data="pagePeople" class="vbox gap-4 p-4">
   <div class="hbox flex-wrap items-end justify-between gap-2">
     <div class="vbox">
-      <h3 x-h-text.h5>People</h3>
+      <h2 x-h-text.h5>People</h2>
       <p x-h-text.muted x-text="$store.chat.users.length + ' teammates in the Onyx Labs workspace.'"></p>
     </div>
     <div class="w-3xs">
@@ -19,7 +19,7 @@
       <div x-h-tile data-variant="outline">
         <div x-h-tile-media>
           <div x-h-avatar class="relative size-10 rounded-control" :data-color="person.color">
-            <img x-h-avatar-image :src="person.avatar" :alt="person.name" />
+            <img x-h-avatar-image :src="person.avatar" alt="" aria-hidden="true" />
             <span x-h-avatar-fallback x-text="person.initials"></span>
             <span x-h-badge-indicator data-dot="true" x-show="person.status !== 'offline'" :data-variant="person.status === 'online' ? 'positive' : 'warning'"></span>
           </div>
@@ -29,7 +29,7 @@
           <p x-h-tile-description x-text="person.title + ', ' + person.status"></p>
         </div>
         <div x-h-tile-actions x-show="person.id !== 'you'">
-          <button x-h-button data-variant="outline" data-size="sm" @click="message(person)">
+          <button x-h-button data-variant="outline" data-size="sm" :aria-label="'Message ' + person.name" @click="message(person)">
             <svg x-h-lucide role="presentation" data-lucide="message-circle"></svg>
             Message
           </button>

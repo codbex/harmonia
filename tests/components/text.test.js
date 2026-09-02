@@ -70,6 +70,7 @@ describe('h-text', () => {
     expect(el.classList.contains('font-mono')).toBe(true);
     expect(el.classList.contains('p-3')).toBe(true);
     expect(el.classList.contains('whitespace-pre')).toBe(true);
+    expect(el.classList.contains('overflow-x-auto')).toBe(true);
   });
 
   it('applies lead classes for lead modifier', () => {

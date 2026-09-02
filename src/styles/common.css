@@ -1,6 +1,20 @@
-[data-slot="radio"]:not(:has(input:disabled)) + [data-slot$="label"],
-[data-slot="checkbox"]:not(:has(input:disabled)) + [data-slot$="label"] {
+/* Labels get the toggle control's cursor and disabled dimming in every supported
+   placement: label after the control, label directly before it, label inside the
+   element directly before it (e.g. a settings row's text column), and a label
+   wrapping it. The pointer rule matches regardless of disabled state because
+   :has() cannot nest inside :has(). The dimming rule below overrides it (later
+   in source and higher specificity) when the control's input is disabled. */
+:is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"]) ~ :is(label, [data-slot$="label"]),
+:is(label, [data-slot$="label"]):has(+ :is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"])),
+:has(+ :is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"])) > :is(label, [data-slot$="label"]),
+:is(label, [data-slot$="label"]):has(:is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"])) {
   @apply cursor-pointer;
+}
+:is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"]):has(input:disabled) ~ :is(label, [data-slot$="label"]),
+:is(label, [data-slot$="label"]):has(+ :is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"]) input:disabled),
+:has(+ :is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"]) input:disabled) > :is(label, [data-slot$="label"]),
+:is(label, [data-slot$="label"]):has(:is([data-slot="switch"], [data-slot="checkbox"], [data-slot="radio"]) input:disabled) {
+  @apply cursor-not-allowed opacity-disabled;
 }
 span[data-slot="radio"],
 span[data-slot="checkbox"] {

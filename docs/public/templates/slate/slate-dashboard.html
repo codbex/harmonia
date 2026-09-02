@@ -14,98 +14,105 @@
   </head>
   <body class="hbox size-full bg-sidebar" x-data="DashboardController">
     <div x-h-sheet-overlay="showSidebarSheet">
-      <div x-h-sheet data-align="left" x-ref="sidebarSheet"></div>
+      <div x-h-sheet id="sidebar-sheet" data-align="left" x-ref="sidebarSheet"></div>
     </div>
 
-    <div x-h-sidebar data-borderless="true" x-ref="sidebar" style="order: 1">
-      <div x-h-sidebar-header data-borderless="true">
-        <div x-h-sidebar-header-item>
-          <svg x-h-icon class="size-9" data-link="/harmonia/logo/harmonia-circle.svg" role="presentation"></svg>
-          <div class="vbox">
-            <span>Harmonia</span>
-            <span class="text-sm font-normal">by codbex</span>
-          </div>
-        </div>
-      </div>
-
-      <div x-h-sidebar-content>
-        <div x-h-sidebar-group>
-          <div x-h-sidebar-group-label>Dashboards</div>
-          <div x-h-sidebar-group-content>
-            <ul x-h-sidebar-menu>
-              <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="view === 'overview'" @click="go('overview')">
-                  <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
-                  <span>Overview</span>
-                </button>
-              </li>
-              <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="view === 'analytics'" @click="go('analytics')">
-                  <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
-                  <span>Analytics</span>
-                </button>
-              </li>
-              <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="view === 'customers'" @click="go('customers')">
-                  <svg x-h-lucide role="presentation" data-lucide="users"></svg>
-                  <span>Customers</span>
-                  <span x-h-sidebar-menu-badge x-text="orders.length"></span>
-                </button>
-              </li>
-            </ul>
+    <div x-ref="sidebarSlot" style="order: 1">
+      <div x-h-sidebar data-borderless="true" x-ref="sidebar">
+        <div x-h-sidebar-header data-borderless="true">
+          <div x-h-sidebar-header-item>
+            <svg x-h-icon class="size-9" data-link="/harmonia/logo/harmonia-circle.svg" role="presentation"></svg>
+            <div class="vbox">
+              <span>Harmonia</span>
+              <span class="text-sm font-normal">by codbex</span>
+            </div>
           </div>
         </div>
 
-        <div x-h-sidebar-group>
-          <div x-h-sidebar-group-label>Workspace</div>
-          <div x-h-sidebar-group-content>
-            <ul x-h-sidebar-menu>
-              <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="view === 'settings'" @click="go('settings')">
-                  <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
-                  <span>Settings</span>
-                </button>
-              </li>
-            </ul>
+        <nav x-h-sidebar-content aria-label="Main navigation">
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-group-label>Dashboards</div>
+            <div x-h-sidebar-group-content>
+              <ul x-h-sidebar-menu>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button :data-active="view === 'overview'" @click="go('overview')">
+                    <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
+                    <span>Overview</span>
+                  </button>
+                </li>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button :data-active="view === 'analytics'" @click="go('analytics')">
+                    <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
+                    <span>Analytics</span>
+                  </button>
+                </li>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button :data-active="view === 'customers'" @click="go('customers')">
+                    <svg x-h-lucide role="presentation" data-lucide="users"></svg>
+                    <span>Customers</span>
+                    <span x-h-sidebar-menu-badge x-text="orders.length"></span>
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div x-h-sidebar-footer data-borderless="true">
-        <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
-          <div x-h-avatar>
-            <img x-h-avatar-image src="/harmonia/avatars/person-02-bg.svg" alt="Jane Doe" />
-            <div x-h-avatar-fallback>JD</div>
+          <div x-h-sidebar-group>
+            <div x-h-sidebar-group-label>Workspace</div>
+            <div x-h-sidebar-group-content>
+              <ul x-h-sidebar-menu>
+                <li x-h-sidebar-menu-item>
+                  <button x-h-sidebar-menu-button :data-active="view === 'settings'" @click="go('settings')">
+                    <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
+                    <span>Settings</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="vbox text-left">
-            <span class="truncate">Jane Doe</span>
-            <span class="truncate text-sm font-normal">jane@codbex.com</span>
-          </div>
-          <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
-        </button>
-        <ul x-h-menu aria-label="User menu" data-align="top-start">
-          <div x-h-menu-label>Account</div>
-          <li x-h-menu-item @click="go('settings')">
-            <svg x-h-lucide role="presentation" data-lucide="user"></svg>
-            <span>Profile</span>
-          </li>
-          <li x-h-menu-item @click="go('settings')">
-            <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
-            <span>Settings</span>
-          </li>
-          <div x-h-menu-separator></div>
-          <li x-h-menu-item data-variant="negative">
-            <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
-            <span>Log out</span>
-          </li>
-        </ul>
+        </nav>
+
+        <div x-h-sidebar-footer data-borderless="true">
+          <button x-h-sidebar-menu-button data-size="lg" x-h-menu-trigger.dropdown>
+            <div x-h-avatar>
+              <img x-h-avatar-image src="/harmonia/avatars/person-02-bg.svg" alt="" aria-hidden="true" />
+              <div x-h-avatar-fallback>JD</div>
+            </div>
+            <div class="vbox text-left">
+              <span class="truncate">Jane Doe</span>
+              <span class="truncate text-sm font-normal">jane@codbex.com</span>
+            </div>
+            <svg x-h-lucide role="presentation" data-lucide="chevrons-up-down"></svg>
+          </button>
+          <ul x-h-menu aria-label="User menu" data-align="top-start">
+            <div x-h-menu-label>Account</div>
+            <li x-h-menu-item @click="go('settings')">
+              <svg x-h-lucide role="presentation" data-lucide="user"></svg>
+              <span>Profile</span>
+            </li>
+            <li x-h-menu-item @click="go('settings')">
+              <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
+              <span>Settings</span>
+            </li>
+            <div x-h-menu-separator></div>
+            <li x-h-menu-item data-variant="negative">
+              <svg x-h-lucide role="presentation" data-lucide="log-out"></svg>
+              <span>Log out</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <div class="flex-1" :class="isSmallScreen || 'p-2'" style="order: 2">
+    <!-- `min-w-0` because a flex item defaults to `min-width: auto`, which makes
+         this column refuse to shrink below the min-content width of the page
+         inside it. A `min-w-0` child with a `truncate` line still reports the
+         full nowrap text width as its min-content, so a long line would push
+         this column past the viewport and scroll the document sideways. -->
+    <div class="min-w-0 flex-1" :class="isSmallScreen || 'p-2'" style="order: 2">
       <main class="vbox size-full bg-background" :class="isSmallScreen || 'rounded-xl border shadow-sm'">
         <div x-h-toolbar data-variant="transparent" class="pr-2">
-          <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="sidebar sheet open button" @click="showSidebarSheet = true">
+          <button x-show="isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="Open navigation" :aria-expanded="showSidebarSheet" aria-controls="sidebar-sheet" @click="showSidebarSheet = true">
             <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
           </button>
           <nav x-h-breadcrumb data-overflow="scroll" :data-variant="isSmallScreen ? 'outline' : 'default'">
@@ -119,8 +126,8 @@
             </ol>
           </nav>
           <div x-h-toolbar-spacer></div>
-          <button x-h-button data-variant="transparent" data-size="icon" class="relative" aria-label="Notifications" x-h-popover-trigger="notificationListShown">
-            <svg x-h-icon data-icon="bell" role="presentation" aria-label="notifications"></svg>
+          <button x-h-button data-variant="transparent" data-size="icon" class="relative" :aria-label="'Notifications (' + notifications.length + ')'" x-h-popover-trigger="notificationListShown">
+            <svg x-h-icon data-icon="bell" role="presentation"></svg>
             <span x-show="notifications.length" x-h-badge-indicator x-text="notifications.length"></span>
           </button>
           <div x-h-popover data-innerclicks="true" class="w-full" data-max-w="lg">
@@ -138,7 +145,7 @@
                     </template>
                     <template x-if="n.media.kind === 'badge'">
                       <div x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
-                        <svg x-h-icon :data-icon="n.media.icon" role="presentation"></svg>
+                        <svg x-h-icon :data-icon="n.media.icon" role="img" :aria-label="n.media.variant"></svg>
                       </div>
                     </template>
                     <template x-if="n.media.kind === 'icon'">
@@ -146,7 +153,7 @@
                     </template>
                   </div>
                   <div class="vbox flex-1 gap-1">
-                    <h1 x-h-notification-title x-text="n.title"></h1>
+                    <div x-h-notification-title x-text="n.title"></div>
                     <template x-if="n.description">
                       <p x-h-notification-description x-text="n.description"></p>
                     </template>
@@ -157,7 +164,7 @@
                     </template>
                   </div>
                   <div x-h-notification-actions data-orientation="vertical" :class="{ 'justify-start': n.action }">
-                    <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="remove notification" @click="removeNotification(n.id)">
+                    <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Remove notification: ' + n.title" @click="removeNotification(n.id)">
                       <svg x-h-icon data-icon="close" role="presentation"></svg>
                     </button>
                   </div>
@@ -177,7 +184,14 @@
           </div>
         </div>
 
-        <div class="vbox flex-1 gap-4 overflow-auto p-4">
+        <!-- `relative` so this is the containing block for its content: sr-only
+             elements are absolutely positioned, and without it they anchor to the
+             page and stretch it past the frame once the content scrolls. -->
+        <div class="relative vbox flex-1 gap-4 overflow-auto p-4">
+          <!-- The view name is shown in the breadcrumb, which is not a heading, so the
+               document gets its top-level heading here instead of going without one. -->
+          <h1 class="sr-only" x-text="viewTitle"></h1>
+
           <!-- ==================== OVERVIEW ==================== -->
           <div x-show="view === 'overview'" class="vbox gap-4">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -219,19 +233,22 @@
               </div>
             </div>
 
-            <div x-h-card>
-              <div x-h-card-header>
+            <div x-h-card class="overflow-hidden">
+              <div x-h-card-header class="border-b">
                 <div x-h-card-title>Recent orders</div>
                 <div x-h-card-description>Your latest 5 transactions</div>
               </div>
-              <div x-h-card-content>
+              <div x-h-card-content.flush>
                 <div x-h-table-container>
                   <table x-h-table>
-                    <thead x-h-table-header data-bordered="true">
+                    <caption class="sr-only">
+                      Recent orders
+                    </caption>
+                    <thead x-h-table-header>
                       <tr x-h-table-row>
                         <th x-h-table-head scope="col">Customer</th>
                         <th x-h-table-head scope="col">Status</th>
-                        <th x-h-table-head scope="col" style="text-align: right">Amount</th>
+                        <th x-h-table-head scope="col" class="text-right">Amount</th>
                       </tr>
                     </thead>
                     <tbody x-h-table-body>
@@ -241,7 +258,7 @@
                           <td x-h-table-cell>
                             <span x-h-badge :data-variant="badgeVariant(order.status)" x-text="order.status"></span>
                           </td>
-                          <td x-h-table-cell style="text-align: right" x-text="order.amount"></td>
+                          <td x-h-table-cell class="text-right" x-text="order.amount"></td>
                         </tr>
                       </template>
                     </tbody>
@@ -313,14 +330,14 @@
           <div x-show="view === 'customers'" class="vbox gap-4">
             <div class="hbox flex-wrap gap-2">
               <div x-h-input-group class="md:w-1/3">
-                <input x-h-input.group placeholder="Search customers..." x-model="search" @input="page = 1" />
+                <input x-h-input.group placeholder="Search customers..." aria-label="Search customers" x-model="search" @input="page = 1" />
                 <div x-h-input-group-addon data-align="inline-start">
                   <svg x-h-lucide role="presentation" data-lucide="search"></svg>
                 </div>
               </div>
               <div class="hbox flex-1 justify-between gap-2">
                 <div x-h-select style="max-width: 11rem">
-                  <input x-h-select-input placeholder="All statuses" x-model="statusFilter" @change="page = 1" />
+                  <input x-h-select-input placeholder="All statuses" aria-label="Filter by status" x-model="statusFilter" @change="page = 1" />
                   <div x-h-select-content>
                     <div x-h-select-list>
                       <div x-h-select-option="'All statuses'" data-value="all"></div>
@@ -339,12 +356,15 @@
 
             <div x-h-table-container data-border="true">
               <table x-h-table data-borders="rows">
+                <caption class="sr-only">
+                  Customers
+                </caption>
                 <thead x-h-table-header>
                   <tr x-h-table-row>
                     <th x-h-table-head scope="col">Customer</th>
                     <th x-h-table-head scope="col">Status</th>
-                    <th x-h-table-head scope="col" style="text-align: right">Amount</th>
-                    <th x-h-table-head scope="col" style="width: 3rem"></th>
+                    <th x-h-table-head scope="col" class="text-right">Amount</th>
+                    <th x-h-table-head scope="col" class="w-12"><span class="sr-only">Actions</span></th>
                   </tr>
                 </thead>
                 <tbody x-h-table-body>
@@ -362,12 +382,12 @@
                       <td x-h-table-cell>
                         <span x-h-badge :data-variant="badgeVariant(order.status)" x-text="order.status"></span>
                       </td>
-                      <td x-h-table-cell style="text-align: right" x-text="order.amount"></td>
-                      <td x-h-table-cell style="text-align: right">
-                        <button x-h-button data-variant="transparent" data-size="icon-sm" aria-label="Row actions" x-h-menu-trigger.dropdown>
+                      <td x-h-table-cell class="text-right" x-text="order.amount"></td>
+                      <td x-h-table-cell class="text-right">
+                        <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Actions for ' + order.customer" x-h-menu-trigger.dropdown>
                           <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
                         </button>
-                        <ul x-h-menu aria-label="Row actions" data-align="bottom-end">
+                        <ul x-h-menu :aria-label="'Actions for ' + order.customer" data-align="bottom-end">
                           <li x-h-menu-item>View details</li>
                           <li x-h-menu-item>Edit</li>
                           <div x-h-menu-separator></div>
@@ -388,7 +408,7 @@
             <nav x-h-pagination>
               <ul x-h-pagination-content>
                 <li x-h-pagination-item>
-                  <a x-h-pagination-link.previous href="#" @click.prevent="page = Math.max(1, page - 1)">
+                  <a x-h-pagination-link.previous href="#" aria-label="Previous page" :aria-disabled="page === 1" :tabindex="page === 1 ? -1 : 0" @click.prevent="page = Math.max(1, page - 1)">
                     <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
                     <span x-h-pagination-link-label>Previous</span>
                   </a>
@@ -399,7 +419,7 @@
                   </li>
                 </template>
                 <li x-h-pagination-item>
-                  <a x-h-pagination-link.next href="#" @click.prevent="page = Math.min(pageCount, page + 1)">
+                  <a x-h-pagination-link.next href="#" aria-label="Next page" :aria-disabled="page === pageCount" :tabindex="page === pageCount ? -1 : 0" @click.prevent="page = Math.min(pageCount, page + 1)">
                     <span x-h-pagination-link-label>Next</span>
                     <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
                   </a>
@@ -411,18 +431,18 @@
           <!-- ==================== SETTINGS ==================== -->
           <div x-show="view === 'settings'" class="vbox items-center gap-4">
             <section class="vbox w-full max-w-xl pt-2">
-              <h3 x-h-text.h5>Preferences</h3>
+              <h2 x-h-text.h5>Preferences</h2>
               <p x-h-text.muted>Defaults applied across the dashboard unless overridden.</p>
 
-              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+              <div x-h-card class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
                   <li x-h-list-item class="gap-3 px-4 py-3">
                     <div class="vbox flex-1">
-                      <p class="text-base font-medium">Default currency</p>
+                      <label class="text-base font-medium" id="st-currency-label" for="st-currency">Default currency</label>
                       <p x-h-text.muted>Used for revenue and order amounts across every view.</p>
                     </div>
                     <div x-h-select class="flex-1" style="max-width: 11rem">
-                      <input x-h-select-input placeholder="Select" x-model="settings.currency" />
+                      <input x-h-select-input data-id="st-currency" aria-labelledby="st-currency-label" placeholder="Select" x-model="settings.currency" />
                       <div x-h-select-content>
                         <div x-h-select-list>
                           <template x-for="option in currencies" :key="option.value">
@@ -434,11 +454,11 @@
                   </li>
                   <li x-h-list-item class="gap-3 px-4 py-3">
                     <div class="vbox flex-1">
-                      <p class="text-base font-medium">Rows per page</p>
+                      <label class="text-base font-medium" for="rows-per-page">Rows per page</label>
                       <p x-h-text.muted>How many customers to show per page in the table.</p>
                     </div>
                     <div x-h-input-number class="flex-1" style="max-width: 11rem">
-                      <input type="number" min="1" max="100" step="1" value="5" />
+                      <input type="number" id="rows-per-page" min="1" max="100" step="1" x-model.number="pageSize" @input="page = 1" />
                     </div>
                   </li>
                 </ul>
@@ -446,13 +466,13 @@
             </section>
 
             <section class="vbox w-full max-w-xl pt-2">
-              <h3 x-h-text.h5>Appearance</h3>
+              <h2 x-h-text.h5>Appearance</h2>
 
-              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+              <div x-h-card class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
                   <li x-h-list-item class="gap-3 px-4 py-3">
                     <div class="vbox w-full">
-                      <p class="text-base font-medium">Theme</p>
+                      <p class="text-base font-medium">Style</p>
                       <p x-h-text.muted>Choose how the dashboard looks.</p>
                     </div>
                     <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
@@ -466,7 +486,7 @@
                       <span x-show="settings.theme === 'auto'">Auto</span>
                       <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
                     </button>
-                    <ul x-h-menu data-align="bottom-end">
+                    <ul x-h-menu aria-label="Style" data-align="bottom-end">
                       <li x-h-menu-item @click="setTheme('light')">
                         <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
                         <span>Light</span>
@@ -493,7 +513,7 @@
                   <li x-h-list-item class="gap-3 px-4 py-3">
                     <label class="w-full text-base font-medium" for="sw-compact">Compact tables</label>
                     <span x-h-switch>
-                      <input type="checkbox" id="sw-compact" />
+                      <input type="checkbox" id="sw-compact" x-model="settings.compactTables" />
                     </span>
                   </li>
                 </ul>
@@ -501,15 +521,15 @@
             </section>
 
             <section class="vbox w-full max-w-xl pt-2">
-              <h3 x-h-text.h5>Notifications</h3>
+              <h2 x-h-text.h5>Notifications</h2>
 
-              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+              <div x-h-card class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
                   <li x-h-list-item class="gap-3 px-4 py-3">
                     <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
                     <label class="w-full text-base font-medium" for="sw-email">Email notifications</label>
                     <span x-h-switch>
-                      <input type="checkbox" id="sw-email" checked />
+                      <input type="checkbox" id="sw-email" x-model="settings.notifications.email" />
                     </span>
                   </li>
                   <li x-h-list-item class="gap-3 px-4 py-3">
@@ -519,7 +539,7 @@
                       <p x-h-text.muted>Get alerted about new orders in real time.</p>
                     </div>
                     <span x-h-switch>
-                      <input type="checkbox" id="sw-push" />
+                      <input type="checkbox" id="sw-push" x-model="settings.notifications.push" />
                     </span>
                   </li>
                 </ul>
@@ -527,10 +547,10 @@
             </section>
 
             <section class="vbox w-full max-w-xl pt-2">
-              <h3 x-h-text.h5>Default view</h3>
+              <h2 x-h-text.h5>Default view</h2>
               <p x-h-text.muted>The page shown when the dashboard opens.</p>
 
-              <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+              <div x-h-card class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
                   <li x-h-list-item class="gap-3 px-4 py-3">
                     <span x-h-radio>
@@ -559,16 +579,13 @@
     </div>
 
     <!-- Add-customer dialog (top level, so it is not hidden by a view's x-show) -->
-    <div x-h-dialog-overlay :data-open="showAddCustomer" class="backdrop-blur-xs">
+    <div x-h-dialog-overlay :data-open="showAddCustomer" class="backdrop-blur-xs" @keydown.escape.window="showAddCustomer = false">
       <div x-h-dialog>
         <div x-h-dialog-header>
           <h2 x-h-dialog-title>Add customer</h2>
           <p x-h-dialog-description>Enter the details for the new customer.</p>
-          <button x-h-dialog-close aria-label="Close dialog" @click="showAddCustomer = false">
-            <svg x-h-icon data-icon="close" role="presentation"></svg>
-          </button>
         </div>
-        <form id="add-customer-form" x-ref="addCustomerForm" @submit.prevent="addCustomer()" @input="newCustomerValid = $el.checkValidity()">
+        <form x-h-dialog-content id="add-customer-form" x-ref="addCustomerForm" @submit.prevent="addCustomer()" @input="newCustomerValid = $el.checkValidity()">
           <fieldset x-h-fieldset>
             <div x-h-field-group class="gap-4!">
               <div x-h-field>
@@ -597,7 +614,7 @@
               <div x-h-field>
                 <label x-h-label for="nc-amount">Amount</label>
                 <div x-h-input-number>
-                  <input type="number" id="nc-amount" min="0" step="1" x-model="newCustomer.amount" placeholder="0" />
+                  <input type="number" id="nc-amount" min="0" step="1" x-model.number="newCustomer.amount" placeholder="0" />
                 </div>
               </div>
             </div>
@@ -711,7 +728,7 @@
 
           // add-customer dialog
           showAddCustomer: false,
-          newCustomer: { name: "", email: "", status: "Pending", amount: "" },
+          newCustomer: { name: "", email: "", status: "Pending", amount: null },
           newCustomerValid: false,
 
           // settings
@@ -726,6 +743,8 @@
             // Seed from Harmonia's current color scheme ("auto" | "light" | "dark").
             theme: Harmonia.getColorScheme(),
             defaultView: "overview",
+            compactTables: false,
+            notifications: { email: true, push: false },
           },
 
           get viewTitle() {
@@ -739,19 +758,25 @@
               return matchesQuery && matchesStatus;
             });
           },
+          // A cleared "Rows per page" field leaves pageSize null until the entry
+          // becomes valid again, so an invalid size falls back to one row rather
+          // than sending pageCount to Infinity.
+          get safePageSize() {
+            return Number(this.pageSize) > 0 ? Number(this.pageSize) : 1;
+          },
           get pageCount() {
-            return Math.max(1, Math.ceil(this.filteredOrders.length / this.pageSize));
+            return Math.max(1, Math.ceil(this.filteredOrders.length / this.safePageSize));
           },
           get pagedOrders() {
             const page = Math.min(this.page, this.pageCount);
-            const start = (page - 1) * this.pageSize;
-            return this.filteredOrders.slice(start, start + this.pageSize);
+            const start = (page - 1) * this.safePageSize;
+            return this.filteredOrders.slice(start, start + this.safePageSize);
           },
           badgeVariant(status) {
             return { Paid: "positive", Pending: "warning", Refunded: "negative" }[status] || "outline";
           },
           openAddCustomer() {
-            this.newCustomer = { name: "", email: "", status: "Pending", amount: "" };
+            this.newCustomer = { name: "", email: "", status: "Pending", amount: null };
             // Clear any :user-invalid state from a previous attempt so the errors
             // do not show on a freshly opened, empty form.
             this.$refs.addCustomerForm?.reset();
@@ -765,7 +790,7 @@
             if (!name || !email) return;
             const parts = name.split(/\s+/);
             const initials = (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : name.slice(0, 2)).toUpperCase();
-            const amount = Number(this.newCustomer.amount) || 0;
+            const amount = this.newCustomer.amount || 0;
             const id = this.orders.length ? Math.max(...this.orders.map((o) => o.id)) + 1 : 1;
             this.orders.unshift({
               id,
@@ -795,13 +820,16 @@
           },
 
           init() {
+            // The setting names the view the dashboard opens on, so it is read here
+            // rather than only written by the radios.
+            this.view = this.settings.defaultView;
             this.sidebarBreakpointListener = Harmonia.getBreakpointListener((matches) => {
               this.isSmallScreen = matches;
               if (matches) {
                 this.$refs.sidebarSheet.appendChild(this.$refs.sidebar);
               } else if (this.$refs.sidebarSheet.firstElementChild) {
                 this.showSidebarSheet = false;
-                this.$el.appendChild(this.$refs.sidebar);
+                this.$refs.sidebarSlot.appendChild(this.$refs.sidebar);
               }
             }, 1024);
           },

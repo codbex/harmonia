@@ -65,8 +65,6 @@ describe('h-checkbox', () => {
     mountDirective(checkboxPlugin, 'h-checkbox', el);
     expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
     expect(el.classList.contains('has-[input:disabled]:opacity-disabled')).toBe(true);
-    expect(el.classList.contains('[&:has(input:disabled)~label]:cursor-not-allowed')).toBe(true);
-    expect(el.classList.contains('[&:has(input:disabled)~label]:opacity-disabled')).toBe(true);
   });
 });
 

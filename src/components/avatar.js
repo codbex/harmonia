@@ -26,6 +26,10 @@ export default function (Alpine) {
       'data-[variant="negative"]:bg-negative/10',
       'data-[variant="negative"]:text-negative',
       'data-[variant="negative"]:border-negative',
+      '[[data-slot=sidebar-menu-button][data-active=true]_&[data-variant]]:bg-sidebar-primary-foreground/10',
+      '[[data-slot=sidebar-menu-button][data-active=true]_&[data-variant]]:text-sidebar-primary-foreground',
+      '[[data-slot=sidebar-menu-button]:active_&[data-variant]]:bg-sidebar-primary-foreground/10',
+      '[[data-slot=sidebar-menu-button]:active_&[data-variant]]:text-sidebar-primary-foreground',
       'has-[img]:border-0',
       'has-[img:not(.hidden)]:bg-transparent',
       'outline-ring/50',
@@ -54,8 +58,13 @@ export default function (Alpine) {
       el.classList.add(colorClass(color), lightBackground ? 'text-black' : 'text-white');
     }
 
-    if (el.tagName === 'BUTTON') {
+    if (el.tagName === 'BUTTON' || el.tagName === 'A') {
       el.classList.add('cursor-pointer');
+      if (el.tagName === 'BUTTON') {
+        if (!el.hasAttribute('type')) el.setAttribute('type', 'button');
+      } else {
+        el.classList.add('no-underline');
+      }
       if (!color) el.classList.add('hover:bg-secondary-hover', 'active:bg-secondary-active');
     }
   });

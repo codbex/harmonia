@@ -52,6 +52,7 @@ export default defineConfig({
           { text: 'Carousel', link: '/components/carousel' },
           { text: 'Checkbox', link: '/components/checkbox' },
           { text: 'Chip', link: '/components/chip' },
+          { text: 'Combobox', link: '/components/combobox' },
           // Date & time components grouped together
           { text: 'Calendar', link: '/components/calendar' },
           { text: 'Calendar (Inline)', link: '/components/inline-calendar' },

@@ -1,5 +1,6 @@
 export default function (Alpine) {
   Alpine.directive('h-switch', (el) => {
+    // Additional component styles in 'src/styles/common.css'
     el.classList.add(
       '[&>input]:absolute',
       '[&>input]:appearance-none',
@@ -37,8 +38,6 @@ export default function (Alpine) {
       'has-[input:checked]:border-primary-active',
       'has-[input:disabled]:cursor-not-allowed',
       'has-[input:disabled]:opacity-disabled',
-      '[&:has(input:disabled)~label]:cursor-not-allowed',
-      '[&:has(input:disabled)~label]:opacity-disabled',
       'p-0.25',
       'max-w-10',
       'min-w-10',

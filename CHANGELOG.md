@@ -2,19 +2,71 @@
 
 ## v3.0.0
 
-A release that brings drag and drop to the Calendar and the Slot Picker. Calendar events can be rescheduled by dragging them to another time or day, and slot picker slots can be reordered within a day or moved to another day, in both cases with the change proposed through an event and applied by the consumer. The release also fixes single mode in the Accordion and makes accordion item ids dynamic. Items written without an explicit id all shared the same empty id, so an accordion in single mode never collapsed the previously open section. The item id is now evaluated as an Alpine expression, which is a breaking change for hard-coded ids but lets items rendered with `x-for` take their id from the iterated data.
+A release that adds the Combobox component and brings drag and drop to the Calendar and the Slot Picker. Calendar events can be rescheduled by dragging them to another time or day, and slot picker slots can be reordered within a day or moved to another day, in both cases with the change proposed through an event and applied by the consumer. The Dialog gains a fullscreen mode that fills the viewport, together with a content slot that scrolls the body while the header and the footer stay in place, and moves its padding onto that slot and its neighbours, which is a breaking change for dialog bodies that are not wrapped in the new slot. It also keeps focus inside itself while it is open, like the Backdrop now does. The Card moves its padding the same way, onto its header, content and footer, which is a breaking change for content placed straight in a card, and gains a modifier that lets a table or a list span the card from edge to edge. The Button Group can now hold a single choice, which turns a row of buttons into a segmented control that is announced as a set of options and navigated with the arrow keys. It also draws the dividers between its buttons itself rather than relying on the `outline` variant's border, which retires `x-h-button-group-separator` as a breaking change, gains a borderless mode for a group that fills a card, and no longer overwrites a `role` set on the group. It also completes the viewport height utilities, repairs keyboard navigation in a listbox whose options change, and stops a long line of code from escaping its block. The Chip becomes a container holding its own buttons, a breaking change that retires the button it used to be applied to: a dismissible chip was a button with another control inside it, which is invalid markup and left its close button reachable by `Tab` but impossible to activate. The Avatar becomes a control on an `a` element as well as on a `button`, and a button avatar no longer submits the form around it. The Backdrop now keeps focus inside itself while it is open, and the Expansion Panel's generated triggers no longer share a single id. The release fixes single mode in the Accordion and makes accordion item ids dynamic: items written without an explicit id all shared the same empty id, so an accordion in single mode never collapsed the previously open section. The item id is now evaluated as an Alpine expression, which is a breaking change for hard-coded ids but lets items rendered with `x-for` take their id from the iterated data. The Range's `input` and `change` events now carry their value in `event.detail.value` rather than as the whole detail, a breaking change that aligns them with every other component's change event. And components that hold their bound value themselves, among them the Rating, the single choice Button Group, the Inline Calendar and the Menu's checkbox and radio items, now reject `x-model`'s event modifiers with a console error, since `.lazy` used to silently corrupt the bound value.
+
+### Combobox
+
+- **New component.** A list of options belonging to a text field, filtered as the user types. It is the pattern behind a search field, an autocomplete and a command palette.
 
 ### Calendar
 
 - **New: events can be rescheduled by drag and drop.** Opt in to let users drag a timed event to a new time or day in the week and day views (the start time snaps to a configurable minute step and the duration is kept), move all-day pills between days, and change an event's day in the month view. Dropping never changes the calendar's data directly: the proposed change is dispatched as an event for the consumer to apply. Individual events can opt out, and every event stays reachable by keyboard, since dragging is a pointer-only convenience.
+- **Fixed: `x-model.lazy` corrupted the bound value of an inline calendar.** The modifier makes Alpine listen for `change`, and the calendar's own `change` event made that listener write the event's detail object over the date string the calendar had just stored. The modifier also silently broke the model-to-view sync, since the model expression was read from the literal `x-model` attribute name. The event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are now rejected with a console error, the model always updates immediately, and a model bound with any other modifier stays in sync.
 
 ### Slot Picker
 
 - **New: slots can be reordered and moved between days by drag and drop.** Opt in to let users drag a slot within its day to reorder it or onto another visible day to move it. While dragging, a half-transparent copy of the slot follows the pointer and the other slots part to show where it will land. Dropping never changes the picker's data directly: the proposed change is dispatched as an event for the consumer to apply. Individual slots can opt out, and unavailable slots never drag.
 
-### Z-Index
+### Dialog
 
-- **New: `z-20` joins the shipped z-index utilities**, filling the gap between `z-10` and `z-50`.
+- **New: fullscreen mode.** A dialog can now fill the entire viewport instead of sitting centered at a capped width, which suits long forms and multi-step tasks, especially on small screens. It is switched on with `data-fullscreen` and can be bound to an expression, so the same dialog can change modes at runtime. The new `x-h-dialog-content` slot marks the body of a dialog as the only scrolling part, keeping the header and the footer in place while the content scrolls between them.
+- **New: focus stays inside an open dialog and returns to the opener when it closes.** `Tab` and `Shift+Tab` used to walk straight out of the dialog into the page behind it, which is invisible to the eye but fully reachable by keyboard, and closing dropped focus at the top of the document instead of returning it to the control that opened it. Where focus lands when a dialog opens is unchanged, and dismissal, including `Esc`, is still wired up by the consumer.
+- **Breaking: the dialog surface no longer has padding of its own.** The header, the body and the footer now pad themselves, so a body that is not wrapped in `x-h-dialog-content` reaches the edges of the dialog. To migrate, wrap it: `<div x-h-dialog-content>` around whatever sits between the header and the footer, carrying over the classes it already had. A dialog laid out only from a header and a footer needs no change and looks exactly as before. Two things get easier in return. A focused control inside a scrolling body no longer has its focus ring clipped at the left and right edges, because the padding is now inside the scrolling area instead of outside it. And content that should span the full width, a calendar, a table or a list, is now a matter of the new `flush` modifier on the body (`x-h-dialog-content.flush`) instead of cancelling the surface padding with `p-0!` and re-adding it to every other part by hand.
+
+### Card
+
+- **Breaking: the card surface no longer has padding of its own.** The header, the content and the footer now pad themselves, so anything placed straight in a card reaches its edges. To migrate, wrap what should stay inset in `x-h-card-content`, carrying over the classes it already had. A card built from the header, content and footer slots needs no change and looks exactly as before, in every combination of the three. What gets easier is the case the card was worst at: a table, a list or a calendar that should span the full width of the card is now the new `flush` modifier on the content (`x-h-card-content.flush`), or simply a direct child of the card, instead of cancelling the surface padding with `p-0!` and putting it back on every other part by hand.
+
+### Button Group
+
+- **New: a button group can hold a single choice.** Binding an `x-model` turns the buttons into mutually exclusive options, the segmented control used for something like a view mode or a color scheme. The group is announced as a set of options, is a single tab stop, and is navigated with the arrow keys. A group without an `x-model` is unchanged.
+- **New: `data-borderless`.** Removes the border around the group and squares its corners, keeping the dividers between the buttons. For a group that fills a card, so the card's own border and radius are the only ones on show.
+- **New: the group draws the dividers between its buttons.** They used to be a side effect of the `outline` variant's border, so a group of `transparent`, `default` or `primary` buttons had none and the buttons ran together. Groups of `outline` buttons look exactly as before.
+- **Breaking: `x-h-button-group-separator` is removed.** The group now draws the dividers itself, so the directive has nothing left to do. To migrate, delete the `<div x-h-button-group-separator></div>` elements from your button groups. The divider appears in their place on its own.
+- **Fixed: a `role` set on the group was overwritten.** The group wrote `role="group"` over whatever the author had put there, unlike `x-h-tile-group`, which keeps a role you set. A role set by the author is now left alone.
+- **`x-model`'s event modifiers are rejected with a console error.** `.lazy` made Alpine's own listener write the `change` event's `{ value }` detail object over the value the group had just stored. The event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) have nothing to defer on a single choice, the model always updates immediately.
+
+### Range
+
+- **Breaking: the `input` and `change` events now carry their value in `event.detail.value`.** They used to put the raw value in `event.detail`, unlike every other component, whose change events report `event.detail.value`. To migrate, read `$event.detail.value` instead of `$event.detail` in `@input` and `@change` handlers.
+- **`x-model`'s event modifiers are rejected with a console error.** `.lazy`, `.change`, `.blur` and `.enter` have nothing to defer on a slider, the model always updates immediately.
+
+### Rating
+
+- **Fixed: `x-model.lazy` corrupted the bound value.** The modifier makes Alpine listen for `change`, and the rating's own `change` event made that listener write the event's `{ value }` detail object over the number the rating had just stored. The event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) have nothing to defer on a rating, so they are now rejected with a console error, the model always updates immediately.
+
+### Menu
+
+- **Fixed: `x-model.lazy` corrupted the bound state of a checkbox or radio item.** The modifier makes Alpine listen for `change`, and the item's own `change` event made that listener write `undefined` over the value the item had just stored. The event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are now rejected with a console error, the model always updates immediately.
+
+### Date Picker
+
+- **Fixed: a modifier on the popup's `x-model` silently broke the model-to-view sync.** The model expression was read from the literal `x-model` attribute, which does not exist when the attribute name carries a modifier such as `.fill`. The expression is now found whatever the modifiers.
+
+### Dark Mode
+
+- **New: a `light` area can be nested inside a `dark` page or container, not just the other way around.** The `dark` class already let you scope dark mode to part of an otherwise light page by adding it to a container element. The `light` class now does the same for a light area inside a dark page, so either scheme can sit inside the other.
+
+### Theme
+
+- **New: color scheme listeners also receive the selected mode.** A listener registered with `addColorSchemeListener` used to be told only the scheme being applied, `light` or `dark`, so an `auto` selection was indistinguishable from whichever scheme the system resolved it to. The selected mode now arrives as a second argument, `light`, `dark` or `auto`, which is what a light/dark/auto control needs in order to show the right option. Listeners that take a single argument are unaffected.
+- **Fixed: the system color scheme listener was never detached.** `window.matchMedia()` returns a new object on every call, so the code meant to remove the auto-mode handler was removing it from a freshly created object rather than from the one that held it. An explicit `light` or `dark` choice was therefore overridden the next time the system scheme flipped, even though the saved mode still said otherwise, and selecting `auto` repeatedly stacked handlers so a single flip notified every listener once per selection.
+- **Fixed: `auto` was saved after the listeners ran.** A listener that called `getColorScheme()` while handling a switch to `auto` saw the mode being replaced rather than the new one, and only in the document that made the change, since every other frame saw the new value. The `light` and `dark` paths already saved before notifying, and `auto` now matches them.
+
+### New utility classes
+
+- **`min-h-screen`, `min-h-dvh`, `min-h-lvh` and `min-h-svh`** are now shipped and documented, setting a minimum height of the screen size or of the dynamic, large or small viewport height. They complete the `min-h` family, which previously stopped at `min-h-0` and the fixed sizes `min-h-1` to `min-h-12`.
+- **`z-20`** joins the shipped z-index utilities, filling the gap between `z-10` and `z-50`.
 
 ### Accordion
 
@@ -25,6 +77,36 @@ A release that brings drag and drop to the Calendar and the Slot Picker. Calenda
 
 - **Fixed: every trigger button had the literal id `undefined`.** The generated buttons all shared that duplicate id instead of getting one of their own. Each button now gets a unique id, derived as `<item id>-trigger` when the panel item has an `id` attribute and generated otherwise.
 - **Fixed: the trigger's `aria-controls` did not point at the content.** It referenced the panel item wrapper when the item had an `id` attribute, and a nonexistent id otherwise. The content region now carries its own id (`<item id>-content` when the item has an `id` attribute, generated otherwise), `aria-controls` points at it, and the content names itself after its trigger with `aria-labelledby`, which it previously lacked entirely.
+
+### List
+
+- **New: `x-h-list-secondary`.** A slot for the supporting text in a list item, the preview under a subject or the timestamp beside a name. It plays the text down the way a muted foreground class does, and follows the row into its selected state, where it switches to the selected foreground at a lower opacity so it stays readable while remaining quieter than the rest of the item.
+
+### Listbox
+
+- **Fixed: a listbox whose options changed fell out of the tab order for good.** The tab stop was handed to an option once, when the listbox first mounted, and every option is otherwise unreachable by design. Rendering the options from a filtered list therefore broke the component the first time the filter ran: the replacement options all arrived unreachable, no stop was ever restored, and because the key handling hangs off that stop the arrow keys, `Home`, `End`, typeahead and `Enter` all went dead with no visible sign. Clearing the filter did not bring it back. A listbox that starts out empty, which is what a search result list does, was never reachable at all. The stop is now re-established whenever the options change.
+
+### Sidebar
+
+- **New: a header item can be interactive.** Writing `x-h-sidebar-header-item` on a `<button>` or an `<a>` used to throw, so a logo row that links home, or a brand row that opens a popover, had to be a menu button and take on its hover, active and current page states to be clickable. The tag now decides: a button or a link gets a pointer cursor and the same focus ring as a menu button, and any other element stays the plain title row it has always been.
+- **Fixed: a collapsible group or menu item collapsed from outside kept reporting itself as expanded.** `aria-expanded` was written once when the label mounted and then only from its own click handler, so binding the collapsed state to an expression and changing it elsewhere left the attribute behind. The content hid correctly while a screen reader was still told the section was open, and the collapse arrow, which turns off that attribute, went on pointing the wrong way. It now follows the state however the state changes.
+
+### Backdrop
+
+- **New: focus stays inside an open backdrop and returns to the opener when it closes.** `Tab` and `Shift+Tab` used to walk straight out of the scrim into the page behind it, which is invisible to the eye but fully reachable by keyboard, and closing dropped focus at the top of the document instead of returning it to the control that opened it. The backdrop remains a scrim rather than a dialog and still sets no `role` or `aria-modal` of its own.
+
+### Text
+
+- **Fixed: a long line in a code block painted outside the block.** The `code` modifier prevents wrapping, but nothing contained the result, so a line wider than the block spilled its text across whatever sat to the right, on the page background rather than the block's own. On a page that scrolls as a document it also widened the page itself, which on a phone pushed fixed overlays partly off screen. A code block now scrolls horizontally instead, so the line stays inside it and remains reachable.
+
+### Chip
+
+- **Breaking: a chip is now a container holding its own buttons.** `x-h-chip` used to go on a `<button>`, which left a dismissible chip as a button with another control inside it. A `<button>` may not contain interactive content, and the invalid markup had real consequences: the close was a `<span>` carrying `role="button"` and a tab stop, so `Tab` reached it while `Enter` and `Space` did nothing at all, leaving a keyboard or screen reader user able to reach the close and never dismiss the chip. Its click also had to be stopped from reaching the chip around it, and the chip's hover state had to exclude it selector by selector. The chip is now a plain container, and each control inside it is a real button, so all of that goes away and keyboard operability, `disabled` and focus come from the elements themselves. To migrate, put `x-h-chip` on a `<div>`, a `<span>` or whatever non-interactive element suits the surrounding markup, move the clickable part onto a `<button x-h-chip-button>` inside it along with everything about the interaction (`@click`, `aria-pressed`, `disabled`), and leave `data-variant` on the chip, which still paints the pill. A chip that is only a label needs no button at all and is no longer announced as one. `x-h-chip-close` moves from a `<span>` to a `<button>` and keeps its required `aria-label` or `aria-labelledby`. Two smaller consequences: pointing at a dismissible chip now highlights the half under the pointer rather than the whole pill, and a label that has to be cut short takes a `truncate` class of its own, since only the element holding the text can end it with an ellipsis. A chip whose button opens a popover keeps the panel inside the chip, after that button.
+
+### Avatar
+
+- **New: an avatar can be a link.** `x-h-avatar` already became a control on a `<button>` and now does the same on an `<a>`, so an avatar that leads somewhere is a real link rather than a plain avatar wrapped in one. On any other tag it stays plain and is never given a role or a `tabindex` it cannot honor.
+- **Fixed: a button avatar submitted the form around it.** No `type` was ever set, so a `<button x-h-avatar>` fell back to the browser's `submit` default. It now gets `type="button"` unless the author has set a type.
 
 ## v2.14.2
 

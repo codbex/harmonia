@@ -14,6 +14,7 @@ Use lists to present multiple related items, such as options, tasks, or entries.
 
 - `x-h-list`
 - `x-h-list-item`
+- `x-h-list-secondary`
 - `x-h-list-header`
 
 ## API
@@ -63,6 +64,21 @@ An item without the `interactive` modifier is display-only and takes no part in 
 <ul x-h-list x-data="{ selected: 3 }">
   <template x-for="item in [1, 2, 3, 4, 5]" :key="item">
     <li x-h-list-item.interactive :aria-selected="selected === item" @click="selected = item" :aria-disabled="item === 4 || item === 2" x-text="'List Item ' + item"></li>
+  </template>
+</ul>
+```
+
+### With secondary text
+
+```html
+<ul x-h-list x-data="{ selected: 2 }">
+  <template x-for="item in [1, 2, 3]" :key="item">
+    <li x-h-list-item.interactive class="items-start" :aria-selected="selected === item" @click="selected = item">
+      <div class="vbox min-w-0 flex-1">
+        <span x-text="'List Item ' + item"></span>
+        <span x-h-list-secondary class="text-sm" x-text="'Secondary line for item ' + item"></span>
+      </div>
+    </li>
   </template>
 </ul>
 ```

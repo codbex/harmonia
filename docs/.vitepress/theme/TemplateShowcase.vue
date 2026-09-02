@@ -5,6 +5,7 @@ defineProps({
   title: { type: String, required: true },
   src: { type: String, required: true },
   desc: { type: String, default: '' },
+  mobile: { type: Boolean, default: false },
 });
 
 const tab = ref('preview');
@@ -63,7 +64,7 @@ onMounted(() => {
       </div>
     </header>
 
-    <div v-show="tab === 'preview'">
+    <div v-show="tab === 'preview'" :class="{ 'template-mobile': mobile }">
       <iframe class="template-frame" :src="src" :title="`${title} template`" loading="lazy"></iframe>
     </div>
 

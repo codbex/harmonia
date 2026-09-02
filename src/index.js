@@ -13,6 +13,7 @@ import carousel from './components/carousel';
 import chart from './components/chart';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
+import combobox from './components/combobox';
 import datepicker from './components/date-picker';
 import datetimePicker from './components/datetime-picker';
 import dialog from './components/dialog';
@@ -110,6 +111,7 @@ function registerPlugins() {
   window.Alpine.plugin(chart);
   window.Alpine.plugin(checkbox);
   window.Alpine.plugin(chip);
+  window.Alpine.plugin(combobox);
   window.Alpine.plugin(datepicker);
   window.Alpine.plugin(datetimePicker);
   window.Alpine.plugin(dialog);

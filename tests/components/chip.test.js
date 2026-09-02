@@ -2,24 +2,38 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import chipPlugin from '../../src/components/chip.js';
 import { mountDirective } from '../test-utils.js';
 
+// MutationObserver callbacks are async microtasks, so state driven by one is only
+// visible after a flush.
+const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
 describe('h-chip', () => {
   let el;
 
   beforeEach(() => {
-    el = document.createElement('button');
+    el = document.createElement('div');
     document.body.appendChild(el);
   });
 
-  it('registers h-chip and h-chip-close directives', () => {
+  it('registers h-chip, h-chip-button and h-chip-close directives', () => {
     const { alpine } = mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
     expect(alpine._directives['h-chip']).toBeDefined();
+    expect(alpine._directives['h-chip-button']).toBeDefined();
     expect(alpine._directives['h-chip-close']).toBeDefined();
   });
 
-  it('throws when element is not a button', () => {
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-    expect(() => mountDirective(chipPlugin, 'h-chip', div, { original: 'h-chip' })).toThrow();
+  it('throws when the element is interactive', () => {
+    for (const tag of ['button', 'a']) {
+      const interactive = document.createElement(tag);
+      document.body.appendChild(interactive);
+      expect(() => mountDirective(chipPlugin, 'h-chip', interactive, { original: 'x-h-chip' }), tag).toThrow(/h-chip-button/);
+    }
+  });
+
+  it('accepts any non-interactive element', () => {
+    const item = document.createElement('li');
+    document.body.appendChild(item);
+    mountDirective(chipPlugin, 'h-chip', item, { original: 'h-chip' });
+    expect(item.getAttribute('data-slot')).toBe('chip');
   });
 
   it('initializes _h_chip reactive state with default variant', () => {
@@ -35,8 +49,26 @@ describe('h-chip', () => {
     expect(el.classList.contains('rounded-full')).toBe(true);
     expect(el.classList.contains('border')).toBe(true);
     expect(el.classList.contains('text-sm')).toBe(true);
-    expect(el.classList.contains('overflow-hidden')).toBe(true);
-    expect(el.classList.contains('cursor-pointer')).toBe(true);
+    expect(el.classList.contains('h-7')).toBe(true);
+  });
+
+  it('makes room for a button child at the edges of the pill', () => {
+    mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
+    expect(el.classList.contains('has-[>[data-slot=chip-button]]:px-0')).toBe(true);
+    expect(el.classList.contains('has-[>[data-slot=chip-close]]:pr-0')).toBe(true);
+  });
+
+  it('closes the gap between button children, keeping it for static content', () => {
+    mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
+    expect(el.classList.contains('gap-1.5')).toBe(true);
+    expect(el.classList.contains('has-[>[data-slot=chip-button]]:gap-0')).toBe(true);
+  });
+
+  it('is not styled as a control', () => {
+    mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
+    for (const className of ['cursor-pointer', 'overflow-hidden', 'disabled:pointer-events-none', 'disabled:opacity-disabled', 'focus-outline']) {
+      expect(el.classList.contains(className), className).toBe(false);
+    }
   });
 
   it('sets data-slot="chip"', () => {
@@ -44,15 +76,9 @@ describe('h-chip', () => {
     expect(el.getAttribute('data-slot')).toBe('chip');
   });
 
-  it('sets type="button" when type is not already set', () => {
+  it('writes no type attribute of its own', () => {
     mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
-    expect(el.getAttribute('type')).toBe('button');
-  });
-
-  it('does not override an existing type attribute', () => {
-    el.setAttribute('type', 'submit');
-    mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
-    expect(el.getAttribute('type')).toBe('submit');
+    expect(el.hasAttribute('type')).toBe(false);
   });
 
   it('applies default variant classes', () => {
@@ -66,6 +92,7 @@ describe('h-chip', () => {
     mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
     expect(el.classList.contains('bg-primary/10')).toBe(true);
     expect(el.classList.contains('border-primary/50')).toBe(true);
+    expect(el.classList.contains('[&>svg]:text-primary')).toBe(true);
     expect(el._h_chip.variant).toBe('primary');
   });
 
@@ -111,9 +138,123 @@ describe('h-chip', () => {
     expect(el.classList.contains('bg-background')).toBe(false);
   });
 
-  it('calls cleanup', () => {
+  it('takes no state classes of its own', () => {
+    mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
+    expect(el.classList.contains('hover:bg-secondary-hover')).toBe(false);
+    expect(el.classList.contains('inset-ring-ring/50')).toBe(false);
+  });
+
+  it('swaps its variant when data-variant changes at runtime', async () => {
+    mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
+    el.setAttribute('data-variant', 'warning');
+    await flush();
+    expect(el.classList.contains('bg-warning/10')).toBe(true);
+    expect(el.classList.contains('bg-secondary')).toBe(false);
+    expect(el._h_chip.variant).toBe('warning');
+  });
+
+  it('stops observing on cleanup', () => {
     const { ctx } = mountDirective(chipPlugin, 'h-chip', el, { original: 'h-chip' });
-    expect(ctx.cleanup).toHaveBeenCalled();
+    const disconnect = vi.spyOn(MutationObserver.prototype, 'disconnect');
+    ctx.cleanup.mock.calls[0][0]();
+    expect(disconnect).toHaveBeenCalled();
+    disconnect.mockRestore();
+  });
+});
+
+describe('h-chip-button', () => {
+  let chipEl, el;
+
+  beforeEach(() => {
+    chipEl = document.createElement('div');
+    chipEl._h_chip = { variant: 'default' };
+    el = document.createElement('button');
+    chipEl.appendChild(el);
+    document.body.appendChild(chipEl);
+  });
+
+  it('throws when the element is not a button', () => {
+    const span = document.createElement('span');
+    chipEl.appendChild(span);
+    expect(() => mountDirective(chipPlugin, 'h-chip-button', span, { original: 'x-h-chip-button' })).toThrow(/button element/);
+  });
+
+  it('throws without a chip ancestor', () => {
+    const orphan = document.createElement('button');
+    document.body.appendChild(orphan);
+    expect(() => mountDirective(chipPlugin, 'h-chip-button', orphan, { original: 'x-h-chip-button' })).toThrow(/h-chip/);
+  });
+
+  it('adds base classes', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('cursor-pointer')).toBe(true);
+    expect(el.classList.contains('inline-flex')).toBe(true);
+    expect(el.classList.contains('h-full')).toBe(true);
+    expect(el.classList.contains('px-2.5')).toBe(true);
+    expect(el.classList.contains('disabled:opacity-disabled')).toBe(true);
+  });
+
+  it('rounds only the ends of the pill it reaches', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('first:rounded-l-full')).toBe(true);
+    expect(el.classList.contains('last:rounded-r-full')).toBe(true);
+  });
+
+  it('sets data-slot="chip-button"', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.getAttribute('data-slot')).toBe('chip-button');
+  });
+
+  it('sets type="button" when type is not already set', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.getAttribute('type')).toBe('button');
+  });
+
+  it('does not override an existing type attribute', () => {
+    el.setAttribute('type', 'submit');
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.getAttribute('type')).toBe('submit');
+  });
+
+  it('writes no role or tabindex of its own', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.hasAttribute('role')).toBe(false);
+    expect(el.hasAttribute('tabindex')).toBe(false);
+  });
+
+  it('applies default state classes from the parent chip', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('hover:bg-secondary-hover')).toBe(true);
+    expect(el.classList.contains('active:bg-secondary-active')).toBe(true);
+    expect(el.classList.contains('inset-ring-ring/50')).toBe(true);
+  });
+
+  it('applies the icon tint and state classes of the parent chip variant', () => {
+    chipEl._h_chip.variant = 'primary';
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('[&>svg]:text-primary')).toBe(true);
+    expect(el.classList.contains('hover:bg-primary/10')).toBe(true);
+    expect(el.classList.contains('aria-pressed:bg-primary/15')).toBe(true);
+  });
+
+  it('does not apply classes from other variants', () => {
+    chipEl._h_chip.variant = 'negative';
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('hover:bg-negative/10')).toBe(true);
+    expect(el.classList.contains('hover:bg-primary/10')).toBe(false);
+    expect(el.classList.contains('hover:bg-secondary-hover')).toBe(false);
+  });
+
+  it('takes none of the chip surface classes', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('bg-secondary')).toBe(false);
+    expect(el.classList.contains('border')).toBe(false);
+  });
+
+  it('does not draw the close separator', () => {
+    mountDirective(chipPlugin, 'h-chip-button', el, { original: 'h-chip-button' });
+    expect(el.classList.contains('hover:border-foreground/20')).toBe(false);
+    expect(el.classList.contains('border-l')).toBe(false);
   });
 });
 
@@ -121,19 +262,26 @@ describe('h-chip-close', () => {
   let chipEl, el;
 
   beforeEach(() => {
-    chipEl = document.createElement('button');
+    chipEl = document.createElement('div');
     chipEl._h_chip = { variant: 'default' };
-    el = document.createElement('span');
+    el = document.createElement('button');
     el.setAttribute('aria-label', 'Remove');
     chipEl.appendChild(el);
     document.body.appendChild(chipEl);
   });
 
-  it('throws when element is a button', () => {
-    const btn = document.createElement('button');
-    btn.setAttribute('aria-label', 'Remove');
-    chipEl.appendChild(btn);
-    expect(() => mountDirective(chipPlugin, 'h-chip-close', btn, { original: 'h-chip-close' })).toThrow();
+  it('throws when the element is not a button', () => {
+    const span = document.createElement('span');
+    span.setAttribute('aria-label', 'Remove');
+    chipEl.appendChild(span);
+    expect(() => mountDirective(chipPlugin, 'h-chip-close', span, { original: 'x-h-chip-close' })).toThrow(/button element/);
+  });
+
+  it('throws without a chip ancestor', () => {
+    const orphan = document.createElement('button');
+    orphan.setAttribute('aria-label', 'Remove');
+    document.body.appendChild(orphan);
+    expect(() => mountDirective(chipPlugin, 'h-chip-close', orphan, { original: 'x-h-chip-close' })).toThrow(/h-chip/);
   });
 
   it('adds base classes', () => {
@@ -143,17 +291,19 @@ describe('h-chip-close', () => {
     expect(el.classList.contains('cursor-pointer')).toBe(true);
     expect(el.classList.contains('rounded-r-full')).toBe(true);
     expect(el.classList.contains('h-full')).toBe(true);
+    expect(el.classList.contains('disabled:opacity-disabled')).toBe(true);
   });
 
-  it('sets data-slot="chip-close"', () => {
+  it('sets data-slot="chip-close" and type="button"', () => {
     mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
     expect(el.getAttribute('data-slot')).toBe('chip-close');
+    expect(el.getAttribute('type')).toBe('button');
   });
 
-  it('sets tabindex="0" and role="button"', () => {
+  it('writes no role or tabindex of its own', () => {
     mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
-    expect(el.getAttribute('tabindex')).toBe('0');
-    expect(el.getAttribute('role')).toBe('button');
+    expect(el.hasAttribute('role')).toBe(false);
+    expect(el.hasAttribute('tabindex')).toBe(false);
   });
 
   it('appends a close svg icon', () => {
@@ -189,6 +339,7 @@ describe('h-chip-close', () => {
     mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
     expect(el.classList.contains('hover:bg-secondary-hover')).toBe(true);
     expect(el.classList.contains('active:bg-secondary-active')).toBe(true);
+    expect(el.classList.contains('hover:border-foreground/20')).toBe(true);
   });
 
   it('applies primary variant classes when parent chip variant is primary', () => {
@@ -196,6 +347,7 @@ describe('h-chip-close', () => {
     mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
     expect(el.classList.contains('hover:bg-primary/10')).toBe(true);
     expect(el.classList.contains('active:bg-primary/15')).toBe(true);
+    expect(el.classList.contains('hover:border-foreground/20')).toBe(false);
   });
 
   it('does not apply classes from other variants', () => {
@@ -206,25 +358,15 @@ describe('h-chip-close', () => {
     expect(el.classList.contains('hover:bg-secondary-hover')).toBe(false);
   });
 
-  it('stops click propagation to the chip when chip is not expanded', () => {
+  it('takes no icon tint, since its own icon is drawn from the current colour', () => {
+    chipEl._h_chip.variant = 'primary';
     mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
-    const chipHandler = vi.fn();
-    chipEl.addEventListener('click', chipHandler);
-    el.dispatchEvent(new Event('click', { bubbles: true }));
-    expect(chipHandler).not.toHaveBeenCalled();
+    expect(el.classList.contains('[&>svg]:text-primary')).toBe(false);
   });
 
-  it('allows click propagation when the chip has aria-expanded="true"', () => {
-    chipEl.setAttribute('aria-expanded', 'true');
+  it('adds no listeners, since a sibling button needs no propagation stop', () => {
+    const addEventListener = vi.spyOn(el, 'addEventListener');
     mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
-    const chipHandler = vi.fn();
-    chipEl.addEventListener('click', chipHandler);
-    el.dispatchEvent(new Event('click', { bubbles: true }));
-    expect(chipHandler).toHaveBeenCalled();
-  });
-
-  it('calls cleanup', () => {
-    const { ctx } = mountDirective(chipPlugin, 'h-chip-close', el, { original: 'h-chip-close' });
-    expect(ctx.cleanup).toHaveBeenCalled();
+    expect(addEventListener).not.toHaveBeenCalled();
   });
 });

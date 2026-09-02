@@ -20,6 +20,16 @@ Use cards to group related information or actions in a visually distinct contain
 - `x-h-card-content`
 - `x-h-card-footer`
 
+## API
+
+### Modifiers
+
+#### x-h-card-content
+
+| Modifier | Description                                                                                                                |
+| -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| flush    | Removes the padding from the content, so that content like a table, a list or a calendar spans the full width of the card. |
+
 ## Examples
 
 ### Action Card
@@ -82,6 +92,52 @@ Use cards to group related information or actions in a visually distinct contain
   <div x-h-card-footer class="flex-col gap-2">
     <button x-h-button data-variant="primary" type="submit" class="w-full">Login</button>
     <button x-h-button class="w-full">Login with Harmonia</button>
+  </div>
+</div>
+```
+
+### Flush Content
+
+The card itself has no padding, the header, the content and the footer pad themselves. Add the `flush` modifier to the content so a table, a list or a calendar reaches the edges of the card, and `overflow-hidden` to the card so it is clipped to the rounded corners. A `border-b` on the header separates it from content that starts right below it.
+
+```html
+<div x-h-card class="overflow-hidden">
+  <div x-h-card-header class="border-b">
+    <div x-h-card-title>Recent orders</div>
+    <div x-h-card-description>Your latest transactions</div>
+  </div>
+  <div x-h-card-content.flush>
+    <div x-h-table-container>
+      <table x-h-table>
+        <caption class="sr-only">
+          Recent orders
+        </caption>
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Customer</th>
+            <th x-h-table-head scope="col">Status</th>
+            <th x-h-table-head scope="col" class="text-right">Amount</th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell>Olivia Davis</td>
+            <td x-h-table-cell><span x-h-badge data-variant="positive">Paid</span></td>
+            <td x-h-table-cell class="text-right">$256.16</td>
+          </tr>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell>Noah Bennett</td>
+            <td x-h-table-cell><span x-h-badge data-variant="warning">Pending</span></td>
+            <td x-h-table-cell class="text-right">$1,024.00</td>
+          </tr>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell>Mia Fletcher</td>
+            <td x-h-table-cell><span x-h-badge data-variant="negative">Refunded</span></td>
+            <td x-h-table-cell class="text-right">$64.90</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 ```

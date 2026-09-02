@@ -26,7 +26,12 @@
                 <div x-h-tree-row>
                   <svg x-h-lucide role="presentation" data-lucide="warehouse"></svg>
                   <span x-h-tree-label x-text="node.name"></span>
-                  <span x-h-tree-indicator data-dot :data-indicator="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'negative' : 'positive'"></span>
+                  <span
+                    x-h-tree-indicator
+                    data-dot
+                    :data-indicator="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'negative' : 'positive'"
+                    :aria-label="$store.erp.inventory.some((i) => i.warehouse === node.name && i.stock <= i.reorderLevel) ? 'Contains low stock items' : 'Fully stocked'"
+                  ></span>
                 </div>
                 <ul x-h-tree.sub>
                   <template x-for="categoryName in node.categories" :key="categoryName">
@@ -51,16 +56,19 @@
           <div x-h-toolbar-title>Stock levels</div>
           <span class="text-sm text-nowrap text-muted-foreground" x-text="list.length + (list.length === 1 ? ' item' : ' items')"></span>
           <div x-h-toolbar-spacer></div>
-          <button x-show="warehouse" x-h-chip data-variant="outline" @click="pick(null)">
+          <div x-show="warehouse" x-h-chip data-variant="outline">
             <span x-text="filterLabel"></span>
-            <span x-h-chip-close aria-label="Clear warehouse filter"></span>
-          </button>
+            <button x-h-chip-close :aria-label="'Clear warehouse filter: ' + filterLabel" @click="pick(null)"></button>
+          </div>
           <button x-show="isCompact" x-h-button data-variant="transparent" data-size="icon" aria-label="Filter by warehouse" @click="treeOpen = true">
             <svg x-h-lucide role="presentation" data-lucide="list-tree"></svg>
           </button>
         </div>
         <div x-h-table-container.scroll class="flex-1">
           <table x-h-table data-borders="rows">
+            <caption class="sr-only">
+              Stock levels
+            </caption>
             <thead x-h-table-header>
               <tr x-h-table-row>
                 <th x-h-table-head scope="col">SKU</th>
@@ -112,7 +120,7 @@
   </div>
 
   <!-- Restock dialog -->
-  <div x-h-dialog-overlay :data-open="!!restockTarget" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="!!restockTarget" class="backdrop-blur-xs" @keydown.escape.window="restockTarget = null">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Restock item</h2>
@@ -120,19 +128,22 @@
           x-h-dialog-description
           x-text="restockTarget ? 'Order more ' + restockTarget.name + ' for the ' + restockTarget.warehouse + ' warehouse. Current stock: ' + restockTarget.stock + ' pcs, reorder level: ' + restockTarget.reorderLevel + ' pcs.' : ''"
         ></p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="restockTarget = null">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
-      <div x-h-field>
-        <label x-h-label for="restock-qty">Quantity to add</label>
-        <div x-h-input-number>
-          <input type="number" id="restock-qty" min="1" step="1" x-model="restockQty" />
-        </div>
+      <div x-h-dialog-content>
+        <fieldset x-h-fieldset>
+          <div x-h-field-group>
+            <div x-h-field>
+              <label x-h-label for="restock-qty">Quantity to add</label>
+              <div x-h-input-number>
+                <input type="number" id="restock-qty" min="1" step="1" x-model.number="restockQty" />
+              </div>
+            </div>
+          </div>
+        </fieldset>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="restockTarget = null">Cancel</button>
-        <button x-h-button data-variant="primary" :disabled="!Number(restockQty)" @click="confirmRestock()">Order restock</button>
+        <button x-h-button data-variant="primary" :disabled="!restockQty" @click="confirmRestock()">Order restock</button>
       </div>
     </div>
   </div>

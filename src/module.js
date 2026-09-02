@@ -13,6 +13,7 @@ import carousel from './components/carousel';
 import chart from './components/chart';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
+import combobox from './components/combobox';
 import datepicker from './components/date-picker';
 import datetimePicker from './components/datetime-picker';
 import dialog from './components/dialog';
@@ -90,6 +91,7 @@ export {
   chart as Chart,
   checkbox as Checkbox,
   chip as Chip,
+  combobox as Combobox,
   dateFormat as DateFormat,
   datepicker as DatePicker,
   datetimePicker as DateTimePicker,
@@ -160,6 +162,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(chart);
   registerPlugin(checkbox);
   registerPlugin(chip);
+  registerPlugin(combobox);
   registerPlugin(dateFormat);
   registerPlugin(datepicker);
   registerPlugin(datetimePicker);

@@ -18,7 +18,8 @@
 - [Card](references/card.md): A flexible container that organizes content into distinct sections, typically including a header, main content area, and footer.
 - [Carousel](references/carousel.md): A slideshow that cycles through a set of slides one at a time, with previous/next controls, indicator dots, keyboard navigation, wraparound looping, and optional autoplay.
 - [Checkbox](references/checkbox.md): Allows users to select or deselect an option, representing a binary choice (true/false).
-- [Chip](references/chip.md): A compact, interactive element used to represent an applied filter, a selected item, or a categorization.
+- [Chip](references/chip.md): A compact element used to represent an applied filter, a selected item, or a categorization.
+- [Combobox](references/combobox.md): A list of options that belongs to a text field, filtered as the user types.
 - [Date Picker](references/date-picker.md): Allows users to enter a date either by typing it directly or by selecting it from a calendar popover.
 - [Date Time Picker](references/datetime-picker.md): Lets users pick a date and a time together.
 - [Dialog](references/dialog.md): A modal container that appears in response to a user action, temporarily interrupting the current workflow to request information or confirmation.

@@ -1,3 +1,4 @@
+import { focusTrap } from '../common/focus-trap';
 import { transitionClose } from '../common/transition-close';
 
 export default function (Alpine) {
@@ -5,6 +6,10 @@ export default function (Alpine) {
     el.classList.add('hidden', 'fixed', 'inset-0', 'z-50', 'bg-black/60', 'transition-[opacity,scale]', 'motion-reduce:transition-none', 'duration-200', 'ease-out', 'opacity-0', '*:scale-95');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'backdrop');
+
+    // Tab and Shift+Tab cycle within the backdrop rather than walking out into
+    // the page behind it, which is inert to the eye but not to the keyboard.
+    const trap = focusTrap(el);
 
     // Guarded on the live state, not a class snapshot, so a late transitionend
     // from an abandoned close cannot hide a backdrop reopened mid-fade.
@@ -17,6 +22,7 @@ export default function (Alpine) {
     const observer = new MutationObserver(() => {
       if (el.getAttribute('data-open') === 'true') {
         closer.cancel();
+        trap.trap();
         el.classList.remove('hidden', 'pointer-events-none');
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.classList.remove('*:scale-95', 'opacity-0');
@@ -29,6 +35,7 @@ export default function (Alpine) {
           });
         }
       } else {
+        trap.release();
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.classList.add('hidden', '*:scale-95', 'opacity-0');
         } else {
@@ -44,6 +51,7 @@ export default function (Alpine) {
 
     cleanup(() => {
       observer.disconnect();
+      trap.dispose();
       closer.dispose();
     });
   });

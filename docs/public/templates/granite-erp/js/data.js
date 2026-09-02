@@ -1,7 +1,13 @@
 // Granite ERP demo dataset. Static and seeded so every visit shows the same
-// believable workspace; the Alpine store in app.js clones these collections
+// believable workspace, the Alpine store in app.js clones these collections
 // and mutates the copies as the user interacts with the demo.
-window.GraniteData = {
+//
+// Every date below is written against ANCHOR_DATE and shifted to the current day
+// on load (see the bottom of this file), so the spread of overdue, due-soon and
+// paid records stays true however long after it was written the demo is opened.
+const ANCHOR_DATE = '2026-07-03';
+
+const graniteData = {
   invoices: [
     {
       id: 'INV-1052',
@@ -573,3 +579,32 @@ window.GraniteData = {
     },
   },
 };
+
+// Whole days rather than a millisecond delta, so a daylight-saving change between
+// the anchor and today cannot shift a date onto the wrong day.
+const DAY_OFFSET = (() => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.round((today - new Date(ANCHOR_DATE + 'T00:00:00')) / 86400000);
+})();
+
+function shiftDate(value) {
+  const [datePart, timePart] = value.split(' ');
+  const date = new Date(datePart + 'T00:00:00');
+  date.setDate(date.getDate() + DAY_OFFSET);
+  const iso = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+  return timePart ? iso + ' ' + timePart : iso;
+}
+
+// Walks the dataset once and rewrites every "YYYY-MM-DD", with or without a
+// trailing time, leaving every other string alone.
+function shiftDates(value) {
+  if (typeof value === 'string') return /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2})?$/.test(value) ? shiftDate(value) : value;
+  if (Array.isArray(value)) return value.map(shiftDates);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, shiftDates(item)]));
+  return value;
+}
+
+window.GraniteData = shiftDates(graniteData);
+// The day the dataset now describes as "today", for records the demo creates.
+window.GraniteData.today = shiftDate(ANCHOR_DATE);

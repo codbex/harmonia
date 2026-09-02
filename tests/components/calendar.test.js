@@ -779,6 +779,38 @@ describe('h-calendar-inline', () => {
     expect(cell.getAttribute('aria-selected')).toBe('false');
   });
 
+  // Alpine's .lazy listener would write the change event's detail object over
+  // the bound value, so the event modifiers are rejected at init.
+  it('rejects x-model event modifiers with a console error', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    el.setAttribute('x-model.lazy', 'date');
+    Object.defineProperty(el, '_x_model', { value: { get: () => '', set: () => {} }, configurable: true });
+    mountDirective(calendarPlugin, 'h-calendar-inline', el, { original: 'h-calendar-inline', expression: '' });
+    expect(error).toHaveBeenCalledWith('h-calendar-inline: x-model.lazy is not supported, the model always updates immediately', el);
+    error.mockRestore();
+  });
+
+  // The x-model attribute name carries any modifiers, so the model expression
+  // has to be read through them rather than from a literal 'x-model' lookup.
+  it('reads the model expression through x-model modifiers', () => {
+    let expr;
+    el.setAttribute('x-model.fill', 'date');
+    Object.defineProperty(el, '_x_model', { value: { get: () => '', set: () => {} }, configurable: true });
+    mountDirective(
+      calendarPlugin,
+      'h-calendar-inline',
+      el,
+      { original: 'h-calendar-inline', expression: '' },
+      {
+        evaluateLater: (expression) => {
+          expr = expression;
+          return (cb) => cb('');
+        },
+      }
+    );
+    expect(expr).toBe('date');
+  });
+
   it('exposes grid roles and is labelled by the month heading', () => {
     mountDirective(calendarPlugin, 'h-calendar-inline', el, { original: 'h-calendar-inline', expression: '' });
     const table = el.querySelector('table');

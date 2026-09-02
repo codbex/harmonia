@@ -1,11 +1,11 @@
 export default function (Alpine) {
   Alpine.directive('h-card', (el) => {
-    el.classList.add('bg-card', '[--badge-ring:var(--card)]', 'text-card-foreground', 'vbox', 'gap-4', 'rounded-xl', 'border', 'py-6', 'shadow-sm');
+    el.classList.add('bg-card', '[--badge-ring:var(--card)]', 'text-card-foreground', 'vbox', 'rounded-xl', 'border', 'shadow-sm');
     el.setAttribute('data-slot', 'card');
   });
 
   Alpine.directive('h-card-header', (el) => {
-    el.classList.add('@container/card-header', 'grid', 'auto-rows-min', 'grid-rows-[auto_auto]', 'items-start', 'gap-2', 'px-6', 'has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]', '[.border-b]:pb-6');
+    el.classList.add('@container/card-header', 'grid', 'auto-rows-min', 'items-start', 'gap-2', 'px-6', 'pt-6', 'last:pb-6', 'has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]', '[.border-b]:pb-6');
     el.setAttribute('data-slot', 'card-header');
   });
 
@@ -24,13 +24,18 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'card-action');
   });
 
-  Alpine.directive('h-card-content', (el) => {
-    el.classList.add('px-6');
+  Alpine.directive('h-card-content', (el, { modifiers }) => {
     el.setAttribute('data-slot', 'card-content');
+    el.classList.add('min-h-0');
+    if (!modifiers.includes('flush')) {
+      el.classList.add('px-6', 'py-4', 'first:pt-6', 'last:pb-6');
+    }
   });
 
   Alpine.directive('h-card-footer', (el) => {
-    el.classList.add('flex', 'items-center', 'px-6', '[.border-t]:pt-6');
+    // The 16 between a header and the content is paid by the content, so a
+    // footer only pays it where there is no content to do so.
+    el.classList.add('flex', 'items-center', 'px-6', 'pb-6', 'first:pt-6', '[[data-slot=card-header]+&]:pt-4', '[.border-t]:pt-6');
     el.setAttribute('data-slot', 'card-footer');
   });
 }
