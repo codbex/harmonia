@@ -119,6 +119,10 @@ A release that adds the Combobox component and brings drag and drop to the Calen
 - **New: an avatar can be a link.** `x-h-avatar` already became a control on a `<button>` and now does the same on an `<a>`, so an avatar that leads somewhere is a real link rather than a plain avatar wrapped in one. On any other tag it stays plain and is never given a role or a `tabindex` it cannot honor.
 - **Fixed: a button avatar submitted the form around it.** No `type` was ever set, so a `<button x-h-avatar>` fell back to the browser's `submit` default. It now gets `type="button"` unless the author has set a type.
 
+### Docs and tooling
+
+- **The Claude Code plugin marketplace is renamed from `harmonia` to `codbex`.** The plugin now installs as `harmonia@codbex` rather than `harmonia@harmonia`, so the identifier reads as the Harmonia plugin from codbex. A marketplace name cannot be aliased the way a plugin name can, so an existing install has to be replaced. Run `/plugin marketplace remove harmonia`, then `/plugin marketplace add codbex/harmonia` and `/plugin install harmonia@codbex`.
+
 ## v2.14.2
 
 A bugfix release for the Number Input and the One-Time Password Input. A Number Input entry the browser cannot represent yet is no longer wiped mid-typing, and a separator keystroke the browser drops now marks the input as invalid instead of letting the digits silently merge into a different number. Mobile keyboards get a decimal key, and the step controls respect `min` and `max` with `step="any"`. The One-Time Password Input now refills its cells when the bound model is set externally. There are no breaking changes.
