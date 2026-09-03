@@ -14,7 +14,7 @@ Install the plugin so the skill is discovered automatically:
 
 ```
 /plugin marketplace add codbex/harmonia
-/plugin install harmonia@harmonia
+/plugin install harmonia@codbex
 ```
 
 ### Manual (any agent that reads `.claude/skills`, `.hermes/skills`, etc.)

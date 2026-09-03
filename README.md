@@ -21,7 +21,7 @@ Harmonia ships an agent-readable skill so coding agents (Hermes, Claude Code and
 
 ```
 /plugin marketplace add codbex/harmonia
-/plugin install harmonia@harmonia
+/plugin install harmonia@codbex
 ```
 
 **Manual (any agent that reads `.claude/skills`, `.hermes/skills`, etc.).**

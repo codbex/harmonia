@@ -34,10 +34,11 @@
     "skills/"
   ],
   "scripts": {
-    "build": "node ./scripts/build.cjs && npm run tailwind && npm run agent-docs:generate && node ./scripts/doc-build.cjs",
-    "build:prod": "node ./scripts/build.cjs && npm run tailwind && npm run extend-css:generate && npm run agent-docs:generate",
+    "build": "node ./scripts/build.cjs && npm run tailwind && npm run agent-docs:generate && npm run plugin-version:sync && node ./scripts/doc-build.cjs",
+    "build:prod": "node ./scripts/build.cjs && npm run tailwind && npm run extend-css:generate && npm run agent-docs:generate && npm run plugin-version:sync",
     "icons:generate": "node ./scripts/generate-icons.cjs",
     "agent-docs:generate": "node ./scripts/generate-agent-docs.cjs",
+    "plugin-version:sync": "node ./scripts/sync-plugin-version.cjs",
     "extend-css:generate": "node ./scripts/generate-extend-css.cjs",
     "theming:generate": "node ./scripts/generate-theming-fragments.cjs && prettier --write \"docs/public/theming/fragments/*.html\" \"docs/public/theming/sections.json\" --config ./.prettierrc",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
