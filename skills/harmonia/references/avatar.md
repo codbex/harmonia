@@ -89,7 +89,7 @@ You can change the avatar shape by using the `rounded-` classes.
 
 ### Variants
 
-Inside an active sidebar menu button, a variant avatar switches to the button's own foreground color so it stays legible.
+Inside an active sidebar menu button or menu nav, a variant avatar switches to the button's own foreground color so it stays legible.
 
 ```html
 <div x-h-avatar data-variant="primary">

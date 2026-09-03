@@ -65,7 +65,7 @@
                 <ul x-h-sidebar-menu>
                   <template x-for="item in $store.quartz.nav[0].items" :key="item.route">
                     <li x-h-sidebar-menu-item>
-                      <a x-h-sidebar-menu-button :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
                     </li>
                   </template>
                 </ul>
@@ -78,7 +78,7 @@
                 <ul x-h-sidebar-menu>
                   <template x-for="item in $store.quartz.nav[1].items" :key="item.route">
                     <li x-h-sidebar-menu-item>
-                      <a x-h-sidebar-menu-button :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
                     </li>
                   </template>
                 </ul>
@@ -91,7 +91,7 @@
                 <ul x-h-sidebar-menu>
                   <template x-for="item in $store.quartz.nav[2].items" :key="item.route">
                     <li x-h-sidebar-menu-item>
-                      <a x-h-sidebar-menu-button :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
                     </li>
                   </template>
                 </ul>
@@ -104,7 +104,7 @@
                 <ul x-h-sidebar-menu>
                   <template x-for="item in $store.quartz.nav[3].items" :key="item.route">
                     <li x-h-sidebar-menu-item>
-                      <a x-h-sidebar-menu-button :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
                     </li>
                   </template>
                 </ul>

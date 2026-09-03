@@ -131,6 +131,7 @@ export default defineConfig({
           { text: 'Date Format', link: '/utilities/date-format' },
           { text: 'Focus', link: '/utilities/focus' },
           { text: 'Include', link: '/utilities/include' },
+          { text: 'Native Notifications', link: '/utilities/native-notifications' },
           { text: 'Responsive', link: '/utilities/responsive' },
           { text: 'Template', link: '/utilities/template' },
           { text: 'Theme', link: '/utilities/theme' },

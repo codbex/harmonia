@@ -40,20 +40,20 @@
           <div x-h-sidebar-group-content>
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="path === '/'" @click="go('/')">
+                <button x-h-sidebar-menu-nav :data-active="path === '/'" @click="go('/')">
                   <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
                   <span>Dashboard</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/inbox')" @click="go('/inbox')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/inbox')" @click="go('/inbox')">
                   <svg x-h-lucide role="presentation" data-lucide="inbox"></svg>
                   <span>Inbox</span>
                   <span x-h-sidebar-menu-badge x-show="$store.erp.unreadCount" role="img" :aria-label="$store.erp.unreadCount + ' unread messages'" x-text="$store.erp.unreadCount"></span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/approvals')" @click="go('/approvals')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/approvals')" @click="go('/approvals')">
                   <svg x-h-lucide role="presentation" data-lucide="stamp"></svg>
                   <span>Approvals</span>
                   <span x-h-sidebar-menu-badge x-show="$store.erp.pendingApprovals.length" role="img" :aria-label="$store.erp.pendingApprovals.length + ' pending approvals'" x-text="$store.erp.pendingApprovals.length"></span>
@@ -68,13 +68,13 @@
           <div x-h-sidebar-group-content>
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/invoices')" @click="go('/invoices')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/invoices')" @click="go('/invoices')">
                   <svg x-h-lucide role="presentation" data-lucide="receipt-text"></svg>
                   <span>Invoices</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/bills')" @click="go('/bills')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/bills')" @click="go('/bills')">
                   <svg x-h-lucide role="presentation" data-lucide="wallet"></svg>
                   <span>Bills</span>
                 </button>
@@ -88,13 +88,13 @@
           <div x-h-sidebar-group-content>
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/customers')" @click="go('/customers')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/customers')" @click="go('/customers')">
                   <svg x-h-lucide role="presentation" data-lucide="users"></svg>
                   <span>Customers</span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/vendors')" @click="go('/vendors')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/vendors')" @click="go('/vendors')">
                   <svg x-h-lucide role="presentation" data-lucide="truck"></svg>
                   <span>Vendors</span>
                 </button>
@@ -108,14 +108,14 @@
           <div x-h-sidebar-group-content>
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/inventory')" @click="go('/inventory')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/inventory')" @click="go('/inventory')">
                   <svg x-h-lucide role="presentation" data-lucide="boxes"></svg>
                   <span>Inventory</span>
                   <span x-h-sidebar-menu-badge x-show="$store.erp.lowStockItems.length" role="img" :aria-label="$store.erp.lowStockItems.length + ' low stock items'" x-text="$store.erp.lowStockItems.length"></span>
                 </button>
               </li>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/documents')" @click="go('/documents')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/documents')" @click="go('/documents')">
                   <svg x-h-lucide role="presentation" data-lucide="folder-open"></svg>
                   <span>Documents</span>
                 </button>
@@ -129,7 +129,7 @@
           <div x-h-sidebar-group-content>
             <ul x-h-sidebar-menu>
               <li x-h-sidebar-menu-item>
-                <button x-h-sidebar-menu-button :data-active="isActive('/reports')" @click="go('/reports')">
+                <button x-h-sidebar-menu-nav :data-active="isActive('/reports')" @click="go('/reports')">
                   <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
                   <span>Reports</span>
                 </button>
@@ -141,7 +141,7 @@
 
       <div x-h-sidebar-footer data-borderless="true">
         <nav aria-label="Settings">
-          <button x-h-sidebar-menu-button :data-active="isActive('/settings')" @click="go('/settings')">
+          <button x-h-sidebar-menu-nav :data-active="isActive('/settings')" @click="go('/settings')">
             <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
             <span>Settings</span>
           </button>

@@ -44,12 +44,14 @@ describe('h-avatar', () => {
     expect(el.classList.contains('data-[variant="primary"]:border-primary')).toBe(true);
   });
 
-  it('recolors a variant avatar inside an active sidebar menu button', () => {
+  // The dash-match covers every sidebar-menu-* slot at once: menu button, menu
+  // nav and their sub variants.
+  it('recolors a variant avatar inside an active sidebar menu entry', () => {
     mountDirective(avatarPlugin, 'h-avatar', el);
-    expect(el.classList.contains('[[data-slot=sidebar-menu-button][data-active=true]_&[data-variant]]:bg-sidebar-primary-foreground/10')).toBe(true);
-    expect(el.classList.contains('[[data-slot=sidebar-menu-button][data-active=true]_&[data-variant]]:text-sidebar-primary-foreground')).toBe(true);
-    expect(el.classList.contains('[[data-slot=sidebar-menu-button]:active_&[data-variant]]:bg-sidebar-primary-foreground/10')).toBe(true);
-    expect(el.classList.contains('[[data-slot=sidebar-menu-button]:active_&[data-variant]]:text-sidebar-primary-foreground')).toBe(true);
+    expect(el.classList.contains('[[data-slot|=sidebar-menu][data-active=true]_&[data-variant]]:bg-sidebar-primary-foreground/10')).toBe(true);
+    expect(el.classList.contains('[[data-slot|=sidebar-menu][data-active=true]_&[data-variant]]:text-sidebar-primary-foreground')).toBe(true);
+    expect(el.classList.contains('[[data-slot|=sidebar-menu]:active_&[data-variant]]:bg-sidebar-primary-foreground/10')).toBe(true);
+    expect(el.classList.contains('[[data-slot|=sidebar-menu]:active_&[data-variant]]:text-sidebar-primary-foreground')).toBe(true);
   });
 
   it('sets data-slot="avatar"', () => {

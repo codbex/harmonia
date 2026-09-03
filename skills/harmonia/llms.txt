@@ -91,6 +91,7 @@
 - [Date Format](references/date-format.md): A behavior-only directive that renders a date value as a locale-aware date string into the element's text content, plus a `$dateFormat` magic that exposes the same formatting engine for use directly in Alpine expressions.
 - [Focus](references/focus.md): A behavior-only directive that programmatically sets focus on an element based on a specified condition.
 - [Include](references/include.md): The include directive makes it easy to fetch and insert an external HTML fragment inside an element.
+- [Native Notifications](references/native-notifications.md): Utility functions for showing operating system notifications through the browser's Notification API.
 - [Responsive](references/responsive.md): A behavior-only directive that adds or removes classes based on the element's **own** width.
 - [Template](references/template.md): The template directive makes it easy to insert and initialize an Alpine.js snippet inside a referenced `<template>` element.
 - [Theme](references/theme.md): Utility functions for retrieving and updating the color scheme.

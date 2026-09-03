@@ -150,6 +150,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Date Format | A behavior-only directive that renders a date value as a locale-aware date string into the element's text content, plus a `$dateFormat` magic that exposes the same formatting engine for use directly in Alpine expressions. | [date-format](references/date-format.md) |
 | Focus | A behavior-only directive that programmatically sets focus on an element based on a specified condition. | [focus](references/focus.md) |
 | Include | The include directive makes it easy to fetch and insert an external HTML fragment inside an element. | [include](references/include.md) |
+| Native Notifications | Utility functions for showing operating system notifications through the browser's Notification API. | [native-notifications](references/native-notifications.md) |
 | Responsive | A behavior-only directive that adds or removes classes based on the element's **own** width. | [responsive](references/responsive.md) |
 | Template | The template directive makes it easy to insert and initialize an Alpine.js snippet inside a referenced `<template>` element. | [template](references/template.md) |
 | Theme | Utility functions for retrieving and updating the color scheme. | [theme](references/theme.md) |

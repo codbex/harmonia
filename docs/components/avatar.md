@@ -111,7 +111,7 @@ You can change the avatar shape by using the `rounded-` classes.
 
 ### Variants
 
-Inside an active [sidebar menu button](/components/sidebar), a variant avatar switches to the button's own foreground color so it stays legible.
+Inside an active [sidebar menu button or menu nav](/components/sidebar), a variant avatar switches to the button's own foreground color so it stays legible.
 
 <LiveExample data-class="grid grid-cols-5 justify-items-center gap-4">
 

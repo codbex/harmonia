@@ -331,152 +331,168 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-sidebar-menu-button', (el, { original }, { cleanup, effect, Alpine }) => {
-    if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
-      throw new Error(`${original} must be a button or a link`);
-    } else if (el.tagName === 'BUTTON') {
-      el.setAttribute('type', 'button');
-    }
-    const menuItem = findAncestorState(Alpine, el, '_h_sidebar_menu_item');
-    el.classList.add(
-      'flex',
-      'w-full',
-      'items-center',
-      'gap-2',
-      'overflow-hidden',
-      'rounded-md',
-      'align-middle',
-      '[&>span]:align-middle',
-      'outline-hidden',
-      'ring-sidebar-ring',
-      'hover:bg-sidebar-secondary',
-      'hover:[--badge-ring:var(--sidebar-secondary)]',
-      'hover:text-sidebar-secondary-foreground',
-      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
-      'active:bg-sidebar-primary',
-      'active:[--badge-ring:var(--sidebar-primary)]',
-      'active:text-sidebar-primary-foreground',
-      ...disabledControlClasses,
-      'aria-disabled:pointer-events-none',
-      'aria-disabled:opacity-disabled',
-      'data-[active=true]:bg-sidebar-primary',
-      'data-[active=true]:[--badge-ring:var(--sidebar-primary)]',
-      'data-[active=true]:text-sidebar-primary-foreground',
-      '[&>span]:truncate',
-      '[&>div]:min-w-0',
-      'svg-defaults'
-    );
-
-    const sizes = {
-      default: ['h-8', 'text-sm'],
-      sm: ['h-7', 'text-xs'],
-      lg: ['h-12', 'text-sm'],
-    };
-
-    function setSize(size) {
-      if (Object.prototype.hasOwnProperty.call(sizes, size)) {
-        el.classList.add(...sizes[size]);
+  // One shared body behind two directive names: 'h-sidebar-menu-nav' is a
+  // navigation destination, 'h-sidebar-menu-button' is any other control a
+  // sidebar can hold (a trigger, a toggle, a selectable row). They differ only
+  // in the 'data-slot' they carry and in who owns 'aria-current'.
+  const menuButton =
+    (nav) =>
+    (el, { original }, { cleanup, effect, Alpine }) => {
+      if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+        throw new Error(`${original} must be a button or a link`);
+      } else if (el.tagName === 'BUTTON') {
+        el.setAttribute('type', 'button');
       }
-    }
-
-    if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-button');
-
-    // 'data-active' is the styling flag, so on its own the current destination is
-    // marked by colour alone. 'aria-current' is what says so out loud, matching
-    // what the menu, the navigation menu and the bottom navigation already do.
-    function syncActive() {
-      if (el.getAttribute('data-active') === 'true') {
-        el.setAttribute('aria-current', 'page');
-      } else {
-        el.removeAttribute('aria-current');
-      }
-    }
-
-    syncActive();
-
-    const activeObserver = new MutationObserver(syncActive);
-    activeObserver.observe(el, { attributes: true, attributeFilter: ['data-active'] });
-    cleanup(() => activeObserver.disconnect());
-
-    if (menuItem && menuItem._h_sidebar_menu_item.isSub) {
-      el.classList.add('text-sidebar-foreground', 'h-7', 'min-w-0', '-translate-x-px', 'px-2', '[&>svg:not(:first-child):last-child]:ml-auto', 'group-data-[collapsed=true]/sidebar:hidden');
-      if (!el.hasAttribute('data-slot')) el.setAttribute('data-slot', 'sidebar-menu-sub-button');
-    } else {
+      const menuItem = findAncestorState(Alpine, el, '_h_sidebar_menu_item');
+      const isSub = !!menuItem?._h_sidebar_menu_item.isSub;
       el.classList.add(
-        'peer/menu-button',
-        'text-left',
-        'p-2',
-        'text-sm',
-        'duration-200',
-        'transition-[width,height,padding]',
-        'motion-reduce:transition-none',
-        'group-has-data-[sidebar=menu-action]/menu-item:pr-8',
-        'data-[active=true]:font-medium',
-        'aria-[expanded=true]:hover:bg-sidebar-secondary',
-        'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
-        'group-data-[collapsed=true]/sidebar:size-8!',
-        'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!'
+        'flex',
+        'w-full',
+        'items-center',
+        'gap-2',
+        'overflow-hidden',
+        'rounded-md',
+        'align-middle',
+        '[&>span]:align-middle',
+        'outline-hidden',
+        'ring-sidebar-ring',
+        'hover:bg-sidebar-secondary',
+        'hover:[--badge-ring:var(--sidebar-secondary)]',
+        'hover:text-sidebar-secondary-foreground',
+        'focus-visible:ring-[calc(var(--spacing)*0.75)]',
+        'active:bg-sidebar-primary',
+        'active:[--badge-ring:var(--sidebar-primary)]',
+        'active:text-sidebar-primary-foreground',
+        ...disabledControlClasses,
+        'aria-disabled:pointer-events-none',
+        'aria-disabled:opacity-disabled',
+        'data-[active=true]:bg-sidebar-primary',
+        'data-[active=true]:[--badge-ring:var(--sidebar-primary)]',
+        'data-[active=true]:text-sidebar-primary-foreground',
+        '[&>span]:truncate',
+        '[&>div]:min-w-0',
+        'svg-defaults'
       );
 
-      if (el.getAttribute('data-logo') === 'true') {
-        el.classList.add('[&>svg:first-child]:rounded-control', '[&>[data-slot=avatar]:first-child]:rounded-control', 'group-data-[collapsed=true]/sidebar:justify-center!');
-        if (el.parentElement?.getAttribute('data-slot') !== 'sidebar-header') {
-          el.classList.add('pl-1', 'group-data-[collapsed=true]/sidebar:p-1');
-          sizes.default.push('[&>[data-slot=avatar]:first-child]:text-xs', '[&>svg:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:size-6!');
-          sizes.sm.push('[&>[data-slot=avatar]:first-child]:text-xs', '[&>svg:first-child]:size-5.5!', '[&>[data-slot=avatar]:first-child]:size-5.5!');
-          sizes.lg.push(
-            '[&>svg:first-child]:size-10!',
-            '[&>[data-slot=avatar]:first-child]:size-10!',
-            'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!',
-            'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:text-xs'
-          );
-        }
-      }
-    }
-
-    setSize(el.getAttribute('data-size') || 'default');
-
-    if (menuItem && menuItem._h_sidebar_menu_item.collapsable) {
-      if (el.hasAttribute('id')) {
-        menuItem._h_sidebar_menu_item.controlId = el.getAttribute('id');
-      } else {
-        menuItem._h_sidebar_menu_item.controlId = `sgl${uuidv4()}`;
-        el.setAttribute('id', menuItem._h_sidebar_menu_item.controlId);
-      }
-      menuItem._h_sidebar_menu_item.controls = `sgc${uuidv4()}`;
-      el.setAttribute('aria-controls', menuItem._h_sidebar_menu_item.controls);
-
-      // Written through an effect rather than once, since a bound expression can
-      // collapse the item without the click handler ever running. The arrow
-      // turns off this attribute, so it would point the wrong way too.
-      effect(() => {
-        el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
-      });
-
-      const handler = () => {
-        menuItem._h_sidebar_menu_item.state.collapsed = !menuItem._h_sidebar_menu_item.state.collapsed;
+      const sizes = {
+        default: ['h-8', 'text-sm'],
+        sm: ['h-7', 'text-xs'],
+        lg: ['h-12', 'text-sm'],
       };
 
-      el.appendChild(
-        createSvg({
-          icon: ChevronRight,
-          classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform motion-reduce:transition-none duration-200 [[aria-expanded=true]>&]:rotate-90',
-          attrs: {
-            'aria-hidden': true,
-            role: 'presentation',
-          },
-        })
-      );
+      function setSize(size) {
+        if (Object.prototype.hasOwnProperty.call(sizes, size)) {
+          el.classList.add(...sizes[size]);
+        }
+      }
 
-      el.addEventListener('click', handler);
+      if (!el.hasAttribute('data-slot')) {
+        const kind = nav ? 'nav' : 'button';
+        el.setAttribute('data-slot', isSub ? `sidebar-menu-sub-${kind}` : `sidebar-menu-${kind}`);
+      }
 
-      cleanup(() => {
-        el.removeEventListener('click', handler);
-      });
-    } else {
-      el.classList.add('[&>svg:not(:first-child):last-child]:ml-auto');
-    }
-  });
+      // 'data-active' is the styling flag, so on its own the current destination is
+      // marked by colour alone. On the nav variant 'aria-current' is what says so
+      // out loud, matching the menu, the navigation menu and the bottom navigation.
+      // The plain menu button never touches 'aria-current', since an active button
+      // that is not navigation (a trigger, a filter) is not a current page.
+      if (nav) {
+        const syncActive = () => {
+          if (el.getAttribute('data-active') === 'true') {
+            el.setAttribute('aria-current', 'page');
+          } else {
+            el.removeAttribute('aria-current');
+          }
+        };
+
+        syncActive();
+
+        const activeObserver = new MutationObserver(syncActive);
+        activeObserver.observe(el, { attributes: true, attributeFilter: ['data-active'] });
+        cleanup(() => activeObserver.disconnect());
+      }
+
+      if (isSub) {
+        el.classList.add('text-sidebar-foreground', 'h-7', 'min-w-0', '-translate-x-px', 'px-2', '[&>svg:not(:first-child):last-child]:ml-auto', 'group-data-[collapsed=true]/sidebar:hidden');
+      } else {
+        el.classList.add(
+          'peer/menu-button',
+          'text-left',
+          'p-2',
+          'text-sm',
+          'duration-200',
+          'transition-[width,height,padding]',
+          'motion-reduce:transition-none',
+          'group-has-data-[sidebar=menu-action]/menu-item:pr-8',
+          'data-[active=true]:font-medium',
+          'aria-[expanded=true]:hover:bg-sidebar-secondary',
+          'aria-[expanded=true]:hover:text-sidebar-secondary-foreground',
+          'group-data-[collapsed=true]/sidebar:size-8!',
+          'group-data-[collapsed=true]/sidebar:[&>*:not(svg:first-child):not([data-slot=menu]):not([data-slot=avatar]:first-child)]:hidden!'
+        );
+
+        if (el.getAttribute('data-logo') === 'true') {
+          el.classList.add('[&>svg:first-child]:rounded-control', '[&>[data-slot=avatar]:first-child]:rounded-control', 'group-data-[collapsed=true]/sidebar:justify-center!');
+          if (el.parentElement?.getAttribute('data-slot') !== 'sidebar-header') {
+            el.classList.add('pl-1', 'group-data-[collapsed=true]/sidebar:p-1');
+            sizes.default.push('[&>[data-slot=avatar]:first-child]:text-xs', '[&>svg:first-child]:size-6!', '[&>[data-slot=avatar]:first-child]:size-6!');
+            sizes.sm.push('[&>[data-slot=avatar]:first-child]:text-xs', '[&>svg:first-child]:size-5.5!', '[&>[data-slot=avatar]:first-child]:size-5.5!');
+            sizes.lg.push(
+              '[&>svg:first-child]:size-10!',
+              '[&>[data-slot=avatar]:first-child]:size-10!',
+              'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:size-6!',
+              'group-data-[collapsed=true]/sidebar:[&>[data-slot=avatar]:first-child]:text-xs'
+            );
+          }
+        }
+      }
+
+      setSize(el.getAttribute('data-size') || 'default');
+
+      if (menuItem && menuItem._h_sidebar_menu_item.collapsable) {
+        if (el.hasAttribute('id')) {
+          menuItem._h_sidebar_menu_item.controlId = el.getAttribute('id');
+        } else {
+          menuItem._h_sidebar_menu_item.controlId = `sgl${uuidv4()}`;
+          el.setAttribute('id', menuItem._h_sidebar_menu_item.controlId);
+        }
+        menuItem._h_sidebar_menu_item.controls = `sgc${uuidv4()}`;
+        el.setAttribute('aria-controls', menuItem._h_sidebar_menu_item.controls);
+
+        // Written through an effect rather than once, since a bound expression can
+        // collapse the item without the click handler ever running. The arrow
+        // turns off this attribute, so it would point the wrong way too.
+        effect(() => {
+          el.setAttribute('aria-expanded', !menuItem._h_sidebar_menu_item.state.collapsed);
+        });
+
+        const handler = () => {
+          menuItem._h_sidebar_menu_item.state.collapsed = !menuItem._h_sidebar_menu_item.state.collapsed;
+        };
+
+        el.appendChild(
+          createSvg({
+            icon: ChevronRight,
+            classes: 'ml-auto pointer-events-none size-4 shrink-0 transition-transform motion-reduce:transition-none duration-200 [[aria-expanded=true]>&]:rotate-90',
+            attrs: {
+              'aria-hidden': true,
+              role: 'presentation',
+            },
+          })
+        );
+
+        el.addEventListener('click', handler);
+
+        cleanup(() => {
+          el.removeEventListener('click', handler);
+        });
+      } else {
+        el.classList.add('[&>svg:not(:first-child):last-child]:ml-auto');
+      }
+    };
+
+  Alpine.directive('h-sidebar-menu-button', menuButton(false));
+  Alpine.directive('h-sidebar-menu-nav', menuButton(true));
 
   Alpine.directive('h-sidebar-menu-action', (el, { modifiers }) => {
     el.classList.add(

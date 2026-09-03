@@ -60,6 +60,8 @@ import tooltip from './components/tooltip';
 import tree from './components/tree';
 import weekPicker from './components/week-picker';
 
+import { getNativeNotificationPermission, isNativeNotificationSupported, requestNativeNotificationPermission, showNativeNotification } from './utils/native-notifications';
+
 import { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import { getBreakpointListener } from './utils/breakpoint-listener';
@@ -88,8 +90,12 @@ window.Harmonia = {
   chartToSvg,
   createDateFormatter,
   getColorScheme,
+  getNativeNotificationPermission,
+  isNativeNotificationSupported,
   removeColorSchemeListener,
+  requestNativeNotificationPermission,
   setColorScheme,
+  showNativeNotification,
   getSystemColorScheme,
   version,
   plugins: (window.Harmonia && window.Harmonia.plugins) || {},

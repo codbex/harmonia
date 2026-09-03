@@ -35,19 +35,19 @@
             <div x-h-sidebar-group-content>
               <ul x-h-sidebar-menu>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="view === 'overview'" @click="go('overview')">
+                  <button x-h-sidebar-menu-nav :data-active="view === 'overview'" @click="go('overview')">
                     <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
                     <span>Overview</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="view === 'analytics'" @click="go('analytics')">
+                  <button x-h-sidebar-menu-nav :data-active="view === 'analytics'" @click="go('analytics')">
                     <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
                     <span>Analytics</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="view === 'customers'" @click="go('customers')">
+                  <button x-h-sidebar-menu-nav :data-active="view === 'customers'" @click="go('customers')">
                     <svg x-h-lucide role="presentation" data-lucide="users"></svg>
                     <span>Customers</span>
                     <span x-h-sidebar-menu-badge x-text="orders.length"></span>
@@ -62,7 +62,7 @@
             <div x-h-sidebar-group-content>
               <ul x-h-sidebar-menu>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="view === 'settings'" @click="go('settings')">
+                  <button x-h-sidebar-menu-nav :data-active="view === 'settings'" @click="go('settings')">
                     <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
                     <span>Settings</span>
                   </button>

@@ -43,20 +43,20 @@
             <div x-h-sidebar-group-content>
               <ul x-h-sidebar-menu>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="isActive('/activity')" @click="go('/activity')">
+                  <button x-h-sidebar-menu-nav :data-active="isActive('/activity')" @click="go('/activity')">
                     <svg x-h-lucide role="presentation" data-lucide="at-sign"></svg>
                     <span>Activity</span>
                     <span x-h-sidebar-menu-badge x-show="$store.chat.unseenMentionCount" role="img" :aria-label="$store.chat.unseenMentionCount + ' unseen mentions'" x-text="$store.chat.unseenMentionCount"></span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="isActive('/channels') && !$router.context.params.id" @click="go('/channels')">
+                  <button x-h-sidebar-menu-nav :data-active="isActive('/channels') && !$router.context.params.id" @click="go('/channels')">
                     <svg x-h-lucide role="presentation" data-lucide="layout-list"></svg>
                     <span>Browse channels</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button :data-active="isActive('/people')" @click="go('/people')">
+                  <button x-h-sidebar-menu-nav :data-active="isActive('/people')" @click="go('/people')">
                     <svg x-h-lucide role="presentation" data-lucide="users"></svg>
                     <span>People</span>
                   </button>
@@ -71,7 +71,7 @@
               <ul x-h-sidebar-menu>
                 <template x-for="channel in $store.chat.joinedChannels" :key="channel.id">
                   <li x-h-sidebar-menu-item>
-                    <button x-h-sidebar-menu-button :data-active="channelActive(channel.id)" @click="go('/channels/' + channel.id)">
+                    <button x-h-sidebar-menu-nav :data-active="channelActive(channel.id)" @click="go('/channels/' + channel.id)">
                       <svg x-h-lucide role="presentation" data-lucide="hash"></svg>
                       <span x-text="channel.name"></span>
                       <span x-h-sidebar-menu-badge x-show="channel.unread" role="img" :aria-label="channel.unread + ' unread messages'" x-text="channel.unread"></span>
@@ -88,7 +88,7 @@
               <ul x-h-sidebar-menu>
                 <template x-for="dm in $store.chat.dms" :key="dm.id">
                   <li x-h-sidebar-menu-item>
-                    <button x-h-sidebar-menu-button data-logo="true" :data-active="isActive('/dms/' + dm.id)" @click="go('/dms/' + dm.id)">
+                    <button x-h-sidebar-menu-nav data-logo="true" :data-active="isActive('/dms/' + dm.id)" @click="go('/dms/' + dm.id)">
                       <div x-h-avatar class="relative" :data-color="$store.chat.userById(dm.userId)?.color">
                         <img x-h-avatar-image :src="$store.chat.userById(dm.userId)?.avatar" alt="" aria-hidden="true" />
                         <span x-h-avatar-fallback x-text="$store.chat.userById(dm.userId)?.initials"></span>
@@ -113,7 +113,7 @@
         </nav>
 
         <div x-h-sidebar-footer data-borderless="true">
-          <button x-h-sidebar-menu-button :data-active="isActive('/settings')" @click="go('/settings')">
+          <button x-h-sidebar-menu-nav :data-active="isActive('/settings')" @click="go('/settings')">
             <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
             <span>Settings</span>
           </button>

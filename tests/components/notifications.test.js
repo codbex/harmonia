@@ -1,6 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { playNotificationSound } from '../../src/common/notification-sound.js';
 import notificationsPlugin from '../../src/components/notifications.js';
 import { createMockAlpine, createMockContext } from '../test-utils.js';
+
+vi.mock('../../src/common/notification-sound.js', () => ({ playNotificationSound: vi.fn() }));
 
 function makeAlpineWithStore() {
   const alpine = createMockAlpine();
@@ -143,6 +146,128 @@ describe('h-notification-overlay', () => {
       expect(list.classList.contains('overflow-visible')).toBe(true);
       expect(list.classList.contains('mask-[linear-gradient(to_top,black_85%,transparent)]')).toBe(true);
     }
+  });
+});
+
+describe('$notifications magic', () => {
+  function getMagic() {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const magic = alpine.magic.mock.calls[0][1]();
+    return { alpine, magic, store: alpine.store('_h_notifications') };
+  }
+
+  it('add forwards the sound option to the store', () => {
+    const { magic, store } = getMagic();
+    magic.add({ template: 'tmpl1', timeout: 0, sound: '/audio/ping.mp3' });
+    expect(store.items[0].sound).toBe('/audio/ping.mp3');
+  });
+
+  it('exposes the native notification helpers', () => {
+    const { magic } = getMagic();
+    expect(typeof magic.native.isSupported).toBe('function');
+    expect(typeof magic.native.getPermission).toBe('function');
+    expect(typeof magic.native.requestPermission).toBe('function');
+    expect(typeof magic.native.show).toBe('function');
+  });
+});
+
+describe('h-notification-overlay sound', () => {
+  function setupOverlayWithTemplate(attrs = {}) {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const el = document.createElement('section');
+    for (const [name, value] of Object.entries(attrs)) el.setAttribute(name, value);
+    const tpl = document.createElement('template');
+    tpl.setAttribute('id', 'basic');
+    tpl.content.appendChild(document.createElement('li'));
+    el.appendChild(tpl);
+    document.body.appendChild(el);
+    alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, createMockContext(alpine));
+    return { alpine, el, store: alpine.store('_h_notifications') };
+  }
+
+  beforeEach(() => {
+    playNotificationSound.mockClear();
+  });
+
+  it('stores the sound option on the pushed item', () => {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const store = alpine.store('_h_notifications');
+    store.push('id1', 'tmpl1', 'top-right', 0, {}, true);
+    expect(store.items[0].sound).toBe(true);
+  });
+
+  it('plays the chime for sound: true', () => {
+    const { store } = setupOverlayWithTemplate();
+    store.push('id1', 'basic', 'top-right', 0, {}, true);
+    expect(playNotificationSound).toHaveBeenCalledWith(true);
+  });
+
+  it('per-notification URL wins over the overlay default', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': 'true' });
+    store.push('id1', 'basic', 'top-right', 0, {}, '/audio/ping.mp3');
+    expect(playNotificationSound).toHaveBeenCalledWith('/audio/ping.mp3');
+  });
+
+  it('sound: false silences a notification despite the overlay default', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': 'true' });
+    store.push('id1', 'basic', 'top-right', 0, {}, false);
+    expect(playNotificationSound).not.toHaveBeenCalled();
+  });
+
+  it('stays silent without a sound option or overlay default', () => {
+    const { store } = setupOverlayWithTemplate();
+    store.push('id1', 'basic', 'top-right', 0, {});
+    expect(playNotificationSound).not.toHaveBeenCalled();
+  });
+
+  it('a bare data-sound attribute plays the chime by default', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': '' });
+    store.push('id1', 'basic', 'top-right', 0, {});
+    expect(playNotificationSound).toHaveBeenCalledWith(true);
+  });
+
+  it('data-sound="true" plays the chime by default', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': 'true' });
+    store.push('id1', 'basic', 'top-right', 0, {});
+    expect(playNotificationSound).toHaveBeenCalledWith(true);
+  });
+
+  it('a data-sound URL plays that file by default', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': '/audio/ping.mp3' });
+    store.push('id1', 'basic', 'top-right', 0, {});
+    expect(playNotificationSound).toHaveBeenCalledWith('/audio/ping.mp3');
+  });
+
+  it('data-sound="false" turns the default sound off', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': 'false' });
+    store.push('id1', 'basic', 'top-right', 0, {});
+    expect(playNotificationSound).not.toHaveBeenCalled();
+  });
+
+  it('per-notification sound still plays despite data-sound="false"', () => {
+    const { store } = setupOverlayWithTemplate({ 'data-sound': 'false' });
+    store.push('id1', 'basic', 'top-right', 0, {}, true);
+    expect(playNotificationSound).toHaveBeenCalledWith(true);
+  });
+
+  it('does not play sound for items replayed on overlay mount', () => {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const store = alpine.store('_h_notifications');
+    store.push('id1', 'basic', 'top-right', 0, {}, true);
+    const el = document.createElement('section');
+    el.setAttribute('data-sound', 'true');
+    const tpl = document.createElement('template');
+    tpl.setAttribute('id', 'basic');
+    tpl.content.appendChild(document.createElement('li'));
+    el.appendChild(tpl);
+    document.body.appendChild(el);
+    alpine._directives['h-notification-overlay'](el, { original: 'x-h-notification-overlay', modifiers: [] }, createMockContext(alpine));
+    expect(el.querySelector('li[id="id1"]')).not.toBeNull();
+    expect(playNotificationSound).not.toHaveBeenCalled();
   });
 });
 

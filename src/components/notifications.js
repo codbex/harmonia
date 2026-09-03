@@ -1,13 +1,15 @@
 import { classListStartsWith } from '../common/class-list';
+import { playNotificationSound } from '../common/notification-sound';
 import { transitionClose } from '../common/transition-close';
 import { getBreakpointListener } from '../utils/breakpoint-listener';
+import { getNativeNotificationPermission, isNativeNotificationSupported, requestNativeNotificationPermission, showNativeNotification } from '../utils/native-notifications';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
   Alpine.store('_h_notifications', {
     items: [],
     listeners: [],
 
-    push(id = `hn${uuidv4()}`, template, position = 'top-right', timeout = 5000, data = {}) {
+    push(id = `hn${uuidv4()}`, template, position = 'top-right', timeout = 5000, data = {}, sound) {
       if (!template) {
         throw new Error('Notification must have a template ID');
       }
@@ -17,6 +19,7 @@ export default function (Alpine) {
         position,
         timeout,
         data: Alpine.reactive(data),
+        sound,
       };
       this.items.push(item);
       this.listeners.forEach((listener) => {
@@ -54,8 +57,8 @@ export default function (Alpine) {
 
   Alpine.magic('notifications', () => {
     return {
-      add({ id, template, position, timeout, data } = {}) {
-        Alpine.store('_h_notifications').push(id, template, position, timeout, data);
+      add({ id, template, position, timeout, data, sound } = {}) {
+        Alpine.store('_h_notifications').push(id, template, position, timeout, data, sound);
       },
       update({ id, data } = {}) {
         Alpine.store('_h_notifications').update(id, data);
@@ -69,6 +72,12 @@ export default function (Alpine) {
       },
       removeListener(listener) {
         Alpine.store('_h_notifications').listeners = Alpine.store('_h_notifications').listeners.filter((item) => item !== listener);
+      },
+      native: {
+        isSupported: isNativeNotificationSupported,
+        getPermission: getNativeNotificationPermission,
+        requestPermission: requestNativeNotificationPermission,
+        show: showNativeNotification,
       },
     };
   });
@@ -136,7 +145,7 @@ export default function (Alpine) {
     }, getComputedStyle(el).getPropertyValue('--breakpoint-xl').trim());
 
     const listener = {
-      added(item) {
+      added(item, replay) {
         const clone = notificationTemplates[item.template].content.firstElementChild.cloneNode(true);
         clone.classList.add('transform', 'transition-all', 'motion-reduce:transition-none', 'duration-300', 'ease-out', 'opacity-0');
         clone.setAttribute('id', item.id);
@@ -191,6 +200,23 @@ export default function (Alpine) {
             Alpine.store('_h_notifications').remove(item.id);
           }, item.timeout);
         }
+        if (!replay) {
+          // The per-notification sound wins. Without one, the overlay's
+          // data-sound sets the default (empty or 'true' = built-in chime,
+          // 'false' = no default, anything else = audio file URL).
+          let sound = null;
+          if (item.sound === true || (typeof item.sound === 'string' && item.sound !== '')) {
+            sound = item.sound;
+          } else if (item.sound !== false && el.hasAttribute('data-sound')) {
+            const value = el.getAttribute('data-sound');
+            if (value === '' || value === 'true') {
+              sound = true;
+            } else if (value !== 'false') {
+              sound = value;
+            }
+          }
+          if (sound !== null) playNotificationSound(sound);
+        }
       },
       removed(id) {
         const element = el.querySelector(`#${id}`);
@@ -218,7 +244,8 @@ export default function (Alpine) {
     Alpine.store('_h_notifications').listeners.push(listener);
     if (Alpine.store('_h_notifications').items.length) {
       Alpine.store('_h_notifications').items.forEach((item) => {
-        listener.added(item);
+        // Replayed items stay silent. The user already got them once.
+        listener.added(item, true);
       });
     }
 

@@ -65,6 +65,7 @@ export { getBreakpointListener } from './utils/breakpoint-listener';
 export { chartToImage, chartToSvg } from './utils/chart-export';
 export { createDateFormatter } from './utils/date-format';
 export { getLanguageStorageKey, setLanguageStorageKey } from './utils/language';
+export { getNativeNotificationPermission, isNativeNotificationSupported, requestNativeNotificationPermission, showNativeNotification } from './utils/native-notifications';
 export { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import i18next from './plugins/i18next';

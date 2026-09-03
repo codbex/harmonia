@@ -24,6 +24,7 @@ Use sidebars for main application navigation or other persistent content that be
 - `x-h-sidebar-menu`
 - `x-h-sidebar-menu-item`
 - `x-h-sidebar-menu-button`
+- `x-h-sidebar-menu-nav`
 - `x-h-sidebar-menu-action`
 - `x-h-sidebar-menu-badge`
 - `x-h-sidebar-menu-skeleton`
@@ -49,6 +50,14 @@ Use sidebars for main application navigation or other persistent content that be
 | Attribute   | Type                        | Required | Description                                                                                                                                                                                                          |
 | ----------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data-active | boolean                     | false    | Sets the menu button as active.                                                                                                                                                                                      |
+| data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button. Ignored when the sidebar is collapsed.                                                                                                                                             |
+| data-logo   | boolean                     | false    | When the sidebar is collapsed, removes the button padding and makes the icon or avatar fill the button. Use it on buttons that show a brand logo in the header or footer, or a user avatar elsewhere in the sidebar. |
+
+#### x-h-sidebar-menu-nav
+
+| Attribute   | Type                        | Required | Description                                                                                                                                                                                                          |
+| ----------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-active | boolean                     | false    | Sets the destination as active and marks it with `aria-current="page"`.                                                                                                                                              |
 | data-size   | `default`<br/>`sm`<br/>`lg` | false    | Sets the size of the menu button. Ignored when the sidebar is collapsed.                                                                                                                                             |
 | data-logo   | boolean                     | false    | When the sidebar is collapsed, removes the button padding and makes the icon or avatar fill the button. Use it on buttons that show a brand logo in the header or footer, or a user avatar elsewhere in the sidebar. |
 
@@ -117,7 +126,7 @@ Use sidebars for main application navigation or other persistent content that be
 
 ## Accessibility
 
-A menu button marked `data-active="true"` also gets `aria-current="page"`, so the destination the user is on is announced and not only coloured. The attribute is followed as it changes, which is what a bound `:data-active` needs.
+A `x-h-sidebar-menu-nav` marked `data-active="true"` also gets `aria-current="page"`, so the destination the user is on is announced and not only coloured. The attribute is followed as it changes, which is what a bound `:data-active` needs. A plain `x-h-sidebar-menu-button` never touches `aria-current`, since an active button may mark a selected filter, a menu/popover trigger or anything else that is not the current page. Its `aria-current` is left entirely to you, both the value and whether it appears at all.
 
 A `x-h-sidebar-group-label` inside a `x-h-sidebar-group.collapsed` is the control that collapses the group, so it is given the `button` role and a tab stop, and it answers `Enter` and `Space` the way a button does. Write it as a `<button>` instead and it is left alone, since it already is one. A label in a group that does not collapse stays plain text with no role and no tab stop.
 
@@ -267,20 +276,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and let it blend
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                 <span>Home</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="true">
+              <button x-h-sidebar-menu-nav data-active="true">
                 <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                 <span>Extensions</span>
               </button>
@@ -310,20 +319,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                 <span>Home</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="true">
+              <button x-h-sidebar-menu-nav data-active="true">
                 <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                 <span>Extensions</span>
               </button>
@@ -348,20 +357,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
       <div x-h-sidebar-group-content>
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="true">
+            <button x-h-sidebar-menu-nav data-active="true">
               <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
@@ -383,20 +392,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
       <div x-h-sidebar-group-content>
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="true">
+            <button x-h-sidebar-menu-nav data-active="true">
               <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
@@ -418,20 +427,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
       <div x-h-sidebar-group-content>
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="true">
+            <button x-h-sidebar-menu-nav data-active="true">
               <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
@@ -455,20 +464,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                 <span>Home</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="true">
+              <button x-h-sidebar-menu-nav data-active="true">
                 <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                 <span>Extensions</span>
               </button>
@@ -492,20 +501,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                 <span>Home</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="false">
+              <button x-h-sidebar-menu-nav data-active="false">
                 <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <button x-h-sidebar-menu-button data-active="true">
+              <button x-h-sidebar-menu-nav data-active="true">
                 <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                 <span>Extensions</span>
               </button>
@@ -538,20 +547,20 @@ Set `data-borderless="true"` on the sidebar to drop its divider and apply a shad
       <div x-h-sidebar-group-content>
         <ul x-h-sidebar-menu>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="house"></svg>
               <span>Home</span>
               <span x-h-sidebar-menu-badge>11</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
               <span>Documents</span>
             </button>
           </li>
           <li x-h-sidebar-menu-item>
-            <button x-h-sidebar-menu-button data-active="false">
+            <button x-h-sidebar-menu-nav data-active="false">
               <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
               <span>Extensions</span>
             </button>
@@ -814,13 +823,13 @@ A group label can carry one or more action buttons. Wrap them in `x-h-sidebar-gr
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button type="button" x-h-sidebar-menu-button :data-active="active === 'dashboard'" @click="changeActive('dashboard')">
+              <button type="button" x-h-sidebar-menu-nav :data-active="active === 'dashboard'" @click="changeActive('dashboard')">
                 <svg x-h-lucide role="presentation" data-lucide="layout-dashboard"></svg>
                 <span>Dashboard</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'analytics'" @click="changeActive('analytics')">
+              <a x-h-sidebar-menu-nav href="#full-example" :data-active="active === 'analytics'" @click="changeActive('analytics')">
                 <svg x-h-lucide role="presentation" data-lucide="chart-no-axes-combined"></svg>
                 <span>Analytics</span>
               </a>
@@ -834,14 +843,14 @@ A group label can carry one or more action buttons. Wrap them in `x-h-sidebar-gr
         <div x-h-sidebar-group-content>
           <ul x-h-sidebar-menu>
             <li x-h-sidebar-menu-item>
-              <button type="button" x-h-sidebar-menu-button :data-active="active === 'files'" @click="changeActive('files')">
+              <button type="button" x-h-sidebar-menu-nav :data-active="active === 'files'" @click="changeActive('files')">
                 <svg x-h-lucide role="presentation" data-lucide="folder"></svg>
                 <span>Files</span>
                 <span x-h-sidebar-menu-badge>11</span>
               </button>
             </li>
             <li x-h-sidebar-menu-item>
-              <a x-h-sidebar-menu-button href="#full-example" :data-active="active === 'docs'" @click="changeActive('docs')">
+              <a x-h-sidebar-menu-nav href="#full-example" :data-active="active === 'docs'" @click="changeActive('docs')">
                 <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                 <span>Documents</span>
               </a>

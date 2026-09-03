@@ -494,33 +494,53 @@ describe('h-sidebar-menu-button', () => {
     expect(el.classList.contains('flex')).toBe(true);
   });
 
-  // data-active is the styling flag. Without aria-current the current destination
-  // was marked by colour alone, unlike the menu, nav menu and bottom navigation.
-  it('marks an active destination with aria-current', () => {
+  it('marks a button inside a sub menu with the sub slot', () => {
+    const item = document.createElement('li');
+    item._h_sidebar_menu_item = {
+      isSub: true,
+      collapsable: false,
+      controlId: undefined,
+      controls: undefined,
+      state: reactive({ collapsed: false }),
+    };
+    const el = document.createElement('button');
+    item.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-sub-button');
+  });
+
+  it('keeps an author-set data-slot', () => {
+    const el = document.createElement('button');
+    el.setAttribute('data-slot', 'custom');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('custom');
+  });
+
+  // A plain menu button may mark a selected filter, a trigger or anything else
+  // that is not the current page, so it makes no aria-current claim of its own
+  // and never touches one the author set. Navigation is h-sidebar-menu-nav.
+  it('never sets aria-current', async () => {
     const el = document.createElement('a');
     el.setAttribute('data-active', 'true');
     mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
-    expect(el.getAttribute('aria-current')).toBe('page');
-  });
-
-  it('leaves aria-current off an inactive destination', () => {
-    for (const value of [null, 'false']) {
-      const el = document.createElement('a');
-      if (value !== null) el.setAttribute('data-active', value);
-      mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
-      expect(el.hasAttribute('aria-current')).toBe(false);
-    }
-  });
-
-  it('follows data-active when it changes at runtime', async () => {
-    const el = document.createElement('a');
-    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
-    el.setAttribute('data-active', 'true');
-    await flush();
-    expect(el.getAttribute('aria-current')).toBe('page');
+    expect(el.hasAttribute('aria-current')).toBe(false);
     el.removeAttribute('data-active');
     await flush();
+    el.setAttribute('data-active', 'true');
+    await flush();
     expect(el.hasAttribute('aria-current')).toBe(false);
+  });
+
+  it('keeps an author-set aria-current', async () => {
+    const el = document.createElement('a');
+    el.setAttribute('aria-current', 'location');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('aria-current')).toBe('location');
+    el.setAttribute('data-active', 'true');
+    await flush();
+    el.removeAttribute('data-active');
+    await flush();
+    expect(el.getAttribute('aria-current')).toBe('location');
   });
 
   // The badge ring reads the inherited --badge-ring, so the button re-declares
@@ -622,6 +642,63 @@ describe('h-sidebar-menu-button', () => {
       expect(item._h_sidebar_menu_item.state.collapsed).toBe(true);
       expect(el.getAttribute('aria-expanded')).toBe('false');
     });
+  });
+});
+
+describe('h-sidebar-menu-nav', () => {
+  // Shares the menu button body, so only the slot and the aria-current sync
+  // are its own.
+  it('applies the shared button treatment with its own data-slot', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    expect(el.getAttribute('type')).toBe('button');
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-nav');
+    expect(el.classList.contains('flex')).toBe(true);
+    expect(el.classList.contains('peer/menu-button')).toBe(true);
+  });
+
+  it('marks a nav inside a sub menu with the sub slot', () => {
+    const item = document.createElement('li');
+    item._h_sidebar_menu_item = {
+      isSub: true,
+      collapsable: false,
+      controlId: undefined,
+      controls: undefined,
+      state: reactive({ collapsed: false }),
+    };
+    const el = document.createElement('a');
+    item.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-sub-nav');
+  });
+
+  // data-active is the styling flag. Without aria-current the current destination
+  // was marked by colour alone, unlike the menu, nav menu and bottom navigation.
+  it('marks an active destination with aria-current', () => {
+    const el = document.createElement('a');
+    el.setAttribute('data-active', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    expect(el.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('leaves aria-current off an inactive destination', () => {
+    for (const value of [null, 'false']) {
+      const el = document.createElement('a');
+      if (value !== null) el.setAttribute('data-active', value);
+      mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+      expect(el.hasAttribute('aria-current')).toBe(false);
+    }
+  });
+
+  it('follows data-active when it changes at runtime', async () => {
+    const el = document.createElement('a');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    el.setAttribute('data-active', 'true');
+    await flush();
+    expect(el.getAttribute('aria-current')).toBe('page');
+    el.removeAttribute('data-active');
+    await flush();
+    expect(el.hasAttribute('aria-current')).toBe(false);
   });
 });
 
