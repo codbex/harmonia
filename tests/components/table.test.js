@@ -84,6 +84,17 @@ describe('h-table-head', () => {
     expect(el.classList.contains('text-left')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('table-head');
   });
+
+  it('applies the header data-bordered variant classes', () => {
+    const el = document.createElement('th');
+    mountDirective(tablePlugin, 'h-table-head', el);
+    expect(el.classList.contains('[[data-slot=table-header][data-bordered=true]_&]:border-t')).toBe(true);
+    expect(el.classList.contains('[[data-slot=table-header][data-bordered=true]_&]:border-b')).toBe(true);
+    expect(el.classList.contains('[[data-slot=table-header][data-bordered=true]_&:first-child]:border-l')).toBe(true);
+    expect(el.classList.contains('[[data-slot=table-header][data-bordered=true]_&:last-child]:border-r')).toBe(true);
+    expect(el.classList.contains('[[data-slot=table-header][data-bordered=horizontal]_&]:border-t')).toBe(true);
+    expect(el.classList.contains('[[data-slot=table-header][data-bordered=horizontal]_&]:border-b')).toBe(true);
+  });
 });
 
 describe('h-table-cell', () => {

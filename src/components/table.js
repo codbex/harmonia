@@ -66,6 +66,8 @@ export default function (Alpine) {
       '[[data-slot=table-header][data-bordered=true]_&]:border-b',
       '[[data-slot=table-header][data-bordered=true]_&:first-child]:border-l',
       '[[data-slot=table-header][data-bordered=true]_&:last-child]:border-r',
+      '[[data-slot=table-header][data-bordered=horizontal]_&]:border-t',
+      '[[data-slot=table-header][data-bordered=horizontal]_&]:border-b',
       'h-10',
       'px-2',
       'text-left',

@@ -45,9 +45,9 @@ Use tables to present datasets, lists, or records where a clear relationship bet
 
 #### x-h-table-header
 
-| Attribute     | Type    | Required | Description                      |
-| ------------- | ------- | -------- | -------------------------------- |
-| data-bordered | boolean | false    | Adds a border around the header. |
+| Attribute     | Type                     | Required | Description                                                       |
+| ------------- | ------------------------ | -------- | ----------------------------------------------------------------- |
+| data-bordered | `true`<br />`horizontal` | false    | Adds a border around the header, or only a top and bottom border. |
 
 #### x-h-table-row
 
@@ -373,7 +373,7 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
 
 ### Table with bordered header
 
-Set `data-bordered="true"` on the header to outline the whole head row. Use it on its own, not together with the table's other border options.
+Set `data-bordered="true"` on the header to outline the whole head row, or `data-bordered="horizontal"` to draw only a top and bottom border. Use it on its own, not together with the table's other border options.
 
 ```html
 <div x-h-table-container>
