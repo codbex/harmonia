@@ -1,29 +1,6 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import listPlugin from '../../src/components/list.js';
 import { mountDirective } from '../test-utils.js';
-
-describe('h-listbox', () => {
-  it('applies base classes', () => {
-    const el = document.createElement('div');
-    mountDirective(listPlugin, 'h-listbox', el);
-    expect(el.classList.contains('bg-background')).toBe(true);
-    expect(el.classList.contains('rounded-control')).toBe(true);
-    expect(el.classList.contains('outline-none')).toBe(true);
-  });
-
-  it('sets role and data-slot attributes', () => {
-    const el = document.createElement('div');
-    mountDirective(listPlugin, 'h-listbox', el);
-    expect(el.getAttribute('role')).toBe('listbox');
-    expect(el.getAttribute('data-slot')).toBe('listbox');
-  });
-
-  it('calls cleanup on teardown', () => {
-    const el = document.createElement('div');
-    const { ctx } = mountDirective(listPlugin, 'h-listbox', el);
-    expect(ctx.cleanup).toHaveBeenCalled();
-  });
-});
 
 describe('h-list', () => {
   it('applies base classes', () => {
@@ -33,11 +10,12 @@ describe('h-list', () => {
     expect(el.classList.contains('divide-y')).toBe(true);
   });
 
-  it('keeps the native list role when standalone', () => {
-    // Overriding role on a plain ul would cost the item count announcement.
+  it('spells out role=list when standalone', () => {
+    // The reset that strips the bullets also costs a ul its list semantics in
+    // Safari, and with them the announced item count.
     const el = document.createElement('ul');
     mountDirective(listPlugin, 'h-list', el);
-    expect(el.hasAttribute('role')).toBe(false);
+    expect(el.getAttribute('role')).toBe('list');
     expect(el.getAttribute('data-slot')).toBe('list');
   });
 
@@ -61,6 +39,36 @@ describe('h-list', () => {
     mountDirective(listPlugin, 'h-list', el);
     expect(el.getAttribute('role')).toBe('group');
   });
+
+  it('stays a group when a wrapper separates it from the combobox', () => {
+    // The popup can hold more than the list (a hint, an empty state, a scroll
+    // container), so the lookup must not require the list to be a direct child.
+    const combobox = document.createElement('div');
+    combobox.setAttribute('data-slot', 'combobox');
+    const wrapper = document.createElement('div');
+    const el = document.createElement('ul');
+    wrapper.appendChild(el);
+    combobox.appendChild(wrapper);
+    mountDirective(listPlugin, 'h-list', el);
+    expect(el.getAttribute('role')).toBe('group');
+  });
+
+  it('is a plain list when nested inside an option, not another group', () => {
+    // A list inside an option is that option's own content. Called a group, its
+    // rows would join the option set the listbox navigates.
+    const listbox = document.createElement('div');
+    listbox.setAttribute('data-slot', 'listbox');
+    const outerList = document.createElement('ul');
+    const option = document.createElement('li');
+    listbox.appendChild(outerList);
+    outerList.appendChild(option);
+    mountDirective(listPlugin, 'h-list-item', option);
+
+    const el = document.createElement('ul');
+    option.appendChild(el);
+    mountDirective(listPlugin, 'h-list', el);
+    expect(el.getAttribute('role')).toBe('list');
+  });
 });
 
 describe('h-list-secondary', () => {
@@ -68,7 +76,11 @@ describe('h-list-secondary', () => {
     const el = document.createElement('span');
     mountDirective(listPlugin, 'h-list-secondary', el);
     expect(el.classList.contains('text-muted-foreground')).toBe(true);
+    // A selected option and the current row of an interactive list both paint
+    // the row, so muted text has to give way inside either.
     expect(el.classList.contains('[[aria-selected=true]_&]:text-primary-foreground/75')).toBe(true);
+    expect(el.classList.contains('[[aria-current=true]_&]:text-primary-foreground/75')).toBe(true);
+    expect(el.classList.contains('[[aria-current=page]_&]:text-primary-foreground/75')).toBe(true);
   });
 
   it('sets data-slot attribute', () => {
@@ -88,13 +100,35 @@ describe('h-list-secondary', () => {
       const item = document.createElement('li');
       item.setAttribute('aria-selected', String(selected));
       list.appendChild(item);
-      mountDirective(listPlugin, 'h-list-item', item, { modifiers: ['interactive'] });
+      mountDirective(listPlugin, 'h-list-item', item);
       const secondary = document.createElement('span');
       item.appendChild(secondary);
       mountDirective(listPlugin, 'h-list-secondary', secondary);
       return secondary;
     });
     expect([...list.querySelectorAll('[aria-selected=true] span')]).toEqual([secondaries[0]]);
+    list.remove();
+  });
+
+  it('recolors inside the current row but not inside one bound to a false expression', () => {
+    // A bound aria-current renders the literal string "false" when the row is
+    // not current, which the variant must not treat as current.
+    const list = document.createElement('ul');
+    document.body.appendChild(list);
+    const secondaries = ['true', 'false'].map((current) => {
+      const item = document.createElement('li');
+      list.appendChild(item);
+      mountDirective(listPlugin, 'h-list-item', item);
+      const control = document.createElement('button');
+      control.setAttribute('aria-current', current);
+      item.appendChild(control);
+      mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' });
+      const secondary = document.createElement('span');
+      control.appendChild(secondary);
+      mountDirective(listPlugin, 'h-list-secondary', secondary);
+      return secondary;
+    });
+    expect([...list.querySelectorAll('[aria-current=true] span')]).toEqual([secondaries[0]]);
     list.remove();
   });
 });
@@ -195,11 +229,12 @@ describe('h-list-item', () => {
     listbox.remove();
   });
 
-  it('sets no tabindex when not in a listbox and not interactive', () => {
-    // tabindex="-1" would not make a plain item Tab-reachable, it would only
-    // make it programmatically focusable and show up in focusable sweeps.
+  it('never becomes a control itself, so its ul keeps its list items', () => {
+    // A li playing a button leaves its ul with no list items at all, which is
+    // invalid and costs the list its announcement. tabindex="-1" would not make
+    // the item Tab-reachable either, only focusable in a focusable sweep.
     const el = document.createElement('li');
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: [] });
+    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
     expect(el.hasAttribute('tabindex')).toBe(false);
     expect(el.hasAttribute('role')).toBe(false);
   });
@@ -240,393 +275,119 @@ describe('h-list-item', () => {
     expect(item.classList.contains('data-[active=true]:bg-table-hover')).toBe(true);
   });
 
-  it('applies disabled styling to interactive items', () => {
-    const el = document.createElement('li');
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
-    expect(el.classList.contains('aria-disabled:opacity-disabled')).toBe(true);
-    expect(el.classList.contains('aria-disabled:pointer-events-none')).toBe(true);
-    expect(el.classList.contains('aria-disabled:cursor-not-allowed')).toBe(true);
-  });
-
-  it('applies interactive classes when interactive modifier used', () => {
-    const el = document.createElement('li');
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
-    expect(el.classList.contains('focus:bg-table-hover')).toBe(true);
-  });
-
-  it('makes every interactive item its own button-like tab stop', () => {
-    // Interactive items are independent controls, so Tab moves between them
-    // the same way it moves between buttons.
+  it('is still an option when a wrapper separates its list from the combobox', () => {
+    // The popup can hold a hint, an empty state or a scroll container beside the
+    // list, so the lookup must not require the list to be a direct child.
+    const combobox = document.createElement('div');
+    combobox.setAttribute('data-slot', 'combobox');
+    const wrapper = document.createElement('div');
     const list = document.createElement('ul');
-    mountDirective(listPlugin, 'h-list', list);
-    const items = [0, 1, 2].map(() => {
-      const item = document.createElement('li');
-      list.appendChild(item);
-      mountDirective(listPlugin, 'h-list-item', item, { modifiers: ['interactive'] });
-      return item;
-    });
-    expect(items.map((item) => item.getAttribute('tabindex'))).toEqual(['0', '0', '0']);
-    expect(items.map((item) => item.getAttribute('role'))).toEqual(['button', 'button', 'button']);
+    const item = document.createElement('li');
+    list.appendChild(item);
+    wrapper.appendChild(list);
+    combobox.appendChild(wrapper);
+
+    mountDirective(listPlugin, 'h-list-item', item);
+    expect(item.getAttribute('role')).toBe('option');
   });
 
-  it.each(['Enter', ' '])('activates an interactive item on %s', (key) => {
-    // role=button promises both keys activate, and an li has to forward them.
-    const el = document.createElement('li');
-    document.body.appendChild(el);
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
-    let clicks = 0;
-    el.addEventListener('click', () => clicks++);
-    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
-    el.dispatchEvent(event);
-    expect(clicks).toBe(1);
-    expect(event.defaultPrevented).toBe(true);
-    el.remove();
-  });
+  it('stays a plain row when its list is nested inside an option', () => {
+    // The lookup used to walk the whole ancestor chain, so these rows claimed
+    // role=option and joined the set the listbox and the combobox navigate with
+    // querySelectorAll('[role=option]'), handing the arrow keys and the tab stop
+    // to rows that are not options.
+    const listbox = document.createElement('div');
+    listbox.setAttribute('data-slot', 'listbox');
+    const outerList = document.createElement('ul');
+    const option = document.createElement('li');
+    listbox.appendChild(outerList);
+    outerList.appendChild(option);
+    mountDirective(listPlugin, 'h-list-item', option);
+    expect(option.getAttribute('role')).toBe('option');
 
-  it('does not activate a disabled interactive item', () => {
-    const el = document.createElement('li');
-    el.setAttribute('aria-disabled', 'true');
-    document.body.appendChild(el);
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
-    let clicks = 0;
-    el.addEventListener('click', () => clicks++);
-    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
-    expect(clicks).toBe(0);
-    el.remove();
-  });
+    const innerList = document.createElement('ul');
+    const row = document.createElement('li');
+    innerList.appendChild(row);
+    option.appendChild(innerList);
+    mountDirective(listPlugin, 'h-list', innerList);
+    mountDirective(listPlugin, 'h-list-item', row);
 
-  it('leaves other keys alone on an interactive item', () => {
-    const el = document.createElement('li');
-    document.body.appendChild(el);
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
-    let clicks = 0;
-    el.addEventListener('click', () => clicks++);
-    const event = new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true });
-    el.dispatchEvent(event);
-    expect(clicks).toBe(0);
-    expect(event.defaultPrevented).toBe(false);
-    el.remove();
-  });
-
-  it('does not select a standalone interactive item on click', () => {
-    // Selection outside a listbox is the author's to manage.
-    const el = document.createElement('li');
-    document.body.appendChild(el);
-    mountDirective(listPlugin, 'h-list-item', el, { modifiers: ['interactive'] });
-    el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    expect(el.hasAttribute('aria-selected')).toBe(false);
-    el.remove();
+    expect(row.hasAttribute('role')).toBe(false);
+    expect(row.hasAttribute('tabindex')).toBe(false);
+    expect(listbox.querySelectorAll('[role=option]')).toHaveLength(1);
   });
 });
 
-describe('h-listbox keyboard navigation', () => {
-  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+describe('h-list-item-button', () => {
+  // Mounts an item and returns a control of the given tag already inside it,
+  // which is the only place the directive accepts one.
+  const mountItem = (tag, { role } = {}) => {
+    const item = document.createElement('li');
+    if (role) item.setAttribute('role', role);
+    mountDirective(listPlugin, 'h-list-item', item, { modifiers: [] });
+    const control = document.createElement(tag);
+    item.appendChild(control);
+    return { item, control };
+  };
 
-  function keydown(el, key) {
-    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
-    el.dispatchEvent(event);
-    return event;
-  }
-
-  // The initial tab stop is claimed in a microtask once every option has
-  // mounted, so the helper is async and callers await it.
-  async function createListbox({ groups = [3], disabled = [], selected, headers = false, separator = false, labels } = {}) {
-    const listbox = document.createElement('div');
-    document.body.appendChild(listbox);
-    // Real Alpine walks the tree ancestor-first, and both h-list and
-    // h-list-item read the listbox's data-slot, so the listbox mounts first.
-    mountDirective(listPlugin, 'h-listbox', listbox);
-    const options = [];
-    let n = 0;
-
-    groups.forEach((count, groupIndex) => {
-      if (separator && groupIndex > 0) {
-        // A plain element between groups is what breaks sibling-walking.
-        listbox.appendChild(document.createElement('div'));
-      }
-      const list = document.createElement('ul');
-      listbox.appendChild(list);
-      // h-list-header looks for an ancestor already marked as a list, so the
-      // list has to be mounted before its header.
-      mountDirective(listPlugin, 'h-list', list);
-      if (headers) {
-        const header = document.createElement('li');
-        header.textContent = `Group ${groupIndex + 1}`;
-        list.appendChild(header);
-        mountDirective(listPlugin, 'h-list-header', header, { original: 'x-h-list-header' });
-      }
-      for (let i = 0; i < count; i++, n++) {
-        const item = document.createElement('li');
-        item.textContent = labels ? labels[n] : `Item ${n + 1}`;
-        if (disabled.includes(n)) item.setAttribute('aria-disabled', 'true');
-        if (selected === n) item.setAttribute('aria-selected', 'true');
-        list.appendChild(item);
-        options.push(item);
-      }
-    });
-
-    // The listbox claims the initial tab stop in a microtask, so it still sees
-    // every option even though it mounted before them.
-    options.forEach((item) => mountDirective(listPlugin, 'h-list-item', item, { modifiers: [] }));
-    await flush();
-    return { listbox, options };
-  }
-
-  const tabIndexes = (options) => options.map((option) => option.getAttribute('tabindex'));
-
-  afterEach(() => {
-    document.body.innerHTML = '';
+  it.each(['button', 'a'])('accepts a %s, which activates without any help', (tag) => {
+    // Tab, Enter and Space all come from the platform, so the directive adds no
+    // listener and has nothing to clean up.
+    const { control } = mountItem(tag);
+    const { ctx } = mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' });
+    expect(control.getAttribute('data-slot')).toBe('list-item-button');
+    expect(ctx.cleanup).not.toHaveBeenCalled();
   });
 
-  describe('the roving tab stop', () => {
-    it('gives the stop to the first option, leaving the rest untabbable', async () => {
-      const { options } = await createListbox({ groups: [3] });
-      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
-    });
-
-    it('gives the stop to the selected option when the author marked one', async () => {
-      const { options } = await createListbox({ groups: [3], selected: 2 });
-      expect(tabIndexes(options)).toEqual(['-1', '-1', '0']);
-    });
-
-    it('gives the stop to a disabled first option, which is still announced', async () => {
-      const { options } = await createListbox({ groups: [3], disabled: [0] });
-      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
-    });
-
-    it('keeps the listbox in the tab order when every option is disabled', async () => {
-      // Dropping it out of the tab order would hide the options entirely, which
-      // is what aria-disabled exists to avoid.
-      const { options } = await createListbox({ groups: [2], disabled: [0, 1] });
-      expect(tabIndexes(options)).toEqual(['0', '-1']);
-    });
-
-    it('claims a stop for options that mount after the listbox settled', async () => {
-      // A filtered list can render nothing at first, which used to leave the
-      // listbox permanently out of the tab order.
-      const { listbox } = await createListbox({ groups: [0] });
-      const list = listbox.querySelector('ul');
-      const late = document.createElement('li');
-      list.appendChild(late);
-      mountDirective(listPlugin, 'h-list-item', late, { modifiers: [] });
-      await flush();
-      expect(late.getAttribute('tabindex')).toBe('0');
-    });
-
-    it('re-establishes the stop when the options are replaced', async () => {
-      // Filtering an x-for swaps the whole option set, taking the stop with it.
-      const { listbox, options } = await createListbox({ groups: [3] });
-      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
-      const list = listbox.querySelector('ul');
-      list.replaceChildren();
-      const replacements = [1, 2].map(() => {
-        const item = document.createElement('li');
-        list.appendChild(item);
-        mountDirective(listPlugin, 'h-list-item', item, { modifiers: [] });
-        return item;
-      });
-      await flush();
-      expect(tabIndexes(replacements)).toEqual(['0', '-1']);
-    });
+  it('throws on anything that is not a button or a link', () => {
+    const { control } = mountItem('div');
+    expect(() => mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' })).toThrow('must be a button or a link');
   });
 
-  describe('arrow keys', () => {
-    it('moves the stop forward and clears the old one', async () => {
-      const { listbox, options } = await createListbox({ groups: [3] });
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[1]);
-      expect(tabIndexes(options)).toEqual(['-1', '0', '-1']);
-    });
-
-    it('moves the stop backward', async () => {
-      const { listbox, options } = await createListbox({ groups: [3] });
-      keydown(listbox, 'End');
-      keydown(listbox, 'ArrowUp');
-      expect(document.activeElement).toBe(options[1]);
-      expect(tabIndexes(options)).toEqual(['-1', '0', '-1']);
-    });
-
-    it('clamps at the last option rather than wrapping', async () => {
-      const { listbox, options } = await createListbox({ groups: [3] });
-      keydown(listbox, 'End');
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[2]);
-      expect(tabIndexes(options)).toEqual(['-1', '-1', '0']);
-    });
-
-    it('clamps at the first option rather than wrapping', async () => {
-      const { listbox, options } = await createListbox({ groups: [3] });
-      keydown(listbox, 'Home');
-      keydown(listbox, 'ArrowUp');
-      expect(document.activeElement).toBe(options[0]);
-      expect(tabIndexes(options)).toEqual(['0', '-1', '-1']);
-    });
-
-    it('crosses a group boundary', async () => {
-      const { listbox, options } = await createListbox({ groups: [2, 2] });
-      keydown(listbox, 'ArrowDown');
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[2]);
-    });
-
-    it('crosses a group boundary with a non-list element between the groups', async () => {
-      // Sibling-walking looked for the next UL and gave up on anything else.
-      const { listbox, options } = await createListbox({ groups: [2, 2], separator: true });
-      keydown(listbox, 'ArrowDown');
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[2]);
-    });
-
-    it('never lands on a group header', async () => {
-      const { listbox, options } = await createListbox({ groups: [2, 2], headers: true });
-      keydown(listbox, 'ArrowDown');
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[2]);
-      expect(document.activeElement.getAttribute('data-slot')).toBe('list-item');
-    });
-
-    it('steps onto a disabled option', async () => {
-      const { listbox, options } = await createListbox({ groups: [4], disabled: [1] });
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[1]);
-    });
+  it('types a button so it does not submit a surrounding form', () => {
+    const { control } = mountItem('button');
+    mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' });
+    expect(control.getAttribute('type')).toBe('button');
   });
 
-  describe('Home, End, PageUp and PageDown', () => {
-    it('land on the first and last option, disabled or not', async () => {
-      const { listbox, options } = await createListbox({ groups: [5], disabled: [0, 4] });
-      keydown(listbox, 'End');
-      expect(document.activeElement).toBe(options[4]);
-      keydown(listbox, 'Home');
-      expect(document.activeElement).toBe(options[0]);
-    });
-
-    it('aliases PageUp and PageDown to Home and End', async () => {
-      const { listbox, options } = await createListbox({ groups: [4] });
-      keydown(listbox, 'PageDown');
-      expect(document.activeElement).toBe(options[3]);
-      keydown(listbox, 'PageUp');
-      expect(document.activeElement).toBe(options[0]);
-    });
-
-    it('prevents the default, so the page does not scroll as well', async () => {
-      // Home and End moved focus without preventing the default, so the page
-      // jumped to the top or bottom at the same time.
-      const { listbox } = await createListbox({ groups: [3] });
-      for (const key of ['Home', 'End', 'PageUp', 'PageDown', 'ArrowUp', 'ArrowDown']) {
-        expect(keydown(listbox, key).defaultPrevented, key).toBe(true);
-      }
-    });
-
-    it('prevents the default even when there is nowhere to move', async () => {
-      const { listbox, options } = await createListbox({ groups: [1] });
-      for (const key of ['ArrowDown', 'ArrowUp', 'Home', 'End']) {
-        expect(keydown(listbox, key).defaultPrevented, key).toBe(true);
-      }
-      expect(tabIndexes(options)).toEqual(['0']);
-    });
+  it('leaves an author-set type alone, since a row can be a form submit', () => {
+    const { control } = mountItem('button');
+    control.setAttribute('type', 'submit');
+    mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' });
+    expect(control.getAttribute('type')).toBe('submit');
   });
 
-  describe('disabled options', () => {
-    it('is reachable by the arrow keys but still cannot be selected', async () => {
-      // The whole point of aria-disabled over the native attribute. Focus lands
-      // on the option so it is announced, and Enter then does nothing.
-      const { listbox, options } = await createListbox({ groups: [3], disabled: [1] });
-      keydown(listbox, 'ArrowDown');
-      expect(document.activeElement).toBe(options[1]);
-      keydown(options[1], 'Enter');
-      expect(options[1].hasAttribute('aria-selected')).toBe(false);
-    });
-
-    it('treats aria-disabled="false" as enabled, not as a bare attribute', async () => {
-      // A bound attribute renders the literal string "false", so a presence
-      // check would disable exactly the option the author meant to keep usable.
-      const { options } = await createListbox({ groups: [3] });
-      options[1].setAttribute('aria-disabled', 'false');
-      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      expect(options[1].getAttribute('aria-selected')).toBe('true');
-    });
-
-    it('ignores a valueless aria-disabled, since the value carries the meaning', async () => {
-      const { options } = await createListbox({ groups: [3] });
-      options[1].setAttribute('aria-disabled', '');
-      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      expect(options[1].getAttribute('aria-selected')).toBe('true');
-    });
-
-    it('does not select a disabled option by click', async () => {
-      const { options } = await createListbox({ groups: [3], disabled: [1] });
-      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      expect(options[1].hasAttribute('aria-selected')).toBe(false);
-    });
-
-    it('does not select a disabled option by Enter', async () => {
-      const { options } = await createListbox({ groups: [3], disabled: [1] });
-      keydown(options[1], 'Enter');
-      expect(options[1].hasAttribute('aria-selected')).toBe(false);
-    });
+  it('throws when it is not a direct child of a list item', () => {
+    // The item paints itself from this child, so a control further down would
+    // light up a row the author did not mean.
+    const { item } = mountItem('button');
+    const wrapper = document.createElement('div');
+    const control = document.createElement('button');
+    wrapper.appendChild(control);
+    item.appendChild(wrapper);
+    expect(() => mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' })).toThrow('must be a direct child of a x-h-list-item element');
   });
 
-  describe('selection', () => {
-    it('selects the focused option on Enter and moves selection on the next one', async () => {
-      const { listbox, options } = await createListbox({ groups: [3] });
-      keydown(listbox, 'ArrowDown');
-      keydown(document.activeElement, 'Enter');
-      expect(options[1].getAttribute('aria-selected')).toBe('true');
-      keydown(listbox, 'ArrowDown');
-      keydown(document.activeElement, ' ');
-      expect(options[1].hasAttribute('aria-selected')).toBe(false);
-      expect(options[2].getAttribute('aria-selected')).toBe('true');
-    });
-
-    it('selects on click', async () => {
-      const { options } = await createListbox({ groups: [3] });
-      options[2].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      expect(options[2].getAttribute('aria-selected')).toBe('true');
-    });
-
-    it('ignores Enter that did not land on an option', async () => {
-      const { listbox } = await createListbox({ groups: [3] });
-      expect(keydown(listbox, 'Enter').defaultPrevented).toBe(false);
-    });
+  it('throws when the item is an option, which is already the control', () => {
+    const { control } = mountItem('button', { role: 'option' });
+    expect(() => mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' })).toThrow('cannot be used inside a listbox or a combobox');
   });
 
-  describe('typeahead', () => {
-    const labels = ['Apple', 'Banana', 'Blueberry', 'Cherry'];
+  it('stretches to fill the row, so the highlight and the target agree', () => {
+    const { control } = mountItem('button');
+    mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' });
+    expect(control.classList.contains('flex-1')).toBe(true);
+    expect(control.classList.contains('self-stretch')).toBe(true);
+    expect(control.classList.contains('p-2')).toBe(true);
+  });
 
-    it('jumps to the next option starting with the typed character', async () => {
-      const { listbox, options } = await createListbox({ groups: [4], labels });
-      keydown(listbox, 'c');
-      expect(document.activeElement).toBe(options[3]);
-    });
-
-    it('is case insensitive', async () => {
-      const { listbox, options } = await createListbox({ groups: [4], labels });
-      keydown(listbox, 'B');
-      expect(document.activeElement).toBe(options[1]);
-    });
-
-    it('cycles through the matches when the same letter is repeated', async () => {
-      const { listbox, options } = await createListbox({ groups: [4], labels });
-      keydown(listbox, 'b');
-      expect(document.activeElement).toBe(options[1]);
-      keydown(listbox, 'b');
-      expect(document.activeElement).toBe(options[2]);
-      keydown(listbox, 'b');
-      expect(document.activeElement).toBe(options[1]);
-    });
-
-    it('matches a disabled option', async () => {
-      const { listbox, options } = await createListbox({ groups: [4], labels, disabled: [1] });
-      keydown(listbox, 'b');
-      expect(document.activeElement).toBe(options[1]);
-    });
-
-    it('leaves focus alone when nothing matches', async () => {
-      const { listbox, options } = await createListbox({ groups: [4], labels });
-      keydown(listbox, 'ArrowDown');
-      keydown(listbox, 'z');
-      expect(document.activeElement).toBe(options[1]);
-    });
+  it('dims itself rather than the row when disabled', () => {
+    // An action button beside a disabled row control stays usable, so it must
+    // not be dimmed along with it.
+    const { control } = mountItem('button');
+    mountDirective(listPlugin, 'h-list-item-button', control, { original: 'x-h-list-item-button' });
+    for (const cls of ['disabled:opacity-disabled', 'disabled:pointer-events-none', 'disabled:cursor-not-allowed', 'aria-disabled:opacity-disabled', 'aria-disabled:pointer-events-none', 'aria-disabled:cursor-not-allowed']) {
+      expect(control.classList.contains(cls)).toBe(true);
+    }
   });
 });

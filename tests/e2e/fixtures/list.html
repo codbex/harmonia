@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>list fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="flex flex-col gap-8 bg-background p-4 text-foreground">
+    <ul id="rows" x-h-list class="w-96">
+      <li id="plain" x-h-list-item>Plain item</li>
+      <li id="with-action" x-h-list-item>
+        <button id="row-control" x-h-list-item-button>Row with an action</button>
+        <button id="row-action" x-h-button data-variant="outline" data-size="icon-sm" aria-label="Row action">
+          <svg x-h-icon data-icon="check" role="presentation"></svg>
+        </button>
+      </li>
+      <li id="current" x-h-list-item>
+        <button id="current-control" x-h-list-item-button aria-current="true">Current row</button>
+      </li>
+      <li id="not-current" x-h-list-item>
+        <button id="not-current-control" x-h-list-item-button aria-current="false">Row bound to a false expression</button>
+      </li>
+      <li id="disabled" x-h-list-item>
+        <button id="disabled-control" x-h-list-item-button disabled>Disabled row</button>
+      </li>
+    </ul>
+  </body>
+</html>

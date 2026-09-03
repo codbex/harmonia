@@ -2,6 +2,12 @@
 
 Breaking changes only, grouped by version (newest first). For the full history including features and fixes, see [CHANGELOG.md](https://github.com/codbex/harmonia/blob/main/CHANGELOG.md).
 
+## v3.1.0
+
+- **Breaking: the `interactive` modifier on `x-h-list-item` is removed.** It set `role="button"` on the `li`, leaving the `ul` with no list items. To migrate, wrap the row's content in a `button` or `a` carrying `x-h-list-item-button`, move `@click` and any layout classes onto it, and replace `aria-selected` on the item with `aria-current` on the control. Options and plain lists are unaffected.
+
+- **Breaking: the listbox is a plugin of its own**, no longer riding along with the list plugin. Only affects ESM consumers registering components one by one: add `Alpine.plugin(Listbox)` beside `Alpine.plugin(List)`. `registerComponents` and the CDN bundle need no change.
+
 ## v3.0.0
 
 - **Breaking: the dialog surface no longer has padding of its own.** The header, the body and the footer now pad themselves, so a body that is not wrapped in `x-h-dialog-content` reaches the edges of the dialog. To migrate, wrap it: `<div x-h-dialog-content>` around whatever sits between the header and the footer, carrying over the classes it already had. A dialog laid out only from a header and a footer needs no change and looks exactly as before. Two things get easier in return. A focused control inside a scrolling body no longer has its focus ring clipped at the left and right edges, because the padding is now inside the scrolling area instead of outside it. And content that should span the full width, a calendar, a table or a list, is now a matter of the new `flush` modifier on the body (`x-h-dialog-content.flush`) instead of cancelling the surface padding with `p-0!` and re-adding it to every other part by hand.

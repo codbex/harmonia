@@ -1,0 +1,30 @@
+/* An interactive list item is a plain list item holding a real button or link,
+   so the row is painted from that one child's state. Reading a specific child
+   rather than the item's own :hover is what lets the row light up across its
+   full width while an action button beside the control leaves it alone. */
+[data-slot="list-item"]:has(> [data-slot="list-item-button"]) {
+  @apply p-0;
+}
+/* Only a row with something after the control needs an inset at the end. A row
+   whose control is on its own would otherwise carry a strip that lights up but
+   cannot be clicked. */
+[data-slot="list-item"]:has(> [data-slot="list-item-button"] ~ *) {
+  @apply pe-2;
+}
+[data-slot="list-item"]:has(> [data-slot="list-item-button"]:hover),
+[data-slot="list-item"]:has(> [data-slot="list-item-button"]:focus-visible) {
+  @apply bg-table-hover text-table-hover-foreground;
+}
+[data-slot="list-item"]:has(> [data-slot="list-item-button"]:active) {
+  @apply bg-table-active text-table-active-foreground;
+}
+/* An 'aria-current' bound to an expression renders the literal string "false"
+   when the row is not the current one, so the value has to be excluded rather
+   than the attribute merely tested for presence. */
+[data-slot="list-item"]:has(> [data-slot="list-item-button"][aria-current]:not([aria-current="false"])) {
+  @apply bg-primary text-primary-foreground;
+}
+[data-slot="list-item"]:has(> [data-slot="list-item-button"][aria-current]:not([aria-current="false"]):hover),
+[data-slot="list-item"]:has(> [data-slot="list-item-button"][aria-current]:not([aria-current="false"]):focus-visible) {
+  @apply bg-primary-hover text-primary-foreground;
+}

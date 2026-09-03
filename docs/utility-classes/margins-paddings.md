@@ -12,16 +12,18 @@ The margin class names start with `m` and have a range of 0 to 12.
 | mr-`0-12` | Add a margin on the right side.                   | Yes         |
 | mr-auto   | Automatic margin on the right.                    | Yes         |
 | mt-`0-12` | Adds a top margin.                                | Yes         |
+| mt-auto   | Automatic margin on top.                          | No          |
 | mb-`0-12` | Add a bottom margin.                              | Yes         |
 | mx-`0-12` | Add a margin on the left and right sides.         | Yes         |
 | my-`0-12` | Add a top and bottom margin.                      | Yes         |
 | mx-auto   | Automatic margin on the left and right.           | No          |
 
-The padding class names start with `p` and have a range of 0 to 12.
+The padding class names start with `p` and have a range of 0 to 12. A few half steps are also available at the tight end of the scale - `p-1.5`, `px-1.5`, `px-2.5`, `py-0.5` and `py-1.5` - and only those. There is no half step on the single sides (`pt`, `pb`, `pl`, `pr`).
 
 | Class     | Description                                         | `!` support |
 | --------- | --------------------------------------------------- | ----------- |
 | p-`0-12`  | Add a padding on all sides. `p-0` means no padding. | Yes         |
+| p-1.5     | Add a padding of 1.5 on all sides.                  | No          |
 | pl-`0-12` | Add a padding on the left side.                     | Yes         |
 | pl-auto   | Automatic padding on the left.                      | Yes         |
 | pr-`0-12` | Add a padding on the right side.                    | Yes         |
@@ -29,7 +31,11 @@ The padding class names start with `p` and have a range of 0 to 12.
 | pt-`0-12` | Adds a top padding.                                 | Yes         |
 | pb-`0-12` | Add a bottom padding.                               | Yes         |
 | px-`0-12` | Add a padding on the left and right sides.          | Yes         |
+| px-1.5    | Add a padding of 1.5 on the left and right sides.   | No          |
+| px-2.5    | Add a padding of 2.5 on the left and right sides.   | No          |
 | py-`0-12` | Add a top and bottom padding.                       | Yes         |
+| py-0.5    | Add a top and bottom padding of 0.5.                | No          |
+| py-1.5    | Add a top and bottom padding of 1.5.                | No          |
 
 ::: info Responsive margins and paddings
 You can use the standard `sm`, `md`, `lg` and `xl` breakpoints for padding and margin classes (with the exception of side-specific ones - `mt-*`, `pt-*`, `ml-*`, `pl-*`, etc.).
@@ -47,7 +53,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="m-4 bg-secondary text-secondary">m-4</div>
+  <div class="m-4 bg-secondary text-secondary-foreground">m-4</div>
 </div>
 ```
 
@@ -57,7 +63,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="m-8 bg-secondary text-secondary">m-8</div>
+  <div class="m-8 bg-secondary text-secondary-foreground">m-8</div>
 </div>
 ```
 
@@ -67,7 +73,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="m-12 bg-secondary text-secondary">m-12</div>
+  <div class="m-12 bg-secondary text-secondary-foreground">m-12</div>
 </div>
 ```
 
@@ -79,7 +85,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="ml-8 bg-secondary text-secondary">ml-8</div>
+  <div class="ml-8 bg-secondary text-secondary-foreground">ml-8</div>
 </div>
 ```
 
@@ -91,7 +97,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="mr-8 bg-secondary text-secondary">mr-8</div>
+  <div class="mr-8 bg-secondary text-secondary-foreground">mr-8</div>
 </div>
 ```
 
@@ -103,7 +109,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="mx-8 bg-secondary text-secondary">mx-8</div>
+  <div class="mx-8 bg-secondary text-secondary-foreground">mx-8</div>
 </div>
 ```
 
@@ -115,7 +121,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="mt-8 bg-secondary text-secondary">mt-8</div>
+  <div class="mt-8 bg-secondary text-secondary-foreground">mt-8</div>
 </div>
 ```
 
@@ -127,7 +133,7 @@ Many components already have margins and paddings set, so you may have to add `!
 
 ```html
 <div class="bg-primary">
-  <div class="mb-8 bg-secondary text-secondary">mb-8</div>
+  <div class="mb-8 bg-secondary text-secondary-foreground">mb-8</div>
 </div>
 ```
 
@@ -153,7 +159,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary">
-  <div class="my-8 bg-secondary text-secondary">my-8</div>
+  <div class="my-8 bg-secondary text-secondary-foreground">my-8</div>
 </div>
 ```
 
@@ -166,7 +172,7 @@ Responsive left and right margin based on the screen size.
 ```html
 <div class="flex bg-primary">
   <div class="bg-secondary px-2 text-secondary">Left content</div>
-  <div class="ml-auto bg-secondary text-secondary">ml-auto</div>
+  <div class="ml-auto bg-secondary text-secondary-foreground">ml-auto</div>
   <div class="bg-secondary px-2 text-secondary">Right content</div>
 </div>
 ```
@@ -180,8 +186,23 @@ Responsive left and right margin based on the screen size.
 ```html
 <div class="flex bg-primary">
   <div class="bg-secondary px-2 text-secondary">Left content</div>
-  <div class="mr-auto bg-secondary text-secondary">ml-auto</div>
+  <div class="mr-auto bg-secondary text-secondary-foreground">ml-auto</div>
   <div class="bg-secondary px-2 text-secondary">Right content</div>
+</div>
+```
+
+</LiveExample>
+
+### Top Auto Margin
+
+Pushes an element to the bottom of a column that has room to spare.
+
+<LiveExample data-class="p-0 flex flex-col items-stretch">
+
+```html
+<div class="flex flex-col bg-primary" style="height: 8rem">
+  <div class="bg-secondary px-2 text-secondary-foreground">Top content</div>
+  <div class="mt-auto bg-secondary px-2 text-secondary-foreground">mt-auto</div>
 </div>
 ```
 
@@ -195,7 +216,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary p-4">
-  <div class="bg-secondary text-secondary">p-4</div>
+  <div class="bg-secondary text-secondary-foreground">p-4</div>
 </div>
 ```
 
@@ -205,7 +226,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary p-8">
-  <div class="bg-secondary text-secondary">p-8</div>
+  <div class="bg-secondary text-secondary-foreground">p-8</div>
 </div>
 ```
 
@@ -215,7 +236,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary p-12">
-  <div class="bg-secondary text-secondary">p-12</div>
+  <div class="bg-secondary text-secondary-foreground">p-12</div>
 </div>
 ```
 
@@ -227,7 +248,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary pl-8">
-  <div class="bg-secondary text-secondary">pl-8</div>
+  <div class="bg-secondary text-secondary-foreground">pl-8</div>
 </div>
 ```
 
@@ -239,7 +260,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary pr-8">
-  <div class="bg-secondary text-secondary">pr-8</div>
+  <div class="bg-secondary text-secondary-foreground">pr-8</div>
 </div>
 ```
 
@@ -251,7 +272,7 @@ Responsive left and right margin based on the screen size.
 
 ```html
 <div class="bg-primary px-8">
-  <div class="bg-secondary text-secondary">px-8</div>
+  <div class="bg-secondary text-secondary-foreground">px-8</div>
 </div>
 ```
 
@@ -265,7 +286,7 @@ Responsive left and right padding based on the screen size.
 
 ```html
 <div class="bg-primary px-0 sm:px-2 md:px-4 lg:px-8 xl:px-12">
-  <div class="bg-secondary text-secondary">Responsive</div>
+  <div class="bg-secondary text-secondary-foreground">Responsive</div>
 </div>
 ```
 
@@ -277,7 +298,7 @@ Responsive left and right padding based on the screen size.
 
 ```html
 <div class="bg-primary pt-8">
-  <div class="bg-secondary text-secondary">pt-8</div>
+  <div class="bg-secondary text-secondary-foreground">pt-8</div>
 </div>
 ```
 
@@ -289,7 +310,7 @@ Responsive left and right padding based on the screen size.
 
 ```html
 <div class="bg-primary pb-8">
-  <div class="bg-secondary text-secondary">pb-8</div>
+  <div class="bg-secondary text-secondary-foreground">pb-8</div>
 </div>
 ```
 
@@ -301,7 +322,23 @@ Responsive left and right padding based on the screen size.
 
 ```html
 <div class="bg-primary py-8">
-  <div class="bg-secondary text-secondary">py-8</div>
+  <div class="bg-secondary text-secondary-foreground">py-8</div>
+</div>
+```
+
+</LiveExample>
+
+### Half-Step Padding
+
+A half step sits between its two whole neighbours.
+
+<LiveExample data-class="p-0 flex flex-col items-stretch">
+
+```html
+<div class="vbox gap-2">
+  <div class="bg-primary p-1"><div class="bg-secondary text-secondary-foreground">p-1</div></div>
+  <div class="bg-primary p-1.5"><div class="bg-secondary text-secondary-foreground">p-1.5</div></div>
+  <div class="bg-primary p-2"><div class="bg-secondary text-secondary-foreground">p-2</div></div>
 </div>
 ```
 

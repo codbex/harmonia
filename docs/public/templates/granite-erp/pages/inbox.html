@@ -21,16 +21,18 @@
         </div>
         <ul x-h-list class="flex-1 overflow-auto">
           <template x-for="message in list" :key="message.id">
-            <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" :class="selectedId === message.id && 'bg-muted'" :aria-selected="selectedId === message.id" @click="open(message.id)">
-              <div x-h-avatar x-text="message.initials"></div>
-              <div class="vbox min-w-0 flex-1">
-                <div class="hbox items-baseline justify-between gap-2">
-                  <span class="truncate" :class="message.unread ? 'font-semibold' : 'font-medium'" x-text="message.from"></span>
-                  <span x-h-list-secondary class="text-sm text-nowrap" x-text="$store.erp.date(message.date.slice(0, 10))"></span>
+            <li x-h-list-item>
+              <button x-h-list-item-button class="items-start gap-3 px-4 py-3" :aria-current="selectedId === message.id" @click="open(message.id)">
+                <div x-h-avatar x-text="message.initials"></div>
+                <div class="vbox min-w-0 flex-1">
+                  <div class="hbox items-baseline justify-between gap-2">
+                    <span class="truncate" :class="message.unread ? 'font-semibold' : 'font-medium'" x-text="message.from"></span>
+                    <span x-h-list-secondary class="text-sm text-nowrap" x-text="$store.erp.date(message.date.slice(0, 10))"></span>
+                  </div>
+                  <span class="truncate text-sm" :class="message.unread && 'font-medium'" x-text="message.subject"></span>
+                  <span x-h-list-secondary class="truncate text-sm" x-text="message.preview"></span>
                 </div>
-                <span class="truncate text-sm" :class="message.unread && 'font-medium'" x-text="message.subject"></span>
-                <span x-h-list-secondary class="truncate text-sm" x-text="message.preview"></span>
-              </div>
+              </button>
               <span x-show="message.unread" x-h-badge data-variant="primary" aria-label="Unread">New</span>
             </li>
           </template>

@@ -6,6 +6,7 @@
 @import "./calendar.css";
 @import "./bubble.css";
 @import "./bottom-nav.css";
+@import "./list.css";
 @source "../**/*.{ts,tsx,js,jsx}";
 
 @custom-variant dark (&:where(.dark, .dark *));

@@ -26,6 +26,7 @@ import infoPage from './components/info-page';
 import input from './components/input';
 import label from './components/label';
 import list from './components/list';
+import listbox from './components/listbox';
 import menu from './components/menu';
 import menubar from './components/menubar';
 import monthPicker from './components/month-picker';
@@ -130,6 +131,7 @@ function registerPlugins() {
   window.Alpine.plugin(input);
   window.Alpine.plugin(label);
   window.Alpine.plugin(list);
+  window.Alpine.plugin(listbox);
   window.Alpine.plugin(menu);
   window.Alpine.plugin(menubar);
   window.Alpine.plugin(monthPicker);

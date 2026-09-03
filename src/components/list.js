@@ -1,143 +1,42 @@
-import { isDisabled } from '../common/disabled';
-import { listboxShellClasses } from '../common/shared-classes';
-import { getFirstChar, isPrintableCharacter } from '../common/typeahead';
 import uuidv4 from '../utils/uuid';
 
 // Containers whose children are options rather than plain list rows. The
-// combobox (src/components/combobox.js) is the listbox popup of a text field,
-// so its items are the same options a listbox holds.
+// listbox (src/components/listbox.js) borrows this file's list and item for its
+// markup, and the combobox (src/components/combobox.js) is the listbox popup of
+// a text field, so its items are the same options a listbox holds.
 const OPTION_CONTAINERS = ['listbox', 'combobox'];
 
-export default function (Alpine) {
-  Alpine.directive('h-listbox', (el, _, { cleanup }) => {
-    el.classList.add(...listboxShellClasses);
-    el.setAttribute('data-slot', 'listbox');
-    el.setAttribute('role', 'listbox');
-
-    // Every option is reachable, disabled ones included. aria-disabled announces
-    // the option as unavailable while leaving it focusable but inert.
-    function getFocusableOptions() {
-      return [...el.querySelectorAll('[role=option]')];
-    }
-
-    // Options find "the current one" through the roving tabindex, so the stop
-    // has to be moved explicitly rather than just followed by focus.
-    function moveFocus(target) {
-      if (!target) return;
-      const current = el.querySelector('[role=option][tabindex="0"]');
-      if (current) current.setAttribute('tabindex', '-1');
-      target.setAttribute('tabindex', '0');
-      target.focus();
-    }
-
-    function findMatching(str, candidates) {
-      for (const option of candidates) {
-        if (getFirstChar(option.textContent).startsWith(str.toLowerCase())) {
-          moveFocus(option);
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function selectOption(option) {
-      if (isDisabled(option)) return;
-      const selected = el.querySelector('[aria-selected="true"]');
-      if (selected) selected.removeAttribute('aria-selected');
-      if (selected !== option) option.setAttribute('aria-selected', 'true');
-    }
-
-    function onKeyDown(event) {
-      const options = getFocusableOptions();
-      const index = options.findIndex((option) => option.getAttribute('tabindex') === '0');
-      switch (event.key) {
-        case 'Up':
-        case 'ArrowUp':
-          event.preventDefault();
-          // Stepping with no stop yet enters from the near end, and the ends
-          // clamp rather than wrap so the listbox has a discoverable start.
-          moveFocus(index === -1 ? options[options.length - 1] : options[index - 1]);
-          break;
-        case 'Down':
-        case 'ArrowDown':
-          event.preventDefault();
-          moveFocus(index === -1 ? options[0] : options[index + 1]);
-          break;
-        case 'Home':
-        case 'PageUp':
-          event.preventDefault();
-          moveFocus(options[0]);
-          break;
-        case 'End':
-        case 'PageDown':
-          event.preventDefault();
-          moveFocus(options[options.length - 1]);
-          break;
-        case ' ':
-        case 'Enter': {
-          const option = event.target.closest('[role=option]');
-          if (!option) break;
-          event.preventDefault();
-          selectOption(option);
-          break;
-        }
-        default:
-          if (isPrintableCharacter(event.key)) {
-            // Search from after the current option first, so repeating a letter
-            // cycles through the matches instead of sticking on the first.
-            if (!findMatching(event.key, options.slice(index + 1))) {
-              findMatching(event.key, options);
-            }
-          }
-      }
-    }
-
-    function onClick(event) {
-      const option = event.target.closest('[role=option]');
-      if (option) selectOption(option);
-    }
-
-    el.addEventListener('click', onClick);
-    el.addEventListener('keydown', onKeyDown);
-
-    // Which option holds the tab stop cannot be decided by the items
-    // themselves, since an item cannot see whether an earlier one already
-    // claimed it. Wait for them all to mount, then give the stop to the
-    // selected option, or to the first one. A disabled option can hold the stop,
-    // since it is still announced, just not selectable.
-    function ensureTabStop() {
-      if (el.querySelector('[role=option][tabindex="0"]')) return;
-      const options = getFocusableOptions();
-      const target = options.find((option) => option.getAttribute('aria-selected') === 'true') ?? options[0];
-      if (target) target.setAttribute('tabindex', '0');
-    }
-
-    // Options rendered from a filtered list are replaced wholesale, taking the
-    // tab stop with them. Without this the listbox would silently fall out of
-    // the tab order for good, and with it the keydown handler above.
-    const observer = new MutationObserver(ensureTabStop);
-    observer.observe(el, { childList: true, subtree: true });
-    queueMicrotask(ensureTabStop);
-
-    cleanup(() => {
-      observer.disconnect();
-      el.removeEventListener('keydown', onKeyDown);
-      el.removeEventListener('click', onClick);
-    });
+// The listbox or combobox whose options this element belongs to, or undefined
+// when it belongs to none. The walk stops at a list item, since a list nested
+// inside one is that item's own content rather than more options for the
+// listbox around it. Without the stop those rows claim 'role=option' and join
+// the set the listbox and the combobox collect with '[role=option]', which
+// hands the arrow keys and the tab stop to rows that are not options.
+function findOptionContainer(Alpine, el) {
+  const boundary = Alpine.findClosest(el.parentElement, (parent) => {
+    const slot = parent.getAttribute('data-slot');
+    return slot === 'list-item' || OPTION_CONTAINERS.includes(slot);
   });
+  return boundary && OPTION_CONTAINERS.includes(boundary.getAttribute('data-slot')) ? boundary : undefined;
+}
 
+export default function (Alpine) {
   Alpine.directive('h-list', (el) => {
     el.classList.add('divide-solid', 'divide-y');
     el.setAttribute('data-slot', 'list');
     // A listbox only permits option and group children, so a list nested in one
-    // is a group. Standalone it keeps the native list role, which is what makes
-    // a screen reader announce the item count.
-    const container = Alpine.findClosest(el.parentElement, (parent) => OPTION_CONTAINERS.includes(parent.getAttribute('data-slot')));
-    if (container) el.setAttribute('role', 'group');
+    // is a group. Standalone it is a list, spelled out rather than left to the
+    // native role, since the reset that strips the bullets also costs a 'ul' its
+    // list semantics in Safari, and with them the announced item count.
+    el.setAttribute('role', findOptionContainer(Alpine, el) ? 'group' : 'list');
   });
 
   Alpine.directive('h-list-secondary', (el) => {
-    el.classList.add('text-muted-foreground', '[[aria-selected=true]_&]:text-primary-foreground/75');
+    // Muted text has to give way on a highlighted row, whether the row is a
+    // selected option ('aria-selected') or the current one in an interactive
+    // list ('aria-current'). A bound 'aria-current' renders the literal string
+    // "false" when the row is not current, which neither selector matches.
+    el.classList.add('text-muted-foreground', '[[aria-selected=true]_&]:text-primary-foreground/75', '[[aria-current=true]_&]:text-primary-foreground/75', '[[aria-current=page]_&]:text-primary-foreground/75');
     if (!el.hasAttribute('data-slot')) {
       el.setAttribute('data-slot', 'list-secondary');
     }
@@ -175,11 +74,16 @@ export default function (Alpine) {
     list.setAttribute('aria-labelledby', el.getAttribute('id'));
   });
 
-  Alpine.directive('h-list-item', (el, { modifiers }, { cleanup }) => {
+  Alpine.directive('h-list-item', (el) => {
+    // An item holding an 'h-list-item-button' is painted from that child's
+    // hover, focus, active and current state, which an item cannot express as a
+    // class on itself. Those rules live in src/styles/list.css.
     el.classList.add('min-h-11', 'flex', 'items-center', 'p-2', 'gap-2', 'align-middle', 'outline-none');
     el.setAttribute('data-slot', 'list-item');
-    const container = Alpine.findClosest(el.parentElement, (parent) => OPTION_CONTAINERS.includes(parent.getAttribute('data-slot')));
-    function setInteractive() {
+    const container = findOptionContainer(Alpine, el);
+    // An option is a control in its own right, so unlike a plain item it paints
+    // itself. Every selector here is scoped to a listbox or a combobox.
+    function setOptionClasses() {
       el.classList.add(
         'focus:bg-table-hover',
         'focus:text-table-hover-foreground',
@@ -207,7 +111,7 @@ export default function (Alpine) {
       );
     }
     if (container) {
-      setInteractive();
+      setOptionClasses();
       // A combobox keeps focus in its text field, so the option the user is on
       // is marked rather than focused and needs the same highlight :focus gives
       // it inside a listbox.
@@ -217,25 +121,57 @@ export default function (Alpine) {
       // to one of them once they have all mounted, while a combobox never does,
       // since it is reached through its text field.
       el.setAttribute('tabindex', '-1');
-    } else if (modifiers.includes('interactive')) {
-      setInteractive();
-      // Each interactive item is its own control rather than part of a
-      // composite widget, so it takes a tab stop and Tab moves between them
-      // the same way it moves between buttons.
-      el.setAttribute('role', 'button');
-      el.setAttribute('tabindex', '0');
-      // A native button activates on both Enter and Space, so an element only
-      // playing one has to forward those keys itself.
-      const onKeyDown = (event) => {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        if (isDisabled(el)) return;
-        // Space scrolls the page and Enter submits a surrounding form, neither
-        // of which a button press should do here.
-        event.preventDefault();
-        el.click();
-      };
-      el.addEventListener('keydown', onKeyDown);
-      cleanup(() => el.removeEventListener('keydown', onKeyDown));
     }
+  });
+
+  // What makes a list interactive. It is a real button or link inside the item
+  // rather than the item itself, because a 'li' playing a button leaves its 'ul'
+  // with no list items at all, which is invalid and costs the list its
+  // announcement. Keeping the item a list item also leaves room beside the
+  // control for actions of its own.
+  Alpine.directive('h-list-item-button', (el, { original }) => {
+    if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+      throw new Error(`${original} must be a button or a link`);
+    } else if (el.tagName === 'BUTTON' && !el.hasAttribute('type')) {
+      // A row inside a form can be its submit, so an author-set type wins.
+      el.setAttribute('type', 'button');
+    }
+    // The item paints itself from this child, so the two have to be a pair. A
+    // control further down would leave the row lit by something the author did
+    // not mean to be the row.
+    if (el.parentElement?.getAttribute('data-slot') !== 'list-item') {
+      throw new Error(`${original} must be a direct child of a ${Alpine.prefixed('h-list-item')} element`);
+    }
+    // An option is already the control, and a listbox permits nothing focusable
+    // inside one.
+    if (el.parentElement.getAttribute('role') === 'option') {
+      throw new Error(`${original} cannot be used inside a listbox or a combobox`);
+    }
+    el.classList.add(
+      'flex',
+      'flex-1',
+      // The item keeps its height while the control takes the padding, so the
+      // area that lights up and the area that can be clicked are the same one.
+      'self-stretch',
+      'min-w-0',
+      'items-center',
+      'p-2',
+      'gap-2',
+      'align-middle',
+      'text-left',
+      'cursor-pointer',
+      'outline-none',
+      'svg-defaults',
+      // Dimming belongs to the control rather than the row, so an action button
+      // beside a disabled row control does not look disabled with it. Blocking
+      // pointer events also keeps the row from lighting up.
+      'disabled:pointer-events-none',
+      'disabled:opacity-disabled',
+      'disabled:cursor-not-allowed',
+      'aria-disabled:pointer-events-none',
+      'aria-disabled:opacity-disabled',
+      'aria-disabled:cursor-not-allowed'
+    );
+    el.setAttribute('data-slot', 'list-item-button');
   });
 }

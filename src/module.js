@@ -26,6 +26,7 @@ import infoPage from './components/info-page';
 import input from './components/input';
 import label from './components/label';
 import list from './components/list';
+import listbox from './components/listbox';
 import menu from './components/menu';
 import menubar from './components/menubar';
 import monthPicker from './components/month-picker';
@@ -109,6 +110,7 @@ export {
   input as Input,
   label as Label,
   list as List,
+  listbox as Listbox,
   lucide as Lucide,
   menu as Menu,
   menubar as Menubar,
@@ -179,6 +181,7 @@ export const registerComponents = (registerPlugin) => {
   registerPlugin(input);
   registerPlugin(label);
   registerPlugin(list);
+  registerPlugin(listbox);
   registerPlugin(menu);
   registerPlugin(menubar);
   registerPlugin(monthPicker);
