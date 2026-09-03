@@ -89,6 +89,15 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **happy-dom** environment; `tests/setup.js` patches `innerText`.
 - Directives are tested **without real Alpine**. `tests/test-utils.js` provides `mountDirective(plugin, 'h-name', el, bindings, ctxOverrides)` plus `createMockAlpine` / `createMockContext`, a minimal Proxy-based `reactive`/`effect` implementation. Use these helpers and assert on the DOM, attributes, and `el._h_*` state the directive produces. Mirror the `src/` layout under `tests/` (`tests/components`, `tests/common`, `tests/utils`).
 
+### End-to-end tests (Playwright)
+
+- `npm run test:e2e` runs `tests/e2e/**/*.spec.js` (Chromium locally; CI adds Firefox and WebKit). `npm run test:e2e:ui` opens the Playwright UI.
+- Build first: `node scripts/build.cjs && npm run tailwind`. The suite tests `dist/harmonia.js` and `dist/harmonia.css`, not `src/`. The fixture server (`scripts/e2e-server.cjs`) exits with instructions when `dist/` is missing.
+- Write an e2e test only for what the unit suite cannot see: real Alpine init and `x-model`, real CSS and layout, floating-ui positioning, focus and Tab order, CSS transitions, pointer drag, theme switching. Everything else stays a vitest unit test.
+- Fixtures are plain HTML files in `tests/e2e/fixtures/`, served over http from the repo root (never `file://` - the bundle reads localStorage at eval time and an opaque origin aborts it). Load `/dist/harmonia.css`, `/dist/harmonia.js`, then `/node_modules/alpinejs/dist/cdn.min.js` with `defer`. `<body>` must carry `x-data` or Alpine initializes nothing, silently.
+- Use `tests/e2e/helpers.js`: `gotoFixture` waits for Alpine and a rendered directive; `settle(page)` waits out the 100-200ms transitions before reading styles or visibility; seed a theme with `seedColorScheme` before navigation; `drag` for real pointer drags.
+- Popover-like content is attached but hidden until opened, so locate it with `state: 'attached'`. Use `page.clock.setFixedTime()` for date components, never `clock.install()` (it freezes the setTimeout-driven transitions). Assert on `data-slot`, `data-state`, `aria-*` and settled computed styles; `el.matches(':hover')` is false under automation even when hover styles apply. No screenshot baselines.
+
 ## Conventions
 
 - ESLint flat config (`eslint.config.js`): browser globals + `Alpine` readonly for `src`; unused vars allowed only with a `_` prefix; `console` limited to `warn`/`error`. Prettier enforces formatting (with organize-imports + tailwindcss plugins).

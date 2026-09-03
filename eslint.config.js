@@ -4,7 +4,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'docs/.vitepress/**', 'src/common/icon-data.js'],
+    ignores: ['dist/**', 'node_modules/**', 'docs/.vitepress/**', 'src/common/icon-data.js', 'playwright-report/**', 'test-results/**'],
   },
   {
     files: ['src/**/*.js'],

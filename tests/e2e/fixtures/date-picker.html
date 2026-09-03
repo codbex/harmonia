@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>date picker fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div x-data="{ date: '' }" class="flex max-w-3xs flex-col gap-2">
+      <div x-h-date-picker>
+        <input type="text" id="input" />
+        <button id="trigger" x-h-date-picker-trigger aria-label="Choose date"></button>
+        <div id="popup" x-h-date-picker-popup x-model="date"></div>
+      </div>
+      <span id="model" x-text="date"></span>
+    </div>
+  </body>
+</html>

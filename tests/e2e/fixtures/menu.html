@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>menu fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <button id="trigger" x-h-button x-h-menu-trigger.dropdown>Dropdown</button>
+    <ul id="menu" x-h-menu>
+      <div x-h-menu-label>Profile</div>
+      <li id="item-away" x-h-menu-item>Set yourself as away</li>
+      <li id="item-sub" x-h-menu-sub>
+        <span>Pause notifications</span>
+        <ul id="submenu" x-h-menu.sub>
+          <li id="sub-15" x-h-menu-item>15 minutes</li>
+          <li id="sub-30" x-h-menu-item>30 minutes</li>
+          <li id="sub-60" x-h-menu-item>1 hour</li>
+        </ul>
+      </li>
+      <li id="item-invite" x-h-menu-item>Invite users</li>
+      <div x-h-menu-separator></div>
+      <li id="item-logout" x-h-menu-item data-variant="negative">Log out</li>
+    </ul>
+
+    <div style="position: fixed; right: 0.5rem; bottom: 0.5rem">
+      <button id="pinned-trigger" x-h-button x-h-menu-trigger.dropdown>Pinned</button>
+      <ul id="pinned-menu" x-h-menu>
+        <li x-h-menu-item>First</li>
+        <li x-h-menu-item>Second</li>
+        <li x-h-menu-item>Third</li>
+        <li x-h-menu-item>Fourth</li>
+        <li x-h-menu-item>Fifth</li>
+        <li x-h-menu-item>Sixth</li>
+      </ul>
+    </div>
+  </body>
+</html>

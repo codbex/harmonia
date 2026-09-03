@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>dialog fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div x-data="{ showDialog: false }" @keydown.escape.window="showDialog = false">
+      <button id="opener" x-h-button @click="showDialog = !showDialog">Show</button>
+
+      <div id="overlay" x-h-dialog-overlay :data-open="showDialog">
+        <div x-h-dialog>
+          <div x-h-dialog-header>
+            <h2 x-h-dialog-title>Edit profile</h2>
+            <p x-h-dialog-description>Make changes to your profile and click save.</p>
+          </div>
+          <div x-h-dialog-content class="grid gap-4">
+            <div class="grid gap-3">
+              <label x-h-label for="name-1">Name</label>
+              <input x-h-input id="name-1" name="name" value="Olivia Davis" />
+            </div>
+            <div class="grid gap-3">
+              <label x-h-label for="username-1">Username</label>
+              <input x-h-input id="username-1" name="username" value="@olivia-davis" />
+            </div>
+          </div>
+          <div x-h-dialog-footer>
+            <button id="cancel" x-h-button data-variant="outline" @click="showDialog = false">Cancel</button>
+            <button id="save" x-h-button data-variant="primary" @click="showDialog = false">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div x-data="{ showLong: false }">
+      <button id="long-opener" x-h-button @click="showLong = !showLong">Show long</button>
+
+      <div id="long-overlay" x-h-dialog-overlay :data-open="showLong">
+        <div x-h-dialog data-fullscreen="true">
+          <div id="long-header" x-h-dialog-header>
+            <h2 x-h-dialog-title>Terms</h2>
+          </div>
+          <div id="long-content" x-h-dialog-content class="grid gap-4">
+            <template x-for="i in 60">
+              <p x-text="`Paragraph ${i} of the terms and conditions.`"></p>
+            </template>
+          </div>
+          <div x-h-dialog-footer>
+            <button x-h-button data-variant="primary" @click="showLong = false">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

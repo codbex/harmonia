@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>smoke fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="flex flex-col gap-4 bg-background p-4 text-foreground">
+    <h1 x-h-text.h1>Smoke</h1>
+    <button id="button" x-h-button data-variant="primary">Primary</button>
+    <div id="badge" x-h-badge data-variant="positive">Positive</div>
+    <div id="chip" x-h-chip>Chip</div>
+    <div x-data="{ name: 'initial' }" class="flex flex-col gap-2">
+      <label x-h-label for="name">Name</label>
+      <input id="name" x-h-input type="text" x-model="name" />
+      <span id="model" x-text="name"></span>
+    </div>
+    <span x-h-switch>
+      <input type="checkbox" id="sw" />
+    </span>
+    <div id="progress" x-h-progress="40"></div>
+    <div x-h-separator data-orientation="horizontal"></div>
+    <span x-h-spinner></span>
+    <div x-h-avatar>
+      <div x-h-avatar-fallback>HM</div>
+    </div>
+    <div x-h-card>
+      <div x-h-card-header>
+        <div x-h-card-title>Card</div>
+        <div x-h-card-description>Description</div>
+      </div>
+      <div x-h-card-content>Content</div>
+    </div>
+  </body>
+</html>

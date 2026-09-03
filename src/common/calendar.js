@@ -527,7 +527,15 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     if (!dayCells.includes(event.target)) return;
     event.stopPropagation();
 
-    if (!focusedDay) focusedDay = selected || rangeEnd || rangeStart || new Date(date.getFullYear(), date.getMonth(), 1);
+    // Base navigation on the cell that actually holds focus (today's cell gets
+    // the initial tabindex stop), not the 1st of the month, or the first arrow
+    // press teleports focus. Adjacent-month cells carry no data-day and are
+    // click-focusable despite tabindex -1, hence the fallback chain.
+    if (!focusedDay) {
+      focusedDay = event.target.hasAttribute('data-day')
+        ? new Date(event.target.getAttribute('data-year'), event.target.getAttribute('data-month'), event.target.getAttribute('data-day'))
+        : selected || rangeEnd || rangeStart || new Date(date.getFullYear(), date.getMonth(), 1);
+    }
 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();

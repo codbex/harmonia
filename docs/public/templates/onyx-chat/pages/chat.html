@@ -105,7 +105,13 @@
                         </div>
                         <template x-if="item.message.userId === 'you'">
                           <div class="hbox gap-1">
-                            <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })" x-h-menu-trigger.dropdown>
+                            <button
+                              x-h-button
+                              data-variant="transparent"
+                              data-size="icon-sm"
+                              :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })"
+                              x-h-menu-trigger.dropdown
+                            >
                               <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
                             </button>
                             <ul x-h-menu :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })" data-align="bottom-end">

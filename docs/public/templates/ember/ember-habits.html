@@ -116,7 +116,12 @@
               <template x-for="day in week" :key="day.label">
                 <div class="hbox items-center gap-3">
                   <span class="w-8 shrink-0 text-sm text-muted-foreground" x-text="day.label"></span>
-                  <div x-h-progress="Math.round((day.done / habits.length) * 100)" class="flex-1" :data-variant="day.done === habits.length ? 'positive' : undefined" :aria-label="day.label + ': ' + day.done + ' of ' + habits.length + ' habits done'"></div>
+                  <div
+                    x-h-progress="Math.round((day.done / habits.length) * 100)"
+                    class="flex-1"
+                    :data-variant="day.done === habits.length ? 'positive' : undefined"
+                    :aria-label="day.label + ': ' + day.done + ' of ' + habits.length + ' habits done'"
+                  ></div>
                   <span class="w-8 shrink-0 text-right text-sm font-medium" x-text="day.done + '/' + habits.length"></span>
                 </div>
               </template>

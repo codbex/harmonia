@@ -83,6 +83,8 @@ The build writes to `dist/`: four JS bundles (`harmonia.js` / `.min.js` for the 
 | `npm test`                    | Run the test suite once (vitest).                                                                             |
 | `npm run test:watch`          | Run the tests in watch mode.                                                                                  |
 | `npm run test:coverage`       | Run the tests with a coverage report.                                                                         |
+| `npm run test:e2e`            | Run the Playwright end-to-end suite against the built `dist/` (build first).                                  |
+| `npm run test:e2e:ui`         | Run the Playwright suite in the interactive UI mode.                                                          |
 | `npm run lint`                | Lint `src/` and `scripts/` with ESLint.                                                                       |
 | `npm run lint:fix`            | Lint and auto-fix.                                                                                            |
 | `npm run format`              | Format the repo with Prettier.                                                                                |
@@ -108,7 +110,7 @@ harmonia/
     module.js           ESM entry point (consumers register components manually)
   icons/                The single source of truth for the icon registry
   scripts/              Build and code-generation scripts (build.cjs, generate-icons.cjs, ...)
-  tests/                Vitest suite, mirroring the src/ layout
+  tests/                Vitest suite mirroring the src/ layout, plus the Playwright e2e suite in tests/e2e/
   dist/                 Build output (generated)
   skills/               Agent skill (generated from docs/**)
   docs/                 VitePress documentation site
@@ -205,6 +207,26 @@ npx vitest run tests/components/accordion.test.js  # a single file
 npx vitest run -t "name substring"                 # a single test by name
 npm run test:coverage                              # with coverage
 ```
+
+### End-to-end tests (Playwright)
+
+The [Playwright](https://playwright.dev/) suite in `tests/e2e/` covers what the unit tests cannot - real Alpine reactivity, real CSS and layout, floating-ui positioning, focus and keyboard traversal, CSS transitions, pointer drags and theme switching. It runs against the built `dist/` bundles, so build first.
+
+```sh
+# 1. Install the Playwright browsers (once)
+npx playwright install
+
+# 2. Build the library so dist/ is fresh
+npm run build
+
+# 3. Run the suite (Chromium)
+npm run test:e2e
+
+# Or with the interactive UI
+npm run test:e2e:ui
+```
+
+Locally the suite runs on Chromium only. In CI (GitHub Actions) it also runs on Firefox and WebKit. You can try all three locally with `CI=1 npx playwright test`, but the WebKit tests will probably fail on an up-to-date system due to an upstream issue - Playwright's bundled WebKit build is not compatible with the newer system libraries many distributions ship. They should run fine in GitHub Actions (though not guaranteed).
 
 ## Contributing
 

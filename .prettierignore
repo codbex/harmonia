@@ -10,3 +10,7 @@ src/common/icon-data.js
 
 # Generated from docs/** by scripts/generate-agent-docs.cjs
 skills/
+
+# Playwright output
+playwright-report
+test-results

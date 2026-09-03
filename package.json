@@ -45,6 +45,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "lint": "eslint \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "lint:fix": "eslint --fix \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
@@ -64,6 +66,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/cli": "^4.3.3",
     "@vitest/coverage-v8": "^4.1.9",
     "alpinejs": "^3.16.3",

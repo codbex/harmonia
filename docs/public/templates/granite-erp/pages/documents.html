@@ -20,9 +20,13 @@
   </div>
 
   <div class="hbox flex-wrap gap-2">
-    <button x-h-chip :data-variant="type === 'all' ? 'primary' : 'outline'" @click="type = 'all'">All types</button>
+    <div x-h-chip :data-variant="type === 'all' ? 'primary' : 'outline'">
+      <button x-h-chip-button @click="type = 'all'">All types</button>
+    </div>
     <template x-for="option in types" :key="option">
-      <button x-h-chip :data-variant="type === option ? 'primary' : 'outline'" @click="type = option" x-text="option"></button>
+      <div x-h-chip :data-variant="type === option ? 'primary' : 'outline'">
+        <button x-h-chip-button @click="type = option" x-text="option"></button>
+      </div>
     </template>
   </div>
 
@@ -56,7 +60,7 @@
         </thead>
         <tbody x-h-table-body>
           <template x-for="doc in list" :key="doc.id">
-            <tr x-h-table-row data-hoverable="true">
+            <tr x-h-table-row>
               <td x-h-table-cell>
                 <div class="hbox min-w-0 items-center gap-3">
                   <svg x-h-lucide role="presentation" :data-lucide="typeIcon(doc.type)" class="text-muted-foreground"></svg>
@@ -75,7 +79,7 @@
               <td x-h-table-cell class="text-right" x-text="doc.size"></td>
               <td x-h-table-cell class="text-right" x-text="$store.erp.date(doc.uploaded)"></td>
               <td x-h-table-cell class="text-right">
-                <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Delete ' + doc.name" @click="removeTarget = doc">
+                <button x-h-button data-variant="transparent" data-size="icon" :aria-label="'Delete ' + doc.name" @click="removeTarget = doc">
                   <svg x-h-icon data-icon="trash" role="presentation"></svg>
                 </button>
               </td>
