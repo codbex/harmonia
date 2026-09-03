@@ -8,7 +8,7 @@ Use tabs to group related content or functionality, allowing users to switch bet
 
 ## Behavior
 
-A tab can carry one action, such as a close button, by placing `x-h-tab-action` on a `<span>` inside it.
+Every tab lives in its own `x-h-tab-item` wrapper, which draws the tab's surface. Actions, such as a close button, are `<button x-h-tab-action>` elements placed beside the tab button inside its item, and a tab can carry several. In a list built with `x-for`, per-tab actions are added conditionally with `<template x-if>`.
 
 When the tabs outgrow their list, the list scrolls in place with no visible scrollbar, and the edge that hides more tabs fades out to show where the overflow is. The selected tab is brought into view automatically, both when it first renders and when the selection changes.
 
@@ -23,7 +23,7 @@ The tab list is a single Tab stop that lands on the selected tab, so reaching th
 
 Tabs disabled with the native `disabled` attribute are skipped. Tabs with `aria-disabled="true"` are still reached by the arrows, `Home` and `End`, and are announced as unavailable, but neither a click nor `Enter` activates them. Moving focus does not change the selection, so the tabs can be looked through before one is activated.
 
-A tab action shares its tab's place in the tab order, so `Tab` from the focused tab moves to its action, where `Enter` / `Space` activates it. Only the action of the tab holding the tab stop is reachable this way, which keeps the tab list a single Tab stop.
+A tab's actions share its place in the tab order, so `Tab` from the focused tab moves through its actions in the order they appear, and `Enter` / `Space` activates them like any button. Only the actions of the tab holding the tab stop are reachable this way, which keeps the tab list a single Tab stop. The arrow keys keep moving between tabs while an action has focus.
 
 ## Accessibility
 
@@ -31,9 +31,9 @@ The tab list, tabs and panels get their `tablist`, `tab` and `tabpanel` roles au
 
 Selection stays yours to drive. Bind `aria-selected` on each tab and `hidden` on each panel to the same value. A tab written without `aria-selected` is announced as not selected. The roving tab stop follows the selected tab, so Tab always enters the widget at the tab whose panel is showing.
 
-Each tab needs an `id` and an `aria-controls` pointing at its panel, and each panel an `id` and an `aria-labelledby` pointing back at its tab, which is what pairs the two for a screen reader. A tab must also live inside a tab list, and a tab list inside a tabs root. The component throws when any of this is missing.
+Each tab needs an `id` and an `aria-controls` pointing at its panel, and each panel an `id` and an `aria-labelledby` pointing back at its tab, which is what pairs the two for a screen reader. A tab must also live inside a tab item, a tab item inside a tab list, and a tab list inside a tabs root. The component throws when any of this is missing.
 
-A tab action holds only whatever you put inside it, usually an icon, so it needs its own `aria-label` or `aria-labelledby` to be announced as anything more than a button. Activating it does not change the selection.
+The tab item takes `role="presentation"` and vanishes from the accessibility tree, so the tab and its actions are announced as direct children of the tab list. A tab action is a real button holding only whatever you put inside it, usually an icon, so it needs its own `aria-label` or `aria-labelledby` naming the thing it acts on. Activating it does not change the selection. A disabled tab dims its whole item, but its actions stay operable unless you disable them too.
 
 Panels are focusable by default, so Tab moves from the selected tab into its panel and the panel shows a focus ring. That stop is what makes a panel with no focusable content of its own reachable. When your panel already contains something focusable, that element is the way in, so set `tabindex="-1"` on the panel to avoid a redundant stop.
 
@@ -45,6 +45,7 @@ Panels are focusable by default, so Tab moves from the selected tab into its pan
 x-h-tabs
 x-h-tab-bar
 x-h-tab-list
+x-h-tab-item
 x-h-tab
 x-h-tab-action
 x-h-tab-list-actions
@@ -67,6 +68,12 @@ x-h-tabs-content
 | data-floating | boolean                       | false    | Floating style tab list.                                                                    |
 | data-size     | `default`<br />`sm`<br />`lg` | false    | Height of the tab bar. Ignored when the tab bar is floating or the orientation is vertical. |
 
+#### x-h-tab-item
+
+> Must not be applied to an interactive element such as a `<button>` or an `<a>`.
+
+The required wrapper around every tab. It holds one `x-h-tab` button and any number of `x-h-tab-action` buttons, and it draws the tab's surface, so the buttons inside it stay transparent. An item with no actions renders exactly like one with them, and an item whose tab or actions are rendered later, for example behind a `<template x-if>`, is valid while it waits for them.
+
 #### x-h-tab
 
 | Attribute     | Type    | Required | Description                                                                                                                |
@@ -78,7 +85,7 @@ x-h-tabs-content
 
 #### x-h-tab-action
 
-> Must be applied to a `<span>` element. A tab can only have one action.
+> Must be applied to a `<button>` element inside an `x-h-tab-item`. A tab can have several actions.
 
 | Attribute       | Type   | Required | Description                                        |
 | --------------- | ------ | -------- | -------------------------------------------------- |
@@ -122,8 +129,12 @@ One of `aria-label` or `aria-labelledby` is required.
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-size="sm">
     <div x-h-tab-list>
-      <button id="smt1" x-h-tab aria-controls="smt1c" aria-selected="true">Tab 1</button>
-      <button id="smt2" x-h-tab aria-controls="smt2c">Tab 2</button>
+      <div x-h-tab-item>
+        <button id="smt1" x-h-tab aria-controls="smt1c" aria-selected="true">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button id="smt2" x-h-tab aria-controls="smt2c">Tab 2</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="smt1c" aria-labelledby="smt1" hidden></div>
@@ -132,8 +143,12 @@ One of `aria-label` or `aria-labelledby` is required.
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button id="dt1" x-h-tab aria-controls="dt1c" aria-selected="true">Tab 1</button>
-      <button id="dt2" x-h-tab aria-controls="dt2c">Tab 2</button>
+      <div x-h-tab-item>
+        <button id="dt1" x-h-tab aria-controls="dt1c" aria-selected="true">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button id="dt2" x-h-tab aria-controls="dt2c">Tab 2</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="dt1c" aria-labelledby="dt1" hidden></div>
@@ -142,8 +157,12 @@ One of `aria-label` or `aria-labelledby` is required.
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-size="lg">
     <div x-h-tab-list>
-      <button id="lgt1" x-h-tab aria-controls="lgt1c" aria-selected="true">Tab 1</button>
-      <button id="lgt2" x-h-tab aria-controls="lgt2c">Tab 2</button>
+      <div x-h-tab-item>
+        <button id="lgt1" x-h-tab aria-controls="lgt1c" aria-selected="true">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button id="lgt2" x-h-tab aria-controls="lgt2c">Tab 2</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="lgt1c" aria-labelledby="lgt1" hidden></div>
@@ -163,10 +182,18 @@ One of `aria-label` or `aria-labelledby` is required.
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button id="dis1" x-h-tab aria-controls="dis1c" aria-selected="true">Tab 1</button>
-      <button id="dis2" x-h-tab aria-controls="dis2c" disabled>Tab 2</button>
-      <button id="dis3" x-h-tab aria-controls="dis3c" aria-disabled="true">Tab 3</button>
-      <button id="dis4" x-h-tab aria-controls="dis4c">Tab 4</button>
+      <div x-h-tab-item>
+        <button id="dis1" x-h-tab aria-controls="dis1c" aria-selected="true">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button id="dis2" x-h-tab aria-controls="dis2c" disabled>Tab 2</button>
+      </div>
+      <div x-h-tab-item>
+        <button id="dis3" x-h-tab aria-controls="dis3c" aria-disabled="true">Tab 3</button>
+      </div>
+      <div x-h-tab-item>
+        <button id="dis4" x-h-tab aria-controls="dis4c">Tab 4</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="dis1c" aria-labelledby="dis1"></div>
@@ -186,7 +213,9 @@ One of `aria-label` or `aria-labelledby` is required.
 <div x-h-tabs data-orientation="horizontal" style="height:10rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button id="stce" x-h-tab aria-controls="stcec" aria-selected="true">Tab 1</button>
+      <div x-h-tab-item>
+        <button id="stce" x-h-tab aria-controls="stcec" aria-selected="true">Tab 1</button>
+      </div>
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stcec" aria-labelledby="stce">
@@ -207,9 +236,15 @@ One of `aria-label` or `aria-labelledby` is required.
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hit1' }">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="hit1" aria-controls="hit1c" :aria-selected="activeTabId === 'hit1'" @click="activeTabId = 'hit1'">Tab 1</button>
-      <button x-h-tab id="hit2" aria-controls="hit2c" :aria-selected="activeTabId === 'hit2'" @click="activeTabId = 'hit2'">Tab 2</button>
-      <button x-h-tab id="hit3" aria-controls="hit3c" :aria-selected="activeTabId === 'hit3'" @click="activeTabId = 'hit3'">Tab 3</button>
+      <div x-h-tab-item>
+        <button x-h-tab id="hit1" aria-controls="hit1c" :aria-selected="activeTabId === 'hit1'" @click="activeTabId = 'hit1'">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="hit2" aria-controls="hit2c" :aria-selected="activeTabId === 'hit2'" @click="activeTabId = 'hit2'">Tab 2</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="hit3" aria-controls="hit3c" :aria-selected="activeTabId === 'hit3'" @click="activeTabId = 'hit3'">Tab 3</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="hit1c" aria-labelledby="hit1" :hidden="activeTabId !== 'hit1'">
@@ -237,7 +272,9 @@ When the tabs do not fit, the list scrolls in place and the edge hiding more tab
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <template x-for="(id, i) in tabs" :key="id">
-        <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+        <div x-h-tab-item>
+          <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+        </div>
       </template>
     </div>
   </div>
@@ -274,7 +311,9 @@ The action buttons keep their place in the bar while the list scrolls independen
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <template x-for="(id, i) in tabs" :key="id">
-        <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+        <div x-h-tab-item>
+          <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+        </div>
       </template>
     </div>
     <div x-h-tab-list-actions>
@@ -314,13 +353,15 @@ The action buttons keep their place in the bar while the list scrolls independen
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <template x-for="tab in tabs" :key="tab.id">
-        <button x-h-tab :id="tab.id" :aria-controls="`${tab.id}c`" :aria-selected="activeTabId === tab.id" @click="activeTabId = tab.id">
-          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-          <span x-text="tab.title"></span>
-          <span x-h-tab-action :aria-label="`close ${tab.title}`" @click="close(tab.id)">
+        <div x-h-tab-item>
+          <button x-h-tab :id="tab.id" :aria-controls="`${tab.id}c`" :aria-selected="activeTabId === tab.id" @click="activeTabId = tab.id">
+            <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+            <span x-text="tab.title"></span>
+          </button>
+          <button x-h-tab-action :aria-label="`close ${tab.title}`" @click="close(tab.id)">
             <svg x-h-icon data-icon="close" role="presentation"></svg>
-          </span>
-        </button>
+          </button>
+        </div>
       </template>
     </div>
   </div>
@@ -342,12 +383,12 @@ The action buttons keep their place in the bar while the list scrolls independen
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="hitwa1" aria-controls="hitwa1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="hitwa1" aria-controls="hitwa1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
@@ -371,12 +412,12 @@ The action buttons keep their place in the bar while the list scrolls independen
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="hitwae1" aria-controls="hitwae1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="hitwae1" aria-controls="hitwae1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action aria-label="tab bar menu button">
@@ -400,9 +441,15 @@ The action buttons keep their place in the bar while the list scrolls independen
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'ht1' }">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="ht1" aria-controls="ht1c" :aria-selected="activeTabId === 'ht1'" @click="activeTabId = 'ht1'">Tab 1</button>
-      <button x-h-tab id="ht2" aria-controls="ht2c" :aria-selected="activeTabId === 'ht2'" @click="activeTabId = 'ht2'">Tab 2</button>
-      <button x-h-tab id="ht3" aria-controls="ht3c" :aria-selected="activeTabId === 'ht3'" @click="activeTabId = 'ht3'">Tab 3</button>
+      <div x-h-tab-item>
+        <button x-h-tab id="ht1" aria-controls="ht1c" :aria-selected="activeTabId === 'ht1'" @click="activeTabId = 'ht1'">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="ht2" aria-controls="ht2c" :aria-selected="activeTabId === 'ht2'" @click="activeTabId = 'ht2'">Tab 2</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="ht3" aria-controls="ht3c" :aria-selected="activeTabId === 'ht3'" @click="activeTabId = 'ht3'">Tab 3</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="ht1c" aria-labelledby="ht1" :hidden="activeTabId !== 'ht1'">
@@ -429,8 +476,12 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true" class="w-max">
     <div x-h-tab-list>
-      <button x-h-tab id="htfts1" aria-controls="htfts1c" aria-selected="true">Sign In</button>
-      <button x-h-tab id="htfts2" aria-controls="htfts2c">Sign Up</button>
+      <div x-h-tab-item>
+        <button x-h-tab id="htfts1" aria-controls="htfts1c" aria-selected="true">Sign In</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="htfts2" aria-controls="htfts2c">Sign Up</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="htfts1c" aria-labelledby="htfts1">
@@ -452,27 +503,33 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 <div x-h-tabs data-orientation="horizontal" x-data="{ activeTabId: 'hbt1' }">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="hbt1" aria-controls="hbt1c" :aria-selected="activeTabId === 'hbt1'" @click="activeTabId = 'hbt1'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="hbt1" aria-controls="hbt1c" :aria-selected="activeTabId === 'hbt1'" @click="activeTabId = 'hbt1'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 1
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="hbt2" aria-controls="hbt2c" :aria-selected="activeTabId === 'hbt2'" @click="activeTabId = 'hbt2'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 2
-        <span x-h-tab-action aria-label="close tab">
+        </button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="hbt2" aria-controls="hbt2c" :aria-selected="activeTabId === 'hbt2'" @click="activeTabId = 'hbt2'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 2
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="hbt3" aria-controls="hbt3c" :aria-selected="activeTabId === 'hbt3'" @click="activeTabId = 'hbt3'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 3
-        <span x-h-tab-action aria-label="close tab">
+        </button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="hbt3" aria-controls="hbt3c" :aria-selected="activeTabId === 'hbt3'" @click="activeTabId = 'hbt3'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 3
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="hbt1c" aria-labelledby="hbt1" :hidden="activeTabId !== 'hbt1'">
@@ -497,12 +554,12 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="hftwa1" aria-controls="hftwa1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="hftwa1" aria-controls="hftwa1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
@@ -526,12 +583,12 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 <div x-h-tabs data-orientation="horizontal">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="hftwae1" aria-controls="hftwae1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="hftwae1" aria-controls="hftwae1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action aria-label="menu button">
@@ -555,9 +612,15 @@ You can make the tab bar fit to the size of the tab list by adding the `w-max` c
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vit1' }">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="vit1" aria-controls="vit1c" :aria-selected="activeTabId === 'vit1'" @click="activeTabId = 'vit1'">Tab 1</button>
-      <button x-h-tab id="vit2" aria-controls="vit2c" :aria-selected="activeTabId === 'vit2'" @click="activeTabId = 'vit2'">Tab 2</button>
-      <button x-h-tab id="vit3" aria-controls="vit3c" :aria-selected="activeTabId === 'vit3'" @click="activeTabId = 'vit3'">Tab 3</button>
+      <div x-h-tab-item>
+        <button x-h-tab id="vit1" aria-controls="vit1c" :aria-selected="activeTabId === 'vit1'" @click="activeTabId = 'vit1'">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vit2" aria-controls="vit2c" :aria-selected="activeTabId === 'vit2'" @click="activeTabId = 'vit2'">Tab 2</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vit3" aria-controls="vit3c" :aria-selected="activeTabId === 'vit3'" @click="activeTabId = 'vit3'">Tab 3</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="vit1c" aria-labelledby="vit1" :hidden="activeTabId !== 'vit1'">
@@ -585,7 +648,9 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
   <div x-h-tab-bar>
     <div x-h-tab-list>
       <template x-for="(id, i) in tabs" :key="id">
-        <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+        <div x-h-tab-item>
+          <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+        </div>
       </template>
     </div>
   </div>
@@ -607,27 +672,33 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vib1' }">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="vib1" aria-controls="vib1c" :aria-selected="activeTabId === 'vib1'" @click="activeTabId = 'vib1'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="vib1" aria-controls="vib1c" :aria-selected="activeTabId === 'vib1'" @click="activeTabId = 'vib1'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 1
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="vib2" aria-controls="vib2c" :aria-selected="activeTabId === 'vib2'" @click="activeTabId = 'vib2'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 2
-        <span x-h-tab-action aria-label="close tab">
+        </button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vib2" aria-controls="vib2c" :aria-selected="activeTabId === 'vib2'" @click="activeTabId = 'vib2'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 2
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="vib3" aria-controls="vib3c" :aria-selected="activeTabId === 'vib3'" @click="activeTabId = 'vib3'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 3
-        <span x-h-tab-action aria-label="close tab">
+        </button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vib3" aria-controls="vib3c" :aria-selected="activeTabId === 'vib3'" @click="activeTabId = 'vib3'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 3
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="vib1c" aria-labelledby="vib1" :hidden="activeTabId !== 'vib1'">
@@ -652,12 +723,12 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="vitwa1" aria-controls="vitwa1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="vitwa1" aria-controls="vitwa1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
@@ -681,12 +752,12 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="vitwae1" aria-controls="vitwae1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="vitwae1" aria-controls="vitwae1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action aria-label="menu button">
@@ -710,9 +781,15 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vt1' }">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="vt1" aria-controls="vt1c" :aria-selected="activeTabId === 'vt1'" @click="activeTabId = 'vt1'">Tab 1</button>
-      <button x-h-tab id="vt2" aria-controls="vt2c" :aria-selected="activeTabId === 'vt2'" @click="activeTabId = 'vt2'">Tab 2</button>
-      <button x-h-tab id="vt3" aria-controls="vt3c" :aria-selected="activeTabId === 'vt3'" @click="activeTabId = 'vt3'">Tab 3</button>
+      <div x-h-tab-item>
+        <button x-h-tab id="vt1" aria-controls="vt1c" :aria-selected="activeTabId === 'vt1'" @click="activeTabId = 'vt1'">Tab 1</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vt2" aria-controls="vt2c" :aria-selected="activeTabId === 'vt2'" @click="activeTabId = 'vt2'">Tab 2</button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vt3" aria-controls="vt3c" :aria-selected="activeTabId === 'vt3'" @click="activeTabId = 'vt3'">Tab 3</button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="vt1c" aria-labelledby="vt1" :hidden="activeTabId !== 'vt1'">
@@ -737,27 +814,33 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" x-data="{ activeTabId: 'vbt1' }">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="vbt1" aria-controls="vbt1c" :aria-selected="activeTabId === 'vbt1'" @click="activeTabId = 'vbt1'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="vbt1" aria-controls="vbt1c" :aria-selected="activeTabId === 'vbt1'" @click="activeTabId = 'vbt1'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 1
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="vbt2" aria-controls="vbt2c" :aria-selected="activeTabId === 'vbt2'" @click="activeTabId = 'vbt2'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 2
-        <span x-h-tab-action aria-label="close tab">
+        </button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vbt2" aria-controls="vbt2c" :aria-selected="activeTabId === 'vbt2'" @click="activeTabId = 'vbt2'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 2
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
-      <button x-h-tab id="vbt3" aria-controls="vbt3c" :aria-selected="activeTabId === 'vbt3'" @click="activeTabId = 'vbt3'">
-        <svg x-h-lucide role="presentation" data-lucide="file"></svg>
-        Tab 3
-        <span x-h-tab-action aria-label="close tab">
+        </button>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="vbt3" aria-controls="vbt3c" :aria-selected="activeTabId === 'vbt3'" @click="activeTabId = 'vbt3'">
+          <svg x-h-lucide role="presentation" data-lucide="file"></svg>
+          Tab 3
+        </button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
   </div>
   <div x-h-tabs-content id="vbt1c" aria-labelledby="vbt1" :hidden="activeTabId !== 'vbt1'">
@@ -782,12 +865,12 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="vftwa1" aria-controls="vftwa1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="vftwa1" aria-controls="vftwa1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions>
       <button x-h-tab-list-action data-variant="transparent" aria-label="add tab button">
@@ -811,12 +894,12 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
 <div x-h-tabs data-orientation="vertical" style="height:8rem">
   <div x-h-tab-bar data-floating="true">
     <div x-h-tab-list>
-      <button x-h-tab id="vftwae1" aria-controls="vftwae1c" aria-selected="true">
-        Tab 1
-        <span x-h-tab-action aria-label="close tab">
+      <div x-h-tab-item>
+        <button x-h-tab id="vftwae1" aria-controls="vftwae1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action aria-label="close tab">
           <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
     <div x-h-tab-list-actions.end>
       <button x-h-tab-list-action data-variant="outline" aria-label="menu button">
@@ -827,6 +910,91 @@ A vertical list scrolls once something constrains its height, here a fixed heigh
   <div x-h-tabs-content id="vftwae1c" aria-labelledby="vftwae1">
     <div class="p-2">Tab 1 Content</div>
   </div>
+</div>
+```
+
+</LiveExample>
+
+### Tabs with multiple actions
+
+A tab can carry several actions, here a menu beside the close button. The popover panel goes inside the tab item, after the actions.
+
+<LiveExample data-class="p-0">
+
+```html
+<div x-h-tabs data-orientation="horizontal">
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <div x-h-tab-item>
+        <button x-h-tab id="mat1" aria-controls="mat1c" aria-selected="true">Tab 1</button>
+        <button x-h-tab-action x-h-popover-trigger aria-label="tab 1 menu">
+          <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
+        </button>
+        <button x-h-tab-action aria-label="close tab 1">
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
+        </button>
+        <div class="w-40 p-2" x-h-popover>Tab menu</div>
+      </div>
+      <div x-h-tab-item>
+        <button x-h-tab id="mat2" aria-controls="mat2c">Tab 2</button>
+        <button x-h-tab-action aria-label="close tab 2">
+          <svg x-h-icon data-icon="close" role="presentation"></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div x-h-tabs-content id="mat1c" aria-labelledby="mat1">
+    <div class="p-2">Tab 1 Content</div>
+  </div>
+  <div x-h-tabs-content id="mat2c" aria-labelledby="mat2" hidden></div>
+</div>
+```
+
+</LiveExample>
+
+### Mixed closable tabs
+
+An `x-for` template has a single root, so a list where only some tabs can close keeps the tab item as that root and gates the action with `<template x-if>`.
+
+<LiveExample data-class="p-0">
+
+```html
+<div
+  x-h-tabs
+  data-orientation="horizontal"
+  x-data="{
+    tabs: [
+      { id: 'mx1', title: 'Home', closable: false },
+      { id: 'mx2', title: 'Notes', closable: true },
+      { id: 'mx3', title: 'Draft', closable: true },
+    ],
+    activeTabId: 'mx1',
+    close(id) {
+      const index = this.tabs.findIndex((tab) => tab.id === id);
+      this.tabs.splice(index, 1);
+      if (this.activeTabId === id) this.activeTabId = this.tabs[Math.min(index, this.tabs.length - 1)]?.id;
+    },
+  }"
+>
+  <div x-h-tab-bar>
+    <div x-h-tab-list>
+      <template x-for="tab in tabs" :key="tab.id">
+        <div x-h-tab-item>
+          <button x-h-tab :id="tab.id" :aria-controls="`${tab.id}c`" :aria-selected="activeTabId === tab.id" @click="activeTabId = tab.id" x-text="tab.title"></button>
+          <template x-if="tab.closable">
+            <button x-h-tab-action :aria-label="`close ${tab.title}`" @click="close(tab.id)">
+              <svg x-h-icon data-icon="close" role="presentation"></svg>
+            </button>
+          </template>
+        </div>
+      </template>
+    </div>
+  </div>
+  <template x-for="tab in tabs" :key="tab.id">
+    <div x-h-tabs-content :id="`${tab.id}c`" :aria-labelledby="tab.id" :hidden="activeTabId !== tab.id">
+      <div class="p-2" x-text="`${tab.title} Content`"></div>
+    </div>
+  </template>
 </div>
 ```
 

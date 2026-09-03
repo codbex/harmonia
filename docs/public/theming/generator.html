@@ -106,12 +106,9 @@
         <div x-h-dialog>
           <div x-h-dialog-header>
             <h2 x-h-dialog-title>Harmonia</h2>
-            <button x-h-dialog-close aria-label="about button" @click="showAbout = false">
-              <svg x-h-icon data-icon="close" role="presentation"></svg>
-            </button>
             <p x-h-dialog-description x-text="getVersion()"></p>
           </div>
-          <div>
+          <div x-h-dialog-content>
             <p>Harmonia is an <a href="https://alpinejs.dev/">Alpine.js</a> component library made by <a href="https://www.codbex.com/">codbex</a>.</p>
             <p>This page is both a demo page and a theme generator.</p>
           </div>
@@ -259,7 +256,9 @@
               <svg x-h-icon data-icon="close" role="presentation"></svg>
             </button>
           </div>
-          <p class="overflow-scroll" x-h-text.code x-text="themeStylesheet"></p>
+          <div x-h-dialog-content>
+            <p class="h-full overflow-auto" x-h-text.code x-text="themeStylesheet"></p>
+          </div>
           <div x-h-dialog-footer>
             <button x-h-button data-variant="primary" @click="copy($refs.copyBtn)"><svg x-h-lucide role="presentation" data-lucide="copy"></svg><span x-ref="copyBtn">Copy</span></button>
           </div>
@@ -275,7 +274,9 @@
             </button>
             <p x-h-dialog-description>This will override the existing theme!</p>
           </div>
-          <textarea id="importCssVars" class="h-full" x-h-textarea :placeholder="importPlaceholder" x-ref="themeCssInput"></textarea>
+          <div x-h-dialog-content>
+            <textarea id="importCssVars" class="h-full" x-h-textarea :placeholder="importPlaceholder" x-ref="themeCssInput"></textarea>
+          </div>
           <div x-h-dialog-footer>
             <button x-h-button data-variant="primary" @click="importTheme($refs)">Import</button>
           </div>
@@ -483,7 +484,7 @@
             }
           },
           themeStylesheet: "",
-          importPlaceholder: `:root,\n:host {\n  --background: ...\n}\n\n.dark {\n  --background: ...\n}`,
+          importPlaceholder: `:root,\n:host,\n.light {\n  --background: ...\n}\n\n.dark {\n  --background: ...\n}`,
           showImportDialog() {
             this.showImport = true;
           },
@@ -494,7 +495,7 @@
             this.showImport = false;
           },
           exportTheme() {
-            let themeCss = ":root,\n:host {\n";
+            let themeCss = ":root,\n:host,\n.light {\n";
             for (let c = 0; c < this.colors.light.length; c++) {
               themeCss += `  ${this.colors.light[c].varId}: ${this.colors.light[c].value};\n`;
             }
@@ -546,7 +547,7 @@
             }
 
             for (const rule of styleSheet.cssRules) {
-              if (rule.selectorText === ":root, :host") {
+              if (rule.selectorText === ":root, :host, .light") {
                 for (const name of rule.style) {
                   if (name.startsWith("--")) {
                     if (this.colorVars.includes(name)) {

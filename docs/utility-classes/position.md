@@ -43,7 +43,9 @@ The custom `position-fit` class has been removed. Use the standard `inset-0` uti
 <div x-h-tabs data-orientation="horizontal" style="height:22rem">
   <div x-h-tab-bar>
     <div x-h-tab-list>
-      <button x-h-tab id="stc1" aria-controls="stc1c" aria-selected="true">Tab 1</button>
+      <div x-h-tab-item>
+        <button x-h-tab id="stc1" aria-controls="stc1c" aria-selected="true">Tab 1</button>
+      </div>
     </div>
   </div>
   <div class="relative" x-h-tabs-content id="stc1c" aria-labelledby="stc1">

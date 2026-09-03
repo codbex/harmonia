@@ -13,6 +13,7 @@ import carousel from './components/carousel';
 import chart from './components/chart';
 import checkbox from './components/checkbox';
 import chip from './components/chip';
+import combobox from './components/combobox';
 import datepicker from './components/date-picker';
 import datetimePicker from './components/datetime-picker';
 import dialog from './components/dialog';
@@ -59,6 +60,8 @@ import tooltip from './components/tooltip';
 import tree from './components/tree';
 import weekPicker from './components/week-picker';
 
+import { getNativeNotificationPermission, isNativeNotificationSupported, requestNativeNotificationPermission, showNativeNotification } from './utils/native-notifications';
+
 import { addColorSchemeListener, getColorScheme, getSystemColorScheme, removeColorSchemeListener, setColorScheme } from './utils/theme';
 
 import { getBreakpointListener } from './utils/breakpoint-listener';
@@ -87,8 +90,12 @@ window.Harmonia = {
   chartToSvg,
   createDateFormatter,
   getColorScheme,
+  getNativeNotificationPermission,
+  isNativeNotificationSupported,
   removeColorSchemeListener,
+  requestNativeNotificationPermission,
   setColorScheme,
+  showNativeNotification,
   getSystemColorScheme,
   version,
   plugins: (window.Harmonia && window.Harmonia.plugins) || {},
@@ -110,6 +117,7 @@ function registerPlugins() {
   window.Alpine.plugin(chart);
   window.Alpine.plugin(checkbox);
   window.Alpine.plugin(chip);
+  window.Alpine.plugin(combobox);
   window.Alpine.plugin(datepicker);
   window.Alpine.plugin(datetimePicker);
   window.Alpine.plugin(dialog);

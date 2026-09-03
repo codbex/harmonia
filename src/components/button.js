@@ -1,3 +1,5 @@
+import { findAncestorState } from '../common/ancestor';
+import { rejectModelEventModifiers } from '../common/model';
 import { disabledControlClasses } from '../common/shared-classes';
 
 export const buttonVariants = {
@@ -228,7 +230,7 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-button-group', (el) => {
+  Alpine.directive('h-button-group', (el, { original }, { cleanup }) => {
     el.classList.add(
       'flex',
       'w-fit',
@@ -238,13 +240,36 @@ export default function (Alpine) {
       "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit",
       '[&>input]:flex-1',
       'has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-control',
-      'has-[>[data-slot=button-group]]:gap-2'
+      'data-[borderless=true]:[&>*]:rounded-none'
     );
-    el.setAttribute('role', 'group');
+
+    // An x-model turns the group into a single choice, where the bound value is
+    // the value of the selected button. Alpine initializes x-model ahead of its
+    // own unknown directives, so the marker is already on the element here.
+    const isSingleChoice = Object.prototype.hasOwnProperty.call(el, '_x_model');
+
+    if (!el.hasAttribute('role')) el.setAttribute('role', isSingleChoice ? 'radiogroup' : 'group');
     el.setAttribute('data-slot', 'button-group');
     const variants = {
-      horizontal: ['[&>*:not(:first-child)]:rounded-l-none', '[&>*:not(:first-child)]:border-l-0', '[&>*:not(:last-child)]:rounded-r-none'],
-      vertical: ['flex-col', '[&>*:not(:first-child)]:rounded-t-none', '[&>*:not(:first-child)]:border-t-0', '[&>*:not(:last-child)]:rounded-b-none'],
+      horizontal: [
+        '[&>*:not(:first-child)]:rounded-l-none',
+        '[&>*:not(:first-child)]:border-l-0',
+        '[&>*:not(:last-child)]:rounded-r-none',
+        'divide-x',
+        'data-[borderless=true]:[&>*]:border-y-0',
+        'data-[borderless=true]:[&>*:first-child]:border-l-0',
+        'data-[borderless=true]:[&>*:last-child]:border-r-0',
+      ],
+      vertical: [
+        'flex-col',
+        '[&>*:not(:first-child)]:rounded-t-none',
+        '[&>*:not(:first-child)]:border-t-0',
+        '[&>*:not(:last-child)]:rounded-b-none',
+        'divide-y',
+        'data-[borderless=true]:[&>*]:border-x-0',
+        'data-[borderless=true]:[&>*:first-child]:border-t-0',
+        'data-[borderless=true]:[&>*:last-child]:border-b-0',
+      ],
     };
 
     function setVariant(variant) {
@@ -254,12 +279,168 @@ export default function (Alpine) {
       if (Object.prototype.hasOwnProperty.call(variants, variant)) el.classList.add(...variants[variant]);
     }
 
+    const isVertical = () => el.getAttribute('data-orientation') === 'vertical';
+
     setVariant(el.getAttribute('data-orientation') ?? 'horizontal');
+
+    // The marker goes up whether or not this is a single choice, so a choice
+    // inside a plain group can say so rather than silently doing nothing.
+    el._h_button_group = { singleChoice: isSingleChoice };
+
+    if (!isSingleChoice) return;
+
+    rejectModelEventModifiers(Alpine, el, original);
+
+    if (isVertical()) el.setAttribute('aria-orientation', 'vertical');
+
+    // A radio group is announced by its name, and there is no label element for
+    // it to fall back on, so the name has to come from the author.
+    if (!el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby')) {
+      console.error(`${original}: a single choice button group must have an "aria-label" or "aria-labelledby" attribute`, el);
+    }
+
+    // Choices register themselves rather than being queried, so the set is never
+    // read mid-render. Registration is in mount order, which x-for and later
+    // insertions make differ from visual order, so it is recovered on read.
+    const choices = [];
+
+    function orderedChoices() {
+      return [...choices].sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+    }
+
+    // A native disabled button cannot be focused at all, so it leaves the order.
+    function focusableChoices() {
+      return orderedChoices().filter((choice) => !choice.disabled);
+    }
+
+    // The group is a single tab stop, held by the selected choice so Tab from
+    // outside lands on the current one. With nothing selected it falls to the
+    // first choice, so the group is always reachable.
+    function selectionChanged() {
+      const focusable = focusableChoices();
+      if (!focusable.length) return;
+      const stop = focusable.find((choice) => choice.getAttribute('aria-checked') === 'true') ?? focusable[0];
+      for (const choice of choices) choice.setAttribute('tabindex', choice === stop ? '0' : '-1');
+    }
+
+    Object.assign(el._h_button_group, {
+      getValue: () => el._x_model?.get(),
+      setValue: (value) => el._x_model?.set(value),
+      register(choice) {
+        if (!choices.includes(choice)) choices.push(choice);
+        selectionChanged();
+      },
+      unregister(choice) {
+        const index = choices.indexOf(choice);
+        if (index !== -1) choices.splice(index, 1);
+        selectionChanged();
+      },
+      selectionChanged,
+    });
+
+    // Selection follows focus, which is how a radio group behaves. Going through
+    // the choice's own click keeps one path for selecting, whatever moved to it.
+    function moveTo(choice) {
+      if (!choice) return;
+      choice.click();
+      choice.focus();
+    }
+
+    function onKeyDown(event) {
+      // Resolved from the registered set rather than a selector, since a choice
+      // is an ordinary button and carries no marker attribute of its own.
+      const choice = choices.find((registered) => registered.contains(event.target));
+      if (!choice) return;
+
+      // Read per keystroke, since the group does not watch its orientation.
+      const vertical = isVertical();
+      const nextKeys = vertical ? ['Down', 'ArrowDown'] : ['Right', 'ArrowRight'];
+      const previousKeys = vertical ? ['Up', 'ArrowUp'] : ['Left', 'ArrowLeft'];
+      const focusable = focusableChoices();
+      const index = focusable.indexOf(choice);
+      if (index === -1) return;
+
+      if (nextKeys.includes(event.key)) {
+        event.preventDefault();
+        moveTo(focusable[(index + 1) % focusable.length]);
+      } else if (previousKeys.includes(event.key)) {
+        event.preventDefault();
+        moveTo(focusable[(index - 1 + focusable.length) % focusable.length]);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        moveTo(focusable[0]);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        moveTo(focusable[focusable.length - 1]);
+      }
+      // Enter and Space are left alone. The choices are native buttons, so the
+      // browser already fires the click that selects them.
+    }
+
+    el.addEventListener('keydown', onKeyDown);
+
+    cleanup(() => {
+      el.removeEventListener('keydown', onKeyDown);
+    });
   });
 
-  Alpine.directive('h-button-group-separator', (el) => {
-    el.classList.add('bg-foreground/20', 'shrink-0', '[[data-orientation=vertical]_&]:h-px', '[[data-orientation=vertical]_&]:w-full', 'h-auto', 'w-px', 'relative', 'm-0!', 'self-stretch');
-    el.setAttribute('role', 'none');
-    el.setAttribute('data-slot', 'button-group-separator');
+  // Pairs with x-h-button on the same element, which styles it. Only the choice
+  // semantics are added here, so nothing the button already sets is touched.
+  Alpine.directive('h-button-group-radio', (el, { original, expression }, { Alpine, effect, evaluateLater, cleanup }) => {
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button element`);
+    }
+
+    const root = findAncestorState(Alpine, el, '_h_button_group');
+    if (!root) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-button-group')} element`);
+    }
+
+    const group = root._h_button_group;
+    if (!group.singleChoice) {
+      throw new Error(`${original} requires an "${Alpine.prefixed('model')}" on the ${Alpine.prefixed('h-button-group')} element to bind the choice to`);
+    }
+
+    // A choice never submits the form it happens to sit in.
+    el.setAttribute('type', 'button');
+    el.setAttribute('role', 'radio');
+
+    // An expression evaluated in the element's scope rather than a literal, so
+    // choices generated with x-for resolve. Kept for the click to write back.
+    let value;
+
+    const getValue = evaluateLater(expression);
+
+    // 'aria-checked' carries the state to assistive technology and 'data-toggled'
+    // draws it. Never 'aria-pressed', which is invalid on a radio.
+    effect(() => {
+      getValue((own) => {
+        value = own;
+        if (own === group.getValue()) {
+          el.setAttribute('aria-checked', 'true');
+          el.setAttribute('data-toggled', 'true');
+        } else {
+          el.setAttribute('aria-checked', 'false');
+          el.removeAttribute('data-toggled');
+        }
+        group.selectionChanged();
+      });
+    });
+
+    // Choosing what is already chosen is not a change, so it writes nothing and
+    // announces nothing.
+    function onClick() {
+      if (el.getAttribute('aria-checked') === 'true') return;
+      group.setValue(value);
+      el.dispatchEvent(new CustomEvent('change', { detail: { value }, bubbles: true }));
+    }
+
+    el.addEventListener('click', onClick);
+    group.register(el);
+
+    cleanup(() => {
+      el.removeEventListener('click', onClick);
+      group.unregister(el);
+    });
   });
 }

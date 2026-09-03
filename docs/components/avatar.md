@@ -6,6 +6,10 @@ Represents a person, entity, or object using an image, icon, or text, such as a 
 
 Use avatars to visually identify users or related entities in lists, profiles, or collaborative features. Choose the appropriate variant based on available data - images for personal recognition, initials or icons as fallbacks.
 
+## Behavior
+
+An avatar is a control only when it is written as a `button` or an `a` element, so the element itself carries the role, the tab stop and the keyboard behavior. On any other tag it stays a plain avatar and is never given a role or a `tabindex` it cannot honor.
+
 ## API Reference
 
 ### Component attribute(s)
@@ -107,6 +111,8 @@ You can change the avatar shape by using the `rounded-` classes.
 
 ### Variants
 
+Inside an active [sidebar menu button or menu nav](/components/sidebar), a variant avatar switches to the button's own foreground color so it stays legible.
+
 <LiveExample data-class="grid grid-cols-5 justify-items-center gap-4">
 
 ```html
@@ -168,12 +174,14 @@ Use `data-color` to fill the avatar with one of Harmonia's standard palette colo
 
 ### Interactive
 
-To make an avatar interactive, use the `button` HTML element instead of a `span`.
+To make an avatar interactive, write it as a `button` or an `a` element instead of a `div`. Use a `button` when the avatar acts on the page, and an `a` with an `href` when it leads somewhere.
 
-<LiveExample data-class="flex flex-col items-center">
+<LiveExample data-class="flex items-center justify-center gap-4">
 
 ```html
 <button x-h-avatar>HM</button>
+
+<a x-h-avatar href="#interactive">HM</a>
 ```
 
 </LiveExample>

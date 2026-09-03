@@ -1,0 +1,67 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+  <a class="hbox w-max items-center gap-1 text-sm text-muted-foreground no-underline" href="/blog">
+    <svg x-h-lucide role="presentation" data-lucide="arrow-left"></svg>
+    All posts
+  </a>
+
+  <!-- Title and byline come from the posts list in js/data.js, so the card on the
+       blog index and this page cannot disagree. -->
+  <h1 x-h-text.h1 x-text="post.title"></h1>
+  <div class="hbox items-center gap-2">
+    <div x-h-avatar class="text-sm" aria-hidden="true" x-text="post.initials"></div>
+    <div class="vbox">
+      <span class="text-sm font-medium" x-text="post.author"></span>
+      <span class="text-sm text-muted-foreground" x-text="post.date"></span>
+    </div>
+  </div>
+
+  <p x-h-text.lead>Focus and reconnect refetching are now driven by a single scheduler. A tab that wakes up after an hour asleep sends one request instead of twelve.</p>
+
+  <h2 x-h-text.h2>The problem</h2>
+  <p x-h-text>
+    Until 1.0.4 every entry listened for its own focus and online events. That was simple and worked well for a handful of keys, but a dashboard holding thirty entries woke up to thirty independent revalidations, all racing for the same
+    connection pool and all arriving at roughly the same useless moment.
+  </p>
+  <p x-h-text>Worse, entries that were still fresh joined in anyway, because the freshness check ran after the event handler rather than before it.</p>
+
+  <h2 x-h-text.h2>What changed</h2>
+  <p x-h-text>There is now one scheduler per client. It collects wake events, filters the cache down to entries that are both stale and watched, and releases them in batches with a small stagger between them.</p>
+  <p
+    x-h-text.code
+    x-text="`const client = quartz({
+  refetchOnFocus: true,
+  // New in 1.1: cap the burst after a wake event.
+  revalidateBatch: 4,
+  revalidateStagger: 120,
+})`"
+  ></p>
+  <p x-h-text>The defaults are conservative and most applications will never touch them. Setting the batch size to zero restores the previous all at once behavior.</p>
+
+  <h2 x-h-text.h2>Upgrading</h2>
+  <p x-h-text>
+    This is a minor release with no breaking changes. Update the package and the scheduler takes over. If you were working around the burst by turning
+    <code x-h-text.code-inline>refetchOnFocus</code> off, this is a good moment to turn it back on.
+  </p>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

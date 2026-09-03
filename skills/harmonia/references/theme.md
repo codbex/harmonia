@@ -28,20 +28,27 @@ Use these functions to read or change the active color scheme from your own code
 
 ### callbackFunction
 
-| Arguments | Description                                                   |
-| --------- | ------------------------------------------------------------- |
-| scheme    | The current color scheme. It can be either `light` or `dark`. |
+| Arguments | Description                                                                                    |
+| --------- | ---------------------------------------------------------------------------------------------- |
+| scheme    | The color scheme the application is now showing. It can be either `light` or `dark`.           |
+| mode      | The selected mode, the same value `setColorScheme` takes. It can be `light`, `dark` or `auto`. |
+
+> **Note:** Which argument to use
+> Use `scheme` to react to how the application looks, for example to redraw a canvas or swap an image. Use `mode` to reflect the user's choice in a light/dark/auto control, since `auto` cannot be recovered from `scheme`. Under `auto`, `mode` stays `auto` while `scheme` follows the system.
 
 ## Examples
 
 ### In plain JS
 
 ```js
-const listener = (scheme) => {
+const listener = (scheme, mode) => {
   if (scheme === 'light') {
     console.log('Switched to a light theme!');
   } else {
     console.log('Switched to a dark theme!');
+  }
+  if (mode === 'auto') {
+    console.log('Following the system preference.');
   }
 };
 Harmonia.addColorSchemeListener(listener);
@@ -59,11 +66,14 @@ Harmonia.removeColorSchemeListener(listener);
 ```js
 import { addColorSchemeListener, getColorScheme, removeColorSchemeListener, setColorScheme } from '@codbex/harmonia';
 
-const listener = (scheme) => {
+const listener = (scheme, mode) => {
   if (scheme === 'light') {
     console.log('Switched to a light theme!');
   } else {
     console.log('Switched to a dark theme!');
+  }
+  if (mode === 'auto') {
+    console.log('Following the system preference.');
   }
 };
 

@@ -1,0 +1,65 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+  <a class="hbox w-max items-center gap-1 text-sm text-muted-foreground no-underline" href="/blog">
+    <svg x-h-lucide role="presentation" data-lucide="arrow-left"></svg>
+    All posts
+  </a>
+
+  <!-- Title and byline come from the posts list in js/data.js, so the card on the
+       blog index and this page cannot disagree. -->
+  <h1 x-h-text.h1 x-text="post.title"></h1>
+  <div class="hbox items-center gap-2">
+    <div x-h-avatar class="text-sm" aria-hidden="true" x-text="post.initials"></div>
+    <div class="vbox">
+      <span class="text-sm font-medium" x-text="post.author"></span>
+      <span class="text-sm text-muted-foreground" x-text="post.date"></span>
+    </div>
+  </div>
+
+  <p x-h-text.lead>After fourteen months in production the cache API is stable. Here is what shipped, what we deliberately left out, and how to move off the beta.</p>
+
+  <h2 x-h-text.h2>Why we built it</h2>
+  <p x-h-text>
+    We kept writing the same cache. Every project started with a map of promises, grew a staleness check, then grew a way to invalidate after a write, and by the third one it was obvious the interesting part was never the fetching. It was
+    deciding when a value is allowed to be old.
+  </p>
+  <p x-h-text>Quartz is that decision, extracted. The rest of the library is deliberately boring.</p>
+
+  <h2 x-h-text.h2>What we left out</h2>
+  <p x-h-text>
+    There is no request builder, no schema layer, no plugin system and no framework binding in the core package. Each of those was prototyped and each one made the library harder to explain than the problem it solved. Keeping them out is
+    what holds the bundle at 2 kB.
+  </p>
+  <p x-h-text.blockquote>A cache that everyone can read the source of is a cache that everyone can debug.</p>
+
+  <h2 x-h-text.h2>Getting started</h2>
+  <p x-h-text>The beta exported a default. The 1.0 entry point is a named export, which is the only change most codebases need to make.</p>
+  <p
+    x-h-text.code
+    x-text="`- import quartz from '@quartz/core'
++ import { quartz } from '@quartz/core'
+
+const client = quartz({ ttl: 30000 })`"
+  ></p>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

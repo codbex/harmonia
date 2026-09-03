@@ -71,7 +71,8 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Card | A flexible container that organizes content into distinct sections, typically including a header, main content area, and footer. | [card](references/card.md) |
 | Carousel | A slideshow that cycles through a set of slides one at a time, with previous/next controls, indicator dots, keyboard navigation, wraparound looping, and optional autoplay. | [carousel](references/carousel.md) |
 | Checkbox | Allows users to select or deselect an option, representing a binary choice (true/false). | [checkbox](references/checkbox.md) |
-| Chip | A compact, interactive element used to represent an applied filter, a selected item, or a categorization. | [chip](references/chip.md) |
+| Chip | A compact element used to represent an applied filter, a selected item, or a categorization. | [chip](references/chip.md) |
+| Combobox | A list of options that belongs to a text field, filtered as the user types. | [combobox](references/combobox.md) |
 | Date Picker | Allows users to enter a date either by typing it directly or by selecting it from a calendar popover. | [date-picker](references/date-picker.md) |
 | Date Time Picker | Lets users pick a date and a time together. | [datetime-picker](references/datetime-picker.md) |
 | Dialog | A modal container that appears in response to a user action, temporarily interrupting the current workflow to request information or confirmation. | [dialog](references/dialog.md) |
@@ -149,6 +150,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | Date Format | A behavior-only directive that renders a date value as a locale-aware date string into the element's text content, plus a `$dateFormat` magic that exposes the same formatting engine for use directly in Alpine expressions. | [date-format](references/date-format.md) |
 | Focus | A behavior-only directive that programmatically sets focus on an element based on a specified condition. | [focus](references/focus.md) |
 | Include | The include directive makes it easy to fetch and insert an external HTML fragment inside an element. | [include](references/include.md) |
+| Native Notifications | Utility functions for showing operating system notifications through the browser's Notification API. | [native-notifications](references/native-notifications.md) |
 | Responsive | A behavior-only directive that adds or removes classes based on the element's **own** width. | [responsive](references/responsive.md) |
 | Template | The template directive makes it easy to insert and initialize an Alpine.js snippet inside a referenced `<template>` element. | [template](references/template.md) |
 | Theme | Utility functions for retrieving and updating the color scheme. | [theme](references/theme.md) |

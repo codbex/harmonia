@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import sidebarPlugin from '../../src/components/sidebar.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
+
+// The collapsed state has to be a tracked proxy for the aria-expanded effect to
+// re-run. activeEffect is module scoped in the test utils, so a proxy from this
+// instance is picked up by an effect from any mounted directive's context.
+const { reactive } = createMockAlpine();
 
 // happy-dom delivers MutationObserver records asynchronously, so an attribute-driven
 // class change is only visible after a macrotask.
@@ -125,11 +130,41 @@ describe('h-sidebar-header-item', () => {
     expect(el.classList.contains('[&>div]:min-w-0')).toBe(true);
   });
 
-  it('throws when set on a button or an anchor element', () => {
-    const button = document.createElement('button');
-    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-header-item', button, { original: 'x-h-sidebar-header-item' })).toThrow();
-    const anchor = document.createElement('a');
-    expect(() => mountDirective(sidebarPlugin, 'h-sidebar-header-item', anchor, { original: 'x-h-sidebar-header-item' })).toThrow();
+  it('makes a button interactive', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    expect(el.getAttribute('type')).toBe('button');
+    expect(el.getAttribute('data-slot')).toBe('sidebar-header-item');
+    expect(el.classList.contains('hbox')).toBe(true);
+    expect(el.classList.contains('cursor-pointer')).toBe(true);
+    expect(el.classList.contains('outline-hidden')).toBe(true);
+    expect(el.classList.contains('ring-sidebar-ring')).toBe(true);
+    expect(el.classList.contains('focus-visible:ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+  });
+
+  it('makes an anchor interactive without giving it a type', () => {
+    const el = document.createElement('a');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    expect(el.hasAttribute('type')).toBe(false);
+    expect(el.classList.contains('cursor-pointer')).toBe(true);
+    expect(el.classList.contains('ring-sidebar-ring')).toBe(true);
+    expect(el.classList.contains('focus-visible:ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+  });
+
+  it('leaves any other element non-interactive', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    expect(el.classList.contains('cursor-pointer')).toBe(false);
+    expect(el.classList.contains('ring-sidebar-ring')).toBe(false);
+    expect(el.classList.contains('focus-visible:ring-[calc(var(--spacing)*0.75)]')).toBe(false);
+  });
+
+  it('gives an interactive item no hover, active or selected state', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-header-item', el, { original: 'x-h-sidebar-header-item' });
+    expect(el.classList.contains('hover:bg-sidebar-secondary')).toBe(false);
+    expect(el.classList.contains('active:bg-sidebar-primary')).toBe(false);
+    expect(el.classList.contains('data-[active=true]:bg-sidebar-primary')).toBe(false);
   });
 
   it('keeps a first-child avatar visible and resizes it when collapsed', () => {
@@ -188,16 +223,17 @@ describe('h-sidebar-group', () => {
 });
 
 describe('h-sidebar-group-label', () => {
-  function mountLabel(el, collapsable = false) {
+  function mountLabel(el, collapsable = false, collapsed = false) {
     const group = document.createElement('div');
     group._h_sidebar_group = {
       collapsable,
       controlId: undefined,
       controls: undefined,
-      state: { collapsed: false },
+      state: reactive({ collapsed }),
     };
     group.appendChild(el);
-    return mountDirective(sidebarPlugin, 'h-sidebar-group-label', el, { original: 'x-h-sidebar-group-label' });
+    const mounted = mountDirective(sidebarPlugin, 'h-sidebar-group-label', el, { original: 'x-h-sidebar-group-label' });
+    return { ...mounted, group };
   }
 
   it('applies base classes and data-slot', () => {
@@ -219,6 +255,110 @@ describe('h-sidebar-group-label', () => {
   it('throws when not placed inside a sidebar group', () => {
     const el = document.createElement('div');
     expect(() => mountDirective(sidebarPlugin, 'h-sidebar-group-label', el, { original: 'x-h-sidebar-group-label' })).toThrow();
+  });
+
+  describe('when the group is collapsible', () => {
+    it('adds the collapse arrow, which the author does not supply', () => {
+      const el = document.createElement('div');
+      el.textContent = 'Application';
+      mountLabel(el, true);
+      const svg = el.querySelector('svg');
+      expect(svg).not.toBeNull();
+      // The arrow turns off the label's aria-expanded rather than a class of its own.
+      expect(svg.getAttribute('class')).toContain('[[aria-expanded=true]>&]:rotate-90');
+      expect(svg.getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('reports the starting state through aria-expanded', () => {
+      const open = document.createElement('div');
+      mountLabel(open, true, false);
+      expect(open.getAttribute('aria-expanded')).toBe('true');
+      const shut = document.createElement('div');
+      mountLabel(shut, true, true);
+      expect(shut.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('follows a collapse driven from outside, not just a click', () => {
+      // A bound expression can collapse the group without the click handler ever
+      // running. aria-expanded used to be written once and then only on click,
+      // so it went on claiming the group was open, and the arrow with it.
+      const el = document.createElement('div');
+      const { group } = mountLabel(el, true);
+      expect(el.getAttribute('aria-expanded')).toBe('true');
+      group._h_sidebar_group.state.collapsed = true;
+      expect(el.getAttribute('aria-expanded')).toBe('false');
+      group._h_sidebar_group.state.collapsed = false;
+      expect(el.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('still toggles the state and the attribute on click', () => {
+      const el = document.createElement('div');
+      const { group } = mountLabel(el, true);
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(group._h_sidebar_group.state.collapsed).toBe(true);
+      expect(el.getAttribute('aria-expanded')).toBe('false');
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(group._h_sidebar_group.state.collapsed).toBe(false);
+      expect(el.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('becomes a keyboard-reachable control, since the component owns the click', () => {
+      const el = document.createElement('div');
+      mountLabel(el, true);
+      expect(el.getAttribute('role')).toBe('button');
+      expect(el.getAttribute('tabindex')).toBe('0');
+    });
+
+    it('keeps an author-supplied tabindex', () => {
+      const el = document.createElement('div');
+      el.setAttribute('tabindex', '-1');
+      mountLabel(el, true);
+      expect(el.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('leaves a button alone, which is already a control', () => {
+      const el = document.createElement('button');
+      mountLabel(el, true);
+      expect(el.hasAttribute('role')).toBe(false);
+      expect(el.hasAttribute('tabindex')).toBe(false);
+      expect(el.getAttribute('type')).toBe('button');
+    });
+
+    it('toggles on Enter and Space', () => {
+      for (const key of ['Enter', ' ']) {
+        const el = document.createElement('div');
+        const { group } = mountLabel(el, true);
+        el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+        expect(group._h_sidebar_group.state.collapsed).toBe(true);
+      }
+    });
+
+    it('ignores other keys', () => {
+      const el = document.createElement('div');
+      const { group } = mountLabel(el, true);
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true, cancelable: true }));
+      expect(group._h_sidebar_group.state.collapsed).toBe(false);
+    });
+
+    it('stops Space from scrolling the page', () => {
+      const el = document.createElement('div');
+      mountLabel(el, true);
+      const event = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+      el.dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(true);
+    });
+  });
+
+  it('stays plain when the group is not collapsible', () => {
+    const el = document.createElement('div');
+    mountLabel(el, false);
+    expect(el.querySelector('svg')).toBeNull();
+    expect(el.hasAttribute('aria-expanded')).toBe(false);
+    expect(el.hasAttribute('id')).toBe(false);
+    expect(el.classList.contains('text-xs')).toBe(true);
+    // A plain label is text, not a control: no role and no tab stop.
+    expect(el.hasAttribute('role')).toBe(false);
+    expect(el.hasAttribute('tabindex')).toBe(false);
   });
 });
 
@@ -354,6 +494,55 @@ describe('h-sidebar-menu-button', () => {
     expect(el.classList.contains('flex')).toBe(true);
   });
 
+  it('marks a button inside a sub menu with the sub slot', () => {
+    const item = document.createElement('li');
+    item._h_sidebar_menu_item = {
+      isSub: true,
+      collapsable: false,
+      controlId: undefined,
+      controls: undefined,
+      state: reactive({ collapsed: false }),
+    };
+    const el = document.createElement('button');
+    item.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-sub-button');
+  });
+
+  it('keeps an author-set data-slot', () => {
+    const el = document.createElement('button');
+    el.setAttribute('data-slot', 'custom');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('custom');
+  });
+
+  // A plain menu button may mark a selected filter, a trigger or anything else
+  // that is not the current page, so it makes no aria-current claim of its own
+  // and never touches one the author set. Navigation is h-sidebar-menu-nav.
+  it('never sets aria-current', async () => {
+    const el = document.createElement('a');
+    el.setAttribute('data-active', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.hasAttribute('aria-current')).toBe(false);
+    el.removeAttribute('data-active');
+    await flush();
+    el.setAttribute('data-active', 'true');
+    await flush();
+    expect(el.hasAttribute('aria-current')).toBe(false);
+  });
+
+  it('keeps an author-set aria-current', async () => {
+    const el = document.createElement('a');
+    el.setAttribute('aria-current', 'location');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+    expect(el.getAttribute('aria-current')).toBe('location');
+    el.setAttribute('data-active', 'true');
+    await flush();
+    el.removeAttribute('data-active');
+    await flush();
+    expect(el.getAttribute('aria-current')).toBe('location');
+  });
+
   // The badge ring reads the inherited --badge-ring, so the button re-declares
   // it alongside each of its own background states.
   it('keeps the badge ring in step with its background states', () => {
@@ -415,6 +604,101 @@ describe('h-sidebar-menu-button', () => {
     expect(el.classList.contains('[&>svg:first-child]:size-6!')).toBe(false);
     expect(el.classList.contains('[&>[data-slot=avatar]:first-child]:size-6!')).toBe(false);
     expect(el.classList.contains('group-data-[collapsed=true]/sidebar:p-1')).toBe(false);
+  });
+
+  describe('when the menu item is collapsible', () => {
+    function mountButton(collapsed = false) {
+      const item = document.createElement('li');
+      item._h_sidebar_menu_item = {
+        isSub: false,
+        collapsable: true,
+        controlId: undefined,
+        controls: undefined,
+        state: reactive({ collapsed }),
+      };
+      const el = document.createElement('button');
+      item.appendChild(el);
+      mountDirective(sidebarPlugin, 'h-sidebar-menu-button', el, { original: 'x-h-sidebar-menu-button', modifiers: [] });
+      return { el, item };
+    }
+
+    it('adds the collapse arrow and reports the starting state', () => {
+      const { el } = mountButton();
+      expect(el.querySelector('svg')).not.toBeNull();
+      expect(el.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('follows a collapse driven from outside, not just a click', () => {
+      const { el, item } = mountButton();
+      item._h_sidebar_menu_item.state.collapsed = true;
+      expect(el.getAttribute('aria-expanded')).toBe('false');
+      item._h_sidebar_menu_item.state.collapsed = false;
+      expect(el.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('still toggles the state and the attribute on click', () => {
+      const { el, item } = mountButton();
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(item._h_sidebar_menu_item.state.collapsed).toBe(true);
+      expect(el.getAttribute('aria-expanded')).toBe('false');
+    });
+  });
+});
+
+describe('h-sidebar-menu-nav', () => {
+  // Shares the menu button body, so only the slot and the aria-current sync
+  // are its own.
+  it('applies the shared button treatment with its own data-slot', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    expect(el.getAttribute('type')).toBe('button');
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-nav');
+    expect(el.classList.contains('flex')).toBe(true);
+    expect(el.classList.contains('peer/menu-button')).toBe(true);
+  });
+
+  it('marks a nav inside a sub menu with the sub slot', () => {
+    const item = document.createElement('li');
+    item._h_sidebar_menu_item = {
+      isSub: true,
+      collapsable: false,
+      controlId: undefined,
+      controls: undefined,
+      state: reactive({ collapsed: false }),
+    };
+    const el = document.createElement('a');
+    item.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-sub-nav');
+  });
+
+  // data-active is the styling flag. Without aria-current the current destination
+  // was marked by colour alone, unlike the menu, nav menu and bottom navigation.
+  it('marks an active destination with aria-current', () => {
+    const el = document.createElement('a');
+    el.setAttribute('data-active', 'true');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    expect(el.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('leaves aria-current off an inactive destination', () => {
+    for (const value of [null, 'false']) {
+      const el = document.createElement('a');
+      if (value !== null) el.setAttribute('data-active', value);
+      mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+      expect(el.hasAttribute('aria-current')).toBe(false);
+    }
+  });
+
+  it('follows data-active when it changes at runtime', async () => {
+    const el = document.createElement('a');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-nav', el, { original: 'x-h-sidebar-menu-nav', modifiers: [] });
+    el.setAttribute('data-active', 'true');
+    await flush();
+    expect(el.getAttribute('aria-current')).toBe('page');
+    el.removeAttribute('data-active');
+    await flush();
+    expect(el.hasAttribute('aria-current')).toBe(false);
   });
 });
 

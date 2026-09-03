@@ -1,6 +1,6 @@
 <div x-data="pageSettings" class="vbox items-center gap-4 p-4">
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Company profile</h3>
+    <h2 x-h-text.h5>Company profile</h2>
     <p x-h-text.muted>Shown on invoices and other outgoing documents.</p>
 
     <div x-h-card class="mt-4 w-full">
@@ -39,10 +39,10 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Preferences</h3>
+    <h2 x-h-text.h5>Preferences</h2>
     <p x-h-text.muted>Formatting defaults applied across every page.</p>
 
-    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+    <div x-h-card class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
         <li x-h-list-item class="gap-3 px-4 py-3">
           <div class="vbox flex-1">
@@ -69,9 +69,9 @@
             <input x-h-select-input aria-label="Date format" x-model="$store.erp.settings.dateFormat" />
             <div x-h-select-content>
               <div x-h-select-list>
-                <div x-h-select-option="'Jul 3, 2026'" data-value="mdy"></div>
-                <div x-h-select-option="'3 Jul 2026'" data-value="dmy"></div>
-                <div x-h-select-option="'2026-07-03'" data-value="iso"></div>
+                <div x-h-select-option="$store.erp.dateSample('mdy')" data-value="mdy"></div>
+                <div x-h-select-option="$store.erp.dateSample('dmy')" data-value="dmy"></div>
+                <div x-h-select-option="$store.erp.dateSample('iso')" data-value="iso"></div>
               </div>
             </div>
           </div>
@@ -81,13 +81,13 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Appearance</h3>
+    <h2 x-h-text.h5>Appearance</h2>
 
-    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+    <div x-h-card class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
         <li x-h-list-item class="gap-3 px-4 py-3">
           <div class="vbox w-full">
-            <p class="text-base font-medium">Theme</p>
+            <p class="text-base font-medium">Style</p>
             <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
           </div>
           <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
@@ -101,27 +101,18 @@
             <span x-show="$store.erp.settings.theme === 'auto'">Auto</span>
             <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
           </button>
-          <ul x-h-menu data-align="bottom-end" aria-label="Theme">
-            <li x-h-menu-item @click="$store.erp.setTheme('light')">
+          <ul x-h-menu data-align="bottom-end" aria-label="Style">
+            <li x-h-menu-radio-item="'light'" name="settings-theme" x-model="$store.erp.settings.theme">
               <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
               <span>Light</span>
-              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'light'">
-                <svg x-h-icon data-icon="check" role="presentation"></svg>
-              </span>
             </li>
-            <li x-h-menu-item @click="$store.erp.setTheme('dark')">
+            <li x-h-menu-radio-item="'dark'" name="settings-theme" x-model="$store.erp.settings.theme">
               <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
               <span>Dark</span>
-              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'dark'">
-                <svg x-h-icon data-icon="check" role="presentation"></svg>
-              </span>
             </li>
-            <li x-h-menu-item @click="$store.erp.setTheme('auto')">
+            <li x-h-menu-radio-item="'auto'" name="settings-theme" x-model="$store.erp.settings.theme">
               <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
               <span>Auto</span>
-              <span x-h-menu-item-secondary x-show="$store.erp.settings.theme === 'auto'">
-                <svg x-h-icon data-icon="check" role="presentation"></svg>
-              </span>
             </li>
           </ul>
         </li>
@@ -130,9 +121,9 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Notifications</h3>
+    <h2 x-h-text.h5>Notifications</h2>
 
-    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+    <div x-h-card class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
         <li x-h-list-item class="gap-3 px-4 py-3">
           <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
@@ -173,7 +164,7 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2 pb-4">
-    <h3 x-h-text.h5>Danger zone</h3>
+    <h2 x-h-text.h5>Danger zone</h2>
 
     <div x-h-tile data-variant="shadow" class="mt-4">
       <div x-h-tile-content>
@@ -187,14 +178,11 @@
   </section>
 
   <!-- Reset confirmation dialog -->
-  <div x-h-dialog-overlay :data-open="showReset" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="showReset" class="backdrop-blur-xs" @keydown.escape.window="showReset = false">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Reset workspace</h2>
         <p x-h-dialog-description>All demo data will be restored to its initial state, including settings and the theme preference. Continue?</p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="showReset = false">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="showReset = false">Cancel</button>

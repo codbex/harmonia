@@ -17,6 +17,10 @@ const NON_PLUGIN_EXPORTS = new Set([
   'removeColorSchemeListener',
   'getLanguageStorageKey',
   'setLanguageStorageKey',
+  'getNativeNotificationPermission',
+  'isNativeNotificationSupported',
+  'requestNativeNotificationPermission',
+  'showNativeNotification',
 ]);
 
 // Plugins exported for manual opt-in that must stay OUT of registerComponents.

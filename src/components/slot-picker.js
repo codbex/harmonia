@@ -1,5 +1,6 @@
 import { findAncestorState } from '../common/ancestor';
 import { createCalendarWidget, forwardCalendarNavAria, isToday, toDateString } from '../common/calendar';
+import { capturePointer, DRAG_THRESHOLD, releasePointer } from '../common/drag';
 import { colorClasses, EVENT_COLORS, ringClass } from '../common/event-colors';
 import { createDateTimeFormatCache } from '../common/intl';
 import { eventInsidePicker, setupPopover } from '../common/picker-popover';
@@ -12,7 +13,7 @@ export default function (Alpine) {
   Alpine.directive('h-slot-picker', (el, { expression, modifiers }, { effect, evaluateLater, cleanup, Alpine }) => {
     el.classList.add('relative', 'flex', 'flex-col', 'bg-background', 'text-foreground');
     el.setAttribute('data-slot', 'slot-picker');
-    // Expose the picker as a labeled group; respect an author-provided aria-label.
+    // Expose the picker as a labeled group. Respect an author-provided aria-label.
     el.setAttribute('role', 'group');
     if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', 'Time slot picker');
 
@@ -36,6 +37,11 @@ export default function (Alpine) {
     let minDate = null;
     let maxDate = null;
     let showNowIndicator = false;
+    let draggable = false;
+    // Set when a drag just completed so the click that follows it does not select.
+    let suppressClick = false;
+    // Ends any in-flight drag gesture (its move/up listeners live on window).
+    let abortDrag = null;
 
     // The picker renders no toolbar of its own. Consumers compose one from an
     // x-h-toolbar wrapping the x-h-slot-picker-* control directives, which reach
@@ -103,7 +109,7 @@ export default function (Alpine) {
         if (currentDate > maxStart) currentDate = maxStart;
       }
       // A range narrower than the visible window can push the start below the start
-      // day; anchor at minDate and let render disable the overflowing days.
+      // day. Anchor at minDate and let render disable the overflowing days.
       if (minDate && currentDate < minDate) currentDate = new Date(minDate);
     }
 
@@ -133,7 +139,7 @@ export default function (Alpine) {
     function getSlotsForDay(dateStr) {
       if (explicitSlots) {
         const daySlots = explicitSlots.filter((s) => s.date === dateStr);
-        // Explicit slots override a day; days without any fall back to the
+        // Explicit slots override a day. Days without any fall back to the
         // generated start/end/step schedule only when `fillEmptyDays` is set.
         if (daySlots.length || !fillEmptyDays) return daySlots;
       }
@@ -178,7 +184,7 @@ export default function (Alpine) {
 
     // A colored slot is "filled" (solid background) for any status other than the
     // two outline statuses - the same split colorClasses() uses. Only filled
-    // colored slots get the selected border; outlined ones (unconfirmed/rejected)
+    // colored slots get the selected border while outlined ones (unconfirmed/rejected)
     // keep the ring alone.
     function isFilledStatus(status) {
       return status !== 'unconfirmed' && status !== 'rejected';
@@ -206,7 +212,7 @@ export default function (Alpine) {
         // Filled colored cells also gain a contrasting border on selection
         // (like the step indicator's active marker: ring = fill, border = text).
         // The transparent border is already on the cell (buildCell) so recoloring
-        // it causes no layout shift; outlined statuses keep their own border.
+        // it causes no layout shift. Outlined statuses keep their own border.
         if (isFilledStatus(cell.getAttribute('data-status'))) {
           cell.classList.toggle('border-transparent', !isSelected);
           cell.classList.toggle('border-background', isSelected);
@@ -269,8 +275,8 @@ export default function (Alpine) {
     }
 
     // Build a selectable cell shared by top-level slots and sub-slot tiles. `item`
-    // supplies the look (color, description, note, icons, availability); `payload`
-    // is the data dispatched on `slot-click`.
+    // supplies the look (color, description, note, icons, availability).
+    // `payload` is the data dispatched on `slot-click`.
     function buildCell({ key, ariaLabel, visibleTime, item, dataSlot, isTile, payload }) {
       const available = item.available !== false;
       const color = resolveColor(item.color);
@@ -288,7 +294,7 @@ export default function (Alpine) {
         cell.setAttribute('data-colored', 'true');
         cell.setAttribute('data-color', color);
         cell.setAttribute('data-status', item.status || '');
-        // A filled colored cell has no border of its own; carry a transparent one
+        // A filled colored cell has no border of its own. Carry a transparent one
         // so selection can recolor it (to border-background) without a layout
         // shift. Outlined statuses already have their own border from colorClasses.
         if (isFilledStatus(item.status)) cell.classList.add('border', 'border-transparent');
@@ -358,14 +364,211 @@ export default function (Alpine) {
       if (rightBadge) cell.appendChild(rightBadge);
 
       if (available) {
-        cell.addEventListener('click', () => selectSlot(key, payload));
+        cell.addEventListener('click', () => {
+          if (suppressClick) {
+            suppressClick = false;
+            return;
+          }
+          selectSlot(key, payload);
+        });
       }
 
       return cell;
     }
 
+    // === Drag and drop ===
+    // Sortable rescheduling: while a slot is dragged, a half-opacity ghost clone
+    // follows the pointer and the slot itself (dimmed) relocates live through
+    // the day lists as the placeholder, so the surrounding slots part exactly
+    // where the drop would land. The picker's own data never changes: a
+    // completed drag dispatches `slot-drop` with the proposed day, position,
+    // and a ready-to-assign `slots` array, and the consumer applies it (or
+    // ignores the event to reject the move).
+
+    const SLOT_SELECTOR = '[data-slot="slot-picker-cell"], [data-slot="slot-picker-slot"]';
+
+    // Dragging needs an array to reorder, so only slots taken directly from the
+    // consumer's `slots` config qualify (generated slots are fresh objects each
+    // render and never match).
+    function canDrag(item) {
+      return draggable && item.available !== false && item.draggable !== false && !!explicitSlots && explicitSlots.includes(item);
+    }
+
+    // The slot nodes of a day list in display order: cells and tile groups only,
+    // skipping the now indicator (and the dragged node when `except` is given).
+    function slotChildren(list, except) {
+      return Array.from(list.children).filter((c) => c !== except && c.matches(SLOT_SELECTOR));
+    }
+
+    // The proposed new slots array for a drop: the consumer's array with the
+    // dragged raw slot removed, shallow-copied onto the target date, and spliced
+    // in before the target day's index-th slot (after the day's last slot when
+    // index runs past it, at the array end when the day has no explicit slots).
+    // Never mutates the consumer's array or objects.
+    function buildProposedSlots(raw, date, index) {
+      const next = explicitSlots.filter((s) => s !== raw);
+      const dayPositions = [];
+      next.forEach((s, i) => {
+        if (s.date === date) dayPositions.push(i);
+      });
+      const at = !dayPositions.length ? next.length : index >= dayPositions.length ? dayPositions[dayPositions.length - 1] + 1 : dayPositions[index];
+      next.splice(at, 0, { ...raw, date });
+      return next;
+    }
+
+    // The slot/tile payload dispatched on slot-click and slot-drop.
+    function slotPayload(dateStr, slot) {
+      return {
+        date: dateStr,
+        start: slot.start,
+        end: slot.end,
+        available: slot.available !== false,
+        description: slot.description ?? null,
+        note: slot.note ?? null,
+        color: slot.color ?? null,
+        status: slot.status ?? null,
+        tileIndex: null,
+      };
+    }
+
+    // Enabled day columns of the current render, hit-tested by rect so day
+    // targeting works for both the side-by-side and the stacked responsive
+    // layout. Disabled and out-of-range days are never listed, so they can
+    // never become drop targets.
+    let dayCols = [];
+
+    function resolveDayColumn(x, y) {
+      // Clamp the pointer into the day grid so a drag just past an edge (for
+      // example below a short column) still targets the nearest day, like the
+      // calendar's cell resolution. Skipped without layout (test environments).
+      const grid = dayGrid.getBoundingClientRect();
+      if (grid.width > 0 && grid.height > 0) {
+        x = Math.min(Math.max(x, grid.left), grid.right - 1);
+        y = Math.min(Math.max(y, grid.top), grid.bottom - 1);
+      }
+      for (const c of dayCols) {
+        const r = c.el.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0 && x >= r.left && x < r.right && y >= r.top && y < r.bottom) return c;
+      }
+      return null;
+    }
+
+    function attachSlotDrag(node, { raw, payload, key, suppress = false, canStart }) {
+      node.addEventListener('pointerdown', (e) => {
+        if (e.button > 0) return;
+        if (canStart && !canStart(e)) return;
+        suppressClick = false;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const srcRect = node.getBoundingClientRect();
+        const homeList = node.parentNode;
+        // The restore anchor must be a slot, not the now indicator, which can
+        // move on its own while the drag is in flight.
+        let homeNext = node.nextElementSibling;
+        while (homeNext && !homeNext.matches(SLOT_SELECTOR)) homeNext = homeNext.nextElementSibling;
+        const origIdx = slotChildren(homeList).indexOf(node);
+        let dragging = false;
+        let ghost = null;
+        let toRem = null;
+        let pending = null;
+
+        const place = (list, ref) => {
+          if (node.parentNode === list && node.nextSibling === ref) return;
+          list.insertBefore(node, ref);
+        };
+        const restoreHome = () => place(homeList, homeNext && homeNext.parentNode === homeList ? homeNext : null);
+
+        const move = (me) => {
+          if (!node.isConnected) return finish(false);
+          if (!dragging) {
+            if (Math.abs(me.clientX - startX) < DRAG_THRESHOLD && Math.abs(me.clientY - startY) < DRAG_THRESHOLD) return;
+            dragging = true;
+            const base = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+            toRem = (px) => `${px / base}rem`;
+            // Clone before dimming the source so the ghost keeps the slot's
+            // resting look.
+            ghost = node.cloneNode(true);
+            ghost.setAttribute('data-slot', 'slot-picker-ghost');
+            ghost.setAttribute('aria-hidden', 'true');
+            ghost.setAttribute('inert', '');
+            // Cells carry `relative`, which would win over `absolute` and leave
+            // the ghost in the flow.
+            ghost.classList.remove('relative');
+            ghost.classList.add('absolute', 'opacity-50', 'pointer-events-none', 'z-50', 'shadow-lg');
+            ghost.style.width = toRem(srcRect.width);
+            ghost.style.height = toRem(srcRect.height);
+            el.appendChild(ghost);
+            node.setAttribute('data-dragging', 'true');
+            node.classList.add('opacity-50');
+          }
+          // Nudge the scroll body when the pointer nears its edges, before any
+          // rect reads so the same move lands consistently.
+          const sRect = scrollBody.getBoundingClientRect();
+          if (sRect.height > 0) {
+            if (me.clientY < sRect.top + 40) scrollBody.scrollTop -= 15;
+            else if (me.clientY > sRect.bottom - 40) scrollBody.scrollTop += 15;
+          }
+          const elRect = el.getBoundingClientRect();
+          ghost.style.left = toRem(me.clientX - elRect.left - (startX - srcRect.left));
+          ghost.style.top = toRem(me.clientY - elRect.top - (startY - srcRect.top));
+          const target = resolveDayColumn(me.clientX, me.clientY);
+          if (!target) {
+            restoreHome();
+            pending = null;
+            return;
+          }
+          const kids = slotChildren(target.list, node);
+          const ref =
+            kids.find((k) => {
+              const r = k.getBoundingClientRect();
+              return r.top + r.height / 2 > me.clientY;
+            }) ?? null;
+          place(target.list, ref);
+          pending = { date: target.date, index: ref ? kids.indexOf(ref) : kids.length };
+        };
+
+        const finish = (commit) => {
+          window.removeEventListener('pointermove', move);
+          window.removeEventListener('pointerup', up);
+          window.removeEventListener('pointercancel', cancel);
+          abortDrag = null;
+          releasePointer(node, e);
+          if (!dragging) return;
+          ghost.remove();
+          restoreHome();
+          node.removeAttribute('data-dragging');
+          node.classList.remove('opacity-50');
+          // The drag may have parked the node past the now indicator. Re-seat it.
+          if (nowIndicatorEl && todaySlotList) positionNowIndicator();
+          if (!commit) return;
+          if (suppress) suppressClick = true;
+          if (!pending || !node.isConnected) return;
+          // Reinserting at the original position leaves the order unchanged.
+          if (pending.date === payload.date && pending.index === origIdx) return;
+          if (!explicitSlots || !explicitSlots.includes(raw)) return;
+          el.dispatchEvent(
+            new CustomEvent('slot-drop', {
+              bubbles: true,
+              detail: { slot: { ...payload, key }, date: pending.date, index: pending.index, slots: buildProposedSlots(raw, pending.date, pending.index) },
+            })
+          );
+        };
+        const up = () => finish(true);
+        const cancel = () => finish(false);
+
+        // Relocating the node clears pointer capture (removal from the tree),
+        // so the gesture listeners must live on window. Capture stays on as a
+        // best effort against text selection and stray hovers.
+        capturePointer(node, e);
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+        window.addEventListener('pointercancel', cancel);
+        abortDrag = () => finish(false);
+      });
+    }
+
     // Build a group container for a slot that holds sub-slot tiles. The slot's own
-    // time labels the group; each tile is an individually selectable cell.
+    // time labels the group. Each tile is an individually selectable cell.
     function buildGroup({ dateStr, dayLabel, slot }) {
       const groupTime = slot.end ? `${slot.start} to ${slot.end}` : slot.start;
 
@@ -457,7 +660,9 @@ export default function (Alpine) {
     function positionNowIndicator() {
       const now = new Date();
       const nowMins = now.getHours() * 60 + now.getMinutes();
-      const next = todayEntries.find((e) => e.startMins > nowMins);
+      // A dragged slot can be parked in another column mid-drag, so anchor only
+      // on entries still in today's list.
+      const next = todayEntries.find((e) => e.startMins > nowMins && e.el.parentNode === todaySlotList);
       todaySlotList.insertBefore(nowIndicatorEl, next ? next.el : null);
       return next ? next.startMins : 24 * 60;
     }
@@ -472,7 +677,7 @@ export default function (Alpine) {
     }
 
     function nowTick() {
-      // Crossing midnight changes which column is today, so re-render; otherwise
+      // Crossing midnight changes which column is today, so re-render. Otherwise
       // move only the indicator element, which never disturbs keyboard focus.
       if (!todaySlotList || toDateString(new Date()) !== renderedTodayStr) render();
       else scheduleNowTick(positionNowIndicator());
@@ -485,7 +690,7 @@ export default function (Alpine) {
     function render() {
       const days = Array.from({ length: dayCount }, (_, i) => addDays(currentDate, i));
 
-      // Reset the now-indicator bookkeeping; today's column repopulates it below.
+      // Reset the now-indicator bookkeeping. Today's column repopulates it below.
       const now = new Date();
       clearTimeout(nowTimer);
       nowIndicatorEl = null;
@@ -493,7 +698,7 @@ export default function (Alpine) {
       todayEntries = [];
       renderedTodayStr = toDateString(now);
 
-      // Heading: exposed as reactive state; an x-h-slot-picker-title control renders it.
+      // Heading: exposed as reactive state. `x-h-slot-picker-title` control renders it.
       const shortFmt = dtf(locale, { day: 'numeric', month: 'short' });
       const longFmt = dtf(locale, { day: 'numeric', month: 'short', year: 'numeric' });
       state.title = days.length === 1 ? longFmt.format(days[0]) : `${shortFmt.format(days[0])} - ${longFmt.format(days[days.length - 1])}`;
@@ -511,6 +716,7 @@ export default function (Alpine) {
 
       dayGrid.innerHTML = '';
       cellByKey.clear();
+      dayCols = [];
 
       const dayNameFmt = dtf(locale, { weekday: 'long' });
       const dateFmt = dtf(locale, { day: 'numeric', month: 'long' });
@@ -555,10 +761,10 @@ export default function (Alpine) {
           dayGrid.appendChild(col);
           return;
         }
-
         // Slot list: a chronological vertical stack per day.
         const slotList = document.createElement('div');
         slotList.classList.add('flex', 'flex-col', 'gap-1', 'p-2');
+        dayCols.push({ el: col, date: dateStr, list: slotList });
 
         const slots = getSlotsForDay(dateStr);
         const trackNow = showNowIndicator && today;
@@ -567,10 +773,22 @@ export default function (Alpine) {
           let node;
           if (Array.isArray(slot.tiles) && slot.tiles.length) {
             node = buildGroup({ dateStr, dayLabel, slot });
+            if (canDrag(slot)) {
+              // The group drags as a whole. A press that starts on a tile stays
+              // a tile interaction, and no click suppression is needed because
+              // the container has no click handler of its own.
+              attachSlotDrag(node, {
+                raw: slot,
+                payload: slotPayload(dateStr, slot),
+                key: slotKey(dateStr, slot.start),
+                canStart: (e) => !e.target.closest('[data-slot="slot-picker-tile"]'),
+              });
+            }
           } else {
             const key = slotKey(dateStr, slot.start);
             const timeLabel = slot.end ? `${slot.start} to ${slot.end}` : slot.start;
             const descPart = slot.description ? `, ${slot.description}` : '';
+            const payload = slotPayload(dateStr, slot);
             node = buildCell({
               key,
               ariaLabel: `${dayLabel}, ${timeLabel}${descPart}`,
@@ -578,21 +796,12 @@ export default function (Alpine) {
               item: slot,
               dataSlot: 'slot-picker-cell',
               isTile: false,
-              payload: {
-                date: dateStr,
-                start: slot.start,
-                end: slot.end,
-                available: slot.available !== false,
-                description: slot.description ?? null,
-                note: slot.note ?? null,
-                color: slot.color ?? null,
-                status: slot.status ?? null,
-                tileIndex: null,
-              },
+              payload,
             });
+            if (canDrag(slot)) attachSlotDrag(node, { raw: slot, payload, key, suppress: true });
           }
           slotList.appendChild(node);
-          // The now indicator is positioned against these start times; a start-less
+          // The now indicator is positioned against these start times. A start-less
           // slot counts as already started (timeToMins would throw on it).
           if (trackNow) todayEntries.push({ el: node, startMins: slot.start ? timeToMins(slot.start) : -1 });
         });
@@ -744,6 +953,7 @@ export default function (Alpine) {
       if (config.fillEmptyDays !== undefined) fillEmptyDays = !!config.fillEmptyDays;
       if (config.multiple !== undefined) multiple = !!config.multiple;
       if (config.showNowIndicator !== undefined) showNowIndicator = !!config.showNowIndicator;
+      if (config.draggable !== undefined) draggable = !!config.draggable;
       if (config.locale !== undefined) {
         locale = resolveLocale(config.locale);
         if (calWidget) calWidget.setConfig({ locale });
@@ -788,6 +998,7 @@ export default function (Alpine) {
     });
 
     cleanup(() => {
+      abortDrag?.();
       clearTimeout(nowTimer);
       if (calPopover) {
         calWidget.cleanup();
@@ -839,7 +1050,7 @@ export default function (Alpine) {
     if (!host) throw new Error(`${original} must be inside a slot picker`);
     const api = host._h_slot_picker;
     // `.text-only` suppresses all built-in styling so the consumer can style the
-    // title (or its wrapper) themselves; text, data-slot, and aria-live remain.
+    // title (or its wrapper) themselves. The text, data-slot, and aria-live remain.
     if (!modifiers.includes('text-only')) el.classList.add('flex-1', 'text-sm', 'font-semibold', 'text-center', 'leading-tight', 'line-clamp-3');
     if (!el.hasAttribute('aria-live')) el.setAttribute('aria-live', 'polite');
     el.setAttribute('data-slot', 'slot-picker-title');

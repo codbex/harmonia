@@ -35,13 +35,14 @@ It is used to add, update and remove notifications from the global state.
 
 ### Magic properties
 
-| Property       | Type     | Description                      |
-| -------------- | -------- | -------------------------------- |
-| add            | function | Adds a notification.             |
-| update         | function | Updates a notification.          |
-| remove         | function | Removes a notification.          |
-| addListener    | function | Adds a notification listener.    |
-| removeListener | function | Removes a notification listener. |
+| Property       | Type     | Description                       |
+| -------------- | -------- | --------------------------------- |
+| add            | function | Adds a notification.              |
+| update         | function | Updates a notification.           |
+| remove         | function | Removes a notification.           |
+| addListener    | function | Adds a notification listener.     |
+| removeListener | function | Removes a notification listener.  |
+| native         | object   | Native (OS) notification helpers. |
 
 #### Arguments
 
@@ -50,13 +51,14 @@ It is used to add, update and remove notifications from the global state.
 > **Note:** Named arguments
 > The `add` function uses object destructuring for its arguments. You will need to call it by passing a single object containing the arguments.
 
-| Argument | Type                                                                                                      | Required | Description                                                                                                                                                                                               |
-| -------- | --------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id       | string                                                                                                    | false    | Unique notification ID.                                                                                                                                                                                   |
-| template | string                                                                                                    | true     | Template ID.                                                                                                                                                                                              |
-| position | `top-left`<br />`top-center`<br />`top-right`<br />`bottom-left`<br />`bottom-center`<br />`bottom-right` | false    | Notification position. On medium-size screens, center notifications will be reassigned to the right top/bottom position. On mobile screens, they will be reassigned to the top and bottom center position |
-| timeout  | number                                                                                                    | false    | Miliseconds before removing the notification. If the notification should not be removed, use a value of `0`.                                                                                              |
-| data     | object                                                                                                    | false    | Contains all the properties that will be used to render the notification template.                                                                                                                        |
+| Argument | Type                                                                                                      | Required | Description                                                                                                                                                                                                                   |
+| -------- | --------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id       | string                                                                                                    | false    | Unique notification ID.                                                                                                                                                                                                       |
+| template | string                                                                                                    | true     | Template ID.                                                                                                                                                                                                                  |
+| position | `top-left`<br />`top-center`<br />`top-right`<br />`bottom-left`<br />`bottom-center`<br />`bottom-right` | false    | Notification position. On medium-size screens, center notifications will be reassigned to the right top/bottom position. On mobile screens, they will be reassigned to the top and bottom center position                     |
+| timeout  | number                                                                                                    | false    | Miliseconds before removing the notification. If the notification should not be removed, use a value of `0`.                                                                                                                  |
+| data     | object                                                                                                    | false    | Contains all the properties that will be used to render the notification template.                                                                                                                                            |
+| sound    | boolean<br />string (URL)                                                                                 | false    | Plays a sound once, when the notification is shown. `true` plays the built-in chime, a URL string plays that audio file and `false` keeps this notification silent. When omitted, the overlay's `data-sound` default applies. |
 
 ```js
 this.$notifications.add({
@@ -137,7 +139,30 @@ const listenerRef = this.$notifications.addListener({
 this.$notifications.removeListener(listenerRef);
 ```
 
+- `native` object
+
+The `native` object bridges to the browser's Notification API for notifications shown by the operating system. It is fully separate from the in-page notifications above, so you decide when a message appears inside the page and when it goes to the system. See the Native Notifications utility for details, including image support.
+
+| Function          | Arguments          | Returns                                                   | Description                                                                                              |
+| ----------------- | ------------------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| isSupported       | none               | boolean                                                   | Whether the browser supports the Notification API.                                                       |
+| getPermission     | none               | `granted`<br />`denied`<br />`default`<br />`unsupported` | The current notification permission.                                                                     |
+| requestPermission | none               | `Promise` resolving to the permission                     | Asks the user for permission to show notifications. Call it from a user gesture.                         |
+| show              | title<br />options | `Notification` or `null`                                  | Shows a native notification. `options` supports the standard options such as `body`, `icon` and `image`. |
+
+```js
+if (this.$notifications.native.getPermission() === 'granted') {
+  this.$notifications.native.show('Harmonia', { body: 'A native notification.' });
+}
+```
+
 ### Attributes
+
+#### x-h-notification-overlay
+
+| Attribute  | Values                              | Required | Description                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ----------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-sound | `true`<br />`false`<br />URL string | false    | Sets the default sound for every notification shown by this overlay. `data-sound` or `data-sound="true"` plays the built-in chime, `data-sound="false"` or omitting the attribute keeps notifications silent, and any other value is treated as the URL of an audio file to play. A notification can always override this default with its own `sound` argument. |
 
 #### x-h-notification
 
@@ -611,6 +636,32 @@ Notifications can contain actions and dynamic information. The following example
     },
   }));
 </script>
+```
+
+### Notification Sound
+
+Notifications can play a sound when they appear. Pass `sound: true` for the built-in chime or a URL for a custom audio file. A `data-sound` attribute on the overlay sets a default for every notification, which each notification can override with its own `sound` value, including `sound: false` to stay silent.
+
+Browsers only allow audio after the user has interacted with the page. These examples are triggered by a click, so the sound always plays.
+
+```html
+<div class="hbox gap-4">
+  <button x-h-button @click="$notifications.add({ template: 'basic', sound: true, data: { title: 'Ding!' } })">Notify with chime</button>
+  <button x-h-button data-variant="outline" @click="$notifications.add({ template: 'basic', sound: '/harmonia/audio/chime.wav', data: { title: 'Custom sound' } })">Notify with custom sound</button>
+</div>
+```
+
+### Native Notification
+
+The `$notifications.native` object shows notifications through the operating system instead of the page. The first button asks the browser for permission, which must happen from a user gesture. Once granted, the second button shows a native notification with an icon and a large image. The `image` option is only rendered on some platforms.
+
+```html
+<div class="hbox gap-4">
+  <button x-h-button @click="$notifications.native.requestPermission()">Enable native notifications</button>
+  <button x-h-button data-variant="outline" @click="$notifications.native.show('Harmonia', { body: 'A native notification.', icon: '/harmonia/logo/harmonia-square.jpg', image: '/harmonia/photos/ignartonosbg-mountain.jpg' })">
+    Show native notification
+  </button>
+</div>
 ```
 
 Full docs: https://www.codbex.com/harmonia/components/notifications.html

@@ -1,13 +1,16 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, toDateString } from '../common/calendar';
+import { attachDayDrag, capturePointer, DRAG_THRESHOLD, releasePointer } from '../common/drag';
 import { colorClasses } from '../common/event-colors';
 import { ChevronDown, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { createDateTimeFormatCache } from '../common/intl';
+import { findModelAttribute, rejectModelEventModifiers } from '../common/model';
 import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
 export default function (Alpine) {
-  Alpine.directive('h-calendar-inline', (el, { expression }, { effect, evaluateLater, cleanup }) => {
+  Alpine.directive('h-calendar-inline', (el, { original, expression }, { effect, evaluateLater, cleanup }) => {
+    rejectModelEventModifiers(Alpine, el, original);
     el.classList.add('gap-2', 'p-2', 'overflow-visible', 'data-[invalid=true]:inset-ring-negative/20', 'dark:data-[invalid=true]:inset-ring-negative/40');
     el.setAttribute('tabindex', '-1');
 
@@ -33,7 +36,7 @@ export default function (Alpine) {
     }
 
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
-      const modelExpression = el.getAttribute('x-model');
+      const modelExpression = findModelAttribute(Alpine, el)?.value;
       const evaluateModel = evaluateLater(modelExpression);
 
       effect(() => {
@@ -59,6 +62,10 @@ export default function (Alpine) {
     let showViewSwitcher = true;
     let scrollTo = 'now';
     let currentTrimAll = null;
+    let draggable = false;
+    let dragStep = 15;
+    // Set when a drag just completed so the click that follows it does not fire event-click.
+    let suppressClick = false;
 
     el.classList.add('flex', 'flex-col', 'h-full', 'overflow-hidden');
     el.setAttribute('role', 'group');
@@ -307,6 +314,10 @@ export default function (Alpine) {
       if (ev.description) pill.title = ev.description;
       pill.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (suppressClick) {
+          suppressClick = false;
+          return;
+        }
         el.dispatchEvent(new CustomEvent('event-click', { detail: { event: ev }, bubbles: true }));
       });
       return pill;
@@ -355,11 +366,153 @@ export default function (Alpine) {
       }
     }
 
+    // === Drag and drop ===
+    // Rescheduling by drag never mutates the calendar's own data: a completed
+    // drag restores the element and dispatches `event-drop` with the proposed
+    // new start/end strings, and the consumer applies them to its events array
+    // (which re-renders the calendar). Time-grid math relies on renderTimeGrid's
+    // scale of 1px per minute (HOUR_H = 60).
+
+    const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+    function canDrag(ev) {
+      return draggable && ev.draggable !== false;
+    }
+
+    // Local YYYY-MM-DDTHH:MM string, the minute-precision form of an event's start/end.
+    function toDateTimeString(d) {
+      return `${toDateString(d)}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
+    // Shift by whole days, then minutes, with wall-clock semantics across DST.
+    function shiftDate(date, dayDelta, minsDelta) {
+      const d = new Date(date);
+      d.setDate(d.getDate() + dayDelta);
+      if (minsDelta) d.setMinutes(d.getMinutes() + minsDelta);
+      return d;
+    }
+
+    // Keep the consumer's string shape: a date-only field stays date-only while
+    // the time of day is unchanged (month and all-day drags), otherwise emit a
+    // datetime string.
+    function dropValue(original, shifted, timeChanged) {
+      return !timeChanged && typeof original === 'string' && DATE_ONLY_RE.test(original) ? toDateString(shifted) : toDateTimeString(shifted);
+    }
+
+    function dispatchEventDrop(ev, dayDelta, minsDelta) {
+      el.dispatchEvent(
+        new CustomEvent('event-drop', {
+          detail: {
+            event: ev,
+            start: dropValue(ev.start, shiftDate(ev.startDate, dayDelta, minsDelta), minsDelta !== 0),
+            end: ev.end ? dropValue(ev.end, shiftDate(ev.endDate, dayDelta, minsDelta), minsDelta !== 0) : undefined,
+          },
+          bubbles: true,
+        })
+      );
+    }
+
+    // Timed events in the week/day grid: vertical moves snap to dragStep minutes
+    // (15 by default), horizontal moves follow the pointer across day columns. Listeners live on
+    // the event element itself (pointer capture routes moves there), so they die
+    // with the render and nothing outlives the directive.
+    function attachTimedDrag(evEl, ev, { colsGrid, scrollArea, days, dayIdx, startMins, durMins, lockVertical, timeEl }) {
+      evEl.addEventListener('pointerdown', (e) => {
+        if (e.button > 0) return;
+        suppressClick = false;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startScroll = scrollArea.scrollTop;
+        const orig = { top: evEl.style.top, left: evEl.style.left, width: evEl.style.width, time: timeEl ? timeEl.textContent : '' };
+        // The 30-minute visual floor can render past the day's end. Never force
+        // the event upward because of it.
+        const maxDelta = Math.max(24 * 60 - startMins - durMins, 0);
+        let dragging = false;
+        let minsDelta = 0;
+        let dayDelta = 0;
+
+        const move = (me) => {
+          if (!evEl.isConnected) return finish(false);
+          if (!dragging) {
+            if (Math.abs(me.clientX - startX) < DRAG_THRESHOLD && Math.abs(me.clientY - startY) < DRAG_THRESHOLD) return;
+            dragging = true;
+            evEl.setAttribute('data-dragging', 'true');
+            evEl.classList.add('z-20', 'shadow-lg');
+            evEl.style.left = '0.125rem';
+            evEl.style.width = 'calc(100% - 0.25rem)';
+          }
+          // Nudge the scroll area when the pointer nears its edges, before the
+          // delta math so the same move lands consistently.
+          const sRect = scrollArea.getBoundingClientRect();
+          if (sRect.height > 0) {
+            if (me.clientY < sRect.top + 40) scrollArea.scrollTop -= 15;
+            else if (me.clientY > sRect.bottom - 40) scrollArea.scrollTop += 15;
+          }
+          if (!lockVertical) {
+            const dy = me.clientY - startY + (scrollArea.scrollTop - startScroll);
+            minsDelta = Math.min(Math.max(Math.round(dy / dragStep) * dragStep, -startMins), maxDelta);
+            evEl.style.top = `${startMins + minsDelta}px`;
+            if (timeEl) timeEl.textContent = dtf(locale, { hour: 'numeric', minute: '2-digit' }).format(shiftDate(ev.startDate, 0, minsDelta));
+          }
+          const gRect = colsGrid.getBoundingClientRect();
+          const colW = gRect.width / days.length;
+          if (colW > 0) {
+            const targetCol = Math.min(Math.max(Math.floor((me.clientX - gRect.left) / colW), 0), days.length - 1);
+            dayDelta = targetCol - dayIdx;
+            evEl.style.transform = dayDelta ? `translateX(${dayDelta * colW}px)` : '';
+          }
+        };
+
+        const finish = (commit) => {
+          evEl.removeEventListener('pointermove', move);
+          evEl.removeEventListener('pointerup', up);
+          evEl.removeEventListener('pointercancel', cancel);
+          releasePointer(evEl, e);
+          if (!dragging) return;
+          evEl.removeAttribute('data-dragging');
+          evEl.classList.remove('z-20', 'shadow-lg');
+          evEl.style.top = orig.top;
+          evEl.style.left = orig.left;
+          evEl.style.width = orig.width;
+          evEl.style.transform = '';
+          if (timeEl) timeEl.textContent = orig.time;
+          if (commit) {
+            suppressClick = true;
+            if ((dayDelta !== 0 || minsDelta !== 0) && evEl.isConnected) dispatchEventDrop(ev, dayDelta, minsDelta);
+          }
+        };
+        const up = () => finish(true);
+        const cancel = () => finish(false);
+
+        capturePointer(evEl, e);
+        evEl.addEventListener('pointermove', move);
+        evEl.addEventListener('pointerup', up);
+        evEl.addEventListener('pointercancel', cancel);
+      });
+    }
+
+    // Day-only drag for month cells and the week all-day strip: the pill stays
+    // in place while the hovered day cell is highlighted. Dropping shifts the
+    // event by whole days and keeps its time of day.
+    function attachEventDayDrag(pill, ev, originDay, resolveCell) {
+      attachDayDrag(pill, {
+        onPointerDown: () => (suppressClick = false),
+        resolveTarget: resolveCell,
+        onDrop: (target) => {
+          suppressClick = true;
+          const dayDelta = target ? Math.round((target.date - originDay) / 86400000) : 0;
+          if (dayDelta !== 0 && pill.isConnected) dispatchEventDrop(ev, dayDelta, 0);
+        },
+      });
+    }
+
     function setConfig(config) {
       locale = resolveLocale(config.locale);
       if (config.firstDay !== undefined) firstDay = config.firstDay;
       if (config.showNowIndicator !== undefined) showNowIndicator = config.showNowIndicator;
       if (config.scrollTo !== undefined && ['now', 'first-event'].includes(config.scrollTo)) scrollTo = config.scrollTo;
+      if (config.draggable !== undefined) draggable = !!config.draggable;
+      if (config.dragStep > 0) dragStep = +config.dragStep;
       if (config.views !== undefined) {
         showViewSwitcher = config.views;
         viewSwitcher.classList.toggle('hidden', !showViewSwitcher);
@@ -450,6 +603,18 @@ export default function (Alpine) {
       const dayLabelFmt = dtf(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
       const dayCells = [];
 
+      // Map a pointer position to a day cell: the 6 rows and 7 columns divide
+      // the grid evenly, so one rect suffices. Out-of-grid pointers clamp to
+      // the nearest cell.
+      const resolveMonthCell = (x, y) => {
+        const rect = grid.getBoundingClientRect();
+        if (!(rect.width > 0) || !(rect.height > 0)) return null;
+        const c = Math.min(Math.max(Math.floor(((x - rect.left) / rect.width) * 7), 0), 6);
+        const r = Math.min(Math.max(Math.floor(((y - rect.top) / rect.height) * 6), 0), 5);
+        const cell = dayCells[r * 7 + c];
+        return cell ? { el: cell, date: cell._date } : null;
+      };
+
       for (let r = 0; r < 6; r++) {
         const rowEl = document.createElement('div');
         rowEl.classList.add('grid', 'grid-cols-7', 'flex-1', 'min-h-0');
@@ -497,6 +662,7 @@ export default function (Alpine) {
           dayEvs.forEach((ev) => {
             const pill = makeEventPill(ev);
             pill.classList.add('event-pill');
+            if (canDrag(ev)) attachEventDayDrag(pill, ev, capturedDay, resolveMonthCell);
             cell.appendChild(pill);
           });
           cell._trimFn = () => trimMonthCell(cell, capturedDay, dayEvs);
@@ -587,10 +753,25 @@ export default function (Alpine) {
       const allDayGrid = document.createElement('div');
       allDayGrid.classList.add('grid', 'flex-1');
       allDayGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+      const adCells = [];
+      const resolveAllDayCell = (x) => {
+        const rect = allDayGrid.getBoundingClientRect();
+        if (!(rect.width > 0)) return null;
+        const c = Math.min(Math.max(Math.floor(((x - rect.left) / rect.width) * cols), 0), cols - 1);
+        return { el: adCells[c], date: days[c] };
+      };
       days.forEach((day) => {
         const adCell = document.createElement('div');
         adCell.classList.add('border-r', 'last:border-r-0', 'p-0.5', 'space-y-0.5', 'min-h-[28px]');
-        events.filter((ev) => ev.allDay && eventSpansDay(ev, day)).forEach((ev) => adCell.appendChild(makeEventPill(ev)));
+        events
+          .filter((ev) => ev.allDay && eventSpansDay(ev, day))
+          .forEach((ev) => {
+            const pill = makeEventPill(ev);
+            // A day-only drag is meaningful only when there is another day column.
+            if (cols > 1 && canDrag(ev)) attachEventDayDrag(pill, ev, day, resolveAllDayCell);
+            adCell.appendChild(pill);
+          });
+        adCells.push(adCell);
         allDayGrid.appendChild(adCell);
       });
       allDayRow.appendChild(allDayGrid);
@@ -626,7 +807,7 @@ export default function (Alpine) {
       colsGrid.style.height = `${HOURS * HOUR_H}px`;
 
       const colDayFmt = dtf(locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-      days.forEach((day) => {
+      days.forEach((day, dayIdx) => {
         const col = document.createElement('div');
         col.classList.add('border-r', 'last:border-r-0', 'relative');
         col.style.height = `${HOURS * HOUR_H}px`;
@@ -704,8 +885,9 @@ export default function (Alpine) {
           titleEl.textContent = ev.title;
           evEl.appendChild(titleEl);
 
+          let timeEl = null;
           if (durMins >= 45) {
-            const timeEl = document.createElement('div');
+            timeEl = document.createElement('div');
             timeEl.classList.add('opacity-80', 'leading-tight');
             timeEl.textContent = dtf(locale, { hour: 'numeric', minute: '2-digit' }).format(ev.startDate);
             evEl.appendChild(timeEl);
@@ -713,8 +895,18 @@ export default function (Alpine) {
 
           evEl.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (suppressClick) {
+              suppressClick = false;
+              return;
+            }
             el.dispatchEvent(new CustomEvent('event-click', { detail: { event: ev }, bubbles: true }));
           });
+          if (canDrag(ev)) {
+            // Segments continuing from an earlier day render clamped to the top,
+            // so a vertical move would disagree with the applied result. Lock
+            // them to day changes.
+            attachTimedDrag(evEl, ev, { colsGrid, scrollArea, days, dayIdx, startMins, durMins, lockVertical: ev.startDate < startOfDay, timeEl });
+          }
           col.appendChild(evEl);
         });
 

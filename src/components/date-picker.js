@@ -1,5 +1,6 @@
 import { findAncestorState } from '../common/ancestor';
 import { createCalendarWidget } from '../common/calendar';
+import { findModelAttribute } from '../common/model';
 import { eventInsidePicker, setupPopover, setupTrigger } from '../common/picker-popover';
 import { disabledControlClasses, pickerCellWrapperClasses, pickerFieldWrapperClasses, pickerWrapperClasses } from '../common/shared-classes';
 import uuidv4 from '../utils/uuid';
@@ -173,7 +174,7 @@ export default function (Alpine) {
     }
 
     if (Object.prototype.hasOwnProperty.call(el, '_x_model')) {
-      const modelExpression = el.getAttribute('x-model');
+      const modelExpression = findModelAttribute(Alpine, el)?.value;
       const evaluateModel = evaluateLater(modelExpression);
 
       effect(() => {

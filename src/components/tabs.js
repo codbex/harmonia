@@ -1,6 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
 import { isDisabled } from '../common/disabled';
-import { disabledControlClasses } from '../common/shared-classes';
 import { buttonVariants, setButtonClasses } from './button';
 
 // Orientation and floating cross rather than layer, so each combination gets its
@@ -26,12 +25,102 @@ const tabBarStateClasses = {
   'vertical-floating': ['flex-col'],
 };
 
-const tabStateClasses = {
-  'horizontal-docked': ['border-0', 'px-2', 'h-full', 'hover:inset-shadow-[0_-.188rem_var(--border)]', 'aria-selected:inset-shadow-[0_-.125rem_var(--primary)]', 'hover:aria-selected:inset-shadow-[0_-.188rem_var(--primary)]'],
-  'vertical-docked': ['border-0', 'px-3', 'w-full', 'h-8', 'hover:inset-shadow-[-.188rem_0_var(--border)]', 'aria-selected:inset-shadow-[-.125rem_0_var(--primary)]', 'hover:aria-selected:inset-shadow-[-.188rem_0_var(--primary)]'],
-  'horizontal-floating': ['rounded-md', 'border', 'border-transparent', 'px-2', 'h-full', 'hover:bg-background', 'hover:border-border', 'aria-selected:bg-background', 'aria-selected:border-border'],
-  'vertical-floating': ['rounded-md', 'border', 'border-transparent', 'px-2', 'w-full', 'h-8', 'hover:bg-background', 'hover:border-border', 'aria-selected:bg-background', 'aria-selected:border-border'],
+// The item owns the tab's surface, so selection reads the inner button's
+// aria-selected through has-. The [data-slot=tab] scope keeps aria-selected
+// inside author-placed content (a popover's listbox) from matching.
+const tabItemStateClasses = {
+  'horizontal-docked': [
+    'border-0',
+    'px-2',
+    'h-full',
+    'hover:inset-shadow-[0_-.188rem_var(--border)]',
+    'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.125rem_var(--primary)]',
+    'hover:has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.188rem_var(--primary)]',
+  ],
+  'vertical-docked': [
+    'border-0',
+    'px-3',
+    'w-full',
+    'h-8',
+    'hover:inset-shadow-[-.188rem_0_var(--border)]',
+    'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[-.125rem_0_var(--primary)]',
+    'hover:has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[-.188rem_0_var(--primary)]',
+  ],
+  'horizontal-floating': [
+    'rounded-md',
+    'border',
+    'border-transparent',
+    'px-2',
+    'h-full',
+    'hover:bg-background',
+    'hover:border-border',
+    'has-[[data-slot=tab][aria-selected=true]]:bg-background',
+    'has-[[data-slot=tab][aria-selected=true]]:border-border',
+  ],
+  'vertical-floating': [
+    'rounded-md',
+    'border',
+    'border-transparent',
+    'px-2',
+    'w-full',
+    'h-8',
+    'hover:bg-background',
+    'hover:border-border',
+    'has-[[data-slot=tab][aria-selected=true]]:bg-background',
+    'has-[[data-slot=tab][aria-selected=true]]:border-border',
+  ],
 };
+
+// Colours, the focus ring and disabled dimming live on the item so they cover
+// the tab and its actions alike. Hovering an action still lightens the label,
+// and focusing the tab rings the whole visual tab. The cursor-default pair
+// exists because the disabled tab's pointer-events-none hands the cursor to
+// the item, which must switch off its own cursor-pointer itself.
+const tabItemClasses = [
+  'cursor-pointer',
+  'inline-flex',
+  'items-center',
+  'justify-start',
+  'gap-1.5',
+  'py-1',
+  'text-sm',
+  'font-medium',
+  'whitespace-nowrap',
+  'text-muted-foreground',
+  'hover:text-foreground',
+  'has-[[data-slot=tab][aria-selected=true]]:text-foreground',
+  'transition-[color,box-shadow]',
+  'motion-reduce:transition-none',
+  'has-[[data-slot=tab]:focus-visible]:border-ring',
+  'has-[[data-slot=tab]:focus-visible]:inset-ring-ring/50',
+  'has-[[data-slot=tab]:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]',
+  'has-[[data-slot=tab]:disabled]:opacity-disabled',
+  'has-[[data-slot=tab]:disabled]:cursor-default',
+  'has-[[data-slot=tab][aria-disabled=true]]:opacity-disabled',
+  'has-[[data-slot=tab][aria-disabled=true]]:cursor-default',
+  'svg-defaults',
+];
+
+// The tab is a transparent button filling its item. flex-1 absorbs the slack a
+// w-full vertical item has, which pushes the actions to the trailing edge and
+// keeps the slack area part of the tab's click target.
+const tabClasses = [
+  'cursor-pointer',
+  'outline-none',
+  'bg-transparent',
+  'inline-flex',
+  'items-center',
+  'justify-start',
+  'gap-1.5',
+  'self-stretch',
+  'flex-1',
+  'min-w-0',
+  'text-sm',
+  'font-medium',
+  'whitespace-nowrap',
+  'disabled:pointer-events-none',
+  'aria-disabled:pointer-events-none',
+];
 
 const tabListActionsEndClasses = {
   'horizontal-docked': ['ml-auto', 'mr-1.5'],
@@ -197,13 +286,14 @@ export default function (Alpine) {
       return orderedTabs().filter((tab) => !tab.disabled);
     }
 
-    // A tab's action shares its place in the tab order, so Tab reaches the action
-    // of the tab that holds the stop and no other.
+    // A tab's actions share its place in the tab order, so Tab reaches the actions
+    // of the tab that holds the stop and no others. The array is the item's live
+    // one, so actions mounted later by an x-if are covered on the next sync.
     function setTabStop(target) {
       for (const tab of tabs) {
         const stop = tab === target ? '0' : '-1';
         tab.setAttribute('tabindex', stop);
-        tab._h_tab?.action?.setAttribute('tabindex', stop);
+        for (const action of tab._h_tab?.actions ?? []) action.setAttribute('tabindex', stop);
       }
     }
 
@@ -233,7 +323,9 @@ export default function (Alpine) {
       const listRect = el.getBoundingClientRect();
       if (!listRect.width && !listRect.height) return;
       revealSettled = true;
-      const tabRect = tab.getBoundingClientRect();
+      // The item is the visual tab, so the reveal reads its box rather than the
+      // transparent button's, which excludes the actions.
+      const tabRect = tab._h_tab.item.getBoundingClientRect();
       if (tabsState.vertical) {
         if (tabRect.top < listRect.top) el.scrollTop += tabRect.top - listRect.top;
         else if (tabRect.bottom > listRect.bottom) el.scrollTop += tabRect.bottom - listRect.bottom;
@@ -260,14 +352,16 @@ export default function (Alpine) {
       // tab's observer never fires for it.
       register(tab) {
         if (!tabs.includes(tab)) tabs.push(tab);
-        resizeObserver?.observe(tab);
+        // The item resizes when an x-if mounts an action, which the transparent
+        // button would not report, so the observer watches the item.
+        resizeObserver?.observe(tab._h_tab.item);
         selectionChanged();
         scheduleFadeUpdate();
       },
       unregister(tab) {
         const index = tabs.indexOf(tab);
         if (index !== -1) tabs.splice(index, 1);
-        resizeObserver?.unobserve(tab);
+        resizeObserver?.unobserve(tab._h_tab.item);
         selectionChanged();
         scheduleFadeUpdate();
       },
@@ -277,7 +371,9 @@ export default function (Alpine) {
     };
 
     function onKeyDown(event) {
-      const tab = event.target.closest?.('[data-slot=tab]');
+      // Resolved through the item, since an action is a sibling of its tab and
+      // its events never bubble through it.
+      const tab = event.target.closest?.('[data-slot=tab-item]')?._h_tab_item.tab;
       if (!tab || !tabs.includes(tab)) return;
 
       const vertical = tabsState.vertical;
@@ -306,7 +402,7 @@ export default function (Alpine) {
     // Focus can also arrive by click or by Tab, so the stop is re-synced to
     // wherever it actually landed. 'focus' does not bubble, hence focusin.
     function onFocusIn(event) {
-      const tab = event.target.closest?.('[data-slot=tab]');
+      const tab = event.target.closest?.('[data-slot=tab-item]')?._h_tab_item.tab;
       if (tab && tabs.includes(tab)) setTabStop(tab);
     }
 
@@ -332,7 +428,12 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-tab', (el, { original }, { Alpine, effect, cleanup }) => {
+  Alpine.directive('h-tab-item', (el, { original }, { Alpine, effect, cleanup }) => {
+    // A container, never a control. Its tab and its actions are the buttons
+    // inside it, and a button may not contain another button.
+    if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+      throw new Error(`${original} must not be an interactive element, put ${Alpine.prefixed('h-tab')} on a button inside it instead`);
+    }
     const list = findAncestorState(Alpine, el, '_h_tab_list');
     if (!list) {
       throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab-list')} element`);
@@ -344,33 +445,47 @@ export default function (Alpine) {
     // Optional, like on the tab list. No bar reads as docked.
     const bar = findAncestorState(Alpine, el, '_h_tab_bar');
 
-    el.classList.add(
-      'cursor-pointer',
-      'focus-visible:border-ring',
-      'focus-visible:inset-ring-ring/50',
-      'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
-      'outline-none',
-      'text-muted-foreground',
-      'hover:text-foreground',
-      'aria-selected:text-foreground',
-      'inline-flex',
-      'items-center',
-      'justify-start',
-      'gap-1.5',
-      'py-1',
-      'text-sm',
-      'font-medium',
-      'whitespace-nowrap',
-      'transition-[color,box-shadow]',
-      'motion-reduce:transition-none',
-      ...disabledControlClasses,
-      'aria-disabled:pointer-events-none',
-      'aria-disabled:opacity-disabled',
-      'aria-disabled:cursor-not-allowed',
-      'svg-defaults'
-    );
+    // The item mounts before its children, so the tab and the actions register
+    // here rather than into each other. An action may be authored before the
+    // tab, or mounted later by an x-if.
+    el._h_tab_item = { tab: null, actions: [] };
 
-    effect(() => applyStateClasses(el, tabStateClasses, root._h_tabs.vertical, bar?._h_tab_bar.floating === true));
+    el.classList.add(...tabItemClasses);
+
+    effect(() => applyStateClasses(el, tabItemStateClasses, root._h_tabs.vertical, bar?._h_tab_bar.floating === true));
+
+    // Grouping only, so the tab and its actions read as direct children of the
+    // tablist.
+    el.setAttribute('role', 'presentation');
+    el.setAttribute('data-slot', 'tab-item');
+
+    // The item's own padding and gap are not part of any button, so a click
+    // landing there forwards to the tab, keeping the whole visual tab clickable.
+    function onClick(event) {
+      if (event.target === el) el._h_tab_item.tab?.click();
+    }
+
+    el.addEventListener('click', onClick);
+
+    cleanup(() => el.removeEventListener('click', onClick));
+  });
+
+  Alpine.directive('h-tab', (el, { original }, { Alpine, cleanup }) => {
+    const list = findAncestorState(Alpine, el, '_h_tab_list');
+    if (!list) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab-list')} element`);
+    }
+    const item = findAncestorState(Alpine, el, '_h_tab_item');
+    if (!item) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab-item')} element`);
+    }
+    // The roving stop, the reveal and the actions are all keyed off one tab per
+    // item, so a second tab would silently orphan the first.
+    if (item._h_tab_item.tab) {
+      throw new Error(`${original}: a ${Alpine.prefixed('h-tab-item')} can only contain one tab`);
+    }
+
+    el.classList.add(...tabClasses);
 
     el.setAttribute('role', 'tab');
     el.setAttribute('data-slot', 'tab');
@@ -393,9 +508,12 @@ export default function (Alpine) {
     };
     el.addEventListener('click', blockDisabledActivation, true);
 
-    // The list reads this so the action shares the tab's place in the tab order. It
-    // has to exist before register(), which syncs the tab stop straight away.
-    el._h_tab = { action: null };
+    // The list reads this so the actions share the tab's place in the tab order
+    // and so the reveal and the resize observer track the item's box. It has to
+    // exist before register(), which syncs the tab stop straight away. `actions`
+    // is the item's live array, kept current by each action's mount and cleanup.
+    el._h_tab = { item, actions: item._h_tab_item.actions };
+    item._h_tab_item.tab = el;
 
     list._h_tab_list.register(el);
 
@@ -408,61 +526,57 @@ export default function (Alpine) {
     cleanup(() => {
       el.removeEventListener('click', blockDisabledActivation, true);
       observer.disconnect();
+      // Released before unregister, so a replacement tab can mount into the item.
+      item._h_tab_item.tab = null;
       list._h_tab_list.unregister(el);
     });
   });
 
   Alpine.directive('h-tab-action', (el, { original }, { Alpine, cleanup }) => {
-    // A span, since the action sits inside the tab's own button where nested
-    // interactive content would be invalid. Same reason as h-chip-close.
-    if (el.tagName !== 'SPAN') {
-      throw new Error(`${original} must be a span element`);
+    // A real button: as a sibling of the tab inside the item it is no longer
+    // nested interactive content. Same reason as h-chip-close.
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button element`);
     }
-    const tab = findAncestorState(Alpine, el, '_h_tab');
-    if (!tab) {
-      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab')} element`);
-    }
-    // The tab stop is keyed off the single action slot, so a second action would
-    // leave the first stranded out of the tab order.
-    if (tab._h_tab.action) {
-      throw new Error(`${original}: a tab can only have one action`);
+    const item = findAncestorState(Alpine, el, '_h_tab_item');
+    if (!item) {
+      throw new Error(`${original} must be inside a ${Alpine.prefixed('h-tab-item')} element`);
     }
 
-    el.classList.add('p-0.5', 'cursor-pointer', 'ml-auto', 'rounded-md', 'text-foreground', 'hover:bg-secondary', 'hover:text-secondary-foreground', 'active:bg-secondary-active', 'outline-ring/50', 'focus-outline');
-    el.setAttribute('role', 'button');
+    el.classList.add(
+      'p-0.5',
+      'shrink-0',
+      'cursor-pointer',
+      'rounded-md',
+      'text-foreground',
+      'hover:bg-secondary',
+      'hover:text-secondary-foreground',
+      'active:bg-secondary-active',
+      'aria-expanded:bg-secondary',
+      'aria-expanded:text-secondary-foreground',
+      'outline-ring/50',
+      'focus-outline'
+    );
     el.setAttribute('data-slot', 'tab-action');
-    // Copied rather than assumed to be -1. The tab mounts first and may already
-    // hold the stop.
-    el.setAttribute('tabindex', tab.getAttribute('tabindex') ?? '-1');
+    // An action inside a form must not submit it, but an author-set type wins.
+    if (!el.hasAttribute('type')) el.setAttribute('type', 'button');
+    // Copied rather than assumed to be -1. The tab may already hold the stop,
+    // and an action inserted later by an x-if mounts long after the stop
+    // settled. A leading action mounts before its tab, so its tab's
+    // registration writes the stop instead.
+    el.setAttribute('tabindex', item._h_tab_item.tab?.getAttribute('tabindex') ?? '-1');
 
     // The action's content is whatever the author put there, so only they can name it.
     if (!el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
       console.error(`${original}: Must have an "aria-label" or "aria-labelledby" attribute`, el);
     }
 
-    tab._h_tab.action = el;
-
-    // The action lives inside the tab's button, so without this every activation
-    // would also select the tab.
-    function onClick(event) {
-      event.stopPropagation();
-    }
-
-    // A span gets no native activation, so Enter and Space route through click,
-    // keeping the keyboard and the mouse on one path including the stop above.
-    function onKeyDown(event) {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      event.preventDefault();
-      el.click();
-    }
-
-    el.addEventListener('click', onClick);
-    el.addEventListener('keydown', onKeyDown);
+    item._h_tab_item.actions.push(el);
 
     cleanup(() => {
-      el.removeEventListener('click', onClick);
-      el.removeEventListener('keydown', onKeyDown);
-      tab._h_tab.action = null;
+      const actions = item._h_tab_item.actions;
+      const index = actions.indexOf(el);
+      if (index !== -1) actions.splice(index, 1);
     });
   });
 

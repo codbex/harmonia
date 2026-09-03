@@ -1,6 +1,6 @@
 <div x-data="pageSettings" class="vbox items-center gap-4 p-4">
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Profile</h3>
+    <h2 x-h-text.h5>Profile</h2>
     <p x-h-text.muted>How you appear to teammates. Renaming yourself updates your past messages too.</p>
 
     <div x-h-card class="mt-4 w-full">
@@ -31,13 +31,13 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Appearance</h3>
+    <h2 x-h-text.h5>Appearance</h2>
 
-    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+    <div x-h-card class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
         <li x-h-list-item class="gap-3 px-4 py-3">
           <div class="vbox w-full">
-            <p class="text-base font-medium">Theme</p>
+            <p class="text-base font-medium">Style</p>
             <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
           </div>
           <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
@@ -51,27 +51,18 @@
             <span x-show="$store.chat.settings.theme === 'auto'">Auto</span>
             <svg x-h-lucide role="presentation" data-lucide="chevron-down"></svg>
           </button>
-          <ul x-h-menu data-align="bottom-end" aria-label="Theme">
-            <li x-h-menu-item @click="$store.chat.setTheme('light')">
+          <ul x-h-menu data-align="bottom-end" aria-label="Style">
+            <li x-h-menu-radio-item="'light'" name="settings-theme" x-model="$store.chat.settings.theme">
               <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
               <span>Light</span>
-              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'light'">
-                <svg x-h-icon data-icon="check" role="presentation"></svg>
-              </span>
             </li>
-            <li x-h-menu-item @click="$store.chat.setTheme('dark')">
+            <li x-h-menu-radio-item="'dark'" name="settings-theme" x-model="$store.chat.settings.theme">
               <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
               <span>Dark</span>
-              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'dark'">
-                <svg x-h-icon data-icon="check" role="presentation"></svg>
-              </span>
             </li>
-            <li x-h-menu-item @click="$store.chat.setTheme('auto')">
+            <li x-h-menu-radio-item="'auto'" name="settings-theme" x-model="$store.chat.settings.theme">
               <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
               <span>Auto</span>
-              <span x-h-menu-item-secondary x-show="$store.chat.settings.theme === 'auto'">
-                <svg x-h-icon data-icon="check" role="presentation"></svg>
-              </span>
             </li>
           </ul>
         </li>
@@ -80,10 +71,10 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2">
-    <h3 x-h-text.h5>Notifications</h3>
+    <h2 x-h-text.h5>Notifications</h2>
     <p x-h-text.muted>Each switch gates a real part of the demo's reply simulation.</p>
 
-    <div x-h-card class="mt-4 w-full overflow-hidden py-0!">
+    <div x-h-card class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
         <li x-h-list-item class="gap-3 px-4 py-3">
           <svg x-h-lucide role="presentation" data-lucide="bell" class="size-5"></svg>
@@ -120,7 +111,7 @@
   </section>
 
   <section class="vbox w-full max-w-xl pt-2 pb-4">
-    <h3 x-h-text.h5>Danger zone</h3>
+    <h2 x-h-text.h5>Danger zone</h2>
 
     <div x-h-tile data-variant="shadow" class="mt-4">
       <div x-h-tile-content>
@@ -134,14 +125,11 @@
   </section>
 
   <!-- Reset confirmation dialog -->
-  <div x-h-dialog-overlay :data-open="showReset" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="showReset" class="backdrop-blur-xs" @keydown.escape.window="showReset = false">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Reset workspace</h2>
         <p x-h-dialog-description>All demo conversations will be restored to their initial state, including channel memberships and your profile. Continue?</p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="showReset = false">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="showReset = false">Cancel</button>

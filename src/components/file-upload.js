@@ -84,12 +84,32 @@ export default function (Alpine) {
     const onReset = () => queueMicrotask(render);
     if (form) form.addEventListener('reset', onReset);
 
+    // The other way the file list changes with no event: `input.value = ''`, which
+    // is how an author lets the same file be picked twice. It is a property rather
+    // than an attribute, so seeing the assignment is the only way to stay in step.
+    // Only '' is a legal value for a file input, so this intercepts a clear alone.
+    const valueDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    Object.defineProperty(fileInput, 'value', {
+      configurable: true,
+      enumerable: false,
+      get() {
+        return valueDescriptor.get.call(this);
+      },
+      set(value) {
+        valueDescriptor.set.call(this, value);
+        render();
+      },
+    });
+
     render();
 
     cleanup(() => {
       el.removeEventListener('click', onClick);
       fileInput.removeEventListener('change', onChange);
       if (form) form.removeEventListener('reset', onReset);
+      // Hands the property back to the prototype rather than leaving a dead
+      // accessor closing over a directive that no longer exists.
+      delete fileInput.value;
       clearTags();
     });
   });

@@ -5,28 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Theme sync - frame</title>
     <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
-    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.min.js"></script>
     <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
     <link href="/harmonia/fonts.css" rel="stylesheet" />
   </head>
-  <body class="size-full bg-background p-4 text-foreground">
+  <body class="size-full bg-background p-4 text-foreground" x-data="themeSync">
     <div class="vbox gap-2">
       <h2 class="text-base font-semibold">Embedded frame</h2>
-      <p class="text-sm text-muted-foreground">Current scheme: <span id="scheme" class="font-medium">-</span></p>
-      <div class="flex gap-2">
-        <button class="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground" onclick="Harmonia.setColorScheme('light')">Light</button>
-        <button class="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground" onclick="Harmonia.setColorScheme('dark')">Dark</button>
-        <button class="rounded-md border px-3 py-1.5 text-sm" onclick="Harmonia.setColorScheme('auto')">Auto</button>
+      <p class="text-sm text-muted-foreground">Current scheme: <span class="font-medium" x-text="getSchemeLabel()"></span></p>
+      <div class="w-full">
+        <div x-h-button-group x-model="scheme" @change="setScheme" class="w-full" aria-label="Color scheme">
+          <button x-h-button data-variant="outline" class="h-auto flex-1 py-3" x-h-button-group-radio="'light'">
+            <div class="vbox items-center gap-1">
+              <svg x-h-lucide class="size-5" role="presentation" data-lucide="sun"></svg>
+              <span class="font-normal">Light</span>
+            </div>
+          </button>
+          <button x-h-button data-variant="outline" class="h-auto flex-1 py-3" x-h-button-group-radio="'dark'">
+            <div class="vbox items-center gap-1">
+              <svg x-h-lucide class="size-5" role="presentation" data-lucide="moon"></svg>
+              <span class="font-normal">Dark</span>
+            </div>
+          </button>
+          <button x-h-button data-variant="outline" class="h-auto flex-1 py-3" x-h-button-group-radio="'auto'">
+            <div class="vbox items-center gap-1">
+              <svg x-h-lucide class="size-5" role="presentation" data-lucide="sun-moon"></svg>
+              <span class="font-normal">Auto</span>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
 
     <script>
-      const schemeEl = document.getElementById("scheme");
-      const render = (scheme) => {
-        schemeEl.textContent = scheme;
-      };
-      render(document.documentElement.classList.contains("dark") ? "dark" : "light");
-      Harmonia.addColorSchemeListener(render);
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("themeSync", () => ({
+          scheme: Harmonia.getColorScheme(),
+          getSchemeLabel() {
+            switch (this.scheme) {
+              case "light":
+                return "Light";
+              case "dark":
+                return "Dark";
+              default:
+                return "Auto";
+            }
+          },
+          setScheme() {
+            Harmonia.setColorScheme(this.scheme);
+          },
+          init() {
+            // The second argument is the selected mode, so an "auto" selection stays "auto"
+            // instead of arriving as the light or dark it currently resolves to.
+            const change = (scheme, mode) => {
+              this.scheme = mode;
+            };
+            Harmonia.addColorSchemeListener(change);
+          },
+        }));
+      });
     </script>
   </body>
 </html>

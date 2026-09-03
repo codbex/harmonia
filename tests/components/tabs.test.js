@@ -16,10 +16,11 @@ function keydown(el, key) {
   return event;
 }
 
-// Builds the x-h-tabs > x-h-tab-list > x-h-tab chain the directives require, in
-// tree order because a tab registers with its list at mount. `floating` is left
-// null by default so the chain has no tab bar at all, which is the shape a list
-// that skips the bar produces and which must read as docked.
+// Builds the x-h-tabs > x-h-tab-list > x-h-tab-item > x-h-tab chain the
+// directives require, in tree order because the item mounts before its children
+// and a tab registers with its list at mount. `floating` is left null by
+// default so the chain has no tab bar at all, which is the shape a list that
+// skips the bar produces and which must read as docked.
 function createTabs({ orientation = 'horizontal', floating = null, count = 3, selected = 0, disabled = [], ariaDisabled = [], action = false } = {}) {
   const root = document.createElement('div');
   root.setAttribute('data-orientation', orientation);
@@ -43,50 +44,65 @@ function createTabs({ orientation = 'horizontal', floating = null, count = 3, se
   parent.appendChild(list);
   const listMount = mountDirective(tabsPlugin, 'h-tab-list', list, { original: 'x-h-tab-list' });
 
+  const items = [];
+  const itemMounts = [];
   const tabs = [];
   const tabMounts = [];
   const actions = [];
   const actionMounts = [];
   for (let i = 0; i < count; i++) {
+    const { item, mount: itemMount } = mountTabItemInto(list);
+    items.push(item);
+    itemMounts.push(itemMount);
     const tab = document.createElement('button');
     tab.setAttribute('id', `tab-${i}`);
     tab.setAttribute('aria-controls', `panel-${i}`);
     if (selected === i) tab.setAttribute('aria-selected', 'true');
     if (disabled.includes(i)) tab.disabled = true;
     if (ariaDisabled.includes(i)) tab.setAttribute('aria-disabled', 'true');
-    list.appendChild(tab);
+    item.appendChild(tab);
     tabMounts.push(mountDirective(tabsPlugin, 'h-tab', tab, { original: 'x-h-tab' }));
     tabs.push(tab);
-    // Mounted after its tab, which is the real order and the case where the tab
-    // may already hold the stop.
+    // Mounted after its tab, which is the common order and the case where the
+    // tab may already hold the stop.
     if (action) {
-      const { action: el, mount } = mountActionInto(tab);
+      const { action: el, mount } = mountActionInto(item);
       actions.push(el);
       actionMounts.push(mount);
     }
   }
 
-  return { root, bar, list, tabs, actions, rootMount, barMount, listMount, tabMounts, actionMounts };
+  return { root, bar, list, items, tabs, actions, rootMount, barMount, listMount, itemMounts, tabMounts, actionMounts };
 }
 
-// Appends a labelled span action to a tab and mounts the directive on it.
-function mountActionInto(tab, { label = 'close tab' } = {}) {
-  const action = document.createElement('span');
+// Inserts an item wrapper into a list and mounts the directive on it, before its
+// children since Alpine walks outer-in. `before` is a sibling item.
+function mountTabItemInto(list, { before = null } = {}) {
+  const item = document.createElement('div');
+  list.insertBefore(item, before);
+  const mount = mountDirective(tabsPlugin, 'h-tab-item', item, { original: 'x-h-tab-item' });
+  return { item, mount };
+}
+
+// Appends a labelled button action to an item and mounts the directive on it.
+function mountActionInto(item, { label = 'close tab' } = {}) {
+  const action = document.createElement('button');
   if (label !== null) action.setAttribute('aria-label', label);
-  tab.appendChild(action);
+  item.appendChild(action);
   const mount = mountDirective(tabsPlugin, 'h-tab-action', action, { original: 'x-h-tab-action' });
   return { action, mount };
 }
 
-// Mounts a single extra tab into an existing list, so DOM position can be chosen
-// independently of mount order.
+// Mounts a single extra tab, in its own item, into an existing list, so DOM
+// position can be chosen independently of mount order. `before` is an item.
 function mountTabInto(list, id, { before = null } = {}) {
+  const { item } = mountTabItemInto(list, { before });
   const tab = document.createElement('button');
   tab.setAttribute('id', id);
   tab.setAttribute('aria-controls', `${id}-panel`);
-  list.insertBefore(tab, before);
+  item.appendChild(tab);
   const mount = mountDirective(tabsPlugin, 'h-tab', tab, { original: 'x-h-tab' });
-  return { tab, mount };
+  return { tab, mount, item };
 }
 
 const tabIndexes = (tabs) => tabs.map((tab) => tab.getAttribute('tabindex'));
@@ -276,31 +292,187 @@ describe('h-tab-list', () => {
   });
 });
 
+describe('h-tab-item', () => {
+  it('applies base classes and attributes', () => {
+    const { items } = createTabs({ count: 1 });
+    const el = items[0];
+    expect(el.classList.contains('cursor-pointer')).toBe(true);
+    expect(el.classList.contains('inline-flex')).toBe(true);
+    expect(el.classList.contains('text-sm')).toBe(true);
+    expect(el.classList.contains('font-medium')).toBe(true);
+    expect(el.classList.contains('text-muted-foreground')).toBe(true);
+    expect(el.classList.contains('svg-defaults')).toBe(true);
+    expect(el.getAttribute('role')).toBe('presentation');
+    expect(el.getAttribute('data-slot')).toBe('tab-item');
+  });
+
+  it('throws when the element is interactive', () => {
+    const { list } = createTabs({ count: 0 });
+    for (const tag of ['button', 'a']) {
+      const el = document.createElement(tag);
+      list.appendChild(el);
+      expect(() => mountDirective(tabsPlugin, 'h-tab-item', el, { original: 'x-h-tab-item' })).toThrow(/must not be an interactive element/);
+    }
+  });
+
+  it('throws without an x-h-tab-list ancestor', () => {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    expect(() => mountDirective(tabsPlugin, 'h-tab-item', el, { original: 'x-h-tab-item' })).toThrow(/x-h-tab-list/);
+  });
+
+  it('throws without an x-h-tabs ancestor', () => {
+    // A tab list attaches _h_tab_list without needing a tabs root, so an item
+    // can find its list and still be outside the root.
+    const list = document.createElement('div');
+    document.body.appendChild(list);
+    list._h_tab_list = { register() {}, unregister() {}, selectionChanged() {} };
+    const el = document.createElement('div');
+    list.appendChild(el);
+    expect(() => mountDirective(tabsPlugin, 'h-tab-item', el, { original: 'x-h-tab-item' })).toThrow(/x-h-tabs/);
+  });
+
+  it('is valid with no tab inside, since an x-if may not have rendered one yet', () => {
+    const { list } = createTabs({ count: 0 });
+    expect(() => mountTabItemInto(list)).not.toThrow();
+  });
+
+  it('draws the focus ring and the disabled dimming for its tab', () => {
+    const { items } = createTabs({ count: 1 });
+    expect(items[0].classList.contains('has-[[data-slot=tab]:focus-visible]:inset-ring-ring/50')).toBe(true);
+    expect(items[0].classList.contains('has-[[data-slot=tab]:focus-visible]:inset-ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+    expect(items[0].classList.contains('has-[[data-slot=tab]:disabled]:opacity-disabled')).toBe(true);
+    expect(items[0].classList.contains('has-[[data-slot=tab][aria-disabled=true]]:opacity-disabled')).toBe(true);
+  });
+
+  // Each state owns every property it writes, so the absent lists are what catch
+  // a stale class surviving a state change.
+  it.each([
+    {
+      orientation: 'horizontal',
+      floating: false,
+      present: ['border-0', 'px-2', 'h-full', 'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.125rem_var(--primary)]', 'hover:inset-shadow-[0_-.188rem_var(--border)]'],
+      absent: ['border', 'rounded-md', 'px-3', 'w-full', 'h-8', 'has-[[data-slot=tab][aria-selected=true]]:bg-background', 'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[-.125rem_0_var(--primary)]'],
+    },
+    {
+      orientation: 'horizontal',
+      floating: true,
+      present: ['border', 'border-transparent', 'rounded-md', 'px-2', 'h-full', 'has-[[data-slot=tab][aria-selected=true]]:bg-background', 'has-[[data-slot=tab][aria-selected=true]]:border-border'],
+      absent: ['border-0', 'px-3', 'w-full', 'h-8', 'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.125rem_var(--primary)]'],
+    },
+    {
+      orientation: 'vertical',
+      floating: false,
+      present: ['border-0', 'px-3', 'w-full', 'h-8', 'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[-.125rem_0_var(--primary)]', 'hover:inset-shadow-[-.188rem_0_var(--border)]'],
+      absent: ['border', 'rounded-md', 'px-2', 'h-full', 'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.125rem_var(--primary)]'],
+    },
+    {
+      orientation: 'vertical',
+      floating: true,
+      present: ['border', 'border-transparent', 'rounded-md', 'px-2', 'w-full', 'h-8', 'has-[[data-slot=tab][aria-selected=true]]:bg-background'],
+      absent: ['border-0', 'px-3', 'h-full', 'has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[-.125rem_0_var(--primary)]'],
+    },
+  ])('applies the $orientation floating=$floating class set', ({ orientation, floating, present, absent }) => {
+    const { items } = createTabs({ orientation, floating, count: 1 });
+    for (const cls of present) expect(items[0].classList.contains(cls), cls).toBe(true);
+    for (const cls of absent) expect(items[0].classList.contains(cls), cls).toBe(false);
+  });
+
+  it('swaps its class set when the orientation changes at runtime', async () => {
+    const { root, items } = createTabs({ orientation: 'horizontal', floating: false, count: 1 });
+    root.setAttribute('data-orientation', 'vertical');
+    await flush();
+    expect(items[0].classList.contains('px-3')).toBe(true);
+    expect(items[0].classList.contains('px-2')).toBe(false);
+    expect(items[0].classList.contains('h-8')).toBe(true);
+    expect(items[0].classList.contains('h-full')).toBe(false);
+    expect(items[0].classList.contains('has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[-.125rem_0_var(--primary)]')).toBe(true);
+    expect(items[0].classList.contains('has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.125rem_var(--primary)]')).toBe(false);
+  });
+
+  it('swaps its class set when data-floating changes at runtime', async () => {
+    const { bar, items } = createTabs({ orientation: 'horizontal', floating: false, count: 1 });
+    bar.setAttribute('data-floating', 'true');
+    await flush();
+    expect(items[0].classList.contains('rounded-md')).toBe(true);
+    expect(items[0].classList.contains('border')).toBe(true);
+    expect(items[0].classList.contains('border-0')).toBe(false);
+    expect(items[0].classList.contains('has-[[data-slot=tab][aria-selected=true]]:inset-shadow-[0_-.125rem_var(--primary)]')).toBe(false);
+  });
+
+  it('reads as docked with no tab bar in the chain', () => {
+    expect(createTabs({ count: 1 }).items[0].className).toBe(createTabs({ floating: false, count: 1 }).items[0].className);
+  });
+
+  it('forwards a click on its own padding to the tab', () => {
+    const { items, tabs } = createTabs({ count: 1 });
+    const select = vi.fn();
+    tabs[0].addEventListener('click', select);
+    items[0].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(select).toHaveBeenCalledOnce();
+  });
+
+  it('does not forward a click that came from a child', () => {
+    const { items, tabs } = createTabs({ count: 1, action: true });
+    const select = vi.fn();
+    tabs[0].addEventListener('click', select);
+    // A click bubbling up from an action targets the action, not the item, so
+    // the forward must not double it into a tab activation.
+    items[0].querySelector('[data-slot=tab-action]').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(select).not.toHaveBeenCalled();
+  });
+
+  it('forwards nothing when it has no tab', () => {
+    const { list } = createTabs({ count: 0 });
+    const { item } = mountTabItemInto(list);
+    expect(() => item.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))).not.toThrow();
+  });
+
+  it('removes its click listener on cleanup', () => {
+    const { items, itemMounts } = createTabs({ count: 1 });
+    const removeEventListener = vi.spyOn(items[0], 'removeEventListener');
+    itemMounts[0].ctx.cleanup.mock.calls[0][0]();
+    expect(removeEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+  });
+});
+
 describe('h-tab', () => {
   it('applies base classes and attributes', () => {
     const { tabs } = createTabs({ count: 1 });
     const el = tabs[0];
     expect(el.classList.contains('cursor-pointer')).toBe(true);
     expect(el.classList.contains('inline-flex')).toBe(true);
-    expect(el.classList.contains('text-sm')).toBe(true);
-    expect(el.classList.contains('font-medium')).toBe(true);
+    expect(el.classList.contains('bg-transparent')).toBe(true);
+    expect(el.classList.contains('flex-1')).toBe(true);
+    expect(el.classList.contains('self-stretch')).toBe(true);
     expect(el.getAttribute('role')).toBe('tab');
     expect(el.getAttribute('data-slot')).toBe('tab');
   });
 
+  // The item owns the surface, the colours and the focus ring, so the tab
+  // carrying any of them would double them up or fight the item's state maps.
+  it('takes none of the item surface or state classes', () => {
+    const { tabs } = createTabs({ count: 1 });
+    for (const cls of ['px-2', 'px-3', 'h-full', 'py-1', 'text-muted-foreground', 'focus-visible:inset-ring-ring/50', 'disabled:opacity-disabled', 'aria-disabled:opacity-disabled', 'transition-[color,box-shadow]']) {
+      expect(tabs[0].classList.contains(cls), cls).toBe(false);
+    }
+  });
+
   it('throws if no id attribute', () => {
     const { list } = createTabs({ count: 0 });
+    const { item } = mountTabItemInto(list);
     const el = document.createElement('button');
     el.setAttribute('aria-controls', 'panel-1');
-    list.appendChild(el);
+    item.appendChild(el);
     expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow();
   });
 
   it('throws if no aria-controls attribute', () => {
     const { list } = createTabs({ count: 0 });
+    const { item } = mountTabItemInto(list);
     const el = document.createElement('button');
     el.setAttribute('id', 'tab-1');
-    list.appendChild(el);
+    item.appendChild(el);
     expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow();
   });
 
@@ -312,91 +484,49 @@ describe('h-tab', () => {
     expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow(/x-h-tab-list/);
   });
 
+  it('throws without an x-h-tab-item ancestor', () => {
+    const { list } = createTabs({ count: 0 });
+    const el = document.createElement('button');
+    el.setAttribute('id', 'tab-1');
+    el.setAttribute('aria-controls', 'panel-1');
+    list.appendChild(el);
+    expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow(/x-h-tab-item/);
+  });
+
+  it('throws when its item already contains a tab', () => {
+    const { items } = createTabs({ count: 1 });
+    const el = document.createElement('button');
+    el.setAttribute('id', 'second');
+    el.setAttribute('aria-controls', 'second-panel');
+    items[0].appendChild(el);
+    expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow(/only contain one tab/);
+  });
+
+  it('releases its item on cleanup so a replacement tab can mount', () => {
+    const { items, tabMounts } = createTabs({ count: 1 });
+    tabMounts[0].ctx.cleanup.mock.calls[0][0]();
+    expect(items[0]._h_tab_item.tab).toBe(null);
+    const el = document.createElement('button');
+    el.setAttribute('id', 'replacement');
+    el.setAttribute('aria-controls', 'replacement-panel');
+    items[0].appendChild(el);
+    expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).not.toThrow();
+  });
+
   it('defaults aria-selected to false', () => {
     const { tabs } = createTabs({ count: 2, selected: 0 });
     expect(tabs[1].getAttribute('aria-selected')).toBe('false');
   });
 
-  // Each state owns every property it writes, so the absent lists are what catch
-  // a stale class surviving a state change.
-  it.each([
-    {
-      orientation: 'horizontal',
-      floating: false,
-      present: ['border-0', 'px-2', 'h-full', 'aria-selected:inset-shadow-[0_-.125rem_var(--primary)]', 'hover:inset-shadow-[0_-.188rem_var(--border)]'],
-      absent: ['border', 'rounded-md', 'px-3', 'w-full', 'h-8', 'aria-selected:bg-background', 'aria-selected:inset-shadow-[-.125rem_0_var(--primary)]'],
-    },
-    {
-      orientation: 'horizontal',
-      floating: true,
-      present: ['border', 'border-transparent', 'rounded-md', 'px-2', 'h-full', 'aria-selected:bg-background', 'aria-selected:border-border'],
-      absent: ['border-0', 'px-3', 'w-full', 'h-8', 'aria-selected:inset-shadow-[0_-.125rem_var(--primary)]'],
-    },
-    {
-      orientation: 'vertical',
-      floating: false,
-      present: ['border-0', 'px-3', 'w-full', 'h-8', 'aria-selected:inset-shadow-[-.125rem_0_var(--primary)]', 'hover:inset-shadow-[-.188rem_0_var(--border)]'],
-      absent: ['border', 'rounded-md', 'px-2', 'h-full', 'aria-selected:inset-shadow-[0_-.125rem_var(--primary)]'],
-    },
-    {
-      orientation: 'vertical',
-      floating: true,
-      present: ['border', 'border-transparent', 'rounded-md', 'px-2', 'w-full', 'h-8', 'aria-selected:bg-background'],
-      absent: ['border-0', 'px-3', 'h-full', 'aria-selected:inset-shadow-[-.125rem_0_var(--primary)]'],
-    },
-  ])('applies the $orientation floating=$floating class set', ({ orientation, floating, present, absent }) => {
-    const { tabs } = createTabs({ orientation, floating, count: 1 });
-    for (const cls of present) expect(tabs[0].classList.contains(cls), cls).toBe(true);
-    for (const cls of absent) expect(tabs[0].classList.contains(cls), cls).toBe(false);
-  });
-
-  it('swaps its class set when the orientation changes at runtime', async () => {
-    const { root, tabs } = createTabs({ orientation: 'horizontal', floating: false, count: 1 });
-    root.setAttribute('data-orientation', 'vertical');
-    await flush();
-    expect(tabs[0].classList.contains('px-3')).toBe(true);
-    expect(tabs[0].classList.contains('px-2')).toBe(false);
-    expect(tabs[0].classList.contains('h-8')).toBe(true);
-    expect(tabs[0].classList.contains('h-full')).toBe(false);
-    expect(tabs[0].classList.contains('aria-selected:inset-shadow-[-.125rem_0_var(--primary)]')).toBe(true);
-    expect(tabs[0].classList.contains('aria-selected:inset-shadow-[0_-.125rem_var(--primary)]')).toBe(false);
-  });
-
-  it('swaps its class set when data-floating changes at runtime', async () => {
-    const { bar, tabs } = createTabs({ orientation: 'horizontal', floating: false, count: 1 });
-    bar.setAttribute('data-floating', 'true');
-    await flush();
-    expect(tabs[0].classList.contains('rounded-md')).toBe(true);
-    expect(tabs[0].classList.contains('border')).toBe(true);
-    expect(tabs[0].classList.contains('border-0')).toBe(false);
-    expect(tabs[0].classList.contains('aria-selected:inset-shadow-[0_-.125rem_var(--primary)]')).toBe(false);
-  });
-
-  it('reads as docked with no tab bar in the chain', () => {
-    expect(createTabs({ count: 1 }).tabs[0].className).toBe(createTabs({ floating: false, count: 1 }).tabs[0].className);
-  });
-
-  it('throws without an x-h-tabs ancestor', () => {
-    // A tab list attaches _h_tab_list without needing a tabs root, so a tab can
-    // find its list and still be outside the root.
-    const list = document.createElement('div');
-    document.body.appendChild(list);
-    list._h_tab_list = { register() {}, unregister() {}, selectionChanged() {} };
-    const el = document.createElement('button');
-    el.setAttribute('id', 'tab-1');
-    el.setAttribute('aria-controls', 'panel-1');
-    list.appendChild(el);
-    expect(() => mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' })).toThrow(/x-h-tabs/);
-  });
-
   it('leaves an explicit aria-selected value alone', () => {
     const { list } = createTabs({ count: 0 });
     for (const value of ['true', 'false']) {
+      const { item } = mountTabItemInto(list);
       const el = document.createElement('button');
       el.setAttribute('id', `tab-${value}`);
       el.setAttribute('aria-controls', `panel-${value}`);
       el.setAttribute('aria-selected', value);
-      list.appendChild(el);
+      item.appendChild(el);
       mountDirective(tabsPlugin, 'h-tab', el, { original: 'x-h-tab' });
       expect(el.getAttribute('aria-selected')).toBe(value);
     }
@@ -418,11 +548,12 @@ describe('h-tab roving tab stop', () => {
     const { list } = createTabs({ count: 0 });
     const tabs = [];
     for (let i = 0; i < 3; i++) {
+      const { item } = mountTabItemInto(list);
       const tab = document.createElement('button');
       tab.setAttribute('id', `tab-${i}`);
       tab.setAttribute('aria-controls', `panel-${i}`);
       if (i > 0) tab.setAttribute('aria-selected', 'true');
-      list.appendChild(tab);
+      item.appendChild(tab);
       mountDirective(tabsPlugin, 'h-tab', tab, { original: 'x-h-tab' });
       tabs.push(tab);
     }
@@ -470,12 +601,12 @@ describe('h-tab roving tab stop', () => {
 
 describe('h-tab registration', () => {
   it('navigates in DOM order, not mount order', () => {
-    const { list, tabs } = createTabs({ count: 2, selected: 0 });
-    // Mounted last, but inserted between the two existing tabs. In mount order it
-    // would come after tabs[1]; in DOM order it sits between them, which is what
-    // the arrows must follow.
-    const { tab: middle } = mountTabInto(list, 'inserted-middle', { before: tabs[1] });
-    expect([...list.children]).toEqual([tabs[0], middle, tabs[1]]);
+    const { list, items, tabs } = createTabs({ count: 2, selected: 0 });
+    // Mounted last, but inserted between the two existing items. In mount order
+    // it would come after tabs[1]; in DOM order it sits between them, which is
+    // what the arrows must follow.
+    const { tab: middle, item: middleItem } = mountTabInto(list, 'inserted-middle', { before: items[1] });
+    expect([...list.children]).toEqual([items[0], middleItem, items[1]]);
     tabs[0].focus();
     keydown(tabs[0], 'ArrowRight');
     expect(document.activeElement).toBe(middle);
@@ -816,15 +947,17 @@ describe('h-tab-list overflow fade', () => {
     expect(list.classList.contains('fade-r-8')).toBe(false);
   });
 
-  it('observes the list and every tab for size changes', () => {
-    const { list, tabs, tabMounts } = createTabs();
+  // The item is observed rather than the transparent tab button, since an action
+  // mounted later by an x-if resizes the item, not the button.
+  it('observes the list and every tab item for size changes', () => {
+    const { list, items, tabMounts } = createTabs();
     expect(observers).toHaveLength(1);
     expect(observers[0].observe).toHaveBeenCalledWith(list);
-    for (const tab of tabs) {
-      expect(observers[0].observe).toHaveBeenCalledWith(tab);
+    for (const item of items) {
+      expect(observers[0].observe).toHaveBeenCalledWith(item);
     }
     tabMounts[0].ctx.cleanup.mock.calls[0][0]();
-    expect(observers[0].unobserve).toHaveBeenCalledWith(tabs[0]);
+    expect(observers[0].unobserve).toHaveBeenCalledWith(items[0]);
   });
 
   it('updates the fades when the resize observer fires', () => {
@@ -846,11 +979,13 @@ describe('h-tab-list overflow fade', () => {
   });
 });
 
+// The reveal reads the item's box (the visual tab, actions included), so the
+// rects are stubbed on the items rather than on the transparent tab buttons.
 describe('h-tab-list selected tab reveal', () => {
   it('scrolls a newly selected tab into view at the nearest end edge', async () => {
-    const { list, tabs } = createTabs({ count: 4, selected: 0 });
+    const { list, items, tabs } = createTabs({ count: 4, selected: 0 });
     setRect(list, { left: 0, right: 200 });
-    setRect(tabs[2], { left: 250, right: 310 });
+    setRect(items[2], { left: 250, right: 310 });
     tabs[0].setAttribute('aria-selected', 'false');
     tabs[2].setAttribute('aria-selected', 'true');
     await flush();
@@ -858,10 +993,10 @@ describe('h-tab-list selected tab reveal', () => {
   });
 
   it('scrolls a newly selected tab into view at the nearest start edge', async () => {
-    const { list, tabs } = createTabs({ count: 4, selected: 3 });
+    const { list, items, tabs } = createTabs({ count: 4, selected: 3 });
     list.scrollLeft = 100;
     setRect(list, { left: 0, right: 200 });
-    setRect(tabs[1], { left: -50, right: 10 });
+    setRect(items[1], { left: -50, right: 10 });
     tabs[3].setAttribute('aria-selected', 'false');
     tabs[1].setAttribute('aria-selected', 'true');
     await flush();
@@ -869,10 +1004,10 @@ describe('h-tab-list selected tab reveal', () => {
   });
 
   it('does not scroll when the selected tab is already fully visible', async () => {
-    const { list, tabs } = createTabs({ count: 3, selected: 0 });
+    const { list, items, tabs } = createTabs({ count: 3, selected: 0 });
     list.scrollLeft = 40;
     setRect(list, { left: 0, right: 200 });
-    setRect(tabs[1], { left: 20, right: 80 });
+    setRect(items[1], { left: 20, right: 80 });
     tabs[0].setAttribute('aria-selected', 'false');
     tabs[1].setAttribute('aria-selected', 'true');
     await flush();
@@ -880,9 +1015,9 @@ describe('h-tab-list selected tab reveal', () => {
   });
 
   it('does not move the scroll when a disabled toggle re-fires selectionChanged', async () => {
-    const { list, tabs } = createTabs({ count: 3, selected: 0 });
+    const { list, items, tabs } = createTabs({ count: 3, selected: 0 });
     setRect(list, { left: 0, right: 200 });
-    setRect(tabs[0], { left: 250, right: 310 });
+    setRect(items[0], { left: 250, right: 310 });
     list.scrollLeft = 40;
     tabs[1].disabled = true;
     await flush();
@@ -892,20 +1027,21 @@ describe('h-tab-list selected tab reveal', () => {
   it('reveals a tab that mounts already selected', () => {
     const { list } = createTabs({ count: 0 });
     setRect(list, { left: 0, right: 200 });
+    const { item } = mountTabItemInto(list);
+    setRect(item, { left: 250, right: 310 });
     const tab = document.createElement('button');
     tab.setAttribute('id', 'late');
     tab.setAttribute('aria-controls', 'late-panel');
     tab.setAttribute('aria-selected', 'true');
-    setRect(tab, { left: 250, right: 310 });
-    list.appendChild(tab);
+    item.appendChild(tab);
     mountDirective(tabsPlugin, 'h-tab', tab, { original: 'x-h-tab' });
     expect(list.scrollLeft).toBe(110);
   });
 
   it('reveals along the vertical axis when vertical', async () => {
-    const { list, tabs } = createTabs({ orientation: 'vertical', count: 4, selected: 0 });
+    const { list, items, tabs } = createTabs({ orientation: 'vertical', count: 4, selected: 0 });
     setRect(list, { top: 0, bottom: 100 });
-    setRect(tabs[2], { top: 150, bottom: 180 });
+    setRect(items[2], { top: 150, bottom: 180 });
     tabs[0].setAttribute('aria-selected', 'false');
     tabs[2].setAttribute('aria-selected', 'true');
     await flush();
@@ -913,9 +1049,9 @@ describe('h-tab-list selected tab reveal', () => {
   });
 
   it('does nothing on deselection and reveals the same tab when it is selected again', async () => {
-    const { list, tabs } = createTabs({ count: 3, selected: 1 });
+    const { list, items, tabs } = createTabs({ count: 3, selected: 1 });
     setRect(list, { left: 0, right: 200 });
-    setRect(tabs[1], { left: 250, right: 310 });
+    setRect(items[1], { left: 250, right: 310 });
     list.scrollLeft = 40;
     tabs[1].setAttribute('aria-selected', 'false');
     await flush();
@@ -938,11 +1074,11 @@ describe('h-tab-list selected tab reveal', () => {
       }
     };
     try {
-      const { list, tabs } = createTabs({ count: 3, selected: 2 });
+      const { list, items } = createTabs({ count: 3, selected: 2 });
       // Every rect was zero at mount, so nothing scrolled.
       expect(list.scrollLeft).toBe(0);
       setRect(list, { left: 0, right: 200 });
-      setRect(tabs[2], { left: 250, right: 310 });
+      setRect(items[2], { left: 250, right: 310 });
       observers[0].callback();
       expect(list.scrollLeft).toBe(110);
       // Settled, so a later resize leaves the user's scroll position alone.
@@ -960,35 +1096,71 @@ describe('h-tab-action', () => {
     const { actions } = createTabs({ count: 1, action: true });
     const el = actions[0];
     expect(el.classList.contains('cursor-pointer')).toBe(true);
-    expect(el.classList.contains('ml-auto')).toBe(true);
+    expect(el.classList.contains('p-0.5')).toBe(true);
+    expect(el.classList.contains('shrink-0')).toBe(true);
     expect(el.classList.contains('focus-outline')).toBe(true);
-    expect(el.getAttribute('role')).toBe('button');
+    expect(el.classList.contains('aria-expanded:bg-secondary')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('tab-action');
   });
 
-  it('throws when not a span element', () => {
-    const { tabs } = createTabs({ count: 1 });
-    const el = document.createElement('button');
-    tabs[0].appendChild(el);
-    expect(() => mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' })).toThrow(/span/);
-  });
-
-  it('throws without an x-h-tab ancestor', () => {
+  it('throws when not a button element', () => {
+    const { items } = createTabs({ count: 1 });
     const el = document.createElement('span');
+    items[0].appendChild(el);
+    expect(() => mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' })).toThrow(/button element/);
+  });
+
+  it('throws without an x-h-tab-item ancestor', () => {
+    const el = document.createElement('button');
     document.body.appendChild(el);
-    expect(() => mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' })).toThrow(/x-h-tab/);
+    expect(() => mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' })).toThrow(/x-h-tab-item/);
   });
 
-  it('throws when a tab already has an action', () => {
-    const { tabs } = createTabs({ count: 1, action: true });
-    expect(() => mountActionInto(tabs[0])).toThrow(/only have one action/);
+  // The old span action carried role="button" and hand-rolled activation. A
+  // native button needs neither, so writing them again would be a regression.
+  it('writes no role of its own', () => {
+    const { actions } = createTabs({ count: 1, action: true });
+    expect(actions[0].hasAttribute('role')).toBe(false);
   });
 
-  it('releases the slot on cleanup so a replacement can mount', () => {
-    const { tabs, actionMounts } = createTabs({ count: 1, action: true });
-    actionMounts[0].ctx.cleanup.mock.calls[0][0]();
-    expect(tabs[0]._h_tab.action).toBe(null);
-    expect(() => mountActionInto(tabs[0])).not.toThrow();
+  it('adds no listeners, since a sibling button needs no propagation stop', () => {
+    const { items } = createTabs({ count: 1 });
+    const el = document.createElement('button');
+    el.setAttribute('aria-label', 'close tab');
+    items[0].appendChild(el);
+    const addEventListener = vi.spyOn(el, 'addEventListener');
+    mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' });
+    expect(addEventListener).not.toHaveBeenCalled();
+  });
+
+  it('defaults type to button and keeps an author-set type', () => {
+    const { actions } = createTabs({ count: 1, action: true });
+    expect(actions[0].getAttribute('type')).toBe('button');
+
+    const { items } = createTabs({ count: 1 });
+    const el = document.createElement('button');
+    el.setAttribute('aria-label', 'close tab');
+    el.setAttribute('type', 'submit');
+    items[0].appendChild(el);
+    mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' });
+    expect(el.getAttribute('type')).toBe('submit');
+  });
+
+  it('does not activate the tab with its click, being a sibling', () => {
+    const { tabs, actions } = createTabs({ count: 1, action: true });
+    const onTabClick = vi.fn();
+    tabs[0].addEventListener('click', onTabClick);
+    actions[0].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(onTabClick).not.toHaveBeenCalled();
+  });
+
+  it('allows several actions on one tab, all sharing the stop', () => {
+    const { items, tabs } = createTabs({ count: 1 });
+    const first = mountActionInto(items[0]).action;
+    const second = mountActionInto(items[0], { label: 'open menu' }).action;
+    expect(tabs[0].getAttribute('tabindex')).toBe('0');
+    expect(first.getAttribute('tabindex')).toBe('0');
+    expect(second.getAttribute('tabindex')).toBe('0');
   });
 
   it('shares the tab stop with its tab', () => {
@@ -996,13 +1168,47 @@ describe('h-tab-action', () => {
     expect(actions.map((a) => a.getAttribute('tabindex'))).toEqual(['-1', '0', '-1']);
   });
 
-  // The tab mounts first and already holds the stop by the time its action mounts.
-  // With more than one tab a later mount re-syncs the whole list and hides this,
-  // so it takes a single-tab list to catch an action that assumes -1.
+  // The tab mounts first and already holds the stop by the time its action
+  // mounts, which is also the x-if case: an action inserted long after the
+  // stop settled, with no register() to re-sync the list.
   it('adopts the stop its tab already holds', () => {
     const { tabs, actions } = createTabs({ count: 1, action: true });
     expect(tabs[0].getAttribute('tabindex')).toBe('0');
     expect(actions[0].getAttribute('tabindex')).toBe('0');
+  });
+
+  it('adopts the -1 of a tab not holding the stop', () => {
+    const { items } = createTabs({ count: 2, selected: 0 });
+    const { action } = mountActionInto(items[1]);
+    expect(action.getAttribute('tabindex')).toBe('-1');
+  });
+
+  // An x-for can put the action before the tab. It mounts into an empty item,
+  // and the tab's registration is what writes the stop it could not copy.
+  it('receives the stop when it mounts before its tab', () => {
+    const { list } = createTabs({ count: 0 });
+    const { item } = mountTabItemInto(list);
+    const { action } = mountActionInto(item);
+    expect(action.getAttribute('tabindex')).toBe('-1');
+    const tab = document.createElement('button');
+    tab.setAttribute('id', 'leading');
+    tab.setAttribute('aria-controls', 'leading-panel');
+    tab.setAttribute('aria-selected', 'true');
+    item.appendChild(tab);
+    mountDirective(tabsPlugin, 'h-tab', tab, { original: 'x-h-tab' });
+    expect(action.getAttribute('tabindex')).toBe('0');
+  });
+
+  it('leaves the stop sync on cleanup, so a removed action is not retouched', async () => {
+    const { items, tabs, actions, actionMounts } = createTabs({ count: 2, selected: 0, action: true });
+    actionMounts[0].ctx.cleanup.mock.calls[0][0]();
+    expect(items[0]._h_tab_item.actions).not.toContain(actions[0]);
+    actions[0].setAttribute('tabindex', 'stale');
+    tabs[0].setAttribute('aria-selected', 'false');
+    tabs[1].setAttribute('aria-selected', 'true');
+    await flush();
+    expect(actions[0].getAttribute('tabindex')).toBe('stale');
+    expect(actions[1].getAttribute('tabindex')).toBe('0');
   });
 
   it('follows the tab stop when the selection changes', async () => {
@@ -1022,18 +1228,18 @@ describe('h-tab-action', () => {
 
   it('errors when it has no accessible name', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const { tabs } = createTabs({ count: 1 });
-    mountActionInto(tabs[0], { label: null });
+    const { items } = createTabs({ count: 1 });
+    mountActionInto(items[0], { label: null });
     expect(error).toHaveBeenCalled();
     error.mockRestore();
   });
 
   it('accepts aria-labelledby as the accessible name', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const { tabs } = createTabs({ count: 1 });
-    const el = document.createElement('span');
+    const { items } = createTabs({ count: 1 });
+    const el = document.createElement('button');
     el.setAttribute('aria-labelledby', 'somewhere');
-    tabs[0].appendChild(el);
+    items[0].appendChild(el);
     mountDirective(tabsPlugin, 'h-tab-action', el, { original: 'x-h-tab-action' });
     expect(error).not.toHaveBeenCalled();
     error.mockRestore();
@@ -1041,8 +1247,8 @@ describe('h-tab-action', () => {
 
   it('never writes an aria-label of its own', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const { tabs } = createTabs({ count: 1 });
-    const { action } = mountActionInto(tabs[0], { label: null });
+    const { items } = createTabs({ count: 1 });
+    const { action } = mountActionInto(items[0], { label: null });
     expect(action.hasAttribute('aria-label')).toBe(false);
     error.mockRestore();
   });
@@ -1050,12 +1256,12 @@ describe('h-tab-action', () => {
   // The content is the author's: the docs already write their own close icon, so
   // injecting one would double it.
   it('appends nothing to its content', () => {
-    const { tabs } = createTabs({ count: 1 });
-    const empty = mountActionInto(tabs[0]).action;
+    const { items } = createTabs({ count: 1 });
+    const empty = mountActionInto(items[0]).action;
     expect(empty.childNodes.length).toBe(0);
 
-    const { tabs: more } = createTabs({ count: 1 });
-    const withIcon = document.createElement('span');
+    const { items: more } = createTabs({ count: 1 });
+    const withIcon = document.createElement('button');
     withIcon.setAttribute('aria-label', 'close tab');
     withIcon.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
     more[0].appendChild(withIcon);
@@ -1063,45 +1269,17 @@ describe('h-tab-action', () => {
     expect(withIcon.children.length).toBe(1);
   });
 
-  it('stops its click from reaching the tab', () => {
-    const { tabs, actions } = createTabs({ count: 1, action: true });
-    const onTabClick = vi.fn();
-    tabs[0].addEventListener('click', onTabClick);
-    actions[0].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-    expect(onTabClick).not.toHaveBeenCalled();
-  });
-
-  it('activates on Enter and Space', () => {
-    const { actions } = createTabs({ count: 1, action: true });
-    const onClick = vi.fn();
-    actions[0].addEventListener('click', onClick);
-    for (const key of ['Enter', ' ']) {
-      expect(keydown(actions[0], key).defaultPrevented, key).toBe(true);
-    }
-    expect(onClick).toHaveBeenCalledTimes(2);
-  });
-
-  it('ignores other keys', () => {
-    const { actions } = createTabs({ count: 1, action: true });
-    const onClick = vi.fn();
-    actions[0].addEventListener('click', onClick);
-    keydown(actions[0], 'ArrowRight');
-    expect(onClick).not.toHaveBeenCalled();
-  });
-
-  it('removes its listeners on cleanup', () => {
-    const { actions, actionMounts } = createTabs({ count: 1, action: true });
-    const removeEventListener = vi.spyOn(actions[0], 'removeEventListener');
-    actionMounts[0].ctx.cleanup.mock.calls[0][0]();
-    expect(removeEventListener).toHaveBeenCalledWith('click', expect.any(Function));
-    expect(removeEventListener).toHaveBeenCalledWith('keydown', expect.any(Function));
-  });
-
   it('leaves the tab list arrow keys working from a focused action', () => {
     const { tabs, actions } = createTabs({ count: 3, selected: 0, action: true });
     actions[0].focus();
     keydown(actions[0], 'ArrowRight');
     expect(document.activeElement).toBe(tabs[1]);
+  });
+
+  it('re-syncs the stop to its tab on focusin', () => {
+    const { tabs, actions } = createTabs({ count: 3, selected: 0, action: true });
+    actions[2].dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+    expect(tabIndexes(tabs)).toEqual(['-1', '-1', '0']);
   });
 });
 

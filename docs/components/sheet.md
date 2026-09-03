@@ -46,20 +46,20 @@ x-h-sheet-overlay
             <div x-h-sidebar-group-content>
               <ul x-h-sidebar-menu>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                  <button x-h-sidebar-menu-nav data-active="false" @click="isOpen = false">
                     <svg x-h-lucide role="presentation" data-lucide="house"></svg>
                     <span>Home</span>
                     <span x-h-sidebar-menu-badge>11</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                  <button x-h-sidebar-menu-nav data-active="false" @click="isOpen = false">
                     <svg x-h-lucide role="presentation" data-lucide="file-text"></svg>
                     <span>Documents</span>
                   </button>
                 </li>
                 <li x-h-sidebar-menu-item>
-                  <button x-h-sidebar-menu-button data-active="false" @click="isOpen = false">
+                  <button x-h-sidebar-menu-nav data-active="false" @click="isOpen = false">
                     <svg x-h-lucide role="presentation" data-lucide="blocks"></svg>
                     <span>Extensions</span>
                   </button>

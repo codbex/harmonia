@@ -1,0 +1,82 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <h1 x-h-text.h1>Getting started</h1>
+  <p x-h-text.lead>Install the package, create a client, and read your first cached value. The whole setup is four lines, and nothing else has to change about how you fetch.</p>
+
+  <div x-h-alert data-variant="warning">
+    <svg x-h-lucide role="presentation" data-lucide="triangle-alert"></svg>
+    <div x-h-alert-title>Prerequisites</div>
+    <div x-h-alert-description>Quartz needs fetch and AbortController. Every browser released since 2019 has both, and on the server it needs Node 18 or newer.</div>
+  </div>
+
+  <h2 id="installation" x-h-text.h2>Installation</h2>
+  <p x-h-text>Quartz ships as an ES module with no build step and no peer dependencies.</p>
+  <p
+    x-h-text.code
+    x-text="`npm install @quartz/core
+
+# or
+pnpm add @quartz/core
+yarn add @quartz/core`"
+  ></p>
+
+  <h2 id="your-first-query" x-h-text.h2>Your first query</h2>
+  <p x-h-text>
+    Create one client for the application and keep it in a module. The client owns the cache, so everything that shares a client shares its entries. The second argument to <code x-h-text.code-inline>client.query()</code> is a plain function
+    that returns a promise, which means any HTTP library works.
+  </p>
+  <p
+    x-h-text.code
+    x-text="`import { quartz } from '@quartz/core'
+
+export const client = quartz({
+  ttl: 30000,
+  retry: 2,
+})
+
+const projects = client.query('projects', () =>
+  fetch('/api/projects').then((r) => r.json())
+)
+
+projects.subscribe(({ status, data, error }) => {
+  if (status === 'error') return showError(error)
+  renderProjects(data)
+})`"
+  ></p>
+  <p x-h-text>
+    The subscriber runs immediately with whatever the cache holds, then again for every state change. On a cold cache that means one call with <code x-h-text.code-inline>status: 'loading'</code> followed by one with the data. On a warm
+    cache the first call already has the data.
+  </p>
+
+  <h2 id="devtools" x-h-text.h2>Devtools</h2>
+  <p x-h-text>The devtools panel ships in the same package and is a single import. It lists every key in the cache with its status, its age, and whether a request is in flight, and it can force a refetch from the panel.</p>
+  <p
+    x-h-text.code
+    x-text="`import { mountDevtools } from '@quartz/core/devtools'
+
+if (import.meta.env.DEV) {
+  mountDevtools(client)
+}`"
+  ></p>
+  <p x-h-text.muted>The panel is tree shaken out of production builds as long as the import stays behind a development guard.</p>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

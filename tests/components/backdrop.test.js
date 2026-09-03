@@ -59,13 +59,19 @@ describe('h-backdrop', () => {
 
 describe('h-backdrop open and close', () => {
   let el;
+  let mounted;
 
   beforeEach(() => {
+    mounted = null;
     el = document.createElement('div');
     document.body.appendChild(el);
   });
 
   afterEach(() => {
+    // An open backdrop holds a document-level listener, so a test that ends
+    // with one open has to tear it down rather than just drop the element.
+    mounted?.ctx.cleanup.mock.calls.forEach(([fn]) => fn());
+    document.body.innerHTML = '';
     vi.useRealTimers();
   });
 
@@ -73,7 +79,7 @@ describe('h-backdrop open and close', () => {
   const flush = () => new Promise((r) => setTimeout(r, 0));
 
   it('stops intercepting pointer events the moment the close starts', async () => {
-    mountDirective(backdropPlugin, 'h-backdrop', el);
+    mounted = mountDirective(backdropPlugin, 'h-backdrop', el);
     el.setAttribute('data-open', 'true');
     await flush();
     expect(el.classList.contains('pointer-events-none')).toBe(false);
@@ -87,7 +93,7 @@ describe('h-backdrop open and close', () => {
 
   it('hides via the fallback timer when transitionend never fires', async () => {
     vi.useFakeTimers();
-    mountDirective(backdropPlugin, 'h-backdrop', el);
+    mounted = mountDirective(backdropPlugin, 'h-backdrop', el);
     el.setAttribute('data-open', 'true');
     await vi.advanceTimersByTimeAsync(0);
     el.setAttribute('data-open', 'false');
@@ -101,7 +107,8 @@ describe('h-backdrop open and close', () => {
   // Alpine's nextTick used to pass the old opacity-0 class guard and wedge the
   // open backdrop hidden.
   it('ignores a late transitionend from an abandoned close after reopening', async () => {
-    const { alpine } = mountDirective(backdropPlugin, 'h-backdrop', el);
+    mounted = mountDirective(backdropPlugin, 'h-backdrop', el);
+    const { alpine } = mounted;
     el.setAttribute('data-open', 'true');
     await flush();
     el.setAttribute('data-open', 'false');
@@ -114,6 +121,121 @@ describe('h-backdrop open and close', () => {
     expect(el.classList.contains('hidden')).toBe(false);
     pending.forEach((fn) => fn());
     expect(el.classList.contains('opacity-0')).toBe(false);
+  });
+});
+
+describe('h-backdrop focus containment', () => {
+  let opener;
+  let el;
+  let first;
+  let last;
+  let mounted;
+
+  const flush = () => new Promise((r) => setTimeout(r, 0));
+  const tab = (shiftKey = false) => {
+    const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey, bubbles: true, cancelable: true });
+    (document.activeElement ?? el).dispatchEvent(event);
+    return event;
+  };
+
+  beforeEach(() => {
+    mounted = null;
+    opener = document.createElement('button');
+    document.body.appendChild(opener);
+    el = document.createElement('div');
+    document.body.appendChild(el);
+    first = document.createElement('input');
+    last = document.createElement('button');
+    el.append(first, last);
+  });
+
+  afterEach(() => {
+    // The trap listens on the document, so an open backdrop has to be torn down
+    // rather than just dropped, or it keeps trapping into the next test.
+    mounted?.ctx.cleanup.mock.calls.forEach(([fn]) => fn());
+    document.body.innerHTML = '';
+  });
+
+  async function open() {
+    mounted = mountDirective(backdropPlugin, 'h-backdrop', el);
+    opener.focus();
+    el.setAttribute('data-open', 'true');
+    await flush();
+    return mounted;
+  }
+
+  it('wraps forward from the last focusable element to the first', async () => {
+    await open();
+    last.focus();
+    expect(tab().defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(first);
+  });
+
+  it('wraps backward from the first focusable element to the last', async () => {
+    await open();
+    first.focus();
+    expect(tab(true).defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(last);
+  });
+
+  it('leaves Tab between two inner elements to the browser', async () => {
+    await open();
+    first.focus();
+    expect(tab().defaultPrevented).toBe(false);
+  });
+
+  it('pulls focus in when it is somewhere outside the backdrop', async () => {
+    await open();
+    opener.focus();
+    expect(tab().defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(first);
+  });
+
+  it('holds focus on the backdrop itself when it has nothing focusable inside', async () => {
+    el.replaceChildren();
+    await open();
+    expect(tab().defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(el);
+  });
+
+  it('skips a disabled control when wrapping', async () => {
+    last.setAttribute('disabled', '');
+    await open();
+    first.focus();
+    expect(tab(true).defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(first);
+  });
+
+  it('returns focus to whatever opened it', async () => {
+    await open();
+    first.focus();
+    el.setAttribute('data-open', 'false');
+    await flush();
+    expect(document.activeElement).toBe(opener);
+  });
+
+  it('leaves focus alone when the opener is gone by the time it closes', async () => {
+    await open();
+    first.focus();
+    opener.remove();
+    el.setAttribute('data-open', 'false');
+    await flush();
+    expect(document.activeElement).toBe(first);
+  });
+
+  it('stops containing focus once it is closed', async () => {
+    await open();
+    el.setAttribute('data-open', 'false');
+    await flush();
+    last.focus();
+    expect(tab().defaultPrevented).toBe(false);
+  });
+
+  it('removes the listener on cleanup', async () => {
+    const { ctx } = await open();
+    ctx.cleanup.mock.calls.at(-1)[0]();
+    last.focus();
+    expect(tab().defaultPrevented).toBe(false);
   });
 });
 

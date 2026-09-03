@@ -28,6 +28,13 @@ outline: deep
       <p class="text">Visual representation of a user or entity, displayed as an image, icon, or fallback initials.</p>
     </div>
   </a>
+  <a href="./components/backdrop" class="card">
+    <svg-icon class="card-media" src="./images/backdrop.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Backdrop</h3>
+      <p class="text">Full-screen scrim that dims the page and animates transient surfaces like command palettes and custom modals in and out.</p>
+    </div>
+  </a>
   <a href="./components/badge" class="card">
     <svg-icon class="card-media" src="./images/badge.svg"></svg-icon>
     <div class="card-content">
@@ -96,6 +103,13 @@ outline: deep
     <div class="card-content">
       <h3>Chip</h3>
       <p class="text">Compact, interactive element representing a filter or selection, with an optional dismiss button.</p>
+    </div>
+  </a>
+  <a href="./components/combobox" class="card">
+    <svg-icon class="card-media" src="./images/combobox.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Combobox</h3>
+      <p class="text">A list of options belonging to a text field, filtered as the user types.</p>
     </div>
   </a>
   <a href="./components/calendar" class="card">

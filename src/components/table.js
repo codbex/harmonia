@@ -1,3 +1,6 @@
+import { findAncestorState } from '../common/ancestor';
+import uuidv4 from '../utils/uuid';
+import { ChevronRight, createSvg } from './../common/icons';
 export default function (Alpine) {
   Alpine.directive('h-table-container', (el, { modifiers }) => {
     if (modifiers.includes('scroll')) {
@@ -80,6 +83,7 @@ export default function (Alpine) {
     el.classList.add(
       'p-2',
       '[&:has([data-slot|=cell-input])]:p-0',
+      '[&:has([data-slot=table-group-button])]:p-0',
       'align-middle',
       'whitespace-nowrap',
       '[&:has([role=checkbox])]:pr-0',
@@ -128,8 +132,8 @@ export default function (Alpine) {
 
   Alpine.directive('h-table-body', (el) => {
     el.classList.add(
-      '[&_tr:last-of-type_td[data-slot|=table]]:border-b-0',
-      '[&_tr:last-of-type_th[data-slot|=table]]:border-b-0',
+      '[&:last-of-type_tr:last-of-type_td[data-slot|=table]]:border-b-0',
+      '[&:last-of-type_tr:last-of-type_th[data-slot|=table]]:border-b-0',
       '[&_tr_th[data-slot|=table]]:bg-table-header',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:bg-table-hover',
       '[&_tr[data-hoverable=true]:hover_th[data-slot|=table]]:text-table-hover-foreground',
@@ -149,6 +153,112 @@ export default function (Alpine) {
       'data-[state=selected]:text-table-active-foreground'
     );
     el.setAttribute('data-slot', 'table-row');
+  });
+
+  Alpine.directive('h-table-group', (el, { expression, original }, { effect, evaluate, evaluateLater, Alpine }) => {
+    if (el.tagName !== 'TBODY') {
+      throw new Error(`${original} must be a tbody element`);
+    }
+    el.classList.add('[&[data-collapsed=true]>tr:not([data-slot=table-group-row])]:hidden');
+    if (!el.hasAttribute('id')) el.setAttribute('id', `tgc${uuidv4()}`);
+    el._h_table_group = {
+      controlId: undefined,
+      controls: el.getAttribute('id'),
+      state: Alpine.reactive({
+        collapsed: evaluate(expression || 'false'),
+      }),
+    };
+    if (expression) {
+      const getCollapsed = evaluateLater(expression);
+      effect(() => {
+        getCollapsed((collapsed) => {
+          el._h_table_group.state.collapsed = collapsed;
+        });
+      });
+    }
+    effect(() => {
+      el.setAttribute('data-collapsed', el._h_table_group.state.collapsed);
+    });
+  });
+
+  Alpine.directive('h-table-group-row', (el) => {
+    el.classList.add('bg-table-header', 'text-table-header-foreground', 'font-medium');
+    el.setAttribute('data-slot', 'table-group-row');
+  });
+
+  Alpine.directive('h-table-group-button', (el, { original }, { cleanup, effect }) => {
+    if (el.tagName !== 'BUTTON') {
+      throw new Error(`${original} must be a button element`);
+    }
+    const group = findAncestorState(Alpine, el, '_h_table_group');
+    if (!group) {
+      throw new Error(`${original} must be placed inside a table group`);
+    }
+    el.classList.add(
+      'px-2',
+      'size-full',
+      'h-10',
+      'cursor-pointer',
+      'inline-flex',
+      'items-center',
+      'justify-start',
+      'outline-none',
+      'gap-2',
+      'transition-[color,box-shadow]',
+      'motion-reduce:transition-none',
+      'svg-defaults',
+      '[&_svg]:opacity-70',
+      '[&_svg]:text-foreground',
+      '[&_svg]:transition-transform',
+      'motion-reduce:[&_svg]:transition-none',
+      '[&_svg]:duration-200',
+      'shrink-0',
+      'focus-visible:inset-ring-ring/50',
+      'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]',
+      'hover:bg-table-hover',
+      'hover:text-table-hover-foreground',
+      'active:bg-table-active!',
+      'active:text-table-active-foreground!'
+    );
+    el.setAttribute('type', 'button');
+    el.setAttribute('data-slot', 'table-group-button');
+
+    if (el.hasAttribute('id')) {
+      group._h_table_group.controlId = el.getAttribute('id');
+    } else {
+      group._h_table_group.controlId = `tgb${uuidv4()}`;
+      el.setAttribute('id', group._h_table_group.controlId);
+    }
+    el.setAttribute('aria-controls', group._h_table_group.controls);
+    group.setAttribute('aria-labelledby', group._h_table_group.controlId);
+
+    // Written through an effect rather than once, since a bound expression can
+    // collapse the group without the click handler ever running. The arrow
+    // turns off this attribute, so it would point the wrong way too.
+    effect(() => {
+      el.setAttribute('aria-expanded', !group._h_table_group.state.collapsed);
+    });
+
+    const handler = () => {
+      group._h_table_group.state.collapsed = !group._h_table_group.state.collapsed;
+    };
+
+    el.prepend(
+      createSvg({
+        icon: ChevronRight,
+        classes: 'pointer-events-none size-4 shrink-0 transition-transform motion-reduce:transition-none duration-200 [[aria-expanded=true]>&]:rotate-90',
+        attrs: {
+          'aria-hidden': true,
+          role: 'presentation',
+        },
+      })
+    );
+
+    el.addEventListener('click', handler);
+
+    cleanup(() => {
+      el.removeEventListener('click', handler);
+    });
   });
 
   Alpine.directive('h-table-caption', (el) => {

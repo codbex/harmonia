@@ -92,9 +92,11 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ### Toggle button
 
+A toggle button usually belongs in a button group. It is rarely used on its own. For a single on/off control, a switch or a checkbox is a better fit. When a toggle button does stand alone, for example in a toolbar, make its state clear from the label, the icon, or both. Do NOT rely on color alone.
+
 ```html
 <div x-data="{ toggled: true }">
-  <button x-h-button :data-toggled="toggled" @click="toggled = !toggled">Toggle</button>
+  <button x-h-button :data-toggled="toggled" @click="toggled = !toggled" x-text="toggled ? 'Untoggle' : 'Toggle'"></button>
 </div>
 ```
 

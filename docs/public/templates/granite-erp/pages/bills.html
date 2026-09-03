@@ -2,7 +2,9 @@
   <div class="hbox flex-wrap items-center gap-2">
     <div class="hbox flex-wrap gap-2">
       <template x-for="option in statuses" :key="option">
-        <button x-h-chip :data-variant="status === option ? 'primary' : 'outline'" @click="status = option" x-text="option"></button>
+        <div x-h-chip :data-variant="status === option ? 'primary' : 'outline'">
+          <button x-h-chip-button @click="status = option" x-text="option"></button>
+        </div>
       </template>
     </div>
     <div class="hbox flex-1 justify-end">
@@ -22,6 +24,9 @@
 
   <div x-h-table-container data-border="true">
     <table x-h-table data-borders="rows">
+      <caption class="sr-only">
+        Bills
+      </caption>
       <thead x-h-table-header>
         <tr x-h-table-row>
           <th x-h-table-head scope="col">Bill</th>
@@ -75,14 +80,11 @@
   </div>
 
   <!-- Pay confirmation dialog -->
-  <div x-h-dialog-overlay :data-open="!!payTarget" class="backdrop-blur-xs">
+  <div x-h-dialog-overlay :data-open="!!payTarget" class="backdrop-blur-xs" @keydown.escape.window="payTarget = null">
     <div x-h-dialog>
       <div x-h-dialog-header>
         <h2 x-h-dialog-title>Pay bill</h2>
         <p x-h-dialog-description x-text="payTarget ? 'Schedule payment of ' + $store.erp.money(payTarget.amount) + ' to ' + payTarget.vendor + ' for ' + payTarget.id + '?' : ''"></p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="payTarget = null">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="payTarget = null">Cancel</button>

@@ -1,0 +1,136 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <h1 x-h-text.h1>API reference</h1>
+  <p x-h-text.lead>The whole public surface is one factory and four methods on the client it returns.</p>
+
+  <h2 id="quartz-options" x-h-text.h2>quartz(options)</h2>
+  <p x-h-text>Creates a client and its cache. Most applications create exactly one and export it.</p>
+  <p
+    x-h-text.code
+    x-text="`import { quartz } from '@quartz/core'
+
+const client = quartz({ ttl: 30000, retry: 2 })`"
+  ></p>
+
+  <h2 id="client-query" x-h-text.h2>client.query()</h2>
+  <p x-h-text>
+    Returns the entry for a key, creating and fetching it if needed. The returned object exposes <code x-h-text.code-inline>subscribe()</code>, <code x-h-text.code-inline>refetch()</code> and a readonly
+    <code x-h-text.code-inline>state</code>.
+  </p>
+  <p
+    x-h-text.code
+    x-text="`const entry = client.query(key, fetcher, options)
+
+const stop = entry.subscribe((state) => render(state))
+stop() // unsubscribe`"
+  ></p>
+  <div x-h-table-container>
+    <table x-h-table>
+      <caption class="sr-only">
+        Arguments
+      </caption>
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Argument</th>
+          <th x-h-table-head scope="col">Type</th>
+          <th x-h-table-head scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-cell>key</td>
+          <td x-h-table-cell>string or null</td>
+          <td x-h-table-cell>Cache identity. A null key stays in the loading state and sends no request.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>fetcher</td>
+          <td x-h-table-cell>function</td>
+          <td x-h-table-cell>Returns a promise. Receives an AbortSignal as its only argument.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>options</td>
+          <td x-h-table-cell>object</td>
+          <td x-h-table-cell>Per query overrides for any of the client options below.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="client-invalidate" x-h-text.h2>client.invalidate()</h2>
+  <p x-h-text>Marks one key, or every key matching a predicate, as stale. Watched entries refetch immediately and unwatched ones refetch the next time they are read.</p>
+  <p
+    x-h-text.code
+    x-text="`client.invalidate('project:17')
+client.invalidate((key) => key.startsWith('projects'))
+client.clear() // drop everything, spinners included`"
+  ></p>
+
+  <h2 id="options" x-h-text.h2>Options</h2>
+  <div x-h-table-container>
+    <table x-h-table>
+      <caption class="sr-only">
+        Options
+      </caption>
+      <thead x-h-table-header>
+        <tr x-h-table-row>
+          <th x-h-table-head scope="col">Option</th>
+          <th x-h-table-head scope="col">Type</th>
+          <th x-h-table-head scope="col">Default</th>
+          <th x-h-table-head scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody x-h-table-body>
+        <tr x-h-table-row>
+          <td x-h-table-cell>ttl</td>
+          <td x-h-table-cell>number</td>
+          <td x-h-table-cell>30000</td>
+          <td x-h-table-cell>Milliseconds an entry stays fresh after it resolves.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>gcTime</td>
+          <td x-h-table-cell>number</td>
+          <td x-h-table-cell>300000</td>
+          <td x-h-table-cell>Milliseconds an unwatched entry is kept before it is dropped.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>retry</td>
+          <td x-h-table-cell>number</td>
+          <td x-h-table-cell>2</td>
+          <td x-h-table-cell>Retries after a failed request, with exponential backoff.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>refetchOnFocus</td>
+          <td x-h-table-cell>boolean</td>
+          <td x-h-table-cell>true</td>
+          <td x-h-table-cell>Revalidate stale entries when the tab regains focus.</td>
+        </tr>
+        <tr x-h-table-row>
+          <td x-h-table-cell>refetchOnReconnect</td>
+          <td x-h-table-cell>boolean</td>
+          <td x-h-table-cell>true</td>
+          <td x-h-table-cell>Revalidate stale entries when the browser comes back online.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

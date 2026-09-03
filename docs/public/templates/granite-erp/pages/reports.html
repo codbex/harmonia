@@ -16,18 +16,24 @@
         <div class="hbox flex-wrap items-center justify-between gap-2">
           <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
             <div x-h-tab-list>
-              <button id="rp-tab-revenue" x-h-tab aria-controls="rp-panel-revenue" :aria-selected="tab === 'revenue'" @click="tab = 'revenue'">
-                <svg x-h-lucide role="presentation" data-lucide="chart-column"></svg>
-                Revenue
-              </button>
-              <button id="rp-tab-cashflow" x-h-tab aria-controls="rp-panel-cashflow" :aria-selected="tab === 'cashflow'" @click="tab = 'cashflow'">
-                <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
-                Cash flow
-              </button>
-              <button id="rp-tab-receivables" x-h-tab aria-controls="rp-panel-receivables" :aria-selected="tab === 'receivables'" @click="tab = 'receivables'">
-                <svg x-h-lucide role="presentation" data-lucide="chart-pie"></svg>
-                Receivables
-              </button>
+              <div x-h-tab-item>
+                <button id="rp-tab-revenue" x-h-tab aria-controls="rp-panel-revenue" :aria-selected="tab === 'revenue'" @click="tab = 'revenue'">
+                  <svg x-h-lucide role="presentation" data-lucide="chart-column"></svg>
+                  Revenue
+                </button>
+              </div>
+              <div x-h-tab-item>
+                <button id="rp-tab-cashflow" x-h-tab aria-controls="rp-panel-cashflow" :aria-selected="tab === 'cashflow'" @click="tab = 'cashflow'">
+                  <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
+                  Cash flow
+                </button>
+              </div>
+              <div x-h-tab-item>
+                <button id="rp-tab-receivables" x-h-tab aria-controls="rp-panel-receivables" :aria-selected="tab === 'receivables'" @click="tab = 'receivables'">
+                  <svg x-h-lucide role="presentation" data-lucide="chart-pie"></svg>
+                  Receivables
+                </button>
+              </div>
             </div>
           </div>
           <div class="hbox items-center gap-2">

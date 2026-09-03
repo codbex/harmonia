@@ -119,6 +119,60 @@ describe('h-progress circle', () => {
   });
 });
 
+describe('h-progress accessibility', () => {
+  function mount(value, attrs = {}) {
+    const el = document.createElement('div');
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    mountDirective(progressPlugin, 'h-progress', el, { expression: String(value) }, { evaluateLater: () => (cb) => cb(value) });
+    return el;
+  }
+
+  it('is announced as a progressbar with a 0-100 range', () => {
+    const el = mount(40);
+    expect(el.getAttribute('role')).toBe('progressbar');
+    expect(el.getAttribute('aria-valuemin')).toBe('0');
+    expect(el.getAttribute('aria-valuemax')).toBe('100');
+  });
+
+  it('reports the current value on both shapes', () => {
+    expect(mount(40).getAttribute('aria-valuenow')).toBe('40');
+    expect(mount(40, { 'data-type': 'circle' }).getAttribute('aria-valuenow')).toBe('40');
+  });
+
+  it('clamps and rounds the reported value', () => {
+    expect(mount(40.4).getAttribute('aria-valuenow')).toBe('40');
+    expect(mount(140).getAttribute('aria-valuenow')).toBe('100');
+    expect(mount(-20).getAttribute('aria-valuenow')).toBe('0');
+  });
+
+  it('reports a missing value as zero rather than omitting it', () => {
+    expect(mount(undefined).getAttribute('aria-valuenow')).toBe('0');
+  });
+
+  it('drops the value and reports busy while indeterminate', () => {
+    for (const type of ['line', 'circle']) {
+      const el = mount(0, { 'data-loading': 'true', 'data-type': type });
+      expect(el.hasAttribute('aria-valuenow')).toBe(false);
+      expect(el.getAttribute('aria-busy')).toBe('true');
+    }
+  });
+
+  it('swaps between busy and a value when data-loading is toggled at runtime', async () => {
+    const el = mount(60, { 'data-loading': 'true' });
+    expect(el.getAttribute('aria-busy')).toBe('true');
+
+    el.setAttribute('data-loading', 'false');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(el.hasAttribute('aria-busy')).toBe(false);
+    expect(el.getAttribute('aria-valuenow')).toBe('60');
+
+    el.setAttribute('data-loading', 'true');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(el.getAttribute('aria-busy')).toBe('true');
+    expect(el.hasAttribute('aria-valuenow')).toBe(false);
+  });
+});
+
 describe('h-progress loading', () => {
   it('line indicator carries the indeterminate sweep classes', () => {
     const el = document.createElement('div');

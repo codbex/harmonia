@@ -6,6 +6,10 @@ By default, the `auto` mode is enabled, which automatically aligns the applicati
 
 A color scheme change is also kept in sync across embedded same-origin iframes that use Harmonia, as well as across other browser tabs of the application, so the whole interface stays consistent.
 
+## Scoping a Color Scheme
+
+The color scheme described above applies to the whole application. To force a scheme for just part of a page, add the `dark` or `light` class directly to any container element. Everything inside that container follows the applied scheme, no matter what the page or an ancestor element is set to, so a light area can sit inside a dark page (or a dark area inside a light page), and either can be nested inside the other.
+
 ## API Reference
 
 During initialization, Harmonia automatically sets the color scheme and persists the user’s last selected preference.
@@ -109,6 +113,29 @@ Changing the color scheme in one frame is automatically applied to every embedde
     },
   }));
 </script>
+```
+
+</LiveExample>
+
+### Nested light and dark areas
+
+<LiveExample data-class="p-0 hbox">
+
+```html
+<div class="dark bg-background p-4 text-foreground">
+  <p class="mb-2 font-medium">.dark container</p>
+  <div class="light rounded-md border bg-background p-4 text-foreground">
+    <p class="font-medium">Nested .light area</p>
+    <p class="text-muted-foreground">Stays light even though its parent is dark.</p>
+  </div>
+</div>
+<div class="light bg-background p-4 text-foreground">
+  <p class="mb-2 font-medium">.light container</p>
+  <div class="dark rounded-md border bg-background p-4 text-foreground">
+    <p class="font-medium">Nested .dark area</p>
+    <p class="text-muted-foreground">Stays dark even though its parent is light.</p>
+  </div>
+</div>
 ```
 
 </LiveExample>

@@ -4,7 +4,7 @@
       <div class="hbox flex-wrap items-center gap-3">
         <div class="vbox">
           <div class="hbox items-center gap-3">
-            <h3 x-h-text.h4 x-text="invoice.id"></h3>
+            <h2 x-h-text.h4 x-text="invoice.id"></h2>
             <span x-h-badge :data-variant="$store.erp.statusVariant(invoice.status)" x-text="invoice.status"></span>
           </div>
           <p x-h-text.muted x-text="'Issued ' + $store.erp.date(invoice.issued) + ', due ' + $store.erp.date(invoice.due)"></p>
@@ -51,35 +51,38 @@
 
       <div x-h-card>
         <div x-h-card-content>
-          <div x-h-step-indicator="lifecycleStep" aria-label="Invoice lifecycle">
+          <!-- lifecycleStep is a read-only getter, which is safe only while every
+               trigger stays data-non-interactive: clicking an interactive step
+               writes the step number back into the bound variable. -->
+          <div x-h-step-indicator="lifecycleStep" role="group" aria-label="Invoice lifecycle">
             <div x-h-step-indicator-item="1">
               <button x-h-step-indicator-trigger data-non-interactive="true">
                 <span x-h-step-indicator-marker>1</span>
+                <span x-h-step-indicator-content>
+                  <span x-h-step-indicator-title>Draft</span>
+                  <span x-h-step-indicator-description x-text="'Created ' + $store.erp.date(invoice.issued)"></span>
+                </span>
               </button>
-              <div x-h-step-indicator-content>
-                <div x-h-step-indicator-title>Draft</div>
-                <div x-h-step-indicator-description x-text="'Created ' + $store.erp.date(invoice.issued)"></div>
-              </div>
               <div x-h-step-indicator-separator></div>
             </div>
             <div x-h-step-indicator-item="2">
               <button x-h-step-indicator-trigger data-non-interactive="true">
                 <span x-h-step-indicator-marker>2</span>
+                <span x-h-step-indicator-content>
+                  <span x-h-step-indicator-title>Sent</span>
+                  <span x-h-step-indicator-description x-text="invoice.status === 'Draft' ? 'Not sent yet' : 'Due ' + $store.erp.date(invoice.due)"></span>
+                </span>
               </button>
-              <div x-h-step-indicator-content>
-                <div x-h-step-indicator-title>Sent</div>
-                <div x-h-step-indicator-description x-text="invoice.status === 'Draft' ? 'Not sent yet' : 'Due ' + $store.erp.date(invoice.due)"></div>
-              </div>
               <div x-h-step-indicator-separator></div>
             </div>
             <div x-h-step-indicator-item="3">
               <button x-h-step-indicator-trigger data-non-interactive="true">
                 <span x-h-step-indicator-marker>3</span>
+                <span x-h-step-indicator-content>
+                  <span x-h-step-indicator-title>Paid</span>
+                  <span x-h-step-indicator-description x-text="invoice.status === 'Paid' ? 'Payment received' : 'Awaiting payment'"></span>
+                </span>
               </button>
-              <div x-h-step-indicator-content>
-                <div x-h-step-indicator-title>Paid</div>
-                <div x-h-step-indicator-description x-text="invoice.status === 'Paid' ? 'Payment received' : 'Awaiting payment'"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -87,12 +90,15 @@
 
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div x-h-card class="lg:col-span-2">
-          <div x-h-card-header>
+          <div x-h-card-header class="border-b">
             <div x-h-card-title>Line items</div>
           </div>
-          <div x-h-card-content>
-            <div x-h-table-container>
+          <div x-h-card-content.flush class="vbox">
+            <div x-h-table-container.scroll>
               <table x-h-table>
+                <caption class="sr-only">
+                  Invoice line items
+                </caption>
                 <thead x-h-table-header>
                   <tr x-h-table-row>
                     <th x-h-table-head scope="col">Description</th>
@@ -167,10 +173,10 @@
               <ul x-h-list>
                 <template x-for="(entry, index) in invoice.activity" :key="index">
                   <li x-h-list-item class="items-start gap-3 py-2">
-                    <svg x-h-lucide role="presentation" data-lucide="history" class="text-muted-foreground"></svg>
+                    <svg x-h-lucide x-h-list-secondary role="presentation" data-lucide="history"></svg>
                     <div class="vbox min-w-0 flex-1">
                       <span class="text-sm" x-text="entry.text"></span>
-                      <span class="text-sm text-muted-foreground" x-text="$store.erp.date(entry.date)"></span>
+                      <span x-h-list-secondary class="text-sm" x-text="$store.erp.date(entry.date)"></span>
                     </div>
                   </li>
                 </template>
@@ -186,7 +192,7 @@
     <div x-h-info-page class="py-12">
       <div x-h-info-page-header>
         <div x-h-info-page-media.icon>
-          <svg x-h-lucide role="img" data-lucide="file-question-mark"></svg>
+          <svg x-h-lucide role="presentation" data-lucide="file-question-mark"></svg>
         </div>
         <div x-h-info-page-title>Invoice not found</div>
         <div x-h-info-page-description x-text="'There is no invoice with the number ' + $params.id + ' in this workspace.'"></div>

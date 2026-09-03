@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "2.14.2",
+  "version": "3.0.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -34,10 +34,11 @@
     "skills/"
   ],
   "scripts": {
-    "build": "node ./scripts/build.cjs && npm run tailwind && npm run agent-docs:generate && node ./scripts/doc-build.cjs",
-    "build:prod": "node ./scripts/build.cjs && npm run tailwind && npm run extend-css:generate && npm run agent-docs:generate",
+    "build": "node ./scripts/build.cjs && npm run tailwind && npm run agent-docs:generate && npm run plugin-version:sync && node ./scripts/doc-build.cjs",
+    "build:prod": "node ./scripts/build.cjs && npm run tailwind && npm run extend-css:generate && npm run agent-docs:generate && npm run plugin-version:sync",
     "icons:generate": "node ./scripts/generate-icons.cjs",
     "agent-docs:generate": "node ./scripts/generate-agent-docs.cjs",
+    "plugin-version:sync": "node ./scripts/sync-plugin-version.cjs",
     "extend-css:generate": "node ./scripts/generate-extend-css.cjs",
     "theming:generate": "node ./scripts/generate-theming-fragments.cjs && prettier --write \"docs/public/theming/fragments/*.html\" \"docs/public/theming/sections.json\" --config ./.prettierrc",
     "tailwind": "npx @tailwindcss/cli -m -i src/styles/globals.css -o dist/harmonia.css",
@@ -45,6 +46,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "lint": "eslint \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "lint:fix": "eslint --fix \"src/**/*.js\" \"scripts/**/*.cjs\"",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,yaml}\" --config ./.prettierrc",
@@ -55,7 +58,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "docDependencies": {
-    "alpinejs": "^3.15.12",
+    "alpinejs": "^3.16.3",
     "i18next": "^26.3.4",
     "lucide": "^1.20.0",
     "culori": "^4.0.2",
@@ -64,9 +67,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/cli": "^4.3.3",
     "@vitest/coverage-v8": "^4.1.9",
-    "alpinejs": "^3.15.12",
+    "alpinejs": "^3.16.3",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
@@ -81,7 +85,7 @@
     "vitest": "^4.1.9"
   },
   "peerDependencies": {
-    "alpinejs": "^3.15.12"
+    "alpinejs": "^3.16.3"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0"

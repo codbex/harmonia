@@ -39,14 +39,14 @@ The element must contain a native `<input>` as a direct child. The slider hides 
 
 ### Model
 
-Bind a number with `x-model`, or an array of two numbers (`[low, high]`) in dual mode. The model updates live while a handle is dragged. Values coming from the model are clamped to the `data-min` / `data-max` bounds and snapped to `data-step` for display.
+Bind a number with `x-model`, or an array of two numbers (`[low, high]`) in dual mode. The model updates live while a handle is dragged. Values coming from the model are clamped to the `data-min` / `data-max` bounds and snapped to `data-step` for display. `x-model`'s event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are not supported and log an error, the model always updates immediately.
 
 ### Events
 
-| Event  | Description                                                                                       |
-| ------ | ------------------------------------------------------------------------------------------------- |
-| input  | Fired continuously while a handle moves. The current value is in `event.detail`.                  |
-| change | Fired when a handle is released or after a keyboard change. The final value is in `event.detail`. |
+| Event  | Description                                                                                             |
+| ------ | ------------------------------------------------------------------------------------------------------- |
+| input  | Fired continuously while a handle moves. The current value is in `event.detail.value`.                  |
+| change | Fired when a handle is released or after a keyboard change. The final value is in `event.detail.value`. |
 
 ### Validation timing
 
@@ -146,7 +146,7 @@ Reacts to the native invalid state or to the `aria-invalid` attribute set on the
   <input type="text" name="volume" aria-invalid="true" />
 </div>
 <form x-data @submit.prevent class="flex flex-col items-start gap-4">
-  <div x-h-range data-value="40" data-label="Budget" @input="$refs.budget.setCustomValidity($event.detail > 50 ? 'Keep the budget at 50 or below' : '')">
+  <div x-h-range data-value="40" data-label="Budget" @input="$refs.budget.setCustomValidity($event.detail.value > 50 ? 'Keep the budget at 50 or below' : '')">
     <input type="text" name="budget" x-ref="budget" />
   </div>
   <button x-h-button type="submit">Submit</button>

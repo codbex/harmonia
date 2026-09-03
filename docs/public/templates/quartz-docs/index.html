@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en" class="size-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/harmonia/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quartz | Harmonia</title>
+    <!-- Pinecone Router must be evaluated before Alpine starts. -->
+    <script src="/harmonia/lib/node_modules/pinecone-router/dist/router.min.js"></script>
+    <script defer src="/harmonia/lib/node_modules/alpinejs/dist/cdn.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.min.js"></script>
+    <script src="/harmonia/lib/node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.min.js"></script>
+    <script src="/harmonia/templates/quartz-docs/js/data.js"></script>
+    <script src="/harmonia/templates/quartz-docs/js/app.js"></script>
+    <link href="/harmonia/lib/node_modules/@codbex/harmonia/dist/harmonia.css" rel="stylesheet" />
+    <link href="/harmonia/fonts.css" rel="stylesheet" />
+  </head>
+  <body
+    class="bg-background"
+    style="--sidebar-width: 16rem"
+    x-data="AppShell"
+    @keydown.window.ctrl.k.prevent="openSearch()"
+    @keydown.window.meta.k.prevent="openSearch()"
+    @keydown.escape.window="closeSearch()"
+    @pinecone:start.document="onRouteStart"
+    @pinecone:end.document="onRouteEnd"
+    @pinecone:fetch-error.document="onFetchError"
+  >
+    <div x-h-sheet-overlay="showSidebarSheet">
+      <div x-h-sheet id="sidebar-sheet" data-align="left" x-ref="sidebarSheet"></div>
+    </div>
+
+    <!-- The document itself scrolls, so the scrollbar is the browser's own, at the
+         right edge of the viewport. The chrome stays put because the navbar and the
+         sidebar are sticky, not because the content sits in a scrolling box. -->
+    <div class="hbox min-h-dvh">
+      <!-- Left bleed: carries the sidebar color (or the page color) to the edge of
+           the viewport, which is what makes the layout read as split rather than as
+           a floating box. Below 90rem it collapses to zero. -->
+      <div class="shrink-0" :class="showDesktopSidebar ? 'bg-sidebar' : 'bg-background'" style="width: max(0rem, (100% - 90rem) / 2)" aria-hidden="true"></div>
+
+      <!-- Sidebar slot: pinned, one viewport tall. The height lives here rather than
+           on the sidebar so the component's own h-full resolves against it. -->
+      <div class="sticky top-0 h-dvh shrink-0" x-ref="sidebarSlot" x-show="showDesktopSidebar">
+        <div x-h-sidebar data-borderless="true" x-ref="sidebar">
+          <div x-h-sidebar-header data-borderless="true">
+            <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
+            <a x-h-sidebar-header-item href="/">
+              <div x-h-avatar class="rounded-lg" data-variant="primary">
+                <svg x-h-lucide role="presentation" data-lucide="gem"></svg>
+              </div>
+              <span>Quartz</span>
+            </a>
+          </div>
+
+          <nav x-h-sidebar-content aria-label="Documentation">
+            <!-- The groups are authored once and their items come from the nav tree
+                 in js/data.js, so the sidebar, the search and the pager cannot drift. -->
+            <div x-h-sidebar-group.collapsed="false">
+              <!-- The label text goes on a child, since the collapse arrow is added
+                   inside the label and x-text would replace it. -->
+              <div x-h-sidebar-group-label><span x-text="$store.quartz.nav[0].label"></span></div>
+              <div x-h-sidebar-group-content>
+                <ul x-h-sidebar-menu>
+                  <template x-for="item in $store.quartz.nav[0].items" :key="item.route">
+                    <li x-h-sidebar-menu-item>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+
+            <div x-h-sidebar-group.collapsed="false">
+              <div x-h-sidebar-group-label><span x-text="$store.quartz.nav[1].label"></span></div>
+              <div x-h-sidebar-group-content>
+                <ul x-h-sidebar-menu>
+                  <template x-for="item in $store.quartz.nav[1].items" :key="item.route">
+                    <li x-h-sidebar-menu-item>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+
+            <div x-h-sidebar-group.collapsed="false">
+              <div x-h-sidebar-group-label><span x-text="$store.quartz.nav[2].label"></span></div>
+              <div x-h-sidebar-group-content>
+                <ul x-h-sidebar-menu>
+                  <template x-for="item in $store.quartz.nav[2].items" :key="item.route">
+                    <li x-h-sidebar-menu-item>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+
+            <div x-h-sidebar-group.collapsed="false">
+              <div x-h-sidebar-group-label><span x-text="$store.quartz.nav[3].label"></span></div>
+              <div x-h-sidebar-group-content>
+                <ul x-h-sidebar-menu>
+                  <template x-for="item in $store.quartz.nav[3].items" :key="item.route">
+                    <li x-h-sidebar-menu-item>
+                      <a x-h-sidebar-menu-nav :href="item.route" :data-active="path === item.route" x-text="item.title"></a>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Content column. It runs to the right edge of the viewport, so the navbar's
+           bottom border does too. --gutter is the leftover between this column and the
+           centered 90rem band, expressed against this column's own width: a 100vw-based
+           formula would include the scrollbar and push the band off centre. -->
+      <main class="z-1 vbox min-w-0 flex-1 bg-background" :class="showDesktopSidebar && 'shadow-sm'" :style="showDesktopSidebar ? '--gutter: max(0rem, 100% + var(--sidebar-width) - 90rem)' : '--gutter: max(0rem, 100% - 90rem)'">
+        <div class="sticky top-0 z-10">
+          <div x-h-toolbar data-variant="clear" :data-borderless="!hasSidebar" style="padding-right: calc(var(--gutter) + 0.25rem)">
+            <button x-show="hasSidebar && isSmallScreen" x-h-button data-variant="transparent" data-size="icon" aria-label="Open navigation" :aria-expanded="showSidebarSheet" aria-controls="sidebar-sheet" @click="showSidebarSheet = true">
+              <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
+            </button>
+
+            <!-- On a wide screen the brand lives in the sidebar header, so the
+                 navbar only carries it where the sidebar is hidden or has collapsed
+                 into the sheet. -->
+            <a x-show="!hasSidebar" href="/" class="ml-1 hbox items-center gap-2 no-underline">
+              <div x-h-avatar class="rounded-lg" data-variant="primary">
+                <svg x-h-lucide role="presentation" data-lucide="gem"></svg>
+              </div>
+              <span class="font-semibold">Quartz</span>
+            </a>
+
+            <div x-h-toolbar-spacer></div>
+
+            <nav x-h-nav aria-label="Main navigation" data-variant="clear" class="hidden lg:flex">
+              <ul x-h-nav-list>
+                <li x-h-nav-item>
+                  <a x-h-nav-link href="/guide/what-is-quartz" :data-active="isSection('/guide')">Guide</a>
+                </li>
+                <li x-h-nav-item>
+                  <a x-h-nav-link href="/api" :data-active="isSection('/api')">Reference</a>
+                </li>
+                <li x-h-nav-item>
+                  <a x-h-nav-link href="/blog" :data-active="isSection('/blog')">Blog</a>
+                </li>
+              </ul>
+            </nav>
+
+            <!-- Below lg the bar has no room for the links, so the same three
+                 destinations collapse into a dropdown. -->
+            <nav x-h-nav aria-label="Main navigation" data-variant="clear" class="lg:hidden">
+              <ul x-h-nav-list>
+                <li x-h-nav-item>
+                  <button x-h-nav-trigger aria-label="Main navigation">
+                    <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
+                  </button>
+                  <ul x-h-menu>
+                    <li x-h-menu-item @click="go('/guide/what-is-quartz')" :aria-current="isSection('/guide') ? 'page' : null">
+                      <span>Guide</span>
+                      <span x-h-menu-item-secondary x-show="isSection('/guide')">
+                        <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      </span>
+                    </li>
+                    <li x-h-menu-item @click="go('/api')" :aria-current="isSection('/api') ? 'page' : null">
+                      <span>Reference</span>
+                      <span x-h-menu-item-secondary x-show="isSection('/api')">
+                        <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      </span>
+                    </li>
+                    <li x-h-menu-item @click="go('/blog')" :aria-current="isSection('/blog') ? 'page' : null">
+                      <span>Blog</span>
+                      <span x-h-menu-item-secondary x-show="isSection('/blog')">
+                        <svg x-h-icon data-icon="check" role="presentation"></svg>
+                      </span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+
+            <button x-h-button data-variant="transparent" data-size="icon" aria-label="Search documentation" @click="openSearch()">
+              <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+            </button>
+
+            <button x-h-button data-variant="transparent" data-size="icon" aria-label="Change appearance" x-h-menu-trigger.dropdown>
+              <svg x-h-lucide role="presentation" :data-lucide="themeIcon"></svg>
+            </button>
+            <ul x-h-menu aria-label="Appearance" data-align="bottom-end">
+              <li x-h-menu-radio-item="'light'" name="theme" x-model="$store.quartz.theme">
+                <svg x-h-lucide role="presentation" data-lucide="sun"></svg>
+                <span>Light</span>
+              </li>
+              <li x-h-menu-radio-item="'dark'" name="theme" x-model="$store.quartz.theme">
+                <svg x-h-lucide role="presentation" data-lucide="moon"></svg>
+                <span>Dark</span>
+              </li>
+              <li x-h-menu-radio-item="'auto'" name="theme" x-model="$store.quartz.theme">
+                <svg x-h-lucide role="presentation" data-lucide="sun-moon"></svg>
+                <span>Auto</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="absolute right-0 bottom-0 left-0" x-show="routeLoading" style="display: none">
+            <div x-h-progress="0" data-loading="true" aria-label="Loading page"></div>
+          </div>
+        </div>
+
+        <div class="vbox flex-1" style="padding-right: var(--gutter)">
+          <!-- x-if rather than x-show, so the alert enters the DOM when the
+               error happens and screen readers announce it. -->
+          <template x-if="loadError">
+            <div class="p-4">
+              <div x-h-alert data-variant="negative">
+                <svg x-h-lucide role="presentation" data-lucide="triangle-alert"></svg>
+                <div x-h-alert-title>This page could not be loaded</div>
+                <div x-h-alert-description>The page template could not be fetched. Check the network connection and try again.</div>
+                <div x-h-alert-actions>
+                  <button x-h-button data-variant="outline" data-size="sm" @click="loadError = false">Dismiss</button>
+                </div>
+              </div>
+            </div>
+          </template>
+          <!-- Pages own their padding, and the outlet fills the remaining height so
+               the 404 page can center itself in it. tabindex="-1" lets the router
+               hand focus to the new page after a navigation. -->
+          <div id="page-outlet" class="flex-1 outline-hidden" tabindex="-1"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Command palette. The backdrop only handles the scrim and the animation,
+         so dismissal and focus are wired here and on the body element. -->
+    <div x-h-backdrop :data-open="searchOpen" @click.self="closeSearch()" role="dialog" aria-modal="true" aria-label="Search documentation" class="vbox items-center gap-4 p-4 sm:p-12">
+      <div class="w-full max-w-xl" x-h-backdrop-item>
+        <div x-h-input-group>
+          <!-- Enter is prevented, not just handled: picking a result closes the
+               palette, which hands focus back to the toolbar search button while
+               this keydown is still being processed. Left to run, the browser
+               finishes the keystroke on that button and its activation click
+               reopens the palette. -->
+          <input
+            x-h-input.group
+            x-ref="searchInput"
+            type="text"
+            placeholder="Search documentation..."
+            aria-label="Search documentation"
+            :aria-expanded="searchOpen"
+            x-model="searchQuery"
+            x-h-focus="searchOpen"
+            @keydown.enter.prevent="pickFirst()"
+          />
+          <div x-h-input-group-addon data-align="inline-start">
+            <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+          </div>
+        </div>
+      </div>
+      <div x-h-combobox="$refs.searchInput" x-h-backdrop-item aria-label="Search results" class="w-full max-w-xl overflow-auto" style="max-height: 24rem">
+        <!-- The hint and the empty state live outside the list, since the
+             listbox may only hold options. -->
+        <template x-if="!searchQuery.trim()">
+          <p class="px-3 py-2 text-sm text-muted-foreground">Search page titles and sections. Press Enter to open the first result, or use the arrow keys to pick another.</p>
+        </template>
+        <template x-if="searchQuery.trim() && !searchResults.length">
+          <p role="status" class="px-3 py-2 text-sm text-muted-foreground" x-text="'No results for ' + searchQuery.trim() + '.'"></p>
+        </template>
+        <ul x-h-list>
+          <template x-for="result in searchResults" :key="result.route + result.heading">
+            <li x-h-list-item class="justify-between gap-3" @click="pick(result)">
+              <div class="vbox min-w-0">
+                <span class="truncate" x-text="result.label"></span>
+                <span x-h-list-secondary class="truncate text-sm" x-show="result.heading" x-text="result.heading"></span>
+              </div>
+              <span x-h-list-secondary class="text-xs" x-text="result.group"></span>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Routes: every page is a separate fragment fetched on demand and
+         rendered into #page-outlet (see targetID in js/app.js). -->
+    <template x-route="/" x-template="/harmonia/templates/quartz-docs/pages/home.html"></template>
+    <template x-route="/guide/what-is-quartz" x-template="/harmonia/templates/quartz-docs/pages/guide-what-is-quartz.html"></template>
+    <template x-route="/guide/getting-started" x-template="/harmonia/templates/quartz-docs/pages/guide-getting-started.html"></template>
+    <template x-route="/guide/queries" x-template="/harmonia/templates/quartz-docs/pages/guide-queries.html"></template>
+    <template x-route="/guide/caching" x-template="/harmonia/templates/quartz-docs/pages/guide-caching.html"></template>
+    <template x-route="/api" x-template="/harmonia/templates/quartz-docs/pages/api.html"></template>
+    <template x-route="/blog" x-template="/harmonia/templates/quartz-docs/pages/blog.html"></template>
+    <template x-route="/blog/quartz-1-1" x-template="/harmonia/templates/quartz-docs/pages/blog-quartz-1-1.html"></template>
+    <template x-route="/blog/announcing-quartz-1-0" x-template="/harmonia/templates/quartz-docs/pages/blog-announcing-quartz-1-0.html"></template>
+    <template x-route="notfound" x-handler="notFound" x-template="/harmonia/templates/quartz-docs/pages/not-found.html"></template>
+  </body>
+</html>

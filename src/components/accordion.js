@@ -3,17 +3,17 @@ import { transitionClose } from '../common/transition-close';
 import uuidv4 from '../utils/uuid';
 import { ChevronDown, createSvg } from './../common/icons';
 export default function (Alpine) {
-  Alpine.directive('h-accordion', (el, { expression, modifiers }, { Alpine }) => {
+  Alpine.directive('h-accordion', (el, { expression, modifiers }, { evaluate, Alpine }) => {
     el._h_accordion = modifiers.includes('single')
       ? Alpine.reactive({
           single: true,
-          expandedId: expression ?? '',
+          expandedId: expression ? String(evaluate(expression) ?? '') : '',
         })
       : { single: false };
     el.setAttribute('data-slot', 'accordion');
   });
 
-  Alpine.directive('h-accordion-item', (el, { original, expression, modifiers }, { Alpine }) => {
+  Alpine.directive('h-accordion-item', (el, { original, expression, modifiers }, { evaluate, Alpine }) => {
     const accordion = findAncestorState(Alpine, el, '_h_accordion');
 
     if (!accordion) {
@@ -23,7 +23,8 @@ export default function (Alpine) {
     el.classList.add('border-b', 'last:border-b-0');
     el.setAttribute('data-slot', 'accordion-item');
 
-    const itemId = expression ?? `ha${uuidv4()}`;
+    const idValue = expression ? evaluate(expression) : null;
+    const itemId = idValue == null || idValue === '' ? `ha${uuidv4()}` : String(idValue);
 
     function getIsExpanded() {
       if (accordion._h_accordion.single) {
@@ -108,11 +109,13 @@ export default function (Alpine) {
     };
 
     const handler = () => {
-      accordionItem._h_accordionItem.expanded = !accordionItem._h_accordionItem.expanded;
-      setAttributes();
+      // Claim the expanded slot before toggling, so the collapse effect never
+      // sees the new expanded state paired with the previous item's id.
       if (accordion._h_accordion.single) {
         accordion._h_accordion.expandedId = accordionItem._h_accordionItem.id;
       }
+      accordionItem._h_accordionItem.expanded = !accordionItem._h_accordionItem.expanded;
+      setAttributes();
     };
     setAttributes();
 

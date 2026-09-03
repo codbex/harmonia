@@ -22,6 +22,19 @@ export const invalidControlClasses = [
   '[[data-validate=immediate]_&:invalid]:border-negative!',
 ];
 
+// The behavior of the panel that holds a set of options, shared by the
+// listbox and by every combobox variant.
+export const optionPanelClasses = ['divide-solid', 'divide-y', 'outline-none', ...disabledControlClasses, 'disabled:cursor-not-allowed', 'focus-ring', ...invalidControlClasses];
+
+// The surface of the listbox, reused by the combobox's default variant. It
+// sits on the default background rather than the input one, so bg-table-header
+// list headers keep reading darker than the rows in themes where the two are
+// close.
+export const listboxSurfaceClasses = ['bg-background', 'border-input', 'border', 'rounded-control', 'shadow-input'];
+
+// The bordered panel that holds a set of options.
+export const listboxShellClasses = [...optionPanelClasses, ...listboxSurfaceClasses];
+
 // Invalid state for wrappers around a native input: explicit aria-invalid and
 // the data-validate="immediate" live-validation mode.
 export const invalidInputClasses = [

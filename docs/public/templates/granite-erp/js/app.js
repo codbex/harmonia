@@ -46,6 +46,9 @@ document.addEventListener('alpine:init', () => {
     activity: [],
     searchSeed: '',
     settings: {},
+    // The day the shifted dataset describes as today, stamped on records the
+    // demo creates so they sit alongside the seeded ones.
+    today: window.GraniteData.today,
     _toaster: undefined,
 
     init() {
@@ -74,7 +77,16 @@ document.addEventListener('alpine:init', () => {
         dateFormat: 'mdy',
         notifications: { invoiceEmails: true, approvalAlerts: true, weeklyDigest: false, lowStockAlerts: true },
         // Seed from Harmonia's current color scheme ("auto" | "light" | "dark").
-        theme: Harmonia.getColorScheme(),
+        // Writing the theme applies it, so the appearance menus' radio items
+        // can bind it with x-model directly.
+        _theme: Harmonia.getColorScheme(),
+        get theme() {
+          return this._theme;
+        },
+        set theme(mode) {
+          this._theme = mode;
+          Harmonia.setColorScheme(mode);
+        },
       };
       if (notify) this.toast('Workspace reset', 'All demo data has been restored to its initial state.', 'information');
     },
@@ -104,7 +116,18 @@ document.addEventListener('alpine:init', () => {
       if (!iso) return '';
       if (this.settings.dateFormat === 'iso') return iso;
       const locale = this.settings.dateFormat === 'dmy' ? 'en-GB' : 'en-US';
-      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(iso.replace(' ', 'T')));
+      // A bare "YYYY-MM-DD" is parsed as UTC midnight, which formats as the day
+      // before west of Greenwich, so a date-only value gets an explicit local time.
+      const value = iso.length === 10 ? iso + 'T00:00:00' : iso.replace(' ', 'T');
+      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(value));
+    },
+    // Today rendered in one specific format, for the Settings options that show
+    // what each choice looks like. Reads today rather than a fixed example date,
+    // so the sample matches the dates the tables are showing.
+    dateSample(format) {
+      if (format === 'iso') return this.today;
+      const locale = format === 'dmy' ? 'en-GB' : 'en-US';
+      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(this.today + 'T00:00:00'));
     },
     statusVariant(status) {
       return statusVariants[status] || 'outline';
@@ -177,14 +200,14 @@ document.addEventListener('alpine:init', () => {
       const invoice = {
         id: 'INV-' + nextNumber,
         customer: draft.customer,
-        issued: '2026-07-03',
+        issued: this.today,
         due: draft.due,
         amount: Math.round(subtotal * 1.1 * 100) / 100,
         status: send ? 'Sent' : 'Draft',
         items: [{ description: draft.description, qty: draft.qty, unitPrice: draft.unitPrice }],
-        activity: [{ date: '2026-07-03', text: 'Draft created.' }],
+        activity: [{ date: this.today, text: 'Draft created.' }],
       };
-      if (send) invoice.activity.push({ date: '2026-07-03', text: `Sent to ${draft.customer}.` });
+      if (send) invoice.activity.push({ date: this.today, text: `Sent to ${draft.customer}.` });
       this.invoices.unshift(invoice);
       this.logActivity('file-plus-2', `${invoice.id} created for ${invoice.customer}.`);
       this.toast(send ? 'Invoice sent' : 'Draft saved', `${invoice.id} for ${this.money(invoice.amount)} was ${send ? 'created and sent to ' + invoice.customer : 'saved as a draft'}.`, 'positive');
@@ -195,11 +218,11 @@ document.addEventListener('alpine:init', () => {
       if (!invoice) return;
       invoice.status = status;
       if (status === 'Paid') {
-        invoice.activity.push({ date: '2026-07-03', text: 'Payment received, invoice closed.' });
+        invoice.activity.push({ date: this.today, text: 'Payment received, invoice closed.' });
         this.logActivity('circle-check', `Payment received for ${invoice.id} from ${invoice.customer}.`);
         this.toast('Invoice paid', `${invoice.id} (${this.money(invoice.amount)}) has been marked as paid.`, 'positive');
       } else if (status === 'Sent') {
-        invoice.activity.push({ date: '2026-07-03', text: `Sent to ${invoice.customer}.` });
+        invoice.activity.push({ date: this.today, text: `Sent to ${invoice.customer}.` });
         this.logActivity('send', `${invoice.id} sent to ${invoice.customer}.`);
         this.toast('Invoice sent', `${invoice.id} was sent to ${invoice.customer}.`, 'positive');
       }
@@ -207,7 +230,7 @@ document.addEventListener('alpine:init', () => {
     remindInvoice(id) {
       const invoice = this.invoiceById(id);
       if (!invoice) return;
-      invoice.activity.push({ date: '2026-07-03', text: 'Payment reminder sent.' });
+      invoice.activity.push({ date: this.today, text: 'Payment reminder sent.' });
       this.toast('Reminder sent', `A payment reminder for ${invoice.id} was sent to ${invoice.customer}.`, 'information');
     },
 
@@ -247,18 +270,15 @@ document.addEventListener('alpine:init', () => {
       const extension = (file.name.split('.').pop() || '').toLowerCase();
       const types = { pdf: 'Report', xlsx: 'Report', csv: 'Report', docx: 'Contract', doc: 'Contract', png: 'Image', jpg: 'Image', svg: 'Image' };
       const size = file.size >= 1048576 ? (file.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(file.size / 1024)) + ' KB';
-      this.documents.unshift({ id: 'DOC-' + (32 + this.documents.length), name: file.name, type: types[extension] || 'File', size, linkedTo: 'Uploads', uploaded: '2026-07-03', tags: ['uploaded'] });
+      // Counted from the highest id rather than the length, which shrinks on a
+      // delete and would hand the next upload an id another document still holds.
+      const nextNumber = Math.max(...this.documents.map((d) => Number(d.id.slice(4)))) + 1;
+      this.documents.unshift({ id: 'DOC-' + nextNumber, name: file.name, type: types[extension] || 'File', size, linkedTo: 'Uploads', uploaded: this.today, tags: ['uploaded'] });
     },
     removeDocument(id) {
       const document = this.documents.find((d) => d.id === id);
       this.documents = this.documents.filter((d) => d.id !== id);
       if (document) this.toast('Document deleted', `${document.name} was removed from the library.`, 'information');
-    },
-
-    // ---- appearance ----
-    setTheme(mode) {
-      this.settings.theme = mode;
-      Harmonia.setColorScheme(mode);
     },
   });
 
@@ -384,6 +404,7 @@ document.addEventListener('alpine:init', () => {
     // Below the breakpoint the inbox split shows either the message list or the
     // reading pane (data-hidden bindings in inbox.html), not both side by side.
     isCompact: false,
+    compactBreakpointListener: undefined,
     init() {
       this.compactBreakpointListener = Harmonia.getBreakpointListener((matches) => {
         this.isCompact = matches;
@@ -488,7 +509,7 @@ document.addEventListener('alpine:init', () => {
       this.showNew = true;
     },
     submitNew(send) {
-      const id = this.$store.erp.addInvoice({ ...this.newInvoice, qty: Number(this.newInvoice.qty), unitPrice: Number(this.newInvoice.unitPrice) }, send);
+      const id = this.$store.erp.addInvoice({ ...this.newInvoice }, send);
       this.showNew = false;
       this.$router.navigate('/invoices/' + id);
     },
@@ -582,6 +603,7 @@ document.addEventListener('alpine:init', () => {
     // switches between them.
     isCompact: false,
     treeOpen: false,
+    compactBreakpointListener: undefined,
     init() {
       this.compactBreakpointListener = Harmonia.getBreakpointListener((matches) => {
         this.isCompact = matches;
@@ -622,7 +644,7 @@ document.addEventListener('alpine:init', () => {
       this.restockTarget = item;
     },
     confirmRestock() {
-      this.$store.erp.adjustStock(this.restockTarget.sku, Number(this.restockQty) || 0);
+      this.$store.erp.adjustStock(this.restockTarget.sku, this.restockQty || 0);
       this.restockTarget = null;
     },
   }));

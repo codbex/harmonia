@@ -7,12 +7,12 @@
           <div x-h-card-title class="text-2xl" x-text="kpi.value"></div>
           <div x-h-card-action>
             <div x-h-avatar class="rounded-lg" data-variant="primary">
-              <svg x-h-lucide role="img" :data-lucide="kpi.icon"></svg>
+              <svg x-h-lucide role="presentation" :data-lucide="kpi.icon"></svg>
             </div>
           </div>
         </div>
         <div class="flex-1" aria-hidden="true"></div>
-        <div x-h-card-footer class="text-sm text-muted-foreground" x-text="kpi.hint"></div>
+        <div x-h-card-footer class="pt-4 text-sm text-muted-foreground" x-text="kpi.hint"></div>
       </div>
     </template>
   </div>
@@ -23,7 +23,7 @@
         <div x-h-card-title>Revenue and expenses</div>
         <div x-h-card-description>Monthly totals in thousands of dollars</div>
         <div x-h-card-action>
-          <div x-h-select data-size="sm" style="width: 9rem">
+          <div x-h-select style="width: 9rem">
             <input x-h-select-input aria-label="Chart period" x-model="period" />
             <div x-h-select-content>
               <div x-h-select-list>
@@ -50,18 +50,21 @@
   </div>
 
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-    <div x-h-card class="lg:col-span-2">
-      <div x-h-card-header>
+    <div x-h-card class="overflow-hidden lg:col-span-2">
+      <div x-h-card-header class="border-b">
         <div x-h-card-title>Recent invoices</div>
         <div x-h-card-description>The five most recent invoices</div>
         <div x-h-card-action>
           <!-- A real anchor on purpose: Pinecone Router intercepts plain-path links. -->
-          <a x-h-button data-variant="outline" data-size="sm" href="/invoices">View all</a>
+          <a x-h-button data-variant="outline" href="/invoices">View all</a>
         </div>
       </div>
-      <div x-h-card-content>
-        <div x-h-table-container>
+      <div x-h-card-content.flush class="vbox">
+        <div x-h-table-container.scroll>
           <table x-h-table>
+            <caption class="sr-only">
+              Recent invoices
+            </caption>
             <thead x-h-table-header>
               <tr x-h-table-row>
                 <th x-h-table-head scope="col">Invoice</th>
@@ -72,8 +75,12 @@
             </thead>
             <tbody x-h-table-body>
               <template x-for="invoice in recentInvoices" :key="invoice.id">
-                <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="$router.navigate('/invoices/' + invoice.id)">
-                  <td x-h-table-cell class="font-medium" x-text="invoice.id"></td>
+                <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="$event.target.closest('a') || $router.navigate('/invoices/' + invoice.id)">
+                  <td x-h-table-cell class="font-medium">
+                    <!-- The row click is a shortcut for the mouse. The link is what makes
+                         the invoice reachable by keyboard, as on the invoices page. -->
+                    <a class="no-underline" :href="'/invoices/' + invoice.id" x-text="invoice.id"></a>
+                  </td>
                   <td x-h-table-cell x-text="invoice.customer"></td>
                   <td x-h-table-cell>
                     <span x-h-badge :data-variant="$store.erp.statusVariant(invoice.status)" x-text="invoice.status"></span>
@@ -86,19 +93,19 @@
         </div>
       </div>
     </div>
-    <div x-h-card>
-      <div x-h-card-header>
+    <div x-h-card class="overflow-hidden" style="max-height: 420px">
+      <div x-h-card-header class="border-b">
         <div x-h-card-title>Activity</div>
         <div x-h-card-description>What happened across the workspace</div>
       </div>
-      <div x-h-card-content>
+      <div x-h-card-content.flush class="overflow-y-auto">
         <ul x-h-list>
           <template x-for="entry in $store.erp.activity.slice(0, 6)" :key="entry.id">
-            <li x-h-list-item class="items-start gap-3 py-2">
-              <svg x-h-lucide role="presentation" :data-lucide="entry.icon" class="text-muted-foreground"></svg>
+            <li x-h-list-item class="items-start">
+              <svg x-h-lucide x-h-list-secondary role="presentation" :data-lucide="entry.icon"></svg>
               <div class="vbox min-w-0 flex-1">
                 <span class="text-sm" x-text="entry.text"></span>
-                <span class="text-sm text-muted-foreground" x-text="entry.time"></span>
+                <span x-h-list-secondary class="text-sm" x-text="entry.time"></span>
               </div>
             </li>
           </template>

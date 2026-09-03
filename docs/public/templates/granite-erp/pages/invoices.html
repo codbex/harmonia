@@ -9,7 +9,9 @@
     <div class="hbox flex-1 flex-wrap items-center justify-between gap-2">
       <div class="hbox flex-wrap gap-2">
         <template x-for="option in statuses" :key="option">
-          <button x-h-chip :data-variant="status === option ? 'primary' : 'outline'" @click="status = option; page = 1" x-text="option"></button>
+          <div x-h-chip :data-variant="status === option ? 'primary' : 'outline'">
+            <button x-h-chip-button @click="status = option; page = 1" x-text="option"></button>
+          </div>
         </template>
       </div>
       <button x-h-button data-variant="primary" @click="openNew()">
@@ -21,6 +23,9 @@
 
   <div x-h-table-container data-border="true">
     <table x-h-table data-borders="rows">
+      <caption class="sr-only">
+        Invoices
+      </caption>
       <thead x-h-table-header>
         <tr x-h-table-row>
           <th x-h-table-head scope="col" :aria-sort="ariaSort('id')">
@@ -89,10 +94,10 @@
 
   <div class="hbox flex-wrap items-center justify-between gap-2">
     <span class="text-sm text-muted-foreground" x-text="sorted.length + ' of ' + $store.erp.invoices.length + ' invoices'"></span>
-    <nav x-h-pagination class="w-fit">
+    <nav x-h-pagination class="w-fit!">
       <ul x-h-pagination-content>
         <li x-h-pagination-item>
-          <a x-h-pagination-link.previous href="#" @click.prevent="page = Math.max(1, page - 1)">
+          <a x-h-pagination-link.previous href="#" aria-label="Previous page" :aria-disabled="page === 1" :tabindex="page === 1 ? -1 : 0" @click.prevent="page = Math.max(1, page - 1)">
             <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
             <span x-h-pagination-link-label>Previous</span>
           </a>
@@ -103,7 +108,7 @@
           </li>
         </template>
         <li x-h-pagination-item>
-          <a x-h-pagination-link.next href="#" @click.prevent="page = Math.min(pageCount, page + 1)">
+          <a x-h-pagination-link.next href="#" aria-label="Next page" :aria-disabled="page === pageCount" :tabindex="page === pageCount ? -1 : 0" @click.prevent="page = Math.min(pageCount, page + 1)">
             <span x-h-pagination-link-label>Next</span>
             <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
           </a>
@@ -114,11 +119,11 @@
 
   <!-- New invoice sheet -->
   <div x-h-sheet-overlay="showNew">
-    <div x-h-sheet data-align="right">
+    <div x-h-sheet data-align="right" @keydown.escape.window="showNew = false">
       <div class="vbox size-full w-sm gap-4 overflow-auto p-4" style="max-width: 100%">
         <div class="hbox items-center justify-between gap-2">
           <div class="vbox">
-            <h3 x-h-text.h5>New invoice</h3>
+            <h2 x-h-text.h5>New invoice</h2>
             <p x-h-text.muted>Drafts can be sent later from the invoice page.</p>
           </div>
           <button x-h-button data-variant="transparent" data-size="icon" aria-label="Close new invoice panel" @click="showNew = false">
@@ -131,7 +136,7 @@
               <div x-h-field>
                 <label x-h-label for="ni-customer">Customer</label>
                 <div x-h-select>
-                  <input x-h-select-input data-id="ni-customer" placeholder="Select customer" required x-model="newInvoice.customer" />
+                  <input x-h-select-input data-id="ni-customer" x-h-focus="showNew" placeholder="Select customer" required x-model="newInvoice.customer" />
                   <div x-h-select-content>
                     <div x-h-select-list>
                       <template x-for="customer in $store.erp.customers" :key="customer.id">
@@ -147,7 +152,7 @@
                 <div x-h-date-picker>
                   <input type="text" id="ni-due" required />
                   <button x-h-date-picker-trigger aria-label="Choose due date"></button>
-                  <div x-h-date-picker-popup="{ min: '2026-07-03' }" x-model="newInvoice.due"></div>
+                  <div x-h-date-picker-popup="{ min: $store.erp.today }" x-model="newInvoice.due"></div>
                 </div>
                 <p x-h-field-error>Pick a due date.</p>
               </div>
@@ -160,13 +165,13 @@
                 <div x-h-field>
                   <label x-h-label for="ni-qty">Quantity</label>
                   <div x-h-input-number>
-                    <input type="number" id="ni-qty" min="1" step="1" required x-model="newInvoice.qty" />
+                    <input type="number" id="ni-qty" min="1" step="1" required x-model.number="newInvoice.qty" />
                   </div>
                 </div>
                 <div x-h-field>
                   <label x-h-label for="ni-price">Unit price</label>
                   <div x-h-input-number>
-                    <input type="number" id="ni-price" min="0" step="0.01" required placeholder="0.00" x-model="newInvoice.unitPrice" />
+                    <input type="number" id="ni-price" min="0" step="0.01" required placeholder="0.00" x-model.number="newInvoice.unitPrice" />
                   </div>
                 </div>
               </div>

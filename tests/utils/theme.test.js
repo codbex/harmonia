@@ -124,7 +124,7 @@ describe('addColorSchemeListener / removeColorSchemeListener', () => {
     const cb = vi.fn();
     addColorSchemeListener(cb);
     setColorScheme('dark');
-    expect(cb).toHaveBeenCalledWith('dark');
+    expect(cb).toHaveBeenCalledWith('dark', 'dark');
     removeColorSchemeListener(cb);
   });
 
@@ -132,7 +132,24 @@ describe('addColorSchemeListener / removeColorSchemeListener', () => {
     const cb = vi.fn();
     addColorSchemeListener(cb);
     setColorScheme('light');
-    expect(cb).toHaveBeenCalledWith('light');
+    expect(cb).toHaveBeenCalledWith('light', 'light');
+    removeColorSchemeListener(cb);
+  });
+
+  it('listener receives the resolved scheme and the "auto" mode when the system prefers light', () => {
+    const cb = vi.fn();
+    addColorSchemeListener(cb);
+    setColorScheme('auto');
+    expect(cb).toHaveBeenCalledWith('light', 'auto');
+    removeColorSchemeListener(cb);
+  });
+
+  it('listener receives the resolved scheme and the "auto" mode when the system prefers dark', () => {
+    window.matchMedia = createMatchMediaMock(true);
+    const cb = vi.fn();
+    addColorSchemeListener(cb);
+    setColorScheme('auto');
+    expect(cb).toHaveBeenCalledWith('dark', 'auto');
     removeColorSchemeListener(cb);
   });
 
@@ -150,8 +167,8 @@ describe('addColorSchemeListener / removeColorSchemeListener', () => {
     addColorSchemeListener(cb1);
     addColorSchemeListener(cb2);
     setColorScheme('light');
-    expect(cb1).toHaveBeenCalledWith('light');
-    expect(cb2).toHaveBeenCalledWith('light');
+    expect(cb1).toHaveBeenCalledWith('light', 'light');
+    expect(cb2).toHaveBeenCalledWith('light', 'light');
     removeColorSchemeListener(cb1);
     removeColorSchemeListener(cb2);
   });
@@ -164,8 +181,31 @@ describe('addColorSchemeListener / removeColorSchemeListener', () => {
     removeColorSchemeListener(cb1);
     setColorScheme('dark');
     expect(cb1).not.toHaveBeenCalled();
-    expect(cb2).toHaveBeenCalledWith('dark');
+    expect(cb2).toHaveBeenCalledWith('dark', 'dark');
     removeColorSchemeListener(cb2);
+  });
+});
+
+describe('getColorScheme inside a listener', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.classList.remove('dark');
+    window.matchMedia = createMatchMediaMock(false);
+  });
+
+  // The saved mode must be written before listeners run, otherwise a listener that reads it
+  // back sees the mode it is replacing. This used to be true only for "dark" and "light".
+  it.each(['dark', 'light', 'auto'])('reports the new mode when "%s" is selected', (mode) => {
+    let seen;
+    const cb = vi.fn(() => {
+      seen = getColorScheme();
+    });
+    // Start from a different explicit mode, so a stale read shows up as that previous value.
+    setColorScheme(mode === 'dark' ? 'light' : 'dark');
+    addColorSchemeListener(cb);
+    setColorScheme(mode);
+    expect(seen).toBe(mode);
+    removeColorSchemeListener(cb);
   });
 });
 
@@ -203,7 +243,16 @@ describe('storage event sync', () => {
     const cb = vi.fn();
     addColorSchemeListener(cb);
     dispatchStorage(colorSchemeKey, 'dark');
-    expect(cb).toHaveBeenCalledWith('dark');
+    expect(cb).toHaveBeenCalledWith('dark', 'dark');
+    removeColorSchemeListener(cb);
+  });
+
+  it('passes on the mode chosen in the other document, including "auto"', () => {
+    window.matchMedia = createMatchMediaMock(true);
+    const cb = vi.fn();
+    addColorSchemeListener(cb);
+    dispatchStorage(colorSchemeKey, 'auto');
+    expect(cb).toHaveBeenCalledWith('dark', 'auto');
     removeColorSchemeListener(cb);
   });
 
@@ -226,6 +275,87 @@ describe('storage event sync', () => {
     addColorSchemeListener(cb);
     dispatchStorage(colorSchemeKey, null);
     expect(cb).not.toHaveBeenCalled();
+    removeColorSchemeListener(cb);
+  });
+});
+
+describe('system scheme changes while "auto" is active', () => {
+  // Mirrors the browser, where every matchMedia() call returns a NEW MediaQueryList and the
+  // handler stays on the object it was added to. A mock returning one shared object would let
+  // a broken detach pass, since removal would appear to work on any object.
+  function createMockMql(matches) {
+    const listeners = {};
+    return {
+      matches,
+      addEventListener: vi.fn((type, cb) => {
+        listeners[type] = cb;
+      }),
+      removeEventListener: vi.fn((type, cb) => {
+        if (listeners[type] === cb) delete listeners[type];
+      }),
+      get watching() {
+        return Boolean(listeners.change);
+      },
+      fire(next) {
+        this.matches = next;
+        if (listeners.change) listeners.change({ matches: next });
+      },
+    };
+  }
+
+  let created;
+
+  beforeEach(() => {
+    // The watched MediaQueryList is module state that outlives a single test, so release it
+    // through the public API before swapping in a fresh mock.
+    setColorScheme('light');
+    localStorage.clear();
+    document.documentElement.classList.remove('dark');
+    created = [];
+    window.matchMedia = vi.fn(() => {
+      const mql = createMockMql(false);
+      created.push(mql);
+      return mql;
+    });
+  });
+
+  it('watches exactly one MediaQueryList after switching to "auto"', () => {
+    setColorScheme('auto');
+    expect(created.filter((mql) => mql.watching)).toHaveLength(1);
+  });
+
+  it('reports the new scheme with an unchanged "auto" mode when the system flips', () => {
+    const cb = vi.fn();
+    setColorScheme('auto');
+    addColorSchemeListener(cb);
+    created.find((mql) => mql.watching).fire(true);
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(cb).toHaveBeenCalledWith('dark', 'auto');
+    expect(localStorage.getItem(colorSchemeKey)).toBe('auto');
+    removeColorSchemeListener(cb);
+  });
+
+  it('stops following the system once an explicit mode is selected', () => {
+    const cb = vi.fn();
+    setColorScheme('auto');
+    setColorScheme('dark');
+    addColorSchemeListener(cb);
+    created.forEach((mql) => mql.fire(false));
+    expect(cb).not.toHaveBeenCalled();
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(localStorage.getItem(colorSchemeKey)).toBe('dark');
+    removeColorSchemeListener(cb);
+  });
+
+  it('does not stack watchers when "auto" is selected repeatedly', () => {
+    const cb = vi.fn();
+    setColorScheme('auto');
+    setColorScheme('auto');
+    setColorScheme('auto');
+    addColorSchemeListener(cb);
+    expect(created.filter((mql) => mql.watching)).toHaveLength(1);
+    created.find((mql) => mql.watching).fire(true);
+    expect(cb).toHaveBeenCalledTimes(1);
     removeColorSchemeListener(cb);
   });
 });

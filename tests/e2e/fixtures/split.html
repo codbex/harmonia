@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>split fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div style="width: 80vw; height: 20rem">
+      <div id="split" class="size-full" x-h-split data-orientation="horizontal" data-variant="handle" data-key="e2e.split.sizes">
+        <div id="panel-a" x-h-split-panel data-min="100">
+          <div class="flex size-full items-center justify-center overflow-hidden">A</div>
+        </div>
+        <div id="panel-b" x-h-split-panel data-min="100">
+          <div class="flex size-full items-center justify-center overflow-hidden">B</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -15,9 +15,17 @@ function reactive(obj) {
       return Reflect.get(target, key);
     },
     set(target, key, value) {
+      const existed = Object.prototype.hasOwnProperty.call(target, key);
+      // Alpine's reactivity does not trigger effects when the value is unchanged.
+      if (existed && Reflect.get(target, key) === value) return true;
       const result = Reflect.set(target, key, value);
       if (deps[key]) {
         for (const fn of [...deps[key]]) fn();
+      }
+      // Appending to an array grows its length, and Alpine notifies effects that
+      // read `length` even though the push writes it back unchanged.
+      if (!existed && Array.isArray(target) && deps['length']) {
+        for (const fn of [...deps['length']]) fn();
       }
       return result;
     },

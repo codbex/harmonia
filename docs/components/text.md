@@ -16,17 +16,17 @@ x-h-text
 
 ### Modifiers
 
-| Modifier    | Description                                                      |
-| ----------- | ---------------------------------------------------------------- |
-| h\{1-6\}    | Applies a heading style to the element. Sizes 1 to 6.            |
-| blockquote  | Applies a quotation style to the element.                        |
-| code-inline | Applies an inline code block style (single line) to the element. |
-| code        | Applies a code block style (multiline) to the element.           |
-| lead        | Applies a lead style to the element.                             |
-| lg          | Large text                                                       |
-| sm          | Small text                                                       |
-| xs          | Extra small text                                                 |
-| muted       | Applies a muted style to the element. Can be used on a label.    |
+| Modifier    | Description                                                                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| h\{1-6\}    | Applies a heading style to the element. Sizes 1 to 6.                                                                        |
+| blockquote  | Applies a quotation style to the element.                                                                                    |
+| code-inline | Applies an inline code block style (single line) to the element.                                                             |
+| code        | Applies a code block style (multiline) to the element. A line that is too long to fit scrolls horizontally within the block. |
+| lead        | Applies a lead style to the element.                                                                                         |
+| lg          | Large text                                                                                                                   |
+| sm          | Small text                                                                                                                   |
+| xs          | Extra small text                                                                                                             |
+| muted       | Applies a muted style to the element. Can be used on a label.                                                                |
 
 ## Examples
 

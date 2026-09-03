@@ -19,10 +19,10 @@
         </div>
       </div>
       <div class="hbox gap-1">
-        <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'grid'" aria-label="Card view" @click="view = 'grid'">
+        <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'grid'" :aria-pressed="view === 'grid'" aria-label="Card view" @click="view = 'grid'">
           <svg x-h-lucide role="presentation" data-lucide="layout-grid"></svg>
         </button>
-        <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'table'" aria-label="Table view" @click="view = 'table'">
+        <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'table'" :aria-pressed="view === 'table'" aria-label="Table view" @click="view = 'table'">
           <svg x-h-lucide role="presentation" data-lucide="rows-3"></svg>
         </button>
       </div>
@@ -54,7 +54,7 @@
               <span class="text-sm text-muted-foreground">Lifetime revenue</span>
               <span class="font-medium" x-text="$store.erp.money(customer.revenue)"></span>
             </div>
-            <button x-h-button data-variant="outline" data-size="sm" @click="selected = customer">View</button>
+            <button x-h-button data-variant="outline" @click="selected = customer">View</button>
           </div>
         </div>
       </template>
@@ -64,6 +64,9 @@
   <template x-if="view === 'table'">
     <div x-h-table-container data-border="true">
       <table x-h-table data-borders="rows">
+        <caption class="sr-only">
+          Customers
+        </caption>
         <thead x-h-table-header>
           <tr x-h-table-row>
             <th x-h-table-head scope="col">Customer</th>
@@ -75,11 +78,13 @@
         </thead>
         <tbody x-h-table-body>
           <template x-for="customer in list" :key="customer.id">
-            <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="selected = customer">
+            <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="$event.target.closest('button') || (selected = customer)">
               <td x-h-table-cell>
                 <div class="hbox items-center gap-3">
                   <div x-h-avatar x-text="customer.initials"></div>
-                  <span class="font-medium" x-text="customer.name"></span>
+                  <!-- The row click is a shortcut for the mouse. This button is what
+                       opens the customer from the keyboard. -->
+                  <button x-h-button data-variant="link" data-size="sm" class="font-medium" x-text="customer.name" @click="selected = customer"></button>
                 </div>
               </td>
               <td x-h-table-cell>
@@ -113,17 +118,14 @@
   </template>
 
   <!-- Customer detail dialog -->
-  <div x-h-dialog-overlay :data-open="!!selected" class="backdrop-blur-xs">
-    <div x-h-dialog class="w-2xl" style="max-width: 100%">
+  <div x-h-dialog-overlay :data-open="!!selected" class="backdrop-blur-xs" @keydown.escape.window="selected = null">
+    <div x-h-dialog style="width: 42rem; max-width: calc(100% - 2rem)">
       <div x-h-dialog-header>
         <h2 x-h-dialog-title x-text="selected ? selected.name : ''"></h2>
         <p x-h-dialog-description x-text="selected ? selected.segment + ', ' + selected.city + ', ' + selected.country : ''"></p>
-        <button x-h-dialog-close aria-label="Close dialog" @click="selected = null">
-          <svg x-h-icon data-icon="close" role="presentation"></svg>
-        </button>
       </div>
       <template x-if="selected">
-        <div class="vbox gap-4">
+        <div x-h-dialog-content class="vbox gap-4">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div class="vbox">
               <span class="text-sm text-muted-foreground">Contact</span>
@@ -142,6 +144,9 @@
             <span class="font-medium">Invoices</span>
             <div x-h-table-container data-border="true">
               <table x-h-table>
+                <caption class="sr-only">
+                  Invoices for this customer
+                </caption>
                 <thead x-h-table-header>
                   <tr x-h-table-row>
                     <th x-h-table-head scope="col">Invoice</th>
@@ -151,8 +156,10 @@
                 </thead>
                 <tbody x-h-table-body>
                   <template x-for="invoice in invoicesFor(selected.name)" :key="invoice.id">
-                    <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="openInvoice(invoice.id)">
-                      <td x-h-table-cell class="font-medium" x-text="invoice.id"></td>
+                    <tr x-h-table-row data-hoverable="true" class="cursor-pointer" @click="$event.target.closest('button') || openInvoice(invoice.id)">
+                      <td x-h-table-cell class="font-medium">
+                        <button x-h-button data-variant="link" data-size="sm" x-text="invoice.id" @click="openInvoice(invoice.id)"></button>
+                      </td>
                       <td x-h-table-cell>
                         <span x-h-badge :data-variant="$store.erp.statusVariant(invoice.status)" x-text="invoice.status"></span>
                       </td>
@@ -172,7 +179,7 @@
       </template>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="selected = null">Close</button>
-        <button x-h-button data-variant="primary" @click="$store.erp.searchSeed = selected.name; selected = null; $router.navigate('/invoices')">Show in invoices</button>
+        <button x-h-button data-variant="primary" @click="selected && ($store.erp.searchSeed = selected.name, selected = null, $router.navigate('/invoices'))">Show in invoices</button>
       </div>
     </div>
   </div>

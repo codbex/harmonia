@@ -1,3 +1,4 @@
+import { focusTrap } from '../common/focus-trap';
 import { transitionClose } from '../common/transition-close';
 import uuidv4 from '../utils/uuid';
 export default function (Alpine) {
@@ -5,6 +6,16 @@ export default function (Alpine) {
     el.classList.add('hidden', 'fixed', 'inset-0', 'z-50', 'bg-black/60', 'transition-[opacity,scale]', 'motion-reduce:transition-none', 'duration-200', 'ease-out', 'opacity-0', '*:scale-95');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'dialog-overlay');
+
+    // Tab and Shift+Tab cycle within the dialog rather than walking out into
+    // the page behind it, which is inert to the eye but not to the keyboard.
+    const trap = focusTrap(el);
+
+    // Returns the controls of the given tag that the dialog may focus on open,
+    // skipping the ones a component has hidden behind its own UI. The OTP keeps
+    // such a field: aria-hidden and out of the tab order, so focus landing there
+    // would strand the user on a control they cannot see.
+    const candidates = (tag) => [...el.getElementsByTagName(tag)].filter((control) => control.getAttribute('aria-hidden') !== 'true' && !(control.getAttribute('tabindex') || '').startsWith('-'));
 
     // Guarded on the live state, not a class snapshot, so a late transitionend
     // from an abandoned close cannot hide an overlay reopened mid-fade.
@@ -17,6 +28,9 @@ export default function (Alpine) {
     const observer = new MutationObserver(() => {
       if (el.getAttribute('data-open') === 'true') {
         closer.cancel();
+        // Before the autofocus cascade below, which would otherwise be recorded
+        // as the opener the dialog has to hand focus back to.
+        trap.trap();
         el.classList.remove('hidden', 'pointer-events-none');
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.classList.remove('*:scale-95', 'opacity-0');
@@ -28,7 +42,7 @@ export default function (Alpine) {
             el.classList.remove('*:scale-95', 'opacity-0');
           });
         }
-        const inputs = el.getElementsByTagName('INPUT');
+        const inputs = candidates('INPUT');
         if (inputs.length) {
           for (let i = 0; i < inputs.length; i++) {
             if (inputs[i].autofocus) {
@@ -39,7 +53,7 @@ export default function (Alpine) {
           inputs[0].focus();
           return;
         } else {
-          const textareas = el.getElementsByTagName('TEXTAREA');
+          const textareas = candidates('TEXTAREA');
           if (textareas.length) {
             for (let i = 0; i < textareas.length; i++) {
               if (textareas[i].autofocus) {
@@ -56,6 +70,7 @@ export default function (Alpine) {
           buttons[0].focus();
         }
       } else {
+        trap.release();
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.classList.add('hidden', '*:scale-95', 'opacity-0');
         } else {
@@ -71,37 +86,46 @@ export default function (Alpine) {
 
     cleanup(() => {
       observer.disconnect();
+      trap.dispose();
       closer.dispose();
     });
   });
 
-  Alpine.directive('h-dialog', (el) => {
-    el.classList.add(
-      'bg-background',
-      'fixed',
-      'position-center',
-      'z-50',
-      'vbox',
-      'w-full',
-      'max-w-[calc(100%-2rem)]',
-      'gap-4',
-      'rounded-lg',
-      'border',
-      'p-4',
-      'shadow-xl',
-      'sm:max-w-lg',
-      'outline-none',
-      'transition-[opacity,scale]',
-      'motion-reduce:transition-none',
-      'duration-200',
-      'ease-out'
-    );
+  Alpine.directive('h-dialog', (el, _, { cleanup }) => {
+    el.classList.add('bg-background', 'fixed', 'z-50', 'vbox', 'w-full', 'outline-none', 'transition-[opacity,scale]', 'motion-reduce:transition-none', 'duration-200', 'ease-out');
     el.setAttribute('role', 'dialog');
     el.setAttribute('data-slot', 'dialog');
+
+    // 'inset-0' gives the fullscreen surface a definite height, which the
+    // scrolling 'dialog-content' slot needs. 'position-center' is removed
+    // rather than overridden, since it applies the centering transforms.
+    const getModeClasses = (fullscreen) => (fullscreen ? ['inset-0'] : ['position-center', 'max-w-[calc(100%-2rem)]', 'sm:max-w-lg', 'rounded-lg', 'border', 'shadow-xl']);
+
+    let lastFullscreen;
+
+    const setMode = (fullscreen) => {
+      if (fullscreen === lastFullscreen) return;
+      if (lastFullscreen !== undefined) {
+        el.classList.remove(...getModeClasses(lastFullscreen));
+      }
+      el.classList.add(...getModeClasses(fullscreen));
+      lastFullscreen = fullscreen;
+    };
+
+    const observer = new MutationObserver(() => {
+      setMode(el.getAttribute('data-fullscreen') === 'true');
+    });
+
+    setMode(el.getAttribute('data-fullscreen') === 'true');
+    observer.observe(el, { attributes: true, attributeFilter: ['data-fullscreen'] });
+
+    cleanup(() => {
+      observer.disconnect();
+    });
   });
 
   Alpine.directive('h-dialog-header', (el) => {
-    el.classList.add('grid', 'grid-cols-[minmax(0,1fr)_auto]', 'place-items-start', 'gap-2', 'text-center', 'sm:text-left');
+    el.classList.add('grid', 'grid-cols-[minmax(0,1fr)_auto]', 'place-items-start', 'gap-2', 'px-4', 'pt-4', 'text-center', 'sm:text-left');
     el.setAttribute('data-slot', 'dialog-header');
   });
 
@@ -151,8 +175,16 @@ export default function (Alpine) {
     }
   });
 
+  Alpine.directive('h-dialog-content', (el, { modifiers }) => {
+    el.classList.add('flex-1', 'min-h-0', 'overflow-y-auto');
+    if (!modifiers.includes('flush')) {
+      el.classList.add('p-4');
+    }
+    el.setAttribute('data-slot', 'dialog-content');
+  });
+
   Alpine.directive('h-dialog-footer', (el) => {
-    el.classList.add('flex', 'flex-col-reverse', 'gap-2', 'sm:flex-row', 'sm:justify-end');
+    el.classList.add('flex', 'flex-col-reverse', 'gap-2', 'px-4', 'pb-4', '[[data-slot=dialog-header]+&]:pt-4', 'sm:flex-row', 'sm:justify-end');
     el.setAttribute('data-slot', 'dialog-footer');
   });
 }

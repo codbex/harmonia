@@ -1,23 +1,16 @@
 import { isDisabled } from '../common/disabled';
-import { disabledControlClasses, invalidControlClasses } from '../common/shared-classes';
+import { listboxShellClasses } from '../common/shared-classes';
 import { getFirstChar, isPrintableCharacter } from '../common/typeahead';
 import uuidv4 from '../utils/uuid';
+
+// Containers whose children are options rather than plain list rows. The
+// combobox (src/components/combobox.js) is the listbox popup of a text field,
+// so its items are the same options a listbox holds.
+const OPTION_CONTAINERS = ['listbox', 'combobox'];
+
 export default function (Alpine) {
   Alpine.directive('h-listbox', (el, _, { cleanup }) => {
-    el.classList.add(
-      'divide-solid',
-      'divide-y',
-      'bg-input-inner',
-      'border-input',
-      'border',
-      'rounded-control',
-      'shadow-input',
-      'outline-none',
-      ...disabledControlClasses,
-      'disabled:cursor-not-allowed',
-      'focus-ring',
-      ...invalidControlClasses
-    );
+    el.classList.add(...listboxShellClasses);
     el.setAttribute('data-slot', 'listbox');
     el.setAttribute('role', 'listbox');
 
@@ -112,14 +105,22 @@ export default function (Alpine) {
     // claimed it. Wait for them all to mount, then give the stop to the
     // selected option, or to the first one. A disabled option can hold the stop,
     // since it is still announced, just not selectable.
-    queueMicrotask(() => {
+    function ensureTabStop() {
       if (el.querySelector('[role=option][tabindex="0"]')) return;
       const options = getFocusableOptions();
       const target = options.find((option) => option.getAttribute('aria-selected') === 'true') ?? options[0];
       if (target) target.setAttribute('tabindex', '0');
-    });
+    }
+
+    // Options rendered from a filtered list are replaced wholesale, taking the
+    // tab stop with them. Without this the listbox would silently fall out of
+    // the tab order for good, and with it the keydown handler above.
+    const observer = new MutationObserver(ensureTabStop);
+    observer.observe(el, { childList: true, subtree: true });
+    queueMicrotask(ensureTabStop);
 
     cleanup(() => {
+      observer.disconnect();
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
     });
@@ -131,8 +132,15 @@ export default function (Alpine) {
     // A listbox only permits option and group children, so a list nested in one
     // is a group. Standalone it keeps the native list role, which is what makes
     // a screen reader announce the item count.
-    const listbox = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'listbox');
-    if (listbox) el.setAttribute('role', 'group');
+    const container = Alpine.findClosest(el.parentElement, (parent) => OPTION_CONTAINERS.includes(parent.getAttribute('data-slot')));
+    if (container) el.setAttribute('role', 'group');
+  });
+
+  Alpine.directive('h-list-secondary', (el) => {
+    el.classList.add('text-muted-foreground', '[[aria-selected=true]_&]:text-primary-foreground/75');
+    if (!el.hasAttribute('data-slot')) {
+      el.setAttribute('data-slot', 'list-secondary');
+    }
   });
 
   Alpine.directive('h-list-header', (el, { original }, { Alpine }) => {
@@ -146,7 +154,13 @@ export default function (Alpine) {
       'bg-table-header',
       'text-table-header-foreground',
       '[[data-slot=listbox]>*:first-of-type_&:first-of-type]:rounded-t-control',
-      '[[data-slot=listbox]>*:last-of-type_&:last-of-type]:rounded-b-control'
+      '[[data-slot=listbox]>*:last-of-type_&:last-of-type]:rounded-b-control',
+      '[[data-slot=combobox]>*:first-of-type_&:first-of-type]:rounded-t-control',
+      '[[data-slot=combobox]>*:last-of-type_&:last-of-type]:rounded-b-control',
+      '[[data-slot=combobox][data-variant=popover]>*:first-of-type_&:first-of-type]:rounded-t-md',
+      '[[data-slot=combobox][data-variant=popover]>*:last-of-type_&:last-of-type]:rounded-b-md',
+      '[[data-slot=combobox][data-variant=inline]>*:first-of-type_&:first-of-type]:rounded-t-none',
+      '[[data-slot=combobox][data-variant=inline]>*:last-of-type_&:last-of-type]:rounded-b-none'
     );
     el.setAttribute('role', 'presentation');
     el.setAttribute('data-slot', 'list-header');
@@ -164,7 +178,7 @@ export default function (Alpine) {
   Alpine.directive('h-list-item', (el, { modifiers }, { cleanup }) => {
     el.classList.add('min-h-11', 'flex', 'items-center', 'p-2', 'gap-2', 'align-middle', 'outline-none');
     el.setAttribute('data-slot', 'list-item');
-    const listbox = Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'listbox');
+    const container = Alpine.findClosest(el.parentElement, (parent) => OPTION_CONTAINERS.includes(parent.getAttribute('data-slot')));
     function setInteractive() {
       el.classList.add(
         'focus:bg-table-hover',
@@ -181,16 +195,27 @@ export default function (Alpine) {
         'focus:aria-selected:text-primary-foreground',
         '[[data-slot=listbox]>*:first-of-type_&:first-of-type]:rounded-t-control',
         '[[data-slot=listbox]>*:last-of-type_&:last-of-type]:rounded-b-control',
+        '[[data-slot=combobox]>*:first-of-type_&:first-of-type]:rounded-t-control',
+        '[[data-slot=combobox]>*:last-of-type_&:last-of-type]:rounded-b-control',
+        '[[data-slot=combobox][data-variant=popover]>*:first-of-type_&:first-of-type]:rounded-t-md',
+        '[[data-slot=combobox][data-variant=popover]>*:last-of-type_&:last-of-type]:rounded-b-md',
+        '[[data-slot=combobox][data-variant=inline]>*:first-of-type_&:first-of-type]:rounded-t-none',
+        '[[data-slot=combobox][data-variant=inline]>*:last-of-type_&:last-of-type]:rounded-b-none',
         'aria-disabled:opacity-disabled',
         'aria-disabled:pointer-events-none',
         'aria-disabled:cursor-not-allowed'
       );
     }
-    if (listbox) {
+    if (container) {
       setInteractive();
+      // A combobox keeps focus in its text field, so the option the user is on
+      // is marked rather than focused and needs the same highlight :focus gives
+      // it inside a listbox.
+      el.classList.add('data-[active=true]:bg-table-hover', 'data-[active=true]:text-table-hover-foreground', 'data-[active=true]:aria-selected:bg-primary-hover', 'data-[active=true]:aria-selected:text-primary-foreground');
       el.setAttribute('role', 'option');
-      // The listbox is a single tab stop, so options start out unreachable and
-      // it hands the stop to one of them once they have all mounted.
+      // Options start out unreachable either way. A listbox hands the tab stop
+      // to one of them once they have all mounted, while a combobox never does,
+      // since it is reached through its text field.
       el.setAttribute('tabindex', '-1');
     } else if (modifiers.includes('interactive')) {
       setInteractive();

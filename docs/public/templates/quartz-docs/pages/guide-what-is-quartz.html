@@ -1,0 +1,64 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <h1 x-h-text.h1>What is Quartz?</h1>
+  <p x-h-text.lead>Quartz is a 2 kB cache that sits between your components and your API. It hands back the value it already has, revalidates it in the background, and tells every subscriber when something better arrives.</p>
+
+  <h2 id="motivation" x-h-text.h2>Motivation</h2>
+  <p x-h-text>
+    Most applications end up writing the same three states by hand for every endpoint they touch: loading, loaded, and failed. That code is easy to write once and miserable to keep correct across a dozen screens, especially once two of them
+    ask for the same resource at the same time.
+  </p>
+  <p x-h-text>Quartz replaces that with a single cache keyed by strings you choose. Ask for a key twice and you get one request. Ask for it again a second later and you get the cached value with no request at all.</p>
+  <p x-h-text.blockquote>The best request is the one you already made.</p>
+
+  <h2 id="how-it-works" x-h-text.h2>How it works</h2>
+  <p x-h-text>
+    A client owns the cache. Calling <code x-h-text.code-inline>client.query()</code> returns an observable entry that emits every time its state changes, so rendering is a matter of subscribing and drawing whatever the latest state says.
+  </p>
+  <p
+    x-h-text.code
+    x-text="`const client = quartz({ ttl: 30000 })
+
+const user = client.query('user:42', () =>
+  fetch('/api/users/42').then((r) => r.json())
+)
+
+user.subscribe((state) => {
+  render(state.data, state.status)
+})`"
+  ></p>
+  <p x-h-text>
+    The first subscriber triggers the fetcher. Later subscribers attach to the same entry and receive the cached value immediately. When the entry goes stale, the next subscription revalidates it while still serving the old value, so the
+    interface never flashes back to a spinner it has already moved past.
+  </p>
+
+  <div x-h-alert data-variant="information">
+    <svg x-h-lucide role="presentation" data-lucide="info"></svg>
+    <div x-h-alert-title>Keys are yours to design</div>
+    <div x-h-alert-description>Quartz never inspects a key. Any string works, and a convention such as resource:id is usually enough to keep invalidation obvious.</div>
+  </div>
+
+  <h2 id="when-to-use-it" x-h-text.h2>When to use it</h2>
+  <p x-h-text>Reach for Quartz when several parts of a page read overlapping server state, when the same resource is requested from more than one route, or when you want a screen to stay usable while its data refreshes.</p>
+  <p x-h-text>Skip it for one-off requests with no reuse, for streaming responses, and for anything that has to be written and read back in the same tick. A plain fetch is smaller than a cache you never hit twice.</p>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

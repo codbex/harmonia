@@ -54,7 +54,16 @@ document.addEventListener('alpine:init', () => {
         // simulation (see deliverMessage and scheduleSimulation below).
         notifications: { messageToasts: true, mentionAlerts: true, typingIndicators: true },
         // Seed from Harmonia's current color scheme ("auto" | "light" | "dark").
-        theme: Harmonia.getColorScheme(),
+        // Writing the theme applies it, so the appearance menus' radio items
+        // can bind it with x-model directly.
+        _theme: Harmonia.getColorScheme(),
+        get theme() {
+          return this._theme;
+        },
+        set theme(mode) {
+          this._theme = mode;
+          Harmonia.setColorScheme(mode);
+        },
       };
       // Two days back, so the seeded mentions count as unseen on first load.
       this.activitySeenTs = new Date(Date.now() - 2 * 86400000).toISOString();
@@ -285,15 +294,6 @@ document.addEventListener('alpine:init', () => {
         this.toast('New message in ' + this.conversationLabel(key), this.displayName(userId) + ': ' + text, 'information');
       }
     },
-
-    // ---- profile and appearance ----
-    setStatus(status) {
-      this.profile.status = status;
-    },
-    setTheme(mode) {
-      this.settings.theme = mode;
-      Harmonia.setColorScheme(mode);
-    },
   });
 
   // ---------------------------------------------------------------------------
@@ -391,7 +391,7 @@ document.addEventListener('alpine:init', () => {
           this.$refs.sidebarSheet.appendChild(this.$refs.sidebar);
         } else if (this.$refs.sidebarSheet.firstElementChild) {
           this.showSidebarSheet = false;
-          this.$el.appendChild(this.$refs.sidebar);
+          this.$refs.sidebarSlot.appendChild(this.$refs.sidebar);
         }
       }, 1024);
     },

@@ -56,13 +56,27 @@ describe('h-exp-panel-item', () => {
   it('creates reactive _h_expPanelItem', () => {
     mountDirective(expansionPanelPlugin, 'h-exp-panel-item', el, { expression: 'false' }, { evaluate: vi.fn().mockReturnValue(false) });
     expect(el._h_expPanelItem).toBeDefined();
+    expect(typeof el._h_expPanelItem.id).toBe('string');
     expect(typeof el._h_expPanelItem.controls).toBe('string');
+    expect(el._h_expPanelItem.id).not.toBe(el._h_expPanelItem.controls);
   });
 
-  it('uses element id when present', () => {
+  it('derives the trigger and content ids from the element id when present', () => {
     el.setAttribute('id', 'custom-id');
     mountDirective(expansionPanelPlugin, 'h-exp-panel-item', el, { expression: 'false' }, { evaluate: vi.fn().mockReturnValue(false) });
-    expect(el._h_expPanelItem.controls).toBe('custom-id');
+    expect(el._h_expPanelItem.id).toBe('custom-id-trigger');
+    expect(el._h_expPanelItem.controls).toBe('custom-id-content');
+  });
+
+  it('generates distinct ids for items without an element id', () => {
+    const sibling = document.createElement('div');
+    document.body.appendChild(sibling);
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-item', el, { expression: 'false' }, { evaluate: vi.fn().mockReturnValue(false) });
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-item', sibling, { expression: 'false' }, { evaluate: vi.fn().mockReturnValue(false) });
+    expect(el._h_expPanelItem.id).toBeTruthy();
+    expect(el._h_expPanelItem.controls).toBeTruthy();
+    expect(el._h_expPanelItem.id).not.toBe(sibling._h_expPanelItem.id);
+    expect(el._h_expPanelItem.controls).not.toBe(sibling._h_expPanelItem.controls);
   });
 
   it('starts collapsed when expression is false', () => {
@@ -173,6 +187,13 @@ describe('h-exp-panel-trigger', () => {
     expect(btn.getAttribute('aria-controls')).toBe('content-1');
   });
 
+  // Regression: the state had no id property, so every button got id="undefined".
+  it('sets the item id on the button', () => {
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-trigger', triggerEl, { original: 'h-exp-panel-trigger', expression: '' });
+    const btn = triggerEl.querySelector('button');
+    expect(btn.getAttribute('id')).toBe('item-1');
+  });
+
   it('calls cleanup', () => {
     const { ctx } = mountDirective(expansionPanelPlugin, 'h-exp-panel-trigger', triggerEl, { original: 'h-exp-panel-trigger', expression: '' });
     expect(ctx.cleanup).toHaveBeenCalled();
@@ -208,5 +229,15 @@ describe('h-exp-panel-content', () => {
   it('sets data-slot="exp-panel-content"', () => {
     mountDirective(expansionPanelPlugin, 'h-exp-panel-content', el);
     expect(el.getAttribute('data-slot')).toBe('exp-panel-content');
+  });
+
+  it('sets id and aria-labelledby from the parent item', () => {
+    const itemEl = document.createElement('div');
+    itemEl._h_expPanelItem = { id: 'item-1', controls: 'content-1', expanded: false };
+    itemEl.appendChild(el);
+    document.body.appendChild(itemEl);
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-content', el);
+    expect(el.getAttribute('id')).toBe('content-1');
+    expect(el.getAttribute('aria-labelledby')).toBe('item-1');
   });
 });

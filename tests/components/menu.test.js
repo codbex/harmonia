@@ -614,6 +614,18 @@ describe('h-menu-checkbox-item', () => {
     const el = document.createElement('span');
     expect(() => mountDirective(menuPlugin, 'h-menu-checkbox-item', el, { original: 'x-h-menu-checkbox-item' })).toThrow();
   });
+
+  // Alpine's .lazy listener would write the change event's undefined target
+  // value over the bound state, so the event modifiers are rejected at init.
+  it('rejects x-model event modifiers with a console error', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { item } = createCheckboxItemSetup();
+    item.setAttribute('x-model.lazy', 'checked');
+    item._x_model = { get: () => false, set: () => {} };
+    mountDirective(menuPlugin, 'h-menu-checkbox-item', item, { original: 'x-h-menu-checkbox-item' });
+    expect(error).toHaveBeenCalledWith('x-h-menu-checkbox-item: x-model.lazy is not supported, the model always updates immediately', item);
+    error.mockRestore();
+  });
 });
 
 describe('h-menu-radio-item', () => {
@@ -647,6 +659,21 @@ describe('h-menu-radio-item', () => {
         expression: '"option1"',
       })
     ).toThrow();
+  });
+
+  // Alpine's .lazy listener would write the change event's undefined target
+  // value over the bound state, so the event modifiers are rejected at init.
+  it('rejects x-model event modifiers with a console error', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { item } = createRadioItemSetup();
+    item.setAttribute('x-model.lazy', 'choice');
+    item._x_model = { get: () => 'option1', set: () => {} };
+    mountDirective(menuPlugin, 'h-menu-radio-item', item, {
+      original: 'x-h-menu-radio-item',
+      expression: '"option1"',
+    });
+    expect(error).toHaveBeenCalledWith('x-h-menu-radio-item: x-model.lazy is not supported, the model always updates immediately', item);
+    error.mockRestore();
   });
 });
 

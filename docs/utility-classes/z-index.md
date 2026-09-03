@@ -7,7 +7,8 @@ Utilities for controlling the stacking order of positioned elements. A higher `z
 | Class | Description                                                               |
 | ----- | ------------------------------------------------------------------------- |
 | z-1   | `z-index: 1;`                                                             |
-| z-10  | `z-index: 10;` Raised elements above normal flow.                         |
+| z-10  | `z-index: 10;`                                                            |
+| z-20  | `z-index: 20;`                                                            |
 | z-50  | `z-index: 50;` Overlays such as popovers, dropdowns, and dialogs.         |
 | z-60  | `z-index: 60;` The topmost layer, above overlays (used by notifications). |
 

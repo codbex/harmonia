@@ -110,10 +110,14 @@ The height class names start with `h`.
 
 The minimum and maximum height class names start with `min-h` and `max-h`.
 
-| Class        | Description                         | `!` support |
-| ------------ | ----------------------------------- | ----------- |
-| max-h-`1-12` | Maximum height sizes, from 1 to 12. | No          |
-| min-h-`0-12` | Minimum height sizes, from 0 to 12. | No          |
+| Class        | Description                                        | `!` support |
+| ------------ | -------------------------------------------------- | ----------- |
+| max-h-`1-12` | Maximum height sizes, from 1 to 12.                | No          |
+| min-h-`0-12` | Minimum height sizes, from 0 to 12.                | No          |
+| min-h-screen | Makes the minimum height equal to the screen size. | No          |
+| min-h-dvh    | Minimum dynamic viewport height (`100dvh`).        | No          |
+| min-h-lvh    | Minimum large viewport height (`100lvh`).          | No          |
+| min-h-svh    | Minimum small viewport height (`100svh`).          | No          |
 
 In case both width and height have to be applied and they must be the same, the `size-*` class can be used with a range from 1 to 12.
 

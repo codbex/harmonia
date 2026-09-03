@@ -5,11 +5,15 @@
     <div x-h-split-panel data-size="35%" data-min="20%" :data-hidden="isCompact && !!selectedId">
       <div class="vbox size-full min-w-0">
         <div x-h-toolbar data-size="md">
-          <button x-h-chip :data-variant="filter === 'all' ? 'primary' : 'outline'" @click="filter = 'all'">All</button>
-          <button x-h-chip :data-variant="filter === 'unread' ? 'primary' : 'outline'" @click="filter = 'unread'">
-            Unread
-            <span x-show="$store.erp.unreadCount" x-text="'(' + $store.erp.unreadCount + ')'"></span>
-          </button>
+          <div x-h-chip :data-variant="filter === 'all' ? 'primary' : 'outline'">
+            <button x-h-chip-button @click="filter = 'all'">All</button>
+          </div>
+          <div x-h-chip :data-variant="filter === 'unread' ? 'primary' : 'outline'">
+            <button x-h-chip-button @click="filter = 'unread'">
+              Unread
+              <span x-show="$store.erp.unreadCount" x-text="'(' + $store.erp.unreadCount + ')'"></span>
+            </button>
+          </div>
           <div x-h-toolbar-spacer></div>
           <button x-h-button data-variant="transparent" data-size="icon" aria-label="Mark all as read" :disabled="!$store.erp.unreadCount" @click="$store.erp.markAllRead()">
             <svg x-h-lucide role="presentation" data-lucide="mail-check"></svg>
@@ -17,15 +21,15 @@
         </div>
         <ul x-h-list class="flex-1 overflow-auto">
           <template x-for="message in list" :key="message.id">
-            <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" :class="selectedId === message.id && 'bg-muted'" @click="open(message.id)">
+            <li x-h-list-item.interactive class="cursor-pointer items-start gap-3 px-4 py-3" :class="selectedId === message.id && 'bg-muted'" :aria-selected="selectedId === message.id" @click="open(message.id)">
               <div x-h-avatar x-text="message.initials"></div>
               <div class="vbox min-w-0 flex-1">
                 <div class="hbox items-baseline justify-between gap-2">
                   <span class="truncate" :class="message.unread ? 'font-semibold' : 'font-medium'" x-text="message.from"></span>
-                  <span class="text-sm text-nowrap text-muted-foreground" x-text="message.date.slice(5, 10)"></span>
+                  <span x-h-list-secondary class="text-sm text-nowrap" x-text="$store.erp.date(message.date.slice(0, 10))"></span>
                 </div>
                 <span class="truncate text-sm" :class="message.unread && 'font-medium'" x-text="message.subject"></span>
-                <span class="truncate text-sm text-muted-foreground" x-text="message.preview"></span>
+                <span x-h-list-secondary class="truncate text-sm" x-text="message.preview"></span>
               </div>
               <span x-show="message.unread" x-h-badge data-variant="primary" aria-label="Unread">New</span>
             </li>
@@ -54,7 +58,7 @@
             <div x-h-avatar x-text="selected.initials"></div>
             <div class="vbox min-w-0 flex-1">
               <span class="text-lg font-semibold" x-text="selected.subject"></span>
-              <div class="text-sm text-muted-foreground" x-text="selected.from + ', ' + selected.date"></div>
+              <div class="text-sm text-muted-foreground" x-text="selected.from + ', ' + $store.erp.date(selected.date.slice(0, 10)) + ' ' + selected.date.slice(11)"></div>
             </div>
             <div class="hbox gap-2">
               <button x-h-button data-variant="outline" data-size="sm" @click="$store.erp.toast('Reply sent', 'Your reply to ' + selected.from + ' is on its way.', 'positive')">
@@ -67,7 +71,7 @@
             </div>
           </div>
           <div class="vbox flex-1 gap-3 overflow-auto p-4">
-            <template x-for="paragraph in selected.body">
+            <template x-for="(paragraph, index) in selected.body" :key="index">
               <p x-text="paragraph"></p>
             </template>
           </div>
@@ -79,7 +83,7 @@
           <div x-h-info-page>
             <div x-h-info-page-header>
               <div x-h-info-page-media.icon>
-                <svg x-h-lucide role="img" data-lucide="inbox"></svg>
+                <svg x-h-lucide role="presentation" data-lucide="inbox"></svg>
               </div>
               <div x-h-info-page-title>Select a message</div>
               <div x-h-info-page-description>Choose a message from the list to read it here.</div>

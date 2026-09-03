@@ -44,7 +44,7 @@ x-h-calendar-inline
 
 ### Model
 
-When using `x-model`, the calendar reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`). Set the bound variable to a `YYYY-MM-DD` string to pre-select a date, or to an empty string for no initial selection. On every selection the model is updated to the newly selected date in the same `YYYY-MM-DD` format. Clicking the selected day again deselects it and writes an empty string.
+When using `x-model`, the calendar reads and writes dates as `YYYY-MM-DD` strings (e.g. `"2025-06-09"`). Set the bound variable to a `YYYY-MM-DD` string to pre-select a date, or to an empty string for no initial selection. On every selection the model is updated to the newly selected date in the same `YYYY-MM-DD` format. Clicking the selected day again deselects it and writes an empty string. `x-model`'s event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are not supported and log an error, the model always updates immediately.
 
 Full ISO datetime strings (e.g. from `new Date().toISOString()`) are also accepted as input, but initialising with `YYYY-MM-DD` is recommended to avoid timezone-related date drift.
 

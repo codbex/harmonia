@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tabs fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="flex flex-col gap-8 bg-background p-4 text-foreground">
+    <div
+      id="closable"
+      x-h-tabs
+      data-orientation="horizontal"
+      x-data="{
+        tabs: [
+          { id: 'ct-1', title: 'Alpha' },
+          { id: 'ct-2', title: 'Beta' },
+          { id: 'ct-3', title: 'Gamma' },
+        ],
+        activeTabId: 'ct-2',
+        close(id) {
+          const index = this.tabs.findIndex((tab) => tab.id === id);
+          this.tabs.splice(index, 1);
+          if (this.activeTabId === id) this.activeTabId = this.tabs[Math.min(index, this.tabs.length - 1)]?.id;
+        },
+      }"
+    >
+      <div x-h-tab-bar>
+        <div x-h-tab-list>
+          <template x-for="tab in tabs" :key="tab.id">
+            <div x-h-tab-item :id="`${tab.id}i`">
+              <button x-h-tab :id="tab.id" :aria-controls="`${tab.id}c`" :aria-selected="activeTabId === tab.id" @click="activeTabId = tab.id" x-text="tab.title"></button>
+              <button x-h-tab-action :aria-label="`close ${tab.title}`" @click="close(tab.id)">
+                <svg x-h-icon data-icon="close" role="presentation"></svg>
+              </button>
+            </div>
+          </template>
+        </div>
+      </div>
+      <template x-for="tab in tabs" :key="tab.id">
+        <div x-h-tabs-content :id="`${tab.id}c`" :aria-labelledby="tab.id" :hidden="activeTabId !== tab.id">
+          <div class="p-2" x-text="`${tab.title} Content`"></div>
+        </div>
+      </template>
+    </div>
+
+    <div
+      id="mixed"
+      x-h-tabs
+      data-orientation="horizontal"
+      x-data="{
+        tabs: [
+          { id: 'mx-1', title: 'Home', closable: false },
+          { id: 'mx-2', title: 'Notes', closable: true },
+        ],
+        activeTabId: 'mx-1',
+        close(id) {
+          const index = this.tabs.findIndex((tab) => tab.id === id);
+          this.tabs.splice(index, 1);
+          if (this.activeTabId === id) this.activeTabId = this.tabs[Math.min(index, this.tabs.length - 1)]?.id;
+        },
+      }"
+    >
+      <button id="make-closable" type="button" @click="tabs[0].closable = true">Make Home closable</button>
+      <div x-h-tab-bar>
+        <div x-h-tab-list>
+          <template x-for="tab in tabs" :key="tab.id">
+            <div x-h-tab-item :id="`${tab.id}i`">
+              <button x-h-tab :id="tab.id" :aria-controls="`${tab.id}c`" :aria-selected="activeTabId === tab.id" @click="activeTabId = tab.id" x-text="tab.title"></button>
+              <template x-if="tab.closable">
+                <button x-h-tab-action :aria-label="`close ${tab.title}`" @click="close(tab.id)">
+                  <svg x-h-icon data-icon="close" role="presentation"></svg>
+                </button>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+      <template x-for="tab in tabs" :key="tab.id">
+        <div x-h-tabs-content :id="`${tab.id}c`" :aria-labelledby="tab.id" :hidden="activeTabId !== tab.id">
+          <div class="p-2" x-text="`${tab.title} Content`"></div>
+        </div>
+      </template>
+    </div>
+
+    <div style="width: 20rem">
+      <div id="overflow" x-h-tabs data-orientation="horizontal" x-data="{ tabs: Array.from({ length: 12 }, (_, i) => `ov-${i + 1}`), activeTabId: 'ov-8' }">
+        <div x-h-tab-bar>
+          <div x-h-tab-list>
+            <template x-for="(id, i) in tabs" :key="id">
+              <div x-h-tab-item :id="`${id}i`">
+                <button x-h-tab :id="id" :aria-controls="`${id}c`" :aria-selected="activeTabId === id" @click="activeTabId = id" x-text="`Tab ${i + 1}`"></button>
+              </div>
+            </template>
+          </div>
+        </div>
+        <template x-for="(id, i) in tabs" :key="id">
+          <div x-h-tabs-content :id="`${id}c`" :aria-labelledby="id" :hidden="activeTabId !== id">
+            <div class="p-2" x-text="`Tab ${i + 1} Content`"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div id="floating" x-h-tabs data-orientation="horizontal">
+      <div x-h-tab-bar data-floating="true">
+        <div x-h-tab-list>
+          <div x-h-tab-item id="fl-1i">
+            <button x-h-tab id="fl-1" aria-controls="fl-1c">Floating</button>
+            <button x-h-tab-action aria-label="close tab">
+              <svg x-h-icon data-icon="close" role="presentation"></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div x-h-tabs-content id="fl-1c" aria-labelledby="fl-1" hidden></div>
+    </div>
+  </body>
+</html>

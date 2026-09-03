@@ -28,11 +28,13 @@ export default function (Alpine) {
     );
     el.setAttribute('data-slot', 'exp-panel-item');
 
-    let itemId;
+    let itemId, controlsId;
     if (el.hasAttribute('id')) {
-      itemId = el.getAttribute('id');
+      itemId = `${el.getAttribute('id')}-trigger`;
+      controlsId = `${el.getAttribute('id')}-content`;
     } else {
       itemId = `epi${uuidv4()}`;
+      controlsId = `epi${uuidv4()}`;
     }
 
     function setExpanded(expanded) {
@@ -46,7 +48,8 @@ export default function (Alpine) {
     }
 
     el._h_expPanelItem = Alpine.reactive({
-      controls: itemId,
+      id: itemId,
+      controls: controlsId,
       expanded: evaluate(expression || 'false'),
     });
 
@@ -177,8 +180,13 @@ export default function (Alpine) {
     });
   });
 
-  Alpine.directive('h-exp-panel-content', (el) => {
+  Alpine.directive('h-exp-panel-content', (el, _, { Alpine }) => {
     el.classList.add('flex-1', 'overflow-scroll');
     el.setAttribute('data-slot', 'exp-panel-content');
+    const parent = findAncestorState(Alpine, el, '_h_expPanelItem');
+    if (parent) {
+      el.setAttribute('id', parent._h_expPanelItem.controls);
+      el.setAttribute('aria-labelledby', parent._h_expPanelItem.id);
+    }
   });
 }

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>select fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div x-data="{ selected: '' }" class="flex max-w-3xs flex-col gap-2">
+      <div id="select" x-h-select>
+        <input id="input" x-h-select-input placeholder="Select" x-model="selected" aria-label="Fruit" />
+        <div id="content" x-h-select-content>
+          <div x-h-select-list>
+            <div id="opt-apple" x-h-select-option="'Apple'" data-value="apple"></div>
+            <div id="opt-banana" x-h-select-option="'Banana'" data-value="banana"></div>
+            <div id="opt-grapes" x-h-select-option="'Grapes'" data-value="grapes"></div>
+          </div>
+        </div>
+      </div>
+      <span id="model" x-text="selected"></span>
+    </div>
+
+    <div style="position: fixed; right: 0.5rem; bottom: 0.5rem" class="w-3xs">
+      <div id="pinned-select" x-h-select>
+        <input id="pinned-input" x-h-select-input placeholder="Pinned" aria-label="Number" />
+        <div id="pinned-content" x-h-select-content>
+          <div x-h-select-list>
+            <div x-h-select-option="'One'" data-value="1"></div>
+            <div x-h-select-option="'Two'" data-value="2"></div>
+            <div x-h-select-option="'Three'" data-value="3"></div>
+            <div x-h-select-option="'Four'" data-value="4"></div>
+            <div x-h-select-option="'Five'" data-value="5"></div>
+            <div x-h-select-option="'Six'" data-value="6"></div>
+            <div x-h-select-option="'Seven'" data-value="7"></div>
+            <div x-h-select-option="'Eight'" data-value="8"></div>
+            <div x-h-select-option="'Nine'" data-value="9"></div>
+            <div x-h-select-option="'Ten'" data-value="10"></div>
+            <div x-h-select-option="'Eleven'" data-value="11"></div>
+            <div x-h-select-option="'Twelve'" data-value="12"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

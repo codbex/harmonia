@@ -162,13 +162,13 @@ describe('h-range', () => {
       expect(handles[0].getAttribute('aria-valuenow')).toBe('50');
     });
 
-    it('dispatches a change CustomEvent with the value as detail', () => {
+    it('dispatches a change CustomEvent carrying the value', () => {
       const { el, handles } = createRange({ 'data-value': '50' });
       const onChange = vi.fn();
       el.addEventListener('change', onChange);
       key(handles[0], 'ArrowRight');
       expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange.mock.calls[0][0].detail).toBe(51);
+      expect(onChange.mock.calls[0][0].detail).toEqual({ value: 51 });
     });
 
     it('does not let dual handles cross', () => {
@@ -177,7 +177,7 @@ describe('h-range', () => {
       el.addEventListener('change', onChange);
       key(handles[0], 'End');
       expect(handles[0].getAttribute('aria-valuenow')).toBe('80');
-      expect(onChange.mock.calls[0][0].detail).toEqual([80, 80]);
+      expect(onChange.mock.calls[0][0].detail).toEqual({ value: [80, 80] });
       key(handles[1], 'Home');
       expect(handles[1].getAttribute('aria-valuenow')).toBe('80');
     });
@@ -203,7 +203,7 @@ describe('h-range', () => {
       pointer(el, 'pointerdown', { clientX: 100 });
       expect(handles[0].getAttribute('aria-valuenow')).toBe('50');
       expect(onInput).toHaveBeenCalledTimes(1);
-      expect(onInput.mock.calls[0][0].detail).toBe(50);
+      expect(onInput.mock.calls[0][0].detail).toEqual({ value: 50 });
       expect(handles[0].hasAttribute('data-active')).toBe(true);
       expect(handles[0].classList.contains('ring-4')).toBe(true);
 
@@ -213,7 +213,7 @@ describe('h-range', () => {
 
       pointer(el, 'pointerup');
       expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange.mock.calls[0][0].detail).toBe(75);
+      expect(onChange.mock.calls[0][0].detail).toEqual({ value: 75 });
       expect(handles[0].hasAttribute('data-active')).toBe(false);
       expect(handles[0].classList.contains('ring-4')).toBe(false);
     });
@@ -335,6 +335,25 @@ describe('h-range', () => {
       const { handles } = createRange({ 'data-value': '30' }, [], withModel('abc'));
       expect(handles[0].getAttribute('aria-valuenow')).toBe('30');
     });
+
+    // Alpine's own x-model listener takes a CustomEvent's detail whole, so
+    // during the dispatch it writes the detail object over the model. The
+    // dispatch re-asserts the model afterwards, the final write wins.
+    it('restores the model after Alpine reads the event detail', () => {
+      let model;
+      const { handles } = createRange({ 'data-value': '50' }, [], (el) => {
+        model = withModel(50)(el);
+        el.addEventListener('input', (event) => model.set(event.detail));
+      });
+      key(handles[0], 'ArrowRight');
+      expect(model.value).toBe(51);
+    });
+
+    it('rejects x-model event modifiers with a console error', () => {
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const { el } = createRange({ 'x-model.lazy': 'volume' });
+      expect(error).toHaveBeenCalledWith('x-h-range: x-model.lazy is not supported, the model always updates immediately', el);
+    });
   });
 
   describe('disabled', () => {
@@ -415,7 +434,7 @@ describe('h-range', () => {
       expect(handles[0].getAttribute('aria-valuenow')).toBe('40');
       expect(input.value).toBe('40');
       expect(model.set).toHaveBeenCalledWith(40);
-      expect(onChange.mock.calls.at(-1)[0].detail).toBe(40);
+      expect(onChange.mock.calls.at(-1)[0].detail).toEqual({ value: 40 });
 
       // The reset listener is removed with the directive.
       key(handles[0], 'ArrowRight');

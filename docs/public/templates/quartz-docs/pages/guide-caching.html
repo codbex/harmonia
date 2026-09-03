@@ -1,0 +1,70 @@
+<div class="mx-auto vbox w-full max-w-3xl gap-6 px-6 py-8" x-data="docPage">
+  <h1 x-h-text.h1>Caching</h1>
+  <p x-h-text.lead>Three numbers decide the whole lifetime of an entry: how long it stays fresh, when it is thrown away, and how many subscribers are still watching it.</p>
+
+  <h2 id="staleness" x-h-text.h2>Staleness</h2>
+  <p x-h-text>
+    An entry is fresh for <code x-h-text.code-inline>ttl</code> milliseconds after it resolves. Reading a fresh entry never touches the network. Reading a stale one serves the old value and starts a refetch in the background, which is where
+    the library gets most of its perceived speed.
+  </p>
+  <p
+    x-h-text.code
+    x-text="`const client = quartz({
+  ttl: 30000,        // fresh for 30 seconds
+  gcTime: 300000,    // dropped 5 minutes after the last subscriber leaves
+  refetchOnFocus: true,
+})
+
+// This key is read far more often than it changes.
+client.query('countries', fetchCountries, { ttl: 86400000 })`"
+  ></p>
+  <p x-h-text>Per query options win over client options, so a reference list that changes twice a year and a dashboard that changes every minute can live in the same cache without compromise.</p>
+
+  <h2 id="invalidation" x-h-text.h2>Invalidation</h2>
+  <p x-h-text>Writes are the other half of caching. After a mutation succeeds, mark the affected keys stale and every screen watching them refreshes itself.</p>
+  <p
+    x-h-text.code
+    x-text="`await saveProject(project)
+
+client.invalidate('project:' + project.id)
+client.invalidate((key) => key.startsWith('projects'))`"
+  ></p>
+  <p x-h-text>
+    Passing a predicate invalidates every matching key at once, which is the usual way to clear a list and all of its filtered variants after an item is added. Entries with no subscribers are simply marked, so nothing is refetched until
+    something asks for it again.
+  </p>
+
+  <div x-h-alert data-variant="information">
+    <svg x-h-lucide role="presentation" data-lucide="info"></svg>
+    <div x-h-alert-title>Invalidate, do not clear</div>
+    <div x-h-alert-description>Clearing removes the value and sends every screen back to a spinner. Invalidating keeps it on screen while the fresh copy is fetched.</div>
+  </div>
+
+  <h2 id="garbage-collection" x-h-text.h2>Garbage collection</h2>
+  <p x-h-text>
+    When the last subscriber to an entry unsubscribes, the entry is kept for <code x-h-text.code-inline>gcTime</code> and then dropped. Navigating away from a route and straight back therefore restores it from cache, while a tab left open
+    overnight does not hold on to data nobody is watching.
+  </p>
+  <p x-h-text.muted>In flight requests for a collected key are aborted, so a route that unmounts mid request does not keep the connection open.</p>
+
+  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+    <template x-if="prev">
+      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+        <span class="text-xs text-muted-foreground">Previous page</span>
+        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+      </a>
+    </template>
+    <template x-if="!prev">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+    <template x-if="next">
+      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+        <span class="text-xs text-muted-foreground">Next page</span>
+        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+      </a>
+    </template>
+    <template x-if="!next">
+      <div class="flex-1" aria-hidden="true"></div>
+    </template>
+  </nav>
+</div>

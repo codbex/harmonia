@@ -1,11 +1,13 @@
 import { resolveColor, textColorClass } from '../common/colors';
 import { isDisabled } from '../common/disabled';
 import { Star, StarHalf, StarHollow, createSvg } from '../common/icons';
+import { rejectModelEventModifiers } from '../common/model';
 
 const sizeClasses = { sm: 'size-4', default: 'size-5', lg: 'size-6' };
 
 export default function (Alpine) {
-  Alpine.directive('h-rating', (el, _, { effect, cleanup }) => {
+  Alpine.directive('h-rating', (el, { original }, { effect, cleanup }) => {
+    rejectModelEventModifiers(Alpine, el, original);
     const max = Math.max(1, parseInt(el.getAttribute('data-max') || '5', 10) || 5);
     const precision = el.getAttribute('data-precision') === 'full' ? 'full' : 'half';
     const step = precision === 'half' ? 0.5 : 1;

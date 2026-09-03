@@ -6,6 +6,10 @@ Lets users choose one or more files for upload. It looks like a regular input wi
 
 Use the File Upload when a form needs the user to attach files, such as a document, an avatar image, or supporting evidence. Constrain the selection to what you actually accept: set `accept` to limit file types and add `multiple` only when several files are genuinely allowed. Pair it with a clear label describing what to upload and any size or format requirements, and prefer it over a bare native file input when you want the selection to stay visible and on-brand. For a single short text value, use a plain [Input](/components/input) instead.
 
+## Behavior
+
+The tags always show what the input holds. Emptying it puts the placeholder back, whether that happens through the picker, a form reset, or setting the input's `value` to `''` in code, which is how the same file is offered for picking a second time.
+
 ## API Reference
 
 ### Component attribute(s)

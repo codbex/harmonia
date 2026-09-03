@@ -23,6 +23,14 @@ Use progress bars to indicate the advancement of tasks such as uploads, download
 | data-loading | boolean                                                      | false    | Shows an indefinite loading animation instead of the value.            |
 | data-variant | `positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color state                                                   |
 
+## Accessibility
+
+The component gives the element the `progressbar` role and keeps `aria-valuenow` in step with the value, alongside the fixed `aria-valuemin="0"` and `aria-valuemax="100"` that make a percentage meaningful. The value is clamped to that range and rounded, so it is announced the same way it is drawn.
+
+With `data-loading` there is no value to announce, so `aria-valuenow` is dropped and `aria-busy="true"` takes its place. That is the difference between a screen reader saying the work is still running and it reading out a stalled zero. Toggling `data-loading` at runtime switches between the two.
+
+Give the element an accessible name with `aria-label` or `aria-labelledby` when what it measures is not already clear from the text next to it.
+
 ## Examples
 
 ```html

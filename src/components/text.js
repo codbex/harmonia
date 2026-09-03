@@ -26,7 +26,7 @@ export default function (Alpine) {
         el.classList.add('bg-muted', 'relative', 'rounded', 'px-[calc(var(--spacing)*1.2)]', 'py-[calc(var(--spacing)*0.8)]', 'font-mono', 'text-sm', 'font-semibold', 'whitespace-pre');
         break;
       case 'code':
-        el.classList.add('bg-muted', 'relative', 'rounded', 'p-3', 'font-mono', 'text-sm', 'font-semibold', 'whitespace-pre');
+        el.classList.add('bg-muted', 'relative', 'rounded', 'p-3', 'font-mono', 'text-sm', 'font-semibold', 'whitespace-pre', 'overflow-x-auto');
         break;
       case 'lead':
         el.classList.add('text-muted-foreground', 'text-xl');

@@ -33,3 +33,7 @@ docs/public/theming/sections.json
 
 # VitePress
 **/.vitepress/cache
+
+# Playwright
+playwright-report
+test-results

@@ -1013,6 +1013,495 @@ describe('h-slot-picker', () => {
     });
   });
 
+  describe('drag and drop', () => {
+    const pointer = (target, type, coords = {}) => target.dispatchEvent(new MouseEvent(type, { bubbles: true, ...coords }));
+
+    function stubRect(node, rect) {
+      node.getBoundingClientRect = () => ({ left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, ...rect });
+    }
+
+    function dayColumns() {
+      return Array.from(el.querySelector('.overflow-auto').firstElementChild.children);
+    }
+
+    // Three 100px-wide side-by-side day columns: 22, 23, 24 June 2026.
+    function stubColumns() {
+      const cols = dayColumns();
+      cols.forEach((col, i) => stubRect(col, { left: i * 100, right: (i + 1) * 100, top: 0, bottom: 500, width: 100, height: 500 }));
+      return cols;
+    }
+
+    function slotList(colIdx) {
+      return dayColumns()[colIdx].querySelector('[data-slot="slot-picker-header"]').nextElementSibling;
+    }
+
+    function slotNodes(colIdx) {
+      return Array.from(slotList(colIdx).children).filter((n) => n.matches('[data-slot="slot-picker-cell"], [data-slot="slot-picker-slot"]'));
+    }
+
+    // Stub each slot node of a column as a 40px-spaced band (midpoints at 68,
+    // 108, 148, ...). Stubs are own-property functions on the original nodes:
+    // they do not move when a node is relocated and do not survive cloning, so
+    // all midpoints stay static for a whole drag and expected indices derive
+    // from the original geometry.
+    function stubSlots(colIdx) {
+      slotNodes(colIdx).forEach((n, j) => stubRect(n, { left: colIdx * 100, right: colIdx * 100 + 100, top: 50 + j * 40, bottom: 86 + j * 40, width: 100, height: 36 }));
+    }
+
+    function ghost() {
+      return el.querySelector('[data-slot="slot-picker-ghost"]');
+    }
+
+    const baseSlots = () => [
+      { date: FIXED_DATE, start: '09:00', end: '09:30' },
+      { date: FIXED_DATE, start: '10:00', end: '10:30' },
+    ];
+
+    function firstCell() {
+      return el.querySelector('button[data-slot="slot-picker-cell"]');
+    }
+
+    it('is inert when draggable is not enabled', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 50 });
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 50 });
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(ghost()).toBeNull();
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('moves a slot to another day with a ghost, a live placeholder, and index and slots in the detail', () => {
+      const slots = baseSlots();
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 250, clientY: 60 });
+      // The ghost follows the pointer while the dimmed original is parked in
+      // the hovered day's list.
+      const g = ghost();
+      expect(g).toBeTruthy();
+      expect(g.parentNode).toBe(el);
+      expect(g.getAttribute('aria-hidden')).toBe('true');
+      ['absolute', 'opacity-50', 'pointer-events-none', 'z-50', 'shadow-lg'].forEach((c) => expect(g.classList.contains(c)).toBe(true));
+      expect(cell.getAttribute('data-dragging')).toBe('true');
+      expect(cell.classList.contains('opacity-50')).toBe(true);
+      expect(cell.parentNode).toBe(slotList(2));
+      pointer(cell, 'pointerup', { clientX: 250, clientY: 60 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.slot).toMatchObject({ date: FIXED_DATE, start: '09:00', end: '09:30', tileIndex: null });
+      expect(detail.slot.key).toBe('2026-06-22T09:00');
+      expect(detail.date).toBe('2026-06-24');
+      expect(detail.index).toBe(0);
+      expect(detail.slots).toEqual([slots[1], { ...slots[0], date: '2026-06-24' }]);
+      expect(detail.slots).not.toBe(slots);
+      expect(slots[0].date).toBe(FIXED_DATE);
+      // Snap-back: ghost gone, the slot restored to its home position and look.
+      expect(ghost()).toBeNull();
+      expect(cell.parentNode).toBe(slotList(0));
+      expect(slotNodes(0)[0]).toBe(cell);
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(cell.classList.contains('opacity-50')).toBe(false);
+    });
+
+    it('reorders a slot down within its day', () => {
+      const slots = [...baseSlots(), { date: FIXED_DATE, start: '11:00', end: '11:30' }];
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      stubColumns();
+      stubSlots(0);
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const [c0, c1, c2] = slotNodes(0);
+      pointer(c0, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(c0, 'pointermove', { clientX: 50, clientY: 120 });
+      // Past cell 1's midpoint (108): the placeholder parks between 10:00 and 11:00.
+      expect(slotNodes(0)).toEqual([c1, c0, c2]);
+      pointer(c0, 'pointerup', { clientX: 50, clientY: 120 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.date).toBe(FIXED_DATE);
+      expect(detail.index).toBe(1);
+      expect(detail.slots).toEqual([slots[1], { ...slots[0] }, slots[2]]);
+      expect(slotNodes(0)).toEqual([c0, c1, c2]);
+    });
+
+    it('reorders a slot up within its day', () => {
+      const slots = [...baseSlots(), { date: FIXED_DATE, start: '11:00', end: '11:30' }];
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      stubColumns();
+      stubSlots(0);
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const [c0, c1, c2] = slotNodes(0);
+      pointer(c2, 'pointerdown', { clientX: 50, clientY: 140 });
+      pointer(c2, 'pointermove', { clientX: 50, clientY: 60 });
+      // Above cell 0's midpoint (68): the placeholder parks first.
+      expect(slotNodes(0)).toEqual([c2, c0, c1]);
+      pointer(c2, 'pointerup', { clientX: 50, clientY: 60 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.date).toBe(FIXED_DATE);
+      expect(detail.index).toBe(0);
+      expect(detail.slots).toEqual([{ ...slots[2] }, slots[0], slots[1]]);
+    });
+
+    it('inserts between existing slots on a cross-day move', () => {
+      const slots = [
+        { date: FIXED_DATE, start: '09:00', end: '09:30' },
+        { date: '2026-06-23', start: '09:00', end: '09:30' },
+        { date: '2026-06-23', start: '10:00', end: '10:30' },
+      ];
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      stubColumns();
+      stubSlots(1);
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 100 });
+      expect(cell.parentNode).toBe(slotList(1));
+      expect(slotNodes(1)[1]).toBe(cell);
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 100 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.date).toBe('2026-06-23');
+      expect(detail.index).toBe(1);
+      expect(detail.slots).toEqual([slots[1], { ...slots[0], date: '2026-06-23' }, slots[2]]);
+    });
+
+    it('does not dispatch on a same-position drop and suppresses the trailing click', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      stubSlots(0);
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      el.addEventListener('slot-click', clicks);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 60, clientY: 60 });
+      pointer(cell, 'pointerup', { clientX: 60, clientY: 60 });
+      expect(drops).not.toHaveBeenCalled();
+      cell.click();
+      expect(clicks).not.toHaveBeenCalled();
+      cell.click();
+      expect(clicks).toHaveBeenCalledOnce();
+    });
+
+    it('dispatches nothing after a round trip back to the original position', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      stubSlots(0);
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const [c0, c1] = slotNodes(0);
+      pointer(c0, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(c0, 'pointermove', { clientX: 50, clientY: 120 });
+      expect(slotNodes(0)).toEqual([c1, c0]);
+      pointer(c0, 'pointermove', { clientX: 50, clientY: 60 });
+      expect(slotNodes(0)).toEqual([c0, c1]);
+      pointer(c0, 'pointerup', { clientX: 50, clientY: 60 });
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('keeps sub-threshold moves as plain clicks', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      const clicks = vi.fn();
+      el.addEventListener('slot-click', clicks);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(cell, 'pointermove', { clientX: 52, clientY: 51 });
+      pointer(cell, 'pointerup', { clientX: 52, clientY: 51 });
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(ghost()).toBeNull();
+      cell.click();
+      expect(clicks).toHaveBeenCalledOnce();
+    });
+
+    it('leaves the selection untouched by a drag', () => {
+      withModel();
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      const cell = firstCell();
+      cell.click();
+      expect(cell.getAttribute('aria-pressed')).toBe('true');
+      expect(el._x_model.get()).toBe('2026-06-22T09:00');
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 50 });
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 50 });
+      expect(cell.getAttribute('aria-pressed')).toBe('true');
+      expect(el._x_model.get()).toBe('2026-06-22T09:00');
+    });
+
+    it('respects a per-slot draggable: false', () => {
+      const slots = baseSlots();
+      slots[0].draggable = false;
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 50 });
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 50 });
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('never drags unavailable slots', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: false }] }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = el.querySelector('[data-slot="slot-picker-cell"]');
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 50 });
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 50 });
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('never targets a disabled day column', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots(), disabledDates: ['2026-06-23'] }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 60 });
+      // The disabled middle day is no target: the placeholder stays home.
+      expect(cell.parentNode).toBe(slotList(0));
+      expect(slotNodes(0)[0]).toBe(cell);
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 60 });
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('restores the placeholder and dispatches nothing on a drop outside every column', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 60 });
+      expect(cell.parentNode).toBe(slotList(1));
+      pointer(cell, 'pointermove', { clientX: -50, clientY: 60 });
+      expect(cell.parentNode).toBe(slotList(0));
+      expect(slotNodes(0)[0]).toBe(cell);
+      pointer(cell, 'pointerup', { clientX: -50, clientY: 60 });
+      expect(drops).not.toHaveBeenCalled();
+      expect(ghost()).toBeNull();
+    });
+
+    it('clamps the pointer into the day grid so edges still target the nearest day', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      stubRect(el.querySelector('.overflow-auto').firstElementChild, { left: 0, right: 300, top: 0, bottom: 500, width: 300, height: 500 });
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      // Far below the grid over column 1's x range: clamps to column 1.
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 700 });
+      expect(cell.parentNode).toBe(slotList(1));
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 700 });
+      expect(drops).toHaveBeenCalledOnce();
+      expect(drops.mock.calls[0][0].detail.date).toBe('2026-06-23');
+    });
+
+    it('never drags generated slots', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, start: '09:00', end: '11:00', step: 60 }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 60 });
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 60 });
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(ghost()).toBeNull();
+      expect(drops).not.toHaveBeenCalled();
+    });
+
+    it('keeps fillEmptyDays fillers inert but accepts drops on their day', () => {
+      const raw = { date: FIXED_DATE, start: '08:00', end: '08:30' };
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, fillEmptyDays: true, start: '09:00', end: '11:00', step: 60, slots: [raw] }));
+      stubColumns();
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      // Generated fillers on other days do not drag.
+      const filler = slotNodes(1)[0];
+      pointer(filler, 'pointerdown', { clientX: 150, clientY: 60 });
+      pointer(filler, 'pointermove', { clientX: 250, clientY: 60 });
+      pointer(filler, 'pointerup', { clientX: 250, clientY: 60 });
+      expect(filler.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+      // The explicit slot can drop on a generated day: the visual position
+      // appends past the fillers while the proposed array simply gains the
+      // day's only explicit slot.
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 60 });
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 60 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.date).toBe('2026-06-23');
+      expect(detail.index).toBe(2);
+      expect(detail.slots).toEqual([{ ...raw, date: '2026-06-23' }]);
+    });
+
+    it('drags a tiled slot as a whole from its header, never from a tile', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '10:00', tiles: [{ description: 'Room A' }, { description: 'Room B' }] }];
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      stubColumns();
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      el.addEventListener('slot-click', clicks);
+      const group = el.querySelector('[data-slot="slot-picker-slot"]');
+      const header = group.querySelector('[data-slot="slot-picker-slot-header"]');
+      const tile = group.querySelector('[data-slot="slot-picker-tile"]');
+
+      // A press on a tile never starts a group drag.
+      pointer(tile, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(tile, 'pointermove', { clientX: 150, clientY: 50 });
+      pointer(tile, 'pointerup', { clientX: 150, clientY: 50 });
+      expect(group.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+      tile.click();
+      expect(clicks).toHaveBeenCalledOnce();
+
+      // A press on the header drags the whole group.
+      pointer(header, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(group, 'pointermove', { clientX: 150, clientY: 50 });
+      expect(group.getAttribute('data-dragging')).toBe('true');
+      expect(group.parentNode).toBe(slotList(1));
+      pointer(group, 'pointerup', { clientX: 150, clientY: 50 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.slot).toMatchObject({ date: FIXED_DATE, start: '09:00', end: '10:00', tileIndex: null });
+      expect(detail.date).toBe('2026-06-23');
+      expect(detail.index).toBe(0);
+      expect(detail.slots).toEqual([{ ...slots[0], date: '2026-06-23' }]);
+      // Group drags never suppress the next tile click.
+      tile.click();
+      expect(clicks).toHaveBeenCalledTimes(2);
+    });
+
+    it('aborts on pointercancel without dispatching or suppressing clicks', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      const drops = vi.fn();
+      const clicks = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      el.addEventListener('slot-click', clicks);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 50 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 50 });
+      expect(ghost()).toBeTruthy();
+      expect(cell.parentNode).toBe(slotList(1));
+      pointer(cell, 'pointercancel', {});
+      expect(ghost()).toBeNull();
+      expect(cell.parentNode).toBe(slotList(0));
+      expect(cell.hasAttribute('data-dragging')).toBe(false);
+      expect(drops).not.toHaveBeenCalled();
+      cell.click();
+      expect(clicks).toHaveBeenCalledOnce();
+    });
+
+    it('positions the ghost from the pointer and the grab offset in rem', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      stubSlots(0);
+      stubRect(el, { left: 0, top: 0, width: 300, height: 600 });
+      const cell = firstCell();
+      // Grab at (50, 60) on the 100x36 cell at (0, 50): offset (50, 10).
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 200 });
+      const g = ghost();
+      expect(g.style.width).toBe('6.25rem');
+      expect(g.style.height).toBe('2.25rem');
+      expect(g.style.left).toBe('6.25rem');
+      expect(g.style.top).toBe('11.875rem');
+      // The cell's own `relative` must not survive on the clone, where it
+      // would win over `absolute` and leave the ghost in the flow.
+      expect(g.classList.contains('relative')).toBe(false);
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 200 });
+    });
+
+    it('nudges the scroll body when dragging near its edges', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      const scrollBody = el.querySelector('.overflow-auto');
+      stubRect(scrollBody, { top: 0, bottom: 500, height: 500, width: 300 });
+      scrollBody.scrollTop = 100;
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+      pointer(cell, 'pointermove', { clientX: 50, clientY: 490 });
+      expect(scrollBody.scrollTop).toBe(115);
+      pointer(cell, 'pointermove', { clientX: 50, clientY: 10 });
+      expect(scrollBody.scrollTop).toBe(100);
+      pointer(cell, 'pointerup', { clientX: 50, clientY: 10 });
+    });
+
+    it('keeps the now indicator safe while a drag parks a slot elsewhere', () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date(2026, 5, 22, 10, 30, 0));
+      try {
+        const slots = [
+          { date: FIXED_DATE, start: '09:00', end: '09:30' },
+          { date: FIXED_DATE, start: '12:00', end: '12:30' },
+          { date: FIXED_DATE, start: '23:00', end: '23:30' },
+        ];
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, showNowIndicator: true, slots }));
+        stubColumns();
+        const cell = slotNodes(0)[2];
+        pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(cell, 'pointermove', { clientX: 150, clientY: 60 });
+        expect(cell.parentNode).toBe(slotList(1));
+        // The 12:00 boundary tick fires while the 23:00 slot is parked in
+        // another column. It must not throw and must keep the indicator in
+        // today's list.
+        expect(() => vi.advanceTimersByTime(90 * 60000)).not.toThrow();
+        expect(el.querySelector('[data-slot="slot-picker-now"]').parentNode).toBe(slotList(0));
+        pointer(cell, 'pointerup', { clientX: 150, clientY: 60 });
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('targets stacked responsive columns by their vertical rects', () => {
+      const slots = [
+        { date: FIXED_DATE, start: '09:00', end: '09:30' },
+        { date: '2026-06-23', start: '09:30', end: '10:00' },
+      ];
+      mountResponsive('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+      const cols = dayColumns();
+      cols.forEach((col, i) => stubRect(col, { left: 0, right: 300, top: i * 200, bottom: (i + 1) * 200, width: 300, height: 200 }));
+      const drops = vi.fn();
+      el.addEventListener('slot-drop', drops);
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 150, clientY: 100 });
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 300 });
+      expect(cell.parentNode).toBe(slotList(1));
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 300 });
+      expect(drops).toHaveBeenCalledOnce();
+      const detail = drops.mock.calls[0][0].detail;
+      expect(detail.date).toBe('2026-06-23');
+      expect(detail.index).toBe(1);
+      expect(detail.slots).toEqual([slots[1], { ...slots[0], date: '2026-06-23' }]);
+    });
+  });
+
   describe('now indicator', () => {
     // FIXED_DATE (2026-06-22) is "today" and the first visible column.
     const setNow = (h, m) => vi.setSystemTime(new Date(2026, 5, 22, h, m, 0));

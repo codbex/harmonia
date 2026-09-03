@@ -30,6 +30,12 @@ describe('h-card', () => {
     expect(el.classList.contains('shadow-sm')).toBe(true);
   });
 
+  it('leaves the padding and the spacing to the header, content and footer', () => {
+    mountDirective(cardPlugin, 'h-card', el);
+    expect(el.classList.contains('py-6')).toBe(false);
+    expect(el.classList.contains('gap-4')).toBe(false);
+  });
+
   it('sets data-slot="card"', () => {
     mountDirective(cardPlugin, 'h-card', el);
     expect(el.getAttribute('data-slot')).toBe('card');
@@ -49,9 +55,25 @@ describe('h-card-header', () => {
     expect(el.classList.contains('px-6')).toBe(true);
   });
 
+  it('pads the top, and the bottom only when it is the last slot', () => {
+    mountDirective(cardPlugin, 'h-card-header', el);
+    expect(el.classList.contains('pt-6')).toBe(true);
+    expect(el.classList.contains('last:pb-6')).toBe(true);
+  });
+
   it('sets data-slot="card-header"', () => {
     mountDirective(cardPlugin, 'h-card-header', el);
     expect(el.getAttribute('data-slot')).toBe('card-header');
+  });
+
+  it('leaves the rows implicit so a lone title gets no gap under it', () => {
+    // A declared second row exists even when nothing is placed in it, and the
+    // gap before that empty track is still drawn, which left 0.5rem of dead
+    // space under a header holding only a title. The rows are placed as the
+    // children need them instead, sized by auto-rows-min.
+    mountDirective(cardPlugin, 'h-card-header', el);
+    expect(el.classList.contains('auto-rows-min')).toBe(true);
+    expect(el.classList.contains('grid-rows-[auto_auto]')).toBe(false);
   });
 
   it('uses a shrinkable minmax(0,1fr) track for the action grid', () => {
@@ -134,6 +156,21 @@ describe('h-card-content', () => {
     expect(el.classList.contains('px-6')).toBe(true);
   });
 
+  it('pays 16 between two slots and 24 against a card edge', () => {
+    mountDirective(cardPlugin, 'h-card-content', el);
+    expect(el.classList.contains('py-4')).toBe(true);
+    expect(el.classList.contains('first:pt-6')).toBe(true);
+    expect(el.classList.contains('last:pb-6')).toBe(true);
+  });
+
+  it('drops the padding with the flush modifier', () => {
+    mountDirective(cardPlugin, 'h-card-content', el, { modifiers: ['flush'] });
+    for (const padding of ['px-6', 'py-4', 'first:pt-6', 'last:pb-6']) {
+      expect(el.classList.contains(padding)).toBe(false);
+    }
+    expect(el.getAttribute('data-slot')).toBe('card-content');
+  });
+
   it('sets data-slot="card-content"', () => {
     mountDirective(cardPlugin, 'h-card-content', el);
     expect(el.getAttribute('data-slot')).toBe('card-content');
@@ -152,6 +189,13 @@ describe('h-card-footer', () => {
     expect(el.classList.contains('flex')).toBe(true);
     expect(el.classList.contains('items-center')).toBe(true);
     expect(el.classList.contains('px-6')).toBe(true);
+  });
+
+  it('pads the bottom, and the top only where no content pays for it', () => {
+    mountDirective(cardPlugin, 'h-card-footer', el);
+    expect(el.classList.contains('pb-6')).toBe(true);
+    expect(el.classList.contains('first:pt-6')).toBe(true);
+    expect(el.classList.contains('[[data-slot=card-header]+&]:pt-4')).toBe(true);
   });
 
   it('sets data-slot="card-footer"', () => {

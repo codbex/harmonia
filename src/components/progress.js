@@ -1,8 +1,30 @@
 export default function (Alpine) {
   Alpine.directive('h-progress', (el, { expression }, { effect, evaluateLater, cleanup }) => {
     el.setAttribute('data-slot', 'progress');
+    el.setAttribute('role', 'progressbar');
+    el.setAttribute('aria-valuemin', '0');
+    el.setAttribute('aria-valuemax', '100');
 
     const getProgress = evaluateLater(expression);
+
+    let value = 0;
+    // Assigned by whichever branch runs below, so the observer at the end can
+    // repaint without knowing which shape it is looking at.
+    let repaint = () => {};
+
+    // A loading progress is indeterminate, so there is no value to announce:
+    // 'aria-valuenow' goes away and 'aria-busy' says the work is still running.
+    // Screen readers announce a progressbar without a value as busy rather than
+    // as zero, which is the difference this guards.
+    const applyAria = () => {
+      if (el.getAttribute('data-loading') === 'true') {
+        el.removeAttribute('aria-valuenow');
+        el.setAttribute('aria-busy', 'true');
+        return;
+      }
+      el.removeAttribute('aria-busy');
+      el.setAttribute('aria-valuenow', String(Math.round(Math.min(100, Math.max(0, value ?? 0)))));
+    };
 
     if (el.getAttribute('data-type') === 'circle') {
       const LOADING_ARC = 30;
@@ -19,8 +41,7 @@ export default function (Alpine) {
       const VARIANT_VARS = { information: '--information', warning: '--warning', positive: '--positive', negative: '--negative' };
       const fill = () => `var(${VARIANT_VARS[el.getAttribute('data-variant')] || '--primary'})`;
 
-      let value = 0;
-      const paint = () => {
+      repaint = () => {
         const loading = el.getAttribute('data-loading') === 'true';
         const p = loading ? LOADING_ARC : Math.min(100, Math.max(0, value ?? 0));
         indicator.style.background = `conic-gradient(${fill()} ${p}%, var(--secondary) ${p}%)`;
@@ -30,15 +51,10 @@ export default function (Alpine) {
       effect(() => {
         getProgress((progress) => {
           value = progress;
-          paint();
+          repaint();
+          applyAria();
         });
       });
-
-      // `data-loading` / `data-variant` are not part of the reactive expression, so
-      // observe them to repaint when they are toggled at runtime.
-      const observer = new MutationObserver(paint);
-      observer.observe(el, { attributes: true, attributeFilter: ['data-loading', 'data-variant'] });
-      cleanup(() => observer.disconnect());
     } else {
       el.classList.add('bg-secondary', 'relative', 'h-2', 'w-full', 'overflow-hidden', 'rounded-full');
 
@@ -69,11 +85,26 @@ export default function (Alpine) {
 
       effect(() => {
         getProgress((progress) => {
+          value = progress;
           Object.assign(indicator.style, {
             transform: `translateX(-${100 - (progress ?? 0)}%)`,
           });
+          applyAria();
         });
       });
     }
+
+    // `data-loading` / `data-variant` are not part of the reactive expression, so
+    // observe them to repaint and re-announce when they are toggled at runtime.
+    const observer = new MutationObserver(() => {
+      repaint();
+      applyAria();
+    });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-loading', 'data-variant'] });
+    cleanup(() => observer.disconnect());
+
+    // The effects above run on the first pass, but only once the expression has
+    // been evaluated. This makes the element announceable from the very start.
+    applyAria();
   });
 }

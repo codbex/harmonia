@@ -1,7 +1,7 @@
 <div x-data="pageChannels" class="vbox gap-4 p-4">
   <div class="hbox flex-wrap items-end justify-between gap-2">
     <div class="vbox">
-      <h3 x-h-text.h5>Channels</h3>
+      <h2 x-h-text.h5>Channels</h2>
       <p x-h-text.muted>Join the conversations that matter to you; joined channels show up in the sidebar.</p>
     </div>
     <div class="w-3xs">
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div x-h-card class="w-full overflow-hidden py-0!">
+  <div x-h-card class="w-full overflow-hidden">
     <ul x-h-list>
       <template x-for="channel in list" :key="channel.id">
         <li x-h-list-item class="items-start gap-3 px-4 py-3">
@@ -26,8 +26,8 @@
               <span class="font-medium" x-text="channel.name"></span>
               <span x-h-badge data-variant="outline" x-show="channel.joined">Joined</span>
             </div>
-            <span class="truncate text-sm text-muted-foreground" x-text="channel.topic"></span>
-            <span class="text-xs text-muted-foreground" x-text="channel.memberIds.length + ' members'"></span>
+            <span x-h-list-secondary class="truncate text-sm" x-text="channel.topic"></span>
+            <span x-h-list-secondary class="text-xs" x-text="channel.memberIds.length + ' members'"></span>
           </div>
           <div class="hbox gap-2">
             <template x-if="channel.joined">

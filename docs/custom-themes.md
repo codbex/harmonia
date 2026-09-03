@@ -10,6 +10,7 @@ Every Harmonia theme includes both **light** and **dark** variants.
 
 - Light theme values are applied under the `:root` and `:host` pseudo-class selectors.
 - Dark theme values are defined under the `.dark` CSS class selector.
+- The same light values are also applied under the `.light` CSS class selector, letting a light-scheme area be nested inside a dark-scheme page or container (and a `.dark` area inside a `.light` one).
 
 This structure makes it simple to switch between themes dynamically and keep the design consistent.
 
@@ -17,7 +18,8 @@ This structure makes it simple to switch between themes dynamically and keep the
 
 ```css
 :root,
-:host {
+:host,
+.light {
   --background: oklch(1 0 0);
   --foreground: oklch(0.3211 0 0);
   ...
@@ -38,7 +40,8 @@ For example, if you only want to change your **primary brand color**, your custo
 
 ```css
 :root,
-:host {
+:host,
+.light {
   --primary: oklch(...);
   --primary-foreground: oklch(...);
   --primary-hover: oklch(...);

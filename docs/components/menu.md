@@ -99,6 +99,10 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 | -------- | ------------------------------ |
 | sub      | Menu will behave as a submenu. |
 
+### Model
+
+Bind a boolean with `x-model` on `x-h-menu-checkbox-item`. On a set of `x-h-menu-radio-item`s, bind the same variable on every item, and it holds the value of the selected one. `x-model`'s event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are not supported and log an error, the model always updates immediately.
+
 ## Examples
 
 ### Dropdown

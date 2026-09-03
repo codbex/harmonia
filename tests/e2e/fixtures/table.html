@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>table fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="flex flex-col gap-8 bg-background p-4 text-foreground">
+    <div id="scroller" x-h-table-container.scroll data-border="true" style="max-height: 16rem; max-width: 24rem">
+      <table x-h-table>
+        <thead id="head" x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Row</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Alpha</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Beta</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Gamma</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Delta</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Epsilon</th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <template x-for="i in 20">
+            <tr x-h-table-row data-hoverable="true" :id="`row-${i}`">
+              <th x-h-table-head scope="row" x-text="`Row ${i}`"></th>
+              <td x-h-table-cell x-text="`Alpha ${i}`"></td>
+              <td x-h-table-cell x-text="`Beta ${i}`"></td>
+              <td x-h-table-cell x-text="`Gamma ${i}`"></td>
+              <td x-h-table-cell x-text="`Delta ${i}`"></td>
+              <td x-h-table-cell x-text="`Epsilon ${i}`"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <div x-h-table-container data-border="true" class="max-w-md">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Product</th>
+            <th x-h-table-head scope="col">Stock</th>
+          </tr>
+        </thead>
+        <tbody id="group" x-h-table-body x-h-table-group>
+          <tr x-h-table-group-row>
+            <td x-h-table-cell colspan="2">
+              <button id="group-button" x-h-table-group-button><span>Fruits</span></button>
+            </td>
+          </tr>
+          <tr id="member-1" x-h-table-row>
+            <td x-h-table-cell>Apples</td>
+            <td x-h-table-cell>140</td>
+          </tr>
+          <tr id="member-2" x-h-table-row>
+            <td x-h-table-cell>Oranges</td>
+            <td x-h-table-cell>72</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

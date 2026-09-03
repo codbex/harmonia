@@ -1,7 +1,10 @@
+import { rejectModelEventModifiers } from '../common/model';
+
 export default function (Alpine) {
   Alpine.directive('h-range', (el, { original, modifiers }, { Alpine, effect, cleanup }) => {
     const vertical = modifiers.includes('vertical');
     const dual = modifiers.includes('dual');
+    rejectModelEventModifiers(Alpine, el, original);
 
     // The consumer-authored native input carries the value into forms and,
     // like the other form components, holds the disabled and aria-invalid
@@ -156,9 +159,11 @@ export default function (Alpine) {
     }
 
     function dispatch(type) {
-      // Alpine's own x-model listener reads CustomEvent detail; a plain Event
-      // would overwrite the bound model with the element's undefined value.
-      el.dispatchEvent(new CustomEvent(type, { detail: modelValue(), bubbles: true }));
+      el.dispatchEvent(new CustomEvent(type, { detail: { value: modelValue() }, bubbles: true }));
+      // Alpine's own x-model listener reads a CustomEvent's detail whole, so
+      // during the dispatch it writes the detail object over the bound model.
+      // Re-assert the model once the listeners have run, the final write wins.
+      if (el._x_model) el._x_model.set(modelValue());
     }
 
     // aria-invalid mirroring - the hidden input is not announced, so the
