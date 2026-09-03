@@ -7,14 +7,18 @@
   <div x-h-tabs data-orientation="horizontal">
     <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
       <div x-h-tab-list>
-        <button id="act-tab-mentions" x-h-tab aria-controls="act-panel-mentions" :aria-selected="tab === 'mentions'" @click="tab = 'mentions'">
-          <svg x-h-lucide role="presentation" data-lucide="at-sign"></svg>
-          <span x-text="'Mentions (' + $store.chat.mentionEvents.length + ')'"></span>
-        </button>
-        <button id="act-tab-reactions" x-h-tab aria-controls="act-panel-reactions" :aria-selected="tab === 'reactions'" @click="tab = 'reactions'">
-          <svg x-h-lucide role="presentation" data-lucide="smile"></svg>
-          <span x-text="'Reactions (' + $store.chat.reactionEvents.length + ')'"></span>
-        </button>
+        <div x-h-tab-item>
+          <button id="act-tab-mentions" x-h-tab aria-controls="act-panel-mentions" :aria-selected="tab === 'mentions'" @click="tab = 'mentions'">
+            <svg x-h-lucide role="presentation" data-lucide="at-sign"></svg>
+            <span x-text="'Mentions (' + $store.chat.mentionEvents.length + ')'"></span>
+          </button>
+        </div>
+        <div x-h-tab-item>
+          <button id="act-tab-reactions" x-h-tab aria-controls="act-panel-reactions" :aria-selected="tab === 'reactions'" @click="tab = 'reactions'">
+            <svg x-h-lucide role="presentation" data-lucide="smile"></svg>
+            <span x-text="'Reactions (' + $store.chat.reactionEvents.length + ')'"></span>
+          </button>
+        </div>
       </div>
     </div>
 

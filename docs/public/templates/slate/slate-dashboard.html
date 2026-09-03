@@ -305,14 +305,18 @@
                 <div x-h-tabs data-orientation="horizontal" x-data="{ tab: 'traffic' }">
                   <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
                     <div x-h-tab-list>
-                      <button id="an-tab-traffic" x-h-tab aria-controls="an-panel-traffic" :aria-selected="tab === 'traffic'" @click="tab = 'traffic'">
-                        <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
-                        Traffic
-                      </button>
-                      <button id="an-tab-devices" x-h-tab aria-controls="an-panel-devices" :aria-selected="tab === 'devices'" @click="tab = 'devices'">
-                        <svg x-h-lucide role="presentation" data-lucide="chart-column"></svg>
-                        Devices
-                      </button>
+                      <div x-h-tab-item>
+                        <button id="an-tab-traffic" x-h-tab aria-controls="an-panel-traffic" :aria-selected="tab === 'traffic'" @click="tab = 'traffic'">
+                          <svg x-h-lucide role="presentation" data-lucide="chart-line"></svg>
+                          Traffic
+                        </button>
+                      </div>
+                      <div x-h-tab-item>
+                        <button id="an-tab-devices" x-h-tab aria-controls="an-panel-devices" :aria-selected="tab === 'devices'" @click="tab = 'devices'">
+                          <svg x-h-lucide role="presentation" data-lucide="chart-column"></svg>
+                          Devices
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="pt-4" x-h-tabs-content id="an-panel-traffic" aria-labelledby="an-tab-traffic" :hidden="tab !== 'traffic'">

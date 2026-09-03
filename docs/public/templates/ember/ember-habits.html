@@ -162,8 +162,12 @@
           <div x-h-tabs data-orientation="horizontal">
             <div x-h-tab-bar data-floating="true" class="w-max shadow-none!">
               <div x-h-tab-list>
-                <button id="range-tab-week" x-h-tab aria-controls="range-panel-week" :aria-selected="range === 'week'" @click="range = 'week'">Week</button>
-                <button id="range-tab-month" x-h-tab aria-controls="range-panel-month" :aria-selected="range === 'month'" @click="range = 'month'">Month</button>
+                <div x-h-tab-item>
+                  <button id="range-tab-week" x-h-tab aria-controls="range-panel-week" :aria-selected="range === 'week'" @click="range = 'week'">Week</button>
+                </div>
+                <div x-h-tab-item>
+                  <button id="range-tab-month" x-h-tab aria-controls="range-panel-month" :aria-selected="range === 'month'" @click="range = 'month'">Month</button>
+                </div>
               </div>
             </div>
             <div class="pt-4" x-h-tabs-content id="range-panel-week" aria-labelledby="range-tab-week" :hidden="range !== 'week'">
