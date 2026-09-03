@@ -151,3 +151,27 @@ The card itself has no padding, the header, the content and the footer pad thems
 ```
 
 </LiveExample>
+
+### Interactive List
+
+<LiveExample data-class="flex flex-col items-stretch">
+
+```html
+<div x-h-card class="overflow-hidden" x-data="{ selected: 'Design' }">
+  <div x-h-card-header class="border-b">
+    <div x-h-card-title>Workspaces</div>
+    <div x-h-card-description>Pick the one to open on start</div>
+  </div>
+  <div x-h-card-content.flush>
+    <ul x-h-list>
+      <template x-for="name in ['Design', 'Engineering', 'Marketing']" :key="name">
+        <li x-h-list-item>
+          <button x-h-list-item-button :aria-current="selected === name" @click="selected = name" x-text="name"></button>
+        </li>
+      </template>
+    </ul>
+  </div>
+</div>
+```
+
+</LiveExample>

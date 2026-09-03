@@ -11,6 +11,12 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Alpine leaves the x-if / x-for <template> in place and inserts the rendered branch after
+   it, so a template is an element sibling that renders nothing. These two stand in for
+   :last-child / :first-child wherever such a template must not count. */
+@custom-variant last-rendered (&:not(:has(~ *:not(template))));
+@custom-variant first-rendered (&:not(:not(template) ~ *));
+
 :root,
 :host,
 .light {

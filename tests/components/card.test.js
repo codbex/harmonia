@@ -55,10 +55,10 @@ describe('h-card-header', () => {
     expect(el.classList.contains('px-6')).toBe(true);
   });
 
-  it('pads the top, and the bottom only when it is the last slot', () => {
+  it('pads the top, and the bottom only when it is the last rendered slot', () => {
     mountDirective(cardPlugin, 'h-card-header', el);
     expect(el.classList.contains('pt-6')).toBe(true);
-    expect(el.classList.contains('last:pb-6')).toBe(true);
+    expect(el.classList.contains('last-rendered:pb-6')).toBe(true);
   });
 
   it('sets data-slot="card-header"', () => {
@@ -159,13 +159,13 @@ describe('h-card-content', () => {
   it('pays 16 between two slots and 24 against a card edge', () => {
     mountDirective(cardPlugin, 'h-card-content', el);
     expect(el.classList.contains('py-4')).toBe(true);
-    expect(el.classList.contains('first:pt-6')).toBe(true);
-    expect(el.classList.contains('last:pb-6')).toBe(true);
+    expect(el.classList.contains('first-rendered:pt-6')).toBe(true);
+    expect(el.classList.contains('last-rendered:pb-6')).toBe(true);
   });
 
   it('drops the padding with the flush modifier', () => {
     mountDirective(cardPlugin, 'h-card-content', el, { modifiers: ['flush'] });
-    for (const padding of ['px-6', 'py-4', 'first:pt-6', 'last:pb-6']) {
+    for (const padding of ['px-6', 'py-4', 'first-rendered:pt-6', 'last-rendered:pb-6']) {
       expect(el.classList.contains(padding)).toBe(false);
     }
     expect(el.getAttribute('data-slot')).toBe('card-content');
@@ -194,8 +194,8 @@ describe('h-card-footer', () => {
   it('pads the bottom, and the top only where no content pays for it', () => {
     mountDirective(cardPlugin, 'h-card-footer', el);
     expect(el.classList.contains('pb-6')).toBe(true);
-    expect(el.classList.contains('first:pt-6')).toBe(true);
-    expect(el.classList.contains('[[data-slot=card-header]+&]:pt-4')).toBe(true);
+    expect(el.classList.contains('first-rendered:pt-6')).toBe(true);
+    expect(el.classList.contains('[[data-slot=card-header]~&:not([data-slot=card-content]~*)]:pt-4')).toBe(true);
   });
 
   it('sets data-slot="card-footer"', () => {

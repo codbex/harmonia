@@ -5,7 +5,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-card-header', (el) => {
-    el.classList.add('@container/card-header', 'grid', 'auto-rows-min', 'items-start', 'gap-2', 'px-6', 'pt-6', 'last:pb-6', 'has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]', '[.border-b]:pb-6');
+    el.classList.add('@container/card-header', 'grid', 'auto-rows-min', 'items-start', 'gap-2', 'px-6', 'pt-6', 'last-rendered:pb-6', 'has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]', '[.border-b]:pb-6');
     el.setAttribute('data-slot', 'card-header');
   });
 
@@ -28,14 +28,17 @@ export default function (Alpine) {
     el.setAttribute('data-slot', 'card-content');
     el.classList.add('min-h-0');
     if (!modifiers.includes('flush')) {
-      el.classList.add('px-6', 'py-4', 'first:pt-6', 'last:pb-6');
+      el.classList.add('px-6', 'py-4', 'first-rendered:pt-6', 'last-rendered:pb-6');
     }
   });
 
   Alpine.directive('h-card-footer', (el) => {
     // The 16 between a header and the content is paid by the content, so a
-    // footer only pays it where there is no content to do so.
-    el.classList.add('flex', 'items-center', 'px-6', 'pb-6', 'first:pt-6', '[[data-slot=card-header]+&]:pt-4', '[.border-t]:pt-6');
+    // footer only pays it where there is no content to do so. An x-if template
+    // between the two is a sibling that renders nothing, so the header cannot be
+    // matched with '+'. Asking for "a header before me and no content before me"
+    // instead picks the same set given the slot order, and no template defeats it.
+    el.classList.add('flex', 'items-center', 'px-6', 'pb-6', 'first-rendered:pt-6', '[[data-slot=card-header]~&:not([data-slot=card-content]~*)]:pt-4', '[.border-t]:pt-6');
     el.setAttribute('data-slot', 'card-footer');
   });
 }

@@ -470,6 +470,11 @@ describe('h-dialog-header', () => {
     expect(el.classList.contains('pb-4')).toBe(false);
   });
 
+  it('pads its bottom when no slot renders after it', () => {
+    mountDirective(dialogPlugin, 'h-dialog-header', el);
+    expect(el.classList.contains('last-rendered:pb-4')).toBe(true);
+  });
+
   it('sets data-slot="dialog-header"', () => {
     mountDirective(dialogPlugin, 'h-dialog-header', el);
     expect(el.getAttribute('data-slot')).toBe('dialog-header');
@@ -623,7 +628,7 @@ describe('h-dialog-footer', () => {
     expect(el.classList.contains('px-4')).toBe(true);
     expect(el.classList.contains('pb-4')).toBe(true);
     expect(el.classList.contains('pt-4')).toBe(false);
-    expect(el.classList.contains('[[data-slot=dialog-header]+&]:pt-4')).toBe(true);
+    expect(el.classList.contains('[[data-slot=dialog-header]~&:not([data-slot=dialog-content]~*)]:pt-4')).toBe(true);
   });
 
   it('sets data-slot="dialog-footer"', () => {

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>card fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data="{ show: false, dialogOpen: true }" class="flex flex-col gap-8 bg-background p-4 text-foreground">
+    <button id="toggle" x-h-button @click="show = !show">Toggle the conditional slots</button>
+
+    <div id="header-only" x-h-card class="w-96">
+      <div id="header-only-header" x-h-card-header>
+        <div x-h-card-title>Conditional content</div>
+      </div>
+      <template x-if="show">
+        <div id="header-only-content" x-h-card-content>Content behind an x-if</div>
+      </template>
+    </div>
+
+    <div id="with-footer" x-h-card class="w-96">
+      <div id="with-footer-header" x-h-card-header>
+        <div x-h-card-title>Conditional content, fixed footer</div>
+      </div>
+      <template x-if="show">
+        <div x-h-card-content>Content behind an x-if</div>
+      </template>
+      <div id="with-footer-footer" x-h-card-footer>
+        <button x-h-button data-variant="primary">Save</button>
+      </div>
+    </div>
+
+    <div id="conditional-header" x-h-card class="w-96">
+      <template x-if="show">
+        <div x-h-card-header>
+          <div x-h-card-title>Header behind an x-if</div>
+        </div>
+      </template>
+      <div id="conditional-header-content" x-h-card-content>Always rendered content</div>
+    </div>
+
+    <div x-h-dialog-overlay :data-open="dialogOpen">
+      <div x-h-dialog>
+        <div id="dialog-header" x-h-dialog-header>
+          <h2 x-h-dialog-title>Conditional dialog content</h2>
+        </div>
+        <template x-if="show">
+          <div x-h-dialog-content>Content behind an x-if</div>
+        </template>
+      </div>
+    </div>
+  </body>
+</html>

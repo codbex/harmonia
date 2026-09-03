@@ -2,7 +2,7 @@
 
 ## v3.1.0
 
-A release that makes an interactive list valid HTML. An interactive item used to become a button itself, which left its `ul` with no list items and cost the list its announcement. The row control is now a real button or link inside the item, written with the new `x-h-list-item-button`. It also fixes a listbox and combobox bug where a list nested inside an option turned its own rows into options, and moves the listbox into a plugin of its own. It ships the `mt-auto` utility class along with the half steps of the padding and gap scales. There are breaking changes to interactive lists and to registering the listbox by hand.
+A release that makes an interactive list valid HTML. An interactive item used to become a button itself, which left its `ul` with no list items and cost the list its announcement. The row control is now a real button or link inside the item, written with the new `x-h-list-item-button`. It also fixes a listbox and combobox bug where a list nested inside an option turned its own rows into options, and moves the listbox into a plugin of its own. It also repairs card and dialog padding around a slot behind an `x-if`, where the template Alpine leaves in place counted as the slot that never rendered. It ships the `mt-auto` utility class along with the half steps of the padding and gap scales. There are breaking changes to interactive lists and to registering the listbox by hand.
 
 ### List
 
@@ -14,6 +14,14 @@ A release that makes an interactive list valid HTML. An interactive item used to
 ### Listbox
 
 - **Breaking: the listbox is a plugin of its own**, no longer riding along with the list plugin. Only affects ESM consumers registering components one by one: add `Alpine.plugin(Listbox)` beside `Alpine.plugin(List)`. `registerComponents` and the CDN bundle need no change.
+
+### Card
+
+- **Fixed: a slot behind an `x-if` cost the slot beside it its padding.** Alpine leaves the `<template>` in the card, and that sibling still counted when a slot looked for the card's edges and for its neighbours, so a header above conditional content sat against the card's bottom edge. A template from `x-if` or `x-for` is no longer counted as a slot.
+
+### Dialog
+
+- **Fixed: a dialog header pays the padding under it when nothing renders after it.** It left that side to the body below, so a dialog whose body is behind an `x-if` had its title against the bottom edge. The gap between a header and a footer now survives a template between them too.
 
 ### New utility classes
 

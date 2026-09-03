@@ -125,7 +125,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-dialog-header', (el) => {
-    el.classList.add('grid', 'grid-cols-[minmax(0,1fr)_auto]', 'place-items-start', 'gap-2', 'px-4', 'pt-4', 'text-center', 'sm:text-left');
+    el.classList.add('grid', 'grid-cols-[minmax(0,1fr)_auto]', 'place-items-start', 'gap-2', 'px-4', 'pt-4', 'last-rendered:pb-4', 'text-center', 'sm:text-left');
     el.setAttribute('data-slot', 'dialog-header');
   });
 
@@ -184,7 +184,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-dialog-footer', (el) => {
-    el.classList.add('flex', 'flex-col-reverse', 'gap-2', 'px-4', 'pb-4', '[[data-slot=dialog-header]+&]:pt-4', 'sm:flex-row', 'sm:justify-end');
+    el.classList.add('flex', 'flex-col-reverse', 'gap-2', 'px-4', 'pb-4', '[[data-slot=dialog-header]~&:not([data-slot=dialog-content]~*)]:pt-4', 'sm:flex-row', 'sm:justify-end');
     el.setAttribute('data-slot', 'dialog-footer');
   });
 }
