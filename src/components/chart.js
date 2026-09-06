@@ -541,7 +541,8 @@ function renderPie(root, cfg, ctx, doughnut = false) {
     );
     svg.appendChild(wedge);
 
-    // Percentage label for the slice (skip slivers too small to fit one).
+    // Percentage label for the slice - its SHARE of the total, never its raw value, so a 336-hour
+    // sum in a one-slice ring reads "100%" and not "336%" (slivers too small to fit one are skipped).
     const pct = (s.value / total) * 100;
     if (showLabels && pct >= 5) {
       const angle = ((start + end) / 2) * 2 * Math.PI - Math.PI / 2;
@@ -549,7 +550,9 @@ function renderPie(root, cfg, ctx, doughnut = false) {
       const offset = outsideLabels ? radius * 1.16 : insideOffset;
       const lx = cx + Math.cos(angle) * offset;
       const ly = cy + Math.sin(angle) * offset;
-      svg.appendChild(outsideLabels ? dataText(`${s.value}%`, lx, ly) : onColorText(`${s.value}%`, lx, ly));
+      // One decimal below 10% keeps small-but-labelled slices distinguishable.
+      const text = `${pct < 10 ? pct.toFixed(1) : Math.round(pct)}%`;
+      svg.appendChild(outsideLabels ? dataText(text, lx, ly) : onColorText(text, lx, ly));
     }
   });
 

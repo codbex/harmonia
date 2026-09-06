@@ -2,7 +2,7 @@
 
 ## v3.1.0
 
-A release that makes an interactive list valid HTML. An interactive item used to become a button itself, which left its `ul` with no list items and cost the list its announcement. The row control is now a real button or link inside the item, written with the new `x-h-list-item-button`. It also fixes a listbox and combobox bug where a list nested inside an option turned its own rows into options, and moves the listbox into a plugin of its own. It also repairs card and dialog padding around a slot behind an `x-if`, where the template Alpine leaves in place counted as the slot that never rendered, and lets a table header draw a top and bottom rule instead of a full outline. It ships the `mt-auto` utility class along with the half steps of the padding and gap scales. There are breaking changes to interactive lists and to registering the listbox by hand.
+A release that makes an interactive list valid HTML. An interactive item used to become a button itself, which left its `ul` with no list items and cost the list its announcement. The row control is now a real button or link inside the item, written with the new `x-h-list-item-button`. It also fixes a listbox and combobox bug where a list nested inside an option turned its own rows into options, and moves the listbox into a plugin of its own. It also repairs card and dialog padding around a slot behind an `x-if`, where the template Alpine leaves in place counted as the slot that never rendered, and lets a table header draw a top and bottom rule instead of a full outline. A pie or doughnut slice label is a share of the total again, not the raw value with a percent sign after it. It ships the `mt-auto` utility class along with the half steps of the padding and gap scales. There are breaking changes to interactive lists and to registering the listbox by hand.
 
 ### List
 
@@ -26,6 +26,10 @@ A release that makes an interactive list valid HTML. An interactive item used to
 ### Table
 
 - **New: the header border can be horizontal only.** `data-bordered="horizontal"` on `x-h-table-header` draws a rule above and below the head row and nothing down its sides, for a header separated from the rest of the table rather than boxed in. `data-bordered="true"` still draws the full outline.
+
+### Chart
+
+- **Fixed: a pie or doughnut slice label printed the raw value with a percent sign.** A ring of one 336-hour slice read `336%` instead of `100%`. The label is now the slice's share of the total, as the option always documented, with one decimal below 10%.
 
 ### New utility classes
 

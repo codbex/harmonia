@@ -251,6 +251,39 @@ describe('chart directives', () => {
       expect(Array.from(slot(el, 'chart-label')).map((l) => l.textContent)).toEqual(['30%', '70%']);
     });
 
+    it('labels each slice with its share of the total, not its raw value', () => {
+      mount(
+        'h-chart-pie',
+        {
+          slices: [
+            { label: 'Billable', value: 336 },
+            { label: 'Non-billable', value: 64 },
+          ],
+        },
+        el
+      );
+      expect(Array.from(slot(el, 'chart-label')).map((l) => l.textContent)).toEqual(['84%', '16%']);
+    });
+
+    it('labels a single slice 100%', () => {
+      mount('h-chart-pie', { slices: [{ label: 'Billable', value: 336 }] }, el);
+      expect(Array.from(slot(el, 'chart-label')).map((l) => l.textContent)).toEqual(['100%']);
+    });
+
+    it('keeps one decimal on a labelled slice under 10%', () => {
+      mount(
+        'h-chart-pie',
+        {
+          slices: [
+            { label: 'A', value: 938 },
+            { label: 'B', value: 62 },
+          ],
+        },
+        el
+      );
+      expect(Array.from(slot(el, 'chart-label')).map((l) => l.textContent)).toEqual(['94%', '6.2%']);
+    });
+
     it('omits slice labels when dataLabels is false', () => {
       mount('h-chart-pie', { dataLabels: false, slices }, el);
       expect(slot(el, 'chart-label').length).toBe(0);
