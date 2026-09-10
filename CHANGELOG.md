@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.1.2
+
+A bugfix release for the charts. A pie or doughnut slice label now shows the slice's share of the total instead of the raw value with a percent sign after it. There are no breaking changes.
+
+### Chart
+
+- **Fixed: a pie or doughnut slice label printed the raw value with a percent sign.** The label was only right when the values happened to add up to 100, so a ring with a single 336-hour slice read `336%`. It now shows the slice's share of the total, rounded to a whole percent and formatted for the user's locale, so the same ring reads `100%`. Slices under 5% still get no label, and the polar area chart keeps labelling its slices with their values.
+
 ## v3.1.1
 
 A bugfix release for the Calendar. The week and day views now scroll down to the intended hour when the calendar was hidden while it rendered, for example behind `x-show`, in an inactive tab or in a closed dialog. With `scrollTo: "first-event"` the grid now opens just above the earliest event instead of a full hour before it, and an event continuing from an earlier day no longer anchors the grid at midnight. There are no breaking changes.

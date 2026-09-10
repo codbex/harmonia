@@ -1,4 +1,22 @@
-import { DEFAULT_PALETTE, attachHover, buildDataTable, createTooltip, defaultFormat, fillClass, fitText, make, makeSvg, measureText, niceScale, noData, normalizeSeries, normalizeSlices, strokeClass, valueToPct } from '../common/chart';
+import {
+  DEFAULT_PALETTE,
+  attachHover,
+  buildDataTable,
+  createTooltip,
+  defaultFormat,
+  fillClass,
+  fitText,
+  formatPercent,
+  make,
+  makeSvg,
+  measureText,
+  niceScale,
+  noData,
+  normalizeSeries,
+  normalizeSlices,
+  strokeClass,
+  valueToPct,
+} from '../common/chart';
 
 // Mark the chart root as a labeled figure for assistive tech. The visual layer
 // (the SVG) is decorative (`aria-hidden`); the real data is exposed via a
@@ -541,15 +559,16 @@ function renderPie(root, cfg, ctx, doughnut = false) {
     );
     svg.appendChild(wedge);
 
-    // Percentage label for the slice (skip slivers too small to fit one).
-    const pct = (s.value / total) * 100;
-    if (showLabels && pct >= 5) {
+    // Label the slice with its share of the total (skip slivers too small to fit one).
+    const share = s.value / total;
+    if (showLabels && share >= 0.05) {
       const angle = ((start + end) / 2) * 2 * Math.PI - Math.PI / 2;
       const insideOffset = cutout > 0 ? ((cutout + 1) / 2) * radius : radius * 0.62;
       const offset = outsideLabels ? radius * 1.16 : insideOffset;
       const lx = cx + Math.cos(angle) * offset;
       const ly = cy + Math.sin(angle) * offset;
-      svg.appendChild(outsideLabels ? dataText(`${s.value}%`, lx, ly) : onColorText(`${s.value}%`, lx, ly));
+      const label = formatPercent(share);
+      svg.appendChild(outsideLabels ? dataText(label, lx, ly) : onColorText(label, lx, ly));
     }
   });
 

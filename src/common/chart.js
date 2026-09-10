@@ -8,10 +8,16 @@ export { KNOWN_COLORS, colorClass, colorVar, fillClass, strokeClass };
 export const DEFAULT_PALETTE = ['blue', 'red', 'green', 'orange', 'purple', 'teal', 'pink', 'indigo', 'yellow'];
 
 const numberFormatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+const percentFormatter = new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 0 });
 
 export function defaultFormat(n) {
   if (typeof n !== 'number' || Number.isNaN(n)) return '';
   return numberFormatter.format(n);
+}
+
+// A share (0-1) as a whole percent in the user's locale, e.g. "84%" or "84 %".
+export function formatPercent(fraction) {
+  return percentFormatter.format(fraction);
 }
 
 /**

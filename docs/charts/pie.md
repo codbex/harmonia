@@ -78,10 +78,10 @@ Clicking or tapping a data point pins its tooltip open (useful on touchscreens, 
   style="max-height: 20rem"
   x-h-chart-pie="{
     slices: [
-      { label: 'Direct', value: 40 },
-      { label: 'Referral', value: 25 },
-      { label: 'Social', value: 20 },
-      { label: 'Other', value: 15 }
+      { label: 'Direct', value: 4120 },
+      { label: 'Referral', value: 2580 },
+      { label: 'Social', value: 2060 },
+      { label: 'Other', value: 1540 }
     ]
   }"
 ></div>

@@ -57,10 +57,10 @@ When `tooltip` is enabled, hovering and clicking slices emit bubbling `CustomEve
   style="max-height: 20rem"
   x-h-chart-doughnut="{
     slices: [
-      { label: 'Direct', value: 40 },
-      { label: 'Referral', value: 25 },
-      { label: 'Social', value: 20 },
-      { label: 'Other', value: 15 }
+      { label: 'Direct', value: 4120 },
+      { label: 'Referral', value: 2580 },
+      { label: 'Social', value: 2060 },
+      { label: 'Other', value: 1540 }
     ]
   }"
 ></div>
