@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import calendarPlugin from '../../src/components/calendar.js';
 import { mountDirective } from '../test-utils.js';
@@ -237,9 +237,9 @@ describe('h-calendar', () => {
       expect(scrollTop()).toBe(8 * 60);
     });
 
-    it('scrollTo "first-event" anchors on the earliest event minus a 60min buffer', () => {
+    it('scrollTo "first-event" anchors 8px above the earliest event', () => {
       mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Standup', start: '2020-06-18T10:00' }] });
-      expect(scrollTop()).toBe(540);
+      expect(scrollTop()).toBe(592);
     });
 
     it('scrollTo "first-event" in week view picks the earliest across all visible days', () => {
@@ -253,7 +253,7 @@ describe('h-calendar', () => {
           { title: 'Mid', start: '2020-06-17T13:00' },
         ],
       });
-      expect(scrollTop()).toBe(510);
+      expect(scrollTop()).toBe(562);
     });
 
     it('scrollTo "first-event" ignores all-day events and falls back', () => {
@@ -262,13 +262,134 @@ describe('h-calendar', () => {
     });
 
     it('scrollTo "first-event" clamps an early-morning event to the top', () => {
-      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Redeye', start: '2020-06-18T00:15' }] });
+      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Redeye', start: '2020-06-18T00:05' }] });
       expect(scrollTop()).toBe(0);
+    });
+
+    it('scrollTo "first-event" ignores a segment continuing from the previous day', () => {
+      mountGrid({
+        view: 'day',
+        date: '2020-06-18',
+        scrollTo: 'first-event',
+        events: [
+          { title: 'Overnight', start: '2020-06-17T22:00', end: '2020-06-18T02:00' },
+          { title: 'Standup', start: '2020-06-18T10:00' },
+        ],
+      });
+      expect(scrollTop()).toBe(592);
+    });
+
+    it('scrollTo "first-event" falls back when the view only holds a continuation', () => {
+      mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Overnight', start: '2020-06-17T22:00', end: '2020-06-18T02:00' }] });
+      expect(scrollTop()).toBe(8 * 60);
     });
 
     it('ignores an invalid scrollTo value', () => {
       mountGrid({ view: 'day', date: '2020-06-18', scrollTo: 'bogus', events: [{ title: 'Standup', start: '2020-06-18T10:00' }] });
       expect(scrollTop()).toBe(8 * 60);
+    });
+  });
+
+  describe('resize observer', () => {
+    // happy-dom has no layout - `clientHeight` is always 0, `scrollTop` stores
+    // any value and `ResizeObserver` never fires. The tests emulate the scroll
+    // box on the grid and capture the observer so a resize can be fired by hand.
+    let observers;
+    let OriginalResizeObserver;
+
+    beforeEach(() => {
+      observers = [];
+      OriginalResizeObserver = global.ResizeObserver;
+      global.ResizeObserver = class {
+        constructor(cb) {
+          this.cb = cb;
+          this.observe = vi.fn();
+          this.disconnect = vi.fn();
+          observers.push(this);
+        }
+      };
+    });
+
+    afterEach(() => {
+      global.ResizeObserver = OriginalResizeObserver;
+    });
+
+    const resize = () => observers[0].cb();
+    const viewItem = (label) => Array.from(el.querySelectorAll('ul li')).find((li) => li.textContent.trim() === label);
+
+    // Browser semantics - a `scrollTop` write on a box without height is dropped.
+    function stubScrollBox(area) {
+      let height = 0;
+      let top = 0;
+      Object.defineProperty(area, 'clientHeight', { get: () => height, configurable: true });
+      Object.defineProperty(area, 'scrollTop', {
+        get: () => top,
+        set: (v) => {
+          if (height > 0) top = v;
+        },
+        configurable: true,
+      });
+      return () => {
+        height = 600;
+      };
+    }
+
+    // The scroll frame is captured instead of run, so the scroll box can be
+    // stubbed before the frame fires, as in a browser where the frame runs
+    // after the directive returned.
+    function mountHidden(config) {
+      const frames = [];
+      const raf = vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((cb) => frames.push(cb));
+      try {
+        mount('calConfig', { evaluateLater: () => (cb) => cb(config) });
+      } finally {
+        raf.mockRestore();
+      }
+      const area = el.querySelector('.overflow-y-auto.flex-1');
+      const reveal = stubScrollBox(area);
+      return { area, reveal, flush: () => frames.splice(0).forEach((cb) => cb()) };
+    }
+
+    const config = { view: 'day', date: '2020-06-18', scrollTo: 'first-event', events: [{ title: 'Standup', start: '2020-06-18T10:00' }] };
+
+    it('applies the initial scroll on the resize that gives the grid a scroll box', () => {
+      const { area, reveal, flush } = mountHidden(config);
+      flush();
+      expect(area.scrollTop).toBe(0);
+      resize();
+      expect(area.scrollTop).toBe(0);
+      reveal();
+      resize();
+      expect(area.scrollTop).toBe(592);
+    });
+
+    it('leaves the user position alone on a resize after the scroll settled', () => {
+      const { area, reveal, flush } = mountHidden(config);
+      reveal();
+      flush();
+      expect(area.scrollTop).toBe(592);
+      area.scrollTop = 100;
+      resize();
+      expect(area.scrollTop).toBe(100);
+    });
+
+    it('drops the pending scroll when the view re-renders before the reveal', () => {
+      const { area, reveal, flush } = mountHidden(config);
+      flush();
+      viewItem('Month').click();
+      reveal();
+      resize();
+      expect(area.isConnected).toBe(false);
+      expect(area.scrollTop).toBe(0);
+    });
+
+    it('stops trimming month cells after leaving the month view', () => {
+      mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'month', date: '2020-06-18' }) });
+      const cell = Array.from(el.querySelectorAll('*')).find((node) => node._trimFn);
+      cell._trimFn = vi.fn();
+      viewItem('Week').click();
+      resize();
+      expect(cell._trimFn).not.toHaveBeenCalled();
     });
   });
 

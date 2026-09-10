@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>calendar fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <!-- Every calendar has one event at 14:00, so first-event opens the grid 8px above it (832px). -->
+
+    <!-- Always visible control. -->
+    <div x-data="{ cal: { view: 'week', scrollTo: 'first-event', events: [{ title: 'Review', start: '2025-06-15T14:00:00', end: '2025-06-15T14:30:00' }] } }">
+      <div id="visible" x-h-calendar="cal" style="height: 600px"></div>
+    </div>
+
+    <!-- Hidden at init, revealed by a click. -->
+    <div x-data="{ open: false, cal: { view: 'week', scrollTo: 'first-event', events: [{ title: 'Review', start: '2025-06-15T14:00:00', end: '2025-06-15T14:30:00' }] } }">
+      <button id="reveal" x-h-button @click="open = true">Show</button>
+      <div id="revealed" x-show="open" x-h-calendar="cal" style="height: 600px"></div>
+    </div>
+
+    <!-- The loading pattern: the config is assigned while hidden and the condition flipped right after. -->
+    <div
+      x-data="{
+        loading: true,
+        cal: {},
+        async init() {
+          await new Promise((r) => setTimeout(r, 200));
+          this.cal = { view: 'week', scrollTo: 'first-event', events: [{ title: 'Review', start: '2025-06-15T14:00:00', end: '2025-06-15T14:30:00' }] };
+          await Promise.resolve();
+          this.loading = false;
+        },
+      }"
+    >
+      <div id="loaded" x-show="!loading" x-h-calendar="cal" style="height: 600px"></div>
+    </div>
+  </body>
+</html>

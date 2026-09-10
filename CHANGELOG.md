@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.1.1
+
+A bugfix release for the Calendar. The week and day views now scroll down to the intended hour when the calendar was hidden while it rendered, for example behind `x-show`, in an inactive tab or in a closed dialog. With `scrollTo: "first-event"` the grid now opens just above the earliest event instead of a full hour before it, and an event continuing from an earlier day no longer anchors the grid at midnight. There are no breaking changes.
+
+### Calendar
+
+- **Fixed: the initial scroll of the week and day views was lost when the calendar rendered hidden.** The views scroll to the first event, the current time or 08:00 in a single animation frame after rendering. A calendar hidden at that moment, behind `x-show`, an inactive tab panel or a closed dialog, has no scroll box, so the browser clamped the scroll to 0 and the grid opened at midnight once revealed. The target is now kept until the calendar gets a layout box and applied on the reveal. Once applied it never re-runs, so a later resize leaves the user's own scroll position alone.
+- **Fixed: the week and day views opened a full hour above the first event.** With `scrollTo: "first-event"` the grid now opens 8px above the earliest event, so it sits at the top of the grid with a small gap. The `now` anchor keeps its one hour lead-in.
+- **Fixed: a timed event continuing from an earlier day anchored the grid at midnight.** An overnight or multi-day event renders from 00:00 on the days it continues into, and the `first-event` anchor took that as its start. An event now anchors the grid only on the day it starts, and a view that only holds the continuation falls back to the current time or 08:00.
+
 ## v3.1.0
 
 A release that makes an interactive list valid HTML. An interactive item used to become a button itself, which left its `ul` with no list items and cost the list its announcement. The row control is now a real button or link inside the item, written with the new `x-h-list-item-button`. It also fixes a listbox and combobox bug where a list nested inside an option turned its own rows into options, and moves the listbox into a plugin of its own. It also repairs card and dialog padding around a slot behind an `x-if`, where the template Alpine leaves in place counted as the slot that never rendered, and lets a table header draw a top and bottom rule instead of a full outline. It ships the `mt-auto` utility class along with the half steps of the padding and gap scales. There are breaking changes to interactive lists and to registering the listbox by hand.

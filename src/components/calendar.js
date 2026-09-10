@@ -62,6 +62,8 @@ export default function (Alpine) {
     let showViewSwitcher = true;
     let scrollTo = 'now';
     let currentTrimAll = null;
+    // The time grid's initial scroll, saved until the grid has a scroll box that could use it.
+    let pendingScroll = null;
     let draggable = false;
     let dragStep = 15;
     // Set when a drag just completed so the click that follows it does not fire event-click.
@@ -219,8 +221,22 @@ export default function (Alpine) {
       }, 0);
     }
 
-    const monthGridObserver = new ResizeObserver(() => currentTrimAll?.());
-    monthGridObserver.observe(el);
+    // A grid rendered without a layout box (`x-show`, an inactive tab panel, a
+    // closed dialog, etc.) drops the `scrollTop` write, so the target waits for the
+    // resize that reveals the calendar. Settling on the first real box means
+    // later resizes never fight the user's scrolling.
+    function applyPendingScroll() {
+      if (!pendingScroll) return;
+      const { area, top } = pendingScroll;
+      area.scrollTop = top;
+      if (area.clientHeight > 0) pendingScroll = null;
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      currentTrimAll?.();
+      applyPendingScroll();
+    });
+    resizeObserver.observe(el);
 
     // === Helpers ===
 
@@ -568,6 +584,8 @@ export default function (Alpine) {
       periodLabel.textContent = formatPeriodLabel();
       updateViewSwitcher();
       viewArea.innerHTML = '';
+      pendingScroll = null;
+      currentTrimAll = null;
       if (view === 'month') renderMonth();
       else if (view === 'week') renderWeek();
       else if (view === 'day') renderDay();
@@ -712,6 +730,8 @@ export default function (Alpine) {
     function renderTimeGrid(days) {
       const HOUR_H = 60;
       const HOURS = 24;
+      // The px gap between the grid's top edge and the first event when `scrollTo` is set to `first-event`.
+      const EVENT_GAP = 8;
       const cols = days.length;
       const now = new Date();
       const nowMins = now.getHours() * 60 + now.getMinutes();
@@ -934,25 +954,28 @@ export default function (Alpine) {
       scrollArea.appendChild(colsGrid);
       viewArea.appendChild(scrollArea);
 
-      // Scroll to the earliest timed event, the current time (-60min buffer), or 8 am
+      // Scroll to just above the earliest timed event, the current time (-60min buffer), or 8 am
       const hasToday = days.some((d) => isTodayDate(d));
-      let anchorMins = null;
+      let firstEventMins = null;
       if (scrollTo === 'first-event') {
         days.forEach((day) => {
           const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0);
+          // An event anchors the grid only on the day it starts. A segment
+          // continuing from an earlier day renders clamped to 00:00 and would
+          // otherwise pull the grid to midnight.
           events
-            .filter((ev) => !ev.allDay && eventSpansDay(ev, day))
+            .filter((ev) => !ev.allDay && ev.startDate >= dayStart && eventSpansDay(ev, day))
             .forEach((ev) => {
-              const mins = Math.max((ev.startDate - dayStart) / 60000, 0);
-              if (anchorMins === null || mins < anchorMins) anchorMins = mins;
+              const mins = (ev.startDate - dayStart) / 60000;
+              if (firstEventMins === null || mins < firstEventMins) firstEventMins = mins;
             });
         });
       }
-      if (anchorMins === null && hasToday) anchorMins = nowMins;
-      const scrollTarget = anchorMins === null ? 8 * HOUR_H : Math.max((anchorMins - 60) * (HOUR_H / 60), 0);
-      requestAnimationFrame(() => {
-        scrollArea.scrollTop = scrollTarget;
-      });
+      let scrollTarget = 8 * HOUR_H;
+      if (firstEventMins !== null) scrollTarget = Math.max(firstEventMins * (HOUR_H / 60) - EVENT_GAP, 0);
+      else if (hasToday) scrollTarget = Math.max((nowMins - 60) * (HOUR_H / 60), 0);
+      pendingScroll = { area: scrollArea, top: scrollTarget };
+      requestAnimationFrame(applyPendingScroll);
     }
 
     function renderWeek() {
@@ -1130,7 +1153,7 @@ export default function (Alpine) {
       prevBtn.removeEventListener('click', onPrev);
       nextBtn.removeEventListener('click', onNext);
       todayBtn.removeEventListener('click', onToday);
-      monthGridObserver.disconnect();
+      resizeObserver.disconnect();
       closeOverflowPopover();
       overflowPopover.remove();
       Alpine.destroyTree(toolbar);
