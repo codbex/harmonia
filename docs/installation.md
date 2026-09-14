@@ -55,11 +55,11 @@ runtimeOnly("org.webjars.npm:codbex__harmonia:__H_VER__")
 ```
 
 ```[Buildr]
-'org.webjars.npm:codbex__harmonia:jar:1.4.2'
+'org.webjars.npm:codbex__harmonia:jar:__H_VER__'
 ```
 
 ```[Leiningen]
-org.webjars.npm/codbex__harmonia "1.4.2"
+org.webjars.npm/codbex__harmonia "__H_VER__"
 ```
 
 :::

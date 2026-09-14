@@ -1045,6 +1045,6 @@ function main() {
   console.warn(`generate-agent-docs: wrote ${refCount} references to ${path.relative(ROOT, REF_DIR)}${warnings.length ? ` (${warnings.length} warning(s))` : ''}`);
 }
 
-module.exports = { transform, parseDoc, outline, readInputs, SOURCES, OUT_DIR, REF_DIR, DOCS_DIR, DOCS_URL };
+module.exports = { transform, parseDoc, outline, readInputs, extractBreakingChanges, SOURCES, OUT_DIR, REF_DIR, DOCS_DIR, DOCS_URL };
 
 if (require.main === module) main();

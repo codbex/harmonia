@@ -32,6 +32,7 @@ export default defineConfig({
           { text: 'Theme Generator', link: '/theming/generator.html', target: '_self' },
           { text: 'Extend Utility Classes', link: '/extend-utility-classes' },
           { text: 'Coding Agents', link: '/agent-skill' },
+          { text: 'Versioning and Support', link: '/versioning-and-support' },
         ],
       },
       {
