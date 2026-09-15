@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>split nested fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div style="width: 80vw; height: 20rem">
+      <div id="outer" class="size-full" x-h-split data-orientation="horizontal" data-variant="border">
+        <div id="outer-a" x-h-split-panel data-size="60%">
+          <div class="flex size-full items-center justify-center overflow-hidden">A</div>
+        </div>
+        <div id="outer-b" x-h-split-panel>
+          <div id="inner" class="size-full" x-h-split data-orientation="vertical" data-variant="border">
+            <div id="inner-top" x-h-split-panel>
+              <div class="flex size-full items-center justify-center overflow-hidden">Top</div>
+            </div>
+            <div id="inner-bottom" x-h-split-panel data-min="100">
+              <div class="flex size-full items-center justify-center overflow-hidden">Bottom</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -32,7 +32,7 @@ h-split (container)
 
 Panel sizes are stored as absolute pixel values (`panel.size`). The engine runs inside a `requestAnimationFrame` callback (scheduled by `queueLayout`) and follows these steps every time:
 
-1. Compute `total = usableSize()` - the container width/height minus the combined width/height of all in-DOM gutters.
+1. Compute `total = usableSize()` - the container width/height minus the combined width/height of the gutters currently in the DOM. Counting real gutters rather than `visible - 1` keeps a `data-gutterless` panel from reserving space it does not use.
 2. Call `panel.resolveBounds(total)` on each visible panel to re-resolve any percentage `min`/`max` against the current `total` and rewrite the `--h-split-panel-min` / `--h-split-panel-max` CSS vars. This runs every pass so a percentage bound tracks the container as it resizes (a fixed px baked in once would pin the panel and overflow on shrink).
 3. Run the **init block** (once, or whenever `initialized === false`) to assign starting sizes.
 4. Clamp each panel's size to its `[min, max]` bounds.
@@ -60,11 +60,15 @@ The init block runs three paths in order:
 
 3. **Declared path** - panels with `data-size` set get their `declaredSize`. Auto panels (no `data-size`) share the remainder equally.
 
+Whichever path ran, a panel that is already `collapsed` is then pinned to its `min`. This is what lets `data-collapse="true"` work at init - the panel directive calls `collapse()` just before registering, while `size` is still the declared one (so `prevSize` is a meaningful restore target rather than whatever an early layout pass handed a lone panel), and the init block must not hand the panel its declared or persisted size back.
+
+There is no per-panel "was dragged" flag. Dragging and keyboard resizing only rewrite `size`, so a structural re-init returns every panel to its declared size, dragged or not.
+
 ### Percentage resolution: `min`/`max` vs `declaredSize`
 
 `data-min`, `data-max`, and `data-size` all accept a percentage. They are resolved to pixels differently, on purpose:
 
-- **`min` / `max` are re-resolved every layout pass** by `resolveBounds(total)` (step 2), because they drive the panel's CSS `min-width` / `max-width` floor and ceiling. If they were baked to pixels once at the initial width, shrinking the container below that stale floor would pin the panel and overflow horizontally (with a matching stale flat when growing). Keeping the raw spec string (`minRaw` / `maxRaw`) and re-deriving on resize makes a percentage track the container.
+- **`min` / `max` are re-resolved every layout pass** by `resolveBounds(total)` (step 2), because they drive the panel's CSS `min-width` / `max-width` floor and ceiling. If they were baked to pixels once at the initial width, shrinking the container below that stale floor would pin the panel and overflow horizontally (with a matching stale flat when growing). Keeping the raw spec string (`minRaw` / `maxRaw`) and re-deriving on resize makes a percentage track the container. The resolved minimum is also floored at the panel's own border plus padding along the axis, read from computed style on the same pass, so the layout never asks the browser for a box it cannot render and flex-shrink never takes the remainder out of the other panels.
 - **`declaredSize` is resolved once at init** and thereafter superseded by persisted (`localStorage`) or dragged sizes. It only seeds the init block and the collapse fallback - the per-pass delta loop never reads it. Re-resolving it on every resize would fight the persisted-fraction restore path, so it is intentionally left static. Every percentage split in the repo also sets `data-key`, so persistence is the normal path, not an edge case.
 
 Residual limitation: if authored percentage `min`s sum to more than 100% of the container, the flex min floor still wins and content can overflow. That is an authoring error - a percentage already degrades better than a fixed px (it scales down proportionally), so no runtime handling is added.
@@ -93,22 +97,26 @@ Each show handler only deposits a `restoreFraction` and calls `resetInit()`. It 
 
 ---
 
-## Dragging
+## Resizing: drag and keyboard
 
-The gutter receives `pointerdown`. On drag start the handler captures:
+Both input paths go through one `resize(next, sizeA, sizeB, delta)` function on the panel. It computes `minDelta` / `maxDelta` - the range that satisfies both this panel's and the next visible panel's `min`/`max` at once - clamps `delta` into it, writes both sizes, clears `collapsed` on the panel the move opened (a positive `clamped` opens this panel, a negative one the next) and calls `panelChange()` -> `queueLayout()`.
 
-- The starting pointer position and the sizes of the panel and its next visible neighbour.
-- `minDelta` / `maxDelta` - the range that satisfies both panels' `min`/`max` constraints simultaneously.
+- **Drag.** The gutter receives `pointerdown`, captures the pointer and snapshots the starting pointer position and both sizes. Every `pointermove` calls `resize` with the delta from that snapshot, so the clamp is always relative to the drag start. `pointerup` and `pointercancel` release the capture and remove the listeners. The panel's `cleanup` ends an in-progress drag the same way so no listener outlives the directive.
+- **Keyboard.** The gutter is a tab stop (`tabindex="0"`) unless locked. `keydown` maps the arrows along the split axis (`Left`/`Right` for a horizontal split, `Up`/`Down` for a vertical one) to a 10px step, 100px with `Shift`, and `Home`/`End` to `-Infinity`/`Infinity`, which the clamp turns into the furthest reachable position. Each press calls `resize` relative to the current sizes.
 
-`pointermove` updates both panels by the clamped delta and calls `panelChange()` → `queueLayout()`. `pointerup` releases pointer capture and removes the listeners.
+### Locking
+
+`setLocked()` reads both `data-locked` on the split and on the panel, and writes the result to the gutter as `aria-disabled` and `tabindex` (`-1` when locked). The `aria-disabled:pointer-events-none` utility on the gutter blocks the pointer, and the key handler bails on `aria-disabled`. It runs once at init - Alpine applies `x-bind` before custom directives, so a bound `:data-locked` is already on the element and the observers alone would miss it - and again from the split's and the panel's attribute observers.
 
 ---
 
 ## Collapse / Expand
 
-`collapse()` snaps the panel to its `min` and saves the pre-collapse size as `prevSize`. If the panel is already at `min` when collapsed, `prevSize` falls back to `declaredSize` so `expand()` has a meaningful restore target rather than restoring to `min` (a no-op).
+`collapse()` snaps the panel to its `min` and saves the pre-collapse size as `prevSize`. If the panel is already at `min` when collapsed, `prevSize` falls back to `declaredSize` so `expand()` has a meaningful restore target rather than restoring to `min` (a no-op). A panel collapsed at init through `data-collapse="true"` has no earlier size, so without a `data-size` its `expand()` target is its `min`.
 
 `expand()` steals space from sibling panels in DOM order, taking as much as each sibling can give above its `min`, until the target size is reached or space runs out.
+
+A drag or key press that cannot move the boundary, such as pushing a collapsed panel further shut, leaves `collapsed` alone, so `data-collapse` stays the source of truth and clearing it still expands. A move that does open the panel clears the flag while the attribute still reads `true`, and only the next `collapse()` re-arms `expand()`.
 
 ---
 
@@ -116,4 +124,8 @@ The gutter receives `pointerdown`. On drag start the handler captures:
 
 Each panel owns a gutter element placed **after itself** in the DOM. The last panel (and hidden or `data-gutterless` panels) have their gutter removed. Insertion is deferred to a per-panel `requestAnimationFrame` so it runs before the layout rAF - both are scheduled before `queueLayout`'s rAF fires, preserving the insertion-before-layout ordering that `gutterSize()` depends on.
 
-In the **border variant** the gutter is 1px wide/tall, and a `::before` pseudo-element extends outward to create a wider drag target. When an adjacent panel is narrower than half the pseudo-element's reach, the `data-edge` attribute shifts the pseudo-element to avoid it overflowing into the narrow panel.
+In the **border variant** the gutter is 1px wide/tall, and a `::before` pseudo-element extends outward to create a wider drag target. When an adjacent panel is narrower than half the pseudo-element's reach, the `data-edge` attribute shifts the pseudo-element to avoid it overflowing into the narrow panel. That reach (`handleSize`) is measured from the pseudo-element's computed style when the gutter is inserted and again whenever the variant changes. Switching to the handle variant also clears `data-edge`.
+
+### Separator semantics
+
+The gutter is a `role="separator"` with `aria-orientation` across the split axis (a horizontal split has a vertical divider) and an accessible name from `data-gutter-label` on its panel, defaulting to "Resize panel". `apply()` also writes `aria-valuenow` / `aria-valuemin` / `aria-valuemax`: the panel's share, in percent, of the space it divides with the next visible panel, and the smallest and largest share the two panels' bounds allow.

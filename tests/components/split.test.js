@@ -335,3 +335,269 @@ describe('h-split responsive percentage bounds', () => {
     expect(state(0).declaredSize).toBe(300);
   });
 });
+
+describe('h-split sizing, locking and keyboard', () => {
+  // Same harness as above: fixed container width, synchronous rAF so every
+  // queueLayout() runs inside the test, captured ResizeObserver.
+  let observers;
+  let OriginalResizeObserver;
+
+  beforeEach(() => {
+    observers = [];
+    OriginalResizeObserver = global.ResizeObserver;
+    global.ResizeObserver = class {
+      constructor(cb) {
+        this.cb = cb;
+        this.observe = vi.fn();
+        this.disconnect = vi.fn();
+        observers.push(this);
+      }
+    };
+    vi.stubGlobal('requestAnimationFrame', (cb) => {
+      cb();
+      return 1;
+    });
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+  });
+
+  afterEach(() => {
+    global.ResizeObserver = OriginalResizeObserver;
+    vi.unstubAllGlobals();
+    document.body.innerHTML = '';
+  });
+
+  // Both dimensions, so a split flipped to vertical still measures a real container.
+  const widthOf = (el, size) => {
+    el.getBoundingClientRect = () => ({ width: size, height: size, top: 0, left: 0, right: size, bottom: size });
+  };
+
+  const mountSplit = (width, panelAttrs, containerAttrs = {}) => {
+    const container = document.createElement('div');
+    container.setAttribute('data-orientation', 'horizontal');
+    Object.entries(containerAttrs).forEach(([k, v]) => container.setAttribute(k, v));
+    document.body.appendChild(container);
+    widthOf(container, width);
+    mountDirective(splitPlugin, 'h-split', container, {});
+
+    const panels = panelAttrs.map((attrs) => {
+      const panel = document.createElement('div');
+      Object.entries(attrs).forEach(([k, v]) => panel.setAttribute(k, v));
+      container.appendChild(panel);
+      mountDirective(splitPlugin, 'h-split-panel', panel, { original: 'x-h-split-panel' });
+      return panel;
+    });
+
+    const state = (i) => container._h_split.panels[i];
+    const gutter = (i) => state(i).gutter;
+    return { container, panels, state, gutter };
+  };
+
+  const flushObserver = () => new Promise((r) => setTimeout(r, 0));
+
+  const press = (target, key, init = {}) => {
+    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
+    target.dispatchEvent(event);
+    return event;
+  };
+
+  it('applies a container data-locked present at init to every gutter', () => {
+    const { gutter } = mountSplit(1000, [{}, {}], { 'data-locked': 'true' });
+    expect(gutter(0).getAttribute('aria-disabled')).toBe('true');
+    expect(gutter(0).getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('keeps a gutter disabled under a locked container when the panel lock toggles off', async () => {
+    const { panels, gutter } = mountSplit(1000, [{}, {}], { 'data-locked': 'true' });
+    panels[0].setAttribute('data-locked', 'true');
+    await flushObserver();
+    panels[0].setAttribute('data-locked', 'false');
+    await flushObserver();
+    expect(gutter(0).getAttribute('aria-disabled')).toBe('true');
+    expect(gutter(0).getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('enables the gutter with a tab stop when nothing is locked', () => {
+    const { gutter } = mountSplit(1000, [{}, {}]);
+    expect(gutter(0).getAttribute('aria-disabled')).toBe('false');
+    expect(gutter(0).getAttribute('tabindex')).toBe('0');
+  });
+
+  it('subtracts only the gutters that are in the DOM from the usable size', () => {
+    const { state, gutter } = mountSplit(1000, [{}, {}, {}]);
+    widthOf(gutter(0), 10);
+    widthOf(gutter(1), 10);
+    observers[0].cb();
+    expect(state(0).size + state(1).size + state(2).size).toBeCloseTo(980, 5);
+
+    // A gutterless panel has no gutter in the DOM, so its width is not reserved.
+    const { state: s2, gutter: g2 } = mountSplit(1000, [{ 'data-gutterless': 'true' }, {}, {}]);
+    expect(g2(0).parentElement).toBeNull();
+    widthOf(g2(1), 10);
+    observers[1].cb();
+    expect(s2(0).size + s2(1).size + s2(2).size).toBeCloseTo(990, 5);
+  });
+
+  it('collapses a panel to its min when data-collapse is set at init', async () => {
+    const { panels, state } = mountSplit(1000, [{ 'data-collapse': 'true', 'data-min': '100', 'data-size': '400' }, {}]);
+    expect(state(0).collapsed).toBe(true);
+    expect(state(0).size).toBe(100);
+    expect(state(1).size).toBe(900);
+
+    panels[0].setAttribute('data-collapse', 'false');
+    await flushObserver();
+    expect(state(0).collapsed).toBe(false);
+    expect(state(0).size).toBe(400);
+    expect(state(1).size).toBe(600);
+  });
+
+  it('returns every panel to its data-size on a structural re-init, dragged or not', () => {
+    const { container, state, gutter } = mountSplit(1000, [{ 'data-size': '300' }, {}]);
+    expect(state(0).size).toBe(300);
+    press(gutter(0), 'ArrowRight');
+    expect(state(0).size).toBe(310);
+
+    const added = document.createElement('div');
+    container.appendChild(added);
+    mountDirective(splitPlugin, 'h-split-panel', added, { original: 'x-h-split-panel' });
+    expect(state(0).size).toBe(300);
+    expect(state(1).size).toBe(350);
+    expect(state(2).size).toBe(350);
+  });
+
+  it('resizes with the arrow keys along the split axis, Shift for a larger step', () => {
+    const { state, gutter } = mountSplit(1000, [{ 'data-min': '100' }, { 'data-min': '100' }]);
+    expect(state(0).size).toBe(500);
+
+    expect(press(gutter(0), 'ArrowRight').defaultPrevented).toBe(true);
+    expect(state(0).size).toBe(510);
+    expect(state(1).size).toBe(490);
+
+    press(gutter(0), 'ArrowRight', { shiftKey: true });
+    expect(state(0).size).toBe(610);
+
+    press(gutter(0), 'ArrowLeft');
+    expect(state(0).size).toBe(600);
+
+    // Keys across the axis are left to the page.
+    expect(press(gutter(0), 'ArrowDown').defaultPrevented).toBe(false);
+    expect(state(0).size).toBe(600);
+  });
+
+  it('moves the boundary as far as the bounds allow with Home and End', () => {
+    const { state, gutter } = mountSplit(1000, [{ 'data-min': '100' }, { 'data-min': '100', 'data-max': '700' }]);
+    press(gutter(0), 'Home');
+    expect(state(0).size).toBe(300); // limited by the neighbour's max
+    expect(state(1).size).toBe(700);
+    press(gutter(0), 'End');
+    expect(state(0).size).toBe(900);
+    expect(state(1).size).toBe(100);
+  });
+
+  it('uses the vertical arrows in a vertical split', () => {
+    const { container, state, gutter } = mountSplit(1000, [{}, {}]);
+    container.setAttribute('data-orientation', 'vertical');
+    container._h_split.state.isHorizontal = false;
+    press(gutter(0), 'ArrowDown');
+    expect(state(0).size).toBe(510);
+    press(gutter(0), 'ArrowRight');
+    expect(state(0).size).toBe(510);
+  });
+
+  it('ignores keys while the gutter is disabled', () => {
+    const { state, gutter } = mountSplit(1000, [{}, {}], { 'data-locked': 'true' });
+    press(gutter(0), 'ArrowRight');
+    expect(state(0).size).toBe(500);
+  });
+
+  it('exposes the separator orientation, value and bounds', () => {
+    const { gutter } = mountSplit(1000, [{ 'data-min': '100' }, { 'data-min': '100' }]);
+    expect(gutter(0).getAttribute('role')).toBe('separator');
+    expect(gutter(0).getAttribute('aria-orientation')).toBe('vertical');
+    expect(gutter(0).getAttribute('aria-valuenow')).toBe('50');
+    expect(gutter(0).getAttribute('aria-valuemin')).toBe('10');
+    expect(gutter(0).getAttribute('aria-valuemax')).toBe('90');
+    press(gutter(0), 'End');
+    expect(gutter(0).getAttribute('aria-valuenow')).toBe('90');
+  });
+
+  it('names the gutter with a default that data-gutter-label overrides', () => {
+    const { gutter } = mountSplit(1000, [{}, { 'data-gutter-label': 'Resize sidebar' }, {}]);
+    expect(gutter(0).getAttribute('aria-label')).toBe('Resize panel');
+    expect(gutter(1).getAttribute('aria-label')).toBe('Resize sidebar');
+  });
+
+  it('scopes the panel min/max rules to the direct parent split', () => {
+    const { panels } = mountSplit(1000, [{}]);
+    expect(panels[0].classList.contains('[[data-orientation=horizontal]>&]:min-w-(--h-split-panel-min)')).toBe(true);
+    expect(panels[0].classList.contains('[[data-orientation=vertical]>&]:min-h-(--h-split-panel-min)')).toBe(true);
+    expect([...panels[0].classList].some((c) => c.includes('_&]'))).toBe(false);
+  });
+
+  it('ends a drag on pointercancel so a later move changes nothing', () => {
+    const { state, gutter } = mountSplit(1000, [{}, {}]);
+    const g = gutter(0);
+    g.setPointerCapture = vi.fn();
+    g.releasePointerCapture = vi.fn();
+    const pointer = (type, clientX) => g.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { pointerId: 1, clientX, clientY: 0 }));
+
+    pointer('pointerdown', 0);
+    pointer('pointermove', 40);
+    expect(state(0).size).toBe(540);
+
+    pointer('pointercancel', 40);
+    expect(g.releasePointerCapture).toHaveBeenCalledWith(1);
+    pointer('pointermove', 80);
+    expect(state(0).size).toBe(540);
+  });
+
+  it('never lets a panel go below its own border and padding', () => {
+    const frame = 'border-left-width: 1px; border-right-width: 1px; border-style: solid; padding: 0 4px';
+    const { panels, state, gutter } = mountSplit(1000, [{ style: frame }, {}]);
+    expect(state(0).min).toBe(10);
+    expect(panels[0].style.getPropertyValue('--h-split-panel-min')).toBe('10px');
+    press(gutter(0), 'Home');
+    expect(state(0).size).toBe(10);
+    expect(state(1).size).toBe(990);
+
+    // An authored data-min above the frame wins.
+    const { state: s2 } = mountSplit(1000, [{ style: frame, 'data-min': '100' }, {}]);
+    expect(s2(0).min).toBe(100);
+  });
+
+  it('reads the frame across the axis of a vertical split', () => {
+    const frame = 'border-top-width: 3px; border-bottom-width: 3px; border-style: solid; padding: 2px 8px';
+    const { state } = mountSplit(1000, [{ style: frame }, {}], { 'data-orientation': 'vertical' });
+    expect(state(0).min).toBe(10);
+  });
+
+  it('keeps a collapsed panel collapsed when a move cannot shift its gutter', async () => {
+    const { panels, state, gutter } = mountSplit(1000, [{ 'data-collapse': 'true', 'data-min': '56', 'data-size': '240' }, {}]);
+    expect(state(0).size).toBe(56);
+    press(gutter(0), 'ArrowLeft');
+    press(gutter(0), 'Home');
+    expect(state(0).collapsed).toBe(true);
+    expect(state(0).size).toBe(56);
+
+    panels[0].setAttribute('data-collapse', 'false');
+    await flushObserver();
+    expect(state(0).size).toBe(240);
+  });
+
+  it('un-collapses a panel only when a move opens it', () => {
+    const { state, gutter } = mountSplit(1000, [{ 'data-collapse': 'true', 'data-min': '56', 'data-size': '240' }, {}]);
+    press(gutter(0), 'ArrowRight');
+    expect(state(0).collapsed).toBe(false);
+    expect(state(0).size).toBe(66);
+  });
+
+  it('treats a collapsed panel after the gutter the same way', () => {
+    const { state, gutter } = mountSplit(1000, [{}, { 'data-collapse': 'true', 'data-min': '56', 'data-size': '240' }]);
+    expect(state(1).size).toBe(56);
+    press(gutter(0), 'ArrowRight'); // would push the collapsed panel further shut
+    expect(state(1).collapsed).toBe(true);
+    expect(state(1).size).toBe(56);
+    press(gutter(0), 'ArrowLeft');
+    expect(state(1).collapsed).toBe(false);
+    expect(state(1).size).toBe(66);
+  });
+});

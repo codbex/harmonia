@@ -45,24 +45,12 @@ export default function (Alpine) {
       }, SAVE_DELAY);
     };
 
-    const sizeProp = () => (state.isHorizontal ? 'width' : 'height');
+    // Rendered width or height of a node along the split axis
+    const measure = (node) => node.getBoundingClientRect()[state.isHorizontal ? 'width' : 'height'];
 
-    const containerSize = () => (state.isHorizontal ? el.getBoundingClientRect().width : el.getBoundingClientRect().height);
-
-    const gutterSize = () => {
-      const panel = panels.find((p) => p.gutter.parentElement);
-      if (panel) {
-        return panel.gutter.getBoundingClientRect()[sizeProp()] ?? 0;
-      }
-      return 0;
-    };
-
-    // Total space available for panels (excluding hidden panels and gutters)
-    const usableSize = () => {
-      const visiblePanels = panels.filter((p) => !p.hidden);
-      const gutters = Math.max(0, visiblePanels.length - 1);
-      return containerSize() - gutters * gutterSize();
-    };
+    // Total space available for panels - the container minus the gutters currently in the DOM
+    // (hidden, gutterless and last panels have none).
+    const usableSize = () => panels.reduce((total, p) => (p.gutter.parentElement ? total - measure(p.gutter) : total), measure(el));
 
     // Resolve a size spec (number, percentage string, or px string) to pixels
     // against an explicit total, so a percentage can be re-resolved on resize
@@ -121,7 +109,6 @@ export default function (Alpine) {
           visible.forEach((p) => {
             if (p.restoreFraction != null) {
               p.size = p.restoreFraction * total;
-              p.explicit = true;
               p.restoreFraction = null;
             } else if (nonRestoreDeclaredTotal > 0) {
               p.size = ((p.declaredSize ?? 0) / nonRestoreDeclaredTotal) * remainingSpace;
@@ -135,51 +122,37 @@ export default function (Alpine) {
 
           if (stored && stored.length === visible.length) {
             visible.forEach((p, i) => {
-              p.size = stored[i] * usableSize();
-              p.explicit = true;
+              p.size = stored[i] * total;
             });
           } else {
-            // Compute the total size of explicitly sized panels
-            const explicitTotal = visible.filter((p) => p.explicit).reduce((sum, p) => sum + p.declaredSize, 0);
-
-            // Compute & distribute remaining space for auto panels
-            const autoPanels = visible.filter((p) => !p.explicit);
-            const remaining = total - explicitTotal;
-            const share = autoPanels.length ? remaining / autoPanels.length : 0;
+            // Panels with a declared size get set to it. Auto panels share what remains equally.
+            const declared = visible.filter((p) => p.declaredSize != null);
+            const declaredTotal = declared.reduce((sum, p) => sum + p.declaredSize, 0);
+            const autoCount = visible.length - declared.length;
+            const share = autoCount ? (total - declaredTotal) / autoCount : 0;
 
             visible.forEach((p) => {
-              if (p.explicit) {
-                p.size = p.declaredSize;
-              } else {
-                p.size = share;
-              }
-
-              p.size = Math.min(Math.max(p.size ?? share, p.min), p.max);
+              p.size = p.declaredSize ?? share;
             });
           }
         }
+
+        // A panel collapsed before this pass (e.g. `data-collapse` set at init) stays at its min.
+        visible.forEach((p) => {
+          if (p.collapsed) p.size = p.min;
+        });
       }
 
       // Ensure all panels have a starting size
       visible.forEach((p) => {
         if (p.size == null) {
-          p.size = p.min ?? 0;
+          p.size = p.min;
         }
 
         p.size = Math.min(Math.max(p.size, p.min), p.max);
       });
 
-      let currentTotal = visible.reduce((sum, p) => sum + p.size, 0);
-      let delta = total - currentTotal;
-
-      if (Math.abs(delta) < DELTA_ABS) {
-        visible.forEach((p) => p.apply());
-        if (total > 0)
-          visible.forEach((p) => {
-            p.savedFraction = p.size / total;
-          });
-        return;
-      }
+      let delta = total - visible.reduce((sum, p) => sum + p.size, 0);
 
       // Panels allowed to change:
       let flexible = visible.filter((p) => {
@@ -258,9 +231,6 @@ export default function (Alpine) {
       panels,
       addPanel(panel) {
         panels.push(panel);
-        if (panel.size == null) {
-          panel.size = null; // keep null
-        }
         initialized = false;
         refreshGutters();
         queueLayout();
@@ -291,7 +261,6 @@ export default function (Alpine) {
       },
       normalize,
       resolveSpec,
-      saveSizes,
     };
 
     el.classList.add('flex', 'flex-1', 'min-w-0', 'min-h-0', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
@@ -305,7 +274,7 @@ export default function (Alpine) {
           state.isBorder = el.getAttribute('data-variant') === 'border';
           queueLayout();
         } else {
-          panels.forEach((p) => p.setLocked(el.getAttribute('data-locked') === 'true'));
+          panels.forEach((p) => p.setLocked());
         }
       });
     });
@@ -330,18 +299,21 @@ export default function (Alpine) {
       throw new Error(`${original} must be inside an split element`);
     }
 
+    // The child combinator is used on purpose. With a descendant combinator, a panel of a nested
+    // vertical split would also match the outer horizontal split and get a min-width
+    // from the var that holds its min-height. See issue #118
     el.classList.add(
       'flex',
       'shrink',
       'grow-0',
       'box-border',
       'overflow-visible',
-      '[[data-orientation=horizontal]_&]:min-w-(--h-split-panel-min)',
-      '[[data-orientation=horizontal]_&]:max-w-(--h-split-panel-max)',
-      '[[data-orientation=horizontal]_&]:min-h-0',
-      '[[data-orientation=vertical]_&]:min-h-(--h-split-panel-min)',
-      '[[data-orientation=vertical]_&]:max-h-(--h-split-panel-max)',
-      '[[data-orientation=vertical]_&]:min-w-0'
+      '[[data-orientation=horizontal]>&]:min-w-(--h-split-panel-min)',
+      '[[data-orientation=horizontal]>&]:max-w-(--h-split-panel-max)',
+      '[[data-orientation=horizontal]>&]:min-h-0',
+      '[[data-orientation=vertical]>&]:min-h-(--h-split-panel-min)',
+      '[[data-orientation=vertical]>&]:max-h-(--h-split-panel-max)',
+      '[[data-orientation=vertical]>&]:min-w-0'
     );
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'split-panel');
@@ -350,33 +322,30 @@ export default function (Alpine) {
 
     const gutter = document.createElement('span');
     gutter.setAttribute('data-slot', 'split-gutter');
-    gutter.setAttribute('aria-disabled', el.getAttribute('data-locked') === 'true');
-    gutter.setAttribute('tabindex', '-1');
     gutter.setAttribute('role', 'separator');
+    gutter.setAttribute('aria-label', el.getAttribute('data-gutter-label') || 'Resize panel');
     gutter.classList.add(
       'overflow-visible',
       'relative',
       'shrink-0',
       'touch-none',
-      'bg-border',
       'outline-none',
-      'hover:bg-primary-hover',
-      'active:bg-primary-active',
       'hover:before:bg-primary-hover',
       'aria-disabled:pointer-events-none',
+      'focus-visible:z-10',
+      'focus-visible:ring-[calc(var(--spacing)*0.75)]',
+      'focus-visible:ring-ring/50',
       '[[data-orientation=horizontal]>&]:cursor-col-resize',
       '[[data-orientation=vertical]>&]:cursor-row-resize'
     );
 
     const borderClasses = [
       'bg-border',
-      'outline-none',
       'hover:bg-primary-hover',
       'active:bg-primary-active',
       'before:absolute',
       'before:block',
       'before:bg-transparent',
-      'hover:before:bg-primary-hover',
       '[[data-orientation=horizontal]>&]:before:-translate-x-1/2',
       '[[data-orientation=horizontal]>&[data-edge=end]]:before:-translate-x-1',
       '[[data-orientation=horizontal]>&[data-edge=start]]:before:translate-x-0',
@@ -394,7 +363,6 @@ export default function (Alpine) {
     ];
     const handleClasses = [
       'bg-transparent',
-      'outline-none',
       'after:absolute',
       'after:block',
       'after:rounded-sm',
@@ -420,7 +388,6 @@ export default function (Alpine) {
       'before:via-split-handle',
       'before:to-85%',
       'before:to-transparent',
-      'hover:before:bg-primary-hover',
       'hover:before:via-transparent',
       'active:before:bg-primary-active',
       'active:before:via-transparent',
@@ -440,20 +407,6 @@ export default function (Alpine) {
       '[[data-orientation=vertical]>&]:after:h-2.5',
     ];
 
-    const setVariant = () => {
-      if (split._h_split.state.isBorder) {
-        gutter.classList.remove(...handleClasses);
-        gutter.classList.add(...borderClasses);
-      } else {
-        gutter.classList.remove(...borderClasses);
-        gutter.classList.add(...handleClasses);
-      }
-    };
-
-    setVariant();
-
-    effect(setVariant);
-
     const initialSize = split._h_split.normalize(el.getAttribute('data-size'));
 
     // Raw min/max specs are kept so resolveBounds() can re-resolve a percentage
@@ -465,17 +418,21 @@ export default function (Alpine) {
 
     let layoutFrame = null;
 
+    // The visible panel after this one, i.e. the one sharing this panel's gutter.
+    const nextVisible = () => {
+      const visible = split._h_split.panels.filter((p) => !p.hidden);
+      return visible[visible.indexOf(panel) + 1];
+    };
+
     const panel = {
       el,
       gutter,
       hidden: el.getAttribute('data-hidden') === 'true',
       declaredSize: initialSize,
       size: initialSize,
-      explicit: initialSize != null,
-      minRaw,
-      maxRaw,
-      min: split._h_split.normalize(minRaw) ?? 0,
-      max: split._h_split.normalize(maxRaw) ?? Infinity,
+      // Placeholders until the first layout pass calls resolveBounds(total).
+      min: 0,
+      max: Infinity,
       collapsed: false,
       prevSize: null,
       prevHiddenFraction: null,
@@ -492,8 +449,14 @@ export default function (Alpine) {
       // content can overflow, but that is an authoring error and % already
       // degrades better than fixed px (it scales down proportionally).
       resolveBounds(total) {
-        this.min = split._h_split.resolveSpec(this.minRaw, total) ?? 0;
-        this.max = split._h_split.resolveSpec(this.maxRaw, total) ?? Infinity;
+        // The panel's own border and padding along the axis. Flex cannot render a box
+        // smaller than that, so asking for one only makes flex-shrink take the remainder
+        // out of the other panels.
+        const style = getComputedStyle(el);
+        const sides = split._h_split.state.isHorizontal ? ['Left', 'Right'] : ['Top', 'Bottom'];
+        const frame = sides.reduce((sum, side) => sum + (parseFloat(style[`border${side}Width`]) || 0) + (parseFloat(style[`padding${side}`]) || 0), 0);
+        this.min = Math.max(split._h_split.resolveSpec(minRaw, total) ?? 0, frame);
+        this.max = split._h_split.resolveSpec(maxRaw, total) ?? Infinity;
         el.style.setProperty('--h-split-panel-min', `${this.min}px`);
         if (this.max < Infinity) {
           el.style.setProperty('--h-split-panel-max', `${this.max}px`);
@@ -505,9 +468,12 @@ export default function (Alpine) {
 
       apply() {
         el.style.flexBasis = `${this.size.toFixed(2)}px`;
+        const next = nextVisible();
+        if (!next) return;
         if (split._h_split.state.isBorder) {
-          this.setHandleOffset();
+          this.setHandleOffset(next);
         }
+        this.setAriaValues(next);
       },
 
       setGutter(last) {
@@ -523,7 +489,7 @@ export default function (Alpine) {
         } else {
           // Defer insertion so this rAF fires before the layout rAF. Both are scheduled
           // before queueLayout's rAF, so the gutter is in the DOM when layout calls
-          // gutterSize(), which reads its rendered dimensions via getBoundingClientRect.
+          // usableSize(), which reads its rendered dimensions via getBoundingClientRect.
           if (layoutFrame) cancelAnimationFrame(layoutFrame);
           layoutFrame = requestAnimationFrame(() => {
             el.after(gutter);
@@ -533,15 +499,11 @@ export default function (Alpine) {
         }
       },
 
-      setHandleOffset() {
+      setHandleOffset(next) {
         // In border variant the gutter's ::before pseudo-element extends outward beyond
         // the 1px gutter line to form a wider drag target. When an adjacent panel is
         // narrower than that reach, data-edge shifts the pseudo-element to avoid it
         // overflowing into the narrow panel.
-        const panels = split._h_split.panels.filter((p) => !p.hidden);
-        const index = panels.indexOf(panel);
-        const next = panels[index + 1];
-        if (!next) return;
         if (next.size < handleSize) {
           gutter.setAttribute('data-edge', 'end');
         } else if (this.size < handleSize) {
@@ -549,6 +511,17 @@ export default function (Alpine) {
         } else {
           gutter.removeAttribute('data-edge');
         }
+      },
+
+      // The separator's value is this panel's share of the space it splits with the
+      // next panel, in percent. `min`/`max` are the shares the two panels' bounds allow.
+      setAriaValues(next) {
+        const pair = this.size + next.size;
+        if (pair <= 0) return;
+        const percent = (px) => String(Math.round((px / pair) * 100));
+        gutter.setAttribute('aria-valuemin', percent(Math.max(this.min, pair - next.max)));
+        gutter.setAttribute('aria-valuemax', percent(Math.min(this.max, pair - next.min)));
+        gutter.setAttribute('aria-valuenow', percent(this.size));
       },
 
       getHandleSize() {
@@ -560,29 +533,69 @@ export default function (Alpine) {
         }
       },
 
-      setLocked(locked = false) {
-        const panelLocked = el.getAttribute('data-locked') === 'true';
-        gutter.setAttribute('aria-disabled', locked || panelLocked);
-        if (locked) {
-          gutter.classList.add('pointer-events-none');
-        } else if (panelLocked) {
-          gutter.classList.add('pointer-events-none');
-        } else {
-          gutter.classList.remove('pointer-events-none');
-        }
+      // A gutter is disabled when either the split or the panel is locked. The
+      // `aria-disabled:pointer-events-none` utility on the gutter blocks the pointer.
+      setLocked() {
+        const locked = split.getAttribute('data-locked') === 'true' || el.getAttribute('data-locked') === 'true';
+        gutter.setAttribute('aria-disabled', locked);
+        gutter.setAttribute('tabindex', locked ? '-1' : '0');
       },
     };
 
-    split._h_split.addPanel(panel);
+    const setVariant = () => {
+      if (split._h_split.state.isBorder) {
+        gutter.classList.remove(...handleClasses);
+        gutter.classList.add(...borderClasses);
+      } else {
+        gutter.classList.remove(...borderClasses);
+        gutter.classList.add(...handleClasses);
+        gutter.removeAttribute('data-edge');
+      }
+      handleSize = panel.getHandleSize();
+    };
+
+    effect(setVariant);
+
+    // The separator runs across the split axis. A horizontal split has a vertical divider.
+    effect(() => {
+      gutter.setAttribute('aria-orientation', split._h_split.state.isHorizontal ? 'vertical' : 'horizontal');
+    });
+
+    panel.setLocked();
+
+    // Move the boundary shared with `next` by `delta` px (positive grows this panel).
+    // Clamped so both panels stay within their `min`/`max`. `sizeA`/`sizeB` are the sizes
+    // the delta is relative to - the drag-start snapshot for a drag and the current sizes
+    // for a key press.
+    const resize = (next, sizeA, sizeB, delta) => {
+      const minDelta = Math.max(
+        panel.min - sizeA, // how much this panel can shrink
+        sizeB - next.max // how much the next panel can grow
+      );
+      const maxDelta = Math.min(
+        panel.max - sizeA, // how much this panel can grow
+        sizeB - next.min // how much the next panel can shrink
+      );
+      const clamped = Math.min(maxDelta, Math.max(minDelta, delta));
+
+      panel.size = sizeA + clamped;
+      next.size = sizeB - clamped;
+      // Only a move that opens a collapsed panel un-collapses it, so a drag or key that
+      // cannot move the boundary leaves `data-collapse` as the source of truth.
+      if (clamped > 0) panel.collapsed = false;
+      if (clamped < 0) next.collapsed = false;
+
+      split._h_split.panelChange();
+    };
 
     // Dragging
+    let endDrag = null;
+
     const drag = (e) => {
       e.preventDefault();
       gutter.setPointerCapture(e.pointerId);
 
-      const panels = split._h_split.panels.filter((p) => !p.hidden);
-      const index = panels.indexOf(panel);
-      const next = panels[index + 1];
+      const next = nextVisible();
       if (!next) return;
 
       const startPos = split._h_split.state.isHorizontal ? e.clientX : e.clientY;
@@ -590,65 +603,76 @@ export default function (Alpine) {
       const startA = panel.size;
       const startB = next.size;
 
-      const minDelta = Math.max(
-        panel.min - startA, // how much panel A can shrink
-        startB - next.max // how much panel B can grow
-      );
-
-      const maxDelta = Math.min(
-        panel.max - startA, // how much panel A can grow
-        startB - next.min // how much panel B can shrink
-      );
-
       const move = (e) => {
         const currentPos = split._h_split.state.isHorizontal ? e.clientX : e.clientY;
-        const delta = currentPos - startPos;
-
-        const clamped = Math.min(maxDelta, Math.max(minDelta, delta));
-
-        panel.size = startA + clamped;
-        next.size = startB - clamped;
-
-        panel.explicit = false;
-
-        if (panel.collapsed) {
-          panel.collapsed = false;
-        }
-        if (next.collapsed) {
-          next.collapsed = false;
-        }
-
-        split._h_split.panelChange();
+        resize(next, startA, startB, currentPos - startPos);
       };
 
       const up = () => {
         gutter.releasePointerCapture(e.pointerId);
         gutter.removeEventListener('pointermove', move);
         gutter.removeEventListener('pointerup', up);
+        gutter.removeEventListener('pointercancel', up);
+        endDrag = null;
       };
 
+      endDrag = up;
       gutter.addEventListener('pointermove', move);
       gutter.addEventListener('pointerup', up);
+      gutter.addEventListener('pointercancel', up);
     };
 
     gutter.addEventListener('pointerdown', drag);
+
+    // Keyboard control. Arrows along the split axis move the boundary by a step (`Shift`
+    // for a larger one), `Home`/`End` move it as far as the bounds allow it to.
+    const KEY_STEP = 10;
+
+    const onKeyDown = (e) => {
+      if (gutter.getAttribute('aria-disabled') === 'true') return;
+      const next = nextVisible();
+      if (!next) return;
+
+      const [back, forward] = split._h_split.state.isHorizontal ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown'];
+      const step = e.shiftKey ? KEY_STEP * 10 : KEY_STEP;
+      let delta;
+      switch (e.key) {
+        case forward:
+          delta = step;
+          break;
+        case back:
+          delta = -step;
+          break;
+        case 'Home':
+          delta = -Infinity;
+          break;
+        case 'End':
+          delta = Infinity;
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+      resize(next, panel.size, next.size, delta);
+    };
+
+    gutter.addEventListener('keydown', onKeyDown);
 
     const collapse = () => {
       if (panel.collapsed) return;
 
       // If the panel is already at its minimum, saving panel.size would make expand() restore
       // to the minimum - a no-op. Use declaredSize as a fallback for a meaningful target.
-      panel.prevSize = panel.size > (panel.min ?? 0) ? panel.size : panel.declaredSize;
-      panel.size = panel.min ?? 0;
+      panel.prevSize = panel.size > panel.min ? panel.size : panel.declaredSize;
+      panel.size = panel.min;
       panel.collapsed = true;
-      panel.explicit = true;
 
       split._h_split.panelChange();
     };
     const expand = () => {
       if (!panel.collapsed) return;
 
-      const target = panel.prevSize ?? panel.min ?? 0;
+      const target = panel.prevSize ?? panel.min;
       const delta = target - panel.size;
 
       const visible = split._h_split.panels.filter((p) => !p.hidden && p !== panel);
@@ -667,21 +691,23 @@ export default function (Alpine) {
 
       panel.size = target - remaining;
       panel.collapsed = false;
-      panel.explicit = true;
 
       split._h_split.panelChange();
     };
 
-    const setState = () => {
-      if (panel.hidden) {
-        el.classList.add('hidden');
-      } else {
-        el.classList.remove('hidden');
-      }
-      split._h_split.panelHidden();
-    };
+    const setState = () => el.classList.toggle('hidden', panel.hidden);
 
     setState();
+
+    // Alpine applies `x-bind` before this directive runs, so an initial `data-collapse` is
+    // already on the element and the observer below never sees it. Collapse before
+    // registering, while `size` is still the declared one, so `expand()` restores to it
+    // rather than to whatever an early layout pass handed the panel.
+    if (el.getAttribute('data-collapse') === 'true') {
+      collapse();
+    }
+
+    split._h_split.addPanel(panel);
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -708,6 +734,7 @@ export default function (Alpine) {
           }
           panel.hidden = newHidden;
           setState();
+          split._h_split.panelHidden();
         } else if (mutation.attributeName === 'data-locked') {
           panel.setLocked();
         } else {
@@ -723,8 +750,11 @@ export default function (Alpine) {
     observer.observe(el, { attributes: true, attributeFilter: ['data-hidden', 'data-locked', 'data-collapse', 'data-gutterless'] });
 
     cleanup(() => {
+      if (layoutFrame) cancelAnimationFrame(layoutFrame);
+      if (endDrag) endDrag();
       gutter.remove();
       gutter.removeEventListener('pointerdown', drag);
+      gutter.removeEventListener('keydown', onKeyDown);
       split._h_split.removePanel(panel);
       observer.disconnect();
     });

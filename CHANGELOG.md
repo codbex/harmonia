@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.2.0
+
+A release that makes the Split layout's gutters keyboard operable. Each gutter is now a tab stop that moves with the arrow keys, `Shift` for a larger step and `Home` / `End` for the furthest position the two panels allow, and it announces itself as a separator with its orientation, its accessible name and the share of space it divides. The release also fixes a lock on the split being ignored when it is present from the start, a nested split inheriting the outer split's minimum and maximum, a panel with `data-collapse="true"` not collapsing at init, a gutterless panel reserving a gutter's width, a cancelled drag leaving its listeners behind, a stale edge shift after switching the gutter style, a panel dragged below its own border and padding nudging its siblings, and a collapsed panel counting as expanded after a drag that moved nothing. There are no breaking changes.
+
+### Split
+
+- **New: the gutter can be operated from the keyboard.** Every gutter is a tab stop. `Left` / `Right` in a horizontal split and `Up` / `Down` in a vertical one move it by 10 pixels, `Shift` with an arrow by 100, and `Home` / `End` move it as far as the two neighbouring panels' `data-min` and `data-max` allow. The keys and the pointer share one clamp, so neither can push a panel past its bounds. A locked gutter is skipped by `Tab` and ignores the keys.
+- **New: the gutter is a full separator.** It carries `aria-orientation` across the split axis, `aria-valuenow`, `aria-valuemin` and `aria-valuemax` with the panel's share of the space it divides with the next one in percent, and an accessible name of "Resize panel" that the new `data-gutter-label` attribute on the panel overrides.
+- **Fixed: `data-locked` on the split was ignored when present at init.** Alpine applies a bound `:data-locked` before the split starts, and the split only reacted to later changes, so a layout locked from the start still had live gutters. Turning a panel's own lock off under a locked split also re-enabled that gutter. The lock is now resolved from both attributes at init and on every change.
+- **Fixed: a nested split inherited the outer split's minimum and maximum.** A panel of a vertical split inside a horizontal one matched the outer split's orientation too, so its `data-min` also became a minimum width. The panel rules now apply to the direct parent split only.
+- **Fixed: `data-collapse="true"` did nothing at init.** The panel only collapsed when the attribute changed later. It now starts collapsed at its minimum size and expands back to its `data-size`.
+- **Fixed: a gutterless panel still reserved a gutter's width.** The layout assumed a gutter between every pair of visible panels, so with `data-gutterless` the panel sizes added up to more than the container and flex shrinking squeezed them. Only the gutters actually rendered are subtracted now.
+- **Fixed: a cancelled drag left its listeners on the gutter.** A pen or touch drag ended by the browser never received `pointerup`, so the move handler stayed attached and stacked up on later drags. `pointercancel` now ends the drag, and removing the panel mid-drag ends it too.
+- **Fixed: switching `data-variant` at runtime left the border gutter's edge shift stale.** The reach of the wider drag target is measured again when the style changes, and the shift is cleared for the handle style.
+- **Fixed: after a panel was added or removed, a dragged panel and its neighbour were reset differently.** The dragged panel went back to an equal share while the other returned to its `data-size`. Every panel now returns to its declared size on such a re-layout.
+- **Fixed: a panel could be dragged below its own border and padding.** The layout asked for a size the browser cannot render and the leftover was shrunk out of the other panels, so closing one panel nudged a fixed panel beside it. A panel's minimum now includes its own border and padding.
+- **Fixed: a drag that could not move a collapsed panel still counted as expanding it.** Pushing a collapsed panel's gutter further shut, or pressing `Home` on it, marked the panel expanded while `data-collapse` still read `true`, so clearing the attribute afterwards did nothing until the panel was collapsed again. Only a move that opens the panel clears its collapsed state now.
+
 ## v3.1.2
 
 A bugfix release for the charts. A pie or doughnut slice label now shows the slice's share of the total instead of the raw value with a percent sign after it. There are no breaking changes.
