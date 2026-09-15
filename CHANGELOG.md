@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.3.0
+
+A release that gives the `import` and `export` icons a second name each, `upload` and `download`. Reaching for `data-icon="upload"` is the natural first try, and it used to render an empty icon with nothing to say why. There are no breaking changes.
+
+### Icon
+
+- **New: the `upload` and `download` icon names.** `import` already draws an arrow rising out of a tray and `export` one descending into it, which is what most icon sets call upload and download, so those two names now resolve to the same glyphs. They are second names for the existing icons rather than new ones, so the pairs cannot drift apart, and the `Upload` and `Download` ESM constants ship with them.
+
 ## v3.2.0
 
 A release that makes the Split layout's gutters keyboard operable. Each gutter is now a tab stop that moves with the arrow keys, `Shift` for a larger step and `Home` / `End` for the furthest position the two panels allow, and it announces itself as a separator with its orientation, its accessible name and the share of space it divides. The release also fixes a lock on the split being ignored when it is present from the start, a nested split inheriting the outer split's minimum and maximum, a panel with `data-collapse="true"` not collapsing at init, a gutterless panel reserving a gutter's width, a cancelled drag leaving its listeners behind, a stale edge shift after switching the gutter style, a panel dragged below its own border and padding nudging its siblings, and a collapsed panel counting as expanded after a drag that moved nothing. There are no breaking changes.

@@ -145,6 +145,11 @@ export const iconPaths = {
   ],
 };
 
+export const iconAliases = {
+  'upload': 'import',
+  'download': 'export',
+};
+
 export const Bell = 'bell';
 export const Calendar = 'calendar';
 export const Check = 'check';
@@ -161,6 +166,7 @@ export const CircleUser = 'circle-user';
 export const CircleWarning = 'circle-warning';
 export const Clock = 'clock';
 export const Close = 'close';
+export const Download = 'download';
 export const Edit = 'edit';
 export const Ellipsis = 'ellipsis';
 export const Export = 'export';
@@ -185,3 +191,4 @@ export const StarHalf = 'star-half';
 export const StarHollow = 'star-hollow';
 export const Star = 'star';
 export const Trash = 'trash';
+export const Upload = 'upload';
