@@ -57,6 +57,43 @@ test('dragged sizes persist through localStorage across a reload', async ({ page
   expect(Math.abs(restored - a)).toBeLessThan(2);
 });
 
+test('the gutter is the first tab stop and the arrow keys resize the panels', async ({ page }) => {
+  await gotoFixture(page, 'split');
+  const before = await width(page.locator('#panel-a'));
+  await page.keyboard.press('Tab');
+  await expect(gutter(page)).toBeFocused();
+
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await settle(page);
+  expect(Math.round((await width(page.locator('#panel-a'))) - before)).toBe(30);
+
+  await page.keyboard.press('Shift+ArrowRight');
+  await settle(page);
+  expect(Math.round((await width(page.locator('#panel-a'))) - before)).toBe(130);
+
+  await page.keyboard.press('Home');
+  await settle(page);
+  expect(Math.round(await width(page.locator('#panel-a')))).toBe(100);
+  await expect(gutter(page)).toHaveAttribute('aria-valuenow', /^\d+$/);
+});
+
+test('a nested vertical split does not inherit min-width from the outer horizontal split', async ({ page }) => {
+  await gotoFixture(page, 'split-nested');
+  await settle(page);
+  const bottom = page.locator('#inner-bottom');
+  const styles = await bottom.evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { minWidth: s.minWidth, minHeight: s.minHeight };
+  });
+  expect(styles.minWidth).toBe('0px');
+  expect(styles.minHeight).toBe('100px');
+  // The inner panel fills its parent instead of being pinned wider than it.
+  const outerB = await width(page.locator('#outer-b'));
+  expect(Math.abs((await width(bottom)) - outerB)).toBeLessThan(2);
+});
+
 test('a container resize re-lays panels while honoring data-min', async ({ page }) => {
   await gotoFixture(page, 'split');
   await dragToRightEdge(page); // pin panel B at its min
@@ -69,4 +106,16 @@ test('a container resize re-lays panels while honoring data-min', async ({ page 
   const container = await width(page.locator('#split'));
   const g = await width(gutter(page));
   expect(Math.abs(a + b + g - container)).toBeLessThan(2);
+});
+
+test('a panel dragged shut stops at its own border and leaves a fixed panel alone', async ({ page }) => {
+  await gotoFixture(page, 'split-gutterless');
+  await settle(page);
+  expect(Math.round(await width(page.locator('#fixed')))).toBe(200);
+  const a = await width(page.locator('#panel-a'));
+  // Well past the point where A has no content left.
+  await drag(page, gutter(page), -(a + 40), 0);
+  await settle(page);
+  expect(await width(page.locator('#fixed'))).toBeCloseTo(200, 1);
+  expect(await width(page.locator('#panel-a'))).toBeCloseTo(2, 1); // its two 1px borders
 });
