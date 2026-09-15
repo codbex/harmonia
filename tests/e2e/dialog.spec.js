@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { gotoFixture, settle } from './helpers.js';
 
 const activeId = (page) => page.evaluate(() => document.activeElement.id);
+const style = (page, id, prop) => page.locator(`#${id}`).evaluate((el, p) => getComputedStyle(el)[p], prop);
 
 async function openDialog(page) {
   await page.locator('#opener').click();
@@ -73,4 +74,37 @@ test('long content scrolls inside the dialog while the header stays put', async 
   expect(await content.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
   const headerAfter = await page.locator('#long-header').boundingBox();
   expect(headerAfter.y).toBe(headerBefore.y);
+});
+
+// The border and the padding it tightens are both plain CSS, and the footer's
+// rule reads its siblings, so only a real browser resolves either of them.
+test('a bordered header and footer draw a rule and tighten their padding to it', async ({ page }) => {
+  await gotoFixture(page, 'dialog');
+  await page.locator('#long-opener').click();
+  await expect(page.locator('#long-overlay')).toBeVisible();
+  await settle(page);
+
+  expect(await style(page, 'long-header', 'borderBottomWidth')).toBe('1px');
+  expect(await style(page, 'long-header', 'paddingTop')).toBe('16px');
+  expect(await style(page, 'long-header', 'paddingBottom')).toBe('8px');
+
+  expect(await style(page, 'long-footer', 'borderTopWidth')).toBe('1px');
+  expect(await style(page, 'long-footer', 'paddingTop')).toBe('8px');
+  expect(await style(page, 'long-footer', 'paddingBottom')).toBe('8px');
+});
+
+test('a bordered footer keeps its own padding in a dialog with no content slot', async ({ page }) => {
+  await gotoFixture(page, 'dialog');
+  await page.locator('#plain-opener').click();
+  await expect(page.locator('#plain-overlay')).toBeVisible();
+  await settle(page);
+
+  // Without a body slot the footer normally pays the 16 under the header, which
+  // outranks the border padding on specificity unless it is excluded from it.
+  expect(await style(page, 'plain-footer', 'paddingTop')).toBe('8px');
+
+  // Dropping the border puts the same footer back on 16, so the exclusion above
+  // is what the border padding depends on rather than a rule that never matched.
+  await page.locator('#plain-footer').evaluate((el) => el.classList.remove('border-t'));
+  expect(await style(page, 'plain-footer', 'paddingTop')).toBe('16px');
 });

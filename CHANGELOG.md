@@ -2,7 +2,11 @@
 
 ## v3.3.0
 
-A release that gives the `import` and `export` icons a second name each, `upload` and `download`. Reaching for `data-icon="upload"` is the natural first try, and it used to render an empty icon with nothing to say why. There are no breaking changes.
+A release that lets a dialog draw a border between its body and its header and footer, so a scrolling list no longer appears to run underneath them. It also gives the `import` and `export` icons a second name each, `upload` and `download`. Reaching for `data-icon="upload"` is the natural first try, and it used to render an empty icon with nothing to say why. There are no breaking changes.
+
+### Dialog
+
+- **New: the header and the footer take a border.** A `border-b` on `x-h-dialog-header` or a `border-t` on `x-h-dialog-footer` now tightens that slot's own padding against the line, the way the card header already does, so the dialog's spacing no longer has to be restated alongside the border.
 
 ### Icon
 
