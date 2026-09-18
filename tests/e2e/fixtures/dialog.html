@@ -41,7 +41,7 @@
 
       <div id="long-overlay" x-h-dialog-overlay :data-open="showLong">
         <div x-h-dialog data-fullscreen="true">
-          <div id="long-header" x-h-dialog-header>
+          <div id="long-header" x-h-dialog-header class="border-b">
             <h2 x-h-dialog-title>Terms</h2>
           </div>
           <div id="long-content" x-h-dialog-content class="grid gap-4">
@@ -49,8 +49,24 @@
               <p x-text="`Paragraph ${i} of the terms and conditions.`"></p>
             </template>
           </div>
-          <div x-h-dialog-footer>
+          <div id="long-footer" x-h-dialog-footer class="border-t">
             <button x-h-button data-variant="primary" @click="showLong = false">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div x-data="{ showPlain: false }">
+      <button id="plain-opener" x-h-button @click="showPlain = !showPlain">Show plain</button>
+
+      <div id="plain-overlay" x-h-dialog-overlay :data-open="showPlain">
+        <div x-h-dialog>
+          <div x-h-dialog-header>
+            <h2 x-h-dialog-title>Delete project</h2>
+          </div>
+          <div class="px-4">This cannot be undone.</div>
+          <div id="plain-footer" x-h-dialog-footer class="border-t">
+            <button x-h-button data-variant="primary" @click="showPlain = false">Delete</button>
           </div>
         </div>
       </div>

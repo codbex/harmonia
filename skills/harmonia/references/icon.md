@@ -52,7 +52,9 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | inbox          | Inbox icon                             |
 | send           | Send icon                              |
 | export         | Export/Download icon                   |
+| download       | Alias of `export`                      |
 | import         | Import/Upload icon                     |
+| upload         | Alias of `import`                      |
 | file           | File icon                              |
 | link           | Link icon                              |
 | edit           | Edit icon                              |

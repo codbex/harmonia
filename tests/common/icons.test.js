@@ -17,6 +17,7 @@ import {
   Clock,
   Close,
   createSvg,
+  Download,
   Edit,
   Ellipsis,
   Export,
@@ -31,6 +32,7 @@ import {
   Send,
   setSvgContent,
   Trash,
+  Upload,
 } from '../../src/common/icons.js';
 
 describe('icon constants', () => {
@@ -248,4 +250,32 @@ describe('setSvgContent', () => {
     setSvgContent(svg, 'trash');
     expect(svg.children.length).toBeGreaterThan(0);
   });
+});
+
+describe('icon aliases', () => {
+  // An alias is a second name for an existing glyph, not a second copy of it,
+  // so it has to draw exactly what its target draws.
+  const aliases = { [Upload]: Import, [Download]: Export };
+
+  const shapesOf = (name) => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    setSvgContent(svg, name);
+    return [...svg.children].map((child) => `${child.tagName}:${child.getAttribute('d')}`);
+  };
+
+  it(`Upload equals 'upload'`, () => {
+    expect(Upload).toBe('upload');
+  });
+
+  it(`Download equals 'download'`, () => {
+    expect(Download).toBe('download');
+  });
+
+  for (const [alias, target] of Object.entries(aliases)) {
+    it(`${alias} draws the ${target} glyph`, () => {
+      const shapes = shapesOf(alias);
+      expect(shapes.length).toBeGreaterThan(0);
+      expect(shapes).toEqual(shapesOf(target));
+    });
+  }
 });

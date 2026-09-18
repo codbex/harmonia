@@ -61,6 +61,15 @@ describe('h-card-header', () => {
     expect(el.classList.contains('last-rendered:pb-6')).toBe(true);
   });
 
+  it('tightens to 16 under a border, or in an object card', () => {
+    // A border-b, or content that brings its own edge, already marks where the
+    // header ends, so the header does not have to pay a full 24 against it.
+    mountDirective(cardPlugin, 'h-card-header', el);
+    expect(el.classList.contains('[.border-b]:pb-4')).toBe(true);
+    expect(el.classList.contains('[.border-b]:pb-6')).toBe(false);
+    expect(el.classList.contains('[[data-slot=card][data-type=object]_&]:pb-4')).toBe(true);
+  });
+
   it('sets data-slot="card-header"', () => {
     mountDirective(cardPlugin, 'h-card-header', el);
     expect(el.getAttribute('data-slot')).toBe('card-header');
@@ -171,6 +180,18 @@ describe('h-card-content', () => {
     expect(el.getAttribute('data-slot')).toBe('card-content');
   });
 
+  it('rounds the end it is an edge of, but only when flush', () => {
+    mountDirective(cardPlugin, 'h-card-content', el, { modifiers: ['flush'] });
+    expect(el.classList.contains('first-rendered:rounded-t-xl')).toBe(true);
+    expect(el.classList.contains('last-rendered:rounded-b-xl')).toBe(true);
+
+    // A padded content is held clear of the card's curve, so it never rounds.
+    const padded = document.createElement('div');
+    mountDirective(cardPlugin, 'h-card-content', padded);
+    expect(padded.classList.contains('first-rendered:rounded-t-xl')).toBe(false);
+    expect(padded.classList.contains('last-rendered:rounded-b-xl')).toBe(false);
+  });
+
   it('sets data-slot="card-content"', () => {
     mountDirective(cardPlugin, 'h-card-content', el);
     expect(el.getAttribute('data-slot')).toBe('card-content');
@@ -196,6 +217,15 @@ describe('h-card-footer', () => {
     expect(el.classList.contains('pb-6')).toBe(true);
     expect(el.classList.contains('first-rendered:pt-6')).toBe(true);
     expect(el.classList.contains('[[data-slot=card-header]~&:not([data-slot=card-content]~*)]:pt-4')).toBe(true);
+  });
+
+  it('tightens to 12 on both sides under a border, or in an object card', () => {
+    // Same reasoning as the header, but a footer sits between the line and the
+    // card edge, so both of its sides tighten rather than only the one.
+    mountDirective(cardPlugin, 'h-card-footer', el);
+    expect(el.classList.contains('[.border-t]:py-3')).toBe(true);
+    expect(el.classList.contains('[.border-t]:pt-6')).toBe(false);
+    expect(el.classList.contains('[[data-slot=card][data-type=object]_&]:py-3')).toBe(true);
   });
 
   it('sets data-slot="card-footer"', () => {

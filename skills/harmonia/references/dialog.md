@@ -14,6 +14,8 @@ By default a dialog is a centered window with a maximum width. In fullscreen mod
 
 Wrapping the body of a dialog in `x-h-dialog-content` makes it the only scrolling part, so the header and the footer stay in place while the content scrolls between them. In a fullscreen dialog this keeps the title and the actions visible at all times.
 
+A border cab be added on the header and footer by using the `border-t` and a `border-b` classes respectivly. Used when the dialog body is expected to scroll. Both header and footer automatically set their own padding when the border class is set.
+
 ## Directives
 
 `x-h-dialog-overlay` is the root. The directives compose one component and must be nested as shown in the Examples below (the library throws at runtime when a required ancestor is missing):
@@ -84,6 +86,39 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="showDialog = false">Cancel</button>
         <button x-h-button data-variant="primary" @click="showDialog = false">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### Separated header and footer
+
+```html
+<div x-data="{ showDialog: false }">
+  <button x-h-button @click="showDialog = !showDialog">Show bordered</button>
+
+  <div x-h-dialog-overlay :data-open="showDialog">
+    <div x-h-dialog style="max-height: 24rem">
+      <div x-h-dialog-header class="border-b">
+        <h2 x-h-dialog-title>Lorem Ipsum</h2>
+        <p x-h-dialog-description>The dialog body scrolls.</p>
+      </div>
+      <div x-h-dialog-content>
+        Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla
+        lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet
+        consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum
+        egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing
+        elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa
+        nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
+        sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia
+        integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae
+        pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc
+        posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+      </div>
+      <div x-h-dialog-footer class="border-t">
+        <button x-h-button data-variant="outline" @click="showDialog = false">Cancel</button>
+        <button x-h-button data-variant="primary" @click="showDialog = false">OK</button>
       </div>
     </div>
   </div>

@@ -25,7 +25,7 @@
     <!-- tabindex="-1" because the rows inside are their own tab stops, so the panel
          does not need to be one as well. -->
     <div class="pt-4" x-h-tabs-content tabindex="-1" id="act-panel-mentions" aria-labelledby="act-tab-mentions" :hidden="tab !== 'mentions'">
-      <div x-h-card class="w-full overflow-hidden">
+      <div x-h-card data-type="object" class="w-full overflow-hidden">
         <ul x-h-list>
           <template x-for="event in $store.chat.mentionEvents" :key="event.id">
             <li x-h-list-item>
@@ -58,7 +58,7 @@
     </div>
 
     <div class="pt-4" x-h-tabs-content tabindex="-1" id="act-panel-reactions" aria-labelledby="act-tab-reactions" :hidden="tab !== 'reactions'">
-      <div x-h-card class="w-full overflow-hidden">
+      <div x-h-card data-type="object" class="w-full overflow-hidden">
         <ul x-h-list>
           <template x-for="event in $store.chat.reactionEvents" :key="event.id">
             <li x-h-list-item>

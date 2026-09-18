@@ -1,4 +1,4 @@
-import { iconPaths } from './icon-data';
+import { iconAliases, iconPaths } from './icon-data';
 
 // Re-export the generated name constants (Calendar, ChevronRight, ...) and the
 // iconPaths map. Icons themselves are the .svg files in icons/; icon-data.js is
@@ -8,9 +8,10 @@ export * from './icon-data';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // Append an icon's drawable children (paths/circles/...) to an existing svg.
-// `name` is a kebab icon name; an unknown or missing name appends nothing.
+// `name` is a kebab icon name, or an alias of one. Unknown or missing names
+// append nothing.
 function appendIconChildren(svg, name) {
-  const parts = iconPaths[name];
+  const parts = iconPaths[iconAliases[name] || name];
   if (!parts) return;
   for (const { tag, attrs } of parts) {
     const node = document.createElementNS(SVG_NS, tag);

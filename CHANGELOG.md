@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.3.0
+
+A release that lets a dialog draw a border between its body and its header and footer, so a scrolling list no longer appears to run underneath them. The card gains the same treatment from the other side: a `data-type="object"` mode that pulls its header and footer in against a table, a list or an iframe filling its flush content, and a tighter measure under a bordered header or over a bordered footer. It also gives the `import` and `export` icons a second name each, `upload` and `download`. Reaching for `data-icon="upload"` is the natural first try, and it used to render an empty icon with nothing to say why. There are no breaking changes.
+
+### Card
+
+- **New: the `data-type="object"` attribute.** A card whose flush content is a table, a list or an iframe can now set `data-type="object"` on `x-h-card`, and its header and footer sit closer to that content. The object brings its own edge, so the 24 the slots pay around prose reads as a gap there.
+- **Fixed: a bordered header or footer paid too much against its line.** A `border-b` on `x-h-card-header` now tightens the header's bottom padding to 16 rather than leaving it at 24, and a `border-t` on `x-h-card-footer` tightens the footer to 12 on both sides of the line instead of only above it.
+
+### Dialog
+
+- **New: the header and the footer take a border.** A `border-b` on `x-h-dialog-header` or a `border-t` on `x-h-dialog-footer` now tightens that slot's own padding against the line, the way the card header already does, so the dialog's spacing no longer has to be restated alongside the border.
+
+### Icon
+
+- **New: the `upload` and `download` icon names.** `import` already draws an arrow rising out of a tray and `export` one descending into it, which is what most icon sets call upload and download, so those two names now resolve to the same glyphs. They are second names for the existing icons rather than new ones, so the pairs cannot drift apart, and the `Upload` and `Download` ESM constants ship with them.
+
 ## v3.2.0
 
 A release that makes the Split layout's gutters keyboard operable. Each gutter is now a tab stop that moves with the arrow keys, `Shift` for a larger step and `Home` / `End` for the furthest position the two panels allow, and it announces itself as a separator with its orientation, its accessible name and the share of space it divides. The release also fixes a lock on the split being ignored when it is present from the start, a nested split inheriting the outer split's minimum and maximum, a panel with `data-collapse="true"` not collapsing at init, a gutterless panel reserving a gutter's width, a cancelled drag leaving its listeners behind, a stale edge shift after switching the gutter style, a panel dragged below its own border and padding nudging its siblings, and a collapsed panel counting as expanded after a drag that moved nothing. There are no breaking changes.

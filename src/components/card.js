@@ -5,7 +5,19 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-card-header', (el) => {
-    el.classList.add('@container/card-header', 'grid', 'auto-rows-min', 'items-start', 'gap-2', 'px-6', 'pt-6', 'last-rendered:pb-6', 'has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]', '[.border-b]:pb-6');
+    el.classList.add(
+      '@container/card-header',
+      'grid',
+      'auto-rows-min',
+      'items-start',
+      'gap-2',
+      'px-6',
+      'pt-6',
+      'last-rendered:pb-6',
+      'has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto]',
+      '[.border-b]:pb-4',
+      '[[data-slot=card][data-type=object]_&]:pb-4'
+    );
     el.setAttribute('data-slot', 'card-header');
   });
 
@@ -29,6 +41,10 @@ export default function (Alpine) {
     el.classList.add('min-h-0');
     if (!modifiers.includes('flush')) {
       el.classList.add('px-6', 'py-4', 'first-rendered:pt-6', 'last-rendered:pb-6');
+    } else {
+      // Padding keeps a normal content clear of the card's curve, so only a
+      // flush one ever reaches it, and only on the end it is an edge of.
+      el.classList.add('first-rendered:rounded-t-xl', 'last-rendered:rounded-b-xl');
     }
   });
 
@@ -38,7 +54,7 @@ export default function (Alpine) {
     // between the two is a sibling that renders nothing, so the header cannot be
     // matched with '+'. Asking for "a header before me and no content before me"
     // instead picks the same set given the slot order, and no template defeats it.
-    el.classList.add('flex', 'items-center', 'px-6', 'pb-6', 'first-rendered:pt-6', '[[data-slot=card-header]~&:not([data-slot=card-content]~*)]:pt-4', '[.border-t]:pt-6');
+    el.classList.add('flex', 'items-center', 'px-6', 'pb-6', 'first-rendered:pt-6', '[[data-slot=card-header]~&:not([data-slot=card-content]~*)]:pt-4', '[.border-t]:py-3', '[[data-slot=card][data-type=object]_&]:py-3');
     el.setAttribute('data-slot', 'card-footer');
   });
 }

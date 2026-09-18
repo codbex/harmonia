@@ -475,6 +475,11 @@ describe('h-dialog-header', () => {
     expect(el.classList.contains('last-rendered:pb-4')).toBe(true);
   });
 
+  it('tightens its bottom padding against a border-b', () => {
+    mountDirective(dialogPlugin, 'h-dialog-header', el);
+    expect(el.classList.contains('[.border-b]:pb-2')).toBe(true);
+  });
+
   it('sets data-slot="dialog-header"', () => {
     mountDirective(dialogPlugin, 'h-dialog-header', el);
     expect(el.getAttribute('data-slot')).toBe('dialog-header');
@@ -628,7 +633,16 @@ describe('h-dialog-footer', () => {
     expect(el.classList.contains('px-4')).toBe(true);
     expect(el.classList.contains('pb-4')).toBe(true);
     expect(el.classList.contains('pt-4')).toBe(false);
-    expect(el.classList.contains('[[data-slot=dialog-header]~&:not([data-slot=dialog-content]~*)]:pt-4')).toBe(true);
+    expect(el.classList.contains('[[data-slot=dialog-header]~&:not([data-slot=dialog-content]~*,.border-t)]:pt-4')).toBe(true);
+  });
+
+  it('tightens its padding against a border-t and leaves that gap out of the header rule', () => {
+    mountDirective(dialogPlugin, 'h-dialog-footer', el);
+    expect(el.classList.contains('[.border-t]:pt-2')).toBe(true);
+    expect(el.classList.contains('[.border-t]:pb-2')).toBe(true);
+    // The header rule outranks the border one on specificity, so a bordered
+    // footer has to be excluded from it rather than overriding it.
+    expect(el.classList.contains('[[data-slot=dialog-header]~&:not([data-slot=dialog-content]~*)]:pt-4')).toBe(false);
   });
 
   it('sets data-slot="dialog-footer"', () => {

@@ -111,6 +111,8 @@ export default function (Alpine) {
       'z-50',
       'min-w-[1rem]',
       'rounded-md',
+      '[&>[data-slot=toolbar]]:first-rendered:rounded-t-md',
+      '[&>[data-slot=toolbar]]:last-rendered:rounded-b-md',
       'border',
       'shadow-md',
       'outline-hidden',
