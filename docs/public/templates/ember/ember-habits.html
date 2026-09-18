@@ -80,7 +80,7 @@
             </div>
           </div>
 
-          <div x-h-card class="overflow-hidden">
+          <div x-h-card data-type="object" class="overflow-hidden">
             <ul x-h-list>
               <template x-for="habit in habits" :key="habit.id">
                 <li x-h-list-item class="gap-3 px-4 py-3">
@@ -227,7 +227,7 @@
 
           <section class="vbox w-full">
             <h2 x-h-text.h6>Preferences</h2>
-            <div x-h-card class="mt-2 w-full overflow-hidden">
+            <div x-h-card data-type="object" class="mt-2 w-full overflow-hidden">
               <ul x-h-list>
                 <li x-h-list-item class="gap-3 px-4 py-3">
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="bell"></svg>
@@ -291,7 +291,7 @@
 
           <section class="vbox w-full">
             <h2 x-h-text.h6>Security</h2>
-            <div x-h-card class="mt-2 w-full overflow-hidden">
+            <div x-h-card data-type="object" class="mt-2 w-full overflow-hidden">
               <ul x-h-list>
                 <li x-h-list-item class="gap-3 px-4 py-3">
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="smartphone"></svg>

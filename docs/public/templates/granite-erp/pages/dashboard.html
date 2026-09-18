@@ -43,15 +43,15 @@
         <div x-h-card-title>Spend by category</div>
         <div x-h-card-description>Share of vendor bills this quarter</div>
       </div>
-      <div x-h-card-content class="hbox items-center justify-center">
+      <div x-h-card-content.flush class="hbox items-center justify-center px-1 py-3">
         <div class="aspect-square w-full" style="max-height: 18rem" x-h-chart-doughnut="spendChart" aria-label="Spend by category"></div>
       </div>
     </div>
   </div>
 
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-    <div x-h-card class="overflow-hidden lg:col-span-2">
-      <div x-h-card-header class="border-b">
+    <div x-h-card data-type="object" class="lg:col-span-2">
+      <div x-h-card-header>
         <div x-h-card-title>Recent invoices</div>
         <div x-h-card-description>The five most recent invoices</div>
         <div x-h-card-action>
@@ -59,13 +59,13 @@
           <a x-h-button data-variant="outline" href="/invoices">View all</a>
         </div>
       </div>
-      <div x-h-card-content.flush class="vbox">
+      <div x-h-card-content.flush class="vbox overflow-hidden">
         <div x-h-table-container.scroll>
           <table x-h-table>
             <caption class="sr-only">
               Recent invoices
             </caption>
-            <thead x-h-table-header>
+            <thead x-h-table-header data-bordered="horizontal">
               <tr x-h-table-row>
                 <th x-h-table-head scope="col">Invoice</th>
                 <th x-h-table-head scope="col">Customer</th>
@@ -93,7 +93,7 @@
         </div>
       </div>
     </div>
-    <div x-h-card class="overflow-hidden" style="max-height: 420px">
+    <div x-h-card data-type="object" style="max-height: 420px">
       <div x-h-card-header class="border-b">
         <div x-h-card-title>Activity</div>
         <div x-h-card-description>What happened across the workspace</div>

@@ -89,17 +89,17 @@
       </div>
 
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div x-h-card class="lg:col-span-2">
-          <div x-h-card-header class="border-b">
+        <div x-h-card data-type="object" class="lg:col-span-2">
+          <div x-h-card-header>
             <div x-h-card-title>Line items</div>
           </div>
-          <div x-h-card-content.flush class="vbox">
+          <div x-h-card-content.flush class="vbox overflow-hidden">
             <div x-h-table-container.scroll>
               <table x-h-table>
                 <caption class="sr-only">
                   Invoice line items
                 </caption>
-                <thead x-h-table-header>
+                <thead x-h-table-header data-bordered="horizontal">
                   <tr x-h-table-row>
                     <th x-h-table-head scope="col">Description</th>
                     <th x-h-table-head scope="col" class="text-right">Qty</th>

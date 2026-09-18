@@ -136,6 +136,18 @@ describe('h-popover', () => {
     expect(popoverEl.classList.contains('rounded-md')).toBe(true);
   });
 
+  it('rounds a flush toolbar to its own corners', () => {
+    const { popoverEl } = createPopoverSetup();
+    mountDirective(popoverPlugin, 'h-popover', popoverEl, {
+      original: 'x-h-popover',
+      modifiers: [],
+    });
+    // The -rendered variants rather than :first-child / :last-child, so an
+    // x-if template beside the toolbar does not cost it its corner.
+    expect(popoverEl.classList.contains('[&>[data-slot=toolbar]]:first-rendered:rounded-t-md')).toBe(true);
+    expect(popoverEl.classList.contains('[&>[data-slot=toolbar]]:last-rendered:rounded-b-md')).toBe(true);
+  });
+
   it('sets role, tabindex, data-slot and id attributes', () => {
     const { popoverEl, trigger } = createPopoverSetup();
     mountDirective(popoverPlugin, 'h-popover', popoverEl, {

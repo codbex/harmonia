@@ -74,6 +74,35 @@ The popover sizes to its content, up to a maximum width. That maximum defaults t
 </div>
 ```
 
+### Popover with a toolbar
+
+```html
+<button x-h-button x-h-popover-trigger>Filters</button>
+<div class="w-72" x-h-popover data-innerclicks="true">
+  <div x-h-toolbar data-variant="transparent" data-size="md">
+    <span x-h-toolbar-title>Filters</span>
+  </div>
+  <div class="vbox gap-3 p-4">
+    <div class="flex items-center gap-2">
+      <span x-h-switch data-size="sm">
+        <input type="checkbox" id="unreadOnlySw" checked />
+      </span>
+      <label x-h-label for="unreadOnlySw">Unread only</label>
+    </div>
+    <div class="flex items-center gap-2">
+      <span x-h-switch data-size="sm">
+        <input type="checkbox" id="withArchivedSw" />
+      </span>
+      <label x-h-label for="withArchivedSw">Include archived</label>
+    </div>
+  </div>
+  <div x-h-toolbar.footer data-size="md" class="justify-end">
+    <button x-h-button data-size="sm" data-variant="outline">Reset</button>
+    <button x-h-button data-size="sm" data-variant="primary">Apply</button>
+  </div>
+</div>
+```
+
 ### Bind the open state (two-way)
 
 Bind a variable to the trigger to read or control the open state while keeping the automatic behavior. The popover still toggles on click and dismisses on an outside click, and setting the variable elsewhere shows or hides it. This is useful to close the popover from a button inside it (for example a "confirm" action) while other inner controls leave it open.
