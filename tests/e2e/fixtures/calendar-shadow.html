@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>calendar shadow fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <!--
+      Mirrors the docs' component-container (docs/public/js/component-container.js):
+      an open shadow root whose only stylesheet is harmonia.css, with Alpine started
+      on the subtree by hand. Anything a directive appends to document.body lands
+      outside that root and loses every Harmonia style, so this is the environment
+      that catches floating content escaping its own component.
+      Templates keep the markup out of Alpine's reach until it is inside the root.
+    -->
+    <button id="outside" type="button">outside</button>
+
+    <template id="week-tpl">
+      <div
+        x-data="{ cal: { view: 'week', date: '2025-06-15', events: [
+          { id: '1', title: 'Off-site 1', start: '2025-06-15', allDay: true },
+          { id: '2', title: 'Off-site 2', start: '2025-06-15', allDay: true },
+          { id: '3', title: 'Off-site 3', start: '2025-06-15', allDay: true },
+          { id: '4', title: 'Off-site 4', start: '2025-06-15', allDay: true },
+          { id: '5', title: 'Off-site 5', start: '2025-06-15', allDay: true },
+        ] } }"
+        id="week-cal"
+        x-h-calendar="cal"
+        style="height: 420px"
+      ></div>
+    </template>
+
+    <template id="month-tpl">
+      <div
+        x-data="{ cal: { view: 'month', date: '2025-06-15', events: [
+          { id: '1', title: 'Sync 1', start: '2025-06-15T09:00:00', end: '2025-06-15T10:00:00' },
+          { id: '2', title: 'Sync 2', start: '2025-06-15T10:00:00', end: '2025-06-15T11:00:00' },
+          { id: '3', title: 'Sync 3', start: '2025-06-15T11:00:00', end: '2025-06-15T12:00:00' },
+          { id: '4', title: 'Sync 4', start: '2025-06-15T13:00:00', end: '2025-06-15T14:00:00' },
+          { id: '5', title: 'Sync 5', start: '2025-06-15T15:00:00', end: '2025-06-15T16:00:00' },
+        ] } }"
+        id="month-cal"
+        x-h-calendar="cal"
+        style="height: 420px"
+      ></div>
+    </template>
+
+    <div id="week-host"></div>
+    <div id="month-host"></div>
+
+    <script>
+      function mount(hostId, templateId) {
+        const root = document.getElementById(hostId).attachShadow({ mode: "open" });
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "/dist/harmonia.css";
+        // Directives that measure at init would otherwise read the unstyled flash.
+        const styled = new Promise((resolve) => {
+          link.addEventListener("load", resolve);
+          link.addEventListener("error", resolve);
+        });
+        root.appendChild(link);
+        const container = document.createElement("div");
+        container.classList.add("bg-background", "text-foreground");
+        root.appendChild(container);
+        container.appendChild(document.getElementById(templateId).content.cloneNode(true));
+        return styled.then(() => Alpine.initTree(container));
+      }
+
+      // alpine:init fires before Alpine.start(), so defer past it before initTree.
+      document.addEventListener(
+        "alpine:init",
+        () => {
+          setTimeout(() => {
+            Promise.all([mount("week-host", "week-tpl"), mount("month-host", "month-tpl")]).then(() => {
+              window.__shadowReady = true;
+            });
+          });
+        },
+        { once: true }
+      );
+    </script>
+  </body>
+</html>

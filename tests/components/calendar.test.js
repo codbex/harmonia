@@ -22,6 +22,12 @@ describe('h-calendar', () => {
     return mountDirective(calendarPlugin, 'h-calendar', el, { original: 'h-calendar', expression }, contextOverrides);
   }
 
+  // The all-day strip is the second row of the time grid's sticky header block,
+  // and its grid of day cells is that row's last child.
+  function allDayGrid() {
+    return el.querySelector('.overflow-y-auto.flex-1').firstElementChild.lastElementChild.lastElementChild;
+  }
+
   it('registers h-calendar directive', () => {
     const { alpine } = mount();
     expect(alpine._directives['h-calendar']).toBeDefined();
@@ -129,6 +135,86 @@ describe('h-calendar', () => {
     expect(pills.length).toBeGreaterThan(0);
   });
 
+  describe('all-day strip overflow', () => {
+    const allDayEvents = (count) => Array.from({ length: count }, (_, i) => ({ id: String(i), title: `Off-site ${i}`, start: '2026-06-18', allDay: true, color: 'orange' }));
+
+    function strip(count, contextOverrides = {}) {
+      mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'week', date: '2026-06-18', events: allDayEvents(count) }), ...contextOverrides });
+      return Array.from(allDayGrid().children).find((c) => c.children.length > 0);
+    }
+
+    it('shows every pill while the day stays within the cap', () => {
+      const cell = strip(3);
+      expect(cell.querySelectorAll('button').length).toBe(3);
+      expect(cell.querySelector('[data-slot="overflow-more-btn"]')).toBeNull();
+    });
+
+    it('past the cap keeps two pills and moves the rest behind a "+N more" trigger', () => {
+      const cell = strip(5);
+      const more = cell.querySelector('[data-slot="overflow-more-btn"]');
+      expect(cell.children.length).toBe(3);
+      expect(more.textContent).toBe('+3 more');
+      expect(Array.from(cell.querySelectorAll('button')).indexOf(more)).toBe(2);
+    });
+
+    it("opens the overflow popover with the day's whole all-day list", () => {
+      const cell = strip(5);
+      cell.querySelector('[data-slot="overflow-more-btn"]').click();
+      const popover = el.querySelector('[role="dialog"]');
+      expect(popover.classList.contains('hidden')).toBe(false);
+      expect(Array.from(popover.querySelectorAll('button')).map((b) => b.textContent)).toEqual(['Off-site 0', 'Off-site 1', 'Off-site 2', 'Off-site 3', 'Off-site 4']);
+    });
+
+    it('builds the trigger label from data-more-label', () => {
+      el.setAttribute('data-more-label', 'noch {count}');
+      expect(strip(5).querySelector('[data-slot="overflow-more-btn"]').textContent).toBe('noch 3');
+    });
+
+    it('closes the popover when the trigger is clicked a second time', () => {
+      const more = strip(5).querySelector('[data-slot="overflow-more-btn"]');
+      const open = () => !el.querySelector('[role="dialog"]').classList.contains('hidden');
+      more.click();
+      expect(open()).toBe(true);
+      more.click();
+      expect(open()).toBe(false);
+      more.click();
+      expect(open()).toBe(true);
+    });
+
+    it('presents the popover as a modal dialog the trigger controls', () => {
+      const more = strip(5).querySelector('[data-slot="overflow-more-btn"]');
+      const popover = el.querySelector('[role="dialog"]');
+      expect(popover.getAttribute('aria-modal')).toBe('true');
+      // focusTrap parks focus on the popover itself when it holds nothing focusable.
+      expect(popover.getAttribute('tabindex')).toBe('-1');
+      expect(more.getAttribute('aria-haspopup')).toBe('dialog');
+      expect(more.getAttribute('aria-controls')).toBe(popover.id);
+      expect(popover.id).toBeTruthy();
+    });
+
+    it('marks the trigger expanded only while its popover is open', () => {
+      const more = strip(5).querySelector('[data-slot="overflow-more-btn"]');
+      expect(more.getAttribute('aria-expanded')).toBe('false');
+      more.click();
+      expect(more.getAttribute('aria-expanded')).toBe('true');
+      more.click();
+      expect(more.getAttribute('aria-expanded')).toBe('false');
+    });
+  });
+
+  it('keeps the day header and the all-day strip inside the scrolling time grid', () => {
+    // Outside it they would keep their full width while a classic scrollbar
+    // narrows the day columns, and the columns would slip out from under their headers.
+    mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'week', date: '2026-06-18' }) });
+    const scrollArea = el.querySelector('.overflow-y-auto.flex-1');
+    const stickyHead = scrollArea.firstElementChild;
+    expect(stickyHead.className).toContain('sticky');
+    expect(stickyHead.className).toContain('top-0');
+    expect(stickyHead.contains(allDayGrid())).toBe(true);
+    expect(stickyHead.children.length).toBe(2);
+    expect(scrollArea.children.length).toBe(2);
+  });
+
   it('renders timed events in day-view columns', () => {
     const events = [{ id: '1', title: 'Standup', start: '2026-06-18T09:00:00', end: '2026-06-18T10:00:00', color: 'blue' }];
     mount('calConfig', { evaluateLater: () => (cb) => cb({ view: 'day', date: '2026-06-18', events }) });
@@ -218,7 +304,7 @@ describe('h-calendar', () => {
 
   describe('initial scroll position', () => {
     // The scrollable time grid is the only flex-1 overflow-y-auto container in
-    // week/day views (the all-day strip above it is max-h-18 flex-none).
+    // week/day views (the all-day strip nested in it does not scroll).
     function scrollTop() {
       return el.querySelector('.overflow-y-auto.flex-1').scrollTop;
     }
@@ -517,7 +603,8 @@ describe('h-calendar', () => {
       const drops = vi.fn();
       el.addEventListener('event-drop', drops);
       const evEl = timedEl('Standup');
-      const colsGrid = scrollArea().lastElementChild;
+      // The scroll box holds the sticky header block, then the gutter + columns row.
+      const colsGrid = scrollArea().lastElementChild.lastElementChild;
       stubRect(colsGrid, { left: 0, width: 700 });
       // Thu Jun 18 is column 4 of the Sun-Sat week; x 650 is column 6 (Sat).
       pointer(evEl, 'pointerdown', { clientX: 450, clientY: 300 });
@@ -647,12 +734,12 @@ describe('h-calendar', () => {
       mountDrag({ view: 'week', date: '2026-06-18', draggable: true, events: [holiday] });
       const drops = vi.fn();
       el.addEventListener('event-drop', drops);
-      const allDayGrid = el.querySelector('.max-h-18').lastElementChild;
-      stubRect(allDayGrid, { left: 0, width: 700 });
-      const pill = allDayGrid.querySelector('button');
+      const grid = allDayGrid();
+      stubRect(grid, { left: 0, width: 700 });
+      const pill = grid.querySelector('button');
       pointer(pill, 'pointerdown', { clientX: 450, clientY: 10 });
       pointer(pill, 'pointermove', { clientX: 550, clientY: 10 });
-      expect(allDayGrid.children[5].getAttribute('data-drop-target')).toBe('true');
+      expect(grid.children[5].getAttribute('data-drop-target')).toBe('true');
       pointer(pill, 'pointerup', { clientX: 550, clientY: 10 });
       expect(drops).toHaveBeenCalledOnce();
       expect(drops.mock.calls[0][0].detail.start).toBe('2026-06-19');

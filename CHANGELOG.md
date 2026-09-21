@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.3.1
+
+A bugfix release for the Calendar. The scrollbar inside the calendar body was moved to the calendar container, so the week and day view headers stay aligned with their columns when a scrollbar is part of the layout. The "+N more" popover missing regression is fixed and working. There are no breaking changes.
+
+### Calendar
+
+- **Fixed: the week and day view day headers drifted out of line with their columns.** Where a scrollbar takes room in the layout rather than overlaying it, it narrowed the day columns but not the header above them. The header, the all-day strip and the columns now share one scroll box with the header pinned to its top.
+- **Fixed: the all-day strip's own scrollbar knocked its cells out of line with the day columns.** The strip now shows up to three events per day and moves the rest behind a "+N more" button, so it never scrolls, following the existing design.
+- **Fixed: the "+N more" popover did not open for a calendar inside a shadow root.** It was attached to `document.body`, outside the tree that carries Harmonia's stylesheet, so it arrived unstyled and away from its button. It is now part of the calendar.
+- **Fixed: clicking the "+N more" button a second time did not close the popover.** It now toggles, and closing it returns focus to the button.
+- **Fixed: `Tab` walked out of the open "+N more" popover.** Past the last event it left the calendar altogether, and `Shift+Tab` reached the grid behind it. `Tab` and `Shift+Tab` now cycle within the popover, which is marked up as the modal dialog it behaves as.
+- **Fixed: the "+N more" button did not read as something to click.** It is now outlined and spaced like the event pills beside it.
+
 ## v3.3.0
 
 A release that lets a dialog draw a border between its body and its header and footer, so a scrolling list no longer appears to run underneath them. The card gains the same treatment from the other side: a `data-type="object"` mode that pulls its header and footer in against a table, a list or an iframe filling its flush content, and a tighter measure under a bordered header or over a bordered footer. It also gives the `import` and `export` icons a second name each, `upload` and `download`. Reaching for `data-icon="upload"` is the natural first try, and it used to render an empty icon with nothing to say why. There are no breaking changes.

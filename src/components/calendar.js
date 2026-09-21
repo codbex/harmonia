@@ -2,9 +2,11 @@ import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/d
 import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, toDateString } from '../common/calendar';
 import { attachDayDrag, capturePointer, DRAG_THRESHOLD, releasePointer } from '../common/drag';
 import { colorClasses } from '../common/event-colors';
+import { focusTrap } from '../common/focus-trap';
 import { ChevronDown, ChevronLeft, ChevronRight, createSvg } from '../common/icons';
 import { createDateTimeFormatCache } from '../common/intl';
 import { findModelAttribute, rejectModelEventModifiers } from '../common/model';
+import { eventInsidePicker } from '../common/picker-popover';
 import { resolveLocale } from '../utils/language';
 import uuidv4 from '../utils/uuid';
 
@@ -62,6 +64,9 @@ export default function (Alpine) {
     let showViewSwitcher = true;
     let scrollTo = 'now';
     let currentTrimAll = null;
+    // Keeps the time grid's scroll padding level with its sticky header, so a
+    // focused event is never scrolled underneath it.
+    let currentStickyPad = null;
     // The time grid's initial scroll, saved until the grid has a scroll box that could use it.
     let pendingScroll = null;
     let draggable = false;
@@ -149,11 +154,18 @@ export default function (Alpine) {
     viewArea.classList.add('flex', 'flex-col', 'flex-1', 'min-h-0', 'overflow-hidden');
     el.appendChild(viewArea);
 
-    // Shared popover for "+N more" overflow in month view
+    // Shared popover for "+N more" overflow
     const overflowPopover = document.createElement('div');
-    overflowPopover.classList.add('fixed', 'hidden', 'bg-popover', 'text-popover-foreground', 'border', 'rounded-md', 'shadow-md', 'w-auto', 'flex', 'flex-col');
+    overflowPopover.classList.add('fixed', 'hidden', 'z-50', 'bg-popover', 'text-popover-foreground', 'border', 'rounded-md', 'shadow-md', 'w-auto', 'flex', 'flex-col');
     overflowPopover.setAttribute('role', 'dialog');
-    document.body.appendChild(overflowPopover);
+    overflowPopover.setAttribute('aria-modal', 'true');
+    // Holds focus itself when the list is empty, without becoming a tab stop.
+    overflowPopover.setAttribute('tabindex', '-1');
+    overflowPopover.setAttribute('id', `hco${uuidv4()}`);
+    el.appendChild(overflowPopover);
+    // Tab and Shift+Tab cycle within the popover instead of walking out of an
+    // open dialog into the grid it covers.
+    const overflowTrap = focusTrap(overflowPopover);
     let overflowAutoUpdate = null;
     let overflowOutsideHandler = null;
     let overflowKeydownHandler = null;
@@ -161,6 +173,11 @@ export default function (Alpine) {
 
     function closeOverflowPopover(restoreFocus = false) {
       overflowPopover.classList.add('hidden');
+      // `dispose` rather than `release`. The explicit restore below is the one
+      // that runs, since Safari leaves a clicked button unfocused and the trap
+      // would then have recorded the document body as the opener.
+      overflowTrap.dispose();
+      overflowTrigger?.setAttribute('aria-expanded', 'false');
       if (overflowAutoUpdate) {
         overflowAutoUpdate();
         overflowAutoUpdate = null;
@@ -180,6 +197,8 @@ export default function (Alpine) {
 
     function showOverflowPopover(anchor, day, dayEvs) {
       overflowPopover.innerHTML = '';
+      // Opening straight from another day's trigger leaves that one expanded.
+      overflowTrigger?.setAttribute('aria-expanded', 'false');
       overflowTrigger = anchor;
       overflowPopover.setAttribute('aria-label', dtf(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(day));
 
@@ -194,6 +213,10 @@ export default function (Alpine) {
       overflowPopover.appendChild(list);
 
       overflowPopover.classList.remove('hidden');
+      anchor.setAttribute('aria-expanded', 'true');
+      // Trap before focus moves in, so it records the trigger as the opener
+      // rather than the pill it is about to focus. Related to the Safari shenanigans.
+      overflowTrap.trap();
       // Move focus into the popover so keyboard users land on the event list.
       list.firstChild?.focus();
 
@@ -210,7 +233,7 @@ export default function (Alpine) {
       overflowAutoUpdate = autoUpdate(anchor, overflowPopover, updatePosition);
 
       overflowOutsideHandler = (e) => {
-        if (!overflowPopover.contains(e.target) && e.target !== anchor) closeOverflowPopover();
+        if (!eventInsidePicker(overflowPopover, e) && !eventInsidePicker(anchor, e)) closeOverflowPopover();
       };
       overflowKeydownHandler = (e) => {
         if (e.key === 'Escape') closeOverflowPopover(true);
@@ -234,6 +257,7 @@ export default function (Alpine) {
 
     const resizeObserver = new ResizeObserver(() => {
       currentTrimAll?.();
+      currentStickyPad?.();
       applyPendingScroll();
     });
     resizeObserver.observe(el);
@@ -339,6 +363,48 @@ export default function (Alpine) {
       return pill;
     }
 
+    function moreLabel(count) {
+      return (el.getAttribute('data-more-label') || '+{count} more').replace('{count}', String(count));
+    }
+
+    // Toggles `dayEvs` in the shared overflow popover. Used by the month cell and
+    // by the week/day all-day strip, which cap what they show for the same reason.
+    function makeMoreButton(count, day, dayEvs) {
+      const more = document.createElement('button');
+      more.type = 'button';
+      more.classList.add(
+        'text-xs',
+        'text-muted-foreground',
+        'px-1',
+        'py-0.5',
+        'hbox',
+        'items-center',
+        'text-left',
+        'w-full',
+        'rounded',
+        'border',
+        'hover:bg-secondary-hover',
+        'hover:text-secondary-foreground',
+        'cursor-pointer',
+        'outline-ring/50',
+        'focus-outline'
+      );
+      more.setAttribute('data-slot', 'overflow-more-btn');
+      more.setAttribute('aria-haspopup', 'dialog');
+      more.setAttribute('aria-controls', overflowPopover.id);
+      more.setAttribute('aria-expanded', 'false');
+      // The button has no aria-label, so this text is also its accessible name.
+      more.textContent = moreLabel(count);
+      more.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // The outside-click handler counts the trigger as inside, so a second
+        // click on it has to close the popover itself.
+        if (overflowTrigger === more) closeOverflowPopover(true);
+        else showOverflowPopover(more, day, dayEvs);
+      });
+      return more;
+    }
+
     function trimMonthCell(cell, day, dayEvs) {
       const pills = Array.from(cell.querySelectorAll('.event-pill'));
       cell.querySelector('button[data-slot="overflow-more-btn"]')?.remove();
@@ -358,19 +424,7 @@ export default function (Alpine) {
       pills.slice(overflowIdx).forEach((p) => p.classList.add('hidden'));
       let hiddenCount = pills.length - overflowIdx;
 
-      const more = document.createElement('button');
-      more.type = 'button';
-      more.classList.add('text-xs', 'text-muted-foreground', 'px-1', 'text-left', 'w-full', 'rounded', 'hover:text-foreground', 'cursor-pointer', 'outline-ring/50', 'focus-outline');
-      more.setAttribute('data-slot', 'overflow-more-btn');
-      // The button has no aria-label, so this text is also its accessible name.
-      const setMoreLabel = (count) => {
-        more.textContent = (el.getAttribute('data-more-label') || '+{count} more').replace('{count}', String(count));
-      };
-      setMoreLabel(hiddenCount);
-      more.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showOverflowPopover(more, day, dayEvs);
-      });
+      const more = makeMoreButton(hiddenCount, day, dayEvs);
       cell.appendChild(more);
 
       // If the more button itself overflows, sacrifice one more pill for it
@@ -378,7 +432,7 @@ export default function (Alpine) {
       if (cell.clientHeight > 0 && more.getBoundingClientRect().bottom > cellBottom && overflowIdx > 0) {
         pills[overflowIdx - 1].classList.add('hidden');
         hiddenCount++;
-        setMoreLabel(hiddenCount);
+        more.textContent = moreLabel(hiddenCount);
       }
     }
 
@@ -432,7 +486,7 @@ export default function (Alpine) {
     // (15 by default), horizontal moves follow the pointer across day columns. Listeners live on
     // the event element itself (pointer capture routes moves there), so they die
     // with the render and nothing outlives the directive.
-    function attachTimedDrag(evEl, ev, { colsGrid, scrollArea, days, dayIdx, startMins, durMins, lockVertical, timeEl }) {
+    function attachTimedDrag(evEl, ev, { colsGrid, scrollArea, stickyHead, days, dayIdx, startMins, durMins, lockVertical, timeEl }) {
       evEl.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
         suppressClick = false;
@@ -458,10 +512,11 @@ export default function (Alpine) {
             evEl.style.width = 'calc(100% - 0.25rem)';
           }
           // Nudge the scroll area when the pointer nears its edges, before the
-          // delta math so the same move lands consistently.
+          // delta math so the same move lands consistently. The sticky header
+          // covers the top of the scroll box, so the upward band starts below it.
           const sRect = scrollArea.getBoundingClientRect();
           if (sRect.height > 0) {
-            if (me.clientY < sRect.top + 40) scrollArea.scrollTop -= 15;
+            if (me.clientY < stickyHead.getBoundingClientRect().bottom + 40) scrollArea.scrollTop -= 15;
             else if (me.clientY > sRect.bottom - 40) scrollArea.scrollTop += 15;
           }
           if (!lockVertical) {
@@ -586,6 +641,7 @@ export default function (Alpine) {
       viewArea.innerHTML = '';
       pendingScroll = null;
       currentTrimAll = null;
+      currentStickyPad = null;
       if (view === 'month') renderMonth();
       else if (view === 'week') renderWeek();
       else if (view === 'day') renderDay();
@@ -730,15 +786,23 @@ export default function (Alpine) {
     function renderTimeGrid(days) {
       const HOUR_H = 60;
       const HOURS = 24;
+      // Rows an all-day cell shows before the rest move into the overflow popover.
+      const ALL_DAY_ROWS = 3;
       // The px gap between the grid's top edge and the first event when `scrollTo` is set to `first-event`.
       const EVENT_GAP = 8;
       const cols = days.length;
       const now = new Date();
       const nowMins = now.getHours() * 60 + now.getMinutes();
 
+      const scrollArea = document.createElement('div');
+      scrollArea.classList.add('flex-1', 'min-h-0', 'overflow-y-auto');
+      const stickyHead = document.createElement('div');
+      // Above the timed events' `z-10` and the `z-20` a dragged event takes.
+      stickyHead.classList.add('sticky', 'top-0', 'z-30', 'bg-background');
+
       // Day header row
       const dayHeader = document.createElement('div');
-      dayHeader.classList.add('flex', 'border-b', 'flex-none');
+      dayHeader.classList.add('flex', 'border-b');
       const hSpacer = document.createElement('div');
       hSpacer.classList.add('w-14', 'flex-none', 'border-r');
       dayHeader.appendChild(hSpacer);
@@ -761,11 +825,11 @@ export default function (Alpine) {
         dayHeaderGrid.appendChild(hCell);
       });
       dayHeader.appendChild(dayHeaderGrid);
-      viewArea.appendChild(dayHeader);
+      stickyHead.appendChild(dayHeader);
 
       // All-day strip
       const allDayRow = document.createElement('div');
-      allDayRow.classList.add('flex', 'border-b', 'flex-none', 'max-h-18', 'overflow-y-auto');
+      allDayRow.classList.add('flex', 'border-b');
       const allDayLabel = document.createElement('div');
       allDayLabel.classList.add('w-14', 'flex-none', 'text-xs', 'text-right', 'pr-2', 'py-1', 'text-muted-foreground', 'border-r');
       allDayLabel.textContent = 'All day';
@@ -782,24 +846,28 @@ export default function (Alpine) {
       };
       days.forEach((day) => {
         const adCell = document.createElement('div');
-        adCell.classList.add('border-r', 'last:border-r-0', 'p-0.5', 'space-y-0.5', 'min-h-[28px]');
-        events
-          .filter((ev) => ev.allDay && eventSpansDay(ev, day))
-          .forEach((ev) => {
-            const pill = makeEventPill(ev);
-            // A day-only drag is meaningful only when there is another day column.
-            if (cols > 1 && canDrag(ev)) attachEventDayDrag(pill, ev, day, resolveAllDayCell);
-            adCell.appendChild(pill);
-          });
+        adCell.classList.add('border-r', 'last:border-r-0', 'p-0.5', 'space-y-0.5', 'min-h-7');
+        // Past the cap the last row becomes the overflow button. That bounds the
+        // strip's height on its own, so it needs no max-height and never scrolls.
+        const dayAllDay = events.filter((ev) => ev.allDay && eventSpansDay(ev, day));
+        const shown = dayAllDay.length > ALL_DAY_ROWS ? ALL_DAY_ROWS - 1 : dayAllDay.length;
+        dayAllDay.slice(0, shown).forEach((ev) => {
+          const pill = makeEventPill(ev);
+          // A day-only drag is meaningful only when there is another day column.
+          if (cols > 1 && canDrag(ev)) attachEventDayDrag(pill, ev, day, resolveAllDayCell);
+          adCell.appendChild(pill);
+        });
+        if (shown < dayAllDay.length) adCell.appendChild(makeMoreButton(dayAllDay.length - shown, day, dayAllDay));
         adCells.push(adCell);
         allDayGrid.appendChild(adCell);
       });
       allDayRow.appendChild(allDayGrid);
-      viewArea.appendChild(allDayRow);
+      stickyHead.appendChild(allDayRow);
+      scrollArea.appendChild(stickyHead);
 
-      // Scrollable time grid
-      const scrollArea = document.createElement('div');
-      scrollArea.classList.add('flex', 'flex-1', 'min-h-0', 'overflow-y-auto');
+      // Time grid
+      const bodyRow = document.createElement('div');
+      bodyRow.classList.add('flex');
 
       // Time gutter
       const gutter = document.createElement('div');
@@ -818,7 +886,7 @@ export default function (Alpine) {
         }
         gutter.appendChild(row);
       }
-      scrollArea.appendChild(gutter);
+      bodyRow.appendChild(gutter);
 
       // Day columns
       const colsGrid = document.createElement('div');
@@ -925,7 +993,7 @@ export default function (Alpine) {
             // Segments continuing from an earlier day render clamped to the top,
             // so a vertical move would disagree with the applied result. Lock
             // them to day changes.
-            attachTimedDrag(evEl, ev, { colsGrid, scrollArea, days, dayIdx, startMins, durMins, lockVertical: ev.startDate < startOfDay, timeEl });
+            attachTimedDrag(evEl, ev, { colsGrid, scrollArea, stickyHead, days, dayIdx, startMins, durMins, lockVertical: ev.startDate < startOfDay, timeEl });
           }
           col.appendChild(evEl);
         });
@@ -951,7 +1019,8 @@ export default function (Alpine) {
         colsGrid.appendChild(col);
       });
 
-      scrollArea.appendChild(colsGrid);
+      bodyRow.appendChild(colsGrid);
+      scrollArea.appendChild(bodyRow);
       viewArea.appendChild(scrollArea);
 
       // Scroll to just above the earliest timed event, the current time (-60min buffer), or 8 am
@@ -975,7 +1044,14 @@ export default function (Alpine) {
       if (firstEventMins !== null) scrollTarget = Math.max(firstEventMins * (HOUR_H / 60) - EVENT_GAP, 0);
       else if (hasToday) scrollTarget = Math.max((nowMins - 60) * (HOUR_H / 60), 0);
       pendingScroll = { area: scrollArea, top: scrollTarget };
-      requestAnimationFrame(applyPendingScroll);
+      currentStickyPad = () => {
+        const base = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        scrollArea.style.scrollPaddingTop = `${stickyHead.offsetHeight / base}rem`;
+      };
+      requestAnimationFrame(() => {
+        currentStickyPad?.();
+        applyPendingScroll();
+      });
     }
 
     function renderWeek() {

@@ -16,6 +16,20 @@
       <div id="visible" x-h-calendar="cal" style="height: 600px"></div>
     </div>
 
+    <!-- Enough all-day events on one day to pass the strip's three-row cap. -->
+    <div
+      x-data="{ cal: { view: 'week', scrollTo: 'first-event', events: [
+        { title: 'Review', start: '2025-06-15T14:00:00', end: '2025-06-15T14:30:00' },
+        { title: 'Off-site 1', start: '2025-06-15', allDay: true },
+        { title: 'Off-site 2', start: '2025-06-15', allDay: true },
+        { title: 'Off-site 3', start: '2025-06-15', allDay: true },
+        { title: 'Off-site 4', start: '2025-06-15', allDay: true },
+        { title: 'Off-site 5', start: '2025-06-15', allDay: true },
+      ] } }"
+    >
+      <div id="allday" x-h-calendar="cal" style="height: 600px"></div>
+    </div>
+
     <!-- Hidden at init, revealed by a click. -->
     <div x-data="{ open: false, cal: { view: 'week', scrollTo: 'first-event', events: [{ title: 'Review', start: '2025-06-15T14:00:00', end: '2025-06-15T14:30:00' }] } }">
       <button id="reveal" x-h-button @click="open = true">Show</button>

@@ -21,6 +21,8 @@ Set `draggable: true` in the configuration to let users reschedule events by dra
 
 Dropping never changes the calendar's data directly. The event snaps back and an `event-drop` event is dispatched with the proposed new `start` and `end` values. Apply them to your event object to accept the move, or ignore the event to reject it. Individual events can opt out with `draggable: false`. Dragging is a mouse or pen interaction, and a plain click still fires `event-click`.
 
+The all-day header of the week and day views shows up to three events per day. If there are more, it shows the first two and puts the rest behind a "+N more" button that opens a popover, listing all events that day, the same way an overflowing month cell does. Both popovers list the day in full.
+
 ## Keyboard Handling
 
 In the month view (and within each year-view mini-month) the day cells form an ARIA grid with roving focus:
@@ -31,7 +33,7 @@ In the month view (and within each year-view mini-month) the day cells form an A
 - `PageUp` / `PageDown` - Move focus to the previous/next month.
 - `Enter` / `Space` - Fire `date-click` for the focused day (year view - open that day in day view).
 
-Events are buttons in the tab order. Activate them to fire `event-click`. In the month view, the "+N more" overflow opens a dialog that moves focus to its event list and returns focus to the trigger on `Escape`.
+Events are buttons in the tab order. Activate them to fire `event-click`. The "+N more" overflow in the month view and in the week and day all-day strip opens a dialog that moves focus to its event list. While it is open, `Tab` and `Shift+Tab` cycle through its own events instead of switching to the calendar behind it. Hitting `Escape` or a second click on the button, closes it and returns focus to the button.
 
 ## Accessibility
 
@@ -47,17 +49,17 @@ x-h-calendar
 
 ### Attributes
 
-| Attribute        | Values | Required | Description                                                                                         |
-| ---------------- | ------ | -------- | --------------------------------------------------------------------------------------------------- |
-| data-aria-prev   | string | false    | Sets the `aria-label` for the previous-period navigation button.                                    |
-| data-aria-next   | string | false    | Sets the `aria-label` for the next-period navigation button.                                        |
-| data-aria-views  | string | false    | Sets the `aria-label` for the view switcher menu (Defaults to `"Change view"`).                     |
-| data-today-label | string | false    | Sets the text label for the Today button (Defaults to `"Today"`).                                   |
-| data-more-label  | string | false    | Template for the month-view overflow button. `{count}` is substituted. Defaults to `+{count} more`. |
-| data-day-label   | string | false    | Sets the label for the Day view option (Defaults to `"Day"`).                                       |
-| data-week-label  | string | false    | Sets the label for the Week view option (Defaults to `"Week"`).                                     |
-| data-month-label | string | false    | Sets the label for the Month view option (Defaults to `"Month"`).                                   |
-| data-year-label  | string | false    | Sets the label for the Year view option (Defaults to `"Year"`).                                     |
+| Attribute        | Values | Required | Description                                                                              |
+| ---------------- | ------ | -------- | ---------------------------------------------------------------------------------------- |
+| data-aria-prev   | string | false    | Sets the `aria-label` for the previous-period navigation button.                         |
+| data-aria-next   | string | false    | Sets the `aria-label` for the next-period navigation button.                             |
+| data-aria-views  | string | false    | Sets the `aria-label` for the view switcher menu (Defaults to `"Change view"`).          |
+| data-today-label | string | false    | Sets the text label for the Today button (Defaults to `"Today"`).                        |
+| data-more-label  | string | false    | Template for the overflow button. `{count}` is substituted. Defaults to `+{count} more`. |
+| data-day-label   | string | false    | Sets the label for the Day view option (Defaults to `"Day"`).                            |
+| data-week-label  | string | false    | Sets the label for the Week view option (Defaults to `"Week"`).                          |
+| data-month-label | string | false    | Sets the label for the Month view option (Defaults to `"Month"`).                        |
+| data-year-label  | string | false    | Sets the label for the Year view option (Defaults to `"Year"`).                          |
 
 ### Events
 
@@ -166,6 +168,41 @@ Each item in the `events` array supports the following fields:
   style="height: 560px"
   @event-click="console.log('event clicked:', $event.detail.event)"
   @date-click="console.log('date clicked:', $event.detail.date, $event.detail.time)"
+></div>
+```
+
+</LiveExample>
+
+### All-day events
+
+In this example, Monday has five events. The header can show up to 3 events, so the Monday column shows two and moves the rest behind a "+N more" button that opens a popover list of events.
+
+<LiveExample data-class="p-0" data-exclude="generator">
+
+```html
+<div
+  x-data="{
+  cal: {},
+  init() {
+    const today = new Date().toISOString().slice(0, 10);
+    const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10);
+    this.cal = {
+      view: 'week',
+      scrollTo: 'first-event',
+      events: [
+        { id: '1', title: 'Company Offsite', start: today, end: tomorrow, allDay: true, color: 'orange' },
+        { id: '2', title: 'Quarter Close', start: today, allDay: true, color: 'purple' },
+        { id: '3', title: 'Hiring Week', start: today, allDay: true, color: 'teal' },
+        { id: '4', title: 'Release Freeze', start: today, allDay: true, color: 'red' },
+        { id: '5', title: 'Charity Drive', start: today, allDay: true, color: 'green' },
+        { id: '6', title: 'Design Review', start: today + 'T11:00:00', end: today + 'T12:00:00', color: 'blue' },
+      ],
+    };
+  }
+}"
+  x-h-calendar="cal"
+  style="height: 560px"
+  @event-click="console.log('event clicked:', $event.detail.event)"
 ></div>
 ```
 
