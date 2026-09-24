@@ -46,6 +46,32 @@ describe('buttonVariants', () => {
     expect(buttonVariants.link).toContain('text-primary');
     expect(buttonVariants.link).toContain('underline-offset-4');
   });
+
+  it('resets every hover and active color to the resting one while aria-disabled', () => {
+    for (const [name, classes] of Object.entries(buttonVariants)) {
+      for (const cls of classes) {
+        const match = /^(hover|active):(bg|text|fill)-/.exec(cls);
+        if (!match) continue;
+        const resting = classes.find((c) => c.startsWith(`${match[2]}-`));
+        expect(classes, `${name}: ${cls}`).toContain(`aria-disabled:${match[1]}:${resting}`);
+      }
+    }
+  });
+
+  // The resets outrank aria-pressed, so the pressed colors have to be restated.
+  it('keeps the pressed colors of every variant while aria-disabled', () => {
+    for (const [name, classes] of Object.entries(buttonVariants)) {
+      for (const cls of classes.filter((c) => c.startsWith('aria-pressed:'))) {
+        const utility = cls.slice('aria-pressed:'.length);
+        expect(classes, name).toContain(`aria-disabled:aria-pressed:${utility}`);
+        expect(classes, name).toContain(`aria-disabled:data-[toggled=true]:${utility}`);
+      }
+    }
+  });
+
+  it('drops the link underline on hover while aria-disabled', () => {
+    expect(buttonVariants.link).toContain('aria-disabled:hover:no-underline');
+  });
 });
 
 describe('setButtonClasses', () => {
@@ -77,6 +103,14 @@ describe('setButtonClasses', () => {
     const el = document.createElement('button');
     setButtonClasses(el);
     expect(el.classList.contains('disabled:opacity-disabled')).toBe(true);
+  });
+
+  it('dims aria-disabled and keeps the pointer for a not-allowed cursor', () => {
+    const el = document.createElement('button');
+    setButtonClasses(el);
+    expect(el.classList.contains('aria-disabled:opacity-disabled')).toBe(true);
+    expect(el.classList.contains('aria-disabled:cursor-not-allowed')).toBe(true);
+    expect(el.classList.contains('aria-disabled:pointer-events-none')).toBe(false);
   });
 });
 
@@ -196,6 +230,15 @@ describe('h-button directive', () => {
   it('calls cleanup', () => {
     const { ctx } = mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  it('leaves the click of an aria-disabled button to the author', () => {
+    el.setAttribute('aria-disabled', 'true');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    const onClick = vi.fn();
+    el.addEventListener('click', onClick);
+    el.click();
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -257,9 +257,6 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     btn.setAttribute(callbacks.Alpine.prefixed('h-button'), '');
     btn.setAttribute('data-variant', 'transparent');
     btn.setAttribute('data-size', 'icon');
-    // aria-disabled at a min/max limit keeps a focused button focused. It still
-    // takes the click, so the handler stops it before it can close a popover.
-    btn.classList.add('aria-disabled:opacity-disabled', 'aria-disabled:cursor-not-allowed', 'aria-disabled:hover:bg-transparent', 'aria-disabled:active:bg-transparent');
   }
 
   // The year buttons show only while the year grid does, in place of the month buttons.
@@ -885,6 +882,8 @@ export function createCalendarWidget(directiveName, el, callbacks) {
       [previousYearBtn, yearStepBlocked(-1)],
       [nextYearBtn, yearStepBlocked(1)],
     ];
+    // aria-disabled at a min/max limit keeps a focused button focused. It still
+    // takes the click, so the handler stops it before it can close a popover.
     for (const [btn, blocked] of steps) {
       if (blocked) btn.setAttribute('aria-disabled', 'true');
       else btn.removeAttribute('aria-disabled');
