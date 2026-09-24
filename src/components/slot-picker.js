@@ -1,5 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
-import { createCalendarWidget, forwardCalendarNavAria, isToday, toDateString } from '../common/calendar';
+import { createCalendarWidget, forwardCalendarNavAria, isToday, parseDateValue, toDateString } from '../common/calendar';
 import { capturePointer, DRAG_THRESHOLD, releasePointer } from '../common/drag';
 import { colorClasses, EVENT_COLORS, ringClass } from '../common/event-colors';
 import { createDateTimeFormatCache } from '../common/intl';
@@ -87,7 +87,7 @@ export default function (Alpine) {
     }
 
     function toMidnight(value) {
-      const d = new Date(value);
+      const d = parseDateValue(value);
       d.setHours(0, 0, 0, 0);
       return d;
     }
@@ -846,6 +846,7 @@ export default function (Alpine) {
       calPopover = document.createElement('div');
       calPopover.setAttribute('id', calControls);
       calPopover.setAttribute('role', 'dialog');
+      calPopover.setAttribute('aria-modal', 'true');
       calPopover.setAttribute('tabindex', '-1');
       calPopover.setAttribute('data-align', 'bottom-end');
       calPopover.setAttribute('data-slot', 'slot-picker-calendar');
@@ -880,6 +881,7 @@ export default function (Alpine) {
         onModelValid: () => {},
         stopNavPropagation: true,
         tableFullWidth: false,
+        cycleSelectionTab: true,
       });
       // Catch up on any locale/bounds config applied before this widget existed.
       calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
@@ -938,10 +940,7 @@ export default function (Alpine) {
 
     function setConfig(config) {
       if (!config) return;
-      if (config.date !== undefined) {
-        currentDate = new Date(config.date);
-        currentDate.setHours(0, 0, 0, 0);
-      }
+      if (config.date !== undefined) currentDate = toMidnight(config.date);
       if (config.days !== undefined) {
         const n = Math.round(Number(config.days));
         dayCount = Number.isFinite(n) ? Math.min(7, Math.max(1, n)) : 3;
@@ -956,7 +955,7 @@ export default function (Alpine) {
       if (config.draggable !== undefined) draggable = !!config.draggable;
       if (config.locale !== undefined) {
         locale = resolveLocale(config.locale);
-        if (calWidget) calWidget.setConfig({ locale });
+        if (calWidget) calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
       }
       if (config.disabledDates !== undefined) disabledDates = Array.isArray(config.disabledDates) ? config.disabledDates : [];
       if (config.disabledDays !== undefined) disabledDays = Array.isArray(config.disabledDays) ? config.disabledDays : [];

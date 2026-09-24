@@ -36,19 +36,21 @@ The date is selected in the calendar. The time is set by focusing a segment (hou
 
 #### x-h-datetime-picker-popup
 
-| Attribute            | Values | Required | Description                                                              |
-| -------------------- | ------ | -------- | ------------------------------------------------------------------------ |
-| data-align           | string | false    | Aligns the popover relative to the trigger (e.g. `bottom-start`, `top`). |
-| data-aria-prev-year  | string | false    | Sets the `aria-label` attribute value for the previous year button.      |
-| data-aria-prev-month | string | false    | Sets the `aria-label` attribute value for the previous month button.     |
-| data-aria-next-month | string | false    | Sets the `aria-label` attribute value for the next month button.         |
-| data-aria-next-year  | string | false    | Sets the `aria-label` attribute value for the next year button.          |
-| data-label-time      | string | false    | `aria-label` for the time editor group (default `"Time"`).               |
-| data-label-hours     | string | false    | `aria-label` for the hour segment (default `"Hour"`).                    |
-| data-label-minutes   | string | false    | `aria-label` for the minute segment (default `"Minute"`).                |
-| data-label-seconds   | string | false    | `aria-label` for the second segment (default `"Second"`).                |
-| data-label-meridiem  | string | false    | `aria-label` for the AM/PM segment (default `"AM/PM"`).                  |
-| data-label-now       | string | false    | Text label for the Now button (default `"Now"`).                         |
+| Attribute              | Values | Required | Description                                                                                        |
+| ---------------------- | ------ | -------- | -------------------------------------------------------------------------------------------------- |
+| data-align             | string | false    | Aligns the popover relative to the trigger (e.g. `bottom-start`, `top`).                           |
+| data-aria-prev-year    | string | false    | Sets the `aria-label` attribute value for the previous year button.                                |
+| data-aria-prev-month   | string | false    | Sets the `aria-label` attribute value for the previous month button.                               |
+| data-aria-next-month   | string | false    | Sets the `aria-label` attribute value for the next month button.                                   |
+| data-aria-next-year    | string | false    | Sets the `aria-label` attribute value for the next year button.                                    |
+| data-aria-choose-month | string | false    | Sets the text after the month name in the month button's `aria-label`. Defaults to `choose month`. |
+| data-aria-choose-year  | string | false    | Sets the text after the year in the year button's `aria-label`. Defaults to `choose year`.         |
+| data-label-time        | string | false    | `aria-label` for the time editor group (default `"Time"`).                                         |
+| data-label-hours       | string | false    | `aria-label` for the hour segment (default `"Hour"`).                                              |
+| data-label-minutes     | string | false    | `aria-label` for the minute segment (default `"Minute"`).                                          |
+| data-label-seconds     | string | false    | `aria-label` for the second segment (default `"Second"`).                                          |
+| data-label-meridiem    | string | false    | `aria-label` for the AM/PM segment (default `"AM/PM"`).                                            |
+| data-label-now         | string | false    | Text label for the Now button (default `"Now"`).                                                   |
 
 ### Model
 
@@ -91,6 +93,15 @@ In the calendar grid:
 - `Home` / `End` - First / last day of the month.
 - `PageUp` / `PageDown` - Previous / next month.
 
+In the month and year selection grids:
+
+- `Up` / `Down` / `Left` / `Right` - Move the focused month or year.
+- `Home` / `End` - First / last month or year.
+- `PageUp` / `PageDown` - 12 years back / forward in the year grid.
+- `Enter` / `Space` - Show the days of the focused month or year.
+- `Tab` / `Shift+Tab` - Cycle between the calendar header buttons and the grid. The time editor is reached again after returning to the days.
+- `Esc` - Return to the days.
+
 In the time editor:
 
 - `Tab` / `Left` / `Right` - Move between the hour, minute, second and AM/PM segments.
@@ -99,11 +110,13 @@ In the time editor:
 - `Up` / `Down` - Increase / decrease the focused segment (wraps around).
 - `Home` / `End` - Set the focused segment to its minimum / maximum.
 - `Backspace` / `Delete` - Clear the focused segment.
-- `Esc` - Close the popover.
+- `Esc` - Close the popover and return focus to the control that opened it.
+
+`Tab` and `Shift+Tab` move through the calendar, the time editor and the "Now" button, and stay inside the open popover.
 
 ## Accessibility
 
-The calendar is exposed as an ARIA date grid (see the Inline Calendar accessibility notes). Each time segment is a `spinbutton` with its own label and `aria-valuemin` / `aria-valuemax` / `aria-valuenow` / `aria-valuetext`, so assistive technology announces it and its current value. The trigger advertises `aria-haspopup="dialog"` and its expanded state.
+The calendar is exposed as an ARIA date grid (see the Inline Calendar accessibility notes). Its month and year are toggle buttons that open a month grid or a year list in place of the days, as described in the Inline Calendar behavior. Each time segment is a `spinbutton` with its own label and `aria-valuemin` / `aria-valuemax` / `aria-valuenow` / `aria-valuetext`, so assistive technology announces it and its current value. The trigger advertises `aria-haspopup="dialog"` and its expanded state.
 
 ## Binding
 
@@ -136,6 +149,77 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
   <input type="text" id="datetime-input-2" />
   <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
   <div x-h-datetime-picker-popup="{ is12Hour: true, seconds: true }" x-model="dt"></div>
+</div>
+```
+
+### With locale
+
+The locale sets the date's display format and the calendar's month and day names. The time keeps its 24-hour or 12-hour form.
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '2026-07-09T14:30' }">
+  <input type="text" id="datetime-input-locale" />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup="{ locale: 'de-DE', firstDay: 1 }" x-model="dt"></div>
+</div>
+```
+
+### With translated labels
+
+Translate the trigger's `aria-label`, the calendar's `data-aria-*` labels and the time editor's `data-label-*` labels along with the locale, so screen readers announce every control in the page's language.
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '2026-07-09T14:30' }">
+  <input type="text" id="datetime-input-labels" />
+  <button x-h-datetime-picker-trigger aria-label="Изберете дата и час"></button>
+  <div
+    x-h-datetime-picker-popup="{ locale: 'bg-BG', firstDay: 1 }"
+    x-model="dt"
+    data-aria-prev-year="предишна година"
+    data-aria-prev-month="предишен месец"
+    data-aria-next-month="следващ месец"
+    data-aria-next-year="следваща година"
+    data-aria-choose-month="изберете месец"
+    data-aria-choose-year="изберете година"
+    data-label-time="Час"
+    data-label-hours="Часове"
+    data-label-minutes="Минути"
+    data-label-now="Сега"
+  ></div>
+</div>
+```
+
+### With min and max dates
+
+Days before `min` and after `max` cannot be selected. The back/forward buttons stop at July and August, and the month grid and year list hold only the months and years inside the range.
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '2026-07-09T09:30' }">
+  <input type="text" id="datetime-input-min-max" />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup="{ min: '2026-07-01', max: '2026-08-31' }" x-model="dt"></div>
+</div>
+```
+
+### With custom date format
+
+The `options`, `order` and `delimiter` keys shape the date part of the display. The time follows it unchanged.
+
+```html
+<div x-h-datetime-picker x-data="{ dt: '2026-07-09T14:30' }">
+  <input type="text" id="datetime-input-format" />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup="{ options: { year: 'numeric', month: '2-digit', day: '2-digit' }, order: 'YMD', delimiter: '-' }" x-model="dt"></div>
+</div>
+```
+
+### Small
+
+```html
+<div x-h-datetime-picker data-size="sm" x-data="{ dt: '2026-07-09T14:30' }">
+  <input type="text" id="datetime-input-sm" />
+  <button x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+  <div x-h-datetime-picker-popup x-model="dt"></div>
 </div>
 ```
 

@@ -14,7 +14,8 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Up` / `Down` - Moves focus to the previous/next week, moving the visible month when needed.
 - `Home` / `End` - Moves focus to the first/last visible week.
 - `PageUp` / `PageDown` - Moves focus to the same week of the previous/next month.
-- `Esc` - Closes the popup.
+- `Tab` / `Shift+Tab` - Moves between the month buttons and the weeks. Focus stays inside the open popup.
+- `Esc` - Closes the popup and returns focus to the control that opened it.
 
 ## API Reference
 
@@ -118,6 +119,22 @@ By default this control shows native-constraint errors (for example `required`) 
 
 </LiveExample>
 
+### With translated labels
+
+`data-week-label` replaces the word before the week number in the input and on the week rows. The other labels name the week number column and the month buttons for screen readers.
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-h-week-picker x-data="{ week: '2026-W07' }">
+  <input type="text" id="week-input-labels" />
+  <button x-h-week-picker-trigger aria-label="Изберете седмица"></button>
+  <div x-h-week-picker-popup="{ locale: 'bg-BG' }" x-model="week" data-week-label="Седмица" data-week-column-label="Номер на седмицата" data-aria-prev-month="предишен месец" data-aria-next-month="следващ месец"></div>
+</div>
+```
+
+</LiveExample>
+
 ### Preselected value
 
 <LiveExample data-exclude="generator">
@@ -125,6 +142,20 @@ By default this control shows native-constraint errors (for example `required`) 
 ```html
 <div x-h-week-picker x-data="{ week: '2026-W07' }">
   <input type="text" id="week-input-preselected" />
+  <button x-h-week-picker-trigger aria-label="Choose week"></button>
+  <div x-h-week-picker-popup x-model="week"></div>
+</div>
+```
+
+</LiveExample>
+
+### Small size
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-h-week-picker data-size="sm" x-data="{ week: '2026-W07' }">
+  <input type="text" id="week-input-sm" />
   <button x-h-week-picker-trigger aria-label="Choose week"></button>
   <div x-h-week-picker-popup x-model="week"></div>
 </div>

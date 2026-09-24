@@ -1,5 +1,38 @@
 # Changelog
 
+## v3.4.0
+
+A release that makes a distant month or year quicker to reach in the calendar shared by the Date Picker, Date Time Picker, Inline Calendar and Slot Picker components. The month and the year in its header become buttons that swap the days for a grid of months or years. The Date Picker can also show its display format as the input's placeholder. It also fixes `min` and `max` dates that landed a day early in time zones west of UTC, could not be removed once set and did not stop the calendar's navigation, month and year buttons that skipped or repeated a month near its end, picker popovers that let `Tab` walk out of them, and toggle buttons that did not announce their pressed state. There are no breaking changes.
+
+### Date Picker
+
+- **New: month and year selection.** The month and the year in the calendar header are now toggle buttons that show a grid of the twelve months or a scrollable list of years in place of the days, and a pick returns to the days. The back/forward year buttons now appear only with the year list, in place of the month buttons. The calendar is shared, so this applies equally to the date time picker, the inline calendar and the slot picker's date popover.
+- **New: `data-aria-choose-month` and `data-aria-choose-year`.** They set the text after the month and the year in the new buttons' accessible names, `choose month` and `choose year` by default.
+- **New: `placeholder` config key.** With `placeholder: true` the input shows the display format as its placeholder, in the locale's own letters, for example `mm/dd/yyyy`, `TT.MM.JJJJ` or `年/月/日`, and twice in range mode. A format with a month name keeps the input's own placeholder.
+- **Fixed: `min` and `max` landed a day early west of UTC.** A `YYYY-MM-DD` bound was read as midnight UTC, so in the Americas a `max` of `2026-01-31` left January 31 unselectable and a `min` of `2026-01-01` let December 31 through. Both are now read as local days.
+- **Fixed: a `min` or `max` removed from the config stayed in force.** A bound could be replaced by another date but never removed.
+- **Fixed: the calendar could move past `min` and `max`.** The back/forward buttons and the arrow and page keys went on into months where every day was disabled, and a calendar with no value opened on the current month even outside the range. The buttons are now disabled at the `min` and `max` months, the keys stop at the `min` and `max` days, and a calendar with no value opens on the nearest month inside the range.
+- **Fixed: the month and year buttons skipped or repeated a month.** From January 31 the next month button jumped to March, from March 31 the previous month button stayed in March, and from February 29 the next year button landed in March.
+- **Fixed: `Tab` could skip the days.** After the month buttons moved to another month, the days could be left without a tab stop.
+- **Fixed: `Tab` left an open picker.** The picker popovers are modal dialogs, but `Tab` moved focus out to the page behind them, and closing one after a pick or `Esc` dropped focus to the page. `Tab` and `Shift+Tab` now cycle within the open popover of the Date, Date Time, Month, Week and Time pickers and the Slot Picker's date dialog, which is now marked modal too. Closing it from inside returns focus to the control that opened it.
+
+### Date Format
+
+- **New: formatters expose `placeholder`.** The formatter from `$dateFormat.with` and `createDateFormatter` now carries its format as a typing hint in the locale's own letters, such as `mm/dd/yyyy`, or `undefined` for a format with a month name.
+
+### Slot Picker
+
+- **Fixed: `date`, `minDate` and `maxDate` landed a day early west of UTC.** A `YYYY-MM-DD` value was read as midnight UTC, so in the Americas a `date` of `2026-06-22` opened the picker on June 21. They are now read as local days.
+- **Fixed: clearing `minDate` or `maxDate` left the date popover bounded.** The picker dropped the bound, but its calendar kept disabling the days beyond it.
+
+### Month Picker
+
+- **New: each month is announced with its full name and year.** The month cells now carry an accessible name such as "September 2026" rather than the abbreviation they show.
+
+### Button
+
+- **Fixed: a toggle button did not announce its pressed state.** A button with `data-toggled` now sets `aria-pressed` to match, unless the author has set `aria-pressed` already.
+
 ## v3.3.1
 
 A bugfix release for the Calendar. The scrollbar inside the calendar body was moved to the calendar container, so the week and day view headers stay aligned with their columns when a scrollbar is part of the layout. The "+N more" popover missing regression is fixed and working. There are no breaking changes.

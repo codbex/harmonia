@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 0, y: 0, placement: 'bottom' }),
@@ -415,6 +415,66 @@ describe('h-slot-picker', () => {
     });
   });
 
+  describe('dates west of UTC', () => {
+    // A YYYY-MM-DD value read as UTC midnight would land on the previous day here.
+    const originalTz = process.env.TZ;
+    beforeAll(() => {
+      process.env.TZ = 'America/New_York';
+    });
+    afterAll(() => {
+      if (originalTz === undefined) delete process.env.TZ;
+      else process.env.TZ = originalTz;
+    });
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date(2026, 5, 22, 12));
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    const firstHeader = () => el.querySelector('[data-slot="slot-picker-header"]').textContent;
+    function mountCalendar() {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', 'Choose date');
+      el.appendChild(btn);
+      mountDirective(slotPickerPlugin, 'h-slot-picker-calendar', btn, { original: 'h-slot-picker-calendar' });
+      return (d) => el.querySelector(`[data-slot="slot-picker-calendar"] td[data-day="${d}"]`).getAttribute('aria-disabled');
+    }
+
+    it('runs in a timezone west of UTC', () => {
+      expect(new Date(2026, 0, 1).getTimezoneOffset()).toBe(300);
+    });
+
+    it('starts the window on the date and keeps the maxDate day', () => {
+      mount('config', withConfig({ date: FIXED_DATE, maxDate: '2026-06-24' }));
+      expect(firstHeader()).toContain('June 22');
+      expect(el._h_slot_picker.canNext).toBe(false);
+    });
+
+    it('clamps the window to the minDate day', () => {
+      mount('config', withConfig({ date: '2026-06-20', minDate: FIXED_DATE }));
+      expect(firstHeader()).toContain('June 22');
+      expect(el._h_slot_picker.canPrev).toBe(false);
+    });
+
+    it('disables the days before minDate in the calendar popover', () => {
+      mount('config', withConfig({ date: FIXED_DATE, minDate: FIXED_DATE }));
+      const disabled = mountCalendar();
+      expect([disabled(21), disabled(22)]).toEqual(['true', 'false']);
+    });
+
+    it('keeps the calendar bounds when only the locale changes, and drops them when cleared', () => {
+      const cfg = createMockAlpine().reactive({ value: { date: FIXED_DATE, minDate: FIXED_DATE } });
+      mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+      const disabled = mountCalendar();
+      cfg.value = { locale: 'de-DE' };
+      expect(disabled(21)).toBe('true');
+      cfg.value = { minDate: null };
+      expect(disabled(21)).toBe('false');
+    });
+  });
+
   describe('accessibility', () => {
     it('exposes the picker as a labeled group', () => {
       mount('config', withConfig({ date: FIXED_DATE }));
@@ -639,6 +699,18 @@ describe('h-slot-picker', () => {
       const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
       const labels = Array.from(popover.querySelectorAll('button')).map((b) => b.getAttribute('aria-label'));
       expect(labels).toEqual(expect.arrayContaining(['previous year', 'previous month', 'next month', 'next year']));
+    });
+
+    it('forwards the host data-aria-choose-* labels onto the popover calendar view toggles', () => {
+      el.setAttribute('data-aria-choose-month', 'pick a month');
+      el.setAttribute('data-aria-choose-year', 'pick a year');
+      mount('config', withConfig({ date: FIXED_DATE }));
+      mountCalendar({ 'aria-label': 'Choose date' });
+      const popover = el.querySelector('[data-slot="slot-picker-calendar"]');
+      const labels = Array.from(popover.querySelectorAll('button[aria-pressed]')).map((b) => b.getAttribute('aria-label'));
+      expect(labels).toHaveLength(2);
+      expect(labels.some((l) => l.endsWith(', pick a month'))).toBe(true);
+      expect(labels.some((l) => l.endsWith(', pick a year'))).toBe(true);
     });
   });
 

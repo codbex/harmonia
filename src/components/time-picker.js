@@ -1,5 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { findAncestorState } from '../common/ancestor';
+import { focusTrap } from '../common/focus-trap';
+import { releasePickerTrap } from '../common/picker-popover';
 import { disabledInputClasses, invalidInputClasses, pickerCellWrapperClasses, userInvalidInputClasses } from '../common/shared-classes';
 import { dayPeriodLabels, formatTimeDisplay, getSelectedTime, partsToValue24 } from '../common/time';
 import { transitionClose } from '../common/transition-close';
@@ -480,16 +482,6 @@ export default function (Alpine) {
         }
         event.stopPropagation();
         event.preventDefault();
-      } else if (event.key === 'Tab' && event.target.tagName === 'BUTTON') {
-        if (event.target.getAttribute('data-action') === 'close' || (event.target.getAttribute('data-action') === 'time' && event.target.nextElementSibling.disabled)) {
-          if (selectedHour) {
-            selectedHour.focus();
-          } else {
-            hoursList.children[timepicker._h_timepicker.is12Hour ? 1 : 0].focus();
-          }
-          event.stopPropagation();
-          event.preventDefault();
-        }
       }
     }
 
@@ -788,8 +780,13 @@ export default function (Alpine) {
       }
     });
 
+    // The popup is a modal dialog, so Tab and Shift+Tab cycle inside it.
+    const trap = focusTrap(el);
+
     effect(() => {
       if (timepicker._h_timepicker.expanded) {
+        // Before focus moves in, so the trap remembers the opener.
+        trap.trap();
         render();
         closer.cancel();
         el.classList.remove('hidden', 'pointer-events-none');
@@ -798,6 +795,7 @@ export default function (Alpine) {
         if (selectedMinute) scrollIntoCenter(selectedMinute.parentElement, selectedMinute);
         if (selectedSecond && timepicker._h_timepicker.seconds) scrollIntoCenter(selectedSecond.parentElement, selectedSecond);
       } else {
+        releasePickerTrap(el, trap);
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           el.classList.add('hidden', 'scale-95', 'opacity-0');
           Object.assign(el.style, {
@@ -821,6 +819,7 @@ export default function (Alpine) {
       el.removeEventListener('keydown', onKeyDown);
       el.removeEventListener('click', onClick);
       closer.dispose();
+      trap.dispose();
       okButton.removeEventListener('click', timepicker._h_timepicker.close);
       nowButton.removeEventListener('click', getCurrentTime);
       timeContainer.removeEventListener('click', setTime);

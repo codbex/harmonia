@@ -184,6 +184,7 @@ export default function (Alpine) {
       onModelValid: () => {},
       stopNavPropagation: true,
       tableFullWidth: false,
+      cycleSelectionTab: true,
     });
 
     // --- Segmented time editor ---

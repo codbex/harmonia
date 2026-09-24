@@ -132,7 +132,7 @@ There are two things that are not immediately obvious:
 - **Tailwind only scans `src/`.** A class name that appears solely in documentation, tests, or a comment elsewhere will not exist in the built stylesheet.
 - **Dynamically composed class names are invisible to the scanner.** Something like `` `bg-${token}` `` needs a literal safelist entry in a scanned file, or the class is never generated.
 
-Use `rem` rather than `px` everywhere, including inline styles set from JavaScript. When you measure something with `getBoundingClientRect`, convert the result before applying it.
+Use `rem` rather than `px` everywhere, including inline styles set from JavaScript, unless `rem` isn't an option or pixels are a better fit. When you measure something with `getBoundingClientRect`, convert the result before applying it.
 
 If you add, rename, or remove a CSS variable in `globals.css`, mirror the change in the `colorVars`, `shadowVars`, `fontVars`, or `othersVars` arrays in [docs/public/theming/generator.html](docs/public/theming/generator.html). A variable missing from those arrays falls through to a generic text input in the theme generator, so a colour would lose its colour picker.
 
@@ -143,6 +143,8 @@ Every event listener a directive adds must be removed in its `cleanup` callback.
 ### Accessibility
 
 Accessibility is a requirement. Components need correct ARIA roles and states, full keyboard operability, and an accessible name. Follow the existing pattern of setting a sensible default `aria-label` only when the author has not already provided one.
+
+When a state can be expressed with an `aria-*` attribute (`aria-pressed`, `aria-expanded`, `aria-selected`, `aria-checked`, `aria-disabled`, and so on), use that attribute and style from it. Do not add a `data-*` attribute for the same state.
 
 Do NOT hardcode user-facing text. A default string such as `'Today'` is fine, as long as a consumer can override it (`el.getAttribute('data-today-label') || 'Today'`).
 

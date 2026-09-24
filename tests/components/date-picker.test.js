@@ -438,6 +438,29 @@ describe('h-date-picker-popup', () => {
       expect(calEl.classList.contains('hidden')).toBe(true);
     });
 
+    it('closing with focus inside returns it to the opener', () => {
+      const { wrapper, calEl } = mountReactivePopup();
+      const opener = document.createElement('button');
+      document.body.appendChild(opener);
+      opener.focus();
+      wrapper._h_datepicker.state.expanded = true;
+      calEl.querySelector('td[role=gridcell]').focus();
+      wrapper._h_datepicker.state.expanded = false;
+      expect(document.activeElement).toBe(opener);
+    });
+
+    it('closing after focus moved outside leaves it there', () => {
+      const { wrapper } = mountReactivePopup();
+      const opener = document.createElement('button');
+      const elsewhere = document.createElement('button');
+      document.body.append(opener, elsewhere);
+      opener.focus();
+      wrapper._h_datepicker.state.expanded = true;
+      elsewhere.focus();
+      wrapper._h_datepicker.state.expanded = false;
+      expect(document.activeElement).toBe(elsewhere);
+    });
+
     it('hides via the fallback timer when transitionend never fires', () => {
       vi.useFakeTimers();
       const { wrapper, calEl } = mountReactivePopup();
@@ -754,5 +777,60 @@ describe('h-date-picker-popup', () => {
     expect(modelSet).toHaveBeenLastCalledWith({ start: undefined, end: undefined });
     expect(input.value).toBe('');
     consoleSpy.mockRestore();
+  });
+});
+
+describe('h-date-picker-popup placeholder', () => {
+  afterEach(() => {
+    document.body.replaceChildren();
+  });
+
+  function mountWithConfig(config, ownPlaceholder) {
+    const wrapper = document.createElement('div');
+    const input = document.createElement('input');
+    if (ownPlaceholder !== undefined) input.setAttribute('placeholder', ownPlaceholder);
+    wrapper.appendChild(input);
+    wrapper._h_datepicker = { state: { expanded: false }, input, controls: 'ctrl-1' };
+    const calEl = document.createElement('div');
+    wrapper.appendChild(calEl);
+    document.body.appendChild(wrapper);
+    const cfg = createMockAlpine().reactive({ value: config });
+    mountDirective(datepickerPlugin, 'h-date-picker-popup', calEl, { original: 'h-date-picker-popup', expression: 'config' }, { evaluateLater: () => (cb) => cb(cfg.value) });
+    return { input, cfg };
+  }
+
+  it('shows the display format with placeholder: true', () => {
+    const { input } = mountWithConfig({ locale: 'en-US', placeholder: true });
+    expect(input.getAttribute('placeholder')).toBe('mm/dd/yyyy');
+  });
+
+  it('shows the format twice in range mode', () => {
+    const { input } = mountWithConfig({ locale: 'en-US', range: true, placeholder: true });
+    expect(input.getAttribute('placeholder')).toBe('mm/dd/yyyy - mm/dd/yyyy');
+  });
+
+  it('leaves the input alone without the key', () => {
+    const { input } = mountWithConfig({ locale: 'en-US' });
+    expect(input.hasAttribute('placeholder')).toBe(false);
+  });
+
+  it("replaces the input's own placeholder and restores it once the key is removed", () => {
+    const { input, cfg } = mountWithConfig({ locale: 'en-US', placeholder: true }, 'Birthday');
+    expect(input.getAttribute('placeholder')).toBe('mm/dd/yyyy');
+    cfg.value = { locale: 'de-DE', placeholder: true };
+    expect(input.getAttribute('placeholder')).toBe('TT.MM.JJJJ');
+    cfg.value = { locale: 'de-DE' };
+    expect(input.getAttribute('placeholder')).toBe('Birthday');
+  });
+
+  it('removes the placeholder it set from an input that had none', () => {
+    const { input, cfg } = mountWithConfig({ locale: 'en-US', placeholder: true });
+    cfg.value = { locale: 'en-US', placeholder: false };
+    expect(input.hasAttribute('placeholder')).toBe(false);
+  });
+
+  it("keeps the input's own placeholder for a format with a month name", () => {
+    const { input } = mountWithConfig({ locale: 'en-US', placeholder: true, options: { year: 'numeric', month: 'long', day: 'numeric' } }, 'Birthday');
+    expect(input.getAttribute('placeholder')).toBe('Birthday');
   });
 });

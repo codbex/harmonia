@@ -216,14 +216,30 @@ export default function (Alpine) {
       }
     }
 
+    // TODO(v4.0): remove 'data-toggled' in favor of 'aria-pressed'.
+    const authorPressed = el.hasAttribute('aria-pressed');
+    let mirrorsPressed = el.getAttributeNames().some((name) => name.endsWith(':data-toggled'));
+
+    function syncPressed() {
+      if (authorPressed) return;
+      // 'aria-pressed' is invalid on any other role, such as a radio choice.
+      const role = el.getAttribute('role');
+      if (role && role !== 'button') return;
+      if (el.hasAttribute('data-toggled')) mirrorsPressed = true;
+      if (mirrorsPressed) el.setAttribute('aria-pressed', el.getAttribute('data-toggled') === 'true' ? 'true' : 'false');
+    }
+
+    syncPressed();
+
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'data-variant') setVariant(el.getAttribute('data-variant') ?? 'default');
-        else setSize(el.getAttribute('data-size') ?? (isAddon ? 'sm' : 'default'));
+        else if (mutation.attributeName === 'data-size') setSize(el.getAttribute('data-size') ?? (isAddon ? 'sm' : 'default'));
+        else if (mutation.attributeName === 'data-toggled') syncPressed();
       });
     });
 
-    observer.observe(el, { attributes: true, attributeFilter: ['data-variant', 'data-size'] });
+    observer.observe(el, { attributes: true, attributeFilter: ['data-variant', 'data-size', 'data-toggled'] });
 
     cleanup(() => {
       observer.disconnect();
