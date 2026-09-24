@@ -99,26 +99,190 @@ describe('h-select-input', () => {
     expect(input.getAttribute('type')).toBe('text');
   });
 
-  it('mirrors a failed native constraint onto the trigger', () => {
-    const { input, selectEl } = createSelectInputSetup();
-    mountDirective(selectPlugin, 'h-select-input', input, {
-      original: 'x-h-select-input',
-      expression: '',
+  // happy-dom never reports :user-invalid, so a submit attempt is simulated by
+  // making the input claim it. The real timing is covered by the e2e suite.
+  describe('native validity', () => {
+    afterEach(() => {
+      vi.useRealTimers();
     });
-    expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
-    input.dispatchEvent(new Event('invalid'));
-    expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+
+    function reportUserInvalid(input) {
+      const matches = input.matches.bind(input);
+      input.matches = (selector) => selector === ':user-invalid' || matches(selector);
+    }
+
+    it('marks the trigger invalid after a submit attempt', () => {
+      vi.useFakeTimers();
+      const { input, selectEl } = createSelectInputSetup();
+      input.required = true;
+      mountDirective(selectPlugin, 'h-select-input', input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+      reportUserInvalid(input);
+      input.dispatchEvent(new Event('invalid'));
+      vi.runAllTimers();
+      expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+    });
+
+    it('ignores an invalid event from checkValidity()', () => {
+      vi.useFakeTimers();
+      const { input, selectEl } = createSelectInputSetup();
+      mountDirective(selectPlugin, 'h-select-input', input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      input.dispatchEvent(new Event('invalid'));
+      vi.runAllTimers();
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+    });
+
+    it('marks the trigger invalid on an invalid event under data-validate="immediate"', () => {
+      vi.useFakeTimers();
+      const { container, input, selectEl } = createSelectInputSetup();
+      container.setAttribute('data-validate', 'immediate');
+      input.required = true;
+      mountDirective(selectPlugin, 'h-select-input', input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      input.dispatchEvent(new Event('invalid'));
+      vi.runAllTimers();
+      expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+    });
+
+    it('lets an explicit aria-invalid win over tracked native validity', () => {
+      vi.useFakeTimers();
+      const { input, selectEl } = createSelectInputSetup();
+      input.setAttribute('aria-invalid', 'false');
+      mountDirective(selectPlugin, 'h-select-input', input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      reportUserInvalid(input);
+      input.dispatchEvent(new Event('invalid'));
+      vi.runAllTimers();
+      expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('false');
+    });
+
+    // A reactive _h_select lets a test open and close the list the way the
+    // trigger and the dismiss handlers do.
+    function mountRequired({ inForm = false } = {}) {
+      const setup = createSelectInputSetup();
+      setup.input.required = true;
+      setup.selectEl._h_select = createMockAlpine().reactive(setup.selectEl._h_select);
+      if (inForm) {
+        setup.form = document.createElement('form');
+        document.body.appendChild(setup.form);
+        setup.form.appendChild(setup.container);
+      }
+      mountDirective(selectPlugin, 'h-select-input', setup.input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      return setup;
+    }
+
+    function openAndClose(selectEl) {
+      selectEl._h_select.expanded = true;
+      selectEl._h_select.expanded = false;
+    }
+
+    it('shows a failed constraint once the list has been opened and closed', () => {
+      const { selectEl } = mountRequired();
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+      openAndClose(selectEl);
+      expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+    });
+
+    it('stays neutral when the list is closed with a value', () => {
+      const { input, selectEl } = mountRequired();
+      input.value = 'apple';
+      openAndClose(selectEl);
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+    });
+
+    it('stays neutral on a change before the list was ever opened', () => {
+      const { input, selectEl } = mountRequired();
+      input.dispatchEvent(new Event('change'));
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+    });
+
+    it('clears the error and the interaction on a form reset', () => {
+      const { form, input, selectEl } = mountRequired({ inForm: true });
+      openAndClose(selectEl);
+      expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+      form.reset();
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+      input.dispatchEvent(new Event('change'));
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+    });
+
+    // A form @change handler calling checkValidity() runs before x-model has
+    // written the picked value, so the invalid event it fires is already stale
+    // by the time the deferred check reads the input.
+    it('does not flag a value that became valid before the invalid check ran', () => {
+      vi.useFakeTimers();
+      const { input, selectEl } = mountRequired();
+      openAndClose(selectEl);
+      input.dispatchEvent(new Event('invalid'));
+      input.value = 'apple';
+      input.dispatchEvent(new Event('change'));
+      vi.runAllTimers();
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+    });
+
+    it('shows the error again when the value is cleared after a submit attempt', () => {
+      vi.useFakeTimers();
+      const { input, selectEl } = mountRequired();
+      reportUserInvalid(input);
+      input.dispatchEvent(new Event('invalid'));
+      vi.runAllTimers();
+      input.value = 'apple';
+      input.dispatchEvent(new Event('change'));
+      expect(selectEl._h_select.trigger.hasAttribute('aria-invalid')).toBe(false);
+      input.value = '';
+      input.dispatchEvent(new Event('change'));
+      expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('true');
+    });
   });
 
-  it('lets an explicit aria-invalid win over tracked native validity', () => {
-    const { input, selectEl } = createSelectInputSetup();
-    input.setAttribute('aria-invalid', 'false');
-    mountDirective(selectPlugin, 'h-select-input', input, {
-      original: 'x-h-select-input',
-      expression: '',
+  // A dialog or sheet around the select can close on any Escape that reaches
+  // the page, so the one that closes the list has to stop at the select.
+  describe('Escape', () => {
+    function pressEscape(selectEl) {
+      const reachedPage = vi.fn();
+      document.addEventListener('keydown', reachedPage);
+      const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+      selectEl._h_select.trigger.dispatchEvent(event);
+      document.removeEventListener('keydown', reachedPage);
+      return { event, reachedPage };
+    }
+
+    it('keeps an Escape that closes the list from reaching the page', () => {
+      const { input, selectEl } = createSelectInputSetup();
+      mountDirective(selectPlugin, 'h-select-input', input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      selectEl._h_select.expanded = true;
+      const { event, reachedPage } = pressEscape(selectEl);
+      expect(selectEl._h_select.expanded).toBe(false);
+      expect(event.defaultPrevented).toBe(true);
+      expect(reachedPage).not.toHaveBeenCalled();
     });
-    input.dispatchEvent(new Event('invalid'));
-    expect(selectEl._h_select.trigger.getAttribute('aria-invalid')).toBe('false');
+
+    it('lets Escape through when the list is closed', () => {
+      const { input, selectEl } = createSelectInputSetup();
+      mountDirective(selectPlugin, 'h-select-input', input, {
+        original: 'x-h-select-input',
+        expression: '',
+      });
+      const { event, reachedPage } = pressEscape(selectEl);
+      expect(event.defaultPrevented).toBe(false);
+      expect(reachedPage).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('creates a fake trigger with data-slot=select-input', () => {

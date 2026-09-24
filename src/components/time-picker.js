@@ -373,6 +373,8 @@ export default function (Alpine) {
 
     function onKeyDown(event) {
       if (event.key === 'Escape') {
+        event.stopPropagation();
+        event.preventDefault();
         timepicker._h_timepicker.close(true);
       } else if (event.target.tagName === 'LI') {
         let list;

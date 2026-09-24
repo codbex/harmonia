@@ -10,9 +10,17 @@ export default function (Alpine) {
       'group-data-[disabled=true]:pointer-events-none',
       'group-data-[disabled=true]:opacity-disabled',
       'peer-disabled:cursor-not-allowed',
-      'peer-disabled:opacity-disabled'
+      'peer-disabled:opacity-disabled',
+      "data-[indicator=start]:before:content-['*'_/_'']",
+      'data-[indicator=start]:before:text-negative',
+      'data-[indicator=start]:before:-me-1',
+      'data-[indicator=start]:[[data-slot=field]:not(:has([required]))_&]:before:hidden',
+      "data-[indicator=end]:after:content-['*'_/_'']",
+      'data-[indicator=end]:after:text-negative',
+      'data-[indicator=end]:after:-ms-1',
+      'data-[indicator=end]:[[data-slot=field]:not(:has([required]))_&]:after:hidden'
     );
-    if (el.parentElement.getAttribute('data-slot') === 'field') {
+    if (Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'field')) {
       el.classList.add(
         'group/field-label',
         'peer/field-label',

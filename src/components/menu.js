@@ -238,6 +238,8 @@ export default function (Alpine) {
             break;
           case 'Esc':
           case 'Escape':
+            event.stopPropagation();
+            event.preventDefault();
             if (isSubmenu) {
               Alpine.nextTick(() => menuSubItem.focus());
             }

@@ -392,6 +392,8 @@ export default function (Alpine) {
 
     function onTimeKeydown(event) {
       if (event.key === 'Escape') {
+        event.stopPropagation();
+        event.preventDefault();
         picker._h_datetimepicker.state.expanded = false;
         return;
       }

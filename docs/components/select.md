@@ -97,7 +97,7 @@ To show a leading icon or image, place an `<svg>` or `<img>` element directly in
 
 ### Validation timing
 
-By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
+By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. For a select, interacting means opening its list and closing it again. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
 ## Examples
 

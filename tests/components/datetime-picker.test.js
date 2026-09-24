@@ -373,6 +373,20 @@ describe('h-datetime-picker-popup', () => {
     expect(wrapper._h_datetimepicker.state.expanded).toBe(false);
   });
 
+  // The calendar half already stops its Escape. The time half has to as well,
+  // or a dialog or sheet around the picker closes with the popover.
+  it('keeps an Escape on a time segment from reaching the page', () => {
+    const { wrapper, seg } = createPopup({ model: '' });
+    wrapper._h_datetimepicker.state.expanded = true;
+    const reachedPage = vi.fn();
+    document.addEventListener('keydown', reachedPage);
+    const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    seg('hour').dispatchEvent(event);
+    document.removeEventListener('keydown', reachedPage);
+    expect(event.defaultPrevented).toBe(true);
+    expect(reachedPage).not.toHaveBeenCalled();
+  });
+
   it('warns and returns early when not inside a datetime-picker', () => {
     const orphan = document.createElement('div');
     document.body.appendChild(orphan);

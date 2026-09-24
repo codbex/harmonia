@@ -593,12 +593,12 @@
           <fieldset x-h-fieldset>
             <div x-h-field-group class="gap-4!">
               <div x-h-field>
-                <label x-h-label for="nc-name">Name</label>
+                <label x-h-label for="nc-name" data-indicator="end">Name</label>
                 <input x-h-input x-h-focus="showAddCustomer" id="nc-name" x-model="newCustomer.name" placeholder="Jane Doe" required />
                 <p x-h-field-error>Name is required.</p>
               </div>
               <div x-h-field>
-                <label x-h-label for="nc-email">Email</label>
+                <label x-h-label for="nc-email" data-indicator="end">Email</label>
                 <input x-h-input id="nc-email" type="email" x-model="newCustomer.email" placeholder="jane@codbex.com" required />
                 <p x-h-field-error>Enter a valid email address.</p>
               </div>

@@ -23,6 +23,22 @@
       <span id="model" x-text="selected"></span>
     </div>
 
+    <form id="required-form" class="mt-4 flex max-w-3xs flex-col gap-2" onsubmit="event.preventDefault()">
+      <div x-h-field>
+        <label x-h-label for="required-trigger">Fruit</label>
+        <div id="required-select" x-h-select>
+          <input x-h-select-input data-id="required-trigger" placeholder="Select" required />
+          <div x-h-select-content>
+            <div x-h-select-list>
+              <div x-h-select-option="'Apple'" data-value="apple"></div>
+            </div>
+          </div>
+        </div>
+        <p id="required-error" x-h-field-error>Choose a fruit.</p>
+      </div>
+      <button id="required-submit" type="submit">Submit</button>
+    </form>
+
     <div style="position: fixed; right: 0.5rem; bottom: 0.5rem" class="w-3xs">
       <div id="pinned-select" x-h-select>
         <input id="pinned-input" x-h-select-input placeholder="Pinned" aria-label="Number" />

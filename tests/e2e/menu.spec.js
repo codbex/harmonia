@@ -45,13 +45,27 @@ test('arrow keys walk real focus through the items and wrap around', async ({ pa
   expect(await activeId(page)).toBe(order[order.length - 1]);
 });
 
+// The Escape stops at the menu, so a dialog or sheet listening for Escape on
+// the window stays open. Once the menu is closed, Escape is the page's again.
 test('Escape closes the menu and returns focus to the trigger', async ({ page }) => {
   await gotoFixture(page, 'menu');
+  await page.evaluate(() => {
+    window.escapesOnWindow = 0;
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') window.escapesOnWindow++;
+    });
+  });
+  const escapesOnWindow = () => page.evaluate(() => window.escapesOnWindow);
+
   await openMenu(page);
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Escape');
   await expect(page.locator('#menu')).toBeHidden();
   expect(await activeId(page)).toBe('trigger');
+  expect(await escapesOnWindow()).toBe(0);
+
+  await page.keyboard.press('Escape');
+  expect(await escapesOnWindow()).toBe(1);
 });
 
 test('clicking outside dismisses the menu', async ({ page }) => {

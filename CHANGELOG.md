@@ -2,7 +2,7 @@
 
 ## v3.4.0
 
-A release that makes a distant month or year quicker to reach in the calendar shared by the Date Picker, Date Time Picker, Inline Calendar and Slot Picker components. The month and the year in its header become buttons that swap the days for a grid of months or years. The Date Picker can also show its display format as the input's placeholder, and buttons gain a disabled state that stays focusable. It also fixes `min` and `max` dates that landed a day early in time zones west of UTC, could not be removed once set and did not stop the calendar's navigation, month and year buttons that skipped or repeated a month near its end, picker popovers that let `Tab` walk out of them, and toggle buttons that did not announce their pressed state. There are no breaking changes.
+A release that makes a distant month or year quicker to reach in the calendar shared by the Date Picker, Date Time Picker, Inline Calendar and Slot Picker components. The month and the year in its header become buttons that swap the days for a grid of months or years. The Date Picker can also show its display format as the input's placeholder, buttons gain a disabled state that stays focusable, and labels can mark a required field with a red asterisk. It also fixes `min` and `max` dates that landed a day early in time zones west of UTC, could not be removed once set and did not stop the calendar's navigation, month and year buttons that skipped or repeated a month near its end, picker popovers that let `Tab` walk out of them, toggle buttons that did not announce their pressed state, a required select that showed its error at the wrong time, and selects, menus and time pickers whose `Escape` propagated outside them. There are no breaking changes.
 
 ### Date Picker
 
@@ -33,6 +33,23 @@ A release that makes a distant month or year quicker to reach in the calendar sh
 
 - **New: a disabled state that stays focusable.** A button with `aria-disabled="true"` looks disabled, without hover or press feedback, but stays in the tab order and is announced as unavailable. Unlike `disabled`, it still passes clicks to its handlers.
 - **Fixed: a toggle button did not announce its pressed state.** A button with `data-toggled` now sets `aria-pressed` to match, unless the author has set `aria-pressed` already.
+
+### Label
+
+- **New: `data-indicator` attribute.** It shows a red asterisk before (`start`) or after (`end`) the label text. Inside a field it appears only while the field contains a `required` control.
+
+### Select
+
+- **Fixed: a required select showed its error at the wrong time.** A `checkValidity()` call flagged it before any interaction, without a red border, while closing its list empty flagged nothing. It now shows the error once its list has been closed or a submit was attempted, like the other controls, and a form reset clears it.
+- **Fixed: `Escape` in the list also closed a surrounding dialog or sheet.** The `Escape` that closes the list no longer reaches the page. With the list closed, `Escape` passes through as before.
+
+### Menu
+
+- **Fixed: `Escape` in a menu also closed a surrounding dialog or sheet.** The `Escape` that closes a menu, a submenu or a menubar's open menu no longer reaches the page.
+
+### Time Picker
+
+- **Fixed: `Escape` in the popover also closed a surrounding dialog or sheet.** The same applies to the time column of the Date Time Picker, whose calendar already kept its `Escape`.
 
 ## v3.3.1
 
