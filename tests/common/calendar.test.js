@@ -779,7 +779,7 @@ describe('createCalendarWidget month and year selection', () => {
       ui.monthToggle().click();
       expect(ui.monthToggle().getAttribute('aria-pressed')).toBe('true');
       expect(ui.dayTable.hidden).toBe(true);
-      expect(ui.dayTable.nextElementSibling).toBe(ui.monthGrid());
+      expect(ui.dayTable.nextElementSibling).toBe(ui.monthGrid().parentElement);
       expect(ui.month(0).getAttribute('aria-selected')).toBe('true');
       expect(ui.month(0).getAttribute('tabindex')).toBe('0');
       expect(ui.month(0).getAttribute('aria-label')).toBe('January 2026');

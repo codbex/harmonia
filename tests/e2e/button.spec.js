@@ -27,6 +27,7 @@ test('an aria-disabled button is dimmed and shows a not-allowed cursor', async (
 
 test('an aria-disabled button keeps its resting color under hover and press', async ({ page }) => {
   await gotoFixture(page, 'button');
+  await settle(page);
   const resting = await style(page, 'primary-enabled', 'backgroundColor');
   await hover(page, 'primary-enabled');
   expect(await style(page, 'primary-enabled', 'backgroundColor')).not.toBe(resting);
@@ -41,6 +42,7 @@ test('an aria-disabled button keeps its resting color under hover and press', as
 
 test('an aria-disabled outline button keeps its resting background and text under hover', async ({ page }) => {
   await gotoFixture(page, 'button');
+  await settle(page);
   const background = await style(page, 'outline-disabled', 'backgroundColor');
   const color = await style(page, 'outline-disabled', 'color');
   await hover(page, 'outline-disabled');
@@ -50,6 +52,8 @@ test('an aria-disabled outline button keeps its resting background and text unde
 
 test('a pressed aria-disabled button keeps its pressed color under hover', async ({ page }) => {
   await gotoFixture(page, 'button');
+  // The colors transition in once the directive has styled the buttons.
+  await settle(page);
   const pressed = await style(page, 'pressed-enabled', 'backgroundColor');
   expect(await style(page, 'pressed-disabled', 'backgroundColor')).toBe(pressed);
   await hover(page, 'pressed-disabled');
@@ -58,6 +62,7 @@ test('a pressed aria-disabled button keeps its pressed color under hover', async
 
 test('a selected aria-disabled group choice keeps its selected color under hover', async ({ page }) => {
   await gotoFixture(page, 'button');
+  await settle(page);
   const selected = await style(page, 'choice-enabled', 'backgroundColor');
   expect(await style(page, 'choice-disabled', 'backgroundColor')).toBe(selected);
   await hover(page, 'choice-disabled');

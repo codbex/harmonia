@@ -459,6 +459,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   // Built on first use and detached while the day table shows, so the day view
   // DOM stays one table of 42 cells.
   let monthGrid = undefined;
+  let monthGridBox = undefined;
   let yearScroller = undefined;
   let yearTable = undefined;
   let yearCells = [];
@@ -466,13 +467,18 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   // The day table's size in rem, which a grid takes so the calendar never changes size.
   let daySize = undefined;
 
+  // The day size goes on a block the table fills, as for the year list, since
+  // WebKit draws a fixed-layout table narrower than an inline width it is given.
   function ensureMonthGrid() {
     if (!monthGrid) {
       monthGrid = createMonthGrid({ onPick: pickMonth, stopPropagation: callbacks.stopNavPropagation });
       monthGrid.table.setAttribute('aria-label', chooseMonthLabel);
-      if (callbacks.tableFullWidth) monthGrid.table.classList.add('w-full');
+      monthGrid.table.classList.add('w-full', 'h-full');
+      monthGridBox = document.createElement('div');
+      if (callbacks.tableFullWidth) monthGridBox.classList.add('w-full');
+      monthGridBox.appendChild(monthGrid.table);
     }
-    return monthGrid.table;
+    return monthGridBox;
   }
 
   function ensureYearGrid() {
@@ -609,7 +615,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
   }
 
   function viewElement(v) {
-    if (v === 'month') return monthGrid.table;
+    if (v === 'month') return monthGridBox;
     if (v === 'year') return yearScroller;
     return datesTable;
   }
@@ -635,9 +641,9 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     previousYearBtn.hidden = nextYearBtn.hidden = view !== 'year';
     if (view === 'month') {
       focusedMonth = date.getMonth();
-      const table = ensureMonthGrid();
-      applyDaySize(table);
-      datesTable.after(table);
+      const box = ensureMonthGrid();
+      applyDaySize(box);
+      datesTable.after(box);
     } else if (view === 'year') {
       focusedYear = date.getFullYear();
       const scroller = ensureYearGrid();
