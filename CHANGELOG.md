@@ -2,7 +2,7 @@
 
 ## v3.4.0
 
-A release that makes a distant month or year quicker to reach in the calendar shared by the Date Picker, Date Time Picker, Inline Calendar and Slot Picker components. The month and the year in its header become buttons that swap the days for a grid of months or years. The Date Picker can also show its display format as the input's placeholder. It also fixes `min` and `max` dates that landed a day early in time zones west of UTC, could not be removed once set and did not stop the calendar's navigation, month and year buttons that skipped or repeated a month near its end, picker popovers that let `Tab` walk out of them, and toggle buttons that did not announce their pressed state. There are no breaking changes.
+A release that makes a distant month or year quicker to reach in the calendar shared by the Date Picker, Date Time Picker, Inline Calendar and Slot Picker components. The month and the year in its header become buttons that swap the days for a grid of months or years. The Date Picker can also show its display format as the input's placeholder, and buttons gain a disabled state that stays focusable. It also fixes `min` and `max` dates that landed a day early in time zones west of UTC, could not be removed once set and did not stop the calendar's navigation, month and year buttons that skipped or repeated a month near its end, picker popovers that let `Tab` walk out of them, and toggle buttons that did not announce their pressed state. There are no breaking changes.
 
 ### Date Picker
 
@@ -31,6 +31,7 @@ A release that makes a distant month or year quicker to reach in the calendar sh
 
 ### Button
 
+- **New: a disabled state that stays focusable.** A button with `aria-disabled="true"` looks disabled, without hover or press feedback, but stays in the tab order and is announced as unavailable. Unlike `disabled`, it still passes clicks to its handlers.
 - **Fixed: a toggle button did not announce its pressed state.** A button with `data-toggled` now sets `aria-pressed` to match, unless the author has set `aria-pressed` already.
 
 ## v3.3.1
