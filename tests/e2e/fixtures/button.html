@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>button fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data="{ picked: 'a', twin: 'a' }" class="flex flex-col items-start gap-4 bg-background p-4 text-foreground">
+    <button id="primary-disabled" x-h-button data-variant="primary" aria-disabled="true">Primary</button>
+    <button id="primary-enabled" x-h-button data-variant="primary">Primary</button>
+
+    <button id="outline-disabled" x-h-button data-variant="outline" aria-disabled="true">Outline</button>
+    <button id="outline-enabled" x-h-button data-variant="outline">Outline</button>
+
+    <button id="pressed-disabled" x-h-button aria-pressed="true" aria-disabled="true">Pressed</button>
+    <button id="pressed-enabled" x-h-button aria-pressed="true">Pressed</button>
+
+    <div x-h-button-group x-model="picked" aria-label="Disabled choice">
+      <button id="choice-disabled" x-h-button x-h-button-group-radio="'a'" aria-disabled="true">A</button>
+      <button x-h-button x-h-button-group-radio="'b'">B</button>
+    </div>
+    <div x-h-button-group x-model="twin" aria-label="Enabled choice">
+      <button id="choice-enabled" x-h-button x-h-button-group-radio="'a'">A</button>
+      <button x-h-button x-h-button-group-radio="'b'">B</button>
+    </div>
+  </body>
+</html>

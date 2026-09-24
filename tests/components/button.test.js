@@ -46,6 +46,32 @@ describe('buttonVariants', () => {
     expect(buttonVariants.link).toContain('text-primary');
     expect(buttonVariants.link).toContain('underline-offset-4');
   });
+
+  it('resets every hover and active color to the resting one while aria-disabled', () => {
+    for (const [name, classes] of Object.entries(buttonVariants)) {
+      for (const cls of classes) {
+        const match = /^(hover|active):(bg|text|fill)-/.exec(cls);
+        if (!match) continue;
+        const resting = classes.find((c) => c.startsWith(`${match[2]}-`));
+        expect(classes, `${name}: ${cls}`).toContain(`aria-disabled:${match[1]}:${resting}`);
+      }
+    }
+  });
+
+  // The resets outrank aria-pressed, so the pressed colors have to be restated.
+  it('keeps the pressed colors of every variant while aria-disabled', () => {
+    for (const [name, classes] of Object.entries(buttonVariants)) {
+      for (const cls of classes.filter((c) => c.startsWith('aria-pressed:'))) {
+        const utility = cls.slice('aria-pressed:'.length);
+        expect(classes, name).toContain(`aria-disabled:aria-pressed:${utility}`);
+        expect(classes, name).toContain(`aria-disabled:data-[toggled=true]:${utility}`);
+      }
+    }
+  });
+
+  it('drops the link underline on hover while aria-disabled', () => {
+    expect(buttonVariants.link).toContain('aria-disabled:hover:no-underline');
+  });
 });
 
 describe('setButtonClasses', () => {
@@ -77,6 +103,14 @@ describe('setButtonClasses', () => {
     const el = document.createElement('button');
     setButtonClasses(el);
     expect(el.classList.contains('disabled:opacity-disabled')).toBe(true);
+  });
+
+  it('dims aria-disabled and keeps the pointer for a not-allowed cursor', () => {
+    const el = document.createElement('button');
+    setButtonClasses(el);
+    expect(el.classList.contains('aria-disabled:opacity-disabled')).toBe(true);
+    expect(el.classList.contains('aria-disabled:cursor-not-allowed')).toBe(true);
+    expect(el.classList.contains('aria-disabled:pointer-events-none')).toBe(false);
   });
 });
 
@@ -196,6 +230,97 @@ describe('h-button directive', () => {
   it('calls cleanup', () => {
     const { ctx } = mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
     expect(ctx.cleanup).toHaveBeenCalled();
+  });
+
+  it('leaves the click of an aria-disabled button to the author', () => {
+    el.setAttribute('aria-disabled', 'true');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    const onClick = vi.fn();
+    el.addEventListener('click', onClick);
+    el.click();
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('h-button aria-pressed from data-toggled', () => {
+  let el;
+
+  beforeEach(() => {
+    el = document.createElement('button');
+    document.body.appendChild(el);
+  });
+
+  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  it('adds no aria-pressed to a button without data-toggled', async () => {
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    el.setAttribute('data-size', 'sm');
+    await flush();
+    expect(el.hasAttribute('aria-pressed')).toBe(false);
+  });
+
+  it('mirrors a static data-toggled into aria-pressed', () => {
+    el.setAttribute('data-toggled', 'true');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    expect(el.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('mirrors data-toggled="false" as not pressed', () => {
+    el.setAttribute('data-toggled', 'false');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    expect(el.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  // Alpine removes a data-* attribute bound to false, so only the binding marks it.
+  it('treats a :data-toggled binding that starts false as not pressed', () => {
+    el.setAttribute(':data-toggled', 'on');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    expect(el.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('follows data-toggled at runtime, including its removal', async () => {
+    el.setAttribute(':data-toggled', 'on');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    el.setAttribute('data-toggled', 'true');
+    await flush();
+    expect(el.getAttribute('aria-pressed')).toBe('true');
+    el.removeAttribute('data-toggled');
+    await flush();
+    expect(el.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('starts mirroring when data-toggled first appears at runtime', async () => {
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    el.setAttribute('data-toggled', 'true');
+    await flush();
+    expect(el.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it("leaves an author's aria-pressed alone", async () => {
+    el.setAttribute('aria-pressed', 'true');
+    el.setAttribute('data-toggled', 'true');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    el.removeAttribute('data-toggled');
+    await flush();
+    expect(el.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('never sets aria-pressed on a button with another role', async () => {
+    el.setAttribute('role', 'radio');
+    el.setAttribute('data-toggled', 'true');
+    mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    el.removeAttribute('data-toggled');
+    await flush();
+    expect(el.hasAttribute('aria-pressed')).toBe(false);
+  });
+
+  it('stops following data-toggled after cleanup', async () => {
+    el.setAttribute('data-toggled', 'false');
+    const { ctx } = mountDirective(buttonPlugin, 'h-button', el, { original: 'h-button' });
+    ctx.cleanup.mock.calls[0][0]();
+    el.setAttribute('data-toggled', 'true');
+    await flush();
+    expect(el.getAttribute('aria-pressed')).toBe('false');
   });
 });
 

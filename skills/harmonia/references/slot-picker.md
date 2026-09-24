@@ -38,13 +38,15 @@ Set `draggable: true` in the configuration to let users reorder slots within a d
 
 The control directives take no attributes of their own. These apply to `x-h-slot-picker`:
 
-| Attribute              | Values | Required | Description                                                        |
-| ---------------------- | ------ | -------- | ------------------------------------------------------------------ |
-| data-unavailable-label | string | false    | Overrides the "Not available" label shown for fully disabled days. |
-| data-aria-prev-year    | string | false    | Overrides the previous year button's `aria-label`.                 |
-| data-aria-prev-month   | string | false    | Overrides the previous month button's `aria-label`.                |
-| data-aria-next-month   | string | false    | Overrides the next month button's `aria-label`.                    |
-| data-aria-next-year    | string | false    | Overrides the next year button's `aria-label`.                     |
+| Attribute              | Values | Required | Description                                                                                             |
+| ---------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------- |
+| data-unavailable-label | string | false    | Overrides the "Not available" label shown for fully disabled days.                                      |
+| data-aria-prev-year    | string | false    | Overrides the previous year button's `aria-label`.                                                      |
+| data-aria-prev-month   | string | false    | Overrides the previous month button's `aria-label`.                                                     |
+| data-aria-next-month   | string | false    | Overrides the next month button's `aria-label`.                                                         |
+| data-aria-next-year    | string | false    | Overrides the next year button's `aria-label`.                                                          |
+| data-aria-choose-month | string | false    | Overrides the text after the month name in the month button's `aria-label`. Defaults to `choose month`. |
+| data-aria-choose-year  | string | false    | Overrides the text after the year in the year button's `aria-label`. Defaults to `choose year`.         |
 
 ### Modifiers
 
@@ -137,7 +139,7 @@ A selected sub-slot tile uses a composite key of the form `'YYYY-MM-DDTHH:MM#ind
 
 ## Accessibility
 
-The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. When selection is enabled (an `x-model` is bound), available slots are toggle buttons with a day + time `aria-label` and `aria-pressed` reflecting selection. Without an `x-model` they are plain action buttons with the same label and no `aria-pressed`. Unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The `x-h-slot-picker-calendar` control opens a `dialog` containing a fully keyboard-navigable date grid, and the dialog takes its accessible name from that control. The default month and year navigation buttons labels can be overridden using the `data-aria-*` attributes. Picking a date moves the visible range and returns focus to the control, and `Esc` closes it. Because you supply the toolbar, give each control button an accessible name (an `aria-label` on an icon-only button, or visible text). Drag-and-drop moving is a pointer-only convenience, and every slot stays reachable through its button and `slot-click`.
+The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. When selection is enabled (an `x-model` is bound), available slots are toggle buttons with a day + time `aria-label` and `aria-pressed` reflecting selection. Without an `x-model` they are plain action buttons with the same label and no `aria-pressed`. Unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The `x-h-slot-picker-calendar` control opens a `dialog` containing a fully keyboard-navigable date grid, and the dialog takes its accessible name from that control. The default month and year navigation buttons labels can be overridden using the `data-aria-*` attributes. The month and year in the grid's header are toggle buttons that open a month grid or a year list in place of the days, as described in the Inline Calendar behavior. While one is shown, `Tab` cycles between the header buttons and that grid, and `Esc` returns to the days. Picking a date moves the visible range and returns focus to the control, and `Esc` closes it. While the dialog is open, `Tab` and `Shift+Tab` stay inside it. Because you supply the toolbar, give each control button an accessible name (an `aria-label` on an icon-only button, or visible text). Drag-and-drop moving is a pointer-only convenience, and every slot stays reachable through its button and `slot-click`.
 
 ## Binding
 

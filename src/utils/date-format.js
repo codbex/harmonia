@@ -12,6 +12,38 @@ const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const BIDI_MARKS = /[\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g;
 const ODD_SPACES = /[\u00A0\u202F]/g;
 const REGEX_SPECIALS = /[.*+?^${}()|[\]\\]/g;
+// Han, Hangul and Kana field names are whole words (年, 월), shown once.
+const WHOLE_WORD_NAME = /^[\p{Script=Han}\p{Script=Hangul}\p{Script=Hiragana}\p{Script=Katakana}]+$/u;
+const LATIN_TOKENS = { year: 'Y', month: 'M', day: 'D' };
+
+// The letters a placeholder shows for each field, as native date inputs do - the
+// initial of the locale's own field name (TT.MM.JJJJ, jj/mm/aaaa), a CJK name
+// once (年/月/日), or Latin letters where those would be ambiguous.
+function placeholderTokens(locale, parts) {
+  const lengths = { year: parts.find((p) => p.type === 'year').value.length === 2 ? 2 : 4, month: 2, day: 2 };
+  let names;
+  try {
+    const displayNames = new Intl.DisplayNames(locale, { type: 'dateTimeField' });
+    names = { year: displayNames.of('year'), month: displayNames.of('month'), day: displayNames.of('day') };
+  } catch {
+    names = undefined;
+  }
+  const initial = (name) => [...name][0];
+  const text = parts.map((p) => p.value).join('');
+  const localized =
+    names &&
+    Object.values(names).every(Boolean) &&
+    new Set(Object.values(names).map(initial)).size === 3 &&
+    // A CJK name the format already writes (2001年3月5日) would read twice.
+    !Object.values(names).some((name) => WHOLE_WORD_NAME.test(name) && text.includes(name));
+  const tokens = {};
+  for (const field of ['year', 'month', 'day']) {
+    if (!localized) tokens[field] = LATIN_TOKENS[field].repeat(lengths[field]);
+    else if (WHOLE_WORD_NAME.test(names[field])) tokens[field] = names[field];
+    else tokens[field] = initial(names[field]).repeat(lengths[field]);
+  }
+  return tokens;
+}
 
 function isoDateToParts(value) {
   const iso = ISO_DATE.exec(value);
@@ -65,6 +97,8 @@ export function createDateFormatter(config = {}) {
 
   let inputParser = null;
   let digitNormalizer = null;
+  // The display format as a typing hint (mm/dd/yyyy), set only for a format with a pattern parser.
+  let placeholder = undefined;
 
   function fieldOrderFromParts(parts) {
     return order ? [...order].map((c) => dateOrderMap[c]) : parts.filter((p) => p.type === 'year' || p.type === 'month' || p.type === 'day').map((p) => p.type);
@@ -98,6 +132,11 @@ export function createDateFormatter(config = {}) {
       return;
     }
 
+    // Only a plain year/month/day format has a hint. A field keeps any text around its digits, such as the 월 of a Korean 3월.
+    const hinted = parts.every((p) => p.type === 'year' || p.type === 'month' || p.type === 'day' || p.type === 'literal');
+    const tokens = hinted && parts.some((p) => p.type === 'year') ? placeholderTokens(resolvedLocale, parts) : null;
+    const hint = (part) => (digitNormalizer ? digitNormalizer(part.value) : part.value).replace(/\d+/, tokens[part.type]);
+
     if (order === undefined && delimiter === undefined) {
       // Default: iterate all parts so locale prefix/suffix literals are included in the regex.
       let regexStr = '^';
@@ -118,6 +157,7 @@ export function createDateFormatter(config = {}) {
         }
       }
       inputParser = fieldOrder.length === 3 ? { regex: new RegExp(regexStr + '$'), fieldOrder } : null;
+      if (inputParser && tokens) placeholder = parts.map((p) => (p.type === 'literal' ? p.value : hint(p))).join('');
       return;
     }
 
@@ -132,6 +172,7 @@ export function createDateFormatter(config = {}) {
     const escapedSep = sep.replace(REGEX_SPECIALS, '\\$&');
     const regexStr = '^' + fieldOrder.map((f) => (f === 'year' ? '(\\d{2,4})' : '(\\d{1,2})')).join(escapedSep) + '$';
     inputParser = { regex: new RegExp(regexStr), fieldOrder };
+    if (tokens) placeholder = fieldOrder.map((f) => hint(parts.find((p) => p.type === f))).join(sep);
   }
 
   function format(d) {
@@ -181,7 +222,7 @@ export function createDateFormatter(config = {}) {
 
   buildInputParser();
 
-  return { format, parse, formatRange, parseRange, rangeSeparator, locale, formatter };
+  return { format, parse, formatRange, parseRange, rangeSeparator, locale, formatter, placeholder };
 }
 
 /**

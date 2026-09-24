@@ -247,6 +247,23 @@ describe('h-menu', () => {
     expect(trigger._h_menu_trigger.setOpen).not.toHaveBeenCalled();
   });
 
+  // A dialog or sheet around the menu can close on any Escape that reaches the
+  // page, so the one that closes the menu has to stop at the menu.
+  it('keeps an Escape that closes the menu from reaching the page', async () => {
+    const { trigger, menu } = createOpenableMenuSetup();
+    trigger._h_menu_trigger.openMenu();
+    await flush();
+    trigger._h_menu_trigger.setOpen.mockClear();
+    const reachedPage = vi.fn();
+    document.addEventListener('keydown', reachedPage);
+    const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    menu.dispatchEvent(event);
+    document.removeEventListener('keydown', reachedPage);
+    expect(trigger._h_menu_trigger.setOpen).toHaveBeenCalledWith(false);
+    expect(event.defaultPrevented).toBe(true);
+    expect(reachedPage).not.toHaveBeenCalled();
+  });
+
   it('focusOnOpen lands on a disabled first item', async () => {
     const { trigger, items } = createOpenableMenuSetup({ items: 3, disabled: [0] });
     trigger._h_menu_trigger.focusOnOpen = 'first';

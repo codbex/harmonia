@@ -34,10 +34,10 @@ x-h-date-format
 
 The utility also registers a [magic method](https://alpinejs.dev/globals/alpine-data#using-magic-properties) called `$dateFormat` for formatting dates inline in Alpine expressions.
 
-| Property           | Type     | Description                                                                                                                                                                        |
-| ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$dateFormat`      | function | `$dateFormat(value, config?)` returns the formatted string for a date value, or a formatted range when `value` is a `{ start, end }` object. Empty or invalid input returns `''`.  |
-| `$dateFormat.with` | function | `$dateFormat.with(config?)` returns a reusable formatter object exposing `format`, `parse`, `formatRange` and `parseRange`, for cases that also need to parse input into a `Date`. |
+| Property           | Type     | Description                                                                                                                                                                                                                                                                                          |
+| ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `$dateFormat`      | function | `$dateFormat(value, config?)` returns the formatted string for a date value, or a formatted range when `value` is a `{ start, end }` object. Empty or invalid input returns `''`.                                                                                                                    |
+| `$dateFormat.with` | function | `$dateFormat.with(config?)` returns a reusable formatter object exposing `format`, `parse`, `formatRange` and `parseRange`, for cases that also need to parse input into a `Date`, and `placeholder`, the format as a typing hint such as `mm/dd/yyyy` (`undefined` for a format with a month name). |
 
 #### Arguments
 
@@ -52,9 +52,9 @@ The utility also registers a [magic method](https://alpinejs.dev/globals/alpine-
 
 The formatting engine is also exported as a plain function, so it can be used outside Alpine (for example in application code or a build step). It returns the same reusable formatter object as `$dateFormat.with`.
 
-| Property            | Arguments | Returns | Description                                                                                                                                                      |
-| ------------------- | --------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| createDateFormatter | config    | object  | Returns a reusable formatter exposing `format`, `parse`, `formatRange` and `parseRange`. Import it from the package or read it off the global `Harmonia` object. |
+| Property            | Arguments | Returns | Description                                                                                                                                                                     |
+| ------------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| createDateFormatter | config    | object  | Returns a reusable formatter exposing `format`, `parse`, `formatRange`, `parseRange` and `placeholder`. Import it from the package or read it off the global `Harmonia` object. |
 
 The `config` argument accepts the same keys described above (`locale`, `order`, `delimiter`, `options` and `rangeSeparator`). Unlike the directive and magic, this plain function does not read the page's `<html lang>`. When `locale` is omitted it defers directly to the JavaScript engine's default locale.
 

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pickers fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div class="flex max-w-3xs flex-col gap-2">
+      <button id="before">Before</button>
+
+      <div x-h-date-picker x-data="{ v: '' }">
+        <input type="text" id="date-input" />
+        <button id="date-open" x-h-date-picker-trigger aria-label="Choose date"></button>
+        <div x-h-date-picker-popup x-model="v"></div>
+      </div>
+
+      <div x-h-datetime-picker x-data="{ v: '' }">
+        <input type="text" id="datetime-input" />
+        <button id="datetime-open" x-h-datetime-picker-trigger aria-label="Choose date and time"></button>
+        <div x-h-datetime-picker-popup x-model="v"></div>
+      </div>
+
+      <div x-h-month-picker x-data="{ v: '' }">
+        <input type="text" id="month-input" />
+        <button id="month-open" x-h-month-picker-trigger aria-label="Choose month"></button>
+        <div x-h-month-picker-popup x-model="v"></div>
+      </div>
+
+      <div x-h-week-picker x-data="{ v: '' }">
+        <input type="text" id="week-input" />
+        <button id="week-open" x-h-week-picker-trigger aria-label="Choose week"></button>
+        <div x-h-week-picker-popup x-model="v"></div>
+      </div>
+
+      <div x-h-time-picker x-data="{ v: '' }">
+        <input type="text" x-model="v" x-h-time-picker-input />
+        <div x-h-time-picker-popup></div>
+      </div>
+
+      <div x-h-slot-picker="{ date: '2025-06-15', start: '08:00', end: '10:00', step: 60 }" style="height: 12rem">
+        <div x-h-toolbar>
+          <button id="slot-open" x-h-button aria-label="Choose date" x-h-slot-picker-calendar>Date</button>
+        </div>
+      </div>
+
+      <button id="after">After</button>
+    </div>
+  </body>
+</html>

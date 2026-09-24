@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>inline calendar range fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div x-data="{ range: { start: '2025-06-10', end: '2025-06-16' } }" class="flex flex-col gap-4">
+      <div id="light" style="width: 20rem" x-h-calendar-inline="{ range: true }" x-model="range"></div>
+      <!-- Dark mode set below the root, on a background other than the page's. -->
+      <div class="dark bg-card p-2 text-foreground">
+        <div id="dark" style="width: 20rem" x-h-calendar-inline="{ range: true }" x-model="range"></div>
+      </div>
+    </div>
+  </body>
+</html>

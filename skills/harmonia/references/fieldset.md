@@ -75,18 +75,18 @@ This affects only native constraint validation (`:invalid`). Setting `aria-inval
       <p x-h-field-description>Enter your card and billing information</p>
       <div x-h-field-group>
         <div x-h-field>
-          <label x-h-label for="formCardName" data-state="checked">Name on Card</label>
+          <label x-h-label for="formCardName" data-state="checked" data-indicator="end">Name on Card</label>
           <input x-h-input id="formCardName" placeholder="John Doe" required />
         </div>
         <div x-h-field>
-          <label x-h-label for="formCardNumber">Card Number</label>
+          <label x-h-label for="formCardNumber" data-indicator="end">Card Number</label>
           <input x-h-input type="text" id="formCardNumber" placeholder="2141 9614 2401 7895" required />
           <p x-h-field-error>Enter your 16-digit card number</p>
           <p x-h-field-description data-hide-on-error="true">This is just a demo. Do NOT enter your real card number.</p>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <div x-h-field>
-            <label x-h-label for="formCardMonth">Month</label>
+            <label x-h-label for="formCardMonth" data-indicator="end">Month</label>
             <div x-h-select>
               <input data-id="formCardMonth" x-h-select-input placeholder="MM" required />
               <div x-h-select-content>
@@ -108,7 +108,7 @@ This affects only native constraint validation (`:invalid`). Setting `aria-inval
             </div>
           </div>
           <div x-h-field>
-            <label x-h-label for="formCardYear">Year</label>
+            <label x-h-label for="formCardYear" data-indicator="end">Year</label>
             <div x-h-select>
               <input data-id="formCardYear" x-h-select-input placeholder="YYYY" required />
               <div
@@ -131,7 +131,7 @@ This affects only native constraint validation (`:invalid`). Setting `aria-inval
             </div>
           </div>
           <div x-h-field>
-            <label x-h-label for="formCVV">CVV</label>
+            <label x-h-label for="formCVV" data-indicator="end">CVV</label>
             <input x-h-input id="formCVV" placeholder="123" required />
           </div>
         </div>
@@ -144,7 +144,7 @@ This affects only native constraint validation (`:invalid`). Setting `aria-inval
       <div x-h-field-group>
         <div class="grid grid-cols-2 gap-4">
           <div x-h-field>
-            <label x-h-label for="delivery-dp">Date</label>
+            <label x-h-label for="delivery-dp" data-indicator="end">Date</label>
             <div x-h-date-picker>
               <input type="text" id="delivery-dp" required />
               <button x-h-date-picker-trigger aria-label="Choose date"></button>
@@ -152,7 +152,7 @@ This affects only native constraint validation (`:invalid`). Setting `aria-inval
             </div>
           </div>
           <div x-h-field>
-            <label x-h-label for="delivery-tp">Time</label>
+            <label x-h-label for="delivery-tp" data-indicator="end">Time</label>
             <div x-h-time-picker>
               <input type="text" id="delivery-tp" x-h-time-picker-input required />
               <div x-h-time-picker-popup></div>

@@ -357,15 +357,22 @@ describe('h-menubar-trigger', () => {
     expect(buttons[0]._h_menu_trigger.focusOnOpen).toBe('first');
   });
 
-  it('Escape closes the trigger menu only when it is open', () => {
+  // Only the Escape that closes a menu is used up. With every menu closed it
+  // belongs to the page, where a dialog or sheet may be listening for it.
+  it('Escape closes the trigger menu only when it is open, and only then stops there', () => {
     const { buttons } = createMenubar();
     const closeMenu = vi.fn(() => buttons[0]._h_menu_trigger.setOpen(false));
     buttons[0]._h_menu_trigger.closeMenu = closeMenu;
+    const reachedPage = vi.fn();
+    document.addEventListener('keydown', reachedPage);
     keydown(buttons[0], 'Escape');
     expect(closeMenu).not.toHaveBeenCalled();
+    expect(reachedPage).toHaveBeenCalledOnce();
     buttons[0]._h_menu_trigger.setOpen(true);
     keydown(buttons[0], 'Escape');
+    document.removeEventListener('keydown', reachedPage);
     expect(closeMenu).toHaveBeenCalledOnce();
+    expect(reachedPage).toHaveBeenCalledOnce();
   });
 
   it('focusing a trigger re-points the roving tab stop', () => {

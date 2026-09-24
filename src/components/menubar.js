@@ -256,7 +256,11 @@ export default function (Alpine) {
         }
         case 'Esc':
         case 'Escape':
-          if (state.open === el) el._h_menu_trigger.closeMenu?.();
+          if (state.open === el) {
+            event.stopPropagation();
+            event.preventDefault();
+            el._h_menu_trigger.closeMenu?.();
+          }
           break;
         case ' ':
         case 'Enter':

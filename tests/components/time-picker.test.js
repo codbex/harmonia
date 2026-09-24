@@ -466,6 +466,21 @@ describe('h-time-picker-popup', () => {
     expect(timepicker._h_time.lastModelValue).toBe('09:30');
   });
 
+  // A dialog or sheet around the picker can close on any Escape that reaches
+  // the page, so the one that closes the popup has to stop at the popup.
+  it('keeps an Escape that closes the popup from reaching the page', () => {
+    const { popup, timepicker } = createTimepickerPopupSetup();
+    mountDirective(timepickerPlugin, 'h-time-picker-popup', popup, {});
+    const reachedPage = vi.fn();
+    document.addEventListener('keydown', reachedPage);
+    const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    popup.dispatchEvent(event);
+    document.removeEventListener('keydown', reachedPage);
+    expect(timepicker._h_timepicker.close).toHaveBeenCalledWith(true);
+    expect(event.defaultPrevented).toBe(true);
+    expect(reachedPage).not.toHaveBeenCalled();
+  });
+
   describe('open and close', () => {
     function mountReactivePopup() {
       const { timepicker, popup } = createTimepickerPopupSetup();

@@ -120,6 +120,61 @@ describe('createDateFormatter', () => {
   });
 });
 
+// The expectations follow the CLDR data of Node 22, the version CI runs.
+describe('createDateFormatter placeholder', () => {
+  const placeholder = (config) => createDateFormatter(config).placeholder;
+
+  it.each([
+    ['en-US', 'mm/dd/yyyy'],
+    ['en-GB', 'dd/mm/yyyy'],
+    ['de-DE', 'TT.MM.JJJJ'],
+    ['fr-FR', 'jj/mm/aaaa'],
+    ['ja', '年/月/日'],
+    ['ko-KR', '년. 월. 일.'],
+  ])('%s uses the initials of its own field names', (locale, expected) => {
+    expect(placeholder({ locale })).toBe(expected);
+  });
+
+  it.each([
+    // The narrow no-break space is the one the display shows.
+    ['bg-BG', 'дд.мм.гггг г.'],
+    ['lv', 'dd.mm.gggg.'],
+    ['hu', 'éééé. hh. nn.'],
+  ])('%s keeps its suffix', (locale, expected) => {
+    expect(placeholder({ locale })).toBe(expected);
+  });
+
+  it('keeps a prefix, with Latin letters where the field names share an initial', () => {
+    expect(placeholder({ locale: 'tok' })).toBe('#YYYY)#MM)#DD');
+  });
+
+  it('uses Latin letters where a CJK name is already part of the format', () => {
+    expect(placeholder({ locale: 'ja', options: { dateStyle: 'long' } })).toBe('YYYY年MM月DD日');
+  });
+
+  it('keeps the text a field value carries beside its digits', () => {
+    expect(placeholder({ locale: 'ko-KR', options: { dateStyle: 'long' } })).toBe('YYYY년 MM월 DD일');
+  });
+
+  it('uses Latin letters where the initials would be ambiguous', () => {
+    expect(placeholder({ locale: 'ar-EG' }).replace(/[\u200E\u200F]/g, '')).toBe('DD/MM/YYYY');
+  });
+
+  it('follows a custom order and delimiter', () => {
+    expect(placeholder({ locale: 'en-US', order: 'DMY', delimiter: '-' })).toBe('dd-mm-yyyy');
+  });
+
+  it('shows a 2-digit year with two letters', () => {
+    expect(placeholder({ locale: 'en-US', options: { year: '2-digit', month: 'numeric', day: 'numeric' } })).toBe('mm/dd/yy');
+  });
+
+  it('is undefined for a format without a typeable pattern', () => {
+    expect(placeholder({ locale: 'en-US', options: { year: 'numeric', month: 'long', day: 'numeric' } })).toBeUndefined();
+    expect(placeholder({ locale: 'en-US', options: { weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric' } })).toBeUndefined();
+    expect(placeholder({ locale: 'fa-IR' })).toBeUndefined();
+  });
+});
+
 describe('x-h-date-format directive', () => {
   const withValue = (value) => ({ evaluateLater: () => (cb) => cb(value) });
 

@@ -1,5 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
+import { activeElement, focusTrap } from './focus-trap';
 import { Calendar, createSvg } from './icons';
 import { transitionClose } from './transition-close';
 
@@ -158,15 +159,27 @@ export function setupTrigger(el, { pickerState, Alpine, effect, cleanup, origina
 }
 
 /**
+ * Releases a picker popover's focus trap on close. Focus still inside the
+ * closing popover (Escape, a pick) goes back to whatever opened it, while a
+ * click elsewhere keeps the focus it moved.
+ */
+export function releasePickerTrap(el, trap) {
+  if (el.contains(activeElement())) trap.release();
+  else trap.dispose();
+}
+
+/**
  * Wire up the popover container: shared classes, the show/hide + floating-ui
- * positioning effect (driven by `pickerState.state.expanded`), and the
- * transition-end hide. `onOpen` runs after the popover is shown (e.g. to move
- * focus). The caller still sets role / aria / data-slot and the content.
+ * positioning effect (driven by `pickerState.state.expanded`), the focus trap
+ * of the modal dialog it is, and the transition-end hide. `onOpen` runs after
+ * the popover is shown (e.g. to move focus). The caller still sets role / aria
+ * / data-slot and the content.
  */
 export function setupPopover(el, { anchor, pickerState, Alpine, effect, cleanup, onOpen }) {
   el.classList.add(...popoverClasses);
 
   let autoUpdateCleanup;
+  const trap = focusTrap(el);
 
   function updatePosition() {
     computePosition(anchor, el, {
@@ -193,10 +206,13 @@ export function setupPopover(el, { anchor, pickerState, Alpine, effect, cleanup,
       el.classList.remove('hidden', 'pointer-events-none');
       if (autoUpdateCleanup) autoUpdateCleanup();
       autoUpdateCleanup = autoUpdate(anchor, el, updatePosition);
+      // Before onOpen moves focus in, so the trap remembers the opener.
+      trap.trap();
       Alpine.nextTick(() => {
         if (onOpen) onOpen();
       });
     } else {
+      releasePickerTrap(el, trap);
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.classList.add('hidden', 'scale-95', 'opacity-0');
         Object.assign(el.style, { left: '0px', top: '0px' });
@@ -212,6 +228,7 @@ export function setupPopover(el, { anchor, pickerState, Alpine, effect, cleanup,
 
   cleanup(() => {
     closer.dispose();
+    trap.dispose();
     if (autoUpdateCleanup) autoUpdateCleanup();
   });
 }

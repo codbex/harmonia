@@ -123,6 +123,7 @@ export default function (Alpine) {
       },
       stopNavPropagation: true,
       tableFullWidth: false,
+      cycleSelectionTab: true,
     });
 
     const onInputChange = (event) => {
@@ -160,12 +161,28 @@ export default function (Alpine) {
     };
     input.addEventListener('change', onInputChange);
 
+    // With `placeholder: true` the input shows the display format. Its own
+    // placeholder, or null for none, is kept aside and restored once that stops.
+    let ownPlaceholder = undefined;
+    function applyPlaceholder(config) {
+      const hint = config && config.placeholder ? widget.getPlaceholder() : undefined;
+      if (hint) {
+        if (ownPlaceholder === undefined) ownPlaceholder = input.getAttribute('placeholder');
+        input.setAttribute('placeholder', hint);
+      } else if (ownPlaceholder !== undefined) {
+        if (ownPlaceholder === null) input.removeAttribute('placeholder');
+        else input.setAttribute('placeholder', ownPlaceholder);
+        ownPlaceholder = undefined;
+      }
+    }
+
     if (expression) {
       const getConfig = evaluateLater(expression);
       effect(() => {
         getConfig((config) => {
           widget.setConfig(config);
           datepicker._h_datepicker.range = widget.isRange();
+          applyPlaceholder(config);
         });
       });
     } else {

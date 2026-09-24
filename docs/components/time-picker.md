@@ -11,15 +11,15 @@ Use the Time Picker when users need to input or select a time value, such as set
 The user can use the following keyboard shortcuts in order to navigate through the time picker:
 
 - `Up` / `Down` - Moves focus to the next/previous column item.
-- `Tab` - Moves focus to the next column (hour -> minute -> second -> day period). If the "Now" button is enabled, it will move focus to it first before looping back to the first column.
-- `Shift` + `Tab` - Moves focus to the previous column.
+- `Tab` - Moves focus to the next column (hour -> minute -> second -> day period), then to the "Now" and "OK" buttons, looping back to the first column.
+- `Shift` + `Tab` - Moves focus to the previous column or button, looping from the first column to the last button. Focus stays inside the open popover.
 - `Right` - Moves focus to the next column. Focuses the first item or the last focused/selected one.
 - `Left` - Moves focus to the previous column. Focuses the first item or the last focused/selected one.
 - `Enter` - Shows and moves focus the time picker popover. If already shown, selects the focused item from the first column.
 - `Space` - Selects the focused item.
 - `PageUp` / `Home` - Selects the first item in the column.
 - `PageDown` / `End` - Selects the last item in the column.
-- `Esc` - Closes the time picker popover.
+- `Esc` - Closes the time picker popover and returns focus to the input.
 
 ## API Reference
 
@@ -43,7 +43,7 @@ x-h-time-picker-popup
 
 | Attribute           | Values                                                                                                                                                                        | Required | Description                                                                                      |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
-| data-label-hours    | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the hours list. Default value is `Select time`.        |
+| data-label-hours    | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the hours list. Default value is `Select hour`.        |
 | data-label-minutes  | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the minutes list. Default value is `Select minute`.    |
 | data-label-seconds  | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the seconds list. Default value is `Select second`.    |
 | data-label-meridiem | string                                                                                                                                                                        | false    | Sets the `aria-label` attribute value for the meridiem list. Default value is `Select meridiem`. |
@@ -134,6 +134,34 @@ By default this control shows native-constraint errors (for example `required`) 
 ```html
 <div x-data="{ time: '' }" x-h-time-picker @change="console.log('Selected time:', time)">
   <input type="text" id="tpi-3" x-model="time" x-h-time-picker-input />
+  <div x-h-time-picker-popup></div>
+</div>
+```
+
+</LiveExample>
+
+### With translated labels
+
+The `data-label-*` attributes name the popup's lists for screen readers and set the text of its "Now" and "OK" buttons.
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker>
+  <input type="text" id="tpi-labels" x-model="time" x-h-time-picker-input />
+  <div x-h-time-picker-popup data-label-hours="Изберете час" data-label-minutes="Изберете минути" data-label-now="Сега" data-label-ok="Готово"></div>
+</div>
+```
+
+</LiveExample>
+
+### Small size
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-data="{ time: '13:33' }" x-h-time-picker data-size="sm">
+  <input type="text" id="tpi-sm" x-model="time" x-h-time-picker-input />
   <div x-h-time-picker-popup></div>
 </div>
 ```

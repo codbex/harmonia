@@ -58,6 +58,9 @@ export default function (Alpine) {
         'has-focus-visible:ring-ring/50',
         ...invalidInputClasses,
         ...userInvalidInputClasses,
+        'has-[>[data-slot=select-input][aria-invalid=true]]:border-negative',
+        'has-[>[data-slot=select-input][aria-invalid=true]]:ring-negative/20',
+        'dark:has-[>[data-slot=select-input][aria-invalid=true]]:ring-negative/40',
         '[&>[data-slot="select-input"]]:hover:bg-secondary-hover',
         '[&>[data-slot="select-input"]]:hover:text-secondary-foreground',
         '[&>[data-slot="select-input"]]:active:bg-secondary-active',
@@ -137,7 +140,6 @@ export default function (Alpine) {
     const displayValue = document.createElement('span');
     displayValue.classList.add('text-left', 'truncate', 'w-full');
     fakeTrigger.appendChild(displayValue);
-    fakeTrigger.setAttribute('data-slot', 'select-value');
     fakeTrigger.setAttribute('type', 'button');
     fakeTrigger.classList.add('flex', 'items-center', 'justify-between', 'gap-2', 'outline-none', 'pl-3', 'pr-2', 'size-full', '[&[aria-expanded=true]>svg]:rotate-180');
     select._h_select.trigger = fakeTrigger;
@@ -176,21 +178,38 @@ export default function (Alpine) {
       else fakeTrigger.setAttribute('aria-invalid', invalid);
     }
 
-    // :user-invalid is not observable from JS, so only clear on valid or set
-    // when an ancestor opted into immediate validation. The invalid event below
-    // covers the submit-attempt case.
+    // :user-invalid never follows a value set by script, which is how the select
+    // writes its input, so the select keeps its own interaction state. It is set
+    // once the list has been opened and closed or a submit was attempted, and
+    // cleared by a form reset, like the browser's own.
+    let interacted = false;
     function syncValidity() {
       if (el.validity.valid) nativeInvalid = false;
-      else if (el.closest('[data-validate=immediate]')) nativeInvalid = true;
+      else if (interacted || el.closest('[data-validate=immediate]')) nativeInvalid = true;
       renderInvalid();
     }
 
+    // The invalid event also fires for checkValidity() and reportValidity(),
+    // which must not show an error. Only a submit attempt leaves the input
+    // :user-invalid, so that is checked once the event has been handled. The
+    // validity is read again then, since a model update can land in between.
     const onInvalid = () => {
-      nativeInvalid = true;
-      renderInvalid();
+      setTimeout(() => {
+        if (el.matches(':user-invalid')) interacted = true;
+        syncValidity();
+      });
     };
 
     el.addEventListener('invalid', onInvalid);
+
+    const form = el.form;
+    const onReset = () => {
+      interacted = false;
+      nativeInvalid = false;
+      renderInvalid();
+    };
+
+    form?.addEventListener('reset', onReset);
 
     // A natively disabled button is unreachable and announced as disabled, which
     // is what disabling the input asks for. It also refuses clicks, so nothing
@@ -265,8 +284,17 @@ export default function (Alpine) {
     fakeTrigger.setAttribute('aria-haspopup', 'listbox');
     fakeTrigger.setAttribute('role', 'combobox');
 
+    // Every way of closing the list ends here, so closing it is the select's
+    // "edited and left", the point from which a failed constraint shows.
+    let wasExpanded = false;
     effect(() => {
-      fakeTrigger.setAttribute('aria-expanded', select._h_select.expanded);
+      const expanded = select._h_select.expanded;
+      fakeTrigger.setAttribute('aria-expanded', expanded);
+      if (wasExpanded && !expanded) {
+        interacted = true;
+        syncValidity();
+      }
+      wasExpanded = expanded;
     });
 
     const close = (focusSelect = false) => {
@@ -355,6 +383,7 @@ export default function (Alpine) {
           }
           break;
         case 'Escape':
+          event.stopPropagation();
           event.preventDefault();
           close(true);
           break;
@@ -398,8 +427,11 @@ export default function (Alpine) {
     };
 
     const onPress = (event) => {
-      if (event.key === 'Escape' && select._h_select.expanded) close(true);
-      else if (event.key === 'Enter') {
+      if (event.key === 'Escape' && select._h_select.expanded) {
+        event.stopPropagation();
+        event.preventDefault();
+        close(true);
+      } else if (event.key === 'Enter') {
         event.preventDefault();
         onClick();
       } else if (event.key === ' ') {
@@ -458,6 +490,7 @@ export default function (Alpine) {
       removeDismiss(el, 'click', close);
       el.removeEventListener('change', onInputChange);
       el.removeEventListener('invalid', onInvalid);
+      form?.removeEventListener('reset', onReset);
       observer.disconnect();
       if (labelObserver) {
         labelObserver.disconnect();

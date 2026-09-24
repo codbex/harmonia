@@ -9,7 +9,7 @@ import { getFocusable } from './focusable';
  *
  * @returns {Element|null} the innermost focused element.
  */
-function activeElement() {
+export function activeElement() {
   let active = document.activeElement;
   while (active?.shadowRoot?.activeElement) {
     active = active.shadowRoot.activeElement;

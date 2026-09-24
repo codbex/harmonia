@@ -134,7 +134,7 @@
           <fieldset x-h-fieldset>
             <div x-h-field-group class="gap-4!">
               <div x-h-field>
-                <label x-h-label for="ni-customer">Customer</label>
+                <label x-h-label for="ni-customer" data-indicator="end">Customer</label>
                 <div x-h-select>
                   <input x-h-select-input data-id="ni-customer" x-h-focus="showNew" placeholder="Select customer" required x-model="newInvoice.customer" />
                   <div x-h-select-content>
@@ -148,7 +148,7 @@
                 <p x-h-field-error>Choose a customer.</p>
               </div>
               <div x-h-field>
-                <label x-h-label for="ni-due">Due date</label>
+                <label x-h-label for="ni-due" data-indicator="end">Due date</label>
                 <div x-h-date-picker>
                   <input type="text" id="ni-due" required />
                   <button x-h-date-picker-trigger aria-label="Choose due date"></button>
@@ -157,19 +157,19 @@
                 <p x-h-field-error>Pick a due date.</p>
               </div>
               <div x-h-field>
-                <label x-h-label for="ni-description">Line item</label>
+                <label x-h-label for="ni-description" data-indicator="end">Line item</label>
                 <input x-h-input id="ni-description" placeholder="What is being invoiced?" required x-model="newInvoice.description" />
                 <p x-h-field-error>Describe the line item.</p>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div x-h-field>
-                  <label x-h-label for="ni-qty">Quantity</label>
+                  <label x-h-label for="ni-qty" data-indicator="end">Quantity</label>
                   <div x-h-input-number>
                     <input type="number" id="ni-qty" min="1" step="1" required x-model.number="newInvoice.qty" />
                   </div>
                 </div>
                 <div x-h-field>
-                  <label x-h-label for="ni-price">Unit price</label>
+                  <label x-h-label for="ni-price" data-indicator="end">Unit price</label>
                   <div x-h-input-number>
                     <input type="number" id="ni-price" min="0" step="0.01" required placeholder="0.00" x-model.number="newInvoice.unitPrice" />
                   </div>

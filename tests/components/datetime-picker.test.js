@@ -200,6 +200,19 @@ describe('h-datetime-picker-popup', () => {
     expect(labels).toEqual(expect.arrayContaining(['previous year', 'previous month', 'next month', 'next year']));
   });
 
+  it('forwards the data-aria-choose-* labels onto the calendar view toggles', () => {
+    const { popupEl } = createPopup({ attrs: { 'data-aria-choose-month': 'pick a month', 'data-aria-choose-year': 'pick a year' } });
+    const labels = Array.from(popupEl.querySelectorAll('button[aria-pressed]')).map((b) => b.getAttribute('aria-label'));
+    expect(labels).toHaveLength(2);
+    expect(labels.some((l) => l.endsWith(', pick a month'))).toBe(true);
+    expect(labels.some((l) => l.endsWith(', pick a year'))).toBe(true);
+  });
+
+  it('keeps the time editor as the only group in the popup', () => {
+    const { popupEl } = createPopup();
+    expect(popupEl.querySelectorAll('[role="group"]').length).toBe(1);
+  });
+
   it('builds a calendar and a time group with hour and minute spinbuttons', () => {
     const { popupEl, seg } = createPopup();
     expect(popupEl.querySelector('table')).toBeTruthy();
@@ -358,6 +371,20 @@ describe('h-datetime-picker-popup', () => {
     wrapper._h_datetimepicker.state.expanded = true;
     key(seg('hour'), 'Escape');
     expect(wrapper._h_datetimepicker.state.expanded).toBe(false);
+  });
+
+  // The calendar half already stops its Escape. The time half has to as well,
+  // or a dialog or sheet around the picker closes with the popover.
+  it('keeps an Escape on a time segment from reaching the page', () => {
+    const { wrapper, seg } = createPopup({ model: '' });
+    wrapper._h_datetimepicker.state.expanded = true;
+    const reachedPage = vi.fn();
+    document.addEventListener('keydown', reachedPage);
+    const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    seg('hour').dispatchEvent(event);
+    document.removeEventListener('keydown', reachedPage);
+    expect(event.defaultPrevented).toBe(true);
+    expect(reachedPage).not.toHaveBeenCalled();
   });
 
   it('warns and returns early when not inside a datetime-picker', () => {

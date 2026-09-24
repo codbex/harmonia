@@ -16,11 +16,12 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ### Attributes
 
-| Attribute    | Type                                                                                                                      | Required | Description                                                                                                |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
-| data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline`<br />`transparent`<br />`link` | false    | Changes the color/shape of the button. Can be used to indicate different states.                           |
-| data-size    | `sm`<br />`md`<br />`icon-sm`<br />`icon-md`<br />`icon`<br />`default`                                                   | false    | Changes the size of the button. When the button contains only an icon, the `icon-*` values should be used. |
-| data-toggled | boolean                                                                                                                   | false    | Set the toggle state.                                                                                      |
+| Attribute     | Type                                                                                                                      | Required | Description                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-variant  | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`<br />`outline`<br />`transparent`<br />`link` | false    | Changes the color/shape of the button. Can be used to indicate different states.                                                               |
+| data-size     | `sm`<br />`md`<br />`icon-sm`<br />`icon-md`<br />`icon`<br />`default`                                                   | false    | Changes the size of the button. When the button contains only an icon, the `icon-*` values should be used.                                     |
+| data-toggled  | boolean                                                                                                                   | false    | Set the toggle state.                                                                                                                          |
+| aria-disabled | boolean                                                                                                                   | false    | Styles the button as disabled while keeping it focusable and announced. Events like `click` still work, so it's the user's job to handle them. |
 
 ### Modifiers
 
@@ -88,6 +89,15 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 
 ```html
 <button x-h-button disabled>Disabled</button>
+```
+
+### Disabled focusable
+
+Use `aria-disabled="true"` instead of `disabled` when an unavailable button must stay reachable, for example so keyboard and screen reader users can find it and learn why it is unavailable.
+
+```html
+<button x-h-button x-h-tooltip-trigger aria-disabled="true">Publish</button>
+<div x-h-tooltip>Add a title before publishing</div>
 ```
 
 ### Toggle button

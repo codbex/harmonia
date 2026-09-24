@@ -75,4 +75,26 @@ describe('h-label', () => {
     mountDirective(labelPlugin, 'h-label', el);
     expect(el.getAttribute('data-slot')).not.toBe('field-label');
   });
+
+  it('adds the required indicator classes', () => {
+    mountDirective(labelPlugin, 'h-label', el);
+    expect(el.classList.contains("data-[indicator=start]:before:content-['*'_/_'']")).toBe(true);
+    expect(el.classList.contains('data-[indicator=start]:before:text-negative')).toBe(true);
+    expect(el.classList.contains('data-[indicator=start]:before:-me-1')).toBe(true);
+    expect(el.classList.contains('data-[indicator=start]:[[data-slot=field]:not(:has([required]))_&]:before:hidden')).toBe(true);
+    expect(el.classList.contains("data-[indicator=end]:after:content-['*'_/_'']")).toBe(true);
+    expect(el.classList.contains('data-[indicator=end]:after:text-negative')).toBe(true);
+    expect(el.classList.contains('data-[indicator=end]:after:-ms-1')).toBe(true);
+    expect(el.classList.contains('data-[indicator=end]:[[data-slot=field]:not(:has([required]))_&]:after:hidden')).toBe(true);
+  });
+
+  it('adds the required indicator classes inside a field element', () => {
+    const parent = document.createElement('div');
+    parent.setAttribute('data-slot', 'field');
+    parent.appendChild(el);
+    document.body.appendChild(parent);
+    mountDirective(labelPlugin, 'h-label', el);
+    expect(el.classList.contains("data-[indicator=start]:before:content-['*'_/_'']")).toBe(true);
+    expect(el.classList.contains("data-[indicator=end]:after:content-['*'_/_'']")).toBe(true);
+  });
 });

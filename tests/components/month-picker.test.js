@@ -191,6 +191,14 @@ describe('h-month-picker-popup', () => {
     expect(popup.querySelectorAll('[data-month]').length).toBe(12);
   });
 
+  it('names each month cell with its long month and year', () => {
+    const { popup } = createPopupSetup();
+    mountDirective(monthPickerPlugin, 'h-month-picker-popup', popup, { original: 'h-month-picker-popup', expression: 'config' }, { evaluateLater: () => (cb) => cb({ locale: 'en-US' }) });
+    const year = new Date().getFullYear();
+    expect(popup.querySelector('[data-month="8"]').getAttribute('aria-label')).toBe(`September ${year}`);
+    expect(popup.querySelector('[data-month="8"]').textContent).toBe('Sep');
+  });
+
   it('Enter or Space on a focused month cell selects it and closes', () => {
     const { wrapper, popup } = createPopupSetup();
     withModel(popup);

@@ -15,7 +15,8 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Up` / `Down` - Moves focus one row (three months) up/down.
 - `Home` / `End` - Moves focus to January/December of the shown year.
 - `PageUp` / `PageDown` - Moves focus to the same month of the previous/next year.
-- `Esc` - Closes the popup.
+- `Tab` / `Shift+Tab` - Moves between the year buttons and the months. Focus stays inside the open popup.
+- `Esc` - Closes the popup and returns focus to the control that opened it.
 
 ## API Reference
 
@@ -123,6 +124,52 @@ By default this control shows native-constraint errors (for example `required`) 
   <input type="text" id="month-input-locale" />
   <button x-h-month-picker-trigger aria-label="Choose month"></button>
   <div x-h-month-picker-popup="{ locale: 'bg-BG' }" x-model="month"></div>
+</div>
+```
+
+</LiveExample>
+
+### With a year-first locale
+
+In a locale that writes the year before the month, such as Japanese, Chinese or Hungarian, the input shows the year first.
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-h-month-picker x-data="{ month: '2026-07' }">
+  <input type="text" id="month-input-year-first" />
+  <button x-h-month-picker-trigger aria-label="月を選択"></button>
+  <div x-h-month-picker-popup="{ locale: 'ja-JP' }" x-model="month"></div>
+</div>
+```
+
+</LiveExample>
+
+### With translated labels
+
+Translate the trigger's `aria-label` and the popup's `data-aria-*` labels along with the locale, so screen readers announce every button in the page's language.
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-h-month-picker x-data="{ month: '2026-07' }">
+  <input type="text" id="month-input-labels" />
+  <button x-h-month-picker-trigger aria-label="Изберете месец"></button>
+  <div x-h-month-picker-popup="{ locale: 'bg-BG' }" x-model="month" data-aria-prev-year="предишна година" data-aria-next-year="следваща година"></div>
+</div>
+```
+
+</LiveExample>
+
+### Small size
+
+<LiveExample data-exclude="generator">
+
+```html
+<div x-h-month-picker data-size="sm" x-data="{ month: '2026-07' }">
+  <input type="text" id="month-input-sm" />
+  <button x-h-month-picker-trigger aria-label="Choose month"></button>
+  <div x-h-month-picker-popup x-model="month"></div>
 </div>
 ```
 
