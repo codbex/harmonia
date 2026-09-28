@@ -17,6 +17,14 @@ Mark each direct child that should animate with `x-h-backdrop-item`. The backdro
 - `x-h-backdrop`
 - `x-h-backdrop-item`
 
+## API
+
+### Data Slots
+
+| Slot       | Element        |
+| ---------- | -------------- |
+| `backdrop` | `x-h-backdrop` |
+
 ## Accessibility
 
 The backdrop is focusable through `tabindex="-1"`, and its show and hide transitions respect the user's `prefers-reduced-motion` setting. Because the surrounding component owns the open state, wire up your own dismissal (for example closing on a click of the scrim or on `Esc`) to match your use case.

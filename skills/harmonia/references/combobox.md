@@ -29,6 +29,12 @@ Activating an option clicks it, so the `@click` you already write for the mouse 
 | `self`         | element                                | true     | The text field that drives the combobox. The component reads the keyboard from it and reports the highlighted option on it.                                                                                                                                                     |
 | `data-variant` | `listbox`<br />`popover`<br />`inline` | false    | The style of the panel. `listbox` (the default) is the bordered panel shared with a listbox. `popover` gives it the surface, shadow and rounded corners of a popover. `inline` removes the background, border, shadow and rounded corners for nesting inside another component. |
 
+### Data Slots
+
+| Slot       | Element        |
+| ---------- | -------------- |
+| `combobox` | `x-h-combobox` |
+
 ## Keyboard Handling
 
 The combobox is not a stop in the tab order of its own. It is reached through its text field, and only takes the keys that field does not need for editing:

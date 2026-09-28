@@ -37,6 +37,12 @@ Bind a number with `x-model`. The value updates on selection (click, drag, or ke
 | ------ | ----------------------------------------------------------------------- |
 | change | Fired when the value changes. The new value is in `event.detail.value`. |
 
+### Data Slots
+
+| Slot     | Element      |
+| -------- | ------------ |
+| `rating` | `x-h-rating` |
+
 ## Keyboard Handling
 
 The rating is focusable and behaves like a slider:

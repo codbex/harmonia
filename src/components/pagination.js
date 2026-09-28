@@ -65,6 +65,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-pagination-link-label', (el) => {
     el.classList.add('hidden', 'sm:block');
+    el.setAttribute('data-slot', 'pagination-link-label');
   });
 
   Alpine.directive('h-pagination-ellipsis', (el) => {

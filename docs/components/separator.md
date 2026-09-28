@@ -20,6 +20,12 @@ x-h-separator
 | ---------------- | ---------------------------- | -------- | ----------------------------------------- |
 | data-orientation | `horizontal`<br />`vertical` | false    | Changes the orientation of the separator. |
 
+### Data Slots
+
+| Slot        | Element         |
+| ----------- | --------------- |
+| `separator` | `x-h-separator` |
+
 ## Examples
 
 <LiveExample>

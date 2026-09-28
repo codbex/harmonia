@@ -47,6 +47,14 @@ A label longer than the space available needs a `truncate` class of its own, sin
 
 > **Note:** \* One of `aria-label` or `aria-labelledby` is required.
 
+### Data Slots
+
+| Slot          | Element           |
+| ------------- | ----------------- |
+| `chip`        | `x-h-chip`        |
+| `chip-button` | `x-h-chip-button` |
+| `chip-close`  | `x-h-chip-close`  |
+
 ## Keyboard Handling
 
 A chip's controls are ordinary buttons, so `Tab` reaches each of them in the order they appear and `Enter` / `Space` activates the one that has focus. A dismissible chip is therefore two tab stops, and a `disabled` control is skipped like any other.

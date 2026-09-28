@@ -47,6 +47,22 @@ The chart is exposed to assistive technologies as a `figure` with a visually-hid
 
 When `tooltip` is enabled, hovering and clicking points emit bubbling `CustomEvent`s on the chart element - `chart-hover`, `chart-leave`, and `chart-click`. See the events reference for the shared `detail` shape.
 
+### Data Slots
+
+| Slot                  | Element                                   |
+| --------------------- | ----------------------------------------- |
+| `chart`               | `x-h-chart-line`                          |
+| `chart-svg`           | The chart drawing                         |
+| `chart-plot`          | The plot area                             |
+| `chart-segment`       | The line of a series                      |
+| `chart-point`         | A data point                              |
+| `chart-label`         | A value label                             |
+| `chart-legend`        | The legend                                |
+| `chart-legend-swatch` | A legend color swatch                     |
+| `chart-tooltip`       | The hover tooltip                         |
+| `chart-table`         | The data table for assistive technologies |
+| `chart-empty`         | The message shown when there is no data   |
+
 ## Examples
 
 ### Basic

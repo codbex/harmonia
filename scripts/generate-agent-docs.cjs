@@ -485,7 +485,7 @@ function renderSkill(index) {
   out.push('## How to use this skill');
   out.push('');
   out.push(
-    'Find the component in the index below and open its file under `references/`. Each reference lists the directive set, its attributes, whether it binds with `x-model`, and working examples you can adapt. Load only the reference(s) you need.'
+    'Find the component in the index below and open its file under `references/`. Each reference lists the directive set, its attributes, whether it binds with `x-model`, its `data-slot` values, and working examples you can adapt. Load only the reference(s) you need.'
   );
   out.push('');
   out.push('## Setup');
@@ -524,6 +524,9 @@ function renderSkill(index) {
   out.push('- **Modifiers are dot suffixes.** For example `x-h-accordion.single`, `x-h-accordion-item.default`.');
   out.push(
     '- **Styling is attribute-driven.** Common attributes are `data-size` (for example `sm` / `md`), `data-variant` (for example `primary` / `negative`), and `data-align` for popovers/menus. See each reference for the exact values.'
+  );
+  out.push(
+    '- **`data-slot` is public API.** Every component sets `data-slot` on its element and on the key elements it creates, and each reference lists the values under "Data Slots". Select Harmonia elements in tests, scripts and CSS with `[data-slot="..."]`, never by Tailwind class, tag name or DOM position, and never set or change `data-slot` on a Harmonia element yourself.'
   );
   out.push(
     '- **Utility classes are a curated subset, NOT all of Tailwind.** Only the classes compiled into `harmonia.css` exist; an arbitrary Tailwind class that is not shipped (for example `h-80`, `gap-20`, `bg-red-450`) silently does nothing. Before using any utility class, confirm it is in the [Utility classes](references/utility-classes.md) reference, and for a one-off value with no matching class use an inline `style`.'

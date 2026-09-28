@@ -21,6 +21,13 @@ outline: deep
       <p class="text">Contextual message for communicating status, warnings, or important information.</p>
     </div>
   </a>
+  <a href="./components/audio-player" class="card">
+    <svg-icon class="card-media" src="./images/audio-player.svg"></svg-icon>
+    <div class="card-content">
+      <h3>Audio Player</h3>
+      <p class="text">Accessible player for an audio source with play/pause, a seek slider and a time readout.</p>
+    </div>
+  </a>
   <a href="./components/avatar" class="card">
     <svg-icon class="card-media" src="./images/avatar.svg"></svg-icon>
     <div class="card-content">

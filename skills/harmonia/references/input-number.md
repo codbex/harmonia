@@ -35,6 +35,17 @@ Decimal separators follow the browser's regional settings. When a typed separato
 
 Bind a number with `x-model.number` on the inner native input. While an in-progress entry is not yet a valid number (for example a partially typed decimal), the browser exposes no value, so the model is `null` until the entry becomes valid. The text typed so far stays visible in the field.
 
+### Data Slots
+
+| Slot                   | Element                                                                    |
+| ---------------------- | -------------------------------------------------------------------------- |
+| `input-number`         | `x-h-input-number`                                                         |
+| `cell-input-number`    | `x-h-input-number.table`                                                   |
+| `input-number-control` | The number input inside `x-h-input-number`                                 |
+| `step-controls`        | Wrapper of the step buttons created by `x-h-input-number`, outside a table |
+| `step-down-trigger`    | Decrease button created by `x-h-input-number`                              |
+| `step-up-trigger`      | Increase button created by `x-h-input-number`                              |
+
 ## Binding
 
 Binds through Alpine `x-model`. See the Examples for the expected value shape.

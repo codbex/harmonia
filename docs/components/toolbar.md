@@ -39,6 +39,18 @@ x-h-toolbar-separator
 | -------- | -------------------- |
 | footer   | Footer-style toolbar |
 
+### Data Slots
+
+| Slot                | Element                 |
+| ------------------- | ----------------------- |
+| `toolbar`           | `x-h-toolbar`           |
+| `toolbar-image`     | `x-h-toolbar-image`     |
+| `toolbar-title`     | `x-h-toolbar-title`     |
+| `toolbar-subtitle`  | `x-h-toolbar-subtitle`  |
+| `toolbar-branding`  | `x-h-toolbar-branding`  |
+| `toolbar-spacer`    | `x-h-toolbar-spacer`    |
+| `toolbar-separator` | `x-h-toolbar-separator` |
+
 ## Examples
 
 ### Default

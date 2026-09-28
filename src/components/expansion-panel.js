@@ -118,6 +118,7 @@ export default function (Alpine) {
       '[[data-variant=transparent]_&]:text-foreground'
     );
     el.setAttribute('tabIndex', '-1');
+    el.setAttribute('data-slot', 'exp-panel-header');
 
     const getLabel = evaluateLater(expression);
 

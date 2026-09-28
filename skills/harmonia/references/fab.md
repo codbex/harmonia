@@ -31,6 +31,12 @@ On a long page the button can get out of the way while people read. Set `data-hi
 | data-position       | `bottom-right`<br />`bottom-left`<br />`static`                                                           | false    | Pins the button to a bottom corner of the viewport, 1rem from each edge. `static` applies no positioning, leaving the button in normal flow. Default is `static`.                |
 | data-hide-on-scroll | boolean                                                                                                   | false    | When set to `true`, slides the button out of view while the content scrolls down and brings it back on the first scroll up. It always comes back at the top of the scroll range. |
 
+### Data Slots
+
+| Slot  | Element   |
+| ----- | --------- |
+| `fab` | `x-h-fab` |
+
 ## Accessibility
 
 Non-extended floating action buttons show no text, so they must be given an accessible name through `aria-label` or `aria-labelledby`. The component logs an error when neither is present. The `extended` size already has a visible label and needs no extra attribute.

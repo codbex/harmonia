@@ -136,6 +136,11 @@ describe('h-accordion-trigger', () => {
     expect(triggerEl.classList.contains('h-12')).toBe(true);
   });
 
+  it('sets data-slot="accordion-header" on the heading', () => {
+    mountDirective(accordionPlugin, 'h-accordion-trigger', triggerEl, { original: 'h-accordion-trigger', expression: '' });
+    expect(triggerEl.getAttribute('data-slot')).toBe('accordion-header');
+  });
+
   it('creates a button child with data-slot="accordion-trigger"', () => {
     mountDirective(accordionPlugin, 'h-accordion-trigger', triggerEl, { original: 'h-accordion-trigger', expression: '' });
     const btn = triggerEl.querySelector('[data-slot="accordion-trigger"]');

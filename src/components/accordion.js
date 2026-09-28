@@ -60,6 +60,7 @@ export default function (Alpine) {
 
     el.classList.add('flex', 'text-sm', 'h-12', 'min-h-12', '[[data-size=md]_&]:h-10', '[[data-size=md]_&]:min-h-10', '[[data-size=sm]_&]:h-8', '[[data-size=sm]_&]:min-h-8');
     el.setAttribute('tabIndex', '-1');
+    el.setAttribute('data-slot', 'accordion-header');
 
     const getLabel = evaluateLater(expression);
 

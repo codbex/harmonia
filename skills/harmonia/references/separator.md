@@ -20,6 +20,12 @@ Use separators to distinguish between related groups of elements, such as menu i
 | ---------------- | ---------------------------- | -------- | ----------------------------------------- |
 | data-orientation | `horizontal`<br />`vertical` | false    | Changes the orientation of the separator. |
 
+### Data Slots
+
+| Slot        | Element         |
+| ----------- | --------------- |
+| `separator` | `x-h-separator` |
+
 ## Examples
 
 ```html

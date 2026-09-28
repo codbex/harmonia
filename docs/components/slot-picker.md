@@ -141,6 +141,24 @@ A selected sub-slot tile uses a composite key of the form `'YYYY-MM-DDTHH:MM#ind
 | slot-click | Dispatched on every slot click, including deselection and when no `x-model` is bound (in which case `selected` is always `false`). `event.detail.slot` contains `date`, `start`, `end`, `available`, `selected` (the new state after the click), `description`, `note`, `color`, `status`, `key`, and `tileIndex` (a number for a tile, `null` for a plain slot).                                                                                                                                                                 |
 | slot-drop  | Dispatched when a dragged slot is dropped at a new position (requires the `draggable` option, dropping at the unchanged position dispatches nothing). `event.detail.slot` carries the same fields as `slot-click`'s detail without `selected`. `event.detail.date` is the target day as `YYYY-MM-DD` and `event.detail.index` the slot's new position within that day's slot list. `event.detail.slots` is a new array with the move applied, built without mutating yours - assign it to your `slots` config to accept the move. |
 
+### Data Slots
+
+| Slot                      | Element                                                     |
+| ------------------------- | ----------------------------------------------------------- |
+| `slot-picker`             | `x-h-slot-picker`                                           |
+| `slot-picker-header`      | Day header created by `x-h-slot-picker`                     |
+| `slot-picker-cell`        | Selectable slot created by `x-h-slot-picker`                |
+| `slot-picker-slot`        | Slot with sub-slot tiles, created by `x-h-slot-picker`      |
+| `slot-picker-slot-header` | Header of a slot with sub-slot tiles                        |
+| `slot-picker-tile`        | Selectable sub-slot tile created by `x-h-slot-picker`       |
+| `slot-picker-time`        | Time of a slot or tile                                      |
+| `slot-picker-desc`        | Description of a slot or tile                               |
+| `slot-picker-note`        | Note of a slot or tile                                      |
+| `slot-picker-now`         | Current time indicator created by `x-h-slot-picker`         |
+| `slot-picker-ghost`       | Copy of a slot that follows the pointer while it is dragged |
+| `slot-picker-title`       | `x-h-slot-picker-title`                                     |
+| `slot-picker-calendar`    | Date popover created by `x-h-slot-picker-calendar`          |
+
 ## Examples
 
 ### Basic (single select) with scroll

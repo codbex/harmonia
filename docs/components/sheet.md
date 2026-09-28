@@ -29,6 +29,13 @@ x-h-sheet-overlay
 | ---------- | ----------------------------------------- | -------- | ------------------------------------------------------------ |
 | data-align | `top`<br/>`right`<br/>`bottom`<br/>`left` | false    | Aligns the sheet to one side of the screen. Default is left. |
 
+### Data Slots
+
+| Slot            | Element             |
+| --------------- | ------------------- |
+| `sheet`         | `x-h-sheet`         |
+| `sheet-overlay` | `x-h-sheet-overlay` |
+
 ## Examples
 
 ### Sheet with Sidebar

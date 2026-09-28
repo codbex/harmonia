@@ -15,6 +15,15 @@ Use tags to highlight keywords, categories, statuses, or shortcuts in a concise 
 - `x-h-tag`
 - `x-h-tag-group`
 
+## API
+
+### Data Slots
+
+| Slot        | Element         |
+| ----------- | --------------- |
+| `tag`       | `x-h-tag`       |
+| `tag-group` | `x-h-tag-group` |
+
 ## Examples
 
 ```html

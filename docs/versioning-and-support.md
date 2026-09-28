@@ -24,6 +24,8 @@ A breaking change forces a major bump. There is no backwards-incompatible change
 
 Everything that range resolves to will be compatible with the code you have written against 3.x. This is enforced in CI against the changelog, not just promised.
 
+The `data-slot` values that components set are part of the public API too, so renaming or removing one is a breaking change. See [Testing](/testing).
+
 ::: info
 Prereleases are published to npm under the `next` tag rather than `latest`, so a version containing `alpha`, `beta` or `rc` never reaches you by default.
 :::

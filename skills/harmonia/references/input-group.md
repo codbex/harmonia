@@ -36,6 +36,14 @@ Use Input Groups when you want to attach supplementary actions or indicators to 
 > **Note:** Focus Navigation
 > In order to achieve proper focus navigation, place the group addon after the input and then set the align prop to position it.
 
+### Data Slots
+
+| Slot                | Element                 |
+| ------------------- | ----------------------- |
+| `input-group`       | `x-h-input-group`       |
+| `input-group-addon` | `x-h-input-group-addon` |
+| `input-group-text`  | `x-h-input-group-text`  |
+
 ## Examples
 
 ### Search bar

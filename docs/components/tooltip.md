@@ -29,6 +29,12 @@ x-h-tooltip-trigger
 The `x-h-tooltip` element must be placed somewhere AFTER the `x-h-tooltip-trigger` and they must have the same direct parent. Otherwise, the tooltip will not be able to find the trigger.
 :::
 
+### Data Slots
+
+| Slot      | Element       |
+| --------- | ------------- |
+| `tooltip` | `x-h-tooltip` |
+
 ## Examples
 
 <LiveExample data-class="flex items-center">

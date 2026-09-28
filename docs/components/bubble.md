@@ -55,6 +55,26 @@ Apply to an `<audio>` element with a `src` (or a `<source>` child). It renders a
 | data-seek-label      | string | false    | Accessible name for the seek slider. Defaults to `Seek`.                                                                                     |
 | data-valuetext-label | string | false    | Template for the position announced on the seek slider. `{current}` and `{duration}` are substituted. Defaults to `{current} of {duration}`. |
 
+### Data Slots
+
+| Slot                  | Element                                         |
+| --------------------- | ----------------------------------------------- |
+| `bubble`              | `x-h-bubble`                                    |
+| `bubble-header`       | `x-h-bubble-header`                             |
+| `bubble-content`      | `x-h-bubble-content`                            |
+| `bubble-footer`       | `x-h-bubble-footer`                             |
+| `bubble-image`        | `x-h-bubble-image`                              |
+| `bubble-gallery`      | `x-h-bubble-gallery`                            |
+| `bubble-gallery-more` | `x-h-bubble-gallery-more`                       |
+| `bubble-audio-native` | `x-h-bubble-audio`                              |
+| `bubble-audio`        | Player created by `x-h-bubble-audio`            |
+| `bubble-audio-play`   | Play/pause button created by `x-h-bubble-audio` |
+| `bubble-audio-seek`   | Seek slider created by `x-h-bubble-audio`       |
+| `bubble-audio-time`   | Time readout created by `x-h-bubble-audio`      |
+| `bubble-file`         | `x-h-bubble-file`                               |
+| `bubble-link`         | `x-h-bubble-link`                               |
+| `bubble-reactions`    | `x-h-bubble-reactions`                          |
+
 ## Examples
 
 ### Basic conversation

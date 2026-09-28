@@ -85,6 +85,23 @@ Use tables to present datasets, lists, or records where a clear relationship bet
 | -------- | ------------------------------------- |
 | scroll   | Adds scroll ability to the container. |
 
+### Data Slots
+
+| Slot                 | Element                  |
+| -------------------- | ------------------------ |
+| `table-container`    | `x-h-table-container`    |
+| `table`              | `x-h-table`              |
+| `table-header`       | `x-h-table-header`       |
+| `table-head`         | `x-h-table-head`         |
+| `table-cell`         | `x-h-table-cell`         |
+| `cell-input-button`  | `x-h-table-cell-button`  |
+| `table-body`         | `x-h-table-body`         |
+| `table-group-row`    | `x-h-table-group-row`    |
+| `table-group-button` | `x-h-table-group-button` |
+| `table-row`          | `x-h-table-row`          |
+| `table-caption`      | `x-h-table-caption`      |
+| `table-footer`       | `x-h-table-footer`       |
+
 ## Binding
 
 Binds through Alpine `x-model`. See the Examples for the expected value shape.

@@ -419,3 +419,28 @@ describe('h-notification-actions', () => {
     expect(el.getAttribute('data-slot')).toBe('notification-actions');
   });
 });
+
+describe('h-notification-close', () => {
+  function mountClose(el) {
+    const alpine = makeAlpineWithStore();
+    notificationsPlugin(alpine);
+    const notification = document.createElement('div');
+    notification.id = 'n1';
+    notification.setAttribute('data-slot', 'notification');
+    notification.appendChild(el);
+    alpine._directives['h-notification-close'](el, { modifiers: [], original: 'x-h-notification-close' }, createMockContext(alpine));
+  }
+
+  it('sets data-slot="notification-close"', () => {
+    const el = document.createElement('button');
+    mountClose(el);
+    expect(el.getAttribute('data-slot')).toBe('notification-close');
+  });
+
+  it('keeps the slot of a component on the same element', () => {
+    const el = document.createElement('button');
+    el.setAttribute('data-slot', 'button');
+    mountClose(el);
+    expect(el.getAttribute('data-slot')).toBe('button');
+  });
+});

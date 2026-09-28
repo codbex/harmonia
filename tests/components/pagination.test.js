@@ -85,6 +85,12 @@ describe('h-pagination-link-label', () => {
     expect(el.classList.contains('hidden')).toBe(true);
     expect(el.classList.contains('sm:block')).toBe(true);
   });
+
+  it('sets data-slot="pagination-link-label"', () => {
+    const el = document.createElement('span');
+    mountDirective(paginationPlugin, 'h-pagination-link-label', el);
+    expect(el.getAttribute('data-slot')).toBe('pagination-link-label');
+  });
 });
 
 describe('h-pagination-ellipsis', () => {

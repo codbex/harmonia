@@ -79,8 +79,9 @@ export default function (Alpine) {
 
             el.dispatchEvent(new CustomEvent('fragment:loaded', { bubbles: false, detail: { url } }));
           })
-          .catch((response) => {
-            console.error(response);
+          .catch((error) => {
+            console.error(error);
+            el.dispatchEvent(new CustomEvent('fragment:error', { bubbles: false, detail: { url, status: error.status, error } }));
           });
       } else {
         throw new Error(`${original}: external requests not allowed`);

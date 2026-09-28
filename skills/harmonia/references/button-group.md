@@ -55,6 +55,12 @@ Bind the value of the selected option with `x-model`. Set it to an option's valu
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | change | Dispatched on an option when it is selected. `event.detail.value` is the option's value. It bubbles, so you can listen on the group. |
 
+### Data Slots
+
+| Slot           | Element            |
+| -------------- | ------------------ |
+| `button-group` | `x-h-button-group` |
+
 ## Keyboard Handling
 
 A single choice group is one stop in the tab order. Tab moves to the selected option, and Tab again leaves the group.

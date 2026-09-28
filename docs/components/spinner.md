@@ -14,6 +14,12 @@ Use spinners to indicate loading, processing, or other indefinite tasks where th
 x-h-spinner
 ```
 
+### Data Slots
+
+| Slot      | Element       |
+| --------- | ------------- |
+| `spinner` | `x-h-spinner` |
+
 ## Examples
 
 <LiveExample data-class="flex flex-col items-center gap-4">

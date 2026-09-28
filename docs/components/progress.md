@@ -31,6 +31,13 @@ x-h-progress
 | data-loading | boolean                                                      | false    | Shows an indefinite loading animation instead of the value.            |
 | data-variant | `positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color state                                                   |
 
+### Data Slots
+
+| Slot                 | Element                             |
+| -------------------- | ----------------------------------- |
+| `progress`           | `x-h-progress`                      |
+| `progress-indicator` | Indicator created by `x-h-progress` |
+
 ## Examples
 
 <LiveExample data-class="vbox gap-4">

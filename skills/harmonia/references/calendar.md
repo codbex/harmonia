@@ -86,6 +86,13 @@ Each item in the `events` array supports the following fields:
 | description | string                                                                                                                     | false    | Shown as a tooltip on event pills.                                                                                                                             |
 | draggable   | boolean                                                                                                                    | false    | Set to `false` to exclude the event from drag and drop when the calendar has `draggable: true`.                                                                |
 
+### Data Slots
+
+| Slot                | Element                                                           |
+| ------------------- | ----------------------------------------------------------------- |
+| `calendar`          | `x-h-calendar`                                                    |
+| `overflow-more-btn` | Button created by `x-h-calendar` for events that do not fit a day |
+
 ## Keyboard Handling
 
 In the month view (and within each year-view mini-month) the day cells form an ARIA grid with roving focus:

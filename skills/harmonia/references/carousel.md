@@ -55,6 +55,16 @@ The `x-h-carousel-control` buttons take a default `aria-label` per direction. Ov
 | ------ | ----------------------------------------------------------------------------------------- |
 | change | Fired when the active slide changes. The new zero-based index is in `event.detail.value`. |
 
+### Data Slots
+
+| Slot                  | Element                   |
+| --------------------- | ------------------------- |
+| `carousel`            | `x-h-carousel`            |
+| `carousel-content`    | `x-h-carousel-content`    |
+| `carousel-item`       | `x-h-carousel-item`       |
+| `carousel-control`    | `x-h-carousel-control`    |
+| `carousel-indicators` | `x-h-carousel-indicators` |
+
 ## Keyboard Handling
 
 When the carousel region is focused, it behaves like a set of slides:

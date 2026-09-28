@@ -132,6 +132,7 @@ export default function (Alpine) {
     // browser from focusing it on a failed submit. It is out of the tab order
     // and the accessibility tree because the trigger stands in for it.
     el.classList.add('sr-only', 'pointer-events-none');
+    el.setAttribute('data-slot', 'select-native-input');
     el.setAttribute('type', 'text');
     el.setAttribute('tabindex', '-1');
     el.setAttribute('aria-hidden', 'true');

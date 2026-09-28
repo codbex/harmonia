@@ -44,6 +44,20 @@ When `x-h-tile` is placed on a `<label>` element it becomes a selectable tile (s
 | ------------ | -------------------------------- | -------- | ------------------------------------ |
 | data-variant | `default`<br/>`icon`<br/>`image` | false    | Changes the style of the tile media. |
 
+### Data Slots
+
+| Slot               | Element                |
+| ------------------ | ---------------------- |
+| `tile-group`       | `x-h-tile-group`       |
+| `tile`             | `x-h-tile`             |
+| `tile-header`      | `x-h-tile-header`      |
+| `tile-media`       | `x-h-tile-media`       |
+| `tile-content`     | `x-h-tile-content`     |
+| `tile-title`       | `x-h-tile-title`       |
+| `tile-description` | `x-h-tile-description` |
+| `tile-actions`     | `x-h-tile-actions`     |
+| `tile-footer`      | `x-h-tile-footer`      |
+
 ## Examples
 
 ### Variants

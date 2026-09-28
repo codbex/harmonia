@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import checkboxPlugin from '../../src/components/checkbox.js';
 import treePlugin from '../../src/components/tree.js';
@@ -65,6 +66,22 @@ describe('h-checkbox', () => {
     mountDirective(checkboxPlugin, 'h-checkbox', el);
     expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
     expect(el.classList.contains('has-[input:disabled]:opacity-disabled')).toBe(true);
+  });
+
+  it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {
+    mountDirective(checkboxPlugin, 'h-checkbox', el);
+    // deferred baseline (shows after interaction/submit)
+    expect(el.classList.contains('has-[input:user-invalid]:border-negative')).toBe(true);
+    // immediate opt-in, gated by a data-validate="immediate" ancestor
+    expect(el.classList.contains('[[data-validate=immediate]_&:has(input:invalid)]:border-negative')).toBe(true);
+    // the bare :invalid (on-load) class is gone
+    expect(el.classList.contains('has-[input:invalid]:border-negative')).toBe(false);
+    // aria-invalid (explicit) styling is unchanged
+    expect(el.classList.contains('has-[input[aria-invalid=true]]:border-negative')).toBe(true);
+    // The fill is styled in checkbox.css and must follow the same gate.
+    const checkboxCss = readFileSync('src/styles/checkbox.css', 'utf8');
+    expect(checkboxCss).toContain('[data-validate="immediate"] [data-slot="checkbox"]:has(input:invalid)');
+    expect(checkboxCss).not.toMatch(/^\[data-slot="checkbox"\]:has\(input:invalid\)/m);
   });
 });
 

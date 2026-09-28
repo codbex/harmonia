@@ -46,5 +46,6 @@ export default function (Alpine) {
       default:
         el.classList.add('leading-7');
     }
+    el.setAttribute('data-slot', 'text');
   });
 }

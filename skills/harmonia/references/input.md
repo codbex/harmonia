@@ -31,6 +31,14 @@ Use input fields for capturing user data, such as names, emails, or color. If yo
 
 By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See Fieldset for details.
 
+### Data Slots
+
+| Slot                  | Element           |
+| --------------------- | ----------------- |
+| `input`               | `x-h-input`       |
+| `input-group-control` | `x-h-input.group` |
+| `cell-input`          | `x-h-input.table` |
+
 ## Examples
 
 ### Text Input

@@ -12,6 +12,14 @@ Use spinners to indicate loading, processing, or other indefinite tasks where th
 
 - `x-h-spinner`
 
+## API
+
+### Data Slots
+
+| Slot      | Element       |
+| --------- | ------------- |
+| `spinner` | `x-h-spinner` |
+
 ## Examples
 
 ```html

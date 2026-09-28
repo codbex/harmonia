@@ -20,6 +20,13 @@ Use labels to clearly describe form fields, controls, or interactive elements. E
 | -------------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | data-indicator | `start`<br/>`end` | false    | Shows a red asterisk before (`start`) or after (`end`) the label text. Inside an `x-h-field` it appears only while the field contains a control with the `required` attribute. |
 
+### Data Slots
+
+| Slot          | Element                        |
+| ------------- | ------------------------------ |
+| `label`       | `x-h-label`                    |
+| `field-label` | `x-h-label` inside `x-h-field` |
+
 ## Examples
 
 ```html

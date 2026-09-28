@@ -76,6 +76,12 @@ Example:
 | order     | Custom display order of the date parts as a three-character string of `Y` (year), `M` (month), `D` (day) (e.g. `"MDY"` for month-day-year). Defaults to the locale's natural order. Does not affect the model value. |
 | range     | When `true`, the calendar selects a start-and-end date range instead of a single date. See Range selection.                                                                               |
 
+### Data Slots
+
+| Slot              | Element               |
+| ----------------- | --------------------- |
+| `calendar-inline` | `x-h-calendar-inline` |
+
 ## Keyboard Handling
 
 The user can use the following keyboard shortcuts in order to navigate through the calendar:

@@ -37,6 +37,14 @@ Place a `x-h-menubar-trigger` button next to a `x-h-menu` inside each `x-h-menub
 | ------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------ |
 | aria-disabled | boolean | false    | Marks the top-level item unavailable while keeping it focusable and announced. Its menu will not open. |
 
+### Data Slots
+
+| Slot              | Element               |
+| ----------------- | --------------------- |
+| `menubar`         | `x-h-menubar`         |
+| `menubar-item`    | `x-h-menubar-item`    |
+| `menubar-trigger` | `x-h-menubar-trigger` |
+
 ## Keyboard Handling
 
 The menubar is a single Tab stop. Once it has focus, the top-level items are operated with the keys below:

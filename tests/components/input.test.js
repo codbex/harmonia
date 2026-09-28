@@ -187,9 +187,9 @@ describe('h-input-group-text', () => {
     expect(el.classList.contains('text-sm')).toBe(true);
   });
 
-  it('sets data-slot="label"', () => {
+  it('sets data-slot="input-group-text"', () => {
     mountDirective(inputPlugin, 'h-input-group-text', el);
-    expect(el.getAttribute('data-slot')).toBe('label');
+    expect(el.getAttribute('data-slot')).toBe('input-group-text');
   });
 });
 
@@ -222,6 +222,11 @@ describe('h-input-number', () => {
   it('sets data-slot="input-number"', () => {
     mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
     expect(el.getAttribute('data-slot')).toBe('input-number');
+  });
+
+  it('sets data-slot="input-number-control" on the number input', () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    expect(el.querySelector('input').getAttribute('data-slot')).toBe('input-number-control');
   });
 
   it('throws if no number input is found', () => {

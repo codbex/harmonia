@@ -124,6 +124,32 @@ Use sidebars for main application navigation or other persistent content that be
 | --------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
 | --sidebar-width | 16rem   | Width of the sidebar when not collapsed. Set it on the sidebar itself, an ancestor, or in a theme CSS file. |
 
+### Data Slots
+
+| Slot                      | Element                                                 |
+| ------------------------- | ------------------------------------------------------- |
+| `sidebar`                 | `x-h-sidebar`                                           |
+| `sidebar-header`          | `x-h-sidebar-header`                                    |
+| `sidebar-header-item`     | `x-h-sidebar-header-item`                               |
+| `sidebar-content`         | `x-h-sidebar-content`                                   |
+| `sidebar-group`           | `x-h-sidebar-group`                                     |
+| `sidebar-group-label`     | `x-h-sidebar-group-label`                               |
+| `sidebar-group-actions`   | `x-h-sidebar-group-actions`                             |
+| `sidebar-group-action`    | `x-h-sidebar-group-action`                              |
+| `sidebar-group-content`   | `x-h-sidebar-group-content`                             |
+| `sidebar-menu`            | `x-h-sidebar-menu`                                      |
+| `sidebar-menu-item`       | `x-h-sidebar-menu-item`                                 |
+| `sidebar-menu-button`     | `x-h-sidebar-menu-button`                               |
+| `sidebar-menu-sub-button` | `x-h-sidebar-menu-button` inside `x-h-sidebar-menu-sub` |
+| `sidebar-menu-nav`        | `x-h-sidebar-menu-nav`                                  |
+| `sidebar-menu-sub-nav`    | `x-h-sidebar-menu-nav` inside `x-h-sidebar-menu-sub`    |
+| `sidebar-menu-action`     | `x-h-sidebar-menu-action`                               |
+| `sidebar-menu-badge`      | `x-h-sidebar-menu-badge`                                |
+| `sidebar-menu-skeleton`   | `x-h-sidebar-menu-skeleton`                             |
+| `sidebar-separator`       | `x-h-sidebar-separator`                                 |
+| `sidebar-menu-sub`        | `x-h-sidebar-menu-sub`                                  |
+| `sidebar-footer`          | `x-h-sidebar-footer`                                    |
+
 ## Accessibility
 
 A `x-h-sidebar-menu-nav` marked `data-active="true"` also gets `aria-current="page"`, so the destination the user is on is announced and not only coloured. The attribute is followed as it changes, which is what a bound `:data-active` needs. A plain `x-h-sidebar-menu-button` never touches `aria-current`, since an active button may mark a selected filter, a menu/popover trigger or anything else that is not the current page. Its `aria-current` is left entirely to you, both the value and whether it appears at all.

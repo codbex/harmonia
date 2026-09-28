@@ -62,6 +62,22 @@ Place inside the step indicator to show a "Step X of Y" label. It is only visibl
 
 Place inside the step indicator to show a thin progress bar that fills to the active step over the total. It is only visible when the indicator is collapsed and needs no attributes.
 
+### Data Slots
+
+| Slot                                | Element                                            |
+| ----------------------------------- | -------------------------------------------------- |
+| `step-indicator`                    | `x-h-step-indicator`                               |
+| `step-indicator-item`               | `x-h-step-indicator-item`                          |
+| `step-indicator-trigger`            | `x-h-step-indicator-trigger`                       |
+| `step-indicator-marker`             | `x-h-step-indicator-marker`                        |
+| `step-indicator-content`            | `x-h-step-indicator-content`                       |
+| `step-indicator-title`              | `x-h-step-indicator-title`                         |
+| `step-indicator-description`        | `x-h-step-indicator-description`                   |
+| `step-indicator-separator`          | `x-h-step-indicator-separator`                     |
+| `step-indicator-counter`            | `x-h-step-indicator-counter`                       |
+| `step-indicator-progress`           | `x-h-step-indicator-progress`                      |
+| `step-indicator-progress-indicator` | Indicator created by `x-h-step-indicator-progress` |
+
 ## Examples
 
 ### Default

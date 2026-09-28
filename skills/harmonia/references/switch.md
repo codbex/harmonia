@@ -20,6 +20,12 @@ Use switches for settings or options that can be turned on or off instantly, esp
 | --------- | ------------------ | -------- | ---------------------------- |
 | data-size | `default`<br/>`sm` | false    | Sets the size of the switch. |
 
+### Data Slots
+
+| Slot     | Element      |
+| -------- | ------------ |
+| `switch` | `x-h-switch` |
+
 ## Examples
 
 ```html

@@ -50,6 +50,16 @@ x-h-list-header
 | aria-current  | string  | false    | Marks the row as the current one, which highlights it. Use `page` in a list of destinations, or bind a boolean elsewhere.              |
 | aria-disabled | boolean | false    | Marks the control unavailable while keeping it focusable and announced. On a button, `disabled` removes it from the tab order instead. |
 
+### Data Slots
+
+| Slot               | Element                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| `list`             | `x-h-list`                                                                           |
+| `list-item`        | `x-h-list-item`                                                                      |
+| `list-item-button` | `x-h-list-item-button`                                                               |
+| `list-secondary`   | `x-h-list-secondary`, unless another component on the same element sets its own slot |
+| `list-header`      | `x-h-list-header`                                                                    |
+
 ## Examples
 
 <LiveExample data-exclude="generator">

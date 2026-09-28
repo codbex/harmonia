@@ -20,6 +20,12 @@ x-h-switch
 | --------- | ------------------ | -------- | ---------------------------- |
 | data-size | `default`<br/>`sm` | false    | Sets the size of the switch. |
 
+### Data Slots
+
+| Slot     | Element      |
+| -------- | ------------ |
+| `switch` | `x-h-switch` |
+
 ## Examples
 
 <LiveExample>

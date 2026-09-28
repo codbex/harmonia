@@ -38,6 +38,17 @@ Use pagination for tables, card grids, lists, or other content-heavy interfaces 
 | previous | Used when the link will lead to the previous page instead of a specific one. |
 | next     | Used when the link will lead to the next page instead of a specific one.     |
 
+### Data Slots
+
+| Slot                    | Element                     |
+| ----------------------- | --------------------------- |
+| `pagination`            | `x-h-pagination`            |
+| `pagination-content`    | `x-h-pagination-content`    |
+| `pagination-item`       | `x-h-pagination-item`       |
+| `pagination-link`       | `x-h-pagination-link`       |
+| `pagination-link-label` | `x-h-pagination-link-label` |
+| `pagination-ellipsis`   | `x-h-pagination-ellipsis`   |
+
 ## Examples
 
 ```html

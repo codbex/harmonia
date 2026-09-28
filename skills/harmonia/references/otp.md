@@ -58,6 +58,16 @@ Events are dispatched on the inner input, except `complete` which is dispatched 
 
 By default this control shows native-constraint errors only after the user attempts to submit the form, since the inner input is never edited directly. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` on the inner input always shows the error immediately. See Fieldset for details.
 
+### Data Slots
+
+| Slot            | Element                                  |
+| --------------- | ---------------------------------------- |
+| `otp`           | `x-h-otp`                                |
+| `otp-input`     | The native input inside `x-h-otp`        |
+| `otp-group`     | `x-h-otp-group`                          |
+| `otp-cell`      | Character box created by `x-h-otp-group` |
+| `otp-separator` | `x-h-otp-separator`                      |
+
 ## Keyboard Handling
 
 - `0-9` (and letters when alphanumeric) - Fill the focused cell and move to the next one.

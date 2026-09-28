@@ -28,6 +28,12 @@ Use the text directive to apply consistent typographic styles to any element wit
 | xs          | Extra small text                                                                                                             |
 | muted       | Applies a muted style to the element. Can be used on a label.                                                                |
 
+### Data Slots
+
+| Slot   | Element    |
+| ------ | ---------- |
+| `text` | `x-h-text` |
+
 ## Examples
 
 ```html

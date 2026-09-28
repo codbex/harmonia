@@ -15,6 +15,14 @@ Use tooltips to clarify controls, explain icons, or provide contextual hints. Ke
 - `x-h-tooltip`
 - `x-h-tooltip-trigger`
 
+## API
+
+### Data Slots
+
+| Slot      | Element       |
+| --------- | ------------- |
+| `tooltip` | `x-h-tooltip` |
+
 ## Keyboard Handling
 
 The tooltip is shown when the trigger is hovered or receives focus, so keyboard users reach it by tabbing to the trigger. Moving focus away (or the pointer leaving) hides it again.

@@ -258,11 +258,7 @@ export default function (Alpine) {
       if (el.hasAttribute('data-size')) {
         setSize(el.getAttribute('data-size'));
       } else {
-        if (['date-picker-trigger', 'time-picker-trigger'].includes(el.getAttribute('data-slot'))) {
-          setSize('icon-sm');
-        } else {
-          setSize();
-        }
+        setSize();
       }
     }
 
@@ -297,17 +293,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-button-group', (el, { original }, { cleanup }) => {
-    el.classList.add(
-      'flex',
-      'w-fit',
-      'items-stretch',
-      '[&>*]:focus-visible:z-10',
-      '[&>*]:focus-visible:relative',
-      "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit",
-      '[&>input]:flex-1',
-      'has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-control',
-      'data-[borderless=true]:[&>*]:rounded-none'
-    );
+    el.classList.add('flex', 'w-fit', 'items-stretch', '[&>*]:focus-visible:z-10', '[&>*]:focus-visible:relative', '[&>input]:flex-1', 'data-[borderless=true]:[&>*]:rounded-none');
 
     // An x-model turns the group into a single choice, where the bound value is
     // the value of the selected button. Alpine initializes x-model ahead of its

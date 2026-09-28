@@ -46,9 +46,10 @@ x-h-include
 
 ### Events
 
-| Event             | Bubbles | Detail    | Description                                                                                                    |
-| ----------------- | ------- | --------- | -------------------------------------------------------------------------------------------------------------- |
-| `fragment:loaded` | No      | `{ url }` | Dispatched on the element after the fragment is inserted into the DOM and Alpine has initialized the new tree. |
+| Event             | Bubbles | Detail                   | Description                                                                                                                                                                                                                                           |
+| ----------------- | ------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fragment:loaded` | No      | `{ url }`                | Dispatched on the element after the fragment is inserted into the DOM and Alpine has initialized the new tree.                                                                                                                                        |
+| `fragment:error`  | No      | `{ url, status, error }` | Dispatched on the element when the response has a non-200 HTTP status code, when the script inside the fragment fails to execute or when the script link inisde the fragment does not resolve. `status` is can be `undefined` for the last two cases. |
 
 ## Examples
 
@@ -74,5 +75,22 @@ Or in plain JavaScript:
 const el = document.querySelector('#my-include');
 el.addEventListener('fragment:loaded', (e) => {
   console.log('Loaded:', e.detail.url);
+});
+```
+
+### Handling a failed load
+
+`fragment:error` does not bubble either, so attach the listener directly to the element. `$event.detail.status` holds the HTTP status code, or `undefined` when the request itself failed:
+
+```html
+<div x-h-include="'/harmonia/components/include/missing.html'" @fragment:error="onFragmentError($event.detail.url, $event.detail.status)"></div>
+```
+
+Or in plain JavaScript:
+
+```js
+const el = document.querySelector('#my-include');
+el.addEventListener('fragment:error', (e) => {
+  console.log('Failed:', e.detail.url, e.detail.status);
 });
 ```

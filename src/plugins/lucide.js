@@ -153,6 +153,9 @@ export default function (Alpine) {
       return String(name);
     };
 
+    // A non-svg placeholder hands this on to the rendered svg (copyAttributes).
+    el.setAttribute('data-slot', 'icon');
+
     if (el.tagName.toLowerCase() === 'svg') {
       let lucideClasses = [];
       let rendered = null;

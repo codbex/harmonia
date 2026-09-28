@@ -39,6 +39,11 @@ describe('h-calendar', () => {
     expect(el.classList.contains('overflow-hidden')).toBe(true);
   });
 
+  it('sets data-slot="calendar"', () => {
+    mount();
+    expect(el.getAttribute('data-slot')).toBe('calendar');
+  });
+
   it('renders toolbar with Previous, Today, and Next buttons', () => {
     mount();
     const labels = Array.from(el.querySelectorAll('button')).map((b) => b.getAttribute('aria-label') || b.textContent.trim());
@@ -914,6 +919,11 @@ describe('h-calendar-inline', () => {
   it('sets tabindex="-1"', () => {
     mountDirective(calendarPlugin, 'h-calendar-inline', el, { original: 'h-calendar-inline', expression: '' });
     expect(el.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('sets data-slot="calendar-inline"', () => {
+    mountDirective(calendarPlugin, 'h-calendar-inline', el, { original: 'h-calendar-inline', expression: '' });
+    expect(el.getAttribute('data-slot')).toBe('calendar-inline');
   });
 
   it('does not add absolute or hidden classes', () => {

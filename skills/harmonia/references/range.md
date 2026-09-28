@@ -52,6 +52,16 @@ Bind a number with `x-model`, or an array of two numbers (`[low, high]`) in dual
 
 By default this control shows native-constraint errors only after the user attempts to submit the form, since the inner input is never edited directly. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` on the inner input always shows the error immediately. See Fieldset for details.
 
+### Data Slots
+
+| Slot            | Element                              |
+| --------------- | ------------------------------------ |
+| `range`         | `x-h-range`                          |
+| `range-input`   | The range input inside `x-h-range`   |
+| `range-fill`    | Fill created by `x-h-range`          |
+| `range-handle`  | Handle created by `x-h-range`        |
+| `range-tooltip` | Value tooltip created by `x-h-range` |
+
 ## Keyboard Handling
 
 Each handle is focusable and supports:

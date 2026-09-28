@@ -49,6 +49,13 @@ The `x-h-popover` element must be placed somewhere AFTER the `x-h-popover-trigge
 | --------- | ------------------------------------------- |
 | no-scroll | Used when the popover body must not scroll. |
 
+### Data Slots
+
+| Slot              | Element                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `popover`         | `x-h-popover`                                                                         |
+| `popover-trigger` | `x-h-popover-trigger`, unless another component on the same element sets its own slot |
+
 ## Examples
 
 ### Popover

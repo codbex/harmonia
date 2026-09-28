@@ -181,6 +181,11 @@ describe('h-datetime-picker-popup', () => {
     return { wrapper, popupEl, input, seg, disp, dayCell, key, type, ctx, changeEvents, getModel: () => modelValue };
   }
 
+  it('sets data-slot="datetime-picker-calendar"', () => {
+    const { popupEl } = createPopup();
+    expect(popupEl.getAttribute('data-slot')).toBe('datetime-picker-calendar');
+  });
+
   it('forwards data-aria-* labels onto the calendar nav buttons', () => {
     const { popupEl } = createPopup({
       attrs: {

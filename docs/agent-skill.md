@@ -59,8 +59,8 @@ Either way, point your agent at `skills/harmonia/SKILL.md` to start.
 
 ## What's included
 
-- **`SKILL.md`** - the router. It describes the library, the conventions that apply to every component, and an index that links to each reference.
-- **`references/<name>.md`** - one focused reference per component, chart, layout, utility and plugin. Each lists the directive set, its attributes, whether it binds with `x-model`, and working examples to adapt.
+- **`SKILL.md`** - the router. It describes the library, the conventions that apply to every component (including `data-slot` as the stable way to select elements), and an index that links to each reference.
+- **`references/<name>.md`** - one focused reference per component, chart, layout, utility and plugin. Each lists the directive set, its attributes, whether it binds with `x-model`, its `data-slot` values, and working examples to adapt.
 - **`references/utility-classes.md`** - the curated list of utility classes Harmonia actually ships, so an agent does not assume a Tailwind class that is not bundled.
 - **`llms.txt`** - a compact index of the whole skill.
 

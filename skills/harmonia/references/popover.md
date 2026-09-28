@@ -47,6 +47,13 @@ Use popovers to show contextual help, tips, or additional options related to a s
 | --------- | ------------------------------------------- |
 | no-scroll | Used when the popover body must not scroll. |
 
+### Data Slots
+
+| Slot              | Element                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `popover`         | `x-h-popover`                                                                         |
+| `popover-trigger` | `x-h-popover-trigger`, unless another component on the same element sets its own slot |
+
 ## Examples
 
 ### Popover

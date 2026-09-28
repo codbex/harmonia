@@ -47,6 +47,11 @@ describe('x-h-lucide directive', () => {
     expect(parent.querySelector('svg')).toBeTruthy();
   });
 
+  it('sets data-slot="icon" on the rendered svg', () => {
+    const { parent } = setup({ 'data-lucide': 'home' });
+    expect(parent.querySelector('svg').getAttribute('data-slot')).toBe('icon');
+  });
+
   it('reads the icon name from the expression when there is no data-lucide', () => {
     const { parent } = setup({}, { expression: 'iconName', evaluate: () => 'home' });
     expect(parent.querySelector('svg')).toBeTruthy();
@@ -133,6 +138,11 @@ describe('x-h-lucide directive', () => {
       const { parent, el } = setup({ 'data-lucide': 'home' }, { tag: 'svg' });
       expect(parent.querySelector('svg')).toBe(el);
       expect(el.querySelector('path')).toBeTruthy();
+    });
+
+    it('sets data-slot="icon"', () => {
+      const { el } = setup({ 'data-lucide': 'home' }, { tag: 'svg' });
+      expect(el.getAttribute('data-slot')).toBe('icon');
     });
 
     it('merges the lucide classes with the author classes', () => {

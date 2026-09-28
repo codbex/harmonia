@@ -189,6 +189,17 @@ describe('h-sidebar-content', () => {
   });
 });
 
+describe('h-sidebar-group-content', () => {
+  it('sets data-slot="sidebar-group-content"', () => {
+    const group = document.createElement('div');
+    group._h_sidebar_group = { collapsable: false, state: reactive({ collapsed: false }) };
+    const el = document.createElement('div');
+    group.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-group-content', el, { original: 'x-h-sidebar-group-content' });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-group-content');
+  });
+});
+
 describe('h-sidebar-group', () => {
   it('applies base classes and data-slot', () => {
     const el = document.createElement('div');
@@ -424,6 +435,12 @@ describe('h-sidebar-group-action', () => {
 });
 
 describe('h-sidebar-menu-action', () => {
+  it('sets data-slot="sidebar-menu-action"', () => {
+    const el = document.createElement('button');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-action', el, { modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-action');
+  });
+
   it('uses a touch-safe autohide (pointer-fine, not md)', () => {
     const el = document.createElement('button');
     mountDirective(sidebarPlugin, 'h-sidebar-menu-action', el, { modifiers: ['autohide'] });
@@ -711,6 +728,25 @@ describe('h-sidebar-separator', () => {
     expect(el.classList.contains('h-px')).toBe(true);
     expect(el.getAttribute('role')).toBe('none');
     expect(el.getAttribute('data-slot')).toBe('sidebar-separator');
+  });
+});
+
+describe('h-sidebar-menu-skeleton', () => {
+  it('sets data-slot="sidebar-menu-skeleton"', () => {
+    const el = document.createElement('div');
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-skeleton', el, { modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-skeleton');
+  });
+});
+
+describe('h-sidebar-menu-sub', () => {
+  it('sets data-slot="sidebar-menu-sub"', () => {
+    const item = document.createElement('li');
+    item._h_sidebar_menu_item = { isSub: false, collapsable: false, state: reactive({ collapsed: false }) };
+    const el = document.createElement('ul');
+    item.appendChild(el);
+    mountDirective(sidebarPlugin, 'h-sidebar-menu-sub', el, { original: 'x-h-sidebar-menu-sub' });
+    expect(el.getAttribute('data-slot')).toBe('sidebar-menu-sub');
   });
 });
 

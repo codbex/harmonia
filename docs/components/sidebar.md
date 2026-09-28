@@ -132,6 +132,32 @@ x-h-sidebar-footer
 | --------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
 | --sidebar-width | 16rem   | Width of the sidebar when not collapsed. Set it on the sidebar itself, an ancestor, or in a theme CSS file. |
 
+### Data Slots
+
+| Slot                      | Element                                                 |
+| ------------------------- | ------------------------------------------------------- |
+| `sidebar`                 | `x-h-sidebar`                                           |
+| `sidebar-header`          | `x-h-sidebar-header`                                    |
+| `sidebar-header-item`     | `x-h-sidebar-header-item`                               |
+| `sidebar-content`         | `x-h-sidebar-content`                                   |
+| `sidebar-group`           | `x-h-sidebar-group`                                     |
+| `sidebar-group-label`     | `x-h-sidebar-group-label`                               |
+| `sidebar-group-actions`   | `x-h-sidebar-group-actions`                             |
+| `sidebar-group-action`    | `x-h-sidebar-group-action`                              |
+| `sidebar-group-content`   | `x-h-sidebar-group-content`                             |
+| `sidebar-menu`            | `x-h-sidebar-menu`                                      |
+| `sidebar-menu-item`       | `x-h-sidebar-menu-item`                                 |
+| `sidebar-menu-button`     | `x-h-sidebar-menu-button`                               |
+| `sidebar-menu-sub-button` | `x-h-sidebar-menu-button` inside `x-h-sidebar-menu-sub` |
+| `sidebar-menu-nav`        | `x-h-sidebar-menu-nav`                                  |
+| `sidebar-menu-sub-nav`    | `x-h-sidebar-menu-nav` inside `x-h-sidebar-menu-sub`    |
+| `sidebar-menu-action`     | `x-h-sidebar-menu-action`                               |
+| `sidebar-menu-badge`      | `x-h-sidebar-menu-badge`                                |
+| `sidebar-menu-skeleton`   | `x-h-sidebar-menu-skeleton`                             |
+| `sidebar-separator`       | `x-h-sidebar-separator`                                 |
+| `sidebar-menu-sub`        | `x-h-sidebar-menu-sub`                                  |
+| `sidebar-footer`          | `x-h-sidebar-footer`                                    |
+
 ## Examples
 
 ### Sidebar header and footer

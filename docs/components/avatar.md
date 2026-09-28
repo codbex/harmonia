@@ -29,6 +29,14 @@ x-h-avatar-fallback
 | data-variant | `primary`<br />`positive`<br />`negative`<br />`warning`<br />`information`                                                                          | false    | Semantic color state                                                                                                      |
 | data-color   | `white`<br />`black`<br />`red`<br />`orange`<br />`yellow`<br />`green`<br />`teal`<br />`blue`<br />`indigo`<br />`purple`<br />`pink`<br />`gray` | false    | Fills the avatar solid with a [standard palette color](/utility-classes/color#standard-colors). Overrides `data-variant`. |
 
+### Data Slots
+
+| Slot              | Element               |
+| ----------------- | --------------------- |
+| `avatar`          | `x-h-avatar`          |
+| `avatar-image`    | `x-h-avatar-image`    |
+| `avatar-fallback` | `x-h-avatar-fallback` |
+
 ## Examples
 
 ### Default

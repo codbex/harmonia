@@ -137,6 +137,24 @@ A selected sub-slot tile uses a composite key of the form `'YYYY-MM-DDTHH:MM#ind
 | slot-click | Dispatched on every slot click, including deselection and when no `x-model` is bound (in which case `selected` is always `false`). `event.detail.slot` contains `date`, `start`, `end`, `available`, `selected` (the new state after the click), `description`, `note`, `color`, `status`, `key`, and `tileIndex` (a number for a tile, `null` for a plain slot).                                                                                                                                                                 |
 | slot-drop  | Dispatched when a dragged slot is dropped at a new position (requires the `draggable` option, dropping at the unchanged position dispatches nothing). `event.detail.slot` carries the same fields as `slot-click`'s detail without `selected`. `event.detail.date` is the target day as `YYYY-MM-DD` and `event.detail.index` the slot's new position within that day's slot list. `event.detail.slots` is a new array with the move applied, built without mutating yours - assign it to your `slots` config to accept the move. |
 
+### Data Slots
+
+| Slot                      | Element                                                     |
+| ------------------------- | ----------------------------------------------------------- |
+| `slot-picker`             | `x-h-slot-picker`                                           |
+| `slot-picker-header`      | Day header created by `x-h-slot-picker`                     |
+| `slot-picker-cell`        | Selectable slot created by `x-h-slot-picker`                |
+| `slot-picker-slot`        | Slot with sub-slot tiles, created by `x-h-slot-picker`      |
+| `slot-picker-slot-header` | Header of a slot with sub-slot tiles                        |
+| `slot-picker-tile`        | Selectable sub-slot tile created by `x-h-slot-picker`       |
+| `slot-picker-time`        | Time of a slot or tile                                      |
+| `slot-picker-desc`        | Description of a slot or tile                               |
+| `slot-picker-note`        | Note of a slot or tile                                      |
+| `slot-picker-now`         | Current time indicator created by `x-h-slot-picker`         |
+| `slot-picker-ghost`       | Copy of a slot that follows the pointer while it is dragged |
+| `slot-picker-title`       | `x-h-slot-picker-title`                                     |
+| `slot-picker-calendar`    | Date popover created by `x-h-slot-picker-calendar`          |
+
 ## Accessibility
 
 The picker is a labeled `group` (default name "Time slot picker", overridable with an `aria-label` attribute). Each day is its own `group` labeled by its header, so the day is announced for the slots inside it. When selection is enabled (an `x-model` is bound), available slots are toggle buttons with a day + time `aria-label` and `aria-pressed` reflecting selection. Without an `x-model` they are plain action buttons with the same label and no `aria-pressed`. Unavailable slots are marked `aria-disabled` with a hidden "Not available" note. Selecting a slot updates the cell in place rather than re-rendering, so keyboard focus stays on the chosen slot. The `x-h-slot-picker-calendar` control opens a `dialog` containing a fully keyboard-navigable date grid, and the dialog takes its accessible name from that control. The default month and year navigation buttons labels can be overridden using the `data-aria-*` attributes. The month and year in the grid's header are toggle buttons that open a month grid or a year list in place of the days, as described in the Inline Calendar behavior. While one is shown, `Tab` cycles between the header buttons and that grid, and `Esc` returns to the days. Picking a date moves the visible range and returns focus to the control, and `Esc` closes it. While the dialog is open, `Tab` and `Shift+Tab` stay inside it. Because you supply the toolbar, give each control button an accessible name (an `aria-label` on an icon-only button, or visible text). Drag-and-drop moving is a pointer-only convenience, and every slot stays reachable through its button and `slot-click`.

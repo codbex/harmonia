@@ -13,6 +13,12 @@ describe('h-split', () => {
     expect(el.classList.contains('min-h-0')).toBe(true);
   });
 
+  it('sets data-slot="split"', () => {
+    const el = document.createElement('div');
+    mountDirective(splitPlugin, 'h-split', el, {});
+    expect(el.getAttribute('data-slot')).toBe('split');
+  });
+
   it('initializes _h_split state on element', () => {
     const el = document.createElement('div');
     mountDirective(splitPlugin, 'h-split', el, {});

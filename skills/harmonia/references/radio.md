@@ -12,6 +12,14 @@ Use radio buttons when users must choose only one option from a group. All optio
 
 - `x-h-radio`
 
+## API
+
+### Data Slots
+
+| Slot    | Element     |
+| ------- | ----------- |
+| `radio` | `x-h-radio` |
+
 ## Examples
 
 ```html

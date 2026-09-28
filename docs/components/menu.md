@@ -103,6 +103,19 @@ The `x-h-menu` element must be placed somewhere AFTER the `x-h-menu-trigger` and
 
 Bind a boolean with `x-model` on `x-h-menu-checkbox-item`. On a set of `x-h-menu-radio-item`s, bind the same variable on every item, and it holds the value of the selected one. `x-model`'s event modifiers (`.lazy`, `.change`, `.blur`, `.enter`) are not supported and log an error, the model always updates immediately.
 
+### Data Slots
+
+| Slot                  | Element                   |
+| --------------------- | ------------------------- |
+| `menu`                | `x-h-menu`                |
+| `menu-item`           | `x-h-menu-item`           |
+| `menu-sub`            | `x-h-menu-sub`            |
+| `menu-item-secondary` | `x-h-menu-item-secondary` |
+| `menu-separator`      | `x-h-menu-separator`      |
+| `menu-label`          | `x-h-menu-label`          |
+| `menu-checkbox-item`  | `x-h-menu-checkbox-item`  |
+| `menu-radio-item`     | `x-h-menu-radio-item`     |
+
 ## Examples
 
 ### Dropdown

@@ -84,6 +84,14 @@ describe('h-tile (selectable label)', () => {
     expect(el.classList.contains('has-[input:disabled]:cursor-not-allowed')).toBe(true);
   });
 
+  it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {
+    const el = document.createElement('label');
+    mountDirective(tilePlugin, 'h-tile', el);
+    expect(el.classList.contains('has-[input:user-invalid]:border-negative')).toBe(true);
+    expect(el.classList.contains('[[data-validate=immediate]_&:has(input:invalid)]:border-negative')).toBe(true);
+    expect(el.classList.contains('has-[input:invalid]:border-negative')).toBe(false);
+  });
+
   it('forces the outline look on a label', () => {
     const el = document.createElement('label');
     mountDirective(tilePlugin, 'h-tile', el);

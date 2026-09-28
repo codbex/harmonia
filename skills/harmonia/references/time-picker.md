@@ -90,6 +90,15 @@ Example:
 
 By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See Fieldset for details.
 
+### Data Slots
+
+| Slot                | Element                 |
+| ------------------- | ----------------------- |
+| `time-picker`       | `x-h-time-picker`       |
+| `cell-input-time`   | `x-h-time-picker.table` |
+| `time-picker-input` | `x-h-time-picker-input` |
+| `time-picker-popup` | `x-h-time-picker-popup` |
+
 ## Keyboard Handling
 
 The user can use the following keyboard shortcuts in order to navigate through the time picker:
