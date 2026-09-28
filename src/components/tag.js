@@ -18,9 +18,8 @@ export default function (Alpine) {
       'font-medium',
       'select-none',
       "[&_svg:not([class*='size-'])]:size-3",
-      '[[data-slot=tooltip-content]_&]:bg-background/20',
-      '[[data-slot=tooltip-content]_&]:text-background',
-      'dark:[[data-slot=tooltip-content]_&]:bg-background/10'
+      '[[data-slot=tooltip]_&]:bg-background/20',
+      '[[data-slot=tooltip]_&]:text-background'
     );
     el.setAttribute('data-slot', 'tag');
   });

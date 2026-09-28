@@ -33,6 +33,15 @@ x-h-alert-actions
 | --------------- | ------------------------------------------------------ |
 | <s>floating</s> | Deprecated. Will be removed in the next major version. |
 
+### Data Slots
+
+| Slot                | Element                 |
+| ------------------- | ----------------------- |
+| `alert`             | `x-h-alert`             |
+| `alert-title`       | `x-h-alert-title`       |
+| `alert-description` | `x-h-alert-description` |
+| `alert-actions`     | `x-h-alert-actions`     |
+
 ## Examples
 
 ### Alert with icon, title and actions

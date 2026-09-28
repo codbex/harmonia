@@ -42,4 +42,16 @@ describe('h-radio', () => {
     expect(radioCss).toMatch(/::before\s*{[^}]*bg-primary/);
     expect(radioCss).toMatch(/::before\s*{[^}]*rounded-full/);
   });
+
+  it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {
+    const el = document.createElement('span');
+    mountDirective(radioPlugin, 'h-radio', el);
+    expect(el.classList.contains('has-[input:user-invalid]:border-negative')).toBe(true);
+    expect(el.classList.contains('[[data-validate=immediate]_&:has(input:invalid)]:border-negative')).toBe(true);
+    expect(el.classList.contains('has-[input:invalid]:border-negative')).toBe(false);
+    // The dot is colored in radio.css and must follow the same gate.
+    const radioCss = readFileSync('src/styles/radio.css', 'utf8');
+    expect(radioCss).toContain('[data-validate="immediate"] [data-slot="radio"]:has(input:invalid)::before');
+    expect(radioCss).not.toMatch(/^\[data-slot="radio"\]:has\(input:invalid\)/m);
+  });
 });

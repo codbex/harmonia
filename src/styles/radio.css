@@ -4,7 +4,7 @@
 [data-slot="radio"]::before {
   @apply pointer-events-none block size-full rounded-full border-3 border-transparent bg-primary bg-clip-padding;
 }
-[data-slot="radio"]:has(input:invalid)::before,
+[data-validate="immediate"] [data-slot="radio"]:has(input:invalid)::before,
 [data-slot="radio"]:has(input:user-invalid)::before,
 [data-slot="radio"]:has(input[aria-invalid="true"])::before {
   @apply bg-negative;

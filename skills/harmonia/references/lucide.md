@@ -50,6 +50,12 @@ How the placeholder is rendered depends on its tag:
 - An `<svg x-h-lucide>` placeholder is rendered **in place**: the icon's shapes are inserted into the element, Lucide's identifying classes are merged with yours, and Lucide's default attributes are applied only where you have not set that attribute yourself. Because the element is never replaced, Alpine directives on it (`x-show`, `:class`, `x-transition`, `@click`, ...) keep working. On this form `data-lucide` is also reactive: change it (for example with a bound `:data-lucide`) and the new icon is rendered in place.
 - Any other tag (typically `<i>`, matching Lucide's own markup) is **replaced** by the rendered `<svg>`. The placeholder's attributes (`class`, `role`, `aria-*`, sizing, etc.) are copied onto it. Alpine bindings cannot survive that replacement, so combining another directive with `x-h-lucide` on such a placeholder throws an error. The one exception is `:data-lucide`, whose bound name is consumed once when the icon renders. Use the `<svg>` form for anything reactive.
 
+### Data Slots
+
+| Slot   | Element                                             |
+| ------ | --------------------------------------------------- |
+| `icon` | `x-h-lucide`, and the rendered svg that replaces it |
+
 ## Examples
 
 ### Drop-in for existing markup

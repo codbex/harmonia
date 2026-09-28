@@ -264,6 +264,7 @@ export default function (Alpine) {
     };
 
     el.classList.add('flex', 'flex-1', 'min-w-0', 'min-h-0', 'data-[orientation=horizontal]:flex-row', 'data-[orientation=vertical]:flex-col');
+    el.setAttribute('data-slot', 'split');
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {

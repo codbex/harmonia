@@ -15,6 +15,7 @@ export default function (Alpine) {
     rejectModelEventModifiers(Alpine, el, original);
     el.classList.add('gap-2', 'p-2', 'overflow-visible', 'data-[invalid=true]:inset-ring-negative/20', 'dark:data-[invalid=true]:inset-ring-negative/40');
     el.setAttribute('tabindex', '-1');
+    el.setAttribute('data-slot', 'calendar-inline');
 
     const widget = createCalendarWidget('x-h-calendar-inline', el, {
       Alpine,
@@ -75,6 +76,7 @@ export default function (Alpine) {
     let suppressClick = false;
 
     el.classList.add('flex', 'flex-col', 'h-full', 'overflow-hidden');
+    el.setAttribute('data-slot', 'calendar');
     el.setAttribute('role', 'group');
     if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', 'Calendar');
 

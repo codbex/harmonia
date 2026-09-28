@@ -23,6 +23,13 @@ Use progress bars to indicate the advancement of tasks such as uploads, download
 | data-loading | boolean                                                      | false    | Shows an indefinite loading animation instead of the value.            |
 | data-variant | `positive`<br />`negative`<br />`warning`<br />`information` | false    | Semantic color state                                                   |
 
+### Data Slots
+
+| Slot                 | Element                             |
+| -------------------- | ----------------------------------- |
+| `progress`           | `x-h-progress`                      |
+| `progress-indicator` | Indicator created by `x-h-progress` |
+
 ## Accessibility
 
 The component gives the element the `progressbar` role and keeps `aria-valuenow` in step with the value, alongside the fixed `aria-valuemin="0"` and `aria-valuemax="100"` that make a percentage meaningful. The value is clamped to that range and rounded, so it is announced the same way it is drawn.

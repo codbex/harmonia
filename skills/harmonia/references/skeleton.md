@@ -30,6 +30,12 @@ A skeleton is only a background, a pulse and a radius, so it can also be written
 | card     | Takes the shape of a card or tile.                      |
 | avatar   | Takes the shape of an avatar component.                 |
 
+### Data Slots
+
+| Slot       | Element        |
+| ---------- | -------------- |
+| `skeleton` | `x-h-skeleton` |
+
 ## Examples
 
 ### Using the component

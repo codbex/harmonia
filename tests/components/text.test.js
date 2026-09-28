@@ -3,6 +3,12 @@ import textPlugin from '../../src/components/text.js';
 import { mountDirective } from '../test-utils.js';
 
 describe('h-text', () => {
+  it('sets data-slot="text"', () => {
+    const el = document.createElement('p');
+    mountDirective(textPlugin, 'h-text', el, { modifiers: [] });
+    expect(el.getAttribute('data-slot')).toBe('text');
+  });
+
   it('applies h1 classes for h1 modifier', () => {
     const el = document.createElement('h1');
     mountDirective(textPlugin, 'h-text', el, { modifiers: ['h1'] });

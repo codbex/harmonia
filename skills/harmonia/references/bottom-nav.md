@@ -75,6 +75,16 @@ Override it on any ancestor to change the height, on `:root` for the whole appli
 <div style="--bottom-nav-height: 4.5rem">...</div>
 ```
 
+### Data Slots
+
+| Slot               | Element                |
+| ------------------ | ---------------------- |
+| `bottom-nav`       | `x-h-bottom-nav`       |
+| `bottom-nav-list`  | `x-h-bottom-nav-list`  |
+| `bottom-nav-item`  | `x-h-bottom-nav-item`  |
+| `bottom-nav-link`  | `x-h-bottom-nav-link`  |
+| `bottom-nav-label` | `x-h-bottom-nav-label` |
+
 ## Accessibility
 
 The bar is a navigation landmark, so it needs an `aria-label` to tell it apart from the other landmarks on a page. The component throws when one is missing.

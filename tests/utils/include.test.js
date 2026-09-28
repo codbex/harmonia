@@ -141,4 +141,35 @@ describe('h-include directive', () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
     consoleErrorSpy.mockRestore();
   });
+
+  it('dispatches fragment:error with the status on a non-200 response', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const response = { status: 404, text: async () => 'Not Found' };
+    global.fetch = vi.fn().mockResolvedValue(response);
+    const onError = vi.fn();
+    const onLoaded = vi.fn();
+    el.addEventListener('fragment:error', onError);
+    el.addEventListener('fragment:loaded', onLoaded);
+    invokeDirective('/missing.html');
+    await vi.waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
+    const event = onError.mock.calls[0][0];
+    expect(event.bubbles).toBe(false);
+    expect(event.detail).toEqual({ url: '/missing.html', status: 404, error: response });
+    expect(onLoaded).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(response);
+  });
+
+  it('dispatches fragment:error without a status when fetch rejects', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const error = new Error('Network error');
+    global.fetch = vi.fn().mockRejectedValue(error);
+    const onError = vi.fn();
+    el.addEventListener('fragment:error', onError);
+    invokeDirective('/bad.html');
+    await vi.waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
+    const { detail } = onError.mock.calls[0][0];
+    expect(detail.url).toBe('/bad.html');
+    expect(detail.status).toBeUndefined();
+    expect(detail.error).toBe(error);
+  });
 });

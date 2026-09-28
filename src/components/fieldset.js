@@ -1,6 +1,6 @@
 export default function (Alpine) {
   Alpine.directive('h-fieldset', (el) => {
-    el.classList.add('vbox', 'gap-6', 'has-[>[data-slot=checkbox-group]]:gap-3', 'has-[>[data-slot=radio-group]]:gap-3');
+    el.classList.add('vbox', 'gap-6');
     el.setAttribute('data-slot', 'fieldset');
   });
 
@@ -10,7 +10,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-field-group', (el) => {
-    el.classList.add('group/field-group', '@container/field-group', 'vbox', 'w-full', 'gap-4', 'data-[slot=checkbox-group]:gap-3', '[&>[data-slot=field-group]]:gap-4');
+    el.classList.add('group/field-group', '@container/field-group', 'vbox', 'w-full', 'gap-4', 'data-[type=checkbox]:gap-3', 'data-[type=radio]:gap-3', '[&>[data-slot=field-group]]:gap-4');
     el.setAttribute('data-slot', 'field-group');
   });
 

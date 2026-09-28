@@ -32,7 +32,7 @@ export default function (Alpine) {
         'border-border',
         'has-[input:checked]:bg-secondary/20',
         'has-[input:checked]:border-primary',
-        'has-[input:invalid]:border-negative',
+        '[[data-validate=immediate]_&:has(input:invalid)]:border-negative',
         'has-[input:user-invalid]:border-negative',
         'has-[input[aria-invalid="true"]]:border-negative',
         'has-[input:focus-visible]:ring-primary/50',

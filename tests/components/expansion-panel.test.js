@@ -168,6 +168,11 @@ describe('h-exp-panel-trigger', () => {
     expect(triggerEl.classList.contains('bg-object-header')).toBe(true);
   });
 
+  it('sets data-slot="exp-panel-header" on the heading', () => {
+    mountDirective(expansionPanelPlugin, 'h-exp-panel-trigger', triggerEl, { original: 'h-exp-panel-trigger', expression: '' });
+    expect(triggerEl.getAttribute('data-slot')).toBe('exp-panel-header');
+  });
+
   it('creates a button with data-slot="exp-panel-trigger"', () => {
     mountDirective(expansionPanelPlugin, 'h-exp-panel-trigger', triggerEl, { original: 'h-exp-panel-trigger', expression: '' });
     const btn = triggerEl.querySelector('[data-slot="exp-panel-trigger"]');

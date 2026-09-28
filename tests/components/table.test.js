@@ -14,7 +14,7 @@ describe('h-table-container', () => {
     expect(el.classList.contains('relative')).toBe(true);
     expect(el.classList.contains('w-full')).toBe(true);
     expect(el.classList.contains('overflow-x-auto')).toBe(true);
-    expect(el.getAttribute('data-slot')).toBe('table');
+    expect(el.getAttribute('data-slot')).toBe('table-container');
   });
 
   it('applies scroll classes for scroll modifier', () => {

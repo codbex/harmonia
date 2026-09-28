@@ -75,6 +75,12 @@ Harmonia includes several built-in icons. Instead of using the `data-link` attri
 | star-hollow    | Hollow/outline star icon               |
 | star-half      | Half-filled star icon                  |
 
+### Data Slots
+
+| Slot   | Element    |
+| ------ | ---------- |
+| `icon` | `x-h-icon` |
+
 ## Examples
 
 ### SVG image

@@ -119,6 +119,20 @@ One of `aria-label` or `aria-labelledby` is required.
 | -------- | --------------------------------------------------------------- |
 | end      | Tab action will be placed at the end of the tab list container. |
 
+### Data Slots
+
+| Slot               | Element                |
+| ------------------ | ---------------------- |
+| `tabs`             | `x-h-tabs`             |
+| `tab-bar`          | `x-h-tab-bar`          |
+| `tab-list`         | `x-h-tab-list`         |
+| `tab-item`         | `x-h-tab-item`         |
+| `tab`              | `x-h-tab`              |
+| `tab-action`       | `x-h-tab-action`       |
+| `tab-list-actions` | `x-h-tab-list-actions` |
+| `tab-list-action`  | `x-h-tab-list-action`  |
+| `tabs-content`     | `x-h-tabs-content`     |
+
 ## Examples
 
 ### Sizes

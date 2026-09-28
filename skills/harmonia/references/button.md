@@ -29,6 +29,12 @@ Use buttons to represent clear, intentional actions. Select the appropriate sema
 | -------- | --------------------------------------------------- |
 | addon    | Used when the button is inside an input group addon |
 
+### Data Slots
+
+| Slot     | Element                                                                      |
+| -------- | ---------------------------------------------------------------------------- |
+| `button` | `x-h-button`, unless another component on the same element sets its own slot |
+
 ## Examples
 
 ### Default

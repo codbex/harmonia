@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>checkbox fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <form id="policy-form" class="flex max-w-3xs flex-col gap-2" onsubmit="event.preventDefault()">
+      <div x-h-field data-orientation="horizontal">
+        <span id="policy" x-h-checkbox>
+          <input type="checkbox" id="policy-input" required />
+        </span>
+        <label x-h-label for="policy-input">I agree to the policy</label>
+      </div>
+      <button id="policy-submit" type="submit">Register</button>
+    </form>
+
+    <form id="immediate-form" class="mt-4 flex max-w-3xs flex-col gap-2" data-validate="immediate" onsubmit="event.preventDefault()">
+      <div x-h-field data-orientation="horizontal">
+        <span id="immediate" x-h-checkbox>
+          <input type="checkbox" id="immediate-input" required />
+        </span>
+        <label x-h-label for="immediate-input">Validated on load</label>
+      </div>
+    </form>
+  </body>
+</html>

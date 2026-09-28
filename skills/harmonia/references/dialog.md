@@ -47,6 +47,19 @@ A border cab be added on the header and footer by using the `border-t` and a `bo
 | -------- | ------------------------------------------------------------------------------------------------------------------------- |
 | flush    | Removes the padding from the body, so that content like a calendar, a table or a list spans the full width of the dialog. |
 
+### Data Slots
+
+| Slot                 | Element                  |
+| -------------------- | ------------------------ |
+| `dialog-overlay`     | `x-h-dialog-overlay`     |
+| `dialog`             | `x-h-dialog`             |
+| `dialog-header`      | `x-h-dialog-header`      |
+| `dialog-title`       | `x-h-dialog-title`       |
+| `dialog-close`       | `x-h-dialog-close`       |
+| `dialog-description` | `x-h-dialog-description` |
+| `dialog-content`     | `x-h-dialog-content`     |
+| `dialog-footer`      | `x-h-dialog-footer`      |
+
 ## Accessibility
 
 When a dialog opens, focus moves to a control inside it. The focused element is either the first input/textarea, the first button or a control marked with `autofocus`. Fields that a component keeps behind its own interface are passed over, so an OTP in a dialog starts on its first cell rather than on the native field it hides.

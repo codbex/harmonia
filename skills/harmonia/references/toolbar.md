@@ -41,6 +41,18 @@ Use toolbars to organize controls that operate on the current content or view, s
 | -------- | -------------------- |
 | footer   | Footer-style toolbar |
 
+### Data Slots
+
+| Slot                | Element                 |
+| ------------------- | ----------------------- |
+| `toolbar`           | `x-h-toolbar`           |
+| `toolbar-image`     | `x-h-toolbar-image`     |
+| `toolbar-title`     | `x-h-toolbar-title`     |
+| `toolbar-subtitle`  | `x-h-toolbar-subtitle`  |
+| `toolbar-branding`  | `x-h-toolbar-branding`  |
+| `toolbar-spacer`    | `x-h-toolbar-spacer`    |
+| `toolbar-separator` | `x-h-toolbar-separator` |
+
 ## Binding
 
 Binds through Alpine `x-model`. See the Examples for the expected value shape.

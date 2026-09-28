@@ -15,6 +15,13 @@ x-h-tag
 x-h-tag-group
 ```
 
+### Data Slots
+
+| Slot        | Element         |
+| ----------- | --------------- |
+| `tag`       | `x-h-tag`       |
+| `tag-group` | `x-h-tag-group` |
+
 ## Examples
 
 <LiveExample data-class="flex items-center gap-3 justify-center">

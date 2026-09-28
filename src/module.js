@@ -1,5 +1,6 @@
 import accordion from './components/accordion';
 import alert from './components/alert';
+import audioPlayer from './components/audio-player';
 import avatar from './components/avatar';
 import backdrop from './components/backdrop';
 import badge from './components/badge';
@@ -80,6 +81,7 @@ import template from './utils/template';
 export {
   accordion as Accordion,
   alert as Alert,
+  audioPlayer as AudioPlayer,
   avatar as Avatar,
   backdrop as Backdrop,
   badge as Badge,
@@ -152,6 +154,7 @@ export {
 export const registerComponents = (registerPlugin) => {
   registerPlugin(accordion);
   registerPlugin(alert);
+  registerPlugin(audioPlayer);
   registerPlugin(avatar);
   registerPlugin(backdrop);
   registerPlugin(badge);

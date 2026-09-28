@@ -68,6 +68,11 @@ describe('h-slot-picker', () => {
     expect(el.classList.contains('relative')).toBe(true);
   });
 
+  it('sets data-slot="slot-picker"', () => {
+    mount();
+    expect(el.getAttribute('data-slot')).toBe('slot-picker');
+  });
+
   it('exposes a navigation API on el._h_slot_picker and renders no toolbar of its own', () => {
     mount('config', withConfig({ date: FIXED_DATE }));
     const api = el._h_slot_picker;

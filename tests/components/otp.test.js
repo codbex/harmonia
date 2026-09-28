@@ -96,6 +96,12 @@ describe('otp', () => {
     expect(input.classList.contains('hidden')).toBe(false);
   });
 
+  it('sets data-slot on the root and the native input', () => {
+    const { el, input } = build();
+    expect(el.getAttribute('data-slot')).toBe('otp');
+    expect(input.getAttribute('data-slot')).toBe('otp-input');
+  });
+
   it('uses a default accessible name unless one is provided', () => {
     const { el } = build();
     expect(el.getAttribute('role')).toBe('group');

@@ -13,6 +13,8 @@ export default defineConfig({
     search: {
       provider: 'local',
     },
+    // List H3 headings too, so every example under "## Examples" shows up in "On this page".
+    outline: { level: [2, 3] },
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo/harmonia-circle.svg',
     nav: [
@@ -31,6 +33,7 @@ export default defineConfig({
           { text: 'Theme Customization', link: '/custom-themes' },
           { text: 'Theme Generator', link: '/theming/generator.html', target: '_self' },
           { text: 'Extend Utility Classes', link: '/extend-utility-classes' },
+          { text: 'Testing', link: '/testing' },
           { text: 'Coding Agents', link: '/agent-skill' },
           { text: 'Versioning and Support', link: '/versioning-and-support' },
         ],
@@ -41,6 +44,7 @@ export default defineConfig({
         items: [
           { text: 'Accordion', link: '/components/accordion' },
           { text: 'Alert', link: '/components/alert' },
+          { text: 'Audio Player', link: '/components/audio-player' },
           { text: 'Avatar', link: '/components/avatar' },
           { text: 'Backdrop', link: '/components/backdrop' },
           { text: 'Badge', link: '/components/badge' },
@@ -196,10 +200,16 @@ export default defineConfig({
     ['script', { src: `${basePath}lib/node_modules/lucide/dist/umd/lucide.min.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/i18next/dist/umd/i18next.min.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}js/i18next-demo.js`, type: 'text/javascript' }],
-    ['script', { src: `${basePath}lib/node_modules/alpinejs/dist/cdn.min.js`, defer: true, type: 'text/javascript' }],
+    // Harmonia must come BEFORE Alpine. In `vitepress dev` these tags are inserted at
+    // runtime and execute in this order (`defer` has no effect on an inserted script),
+    // so Alpine listed first would start and dispatch `alpine:init` before Harmonia
+    // registers its plugins, and a live example initialized in that window would keep
+    // its `x-h-*` attributes inert. The built site inlines the tags, where the deferred
+    // Alpine runs after these synchronous scripts regardless of their position.
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-lucide.js`, type: 'text/javascript' }],
     ['script', { src: `${basePath}lib/node_modules/@codbex/harmonia/dist/harmonia-i18next.js`, type: 'text/javascript' }],
+    ['script', { src: `${basePath}lib/node_modules/alpinejs/dist/cdn.min.js`, defer: true, type: 'text/javascript' }],
     // harmonia.css is intentionally NOT loaded globally: its full ruleset clashes with
     // VitePress's theme. Each live example loads it inside its own shadow root instead
     // (docs/public/js/component-container.js), and that same file lifts Tailwind's

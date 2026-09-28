@@ -41,6 +41,16 @@ Suitable for embedded interactive content such as iframes and side panel/utility
 | --------- | ------ | -------- | ---------------------------------------------------------------------------------- |
 | `self`    | string | true     | Sets the title of the item. Expects a string literal or a reference to a variable. |
 
+### Data Slots
+
+| Slot                | Element                                   |
+| ------------------- | ----------------------------------------- |
+| `exp-panel`         | `x-h-exp-panel`                           |
+| `exp-panel-item`    | `x-h-exp-panel-item`                      |
+| `exp-panel-header`  | `x-h-exp-panel-trigger`                   |
+| `exp-panel-trigger` | Button created by `x-h-exp-panel-trigger` |
+| `exp-panel-content` | `x-h-exp-panel-content`                   |
+
 ## Examples
 
 ### Default Panels

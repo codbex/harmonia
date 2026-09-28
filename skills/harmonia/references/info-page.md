@@ -29,6 +29,17 @@ Use Info Pages to guide users, explain empty states, or report errors in a visua
 | -------- | --------------------------------------------------------------------------- |
 | icon     | Applies styles for inline svg icons. Do not activate when using an img tag. |
 
+### Data Slots
+
+| Slot                    | Element                     |
+| ----------------------- | --------------------------- |
+| `info-page`             | `x-h-info-page`             |
+| `info-page-header`      | `x-h-info-page-header`      |
+| `info-page-media`       | `x-h-info-page-media`       |
+| `info-page-title`       | `x-h-info-page-title`       |
+| `info-page-description` | `x-h-info-page-description` |
+| `info-page-content`     | `x-h-info-page-content`     |
+
 ## Examples
 
 ### With inline SVG icon

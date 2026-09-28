@@ -24,6 +24,13 @@ Use textareas for capturing extended input, such as comments, descriptions, or m
 
 By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See Fieldset for details.
 
+### Data Slots
+
+| Slot                  | Element              |
+| --------------------- | -------------------- |
+| `textarea`            | `x-h-textarea`       |
+| `input-group-control` | `x-h-textarea.group` |
+
 ## Examples
 
 ```html

@@ -58,6 +58,14 @@ x-h-chip-close
 ::: info \* One of `aria-label` or `aria-labelledby` is required.
 :::
 
+### Data Slots
+
+| Slot          | Element           |
+| ------------- | ----------------- |
+| `chip`        | `x-h-chip`        |
+| `chip-button` | `x-h-chip-button` |
+| `chip-close`  | `x-h-chip-close`  |
+
 ## Examples
 
 ### Text-Only

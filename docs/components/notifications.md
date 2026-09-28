@@ -194,6 +194,19 @@ if (this.$notifications.native.getPermission() === 'granted') {
 | -------- | ------- | -------- | ---------------------------------------------------- |
 | floating | boolean | false    | Adds rounded corners and shadow to the notification. |
 
+### Data Slots
+
+| Slot                       | Element                                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------------------- |
+| `notification-overlay`     | `x-h-notification-overlay`                                                               |
+| `notification-list`        | `x-h-notification-list`                                                                  |
+| `notification`             | `x-h-notification`                                                                       |
+| `notification-media`       | `x-h-notification-media`                                                                 |
+| `notification-title`       | `x-h-notification-title`                                                                 |
+| `notification-description` | `x-h-notification-description`                                                           |
+| `notification-actions`     | `x-h-notification-actions`                                                               |
+| `notification-close`       | `x-h-notification-close`, unless another component on the same element sets its own slot |
+
 ## Examples
 
 ### Notification Overlay

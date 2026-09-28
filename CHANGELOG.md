@@ -1,5 +1,53 @@
 # Changelog
 
+## v3.5.0
+
+A release that adds an Audio Player component and makes `data-slot` a documented part of the public API. The player wraps a native `<audio>` element with a play/pause button, a seek slider and a time readout, the same controls the Bubble's audio attachment renders, in three variants. Every component marks its element, and the key elements it creates, with a `data-slot` value that tests, scripts and stylesheets can rely on, and every component page now lists these values. A new Testing page describes them. Thirteen elements that had no slot gain one, and two values are renamed to follow the naming scheme. It also adds a `data-type` attribute that tightens the spacing of a field group holding only checkboxes or only radios and a `fragment:error` event that the include directive dispatches when a fragment fails to load, and fixes the colors of a tag inside a tooltip, a Bubble audio player that showed no duration when its recording had loaded before Alpine started, and a required checkbox and a selectable tile that were marked invalid on page load before any submit. There are no breaking changes.
+
+### Audio Player
+
+- **New component.** A standalone player for a single audio source. The Bubble's audio attachment shares its mechanics.
+
+### Data Slots
+
+- **New: `data-slot` values are public API.** Every component page lists them in a new Data Slots table, and the new Testing page covers selecting and styling elements by them.
+- **New: slots on elements that had none.** - Calendar, Inline Calendar, Split, Text, Pagination link label, Accordion, Expansion Panel trigger, Select's native input, Bubble's audio element and Lucide icons.
+- **New: slots on the parts of the Bubble audio player.** `bubble-audio-play`, `bubble-audio-seek` and `bubble-audio-time` on the button, the seek slider and the time readout that `x-h-bubble-audio` creates.
+- **Fixed: `x-h-input-group-text` sets `input-group-text`.** It set `label` before.
+- **Fixed: `x-h-table-container` sets `table-container`.** It shared `table` before.
+
+### Bubble
+
+- **Fixed: the audio player showed `0:00 / 0:00` and could not seek when the recording's metadata had loaded before Alpine started.** An `<audio>` in the initial HTML often has its duration before a deferred Alpine runs the directive, which then waited for a `loadedmetadata` event that had already fired. The player now reads the duration and position from the element on initialization.
+
+### Checkbox
+
+- **Fixed: a required checkbox was filled red on page load.** It now shows the error after the user has toggled it or a submit was attempted, like the other controls, or immediately under a `data-validate="immediate"` ancestor. Setting `aria-invalid="true"` still shows it at once.
+
+### Fieldset
+
+- **New: `data-type` attribute on `x-h-field-group`.** With `checkbox` or `radio` it tightens the spacing between the fields of a group that contains only checkboxes or only radios.
+
+### Include
+
+- **New: `fragment:error` event.** `x-h-include` dispatches it on the element when the fragment could not be loaded. `event.detail` carries the `url`, the HTTP `status` of a non-200 response, and the `error`. It does not bubble, like `fragment:loaded`.
+
+### Tag
+
+- **Fixed: a tag inside a tooltip kept its regular colors.** It now uses a translucent background and the tooltip's text color.
+
+### Tile
+
+- **Fixed: a selectable tile wrapping a required checkbox or radio had a red border on page load.** It now follows the same validation timing as the control it wraps.
+
+### Dependencies
+
+- Bumped the required Alpine.js version to `^3.17.4`. Nothing in Harmonia changes with it, and Alpine has no breaking changes between 3.16.3 and 3.17.4.
+
+### Coding agents
+
+- **New: `data-slot` in the agent-readable skill.** Its conventions tell an agent to select Harmonia elements by `data-slot`, and every reference lists the component's values.
+
 ## v3.4.0
 
 A release that makes a distant month or year quicker to reach in the calendar shared by the Date Picker, Date Time Picker, Inline Calendar and Slot Picker components. The month and the year in its header become buttons that swap the days for a grid of months or years. The Date Picker can also show its display format as the input's placeholder, buttons gain a disabled state that stays focusable, and labels can mark a required field with a red asterisk. It also fixes `min` and `max` dates that landed a day early in time zones west of UTC, could not be removed once set and did not stop the calendar's navigation, month and year buttons that skipped or repeated a month near its end, picker popovers that let `Tab` walk out of them, toggle buttons that did not announce their pressed state, a required select that showed its error at the wrong time, and selects, menus and time pickers whose `Escape` propagated outside them. There are no breaking changes.

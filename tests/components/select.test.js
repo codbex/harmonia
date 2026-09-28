@@ -285,6 +285,15 @@ describe('h-select-input', () => {
     });
   });
 
+  it('sets data-slot="select-native-input" on the native input', () => {
+    const { input } = createSelectInputSetup();
+    mountDirective(selectPlugin, 'h-select-input', input, {
+      original: 'x-h-select-input',
+      expression: '',
+    });
+    expect(input.getAttribute('data-slot')).toBe('select-native-input');
+  });
+
   it('creates a fake trigger with data-slot=select-input', () => {
     const { input, selectEl } = createSelectInputSetup();
     mountDirective(selectPlugin, 'h-select-input', input, {

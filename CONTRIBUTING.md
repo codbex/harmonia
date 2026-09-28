@@ -136,6 +136,17 @@ Use `rem` rather than `px` everywhere, including inline styles set from JavaScri
 
 If you add, rename, or remove a CSS variable in `globals.css`, mirror the change in the `colorVars`, `shadowVars`, `fontVars`, or `othersVars` arrays in [docs/public/theming/generator.html](docs/public/theming/generator.html). A variable missing from those arrays falls through to a generic text input in the theme generator, so a colour would lose its colour picker.
 
+### Data slots
+
+`data-slot` is public API. Developers select Harmonia elements by it in their tests, scripts and stylesheets (see the [Testing](https://codbex.github.io/harmonia/testing) page), so renaming or removing a value is a breaking change and waits for the next major.
+
+- Every component directive sets `data-slot` on its element. The value is the directive name without the `h-` prefix, so `x-h-card-title` sets `card-title`.
+- An element the directive creates is named `<component>-<part>`, for example `accordion-trigger` or `split-gutter`. Give it a slot too, at least when a test would want to find it.
+- A directive that only adds behaviour to an element another component owns, such as `x-h-menu-trigger` on an `x-h-button`, sets no slot. Neither do utilities such as `x-h-focus`. Both kinds are listed in `NO_DATA_SLOT` in [tests/docs-structure.test.js](tests/docs-structure.test.js).
+- Choose a new value so it cannot accidentally match an existing substring selector, such as `[data-slot|=table]`, `|=tag`, `|=sidebar-menu`, `|=cell-input` or `[data-slot$="label"]`, or the `a:not([data-slot])` link rule.
+- Styling from slots inside the library is encouraged.
+- Assert the slot in the component's unit test, and list every value the component produces in the `### Data Slots` table of its documentation page.
+
 ### Cleaning up
 
 Every event listener a directive adds must be removed in its `cleanup` callback. No listener may outlive the directive that created it. A directive/component must always clean up after itself.
@@ -199,7 +210,7 @@ One-paragraph description
 ## Examples
 ```
 
-Under `## API Reference`, sections appear in a fixed order - `### Component attribute(s)`, then optionally `### Attributes`, `### Modifiers`, `### Model`, `### Events`, `### Configuration` and `### CSS Variables`. Example variants are `###` subsections under the single `## Examples` heading.
+Under `## API Reference`, sections appear in a fixed order - `### Component attribute(s)`, then optionally `### Attributes`, `### Modifiers`, `### Model`, `### Events`, `### Configuration`, `### CSS Variables` and `### Data Slots`. The Data Slots table (`| Slot | Element |`) lists every `data-slot` value the page's directives produce, and it is required on every page that documents a directive with a slot of its own. Example variants are `###` subsections under the single `## Examples` heading.
 
 Run `npx vitest run tests/docs-structure.test.js` after editing documentation.
 
@@ -252,7 +263,7 @@ npx vitest run tests/components/accordion.test.js   # a single file
 npx vitest run -t "name substring"                  # a single test
 ```
 
-Unit tests use Vitest with happy-dom, and mirror the layout of `src/` under `tests/`. Directives are tested **without** real Alpine. [tests/test-utils.js](tests/test-utils.js) provides `mountDirective`, `createMockAlpine`, and `createMockContext` (a small reactivity stand-in). Mount your directive with those helpers and assert on the DOM, the attributes, and the state it produces.
+Unit tests use Vitest with happy-dom, and mirror the layout of `src/` under `tests/`. Directives are tested **without** real Alpine. [tests/test-utils.js](tests/test-utils.js) provides `mountDirective`, `createMockAlpine`, and `createMockContext` (a small reactivity stand-in). Mount your directive with those helpers and assert on the DOM, the attributes, and the state it produces. Every component test asserts the `data-slot` its directive sets.
 
 ### End-to-end tests
 
@@ -267,6 +278,8 @@ npm run test:e2e:ui                          # interactive UI
 The build step is required, because the suite exercises the built `dist/` output rather than `src/`. Fixtures are plain HTML files served over http, never opened from disk.
 
 Write an end-to-end test only for what a unit test cannot see - real Alpine initialisation and `x-model` use, real CSS and layout, floating element positioning, focus and tab order, CSS transitions, pointer dragging, and theme switching. Everything else stays as a unit test.
+
+Locate Harmonia elements by their `data-slot`, scoped to an id in the fixture, rather than by class names or DOM position.
 
 Locally the suite runs on Chromium. CI adds Firefox and WebKit. You can try all three locally with `CI=1 npx playwright test`, but the results are only really dependable inside the CI containers. WebKit in particular usually fails on an up-to-date machine, because Playwright's bundled WebKit build is not compatible with the newer system libraries shipped with most Linux distributions. A WebKit failure on your own machine is therefore not, by itself, evidence of a bug.
 

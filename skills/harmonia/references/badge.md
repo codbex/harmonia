@@ -41,6 +41,13 @@ Use badges to highlight status, category, or state in a compact and non-intrusiv
 | ------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | --badge-ring | `var(--background)` | The color of the gap ring around the indicator. Set it inline on the indicator when the badge sits on a surface the automatic detection does not cover. |
 
+### Data Slots
+
+| Slot              | Element               |
+| ----------------- | --------------------- |
+| `badge`           | `x-h-badge`           |
+| `badge-indicator` | `x-h-badge-indicator` |
+
 ## Examples
 
 ### Badge

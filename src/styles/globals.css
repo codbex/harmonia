@@ -345,7 +345,8 @@ body {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  a:not([data-slot]) {
+  a:not([data-slot]),
+  a[data-slot="text"] {
     @apply text-primary underline-offset-4 hover:underline;
   }
 }

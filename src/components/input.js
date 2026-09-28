@@ -174,7 +174,7 @@ export default function (Alpine) {
 
   Alpine.directive('h-input-group-text', (el) => {
     el.classList.add('text-muted-foreground', 'flex', 'items-center', 'gap-2', 'text-sm', 'svg-defaults');
-    el.setAttribute('data-slot', 'label');
+    el.setAttribute('data-slot', 'input-group-text');
   });
 
   Alpine.directive('h-input-number', (el, { original, modifiers }, { cleanup }) => {

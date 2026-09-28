@@ -52,6 +52,14 @@ Use Split when you need a side-by-side layout for content, such as editors, dash
 | data-min          | number<br />`percentage` | false    | Minimum size of the panel, in pixels or as percentage.                   |
 | data-max          | number<br />`percentage` | false    | Maximum size of the panel, in pixels or as percentage.                   |
 
+### Data Slots
+
+| Slot           | Element                             |
+| -------------- | ----------------------------------- |
+| `split`        | `x-h-split`                         |
+| `split-panel`  | `x-h-split-panel`                   |
+| `split-gutter` | Gutter created by `x-h-split-panel` |
+
 ## Keyboard Handling
 
 Each gutter is a tab stop. When a gutter is focused:

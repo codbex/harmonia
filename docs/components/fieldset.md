@@ -23,6 +23,12 @@ x-h-field-error
 
 ### Attributes
 
+#### x-h-field-group
+
+| Attribute | Values                 | Required | Description                                                                                 |
+| --------- | ---------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| data-type | `checkbox`<br/>`radio` | false    | Tightens the spacing between fields when the group contains only checkboxes or only radios. |
+
 #### x-h-field
 
 | Attribute        | Values                                       | Required | Description                                                               |
@@ -62,6 +68,19 @@ By default a control with a failing native constraint (for example a `required` 
 ```
 
 This affects only native constraint validation (`:invalid`). Setting `aria-invalid="true"` yourself always shows the invalid styling immediately, in either mode - use it for programmatic or server-side errors.
+
+### Data Slots
+
+| Slot                | Element                 |
+| ------------------- | ----------------------- |
+| `fieldset`          | `x-h-fieldset`          |
+| `legend`            | `x-h-legend`            |
+| `field-group`       | `x-h-field-group`       |
+| `field`             | `x-h-field`             |
+| `field-content`     | `x-h-field-content`     |
+| `field-title`       | `x-h-field-title`       |
+| `field-description` | `x-h-field-description` |
+| `field-error`       | `x-h-field-error`       |
 
 ## Examples
 
@@ -335,6 +354,67 @@ In horizontal orientation the label stays beside the input, while the error and 
       <div x-h-field data-disabled="true">
         <label x-h-label for="fullyDisabled">Label Disabled</label>
         <input x-h-input id="fullyDisabled" placeholder="Input inactive" disabled />
+      </div>
+    </div>
+  </fieldset>
+</form>
+```
+
+</LiveExample>
+
+### Checkbox and radio groups
+
+Set `data-type` on a field group that contains only checkboxes or only radios to tighten the spacing between its fields.
+
+<LiveExample>
+
+```html
+<form class="vbox gap-6">
+  <fieldset x-h-fieldset>
+    <legend x-h-legend>Notifications</legend>
+    <p x-h-field-description>Choose how you want to be notified</p>
+    <div x-h-field-group data-type="checkbox">
+      <div x-h-field data-orientation="horizontal">
+        <span x-h-checkbox>
+          <input type="checkbox" id="notifyEmail" checked />
+        </span>
+        <label x-h-label for="notifyEmail" class="font-normal">Email</label>
+      </div>
+      <div x-h-field data-orientation="horizontal">
+        <span x-h-checkbox>
+          <input type="checkbox" id="notifySms" />
+        </span>
+        <label x-h-label for="notifySms" class="font-normal">SMS</label>
+      </div>
+      <div x-h-field data-orientation="horizontal">
+        <span x-h-checkbox>
+          <input type="checkbox" id="notifyPush" checked />
+        </span>
+        <label x-h-label for="notifyPush" class="font-normal">Push notifications</label>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset x-h-fieldset>
+    <legend x-h-legend>Plan</legend>
+    <p x-h-field-description>Pick the plan that fits your team</p>
+    <div x-h-field-group data-type="radio">
+      <div x-h-field data-orientation="horizontal">
+        <span x-h-radio>
+          <input type="radio" name="plan" id="planFree" value="free" checked />
+        </span>
+        <label x-h-label for="planFree" class="font-normal">Free</label>
+      </div>
+      <div x-h-field data-orientation="horizontal">
+        <span x-h-radio>
+          <input type="radio" name="plan" id="planPro" value="pro" />
+        </span>
+        <label x-h-label for="planPro" class="font-normal">Pro</label>
+      </div>
+      <div x-h-field data-orientation="horizontal">
+        <span x-h-radio>
+          <input type="radio" name="plan" id="planTeam" value="team" />
+        </span>
+        <label x-h-label for="planTeam" class="font-normal">Team</label>
       </div>
     </div>
   </fieldset>

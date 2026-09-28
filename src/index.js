@@ -1,5 +1,6 @@
 import accordion from './components/accordion';
 import alert from './components/alert';
+import audioPlayer from './components/audio-player';
 import avatar from './components/avatar';
 import backdrop from './components/backdrop';
 import badge from './components/badge';
@@ -105,6 +106,7 @@ window.Harmonia = {
 function registerPlugins() {
   window.Alpine.plugin(accordion);
   window.Alpine.plugin(alert);
+  window.Alpine.plugin(audioPlayer);
   window.Alpine.plugin(avatar);
   window.Alpine.plugin(backdrop);
   window.Alpine.plugin(badge);

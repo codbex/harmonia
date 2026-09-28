@@ -53,6 +53,16 @@ Use accordions to group related content that doesn’t need to be visible all at
 | -------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------- |
 | default  | string | false    | Accordion items are collapsed by default. If included, the item will be expanded by default. There can be only one default. |
 
+### Data Slots
+
+| Slot                | Element                                   |
+| ------------------- | ----------------------------------------- |
+| `accordion`         | `x-h-accordion`                           |
+| `accordion-item`    | `x-h-accordion-item`                      |
+| `accordion-header`  | `x-h-accordion-trigger`                   |
+| `accordion-trigger` | Button created by `x-h-accordion-trigger` |
+| `accordion-content` | `x-h-accordion-content`                   |
+
 ## Examples
 
 ### Show only one section at a time

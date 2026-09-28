@@ -13,7 +13,7 @@ Full documentation: https://www.codbex.com/harmonia/
 
 ## How to use this skill
 
-Find the component in the index below and open its file under `references/`. Each reference lists the directive set, its attributes, whether it binds with `x-model`, and working examples you can adapt. Load only the reference(s) you need.
+Find the component in the index below and open its file under `references/`. Each reference lists the directive set, its attributes, whether it binds with `x-model`, its `data-slot` values, and working examples you can adapt. Load only the reference(s) you need.
 
 ## Setup
 
@@ -46,6 +46,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 - **Compound components nest.** Many components are a set of directives (root plus children). They must be nested as the reference example shows; the library throws a descriptive error at runtime if a required ancestor is missing.
 - **Modifiers are dot suffixes.** For example `x-h-accordion.single`, `x-h-accordion-item.default`.
 - **Styling is attribute-driven.** Common attributes are `data-size` (for example `sm` / `md`), `data-variant` (for example `primary` / `negative`), and `data-align` for popovers/menus. See each reference for the exact values.
+- **`data-slot` is public API.** Every component sets `data-slot` on its element and on the key elements it creates, and each reference lists the values under "Data Slots". Select Harmonia elements in tests, scripts and CSS with `[data-slot="..."]`, never by Tailwind class, tag name or DOM position, and never set or change `data-slot` on a Harmonia element yourself.
 - **Utility classes are a curated subset, NOT all of Tailwind.** Only the classes compiled into `harmonia.css` exist; an arbitrary Tailwind class that is not shipped (for example `h-80`, `gap-20`, `bg-red-450`) silently does nothing. Before using any utility class, confirm it is in the [Utility classes](references/utility-classes.md) reference, and for a one-off value with no matching class use an inline `style`.
 - **Form controls use `x-model`.** Inputs, selects, checkboxes, radios, ranges, switches, and the date/time pickers bind their value with Alpine `x-model`.
 - **Light and dark modes** are handled automatically.
@@ -59,6 +60,7 @@ Import the CSS (`@codbex/harmonia/dist/harmonia.css`) too. For selective registr
 | ---- | ----------- | --------- |
 | Accordion | Organizes related content into expandable and collapsible sections, allowing users to reveal or hide information as needed while keeping the interface clean and compact. | [accordion](references/accordion.md) |
 | Alert | Communicates important information to the user about a situation or task that requires attention. | [alert](references/alert.md) |
+| Audio Player | An accessible player for a single audio source with a play/pause button, a seek slider and an elapsed/total time readout. | [audio-player](references/audio-player.md) |
 | Avatar | Represents a person, entity, or object using an image, icon, or text, such as a user photo, initials, or symbolic graphic. | [avatar](references/avatar.md) |
 | Backdrop | A full-screen overlay that dims the page and animates its content in and out. | [backdrop](references/backdrop.md) |
 | Badge | Displays a short label used to convey the semantic status of an object. | [badge](references/badge.md) |

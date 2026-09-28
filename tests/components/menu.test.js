@@ -713,6 +713,11 @@ describe('h-menu-sub', () => {
     return { menu, sub, open };
   }
 
+  it('sets data-slot="menu-sub"', () => {
+    const { sub } = createSubSetup();
+    expect(sub.getAttribute('data-slot')).toBe('menu-sub');
+  });
+
   // A disabled subitem is announced as a submenu that cannot be opened, so it
   // keeps aria-haspopup and the tab stop but never expands.
   it('does not open on mouseenter, click or focus when disabled', () => {

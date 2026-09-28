@@ -88,6 +88,19 @@ x-h-tree-indicator
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | tree-item-click | Dispatched on an item when it is activated by click, `Enter` or `Space`. `event.detail` carries `expanded` and `depth`, and it bubbles. |
 
+### Data Slots
+
+| Slot             | Element              |
+| ---------------- | -------------------- |
+| `tree`           | `x-h-tree`           |
+| `subtree`        | `x-h-tree.sub`       |
+| `tree-item`      | `x-h-tree-item`      |
+| `tree-row`       | `x-h-tree-row`       |
+| `tree-label`     | `x-h-tree-label`     |
+| `tree-actions`   | `x-h-tree-actions`   |
+| `tree-action`    | `x-h-tree-action`    |
+| `tree-indicator` | `x-h-tree-indicator` |
+
 ## Examples
 
 ### File browser

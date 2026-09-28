@@ -30,6 +30,12 @@ x-h-skeleton
 | card     | Takes the shape of a card or tile.                      |
 | avatar   | Takes the shape of an avatar component.                 |
 
+### Data Slots
+
+| Slot       | Element        |
+| ---------- | -------------- |
+| `skeleton` | `x-h-skeleton` |
+
 ## Examples
 
 ### Using the component

@@ -28,6 +28,16 @@ Use breadcrumbs on pages that are deeply nested within a site hierarchy. Avoid t
 | data-size     | `sm`<br/>`md`<br/>`default` | false    | Changes the size of the breadcrumb. Only applied when the `outline` variant is set.                                                         |
 | data-overflow | `scroll`<br/>`nowrap`       | false    | `scroll` - enables horizontal scrolling, last item visible on load. `nowrap` - prevents wrapping without scrolling. Wraps items by default. |
 
+### Data Slots
+
+| Slot              | Element               |
+| ----------------- | --------------------- |
+| `breadcrumb`      | `x-h-breadcrumb`      |
+| `breadcrumb-list` | `x-h-breadcrumb-list` |
+| `breadcrumb-item` | `x-h-breadcrumb-item` |
+| `breadcrumb-link` | `x-h-breadcrumb-link` |
+| `breadcrumb-page` | `x-h-breadcrumb-page` |
+
 ## Examples
 
 ```html

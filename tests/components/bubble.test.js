@@ -316,6 +316,11 @@ describe('h-bubble-audio', () => {
     expect(el.hasAttribute('controls')).toBe(false);
   });
 
+  it('sets data-slot="bubble-audio-native" on the native element', () => {
+    mountDirective(bubblePlugin, 'h-bubble-audio', el);
+    expect(el.getAttribute('data-slot')).toBe('bubble-audio-native');
+  });
+
   it('builds a custom player with button, seek slider and time readout', () => {
     mountDirective(bubblePlugin, 'h-bubble-audio', el);
     const p = player();
@@ -327,6 +332,13 @@ describe('h-bubble-audio', () => {
     expect(track.getAttribute('tabindex')).toBe('0');
     expect(track.getAttribute('aria-label')).toBe('Seek');
     expect(p.querySelector('span').textContent).toBe('0:00 / 0:00');
+  });
+
+  it('sets data-slot on the created parts', () => {
+    mountDirective(bubblePlugin, 'h-bubble-audio', el);
+    expect(player().querySelector('button').getAttribute('data-slot')).toBe('bubble-audio-play');
+    expect(player().querySelector('[role="slider"]').getAttribute('data-slot')).toBe('bubble-audio-seek');
+    expect(player().querySelector('span').getAttribute('data-slot')).toBe('bubble-audio-time');
   });
 
   it('logs an error when there is no src or source child', () => {
@@ -390,6 +402,18 @@ describe('h-bubble-audio', () => {
     expect(track.getAttribute('aria-valuenow')).toBe('25');
     expect(track.getAttribute('aria-valuemax')).toBe('100');
     expect(track.getAttribute('aria-valuetext')).toBe('0:25 of 1:40');
+  });
+
+  it('seeds the state from an element whose metadata already loaded', () => {
+    Object.defineProperty(el, 'duration', { configurable: true, get: () => 100 });
+    Object.defineProperty(el, 'readyState', { configurable: true, get: () => 1 });
+    el.currentTime = 25;
+    mountDirective(bubblePlugin, 'h-bubble-audio', el);
+
+    const track = player().querySelector('[role="slider"]');
+    expect(player().querySelector('span').textContent).toBe('0:25 / 1:40');
+    expect(track.getAttribute('aria-valuemax')).toBe('100');
+    expect(track.firstElementChild.style.width).toBe('25%');
   });
 
   it('builds aria-valuetext from data-valuetext-label', () => {

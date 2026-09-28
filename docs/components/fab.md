@@ -39,6 +39,12 @@ x-h-fab
 | data-position       | `bottom-right`<br />`bottom-left`<br />`static`                                                           | false    | Pins the button to a bottom corner of the viewport, 1rem from each edge. `static` applies no positioning, leaving the button in normal flow. Default is `static`.                |
 | data-hide-on-scroll | boolean                                                                                                   | false    | When set to `true`, slides the button out of view while the content scrolls down and brings it back on the first scroll up. It always comes back at the top of the scroll range. |
 
+### Data Slots
+
+| Slot  | Element   |
+| ----- | --------- |
+| `fab` | `x-h-fab` |
+
 ## Examples
 
 ### Default

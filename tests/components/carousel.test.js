@@ -277,6 +277,13 @@ describe('h-carousel-indicators', () => {
     return { el, ctx };
   }
 
+  it('sets data-slot="carousel-indicators"', () => {
+    const { root } = makeRoot();
+    addItem(root);
+    const { el } = mountIndicators(root);
+    expect(el.getAttribute('data-slot')).toBe('carousel-indicators');
+  });
+
   it('builds one dot per slide and marks the active one', () => {
     const { root } = makeRoot();
     addItem(root);

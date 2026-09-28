@@ -28,6 +28,12 @@ x-h-text
 | xs          | Extra small text                                                                                                             |
 | muted       | Applies a muted style to the element. Can be used on a label.                                                                |
 
+### Data Slots
+
+| Slot   | Element    |
+| ------ | ---------- |
+| `text` | `x-h-text` |
+
 ## Examples
 
 <LiveExample data-class="flex flex-col gap-4">

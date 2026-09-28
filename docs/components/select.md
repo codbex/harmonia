@@ -99,6 +99,23 @@ To show a leading icon or image, place an `<svg>` or `<img>` element directly in
 
 By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. For a select, interacting means opening its list and closing it again. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
+### Data Slots
+
+| Slot                  | Element                                      |
+| --------------------- | -------------------------------------------- |
+| `select`              | `x-h-select`                                 |
+| `cell-input-select`   | `x-h-select.table`                           |
+| `select-native-input` | `x-h-select-input`                           |
+| `select-input`        | Trigger button created by `x-h-select-input` |
+| `select-content`      | `x-h-select-content`                         |
+| `select-search`       | `x-h-select-search`                          |
+| `select-search-input` | Search input created by `x-h-select-search`  |
+| `select-list`         | `x-h-select-list`                            |
+| `select-group`        | `x-h-select-group`                           |
+| `select-label`        | `x-h-select-label`                           |
+| `select-option`       | `x-h-select-option`                          |
+| `select-separator`    | `x-h-select-separator`                       |
+
 ## Examples
 
 ### With a label

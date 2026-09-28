@@ -39,6 +39,16 @@ Place `x-h-nav-trigger` items next to a `x-h-menu` to get dropdown navigation. P
 | ----------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
 | data-active | boolean | false    | Marks the link as the current page. Sets `aria-current="page"` and applies active styling. |
 
+### Data Slots
+
+| Slot          | Element           |
+| ------------- | ----------------- |
+| `nav`         | `x-h-nav`         |
+| `nav-list`    | `x-h-nav-list`    |
+| `nav-item`    | `x-h-nav-item`    |
+| `nav-trigger` | `x-h-nav-trigger` |
+| `nav-link`    | `x-h-nav-link`    |
+
 ## Keyboard Handling
 
 Top-level items follow standard Tab navigation. Once a dropdown is open, the full Menu keyboard handling applies:

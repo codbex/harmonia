@@ -56,6 +56,16 @@ x-h-nav-link
 | ----------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
 | data-active | boolean | false    | Marks the link as the current page. Sets `aria-current="page"` and applies active styling. |
 
+### Data Slots
+
+| Slot          | Element           |
+| ------------- | ----------------- |
+| `nav`         | `x-h-nav`         |
+| `nav-list`    | `x-h-nav-list`    |
+| `nav-item`    | `x-h-nav-item`    |
+| `nav-trigger` | `x-h-nav-trigger` |
+| `nav-link`    | `x-h-nav-link`    |
+
 ## Examples
 
 ### Basic

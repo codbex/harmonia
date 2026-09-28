@@ -116,6 +116,15 @@ You can pass a configuration object to the popup as an expression or as a value.
 
 By default this control shows native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` yourself always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
 
+### Data Slots
+
+| Slot                       | Element                       |
+| -------------------------- | ----------------------------- |
+| `datetime-picker`          | `x-h-datetime-picker`         |
+| `cell-input-datetime`      | `x-h-datetime-picker.table`   |
+| `datetime-picker-trigger`  | `x-h-datetime-picker-trigger` |
+| `datetime-picker-calendar` | `x-h-datetime-picker-popup`   |
+
 ## Examples
 
 <LiveExample>

@@ -90,6 +90,14 @@ x-h-split-panel
 | data-min          | number<br />`percentage` | false    | Minimum size of the panel, in pixels or as percentage.                   |
 | data-max          | number<br />`percentage` | false    | Maximum size of the panel, in pixels or as percentage.                   |
 
+### Data Slots
+
+| Slot           | Element                             |
+| -------------- | ----------------------------------- |
+| `split`        | `x-h-split`                         |
+| `split-panel`  | `x-h-split-panel`                   |
+| `split-gutter` | Gutter created by `x-h-split-panel` |
+
 ## Examples
 
 ### Horizontal split (2 panels)

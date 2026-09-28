@@ -31,6 +31,38 @@ function h2Index(headings, text) {
   return headings.filter((h) => h.level === 2).findIndex((h) => h.text === text);
 }
 
+// Directives that set no data-slot of their own, so a page documenting only
+// these needs no "Data Slots" table.
+const NO_DATA_SLOT = new Set([
+  // Add-ons: they sit on an element another component owns, which keeps that
+  // component's slot.
+  'x-h-backdrop-item',
+  'x-h-button-group-radio',
+  'x-h-file-upload',
+  'x-h-menu-trigger',
+  'x-h-slot-picker-calendar',
+  'x-h-slot-picker-next',
+  'x-h-slot-picker-previous',
+  'x-h-slot-picker-today',
+  'x-h-table-group',
+  'x-h-tooltip-trigger',
+  // Behaviour utilities.
+  'x-h-date-format',
+  'x-h-focus',
+  'x-h-include',
+  'x-h-responsive',
+  'x-h-template',
+  'x-h-translate',
+]);
+
+// The H3 headings inside "## API Reference", in order.
+function apiSubsections(headings) {
+  const start = headings.findIndex((h) => h.level === 2 && h.text === 'API Reference');
+  if (start === -1) return [];
+  const end = headings.findIndex((h, i) => i > start && h.level <= 2);
+  return headings.slice(start + 1, end === -1 ? undefined : end).filter((h) => h.level === 3);
+}
+
 describe('documentation page structure', () => {
   it('found doc pages to check', () => {
     expect(docs.length).toBeGreaterThan(50);
@@ -92,6 +124,14 @@ describe('documentation page structure', () => {
     if (doc.requireDirectives) {
       it('documents its directives in a "Component attribute(s)" block', () => {
         expect(parsed.directives.length, 'add a "### Component attribute(s)" block listing the x-h-* directives').toBeGreaterThan(0);
+      });
+    }
+
+    if (parsed.directives.some((d) => !NO_DATA_SLOT.has(d))) {
+      it('lists its data-slot values in a "Data Slots" section, last in API Reference', () => {
+        const subsections = apiSubsections(headings).map((h) => h.text);
+        expect(subsections, 'add a "### Data Slots" table under "## API Reference"').toContain('Data Slots');
+        expect(subsections.at(-1), '"### Data Slots" must be the last section of "## API Reference"').toBe('Data Slots');
       });
     }
   });

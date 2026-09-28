@@ -38,6 +38,13 @@ The `<input type="file">` keeps its native attributes - set `multiple`, `accept`
 
 There is no `x-model`. The native `<input type="file">` is the source of truth: listen to its `change` event and read its `.files`, exactly as you would with a plain file input.
 
+### Data Slots
+
+| Slot                     | Element                                  |
+| ------------------------ | ---------------------------------------- |
+| `input-group-control`    | The file input inside `x-h-file-upload`  |
+| `file-input-placeholder` | Placeholder created by `x-h-file-upload` |
+
 ## Examples
 
 ### Single file

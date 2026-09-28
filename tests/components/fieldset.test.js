@@ -82,6 +82,12 @@ describe('h-field-group', () => {
     mountDirective(fieldsetPlugin, 'h-field-group', el);
     expect(el.getAttribute('data-slot')).toBe('field-group');
   });
+
+  it('tightens the gap for checkbox and radio groups', () => {
+    mountDirective(fieldsetPlugin, 'h-field-group', el);
+    expect(el.classList.contains('data-[type=checkbox]:gap-3')).toBe(true);
+    expect(el.classList.contains('data-[type=radio]:gap-3')).toBe(true);
+  });
 });
 
 describe('h-field', () => {

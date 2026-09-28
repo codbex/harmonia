@@ -39,6 +39,16 @@ Which row is the current one stays yours to manage. Bind `aria-current` on the c
 | aria-current  | string  | false    | Marks the row as the current one, which highlights it. Use `page` in a list of destinations, or bind a boolean elsewhere.              |
 | aria-disabled | boolean | false    | Marks the control unavailable while keeping it focusable and announced. On a button, `disabled` removes it from the tab order instead. |
 
+### Data Slots
+
+| Slot               | Element                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| `list`             | `x-h-list`                                                                           |
+| `list-item`        | `x-h-list-item`                                                                      |
+| `list-item-button` | `x-h-list-item-button`                                                               |
+| `list-secondary`   | `x-h-list-secondary`, unless another component on the same element sets its own slot |
+| `list-header`      | `x-h-list-header`                                                                    |
+
 ## Keyboard Handling
 
 The row control is a native button or link, so it behaves like one and the list adds nothing of its own. Each control is a separate tab stop and the arrow keys are not used. For a group that `Tab` enters once and the arrow keys move through, use the Listbox component instead.

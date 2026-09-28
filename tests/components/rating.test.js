@@ -22,6 +22,12 @@ describe('h-rating', () => {
     expect(alpine._directives['h-rating']).toBeDefined();
   });
 
+  it('sets data-slot="rating"', () => {
+    const el = build();
+    mount(el);
+    expect(el.getAttribute('data-slot')).toBe('rating');
+  });
+
   it('renders 5 stars by default and honors data-max', () => {
     const def = build();
     mount(def);

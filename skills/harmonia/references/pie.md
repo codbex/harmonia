@@ -66,6 +66,20 @@ Each event's `detail` is:
 
 Clicking or tapping a data point pins its tooltip open (useful on touchscreens, where there is no hover). The pinned tooltip stays until another point is clicked or a press lands elsewhere.
 
+### Data Slots
+
+| Slot                  | Element                                   |
+| --------------------- | ----------------------------------------- |
+| `chart`               | `x-h-chart-pie`                           |
+| `chart-svg`           | The chart drawing                         |
+| `chart-pie`           | A slice                                   |
+| `chart-label`         | A value label                             |
+| `chart-legend`        | The legend                                |
+| `chart-legend-swatch` | A legend color swatch                     |
+| `chart-tooltip`       | The hover tooltip                         |
+| `chart-table`         | The data table for assistive technologies |
+| `chart-empty`         | The message shown when there is no data   |
+
 ## Examples
 
 ### Basic

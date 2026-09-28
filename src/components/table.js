@@ -19,7 +19,7 @@ export default function (Alpine) {
     } else {
       el.classList.add('relative', 'w-full', 'overflow-x-auto');
     }
-    el.setAttribute('data-slot', 'table');
+    el.setAttribute('data-slot', 'table-container');
 
     if (el.getAttribute('data-border') === 'true') {
       el.classList.add('border', 'rounded-md');

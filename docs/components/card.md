@@ -46,6 +46,18 @@ x-h-card-footer
 | -------- | -------------------------------------------------------------------------------------------------------------------------- |
 | flush    | Removes the padding from the content, so that content like a table, a list or a calendar spans the full width of the card. |
 
+### Data Slots
+
+| Slot               | Element                |
+| ------------------ | ---------------------- |
+| `card`             | `x-h-card`             |
+| `card-header`      | `x-h-card-header`      |
+| `card-title`       | `x-h-card-title`       |
+| `card-description` | `x-h-card-description` |
+| `card-action`      | `x-h-card-action`      |
+| `card-content`     | `x-h-card-content`     |
+| `card-footer`      | `x-h-card-footer`      |
+
 ## Examples
 
 ### Action Card

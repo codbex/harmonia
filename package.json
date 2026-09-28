@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -58,9 +58,9 @@
     "docs:preview": "vitepress preview docs"
   },
   "docDependencies": {
-    "alpinejs": "^3.16.3",
+    "alpinejs": "^3.17.4",
     "i18next": "^26.3.4",
-    "lucide": "^1.20.0",
+    "lucide": "^1.48.0",
     "culori": "^4.0.2",
     "@fontsource/open-sans": "^5.2.7",
     "pinecone-router": "^7.6.0"
@@ -70,7 +70,7 @@
     "@playwright/test": "^1.62.1",
     "@tailwindcss/cli": "^4.3.3",
     "@vitest/coverage-v8": "^4.1.9",
-    "alpinejs": "^3.16.3",
+    "alpinejs": "^3.17.4",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
@@ -85,7 +85,7 @@
     "vitest": "^4.1.9"
   },
   "peerDependencies": {
-    "alpinejs": "^3.16.3"
+    "alpinejs": "^3.17.4"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0"

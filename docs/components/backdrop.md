@@ -25,6 +25,12 @@ x-h-backdrop
 x-h-backdrop-item
 ```
 
+### Data Slots
+
+| Slot       | Element        |
+| ---------- | -------------- |
+| `backdrop` | `x-h-backdrop` |
+
 ## Examples
 
 A command palette where a button opens the backdrop and the scrim closes it. The results come from a [Combobox](/components/combobox), so typing filters them, the arrow keys move through them, and picking one closes the palette. `Enter` before any arrow key runs the first match.

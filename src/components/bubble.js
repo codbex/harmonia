@@ -1,5 +1,4 @@
-import { createSvg, Pause, Play, setSvgContent } from '../common/icons';
-import { formatDuration } from '../common/time';
+import { setupAudioPlayer } from '../common/audio-player';
 
 export const bubbleVariants = {
   primary: ['bg-primary', 'text-primary-foreground', 'fill-primary-foreground'],
@@ -116,186 +115,15 @@ export default function (Alpine) {
     if (!el.hasAttribute('src') && !el.querySelector('source')) {
       console.error(`${original}: Bubble audio must have a "src" attribute or a <source> child`, el);
     }
-    // The custom UI is the interactive surface; keep the native element hidden
-    // in the DOM as the playback engine, and load metadata so the duration is
-    // known before playback starts.
-    el.removeAttribute('controls');
-    el.classList.add('hidden');
-    if (!el.hasAttribute('preload')) {
-      el.preload = 'metadata';
-    }
-
-    const SEEK_STEP = 5;
-    const state = Alpine.reactive({ playing: false, current: 0, duration: 0 });
-
+    // The player mechanics are shared with the Audio Player component.
+    // See 'src/common/audio-player.js'.
     const player = document.createElement('div');
     player.setAttribute('data-slot', 'bubble-audio');
-    player.classList.add('hbox', 'items-center', 'gap-3', 'w-full', 'min-w-3xs', 'max-w-full', 'rounded-lg', 'bg-current/10', 'p-2');
-
-    const playBtn = document.createElement('button');
-    playBtn.type = 'button';
-    playBtn.classList.add('hbox', 'items-center', 'justify-center', 'shrink-0', 'size-8', 'rounded-full', 'cursor-pointer', 'hover:bg-current/20', 'outline-ring/50', 'focus-outline');
-    const playIcon = createSvg({ icon: Play, classes: 'size-4 fill-current', attrs: { 'aria-hidden': 'true' } });
-    playBtn.appendChild(playIcon);
-
-    const track = document.createElement('div');
-    track.setAttribute('role', 'slider');
-    track.setAttribute('tabindex', '0');
-    track.setAttribute('aria-label', el.getAttribute('data-seek-label') || 'Seek');
-    track.setAttribute('aria-valuemin', '0');
-    track.classList.add('relative', 'h-1.5', 'flex-1', 'rounded-full', 'bg-current/20', 'cursor-pointer', 'outline-ring/50', 'focus-outline');
-
-    const fill = document.createElement('div');
-    fill.classList.add('absolute', 'inset-y-0', 'left-0', 'rounded-full', 'bg-current');
-    fill.style.width = '0%';
-
-    const thumb = document.createElement('div');
-    thumb.classList.add('absolute', 'top-1/2', '-translate-x-1/2', '-translate-y-1/2', 'size-3', 'rounded-full', 'bg-current');
-    thumb.style.left = '0%';
-
-    track.appendChild(fill);
-    track.appendChild(thumb);
-
-    const time = document.createElement('span');
-    time.classList.add('text-xs', 'tabular-nums', 'shrink-0', 'opacity-80');
-    time.textContent = '0:00 / 0:00';
-
-    player.appendChild(playBtn);
-    player.appendChild(track);
-    player.appendChild(time);
+    player.classList.add('w-full', 'min-w-3xs', 'max-w-full', 'rounded-lg', 'bg-current/10', 'p-2');
+    setupAudioPlayer(el, { container: player, labelsFrom: el, slotPrefix: 'bubble-audio', Alpine, effect, cleanup });
     el.after(player);
 
-    function clamp(t) {
-      if (!Number.isFinite(state.duration) || state.duration <= 0) return 0;
-      return Math.min(Math.max(t, 0), state.duration);
-    }
-
-    function seekTo(t) {
-      const target = clamp(t);
-      el.currentTime = target;
-      state.current = target;
-    }
-
-    // Audio element -> state
-    const onLoadedMetadata = () => {
-      state.duration = Number.isFinite(el.duration) ? el.duration : 0;
-    };
-    const onTimeUpdate = () => {
-      state.current = el.currentTime;
-    };
-    const onPlay = () => {
-      state.playing = true;
-    };
-    const onPause = () => {
-      state.playing = false;
-    };
-    const onEnded = () => {
-      state.playing = false;
-      state.current = 0;
-    };
-    el.addEventListener('loadedmetadata', onLoadedMetadata);
-    el.addEventListener('durationchange', onLoadedMetadata);
-    el.addEventListener('timeupdate', onTimeUpdate);
-    el.addEventListener('play', onPlay);
-    el.addEventListener('pause', onPause);
-    el.addEventListener('ended', onEnded);
-
-    // Controls -> audio element
-    const onPlayClick = () => {
-      if (el.paused) el.play();
-      else el.pause();
-    };
-    playBtn.addEventListener('click', onPlayClick);
-
-    const onKeyDown = (event) => {
-      let handled = true;
-      switch (event.key) {
-        case 'ArrowRight':
-        case 'ArrowUp':
-          seekTo(state.current + SEEK_STEP);
-          break;
-        case 'ArrowLeft':
-        case 'ArrowDown':
-          seekTo(state.current - SEEK_STEP);
-          break;
-        case 'Home':
-          seekTo(0);
-          break;
-        case 'End':
-          seekTo(state.duration);
-          break;
-        default:
-          handled = false;
-      }
-      if (handled) event.preventDefault();
-    };
-    track.addEventListener('keydown', onKeyDown);
-
-    function seekFromPointer(clientX) {
-      const rect = track.getBoundingClientRect();
-      if (rect.width <= 0) return;
-      const ratio = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
-      seekTo(ratio * state.duration);
-    }
-    let dragging = false;
-    const onPointerDown = (event) => {
-      dragging = true;
-      if (track.setPointerCapture) {
-        try {
-          track.setPointerCapture(event.pointerId);
-        } catch {
-          // pointer capture is best-effort; ignore environments that lack it
-        }
-      }
-      seekFromPointer(event.clientX);
-    };
-    const onPointerMove = (event) => {
-      if (dragging) seekFromPointer(event.clientX);
-    };
-    const onPointerUp = () => {
-      dragging = false;
-    };
-    track.addEventListener('pointerdown', onPointerDown);
-    track.addEventListener('pointermove', onPointerMove);
-    track.addEventListener('pointerup', onPointerUp);
-    track.addEventListener('pointercancel', onPointerUp);
-
-    const playLabel = () => el.getAttribute('data-play-label') || 'Play';
-    const pauseLabel = () => el.getAttribute('data-pause-label') || 'Pause';
-    // Read once rather than per tick, since the effect below runs several times
-    // a second while the audio plays.
-    const valueTextLabel = el.getAttribute('data-valuetext-label') || '{current} of {duration}';
-
-    // State -> UI
-    effect(() => {
-      playIcon.replaceChildren();
-      setSvgContent(playIcon, state.playing ? Pause : Play);
-      playBtn.setAttribute('aria-label', state.playing ? pauseLabel() : playLabel());
-    });
-    effect(() => {
-      const ratio = Number.isFinite(state.duration) && state.duration > 0 ? Math.min(state.current / state.duration, 1) : 0;
-      const pct = `${ratio * 100}%`;
-      fill.style.width = pct;
-      thumb.style.left = pct;
-      track.setAttribute('aria-valuemax', String(Math.floor(state.duration)));
-      track.setAttribute('aria-valuenow', String(Math.floor(state.current)));
-      track.setAttribute('aria-valuetext', valueTextLabel.replace('{current}', formatDuration(state.current)).replace('{duration}', formatDuration(state.duration)));
-      time.textContent = `${formatDuration(state.current)} / ${formatDuration(state.duration)}`;
-    });
-
     cleanup(() => {
-      el.removeEventListener('loadedmetadata', onLoadedMetadata);
-      el.removeEventListener('durationchange', onLoadedMetadata);
-      el.removeEventListener('timeupdate', onTimeUpdate);
-      el.removeEventListener('play', onPlay);
-      el.removeEventListener('pause', onPause);
-      el.removeEventListener('ended', onEnded);
-      playBtn.removeEventListener('click', onPlayClick);
-      track.removeEventListener('keydown', onKeyDown);
-      track.removeEventListener('pointerdown', onPointerDown);
-      track.removeEventListener('pointermove', onPointerMove);
-      track.removeEventListener('pointerup', onPointerUp);
-      track.removeEventListener('pointercancel', onPointerUp);
       player.remove();
     });
   });
