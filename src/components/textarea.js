@@ -27,7 +27,7 @@ export default function (Alpine) {
       'md:text-sm'
     );
     if (modifiers.includes('group')) {
-      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'py-2', 'shadow-input', 'focus-ring');
+      el.classList.remove('rounded-control', 'border', 'bg-input-inner', 'py-2', 'shadow-input', 'focus-ring', '[&[readonly]]:bg-muted');
       el.classList.add('flex-1', 'resize-none', 'rounded-none', 'border-0', 'bg-transparent', 'py-3', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
     } else el.setAttribute('data-slot', 'textarea');

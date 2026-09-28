@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.5.1
+
+A bugfix release for the Input Group. A read-only input or textarea inside a group no longer paints its own muted box over the group surface. The group now marks the read-only state with a dashed border instead. There are no breaking changes.
+
+### Input Group
+
+- **Fixed: a read-only control inside a group had a mismatched background.** The control now keeps the group surface, and the group shows a dashed border while its control is `readonly`, which stays visible on touch devices where no cursor is shown. No colors change, so buttons and tags in the addons look as before.
+
 ## v3.5.0
 
 A release that adds an Audio Player component and makes `data-slot` a documented part of the public API. The player wraps a native `<audio>` element with a play/pause button, a seek slider and a time readout, the same controls the Bubble's audio attachment renders, in three variants. Every component marks its element, and the key elements it creates, with a `data-slot` value that tests, scripts and stylesheets can rely on, and every component page now lists these values. A new Testing page describes them. Thirteen elements that had no slot gain one, and two values are renamed to follow the naming scheme. It also adds a `data-type` attribute that tightens the spacing of a field group holding only checkboxes or only radios and a `fragment:error` event that the include directive dispatches when a fragment fails to load, and fixes the colors of a tag inside a tooltip, a Bubble audio player that showed no duration when its recording had loaded before Alpine started, and a required checkbox and a selectable tile that were marked invalid on page load before any submit. There are no breaking changes.

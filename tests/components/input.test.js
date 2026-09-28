@@ -64,6 +64,8 @@ describe('h-input', () => {
     expect(el.classList.contains('h-full')).toBe(true);
     expect(el.classList.contains('flex-1')).toBe(true);
     expect(el.classList.contains('rounded-none')).toBe(true);
+    expect(el.classList.contains('bg-transparent')).toBe(true);
+    expect(el.classList.contains('[&[readonly]]:bg-muted')).toBe(false);
     expect(el.getAttribute('data-slot')).toBe('input-group-control');
   });
 
@@ -98,6 +100,7 @@ describe('h-input-group', () => {
     expect(el.classList.contains('rounded-control')).toBe(true);
     expect(el.classList.contains('border')).toBe(true);
     expect(el.classList.contains('shadow-input')).toBe(true);
+    expect(el.classList.contains('has-[[data-slot=input-group-control][readonly]]:border-dashed')).toBe(true);
   });
 
   it('sets role="group"', () => {

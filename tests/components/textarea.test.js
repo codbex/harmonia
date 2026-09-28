@@ -32,6 +32,7 @@ describe('h-textarea', () => {
     expect(el.classList.contains('rounded-none')).toBe(true);
     expect(el.classList.contains('border-0')).toBe(true);
     expect(el.classList.contains('bg-transparent')).toBe(true);
+    expect(el.classList.contains('[&[readonly]]:bg-muted')).toBe(false);
     expect(el.getAttribute('data-slot')).toBe('input-group-control');
   });
 

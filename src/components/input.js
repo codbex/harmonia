@@ -37,6 +37,7 @@ export default function (Alpine) {
       ...invalidControlClasses
     );
     if (modifiers.includes('group')) {
+      el.classList.remove('[&[readonly]]:bg-muted');
       el.classList.add('h-full', 'flex-1', 'rounded-none', 'border-0', 'bg-transparent', 'shadow-none', 'focus-visible:ring-0');
       el.setAttribute('data-slot', 'input-group-control');
     } else if (modifiers.includes('table')) {
@@ -93,6 +94,7 @@ export default function (Alpine) {
       'has-[[data-slot=input-group-control]:focus-visible]:border-ring',
       'has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
       'has-[[data-slot=input-group-control]:focus-visible]:ring-[calc(var(--spacing)*0.75)]',
+      'has-[[data-slot=input-group-control][readonly]]:border-dashed',
       'has-[[data-slot][aria-invalid=true]]:ring-negative/20',
       'has-[[data-slot][aria-invalid=true]]:border-negative',
       'dark:has-[[data-slot][aria-invalid=true]]:ring-negative/40'

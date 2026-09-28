@@ -155,6 +155,24 @@ Set the native `disabled` attribute on the grouped input and `data-disabled="tru
 
 </LiveExample>
 
+### Read-only
+
+Set the native `readonly` attribute on the grouped input. The group shows a dashed border.
+
+<LiveExample>
+
+```html
+<div x-h-input-group>
+  <input x-h-input.group value="Read-only value" readonly />
+  <div x-h-input-group-addon data-align="inline-start">
+    <svg x-h-lucide role="presentation" data-lucide="search"></svg>
+  </div>
+  <div x-h-input-group-addon data-align="inline-end">12 results</div>
+</div>
+```
+
+</LiveExample>
+
 ### Textarea with top and bottom toolbars
 
 <LiveExample>

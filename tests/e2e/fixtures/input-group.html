@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>input-group fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div class="flex flex-col gap-2" style="max-width: 24rem">
+      <div id="plain" x-h-input-group>
+        <input id="plain-input" x-h-input.group value="Editable value" />
+        <div x-h-input-group-addon data-align="inline-end">12 results</div>
+      </div>
+
+      <div id="readonly" x-h-input-group>
+        <input id="readonly-input" x-h-input.group value="Read-only value" readonly />
+        <div x-h-input-group-addon data-align="inline-start">
+          <div x-h-tag>Ctrl</div>
+        </div>
+        <div x-h-input-group-addon data-align="inline-end">
+          <button x-h-button.addon>Go</button>
+        </div>
+      </div>
+
+      <div id="readonly-textarea" x-h-input-group>
+        <textarea id="readonly-textarea-control" x-h-textarea.group readonly>Read-only text</textarea>
+        <div x-h-input-group-addon data-align="block-end" class="border-t">
+          <span x-h-input-group-text>0/300</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
