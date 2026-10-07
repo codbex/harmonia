@@ -31,6 +31,23 @@
           <span x-h-input-group-text>0/300</span>
         </div>
       </div>
+
+      <form id="required-form" class="flex flex-col gap-2" onsubmit="event.preventDefault()">
+        <div id="required" x-h-input-group>
+          <input id="required-input" x-h-input.group type="password" placeholder="Password" required />
+          <div x-h-input-group-addon data-align="inline-end">
+            <button x-h-button.addon type="button">Show</button>
+          </div>
+        </div>
+        <button id="required-submit" type="submit">Sign in</button>
+      </form>
+
+      <form id="immediate-form" data-validate="immediate" onsubmit="event.preventDefault()">
+        <div id="immediate" x-h-input-group>
+          <input id="immediate-input" x-h-input.group placeholder="Validated on load" required />
+          <div x-h-input-group-addon data-align="inline-end">12 results</div>
+        </div>
+      </form>
     </div>
   </body>
 </html>

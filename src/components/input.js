@@ -83,8 +83,10 @@ export default function (Alpine) {
       'outline-none',
       'min-w-0',
       'has-[>textarea]:h-auto',
-      'has-[>[data-align=inline-start]]:[&>input]:pl-2',
-      'has-[>[data-align=inline-end]]:[&>input]:pr-2',
+      'has-[>[data-align=inline-start]]:[&>input]:pl-1',
+      'has-[>[data-align=inline-start]]:[&>input]:rounded-e-control',
+      'has-[>[data-align=inline-end]]:[&>input]:pr-1',
+      'has-[>[data-align=inline-end]]:[&>input]:rounded-s-control',
       'has-[>[data-align=block-start]]:h-auto',
       'has-[>[data-align=block-start]]:flex-col',
       'has-[>[data-align=block-start]]:[&>input]:pb-3',
@@ -97,7 +99,13 @@ export default function (Alpine) {
       'has-[[data-slot=input-group-control][readonly]]:border-dashed',
       'has-[[data-slot][aria-invalid=true]]:ring-negative/20',
       'has-[[data-slot][aria-invalid=true]]:border-negative',
-      'dark:has-[[data-slot][aria-invalid=true]]:ring-negative/40'
+      'dark:has-[[data-slot][aria-invalid=true]]:ring-negative/40',
+      'has-[[data-slot=input-group-control]:user-invalid]:ring-negative/20',
+      'has-[[data-slot=input-group-control]:user-invalid]:border-negative',
+      'dark:has-[[data-slot=input-group-control]:user-invalid]:ring-negative/40',
+      '[[data-validate=immediate]_&:has([data-slot=input-group-control]:invalid)]:ring-negative/20',
+      '[[data-validate=immediate]_&:has([data-slot=input-group-control]:invalid)]:border-negative',
+      'dark:[[data-validate=immediate]_&:has([data-slot=input-group-control]:invalid)]:ring-negative/40'
     );
     el.setAttribute('role', 'group');
     el.setAttribute('data-slot', 'input-group');
@@ -133,6 +141,7 @@ export default function (Alpine) {
       'inline-start': [
         'order-first',
         'pl-3',
+        'pr-1',
         '[[data-slot=input-group][data-size=sm]_&]:pl-1.25',
         'has-[>button]:pl-1.25',
         '[[data-slot=input-group][data-size=sm]_&]:has-[>button]:pl-0.5',
@@ -142,6 +151,7 @@ export default function (Alpine) {
       'inline-end': [
         'order-last',
         'pr-3',
+        'pl-1',
         '[[data-slot=input-group][data-size=sm]_&]:pr-1.25',
         'has-[>button]:pr-1.25',
         '[[data-slot=input-group][data-size=sm]_&]:has-[>button]:pr-0.5',

@@ -35,6 +35,10 @@ x-h-input-group-text
 In order to achieve proper focus navigation, place the group addon after the input and then set the align prop to position it.
 :::
 
+### Validation timing
+
+By default the group shows its control's native-constraint errors (for example `required`) only after the user interacts with it or attempts to submit, not on page load. To validate on load instead, set `data-validate="immediate"` on a wrapping `x-h-fieldset`, `x-h-field`, or any ancestor element. Setting `aria-invalid="true"` on the grouped control always shows the error immediately. See [Fieldset](/components/fieldset#validation-timing) for details.
+
 ### Data Slots
 
 | Slot                | Element                 |
@@ -113,6 +117,23 @@ In order to achieve proper focus navigation, place the group addon after the inp
   <input x-h-input.group placeholder="Searching..." disabled />
   <div x-h-input-group-addon data-align="inline-end">
     <span x-h-spinner></span>
+  </div>
+</div>
+```
+
+</LiveExample>
+
+### Password with visibility toggle
+
+<LiveExample>
+
+```html
+<div x-h-input-group>
+  <input x-h-input.group type="password" />
+  <div x-h-input-group-addon data-align="inline-end">
+    <button x-h-button.addon data-size="icon-sm" aria-label="toggle password visibility">
+      <svg x-h-icon data-icon="eye" role="presentation"></svg>
+    </button>
   </div>
 </div>
 ```

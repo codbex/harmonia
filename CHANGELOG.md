@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.6.0
+
+A release that fixes an input group that showed no error for a natively invalid control. There are no breaking changes.
+
+### Input Group
+
+- **Fixed: an input group showed no error for a natively invalid control.** The group's border and ring now turn negative once its control is `:user-invalid` (after the user has interacted with it or a submit was attempted), or immediately under a `data-validate="immediate"` ancestor, like the other controls. Setting `aria-invalid="true"` on the control still shows it at once.
+
 ## v3.5.1
 
 A bugfix release for the Input Group. A read-only input or textarea inside a group no longer paints its own muted box over the group surface. The group now marks the read-only state with a dashed border instead. There are no breaking changes.

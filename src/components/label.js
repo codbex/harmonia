@@ -14,10 +14,12 @@ export default function (Alpine) {
       "data-[indicator=start]:before:content-['*'_/_'']",
       'data-[indicator=start]:before:text-negative',
       'data-[indicator=start]:before:-me-1',
+      'data-[indicator=start]:before:self-start',
       'data-[indicator=start]:[[data-slot=field]:not(:has([required]))_&]:before:hidden',
       "data-[indicator=end]:after:content-['*'_/_'']",
       'data-[indicator=end]:after:text-negative',
       'data-[indicator=end]:after:-ms-1',
+      'data-[indicator=end]:after:self-start',
       'data-[indicator=end]:[[data-slot=field]:not(:has([required]))_&]:after:hidden'
     );
     if (Alpine.findClosest(el.parentElement, (parent) => parent.getAttribute('data-slot') === 'field')) {
