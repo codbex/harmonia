@@ -73,49 +73,47 @@
         <p x-h-dialog-description>New vendors become available for purchase orders and bills.</p>
       </div>
       <form x-h-dialog-content id="add-vendor-form" x-ref="newVendorForm" @submit.prevent="newVendorValid && submitAdd()" @input="newVendorValid = $el.checkValidity()" @change="newVendorValid = $el.checkValidity()">
-        <fieldset x-h-fieldset>
-          <div x-h-field-group class="gap-4!">
-            <div x-h-field>
-              <label x-h-label for="nv-name" data-indicator="end">Name</label>
-              <input x-h-input id="nv-name" x-h-focus="showAdd" placeholder="Vendor name" required x-model="newVendor.name" />
-              <p x-h-field-error>Name is required.</p>
-            </div>
-            <div x-h-field>
-              <label x-h-label for="nv-category" data-indicator="end">Category</label>
-              <div x-h-select>
-                <input x-h-select-input data-id="nv-category" placeholder="Select category" required x-model="newVendor.category" />
-                <div x-h-select-content>
-                  <div x-h-select-list>
-                    <div x-h-select-option="'Logistics'" data-value="Logistics"></div>
-                    <div x-h-select-option="'Software'" data-value="Software"></div>
-                    <div x-h-select-option="'Raw materials'" data-value="Raw materials"></div>
-                    <div x-h-select-option="'Utilities'" data-value="Utilities"></div>
-                    <div x-h-select-option="'Office'" data-value="Office"></div>
-                    <div x-h-select-option="'Marketing'" data-value="Marketing"></div>
-                    <div x-h-select-option="'Facilities'" data-value="Facilities"></div>
-                  </div>
+        <div x-h-field-group>
+          <div x-h-field>
+            <label x-h-label for="nv-name" data-indicator="end">Name</label>
+            <input x-h-input id="nv-name" placeholder="Vendor name" required x-model="newVendor.name" />
+            <p x-h-field-error>Name is required.</p>
+          </div>
+          <div x-h-field>
+            <label x-h-label for="nv-category" data-indicator="end">Category</label>
+            <div x-h-select>
+              <input x-h-select-input data-id="nv-category" placeholder="Select category" required x-model="newVendor.category" />
+              <div x-h-select-content>
+                <div x-h-select-list>
+                  <div x-h-select-option="'Logistics'" data-value="Logistics"></div>
+                  <div x-h-select-option="'Software'" data-value="Software"></div>
+                  <div x-h-select-option="'Raw materials'" data-value="Raw materials"></div>
+                  <div x-h-select-option="'Utilities'" data-value="Utilities"></div>
+                  <div x-h-select-option="'Office'" data-value="Office"></div>
+                  <div x-h-select-option="'Marketing'" data-value="Marketing"></div>
+                  <div x-h-select-option="'Facilities'" data-value="Facilities"></div>
                 </div>
               </div>
-              <p x-h-field-error>Choose a category.</p>
+            </div>
+            <p x-h-field-error>Choose a category.</p>
+          </div>
+          <div x-h-field>
+            <label x-h-label for="nv-contact" data-indicator="end">Contact person</label>
+            <input x-h-input id="nv-contact" placeholder="Full name" required x-model="newVendor.contact" />
+            <p x-h-field-error>Contact person is required.</p>
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div x-h-field>
+              <label x-h-label for="nv-email" data-indicator="end">Billing email</label>
+              <input x-h-input id="nv-email" type="email" placeholder="billing@vendor.example" required x-model="newVendor.email" />
+              <p x-h-field-error>Enter a valid email address.</p>
             </div>
             <div x-h-field>
-              <label x-h-label for="nv-contact" data-indicator="end">Contact person</label>
-              <input x-h-input id="nv-contact" placeholder="Full name" required x-model="newVendor.contact" />
-              <p x-h-field-error>Contact person is required.</p>
-            </div>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div x-h-field>
-                <label x-h-label for="nv-email" data-indicator="end">Billing email</label>
-                <input x-h-input id="nv-email" type="email" placeholder="billing@vendor.example" required x-model="newVendor.email" />
-                <p x-h-field-error>Enter a valid email address.</p>
-              </div>
-              <div x-h-field>
-                <label x-h-label for="nv-city">City</label>
-                <input x-h-input id="nv-city" placeholder="City" x-model="newVendor.city" />
-              </div>
+              <label x-h-label for="nv-city">City</label>
+              <input x-h-input id="nv-city" placeholder="City" x-model="newVendor.city" />
             </div>
           </div>
-        </fieldset>
+        </div>
       </form>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="showAdd = false">Cancel</button>

@@ -145,7 +145,7 @@
                     </template>
                     <template x-if="n.media.kind === 'badge'">
                       <div x-h-avatar class="rounded-lg" :data-variant="n.media.variant">
-                        <svg x-h-icon :data-icon="n.media.icon" role="img" :aria-label="n.media.variant"></svg>
+                        <svg x-h-icon :data-icon="n.media.icon" role="img" :aria-label="n.media.label"></svg>
                       </div>
                     </template>
                     <template x-if="n.media.kind === 'icon'">
@@ -290,7 +290,7 @@
                   <template x-for="kpi in kpis" :key="kpi.label">
                     <div class="vbox items-center gap-2">
                       <div class="relative">
-                        <div x-h-progress="kpi.value" data-type="circle" :data-variant="kpi.variant" style="width: 6rem"></div>
+                        <div x-h-progress="kpi.value" data-type="circle" :data-variant="kpi.variant" style="width: 6rem" :aria-label="kpi.label + ' goal'"></div>
                         <span class="position-center absolute text-lg font-medium" x-text="kpi.value + '%'"></span>
                       </div>
                       <span class="text-sm text-muted-foreground" x-text="kpi.label"></span>
@@ -412,10 +412,10 @@
             <nav x-h-pagination>
               <ul x-h-pagination-content>
                 <li x-h-pagination-item>
-                  <a x-h-pagination-link.previous href="#" aria-label="Previous page" :aria-disabled="page === 1" :tabindex="page === 1 ? -1 : 0" @click.prevent="page = Math.max(1, page - 1)">
+                  <button x-h-pagination-link.previous aria-label="Previous page" :disabled="page === 1" @click="page = Math.max(1, page - 1)">
                     <svg x-h-lucide role="presentation" data-lucide="chevron-left"></svg>
                     <span x-h-pagination-link-label>Previous</span>
-                  </a>
+                  </button>
                 </li>
                 <template x-for="p in pageCount" :key="p">
                   <li x-h-pagination-item>
@@ -423,10 +423,10 @@
                   </li>
                 </template>
                 <li x-h-pagination-item>
-                  <a x-h-pagination-link.next href="#" aria-label="Next page" :aria-disabled="page === pageCount" :tabindex="page === pageCount ? -1 : 0" @click.prevent="page = Math.min(pageCount, page + 1)">
+                  <button x-h-pagination-link.next aria-label="Next page" :disabled="page === pageCount" @click="page = Math.min(pageCount, page + 1)">
                     <span x-h-pagination-link-label>Next</span>
                     <svg x-h-lucide role="presentation" data-lucide="chevron-right"></svg>
-                  </a>
+                  </button>
                 </li>
               </ul>
             </nav>
@@ -440,10 +440,10 @@
 
               <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4">
                     <div class="vbox flex-1">
-                      <label class="text-base font-medium" id="st-currency-label" for="st-currency">Default currency</label>
-                      <p x-h-text.muted>Used for revenue and order amounts across every view.</p>
+                      <label x-h-label id="st-currency-label" for="st-currency">Default currency</label>
+                      <p x-h-list-secondary class="text-sm">Used for revenue and order amounts across every view.</p>
                     </div>
                     <div x-h-select class="flex-1" style="max-width: 11rem">
                       <input x-h-select-input data-id="st-currency" aria-labelledby="st-currency-label" placeholder="Select" x-model="settings.currency" />
@@ -456,10 +456,10 @@
                       </div>
                     </div>
                   </li>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4">
                     <div class="vbox flex-1">
-                      <label class="text-base font-medium" for="rows-per-page">Rows per page</label>
-                      <p x-h-text.muted>How many customers to show per page in the table.</p>
+                      <label x-h-label for="rows-per-page">Rows per page</label>
+                      <p x-h-list-secondary class="text-sm">How many customers to show per page in the table.</p>
                     </div>
                     <div x-h-input-number class="flex-1" style="max-width: 11rem">
                       <input type="number" id="rows-per-page" min="1" max="100" step="1" x-model.number="pageSize" @input="page = 1" />
@@ -474,12 +474,12 @@
 
               <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
-                    <div class="vbox w-full">
-                      <p class="text-base font-medium">Style</p>
-                      <p x-h-text.muted>Choose how the dashboard looks.</p>
+                  <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+                    <div class="vbox w-full gap-1">
+                      <label x-h-label id="st-style-label" for="st-style">Style</label>
+                      <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
                     </div>
-                    <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+                    <button x-h-button data-variant="outline" id="st-style" aria-labelledby="st-date-format-label" x-h-menu-trigger.dropdown.chevron>
                       <!-- svg placeholders on purpose: x-h-lucide renders them in place,
                            so the x-show bindings keep switching the visible icon. -->
                       <svg x-h-lucide x-show="settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
@@ -514,8 +514,8 @@
                       </li>
                     </ul>
                   </li>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
-                    <label class="w-full text-base font-medium" for="sw-compact">Compact tables</label>
+                  <li x-h-list-item class="gap-3 px-4">
+                    <label x-h-label class="flex-1" for="sw-compact">Compact tables</label>
                     <span x-h-switch>
                       <input type="checkbox" id="sw-compact" x-model="settings.compactTables" />
                     </span>
@@ -529,18 +529,18 @@
 
               <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
                 <ul x-h-list>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
-                    <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
-                    <label class="w-full text-base font-medium" for="sw-email">Email notifications</label>
+                  <li x-h-list-item class="gap-3 px-4">
+                    <svg x-h-icon x-h-list-secondary data-icon="mail" class="size-5 shrink-0" role="presentation"></svg>
+                    <label x-h-label class="flex-1" for="sw-email">Email notifications</label>
                     <span x-h-switch>
                       <input type="checkbox" id="sw-email" x-model="settings.notifications.email" />
                     </span>
                   </li>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
-                    <svg x-h-icon data-icon="bell" class="size-5" role="presentation"></svg>
-                    <div class="vbox w-full">
-                      <label class="text-base font-medium" for="sw-push">Push notifications</label>
-                      <p x-h-text.muted>Get alerted about new orders in real time.</p>
+                  <li x-h-list-item class="gap-3 px-4">
+                    <svg x-h-icon x-h-list-secondary data-icon="bell" class="size-5 shrink-0" role="presentation"></svg>
+                    <div class="vbox w-full gap-1">
+                      <label x-h-label for="sw-push">Push notifications</label>
+                      <p x-h-list-secondary class="text-sm">Get alerted about new orders in real time.</p>
                     </div>
                     <span x-h-switch>
                       <input type="checkbox" id="sw-push" x-model="settings.notifications.push" />
@@ -551,28 +551,28 @@
             </section>
 
             <section class="vbox w-full max-w-xl pt-2">
-              <h2 x-h-text.h5>Default view</h2>
+              <h2 x-h-text.h5 id="default-view-heading">Default view</h2>
               <p x-h-text.muted>The page shown when the dashboard opens.</p>
 
-              <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
+              <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden" role="radiogroup" aria-labelledby="default-view-heading">
                 <ul x-h-list>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4">
                     <span x-h-radio>
                       <input type="radio" name="defaultView" id="dv-overview" value="overview" x-model="settings.defaultView" />
                     </span>
-                    <label class="w-full text-base" for="dv-overview">Overview</label>
+                    <label x-h-label class="flex-1 font-normal" for="dv-overview">Overview</label>
                   </li>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4">
                     <span x-h-radio>
                       <input type="radio" name="defaultView" id="dv-analytics" value="analytics" x-model="settings.defaultView" />
                     </span>
-                    <label class="w-full text-base" for="dv-analytics">Analytics</label>
+                    <label x-h-label class="flex-1 font-normal" for="dv-analytics">Analytics</label>
                   </li>
-                  <li x-h-list-item class="gap-3 px-4 py-3">
+                  <li x-h-list-item class="gap-3 px-4">
                     <span x-h-radio>
                       <input type="radio" name="defaultView" id="dv-customers" value="customers" x-model="settings.defaultView" />
                     </span>
-                    <label class="w-full text-base" for="dv-customers">Customers</label>
+                    <label x-h-label class="flex-1 font-normal" for="dv-customers">Customers</label>
                   </li>
                 </ul>
               </div>
@@ -590,43 +590,41 @@
           <p x-h-dialog-description>Enter the details for the new customer.</p>
         </div>
         <form x-h-dialog-content id="add-customer-form" x-ref="addCustomerForm" @submit.prevent="addCustomer()" @input="newCustomerValid = $el.checkValidity()">
-          <fieldset x-h-fieldset>
-            <div x-h-field-group class="gap-4!">
-              <div x-h-field>
-                <label x-h-label for="nc-name" data-indicator="end">Name</label>
-                <input x-h-input x-h-focus="showAddCustomer" id="nc-name" x-model="newCustomer.name" placeholder="Jane Doe" required />
-                <p x-h-field-error>Name is required.</p>
-              </div>
-              <div x-h-field>
-                <label x-h-label for="nc-email" data-indicator="end">Email</label>
-                <input x-h-input id="nc-email" type="email" x-model="newCustomer.email" placeholder="jane@codbex.com" required />
-                <p x-h-field-error>Enter a valid email address.</p>
-              </div>
-              <div x-h-field>
-                <label x-h-label for="nc-status">Status</label>
-                <div x-h-select>
-                  <input x-h-select-input data-id="nc-status" x-model="newCustomer.status" placeholder="Select status" />
-                  <div x-h-select-content>
-                    <div x-h-select-list>
-                      <div x-h-select-option="'Paid'" data-value="Paid"></div>
-                      <div x-h-select-option="'Pending'" data-value="Pending"></div>
-                      <div x-h-select-option="'Refunded'" data-value="Refunded"></div>
-                    </div>
+          <div x-h-field-group>
+            <div x-h-field>
+              <label x-h-label for="nc-name" data-indicator="end">Name</label>
+              <input x-h-input id="nc-name" x-model="newCustomer.name" placeholder="Jane Doe" required />
+              <p x-h-field-error>Name is required.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nc-email" data-indicator="end">Email</label>
+              <input x-h-input id="nc-email" type="email" x-model="newCustomer.email" placeholder="jane@codbex.com" required />
+              <p x-h-field-error>Enter a valid email address.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nc-status">Status</label>
+              <div x-h-select>
+                <input x-h-select-input data-id="nc-status" x-model="newCustomer.status" placeholder="Select status" />
+                <div x-h-select-content>
+                  <div x-h-select-list>
+                    <div x-h-select-option="'Paid'" data-value="Paid"></div>
+                    <div x-h-select-option="'Pending'" data-value="Pending"></div>
+                    <div x-h-select-option="'Refunded'" data-value="Refunded"></div>
                   </div>
                 </div>
               </div>
-              <div x-h-field>
-                <label x-h-label for="nc-amount">Amount</label>
-                <div x-h-input-number>
-                  <input type="number" id="nc-amount" min="0" step="1" x-model.number="newCustomer.amount" placeholder="0" />
-                </div>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nc-amount">Amount</label>
+              <div x-h-input-number>
+                <input type="number" id="nc-amount" min="0" step="1" x-model.number="newCustomer.amount" placeholder="0" />
               </div>
             </div>
-          </fieldset>
+          </div>
         </form>
         <div x-h-dialog-footer>
           <button x-h-button data-variant="outline" @click="showAddCustomer = false">Cancel</button>
-          <button x-h-button data-variant="primary" type="submit" form="add-customer-form" :disabled="!newCustomerValid">Add</button>
+          <button x-h-button data-variant="primary" type="submit" form="add-customer-form" :aria-disabled="!newCustomerValid">Add</button>
         </div>
       </div>
     </div>
@@ -647,7 +645,7 @@
             {
               id: 2,
               unread: true,
-              media: { kind: "badge", icon: "circle-error", variant: "negative" },
+              media: { kind: "badge", icon: "circle-error", variant: "negative", label: "Error" },
               title: "Payment failed",
               description: "Olivia Davis' payment of $430 was declined.",
             },

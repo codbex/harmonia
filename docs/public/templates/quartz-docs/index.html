@@ -128,11 +128,13 @@
             <!-- On a wide screen the brand lives in the sidebar header, so the
                  navbar only carries it where the sidebar is hidden or has collapsed
                  into the sheet. -->
-            <a x-show="!hasSidebar" href="/" class="ml-1 hbox items-center gap-2 no-underline">
+            <a x-show="!hasSidebar" href="/" class="ml-1 hbox items-center no-underline">
               <div x-h-avatar class="rounded-lg" data-variant="primary">
                 <svg x-h-lucide role="presentation" data-lucide="gem"></svg>
               </div>
-              <span class="font-semibold">Quartz</span>
+              <span x-h-toolbar-branding>
+                <span x-h-toolbar-title>Quartz</span>
+              </span>
             </a>
 
             <div x-h-toolbar-spacer></div>
@@ -156,28 +158,11 @@
             <nav x-h-nav aria-label="Main navigation" data-variant="clear" class="lg:hidden">
               <ul x-h-nav-list>
                 <li x-h-nav-item>
-                  <button x-h-nav-trigger aria-label="Main navigation">
-                    <svg x-h-lucide role="presentation" data-lucide="menu"></svg>
-                  </button>
+                  <button x-h-nav-trigger aria-label="Main navigation">Menu</button>
                   <ul x-h-menu>
-                    <li x-h-menu-item @click="go('/guide/what-is-quartz')" :aria-current="isSection('/guide') ? 'page' : null">
-                      <span>Guide</span>
-                      <span x-h-menu-item-secondary x-show="isSection('/guide')">
-                        <svg x-h-icon data-icon="check" role="presentation"></svg>
-                      </span>
-                    </li>
-                    <li x-h-menu-item @click="go('/api')" :aria-current="isSection('/api') ? 'page' : null">
-                      <span>Reference</span>
-                      <span x-h-menu-item-secondary x-show="isSection('/api')">
-                        <svg x-h-icon data-icon="check" role="presentation"></svg>
-                      </span>
-                    </li>
-                    <li x-h-menu-item @click="go('/blog')" :aria-current="isSection('/blog') ? 'page' : null">
-                      <span>Blog</span>
-                      <span x-h-menu-item-secondary x-show="isSection('/blog')">
-                        <svg x-h-icon data-icon="check" role="presentation"></svg>
-                      </span>
-                    </li>
+                    <li x-h-menu-item :data-active="isSection('/guide')" @click="go('/guide/what-is-quartz')">Guide</li>
+                    <li x-h-menu-item :data-active="isSection('/api')" @click="go('/api')">Reference</li>
+                    <li x-h-menu-item :data-active="isSection('/blog')" @click="go('/blog')">Blog</li>
                   </ul>
                 </li>
               </ul>
@@ -282,6 +267,32 @@
         </ul>
       </div>
     </div>
+
+    <!-- Previous/next pager shared by every content page. Each page fragment
+         renders it with x-h-template, reading prev and next from its own
+         docPage scope, so the markup is written once. -->
+    <template x-ref="pager">
+      <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
+        <template x-if="prev">
+          <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
+            <span class="text-xs text-muted-foreground">Previous page</span>
+            <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
+          </a>
+        </template>
+        <template x-if="!prev">
+          <div class="flex-1" aria-hidden="true"></div>
+        </template>
+        <template x-if="next">
+          <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
+            <span class="text-xs text-muted-foreground">Next page</span>
+            <span class="text-sm font-medium text-primary" x-text="next.title"></span>
+          </a>
+        </template>
+        <template x-if="!next">
+          <div class="flex-1" aria-hidden="true"></div>
+        </template>
+      </nav>
+    </template>
 
     <!-- Routes: every page is a separate fragment fetched on demand and
          rendered into #page-outlet (see targetID in js/app.js). -->

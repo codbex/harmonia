@@ -25,8 +25,8 @@ stop() // unsubscribe`"
   ></p>
   <div x-h-table-container>
     <table x-h-table>
-      <caption class="sr-only">
-        Arguments
+      <caption x-h-table-caption>
+        Arguments of client.query()
       </caption>
       <thead x-h-table-header>
         <tr x-h-table-row>
@@ -67,8 +67,8 @@ client.clear() // drop everything, spinners included`"
   <h2 id="options" x-h-text.h2>Options</h2>
   <div x-h-table-container>
     <table x-h-table>
-      <caption class="sr-only">
-        Options
+      <caption x-h-table-caption>
+        Client options and their defaults
       </caption>
       <thead x-h-table-header>
         <tr x-h-table-row>
@@ -113,24 +113,6 @@ client.clear() // drop everything, spinners included`"
     </table>
   </div>
 
-  <nav aria-label="Previous and next page" class="hbox gap-4 pt-8">
-    <template x-if="prev">
-      <a class="vbox flex-1 gap-1 rounded-lg border p-3 no-underline hover:bg-muted" :href="prev.route">
-        <span class="text-xs text-muted-foreground">Previous page</span>
-        <span class="text-sm font-medium text-primary" x-text="prev.title"></span>
-      </a>
-    </template>
-    <template x-if="!prev">
-      <div class="flex-1" aria-hidden="true"></div>
-    </template>
-    <template x-if="next">
-      <a class="vbox flex-1 items-end gap-1 rounded-lg border p-3 text-right no-underline hover:bg-muted" :href="next.route">
-        <span class="text-xs text-muted-foreground">Next page</span>
-        <span class="text-sm font-medium text-primary" x-text="next.title"></span>
-      </a>
-    </template>
-    <template x-if="!next">
-      <div class="flex-1" aria-hidden="true"></div>
-    </template>
-  </nav>
+  <!-- The pager markup lives once in index.html; see the pager template there. -->
+  <template x-h-template="$refs.pager" x-data></template>
 </div>

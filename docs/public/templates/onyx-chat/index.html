@@ -166,13 +166,14 @@
               <!-- The field keeps focus while the arrow keys move through the results,
                    so the popup is a combobox rather than a list of tab stops. -->
               <div x-h-combobox="$refs.jumpInput" data-variant="inline" aria-label="Search results">
+                <!-- The hint and the empty state live outside the list, since the listbox may only hold options. -->
+                <template x-if="!jumpQuery.trim()">
+                  <p class="px-3 py-2 text-sm text-muted-foreground">Type to search channels and people. Enter opens the first match.</p>
+                </template>
+                <template x-if="jumpQuery.trim() && !jumpResults.length">
+                  <p role="status" class="px-3 py-2 text-sm text-muted-foreground">No channels or people match.</p>
+                </template>
                 <ul x-h-list>
-                  <template x-if="jumpQuery.trim() && !jumpResults.length">
-                    <li role="presentation" class="border-0 px-3 py-2 text-sm text-muted-foreground">No channels or people match.</li>
-                  </template>
-                  <template x-if="!jumpQuery.trim()">
-                    <li role="presentation" class="border-0 px-3 py-2 text-sm text-muted-foreground">Type to search channels and people. Enter opens the first match.</li>
-                  </template>
                   <template x-for="result in jumpResults" :key="result.id">
                     <li x-h-list-item class="cursor-pointer gap-3 px-3 py-2" @click="jumpTo(result)">
                       <svg x-h-lucide role="presentation" :data-lucide="result.kind === 'channel' ? 'hash' : 'user'"></svg>

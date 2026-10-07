@@ -77,11 +77,13 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "happy-dom": "^20.10.4",
+    "lucide": "^1.50.0",
+    "pinecone-router": "^7.6.0",
     "prettier": "^3.8.4",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.3.3",
-    "vitepress": "^2.0.0-alpha.19",
+    "vitepress": "^2.0.0-alpha.20",
     "vitest": "^4.1.9"
   },
   "peerDependencies": {

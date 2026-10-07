@@ -11,8 +11,7 @@
             </div>
           </div>
         </div>
-        <div class="flex-1" aria-hidden="true"></div>
-        <div x-h-card-footer class="pt-4 text-sm text-muted-foreground" x-text="kpi.hint"></div>
+        <div x-h-card-footer class="mt-auto pt-4 text-sm text-muted-foreground" x-text="kpi.hint"></div>
       </div>
     </template>
   </div>
@@ -23,14 +22,9 @@
         <div x-h-card-title>Revenue and expenses</div>
         <div x-h-card-description>Monthly totals in thousands of dollars</div>
         <div x-h-card-action>
-          <div x-h-select style="width: 9rem">
-            <input x-h-select-input aria-label="Chart period" x-model="period" />
-            <div x-h-select-content>
-              <div x-h-select-list>
-                <div x-h-select-option="'Last 6 months'" data-value="6m"></div>
-                <div x-h-select-option="'Last 12 months'" data-value="12m"></div>
-              </div>
-            </div>
+          <div x-h-button-group :data-orientation="isSmallScreen ? 'vertical' : 'horizontal'" x-model="period" aria-label="Chart period">
+            <button x-h-button data-variant="outline" x-h-button-group-radio="'6m'">6 months</button>
+            <button x-h-button data-variant="outline" x-h-button-group-radio="'12m'">12 months</button>
           </div>
         </div>
       </div>
@@ -93,7 +87,7 @@
         </div>
       </div>
     </div>
-    <div x-h-card data-type="object" style="max-height: 420px">
+    <div x-h-card data-type="object" style="max-height: 26.25rem">
       <div x-h-card-header class="border-b">
         <div x-h-card-title>Activity</div>
         <div x-h-card-description>What happened across the workspace</div>

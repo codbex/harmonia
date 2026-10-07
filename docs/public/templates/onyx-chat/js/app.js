@@ -20,7 +20,9 @@ document.addEventListener('alpine:init', () => {
 
   const data = window.OnyxData;
   const toastIcons = { positive: 'circle-success', negative: 'circle-error', warning: 'circle-warning', information: 'circle-info' };
-  const dayFormatter = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  // The same engine as every <time x-h-date-format> in the app, so the day
+  // separators follow the page locale like the message timestamps do.
+  const dayFormatter = Harmonia.createDateFormatter({ locale: document.documentElement.lang || undefined, options: { weekday: 'long', month: 'short', day: 'numeric' } });
   const localDay = (ts) => new Date(ts).toDateString();
 
   Alpine.store('chat', {

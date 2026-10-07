@@ -18,6 +18,8 @@ A button placed beside the control, for an action on the row rather than the row
 
 Which row is the current one stays yours to manage. Bind `aria-current` on the control to mark it, since the list never changes it. Use `page` for a list of destinations and a bound boolean for a list you select from.
 
+Supporting content in a row, whether a secondary line of text or a decorative icon, goes on `x-h-list-secondary`. It renders muted and reacts to a highlighted row, so it stays legible. Use it instead of `text-muted-foreground` inside a list.
+
 ## Directives
 
 `x-h-list` is the root. The directives compose one component and must be nested as shown in the Examples below (the library throws at runtime when a required ancestor is missing):
@@ -84,13 +86,16 @@ An item that holds only an icon needs an `aria-label` on its control, naming the
 </ul>
 ```
 
-### With secondary text
+### With secondary text and icons
+
+The icon and the second line share the `x-h-list-secondary` slot, so both are muted and both stay readable on the current row.
 
 ```html
 <ul x-h-list x-data="{ selected: 2 }">
   <template x-for="item in [1, 2, 3]" :key="item">
     <li x-h-list-item>
-      <button x-h-list-item-button class="items-start" :aria-current="selected === item" @click="selected = item">
+      <button x-h-list-item-button class="items-center" :aria-current="selected === item" @click="selected = item">
+        <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="file-text"></svg>
         <div class="vbox min-w-0 flex-1">
           <span x-text="'List Item ' + item"></span>
           <span x-h-list-secondary class="text-sm" x-text="'Secondary line for item ' + item"></span>

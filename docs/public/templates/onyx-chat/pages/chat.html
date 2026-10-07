@@ -7,7 +7,7 @@
       <div class="vbox size-full min-w-0">
         <div x-h-toolbar data-size="md" data-variant="transparent">
           <template x-if="conversation && !isDm">
-            <span x-h-toolbar-title x-text="'#' + conversation.name">Title</span>
+            <span x-h-toolbar-title x-text="'#' + conversation.name"></span>
           </template>
           <template x-if="conversation && !isDm">
             <span class="truncate px-2 text-sm text-muted-foreground" x-text="conversation.topic"></span>
@@ -105,16 +105,10 @@
                         </div>
                         <template x-if="item.message.userId === 'you'">
                           <div class="hbox gap-1">
-                            <button
-                              x-h-button
-                              data-variant="transparent"
-                              data-size="icon-sm"
-                              :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })"
-                              x-h-menu-trigger.dropdown
-                            >
+                            <button x-h-button data-variant="transparent" data-size="icon-sm" :aria-label="'Actions for your message sent at ' + $dateFormat(item.message.ts, { options: { timeStyle: 'short' } })" x-h-menu-trigger.dropdown>
                               <svg x-h-lucide role="presentation" data-lucide="ellipsis"></svg>
                             </button>
-                            <ul x-h-menu :aria-label="'Actions for your message sent at ' + new Date(item.message.ts).toLocaleTimeString([], { timeStyle: 'short' })" data-align="bottom-end">
+                            <ul x-h-menu :aria-label="'Actions for your message sent at ' + $dateFormat(item.message.ts, { options: { timeStyle: 'short' } })" data-align="bottom-end">
                               <li x-h-menu-item @click="startEdit(item.message)">
                                 <svg x-h-lucide role="presentation" data-lucide="pencil"></svg>
                                 <span>Edit message</span>

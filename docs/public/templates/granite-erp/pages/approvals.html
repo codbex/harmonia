@@ -1,16 +1,16 @@
 <div x-data="pageApprovals" class="vbox gap-4 p-4">
   <div class="hbox flex-wrap items-center gap-2">
     <div x-h-chip :data-variant="filter === 'Pending' ? 'primary' : 'outline'">
-      <button x-h-chip-button @click="filter = 'Pending'">
+      <button x-h-chip-button :aria-pressed="filter === 'Pending'" @click="filter = 'Pending'">
         Pending
         <span x-show="$store.erp.pendingApprovals.length" x-text="'(' + $store.erp.pendingApprovals.length + ')'"></span>
       </button>
     </div>
     <div x-h-chip :data-variant="filter === 'Resolved' ? 'primary' : 'outline'">
-      <button x-h-chip-button @click="filter = 'Resolved'">Resolved</button>
+      <button x-h-chip-button :aria-pressed="filter === 'Resolved'" @click="filter = 'Resolved'">Resolved</button>
     </div>
     <div x-h-chip :data-variant="filter === 'All' ? 'primary' : 'outline'">
-      <button x-h-chip-button @click="filter = 'All'">All</button>
+      <button x-h-chip-button :aria-pressed="filter === 'All'" @click="filter = 'All'">All</button>
     </div>
     <div class="flex-1"></div>
     <span class="text-sm text-muted-foreground">Approving or rejecting updates the dashboard, sidebar badges, and activity feed.</span>
@@ -21,7 +21,7 @@
   <template x-if="list.length">
     <ul x-h-list class="overflow-hidden rounded-lg border" aria-label="Approval requests">
       <template x-for="approval in list" :key="approval.id">
-        <li x-h-list-item class="vbox items-stretch gap-3 px-4 py-3">
+        <li x-h-list-item class="vbox items-stretch gap-3 px-3">
           <div class="hbox flex-wrap items-center gap-3">
             <div x-h-avatar x-text="approval.initials"></div>
             <div class="vbox min-w-0 flex-1">

@@ -32,6 +32,15 @@ document.addEventListener('alpine:init', () => {
   };
   const currencyCodes = { usd: 'USD', eur: 'EUR', gbp: 'GBP' };
   const moneyFormatters = {};
+  // One display config per "Date format" choice on the Settings page. The same
+  // config drives the store's date() helper and the New invoice date picker, so
+  // the tables and the picker's input always agree.
+  const dateDisplays = {
+    mdy: { locale: 'en-US', options: { dateStyle: 'medium' } },
+    dmy: { locale: 'en-GB', options: { dateStyle: 'medium' } },
+    iso: { order: 'YMD', delimiter: '-', options: { year: 'numeric', month: '2-digit', day: '2-digit' } },
+  };
+  const dateFormatters = {};
 
   Alpine.store('erp', {
     invoices: [],
@@ -88,7 +97,12 @@ document.addEventListener('alpine:init', () => {
           Harmonia.setColorScheme(mode);
         },
       };
-      if (notify) this.toast('Workspace reset', 'All demo data has been restored to its initial state.', 'information');
+      // The initial load keeps whatever scheme the visitor already had, but the
+      // Reset workspace dialog promises to reset the theme preference too.
+      if (notify) {
+        this.settings.theme = 'auto';
+        this.toast('Workspace reset', 'All demo data has been restored to its initial state.', 'information');
+      }
     },
 
     // ---- notifications (toasts) ----
@@ -112,22 +126,25 @@ document.addEventListener('alpine:init', () => {
       moneyFormatters[key] ??= new Intl.NumberFormat('en-US', { style: 'currency', currency: code, minimumFractionDigits: kind === 'whole' ? 0 : 2, maximumFractionDigits: kind === 'whole' ? 0 : 2 });
       return moneyFormatters[key].format(value);
     },
+    get dateDisplay() {
+      return dateDisplays[this.settings.dateFormat] || dateDisplays.mdy;
+    },
+    dateFormatter(format = this.settings.dateFormat) {
+      return (dateFormatters[format] ??= Harmonia.createDateFormatter(dateDisplays[format] || dateDisplays.mdy));
+    },
     date(iso) {
       if (!iso) return '';
-      if (this.settings.dateFormat === 'iso') return iso;
-      const locale = this.settings.dateFormat === 'dmy' ? 'en-GB' : 'en-US';
-      // A bare "YYYY-MM-DD" is parsed as UTC midnight, which formats as the day
-      // before west of Greenwich, so a date-only value gets an explicit local time.
-      const value = iso.length === 10 ? iso + 'T00:00:00' : iso.replace(' ', 'T');
-      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(value));
+      const formatter = this.dateFormatter();
+      // The formatter reads a bare "YYYY-MM-DD" as a local day. A value with a
+      // time ("YYYY-MM-DD HH:MM") goes through the Date constructor instead.
+      return formatter.format(iso.length === 10 ? formatter.parse(iso) : new Date(iso.replace(' ', 'T')));
     },
     // Today rendered in one specific format, for the Settings options that show
     // what each choice looks like. Reads today rather than a fixed example date,
     // so the sample matches the dates the tables are showing.
     dateSample(format) {
-      if (format === 'iso') return this.today;
-      const locale = format === 'dmy' ? 'en-GB' : 'en-US';
-      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(this.today + 'T00:00:00'));
+      const formatter = this.dateFormatter(format);
+      return formatter.format(formatter.parse(this.today));
     },
     statusVariant(status) {
       return statusVariants[status] || 'outline';
