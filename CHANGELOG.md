@@ -2,7 +2,7 @@
 
 ## v3.6.0
 
-A release that fixes an input group that showed no error for a natively invalid control, and a slot picker that showed its generated schedule for an empty `slots` array. There are no breaking changes.
+A release that fixes an input group that showed no error for a natively invalid control, and a slot picker that showed its generated schedule for an empty `slots` array and jumped back to `date` whenever its configuration changed. The slot picker also gains a `range-change` event that reports the visible range. There are no breaking changes.
 
 ### Input Group
 
@@ -11,6 +11,8 @@ A release that fixes an input group that showed no error for a natively invalid 
 ### Slot Picker
 
 - **Fixed: an empty `slots` array showed the generated schedule.** The picker treated `slots: []` as if `slots` had not been set and filled every day with the `start`/`end`/`step` schedule. An empty array now shows every day empty, the same as a day without an entry in a non-empty array, unless `fillEmptyDays` is set. A `slots` value that is not an array selects the generated schedule instead of throwing.
+- **Fixed: the visible range jumped back to `date` whenever the configuration changed.** Replacing `slots` or any other key now keeps the days the user paged to. Only a new `date` moves the visible range.
+- **New: `range-change` event.** Dispatched with the first and last visible dates whenever the visible range changes, and once after the picker initializes.
 
 ## v3.5.1
 

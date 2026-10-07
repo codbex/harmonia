@@ -10,6 +10,8 @@ Set `days` to control how many day columns are shown (1 to 7). The picker render
 
 ## Behavior
 
+Changing the configuration keeps the days in view. Replacing `slots`, for example when fresh data arrives or to accept a drop, re-renders the visible days without moving them, and only a new `date` moves the visible range. The picker dispatches `range-change` with the first and last visible dates once after it initializes and whenever the range moves, whether through the controls, the date dialog or the configuration, so a page can load the slots for the days in view (see [Load slots for the visible range](#load-slots-for-the-visible-range)).
+
 Set `draggable: true` in the configuration to let users reorder slots within a day and move them to another visible day by dragging them. Dragging requires explicit `slots` (there must be an array to reorder), so generated slots (shorthand mode and `fillEmptyDays` fillers) never drag:
 
 - While a slot is dragged, a half-transparent copy of it follows the pointer, and the slot itself (dimmed) moves through the day lists live. The surrounding slots part around it by exactly its own space, always showing where the drop will land.
@@ -76,7 +78,7 @@ Pass a configuration object as an Alpine expression.
 
 | Key              | Default     | Description                                                                                                                                                                                                                       |
 | ---------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date             | today       | The starting date of the visible window. Accepts a `YYYY-MM-DD` string or a `Date` object.                                                                                                                                        |
+| date             | today       | The starting date of the visible window. Accepts a `YYYY-MM-DD` string or a `Date` object. Changing it moves the visible range. Other keys keep the days in view.                                                                 |
 | days             | `3`         | Number of day columns to show. Clamped to the range 1 to 7.                                                                                                                                                                       |
 | start            | `'08:00'`   | The first time slot of the day as `HH:MM`. Used in shorthand mode (when `slots` is not provided).                                                                                                                                 |
 | end              | `'18:00'`   | The exclusive end time as `HH:MM`. Used in shorthand mode.                                                                                                                                                                        |
@@ -136,10 +138,11 @@ A selected sub-slot tile uses a composite key of the form `'YYYY-MM-DDTHH:MM#ind
 
 ### Events
 
-| Event      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| slot-click | Dispatched on every slot click, including deselection and when no `x-model` is bound (in which case `selected` is always `false`). `event.detail.slot` contains `date`, `start`, `end`, `available`, `selected` (the new state after the click), `description`, `note`, `color`, `status`, `key`, and `tileIndex` (a number for a tile, `null` for a plain slot).                                                                                                                                                                 |
-| slot-drop  | Dispatched when a dragged slot is dropped at a new position (requires the `draggable` option, dropping at the unchanged position dispatches nothing). `event.detail.slot` carries the same fields as `slot-click`'s detail without `selected`. `event.detail.date` is the target day as `YYYY-MM-DD` and `event.detail.index` the slot's new position within that day's slot list. `event.detail.slots` is a new array with the move applied, built without mutating yours - assign it to your `slots` config to accept the move. |
+| Event        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| slot-click   | Dispatched on every slot click, including deselection and when no `x-model` is bound (in which case `selected` is always `false`). `event.detail.slot` contains `date`, `start`, `end`, `available`, `selected` (the new state after the click), `description`, `note`, `color`, `status`, `key`, and `tileIndex` (a number for a tile, `null` for a plain slot).                                                                                                                                                                 |
+| range-change | Dispatched once after the picker initializes and whenever the visible range changes, whether through the controls, the date dialog, or a new `date` or `days` in the configuration. `event.detail.from` and `event.detail.to` are the first and last visible dates as `YYYY-MM-DD`. Replacing `slots` in the handler keeps the range, so it is the place to load the slots for the days in view.                                                                                                                                  |
+| slot-drop    | Dispatched when a dragged slot is dropped at a new position (requires the `draggable` option, dropping at the unchanged position dispatches nothing). `event.detail.slot` carries the same fields as `slot-click`'s detail without `selected`. `event.detail.date` is the target day as `YYYY-MM-DD` and `event.detail.index` the slot's new position within that day's slot list. `event.detail.slots` is a new array with the move applied, built without mutating yours - assign it to your `slots` config to accept the move. |
 
 ### Data Slots
 
@@ -603,6 +606,58 @@ Set `days` to show up to seven day columns at once. The previous/next buttons th
     },
   }));
 </script>
+```
+
+</LiveExample>
+
+### Load slots for the visible range
+
+Handle `range-change` to load the slots for the days in view. The event reports the first and last visible dates once after the picker initializes and again whenever the user pages or picks a date, so one handler covers the initial load and every move. Assigning the loaded `slots` keeps the days in view. Here `loadSlots` stands in for a request to your API and generates two slots for each visible day.
+
+<LiveExample data-class="p-0 overflow-visible">
+
+```html
+<div
+  x-data="{
+    config: {},
+    selected: null,
+    range: '',
+    init() {
+      const today = new Date().toISOString().slice(0, 10);
+      this.config = { date: today, slots: [] };
+    },
+    loadSlots({ from, to }) {
+      const slots = [];
+      const day = new Date(from);
+      while (day.toISOString().slice(0, 10) <= to) {
+        const date = day.toISOString().slice(0, 10);
+        slots.push({ date, start: '09:00', end: '09:30' }, { date, start: '11:00', end: '11:30', description: 'Consultation', color: 'blue' });
+        day.setUTCDate(day.getUTCDate() + 1);
+      }
+      this.config.slots = slots;
+      this.range = from + ' to ' + to;
+    }
+  }"
+>
+  <div x-h-slot-picker="config" x-model="selected" class="rounded-md" @range-change="loadSlots($event.detail)">
+    <div x-h-toolbar data-variant="transparent">
+      <div x-h-button-group>
+        <button x-h-button data-variant="outline" data-size="icon" aria-label="Previous" x-h-slot-picker-previous>
+          <svg x-h-icon data-icon="chevron-left" role="presentation"></svg>
+        </button>
+        <button x-h-button data-variant="outline" data-size="icon" aria-label="Choose date" x-h-slot-picker-calendar>
+          <svg x-h-icon data-icon="calendar" role="presentation"></svg>
+        </button>
+        <button x-h-button data-variant="outline" data-size="icon" aria-label="Next" x-h-slot-picker-next>
+          <svg x-h-icon data-icon="chevron-right" role="presentation"></svg>
+        </button>
+      </div>
+      <div x-h-slot-picker-title></div>
+      <button x-h-button data-variant="outline" x-h-slot-picker-today>Today</button>
+    </div>
+  </div>
+  <p class="border-t p-3 text-center text-sm text-muted-foreground">Loaded slots for <span x-text="range" class="font-medium text-foreground"></span></p>
+</div>
 ```
 
 </LiveExample>

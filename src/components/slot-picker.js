@@ -23,6 +23,9 @@ export default function (Alpine) {
 
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
+    // The `date` last applied from the config, as YYYY-MM-DD. The config effect
+    // re-runs on any change, so only a different value may move the visible range.
+    let appliedDate = null;
     let dayCount = 3;
     let slotStart = '08:00';
     let slotEnd = '18:00';
@@ -683,6 +686,24 @@ export default function (Alpine) {
       else scheduleNowTick(positionNowIndicator());
     }
 
+    // The visible range, reported to the page as `range-change` whenever it moves.
+    // The first render runs while Alpine still initializes the host, so a
+    // listener written after the directive is not attached yet - that first report waits a microtask.
+    let announcedFrom = null;
+    let announcedTo = null;
+
+    function announceRange(days) {
+      const from = toDateString(days[0]);
+      const to = toDateString(days[days.length - 1]);
+      if (from === announcedFrom && to === announcedTo) return;
+      const first = announcedFrom === null;
+      announcedFrom = from;
+      announcedTo = to;
+      const dispatch = () => el.dispatchEvent(new CustomEvent('range-change', { bubbles: true, detail: { from, to } }));
+      if (first) queueMicrotask(dispatch);
+      else dispatch();
+    }
+
     // Render
 
     const dtf = createDateTimeFormatCache();
@@ -824,6 +845,7 @@ export default function (Alpine) {
       }
 
       updateNavState();
+      announceRange(days);
     }
 
     // Calendar popover: jump the first day to any date via the shared calendar widget.
@@ -940,7 +962,14 @@ export default function (Alpine) {
 
     function setConfig(config) {
       if (!config) return;
-      if (config.date !== undefined) currentDate = toMidnight(config.date);
+      if (config.date !== undefined) {
+        const next = toMidnight(config.date);
+        const key = toDateString(next);
+        if (key !== appliedDate) {
+          appliedDate = key;
+          currentDate = next;
+        }
+      }
       if (config.days !== undefined) {
         const n = Math.round(Number(config.days));
         dayCount = Number.isFinite(n) ? Math.min(7, Math.max(1, n)) : 3;

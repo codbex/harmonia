@@ -1760,4 +1760,121 @@ describe('h-slot-picker', () => {
       expect(indicatorIndex(0)).toBe(idx); // nothing moved after teardown
     });
   });
+
+  describe('visible range', () => {
+    const firstHeader = () => el.querySelector('[data-slot="slot-picker-header"]').textContent;
+    const tick = () => new Promise((resolve) => queueMicrotask(resolve));
+    const detail = (handler, i = 0) => handler.mock.calls[i][0].detail;
+
+    // Pin today to June 22 so the today control is deterministic. Only Date is
+    // faked: the deferred initial range-change still runs as a real microtask.
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date(2026, 5, 22, 12));
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    // Mount with a reactive config and let the deferred initial range-change
+    // pass, so a handler added afterwards sees only the moves under test.
+    async function mountReactive(initial) {
+      const cfg = createMockAlpine().reactive({ value: initial });
+      mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+      await tick();
+      return cfg;
+    }
+
+    function listen() {
+      const handler = vi.fn();
+      el.addEventListener('range-change', handler);
+      return handler;
+    }
+
+    it('keeps the visible range when slots are replaced after paging', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE, slots: [] });
+      el._h_slot_picker.next();
+      expect(firstHeader()).toContain('June 25');
+      cfg.value = { date: FIXED_DATE, slots: [{ date: '2026-06-25', start: '09:00', end: '09:30' }] };
+      expect(firstHeader()).toContain('June 25');
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(1);
+    });
+
+    it('keeps the visible range when days changes after paging', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE });
+      el._h_slot_picker.next();
+      cfg.value = { date: FIXED_DATE, days: 5 };
+      expect(firstHeader()).toContain('June 25');
+      expect(el.querySelectorAll('[data-slot="slot-picker-header"]').length).toBe(5);
+    });
+
+    it('moves the visible range when date changes', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE });
+      el._h_slot_picker.next();
+      cfg.value = { date: '2026-07-01' };
+      expect(firstHeader()).toContain('July 1');
+    });
+
+    it('compares a Date value by day, so a new Date object for the same day keeps the range', async () => {
+      const cfg = await mountReactive({ date: new Date(2026, 5, 22) });
+      el._h_slot_picker.next();
+      cfg.value = { date: new Date(2026, 5, 22) };
+      expect(firstHeader()).toContain('June 25');
+      cfg.value = { date: new Date(2026, 6, 1) };
+      expect(firstHeader()).toContain('July 1');
+    });
+
+    it('dispatches range-change once after init, after the directive has run', async () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const handler = listen();
+      expect(handler).not.toHaveBeenCalled();
+      await tick();
+      expect(handler).toHaveBeenCalledOnce();
+      expect(detail(handler)).toEqual({ from: '2026-06-22', to: '2026-06-24' });
+    });
+
+    it('dispatches a bubbling range-change on next, previous and today', async () => {
+      await mountReactive({ date: '2026-06-01' });
+      const handler = listen();
+      el._h_slot_picker.next();
+      expect(detail(handler, 0)).toEqual({ from: '2026-06-04', to: '2026-06-06' });
+      el._h_slot_picker.previous();
+      expect(detail(handler, 1)).toEqual({ from: '2026-06-01', to: '2026-06-03' });
+      el._h_slot_picker.today();
+      expect(detail(handler, 2)).toEqual({ from: '2026-06-22', to: '2026-06-24' });
+      expect(handler.mock.calls[2][0].bubbles).toBe(true);
+      expect(handler).toHaveBeenCalledTimes(3);
+    });
+
+    it('dispatches range-change when date or days changes in the config, not when slots change', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE });
+      const handler = listen();
+      cfg.value = { date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30' }] };
+      expect(handler).not.toHaveBeenCalled();
+      cfg.value = { date: FIXED_DATE, days: 5 };
+      expect(detail(handler, 0)).toEqual({ from: '2026-06-22', to: '2026-06-26' });
+      cfg.value = { date: '2026-07-01', days: 5 };
+      expect(detail(handler, 1)).toEqual({ from: '2026-07-01', to: '2026-07-05' });
+      expect(handler).toHaveBeenCalledTimes(2);
+    });
+
+    it('dispatches nothing when today is pressed while today is already the first visible day', async () => {
+      await mountReactive({ date: FIXED_DATE });
+      const handler = listen();
+      el._h_slot_picker.today();
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('dispatches range-change when a date is picked in the calendar dialog', async () => {
+      await mountReactive({ date: FIXED_DATE });
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', 'Choose date');
+      el.appendChild(btn);
+      mountDirective(slotPickerPlugin, 'h-slot-picker-calendar', btn, { original: 'h-slot-picker-calendar' });
+      const handler = listen();
+      btn.click();
+      el.querySelector('[data-slot="slot-picker-calendar"] td[data-day="10"]').click();
+      expect(detail(handler)).toEqual({ from: '2026-06-10', to: '2026-06-12' });
+    });
+  });
 });
