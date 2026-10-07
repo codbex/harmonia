@@ -948,7 +948,7 @@ export default function (Alpine) {
       if (config.start !== undefined) slotStart = config.start;
       if (config.end !== undefined) slotEnd = config.end;
       if (config.step !== undefined) slotStep = Number(config.step);
-      if (config.slots !== undefined) explicitSlots = config.slots.length ? config.slots : null;
+      if (config.slots !== undefined) explicitSlots = Array.isArray(config.slots) ? config.slots : null;
       if (config.fillEmptyDays !== undefined) fillEmptyDays = !!config.fillEmptyDays;
       if (config.multiple !== undefined) multiple = !!config.multiple;
       if (config.showNowIndicator !== undefined) showNowIndicator = !!config.showNowIndicator;

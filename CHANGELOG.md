@@ -2,11 +2,15 @@
 
 ## v3.6.0
 
-A release that fixes an input group that showed no error for a natively invalid control. There are no breaking changes.
+A release that fixes an input group that showed no error for a natively invalid control, and a slot picker that showed its generated schedule for an empty `slots` array. There are no breaking changes.
 
 ### Input Group
 
 - **Fixed: an input group showed no error for a natively invalid control.** The group's border and ring now turn negative once its control is `:user-invalid` (after the user has interacted with it or a submit was attempted), or immediately under a `data-validate="immediate"` ancestor, like the other controls. Setting `aria-invalid="true"` on the control still shows it at once.
+
+### Slot Picker
+
+- **Fixed: an empty `slots` array showed the generated schedule.** The picker treated `slots: []` as if `slots` had not been set and filled every day with the `start`/`end`/`step` schedule. An empty array now shows every day empty, the same as a day without an entry in a non-empty array, unless `fillEmptyDays` is set. A `slots` value that is not an array selects the generated schedule instead of throwing.
 
 ## v3.5.1
 

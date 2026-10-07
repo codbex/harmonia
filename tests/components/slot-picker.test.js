@@ -364,6 +364,33 @@ describe('h-slot-picker', () => {
     });
   });
 
+  describe('empty slots array', () => {
+    it('shows every day empty for an empty slots array', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: [] }));
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(0);
+    });
+
+    it('fills every day from the default schedule for an empty slots array with fillEmptyDays', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: [], fillEmptyDays: true }));
+      // Every day is empty, so each falls back to 08:00-18:00 / 60 min = 10 slots.
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(30);
+    });
+
+    it('empties every day when the slots array becomes empty at runtime', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true }];
+      const cfg = createMockAlpine().reactive({ value: { date: FIXED_DATE, slots } });
+      mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(1);
+      cfg.value = { slots: [] };
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(0);
+    });
+
+    it('uses the generated schedule when slots is null', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: null }));
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(30);
+    });
+  });
+
   describe('start and end day bounds', () => {
     const canPrev = () => el._h_slot_picker.canPrev;
     const canNext = () => el._h_slot_picker.canNext;
