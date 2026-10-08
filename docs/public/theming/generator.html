@@ -418,6 +418,18 @@
             "--table-hover-foreground",
             "--table-active",
             "--table-active-foreground",
+            "--chart-color-1",
+            "--chart-color-2",
+            "--chart-color-3",
+            "--chart-color-4",
+            "--chart-color-5",
+            "--chart-color-6",
+            "--chart-color-7",
+            "--chart-color-8",
+            "--chart-color-9",
+            "--chart-color-10",
+            "--chart-color-11",
+            "--chart-color-12",
           ],
           shadowVars: ["--shadow-xs", "--shadow-sm", "--shadow-md", "--shadow-lg", "--shadow-xl", "--shadow-button", "--shadow-input"],
           fontVars: ["--font-sans", "--font-serif", "--font-mono", "--tracking-normal"],
@@ -432,13 +444,14 @@
           },
           getHexColor(color) {
             if (color.startsWith("var(")) {
-              const colorName = color.replace("var(", "").replace(")", "");
-              if (this.mode === "dark") {
-                for (let c = 0; c < this.colors.dark.length; c++) {
-                  if (this.colors.dark[c].name === colorName) return ColorConvert.formatHex(this.colors.dark[c].value);
-                }
-              }
-            } else return ColorConvert.formatHex(color);
+              // A value referencing another variable, like the chart colors' default
+              // `var(--color-blue-500)`, should be resolved from this mode's list, or from the computed root style.
+              const ref = color.slice(4, -1).trim();
+              const known = this.colors[this.mode === "dark" ? "dark" : "light"].find((c) => c.varId === ref);
+              const value = known ? known.value : getComputedStyle(document.documentElement).getPropertyValue(ref).trim();
+              return value ? ColorConvert.formatHex(value) : undefined;
+            }
+            return ColorConvert.formatHex(color);
           },
           applyColSelect(event, varId) {
             event.target.nextElementSibling.value = event.target.value;

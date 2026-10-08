@@ -80,6 +80,19 @@
   --table-active: oklch(0.9393 0.0011 197.14);
   --table-active-foreground: oklch(0.3211 0 0);
 
+  --chart-color-1: var(--color-blue-500);
+  --chart-color-2: var(--color-red-500);
+  --chart-color-3: var(--color-green-500);
+  --chart-color-4: var(--color-orange-500);
+  --chart-color-5: var(--color-purple-500);
+  --chart-color-6: var(--color-teal-500);
+  --chart-color-7: var(--color-pink-500);
+  --chart-color-8: var(--color-indigo-500);
+  --chart-color-9: var(--color-yellow-500);
+  --chart-color-10: var(--color-gray-500);
+  --chart-color-11: var(--color-white);
+  --chart-color-12: var(--color-black);
+
   --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -163,6 +176,19 @@
   --table-active: oklch(0.2221 0 0);
   --table-active-foreground: oklch(1 0 0);
 
+  --chart-color-1: var(--color-blue-500);
+  --chart-color-2: var(--color-red-500);
+  --chart-color-3: var(--color-green-500);
+  --chart-color-4: var(--color-orange-500);
+  --chart-color-5: var(--color-purple-500);
+  --chart-color-6: var(--color-teal-500);
+  --chart-color-7: var(--color-pink-500);
+  --chart-color-8: var(--color-indigo-500);
+  --chart-color-9: var(--color-yellow-500);
+  --chart-color-10: var(--color-gray-500);
+  --chart-color-11: var(--color-white);
+  --chart-color-12: var(--color-black);
+
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 3px -2px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 3px 6px -1px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -235,6 +261,19 @@
   --color-table-hover-foreground: var(--table-hover-foreground);
   --color-table-active: var(--table-active);
   --color-table-active-foreground: var(--table-active-foreground);
+
+  --color-chart-1: var(--chart-color-1);
+  --color-chart-2: var(--chart-color-2);
+  --color-chart-3: var(--chart-color-3);
+  --color-chart-4: var(--chart-color-4);
+  --color-chart-5: var(--chart-color-5);
+  --color-chart-6: var(--chart-color-6);
+  --color-chart-7: var(--chart-color-7);
+  --color-chart-8: var(--chart-color-8);
+  --color-chart-9: var(--chart-color-9);
+  --color-chart-10: var(--chart-color-10);
+  --color-chart-11: var(--chart-color-11);
+  --color-chart-12: var(--chart-color-12);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

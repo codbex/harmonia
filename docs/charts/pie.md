@@ -22,19 +22,21 @@ x-h-chart-pie
 
 ### Configuration
 
-| Key             | Type                              | Default          | Description                                                                         |
-| --------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------------------- |
-| `slices`        | `{ label, value, color? }[]`      | required         | The slices to draw. Only positive values are shown.                                 |
-| `series`        | `{ data: number[] }[]` + `labels` | required         | Alternative to `slices`. Тhe first series' values become slices, named by `labels`. |
-| `legend`        | boolean                           | `true`           | Show the color/label key.                                                           |
-| `tooltip`       | boolean                           | `true`           | Show a tooltip on hover and emit interaction events.                                |
-| `dataLabels`    | boolean                           | `true`           | Draw each slice's percentage on the slice (hidden for slices under 5%).             |
-| `labelPosition` | `'inside'` \| `'outside'`         | `'inside'`       | Place the percentage labels inside each slice or just outside the slice edge.       |
-| `valueFormat`   | `(value) => string`               | locale number    | Formats values in tooltips.                                                         |
-| `palette`       | string[]                          | theme tokens     | Color tokens cycled for slices without an explicit `color`.                         |
-| `tableLabels`   | `{ segment?, value? }`            | English defaults | Column headers of the hidden data table read by screen readers.                     |
+| Key             | Type                              | Default                | Description                                                                                             |
+| --------------- | --------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| `slices`        | `{ label, value, color? }[]`      | required               | The slices to draw. Only positive values are shown. For `color` values, see [Colors](#colors).          |
+| `series`        | `{ data: number[] }[]` + `labels` | required               | Alternative to `slices`. Тhe first series' values become slices, named by `labels`.                     |
+| `legend`        | boolean                           | `true`                 | Show the color/label key.                                                                               |
+| `tooltip`       | boolean                           | `true`                 | Show a tooltip on hover and emit interaction events.                                                    |
+| `dataLabels`    | boolean                           | `true`                 | Draw each slice's percentage on the slice (hidden for slices under 5%).                                 |
+| `labelPosition` | `'inside'` \| `'outside'`         | `'inside'`             | Place the percentage labels inside each slice or just outside the slice edge.                           |
+| `valueFormat`   | `(value) => string`               | locale number          | Formats values in tooltips.                                                                             |
+| `palette`       | string[]                          | `color-1` to `color-9` | Chart colors cycled for slices without an explicit `color`. See [Colors](#colors) for more information. |
+| `tableLabels`   | `{ segment?, value? }`            | English defaults       | Column headers of the hidden data table read by screen readers.                                         |
 
-A slice `color` (and the `palette` entries) is one of the standard color names - `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
+#### Colors
+
+A slice `color` (and the `palette` entries) is one of the chart colors `color-1` to `color-12`. They paint with the theme's `--chart-color-1` to `--chart-color-12` variables (see [Theme Customization](/custom-themes#colors)). By default, they map to blue, red, green, orange, purple, teal, pink, indigo, yellow, gray, white and black. The standard color names (`red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white` and `black`) are deprecated. They still work but they will be removed in the next major version.
 
 ### Accessibility
 
@@ -60,7 +62,7 @@ Each event's `detail` is:
   categoryIndex: number, // data index (bar/line) or slice index (pie)
   label: string,
   value: number,
-  color: string          // standard color name
+  color: string          // 'color-1' to 'color-12', or a deprecated standard color name
 }
 ```
 

@@ -6,8 +6,13 @@
 // the consumer pick from the standard colors.
 export const KNOWN_COLORS = ['white', 'black', 'red', 'orange', 'yellow', 'green', 'teal', 'blue', 'indigo', 'purple', 'pink', 'gray'];
 
-// Resolve a color name to its underlying token (chromatic colors use the 500 step).
+// The chart colors `color-1` to `color-12`.
+// Each paints with the theme's `--chart-color-<n>` variable (src/styles/globals.css) through the `<utility>-chart-<n>` classes, so a theme can restyle the charts.
+export const CHART_COLORS = Array.from({ length: 12 }, (_, i) => `color-${i + 1}`);
+
+// Resolve a color name to its underlying token (chromatic colors use the 500 <step, chart colors their `chart-<n>` theme key).
 export function colorToken(name) {
+  if (CHART_COLORS.includes(name)) return name.replace('color-', 'chart-');
   return name === 'white' || name === 'black' ? name : `${name}-500`;
 }
 
@@ -28,7 +33,8 @@ export function textColorClass(name) {
 }
 
 export function colorVar(name) {
-  return `var(--color-${colorToken(name)})`;
+  // The chart keys are `@theme inline`, so at runtime only `--chart-color-<n>` exists.
+  return CHART_COLORS.includes(name) ? `var(--chart-${name})` : `var(--color-${colorToken(name)})`;
 }
 
 // Return `name` when it is a known standard color, otherwise `fallback`.

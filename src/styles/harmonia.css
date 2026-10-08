@@ -245,6 +245,8 @@
 /* SVG paint utilities for the charts (same palette) */
 @source inline("{fill,stroke}-{white,black}");
 @source inline("{fill,stroke}-{red,orange,yellow,green,blue,purple,pink,indigo,gray,teal}-500");
+/* The theme's chart colors (--chart-color-1 to --chart-color-12) */
+@source inline("{fill,stroke}-chart-{1..12}");
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;

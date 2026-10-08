@@ -115,6 +115,36 @@ This approach keeps theming lightweight, flexible, and easy to maintain.
 | --table-hover-foreground       | Foreground color applied to hovered table elements.                                         |
 | --table-active                 | Background color applied to active or selected table elements.                              |
 | --table-active-foreground      | Foreground color applied to active or selected table elements.                              |
+| --chart-color-1                | First chart color. Defaults to the standard blue.                                           |
+| --chart-color-2                | Second chart color. Defaults to the standard red.                                           |
+| --chart-color-3                | Third chart color. Defaults to the standard green.                                          |
+| --chart-color-4                | Fourth chart color. Defaults to the standard orange.                                        |
+| --chart-color-5                | Fifth chart color. Defaults to the standard purple.                                         |
+| --chart-color-6                | Sixth chart color. Defaults to the standard teal.                                           |
+| --chart-color-7                | Seventh chart color. Defaults to the standard pink.                                         |
+| --chart-color-8                | Eighth chart color. Defaults to the standard indigo.                                        |
+| --chart-color-9                | Ninth chart color. Defaults to the standard yellow.                                         |
+| --chart-color-10               | Tenth chart color. Defaults to the standard gray.                                           |
+| --chart-color-11               | Eleventh chart color. Defaults to the standard white.                                       |
+| --chart-color-12               | Twelfth chart color. Defaults to the standard black.                                        |
+
+Charts paint their series and slices with `--chart-color-1` to `--chart-color-12`, so a theme can give them its own palette:
+
+```css
+:root,
+:host,
+.light {
+  --chart-color-1: oklch(0.55 0.2 280);
+  --chart-color-2: oklch(0.7 0.17 60);
+  --chart-color-3: oklch(0.65 0.15 170);
+}
+
+.dark {
+  --chart-color-1: oklch(0.7 0.17 280);
+  --chart-color-2: oklch(0.78 0.15 60);
+  --chart-color-3: oklch(0.75 0.13 170);
+}
+```
 
 ### Fonts
 

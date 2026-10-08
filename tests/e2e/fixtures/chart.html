@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>chart fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div
+      id="bar"
+      style="height: 20rem"
+      x-h-chart-bar="{
+        labels: ['Q1', 'Q2', 'Q3'],
+        series: [
+          { name: 'First', data: [12, 19, 7] },
+          { name: 'Second', data: [8, 11, 5] },
+          { name: 'Green', color: 'green', data: [4, 6, 3] }
+        ]
+      }"
+    ></div>
+  </body>
+</html>

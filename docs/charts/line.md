@@ -22,22 +22,24 @@ x-h-chart-line
 
 ### Configuration
 
-| Key           | Type                                  | Default          | Description                                                            |
-| ------------- | ------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
-| `series`      | `{ name?, color?, data: number[] }[]` | `[]`             | One entry per line. Multiple series are overlaid.                      |
-| `labels`      | string[]                              | `[]`             | Label for each data index.                                             |
-| `legend`      | boolean                               | `true`           | Show the color/label key.                                              |
-| `axes`        | boolean                               | `true`           | Show the numeric axis ticks and labels.                                |
-| `gridlines`   | boolean                               | `true`           | Show gridlines behind the lines.                                       |
-| `tooltip`     | boolean                               | `true`           | Show a tooltip on hover and emit interaction events.                   |
-| `dataLabels`  | boolean                               | `false`          | Draw each point's value next to it.                                    |
-| `tickCount`   | number                                | `5`              | Target number of numeric axis ticks.                                   |
-| `valueFormat` | `(value) => string`                   | locale number    | Formats values in tooltips and numeric axis ticks.                     |
-| `palette`     | string[]                              | theme tokens     | Color tokens cycled for series without an explicit `color`.            |
-| `seriesLabel` | string                                | `Series {index}` | Template naming a series that has no `name`. `{index}` is substituted. |
-| `tableLabels` | `{ category? }`                       | English defaults | Column headers of the hidden data table read by screen readers.        |
+| Key           | Type                                  | Default                | Description                                                                                             |
+| ------------- | ------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| `series`      | `{ name?, color?, data: number[] }[]` | `[]`                   | One entry per line. Multiple series are overlaid. For `color` values, see [Colors](#colors).            |
+| `labels`      | string[]                              | `[]`                   | Label for each data index.                                                                              |
+| `legend`      | boolean                               | `true`                 | Show the color/label key.                                                                               |
+| `axes`        | boolean                               | `true`                 | Show the numeric axis ticks and labels.                                                                 |
+| `gridlines`   | boolean                               | `true`                 | Show gridlines behind the lines.                                                                        |
+| `tooltip`     | boolean                               | `true`                 | Show a tooltip on hover and emit interaction events.                                                    |
+| `dataLabels`  | boolean                               | `false`                | Draw each point's value next to it.                                                                     |
+| `tickCount`   | number                                | `5`                    | Target number of numeric axis ticks.                                                                    |
+| `valueFormat` | `(value) => string`                   | locale number          | Formats values in tooltips and numeric axis ticks.                                                      |
+| `palette`     | string[]                              | `color-1` to `color-9` | Chart colors cycled for series without an explicit `color`. See [Colors](#colors) for more information. |
+| `seriesLabel` | string                                | `Series {index}`       | Template naming a series that has no `name`. `{index}` is substituted.                                  |
+| `tableLabels` | `{ category? }`                       | English defaults       | Column headers of the hidden data table read by screen readers.                                         |
 
-A series `color` (and the `palette` entries) is one of the standard color names - `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
+#### Colors
+
+A series `color` (and the `palette` entries) is one of the chart colors `color-1` to `color-12`. They paint with the theme's `--chart-color-1` to `--chart-color-12` variables (see [Theme Customization](/custom-themes#colors)). By default, they map to blue, red, green, orange, purple, teal, pink, indigo, yellow, gray, white and black. The standard color names (`red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white` and `black`) are deprecated. They still work but they will be removed in the next major version.
 
 ### Accessibility
 

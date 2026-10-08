@@ -2,7 +2,14 @@
 
 ## v3.6.0
 
-A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs and the shared calendar ignoring a `firstDay` of `0`. There are no breaking changes.
+A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. Charts take their colors from the new `--chart-color-1` to `--chart-color-12` theme variables, and the standard color names are deprecated as chart colors. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs and the shared calendar ignoring a `firstDay` of `0`. There are no breaking changes.
+
+### Chart
+
+- **New: `--chart-color-1` to `--chart-color-12` theme variables.** They default to the standard blue, red, green, orange, purple, teal, pink, indigo, yellow, gray, white and black, and the theme generator edits them. Series and slices without a `color` cycle through the first nine.
+- **New: `color-1` to `color-12` as `color` and `palette` values.** Each paints with the matching theme variable.
+- **Deprecated: the standard color names (`red`, `blue`, ...) as `color` and `palette` values.** They still work but they will be removed in the next major version.
+- **The `color` in `chart-hover`, `chart-leave` and `chart-click` events reports `color-1` to `color-9` for series without an explicit color** instead of a standard name.
 
 ### Date Picker
 
