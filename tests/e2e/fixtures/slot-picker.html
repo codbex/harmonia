@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>slot picker fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div
+      x-data="{
+        menuAt: null,
+        hit: null,
+        log: [],
+        config: {
+          date: '2025-06-15',
+          days: 3,
+          draggable: true,
+          dropMode: 'slot',
+          clickableHeaders: true,
+          slots: [
+            { id: 'b1', date: '2025-06-15', start: '09:00', end: '09:30', available: false, clickable: true, color: 'blue', description: 'Anna Berg' },
+            { id: 'f1', date: '2025-06-15', start: '10:00', end: '10:30', droppable: true },
+            { id: 'x1', date: '2025-06-15', start: '11:00', end: '11:30', available: false, color: 'gray', description: 'Blocked' },
+            { id: 'f2', date: '2025-06-16', start: '09:00', end: '09:30', droppable: true },
+          ],
+        },
+      }"
+    >
+      <div
+        id="picker"
+        x-h-slot-picker="config"
+        style="height: 20rem"
+        @slot-contextmenu.prevent="hit = $event.detail.slot; menuAt = { x: $event.detail.x, y: $event.detail.y }; log.push('contextmenu ' + hit.item.id)"
+        @slot-drop="log.push('drop ' + $event.detail.slot.item.id + ' onto ' + $event.detail.target.item.id)"
+        @day-click="log.push('day ' + $event.detail.date)"
+        @slot-click="log.push('click ' + $event.detail.slot.item.id + ' ' + $event.detail.slot.available)"
+      >
+        <div x-h-toolbar>
+          <button id="prev" x-h-button x-h-slot-picker-previous aria-label="Previous">Prev</button>
+          <span x-h-slot-picker-title></span>
+          <button id="next" x-h-button x-h-slot-picker-next aria-label="Next">Next</button>
+        </div>
+      </div>
+      <ul id="slot-menu" x-h-menu="menuAt" aria-label="Slot actions">
+        <li id="menu-book" x-h-menu-item @click="log.push('book ' + hit.item.id)">Book</li>
+        <li id="menu-cancel" x-h-menu-item data-variant="negative">Cancel booking</li>
+      </ul>
+      <pre id="log" x-text="log.join(' | ')"></pre>
+    </div>
+    <div
+      x-data="{
+        weekLog: [],
+        week: {
+          date: '2025-06-16',
+          days: 7,
+          draggable: true,
+          slots: ['16', '17', '18', '19', '20', '21', '22']
+            .flatMap((day) => [
+              { date: '2025-06-' + day, start: '09:00', end: '09:30' },
+              { date: '2025-06-' + day, start: '09:30', end: '10:00' },
+            ])
+            .concat([{ date: '2025-06-20', start: '11:00', end: '12:00', description: 'Group session on nutrition and diabetes management', tiles: [{ description: 'Room A' }, { description: 'Room B' }] }]),
+        },
+      }"
+    >
+      <div id="week" x-h-slot-picker="week" style="width: 22rem; height: 20rem" @slot-drop="weekLog.push('week drop ' + $event.detail.date)"></div>
+      <pre id="week-log" x-text="weekLog.join(' | ')"></pre>
+    </div>
+  </body>
+</html>

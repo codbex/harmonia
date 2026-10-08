@@ -68,9 +68,9 @@
 @source inline("w-{1..12}{!,}");
 @source inline("w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl}");
 @source inline("min-w-{1..12}");
-@source inline("min-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto}");
+@source inline("min-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto,fit,min,max}");
 @source inline("max-w-{1..12}");
-@source inline("max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,auto}");
+@source inline("max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,10xl,fit,min,max}");
 @source inline("size-{full,fit}{!,}");
 .min-size-4 {
   @apply min-h-4 min-w-4;

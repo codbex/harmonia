@@ -28,10 +28,11 @@ Use menus to present a set of related actions or navigation links. Menu items sh
 
 #### x-h-menu
 
-| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                                                            |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the menu relative to the cursor or relative to the trigger if in dropdown mode.                                                                                                                                 |
-| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the menu from closing when there is a click inside it.<br/>Enabling or disabling this option on a menu or submenu does not affect its nested submenus. Each menu and submenu can be configured independently. |
+| Attribute        | Type                                                                                                                                                                          | Required | Description                                                                                                                                                                                                                                                                                                                                |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `self`           | object                                                                                                                                                                        | false    | Opens the menu at a point without a trigger. Expects a variable holding `{ x, y }` in viewport coordinates, as reported by `clientX` and `clientY`. Setting it opens the menu there, a new point moves the open menu, and `null` closes it. The menu writes `null` back when it closes itself. Requires `aria-label` or `aria-labelledby`. |
+| data-align       | `bottom-start`<br/>`bottom`<br/>`bottom-end`<br/>`right-start`<br/>`right`<br/>`right-end`<br/>`left-start`<br/>`left`<br/>`left-end`<br/>`top-start`<br/>`top`<br/>`top-end` | false    | Aligns the menu relative to the cursor or relative to the trigger if in dropdown mode.                                                                                                                                                                                                                                                     |
+| data-innerclicks | boolean                                                                                                                                                                       | false    | Prevents the menu from closing when there is a click inside it.<br/>Enabling or disabling this option on a menu or submenu does not affect its nested submenus. Each menu and submenu can be configured independently.                                                                                                                     |
 
 #### x-h-menu-item
 
@@ -113,6 +114,10 @@ The user can use the following keyboard shortcuts in order to navigate through t
 - `Esc` - Closes the menu or submenu and returns focus to the controlling element.
 - `Tab` - Closes the menu and submenus and sets focus to the next element.
 - `Character keys (A-Z)` - Moves focus to the next item whose label starts with the typed character.
+
+## Accessibility
+
+A dropdown menu takes its accessible name from its trigger. A context menu and a menu opened at a point have no trigger to borrow a name from, so give them an `aria-label` or `aria-labelledby` attribute. A menu opened at a point remembers the element that had focus when it opened and hands focus back to it when it closes.
 
 ## Binding
 
@@ -213,6 +218,22 @@ Every kind of item is disabled with `aria-disabled="true"`. It needs the explici
     <li x-h-menu-radio-item="radio.value" name="rg1" x-model="radioSelected" x-text="radio.label"></li>
   </template>
 </ul>
+```
+
+### Open at a point
+
+Bind a variable to `x-h-menu` to open the menu from code at a point, without a trigger. You can use the `clientX` and `clientY` coordinates from a context menu event.
+
+```html
+<div x-data="{ menuAt: null }">
+  <div @contextmenu.prevent="menuAt = { x: $event.clientX, y: $event.clientY }" class="flex items-center justify-center p-12">Right click anywhere in this area</div>
+  <ul x-h-menu="menuAt" aria-label="Slot actions">
+    <li x-h-menu-item>Menu Item 1</li>
+    <li x-h-menu-item>Menu Item 2</li>
+    <div x-h-menu-separator></div>
+    <li x-h-menu-item data-variant="negative">Cancel</li>
+  </ul>
+</div>
 ```
 
 Full docs: https://www.codbex.com/harmonia/components/menu.html

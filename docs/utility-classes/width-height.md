@@ -50,7 +50,11 @@ The minimum width class names start with `min-w`.
 
 | Class        | Description                                               | `!` support |
 | ------------ | --------------------------------------------------------- | ----------- |
+| min-w-auto   | Auto minimum width.                                       | No          |
 | min-w-`0-12` | Minimum width sizes, from 0 to 12.                        | No          |
+| min-w-min    | `min-width: min-content`                                  | No          |
+| min-w-max    | `min-width: max-content`                                  | No          |
+| min-w-fit    | `min-width: fit-content`                                  | No          |
 | min-w-3xs    | `min-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | min-w-2xs    | `min-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | min-w-xs     | `min-width: var(--container-xs); /* 20rem (320px) */`     | No          |
@@ -75,6 +79,9 @@ The maximum width class names start with `max-w`.
 | max-w-screen | Sets maximum width to the width of the screen.            | No          |
 | max-w-dvw    | Sets maximum width to the dynamic width of the screen.    | No          |
 | max-w-`1-12` | Maximum width sizes 1 to 12.                              | No          |
+| max-w-min    | `max-width: min-content`                                  | No          |
+| max-w-max    | `max-width: max-content`                                  | No          |
+| max-w-fit    | `max-width: fit-content`                                  | No          |
 | max-w-3xs    | `max-width: var(--container-3xs); /* 16rem (256px) */`    | No          |
 | max-w-2xs    | `max-width: var(--container-2xs); /* 18rem (288px) */`    | No          |
 | max-w-xs     | `max-width: var(--container-xs); /* 20rem (320px) */`     | No          |

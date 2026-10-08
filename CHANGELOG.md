@@ -2,17 +2,39 @@
 
 ## v3.6.0
 
-A release that fixes an input group that showed no error for a natively invalid control, and a slot picker that showed its generated schedule for an empty `slots` array and jumped back to `date` whenever its configuration changed. The slot picker also gains a `range-change` event that reports the visible range. There are no breaking changes.
+A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, four slot picker bugs and the shared calendar ignoring a `firstDay` of `0`. There are no breaking changes.
+
+### Date Picker
+
+- **Fixed: `firstDay: 0` was ignored once another first day had been set, and a string value scrambled the weekday header.** The calendar is shared, so this applies to every component that shows one.
 
 ### Input Group
 
-- **Fixed: an input group showed no error for a natively invalid control.** The group's border and ring now turn negative once its control is `:user-invalid` (after the user has interacted with it or a submit was attempted), or immediately under a `data-validate="immediate"` ancestor, like the other controls. Setting `aria-invalid="true"` on the control still shows it at once.
+- **Fixed: an input group showed no error for a natively invalid control.** It now follows the same validation timing as the other controls.
 
 ### Slot Picker
 
-- **Fixed: an empty `slots` array showed the generated schedule.** The picker treated `slots: []` as if `slots` had not been set and filled every day with the `start`/`end`/`step` schedule. An empty array now shows every day empty, the same as a day without an entry in a non-empty array, unless `fillEmptyDays` is set. A `slots` value that is not an array selects the generated schedule instead of throwing.
-- **Fixed: the visible range jumped back to `date` whenever the configuration changed.** Replacing `slots` or any other key now keeps the days the user paged to. Only a new `date` moves the visible range.
-- **New: `range-change` event.** Dispatched with the first and last visible dates whenever the visible range changes, and once after the picker initializes.
+- **Fixed: an empty `slots` array showed the generated schedule.** It now shows every day empty, unless `fillEmptyDays` is set.
+- **Fixed: the visible range jumped back to `date` whenever the configuration changed.** Now, only a new `date` moves it.
+- **Fixed: a click after a drag could be swallowed.** The next click on a slot was ignored after a drop outside the dragged slot.
+- **Fixed: day columns ran into each other in a narrow picker.** They now keep the width of their header, and the picker scrolls sideways.
+- **New: `range-change` event.** Reports the first and last visible dates whenever the range changes.
+- **New: `slot-contextmenu` event.** Dispatched by a right-click, a long press or the keyboard on a slot, tile or tile group, with the point to open a menu at. Cancel it to suppress the browser's own menu.
+- **New: `dropMode: 'slot'`.** Drops a slot or tile onto a `droppable` slot instead of reordering a list. `slot-drop` names the dragged item and the target.
+- **New: clickable day headers and markers.** `clickableHeaders` turns each header into a button dispatching `day-click`, and `dayIcons` adds markers to a header's corners.
+- **New: events carry your original objects.** `slot-click`, `slot-drop` and `slot-contextmenu` include `item` and `parent`. Cells, tiles and tile groups carry `data-date`, `data-start` and `data-key`, and a slot or tile can set its own `class` and `data` attributes.
+- **New: `clickable` on an unavailable slot or tile.** It stays a button that dispatches `slot-click` but can never be selected.
+- **New: `firstDay` option.** Sets the first weekday of the date dialog and, with seven visible days, aligns the window to calendar weeks.
+- **New: `tooltip` on a slot or tile.** Replaces the default hover text. An empty string removes it.
+- **Today's day header is underlined in the primary color instead of coloring the day name,** which could be hard to read on some themes.
+
+### Menu
+
+- **New: open at a point.** `x-h-menu` accepts a variable holding `{ x, y }` coordinates, opens there without a trigger and writes `null` back when it closes.
+
+### New utility classes
+
+- **`min-w-fit`, `min-w-min`, `min-w-max`, `max-w-fit`, `max-w-min` and `max-w-max`** are now shipped and documented.
 
 ## v3.5.1
 

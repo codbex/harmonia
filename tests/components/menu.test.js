@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: vi.fn().mockResolvedValue({ x: 10, y: 20, placement: 'bottom' }),
@@ -12,8 +12,9 @@ vi.mock('@floating-ui/dom', () => ({
   size: vi.fn(),
 }));
 
+import { computePosition } from '@floating-ui/dom';
 import menuPlugin from '../../src/components/menu.js';
-import { mountDirective } from '../test-utils.js';
+import { createMockAlpine, mountDirective } from '../test-utils.js';
 
 describe('h-menu-trigger', () => {
   it('registers _h_menu_trigger on element', () => {
@@ -513,7 +514,7 @@ describe('h-menu', () => {
     // The checkbox is where focus used to lock, so it gets its own assertion
     // that arrowing off it actually leaves.
     it('moves off the disabled checkbox item', async () => {
-      const { menu, items } = await openMixedMenu();
+      const { items } = await openMixedMenu();
       const checkbox = items.find((item) => item.getAttribute('role') === 'menuitemcheckbox');
       checkbox.focus();
       key(checkbox, 'ArrowDown');
@@ -765,5 +766,182 @@ describe('h-menu-sub', () => {
     sub.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
     expect(open).toHaveBeenCalledOnce();
     expect(sub.getAttribute('aria-expanded')).toBe('true');
+  });
+});
+
+describe('h-menu point mode', () => {
+  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+  const key = (target, k) => target.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+  const mounted = [];
+
+  beforeEach(() => {
+    computePosition.mockClear();
+  });
+
+  afterEach(() => {
+    // Run the directives' cleanups so no document dismiss listener outlives its test.
+    for (const ctx of mounted.splice(0)) ctx.cleanup.mock.calls.forEach(([fn]) => fn());
+    document.body.innerHTML = '';
+  });
+
+  function createPointMenuSetup({ items = 2, label = 'Slot actions' } = {}) {
+    const container = document.createElement('div');
+    const opener = document.createElement('button');
+    const other = document.createElement('button');
+    const menu = document.createElement('ul');
+    if (label) menu.setAttribute('aria-label', label);
+    const built = [];
+    for (let i = 0; i < items; i++) {
+      const item = document.createElement('li');
+      item.textContent = `Item ${i}`;
+      menu.appendChild(item);
+      built.push(item);
+    }
+    container.append(opener, other, menu);
+    document.body.appendChild(container);
+    // The mock effect tracks reads through this proxy, so a write re-runs the
+    // directive's effect synchronously, like a real right-click where Alpine
+    // flushes between the page's listener and the document dismiss.
+    const state = createMockAlpine().reactive({ menuAt: null });
+    const evaluate = vi.fn((expression) => {
+      if (expression === 'menuAt = null') state.menuAt = null;
+    });
+    const evaluateLater = () => (cb) => cb(state.menuAt);
+    const { ctx } = mountDirective(menuPlugin, 'h-menu', menu, { original: 'x-h-menu', modifiers: [], expression: 'menuAt' }, { evaluate, evaluateLater });
+    mounted.push(ctx);
+    for (const item of built) mountDirective(menuPlugin, 'h-menu-item', item, { original: 'x-h-menu-item', modifiers: [] });
+    return { container, opener, other, menu, items: built, state, evaluate, ctx };
+  }
+
+  const lastReference = () => computePosition.mock.calls.at(-1)[0].getBoundingClientRect();
+
+  it('mounts without a trigger and opens at the bound point', async () => {
+    const { menu, state } = createPointMenuSetup();
+    expect(menu.classList.contains('hidden')).toBe(true);
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    expect(menu.classList.contains('hidden')).toBe(false);
+    const [, floating, options] = computePosition.mock.calls.at(-1);
+    expect(floating).toBe(menu);
+    expect(options.placement).toBe('right-start');
+    expect(lastReference()).toEqual({ width: 0, height: 0, x: 100, y: 200, top: 200, left: 100, right: 100, bottom: 200 });
+    expect(document.activeElement).toBe(menu);
+  });
+
+  it('throws without aria-label or aria-labelledby, like a context menu', () => {
+    expect(() => createPointMenuSetup({ label: null })).toThrow(/aria-label/);
+  });
+
+  it('leaves the menu closed for a point without numeric coordinates', async () => {
+    const { menu, state } = createPointMenuSetup();
+    state.menuAt = { x: '1', y: 2 };
+    await flush();
+    expect(menu.classList.contains('hidden')).toBe(true);
+  });
+
+  it('moves to a new point while open instead of reopening', async () => {
+    const { menu, state, evaluate } = createPointMenuSetup();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    computePosition.mockClear();
+    state.menuAt = { x: 300, y: 400 };
+    await flush();
+    expect(computePosition).toHaveBeenCalledOnce();
+    expect(lastReference()).toMatchObject({ x: 300, y: 400 });
+    expect(menu.classList.contains('hidden')).toBe(false);
+    expect(evaluate).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(menu);
+  });
+
+  it('closes when the point becomes null', async () => {
+    const { menu, state } = createPointMenuSetup();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    state.menuAt = null;
+    expect(menu.classList.contains('pointer-events-none')).toBe(true);
+    expect(menu.classList.contains('scale-95')).toBe(true);
+  });
+
+  it('writes null back and returns focus on Escape', async () => {
+    const { menu, opener, state, evaluate } = createPointMenuSetup();
+    opener.focus();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    expect(document.activeElement).toBe(menu);
+    key(menu, 'Escape');
+    expect(evaluate).toHaveBeenCalledWith('menuAt = null');
+    expect(state.menuAt).toBeNull();
+    expect(document.activeElement).toBe(opener);
+  });
+
+  it('writes null back on an outside click', async () => {
+    const { state, evaluate } = createPointMenuSetup();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    document.body.click();
+    expect(evaluate).toHaveBeenCalledWith('menuAt = null');
+  });
+
+  it('activates the item, writes null back and returns focus on Enter', async () => {
+    const { items, opener, state, evaluate } = createPointMenuSetup();
+    opener.focus();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    const clicked = vi.fn();
+    items[0].addEventListener('click', clicked);
+    key(items[0], 'Enter');
+    expect(clicked).toHaveBeenCalledOnce();
+    expect(evaluate).toHaveBeenCalledWith('menuAt = null');
+    expect(document.activeElement).toBe(opener);
+  });
+
+  it('writes null back on an item click', async () => {
+    const { items, state, evaluate } = createPointMenuSetup();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    items[0].click();
+    expect(evaluate).toHaveBeenCalledWith('menuAt = null');
+  });
+
+  it('leaves focus alone when it already left the menu', async () => {
+    const { opener, other, state } = createPointMenuSetup();
+    opener.focus();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    other.focus();
+    document.body.click();
+    expect(document.activeElement).toBe(other);
+  });
+
+  it('moves instead of dismissing on a right-click the page handled', async () => {
+    const { container, menu, state, evaluate } = createPointMenuSetup();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    container.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      state.menuAt = { x: 5, y: 6 };
+    });
+    computePosition.mockClear();
+    container.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
+    await flush();
+    expect(menu.classList.contains('scale-95')).toBe(false);
+    expect(evaluate).not.toHaveBeenCalled();
+    expect(lastReference()).toMatchObject({ x: 5, y: 6 });
+  });
+
+  it('dismisses on an unhandled right-click and keeps the native menu away', async () => {
+    const { state, evaluate } = createPointMenuSetup();
+    state.menuAt = { x: 100, y: 200 };
+    await flush();
+    const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+    document.body.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(evaluate).toHaveBeenCalledWith('menuAt = null');
+  });
+
+  it('cleans up without a trigger', () => {
+    const { ctx } = createPointMenuSetup();
+    const [[dispose]] = ctx.cleanup.mock.calls;
+    expect(() => dispose()).not.toThrow();
   });
 });
