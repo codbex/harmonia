@@ -1891,10 +1891,11 @@ describe('h-slot-picker', () => {
       await mountReactive({ date: '2026-06-01' });
       const handler = listen();
       el._h_slot_picker.next();
-      expect(detail(handler, 0)).toEqual({ from: '2026-06-04', to: '2026-06-06' });
       el._h_slot_picker.previous();
-      expect(detail(handler, 1)).toEqual({ from: '2026-06-01', to: '2026-06-03' });
       el._h_slot_picker.today();
+      await tick();
+      expect(detail(handler, 0)).toEqual({ from: '2026-06-04', to: '2026-06-06' });
+      expect(detail(handler, 1)).toEqual({ from: '2026-06-01', to: '2026-06-03' });
       expect(detail(handler, 2)).toEqual({ from: '2026-06-22', to: '2026-06-24' });
       expect(handler.mock.calls[2][0].bubbles).toBe(true);
       expect(handler).toHaveBeenCalledTimes(3);
@@ -1904,18 +1905,34 @@ describe('h-slot-picker', () => {
       const cfg = await mountReactive({ date: FIXED_DATE });
       const handler = listen();
       cfg.value = { date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30' }] };
+      await tick();
       expect(handler).not.toHaveBeenCalled();
       cfg.value = { date: FIXED_DATE, days: 5 };
+      await tick();
       expect(detail(handler, 0)).toEqual({ from: '2026-06-22', to: '2026-06-26' });
       cfg.value = { date: '2026-07-01', days: 5 };
+      await tick();
       expect(detail(handler, 1)).toEqual({ from: '2026-07-01', to: '2026-07-05' });
       expect(handler).toHaveBeenCalledTimes(2);
+    });
+
+    // A handler loading the slots of the new range assigns to the configuration. Dispatched
+    // inside the configuration effect, that assignment would never re-run it.
+    it('dispatches range-change for a date change outside the configuration effect, a microtask later', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE, slots: [] });
+      const handler = listen();
+      cfg.value = { date: '2026-07-01', slots: [] };
+      expect(firstHeader()).toContain('July 1');
+      expect(handler).not.toHaveBeenCalled();
+      await tick();
+      expect(detail(handler)).toEqual({ from: '2026-07-01', to: '2026-07-03' });
     });
 
     it('dispatches nothing when today is pressed while today is already the first visible day', async () => {
       await mountReactive({ date: FIXED_DATE });
       const handler = listen();
       el._h_slot_picker.today();
+      await tick();
       expect(handler).not.toHaveBeenCalled();
     });
 
@@ -1928,6 +1945,7 @@ describe('h-slot-picker', () => {
       const handler = listen();
       btn.click();
       el.querySelector('[data-slot="slot-picker-calendar"] td[data-day="10"]').click();
+      await tick();
       expect(detail(handler)).toEqual({ from: '2026-06-10', to: '2026-06-12' });
     });
   });
@@ -2308,6 +2326,47 @@ describe('h-slot-picker', () => {
           expect(menus).toHaveBeenCalledOnce();
         });
 
+        it('keeps the click and the mousedown of the release from the page, so a menu opened by the press stays open', () => {
+          mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+          const cell = firstCell();
+          const outside = vi.fn();
+          document.addEventListener('click', outside);
+          const clicks = listen('slot-click');
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(500);
+          pointer(cell, 'pointerup', { clientX: 50, clientY: 60 });
+          // The compatibility mouse events of the release. The mousedown would move
+          // focus to the slot, the click would be an outside click for the menu.
+          const down = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+          cell.dispatchEvent(down);
+          expect(down.defaultPrevented).toBe(true);
+          cell.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+          expect(clicks).not.toHaveBeenCalled();
+          expect(outside).not.toHaveBeenCalled();
+          // The next click is a normal click again, and reaches the page.
+          cell.click();
+          expect(clicks).toHaveBeenCalledOnce();
+          expect(outside).toHaveBeenCalledOnce();
+          document.removeEventListener('click', outside);
+        });
+
+        it('swallows the release click of a long press on a tile group too, which has no click handler of its own', () => {
+          mount('config', withConfig({ date: FIXED_DATE, slots: tiledSlots() }));
+          const header = el.querySelector('[data-slot="slot-picker-slot-header"]');
+          const outside = vi.fn();
+          document.addEventListener('click', outside);
+          const menus = listen('slot-contextmenu');
+          touchDown(header, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(500);
+          expect(menus).toHaveBeenCalledOnce();
+          pointer(header, 'pointerup', { clientX: 50, clientY: 60 });
+          header.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          expect(outside).not.toHaveBeenCalled();
+          header.click();
+          expect(outside).toHaveBeenCalledOnce();
+          document.removeEventListener('click', outside);
+        });
+
         it('removes its host listeners and the timer on cleanup', () => {
           const { ctx } = mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
           touchDown(firstCell(), { clientX: 1, clientY: 1 });
@@ -2557,6 +2616,25 @@ describe('h-slot-picker', () => {
         expect(handler.mock.calls[0][0].bubbles).toBe(true);
       });
 
+      it('keeps a disabled day header plain and silent when clickableHeaders is set', () => {
+        // 22 June 2026 is a Monday. Tuesday is disabled by weekday, Wednesday is past maxDate.
+        // minDate anchors the window on Monday, which the maxDate clamp would otherwise pull back.
+        mount('config', withConfig({ date: FIXED_DATE, clickableHeaders: true, disabledDays: [2], minDate: FIXED_DATE, maxDate: '2026-06-23' }));
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[0].tagName).toBe('BUTTON');
+        expect(headers[1].tagName).toBe('DIV');
+        expect(headers[2].tagName).toBe('DIV');
+        expect(Array.from(headers[1].children).map((c) => c.tagName)).toEqual(['DIV', 'DIV']);
+        expect(headers[1].classList.contains('cursor-pointer')).toBe(false);
+        expect(headers[1].nextElementSibling.textContent.trim()).toBe('Not available');
+        const handler = listen('day-click');
+        headers[1].click();
+        headers[2].click();
+        expect(handler).not.toHaveBeenCalled();
+        headers[0].click();
+        expect(detail(handler)).toEqual({ date: FIXED_DATE });
+      });
+
       it('renders corner markers only for days with dayIcons, like a cell', () => {
         mount(
           'config',
@@ -2644,10 +2722,38 @@ describe('h-slot-picker', () => {
         const ranges = listen('range-change');
         el._h_slot_picker.today();
         expect(firstHeader()).toContain('June 22');
+        await tick();
         expect(detail(ranges, 0)).toEqual({ from: '2026-06-22', to: '2026-06-28' });
         btn.click();
         el.querySelector('[data-slot="slot-picker-calendar"] td[data-day="10"]').click();
+        await tick();
         expect(detail(ranges, 1)).toEqual({ from: '2026-06-08', to: '2026-06-14' });
+      });
+
+      it('keeps the last week aligned at maxDate and marks the days after it unavailable', () => {
+        // 7 November 2026 is a Saturday. The week holding it is the last one.
+        mount('config', withConfig({ date: '2026-11-02', days: 7, firstDay: 1, maxDate: '2026-11-07' }));
+        expect(firstHeader()).toContain('November 2');
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[6].textContent).toContain('November 8');
+        expect(headers[6].nextElementSibling.textContent.trim()).toBe('Not available');
+        expect(headers[5].nextElementSibling.textContent.trim()).not.toBe('Not available');
+        expect(el._h_slot_picker.canNext).toBe(false);
+        el._h_slot_picker.next();
+        expect(firstHeader()).toContain('November 2');
+      });
+
+      it('keeps the first week aligned at minDate and marks the days before it unavailable', () => {
+        // 24 June 2026 is a Wednesday. The week holding it is the first one.
+        mount('config', withConfig({ date: '2026-06-24', days: 7, firstDay: 1, minDate: '2026-06-24' }));
+        expect(firstHeader()).toContain('June 22');
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[0].nextElementSibling.textContent.trim()).toBe('Not available');
+        expect(headers[1].nextElementSibling.textContent.trim()).toBe('Not available');
+        expect(headers[2].nextElementSibling.textContent.trim()).not.toBe('Not available');
+        expect(el._h_slot_picker.canPrev).toBe(false);
+        el._h_slot_picker.previous();
+        expect(firstHeader()).toContain('June 22');
       });
 
       it('aligns a picker that becomes a week view through the configuration', () => {

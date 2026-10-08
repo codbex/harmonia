@@ -69,5 +69,9 @@
       <div id="week" x-h-slot-picker="week" style="width: 22rem; height: 20rem" @slot-drop="weekLog.push('week drop ' + $event.detail.date)"></div>
       <pre id="week-log" x-text="weekLog.join(' | ')"></pre>
     </div>
+    <div x-data="{ range: { date: '2025-06-15', days: 3, slots: [] } }">
+      <div id="range" x-h-slot-picker="range" style="height: 12rem" @range-change="range.slots = [{ date: $event.detail.from, start: '09:00', end: '09:30', description: 'Loaded ' + $event.detail.from }]"></div>
+      <button id="range-go" x-h-button @click="range.date = '2025-06-22'">Go to 22 June</button>
+    </div>
   </body>
 </html>

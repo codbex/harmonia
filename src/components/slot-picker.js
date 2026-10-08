@@ -115,17 +115,17 @@ export default function (Alpine) {
       return false;
     }
 
-    // Keep the visible window inside the configured bounds so the user can never
-    // page to days before the start day or after the end day.
+    // Keep the visible window inside the configured bounds so the user can never page to days before the start day or after the end day.
+    // In a week view the bounds clamp to the week holding them, so the window stays a calendar week and render marks the days outside the bounds unavailable.
     function clampCurrentDate() {
-      if (minDate && currentDate < minDate) currentDate = new Date(minDate);
-      if (maxDate) {
-        const maxStart = addDays(maxDate, -(dayCount - 1));
-        if (currentDate > maxStart) currentDate = maxStart;
-      }
+      const week = dayCount === 7 && firstDay !== null;
+      const minStart = minDate && (week ? startOfWeek(minDate, firstDay) : minDate);
+      const maxStart = maxDate && (week ? startOfWeek(maxDate, firstDay) : addDays(maxDate, -(dayCount - 1)));
+      if (minStart && currentDate < minStart) currentDate = new Date(minStart);
+      if (maxStart && currentDate > maxStart) currentDate = new Date(maxStart);
       // A range narrower than the visible window can push the start below the start
-      // day. Anchor at minDate and let render disable the overflowing days.
-      if (minDate && currentDate < minDate) currentDate = new Date(minDate);
+      // day. Anchor at the start bound and let render disable the overflowing days.
+      if (minStart && currentDate < minStart) currentDate = new Date(minStart);
     }
 
     // With seven visible days and a configured first day, the window is the calendar week holding `d`. Otherwise `d` is the first visible day.
@@ -776,6 +776,11 @@ export default function (Alpine) {
     // A real right-click always starts with a pointerdown, which clears a stale
     // flag first, as does the next keydown.
     let swallowNextContextmenu = null;
+    // Set by a long press. The click the release then produces is a leftover of
+    // the gesture, not a choice. It must neither select nor reach the page, where
+    // a menu the press opened would take it for an outside click and close. The
+    // mousedown before it must not pull focus out of that menu either.
+    let longPressed = false;
 
     // The cell, tile or tile group an event target belongs to. The ghost clone carries data-key too but has no entry, so it never resolves.
     function resolveHit(target) {
@@ -823,10 +828,11 @@ export default function (Alpine) {
     };
 
     const onPointerDown = (event) => {
-      // Every press starts clean. A click suppression left by a drag whose click
-      // never came, or a swallow flag left by a browser that fired no native
-      // contextmenu for the keyboard gesture, must not eat this one.
+      // Every press starts clean. A click suppression left by a drag or a long
+      // press whose click never came, or a swallow flag left by a browser that
+      // fired no native contextmenu for the keyboard gesture, must not eat this one.
       suppressClick = false;
+      longPressed = false;
       swallowNextContextmenu = null;
       cancelLongPress();
       if (event.pointerType !== 'touch' || !event.isPrimary) return;
@@ -837,9 +843,9 @@ export default function (Alpine) {
       longPressTimer = setTimeout(() => {
         longPressTimer = null;
         if (!hit.node.isConnected) return;
-        // The press can no longer become a drag, and the click that follows the release must not select.
+        // The press can no longer become a drag, and the click that follows the release is swallowed.
         abortDrag?.();
-        suppressClick = true;
+        longPressed = true;
         swallowNextContextmenu = { prevent: dispatchContextMenu(hit.info, pressX, pressY) };
       }, LONG_PRESS_MS);
     };
@@ -849,12 +855,25 @@ export default function (Alpine) {
       if (Math.abs(event.clientX - pressX) >= DRAG_THRESHOLD || Math.abs(event.clientY - pressY) >= DRAG_THRESHOLD) cancelLongPress();
     };
 
+    const onMouseDown = (event) => {
+      if (longPressed) event.preventDefault();
+    };
+
+    // Capture phase, so neither the cell's own handler nor the page sees the click.
+    const onClick = (event) => {
+      if (!longPressed) return;
+      longPressed = false;
+      event.stopPropagation();
+    };
+
     el.addEventListener('contextmenu', onContextMenu);
     el.addEventListener('keydown', onKeyDown);
     el.addEventListener('pointerdown', onPointerDown);
     el.addEventListener('pointermove', onPointerMove);
     el.addEventListener('pointerup', cancelLongPress);
     el.addEventListener('pointercancel', cancelLongPress);
+    el.addEventListener('mousedown', onMouseDown);
+    el.addEventListener('click', onClick, true);
 
     // Now indicator: a red dot + hairline row inside today's slot list, sitting
     // below every slot that has already started. A single timeout aimed at the
@@ -910,8 +929,11 @@ export default function (Alpine) {
     }
 
     // The visible range, reported to the page as `range-change` whenever it moves.
-    // The first render runs while Alpine still initializes the host, so a
-    // listener written after the directive is not attached yet - that first report waits a microtask.
+    // Every report waits a microtask. The first render runs while Alpine still
+    // initializes the host, so a listener written after the directive is not
+    // attached yet. A later render may run inside the configuration effect, where
+    // a handler's assignment to the configuration (loading the slots of the new
+    // range) would be ignored, since a running effect never re-runs for its own writes.
     let announcedFrom = null;
     let announcedTo = null;
 
@@ -919,12 +941,9 @@ export default function (Alpine) {
       const from = toDateString(days[0]);
       const to = toDateString(days[days.length - 1]);
       if (from === announcedFrom && to === announcedTo) return;
-      const first = announcedFrom === null;
       announcedFrom = from;
       announcedTo = to;
-      const dispatch = () => el.dispatchEvent(new CustomEvent('range-change', { bubbles: true, detail: { from, to } }));
-      if (first) queueMicrotask(dispatch);
-      else dispatch();
+      queueMicrotask(() => el.dispatchEvent(new CustomEvent('range-change', { bubbles: true, detail: { from, to } })));
     }
 
     // Render
@@ -977,10 +996,14 @@ export default function (Alpine) {
         const col = document.createElement('div');
         col.classList.add('flex', 'flex-col');
 
+        const dayDisabled = isDayDisabled(dateStr, day.getDay()) || isDayOutOfRange(day);
+        // A disabled day's header stays plain text, as inert as the rest of its column.
+        const headerButton = clickableHeaders && !dayDisabled;
+
         // Day header: 2 rows (day name + localized date), plus `dayIcons` markers
         // in its top corners. With `clickableHeaders` it is a button dispatching
         // `day-click`, so its rows are spans (a button may not contain divs).
-        const hdr = document.createElement(clickableHeaders ? 'button' : 'div');
+        const hdr = document.createElement(headerButton ? 'button' : 'div');
         hdr.classList.add('sticky', 'top-0', 'border-b', 'p-2', 'text-center', 'bg-background', 'z-1');
         // The default layout's columns are as wide as their header's unwrapped
         // rows. The responsive layout's columns never grow, so its rows wrap.
@@ -990,26 +1013,25 @@ export default function (Alpine) {
         hdr.setAttribute('id', headerId);
         col.setAttribute('role', 'group');
         col.setAttribute('aria-labelledby', headerId);
-        if (clickableHeaders) {
+        if (headerButton) {
           hdr.type = 'button';
           // The same hover as an uncolored slot, and an inset focus ring.
           // The header sits flush against the scroll body, which would clip an outset one.
           hdr.classList.add('w-full', 'cursor-pointer', 'transition-colors', ...UNSELECTED_UNCOLORED, 'focus-visible:outline-none', 'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]', 'focus-visible:inset-ring-ring/50');
           hdr.addEventListener('click', () => el.dispatchEvent(new CustomEvent('day-click', { bubbles: true, detail: { date: dateStr } })));
         }
-        const rowTag = clickableHeaders ? 'span' : 'div';
+        const rowTag = headerButton ? 'span' : 'div';
 
         const nameEl = document.createElement(rowTag);
         nameEl.classList.add('text-sm', 'font-semibold', 'leading-tight');
-        if (clickableHeaders) nameEl.classList.add('block');
+        if (headerButton) nameEl.classList.add('block');
         nameEl.textContent = dayNameFmt.format(day);
 
         const dateEl = document.createElement(rowTag);
         dateEl.classList.add('text-xs', 'text-muted-foreground');
-        if (clickableHeaders) dateEl.classList.add('block');
+        if (headerButton) dateEl.classList.add('block');
         dateEl.textContent = dateFmt.format(day);
 
-        const dayDisabled = isDayDisabled(dateStr, day.getDay()) || isDayOutOfRange(day);
         if (today && !dayDisabled) hdr.classList.add('inset-shadow-[0_-.188rem_var(--primary)]');
 
         hdr.append(nameEl, dateEl);
@@ -1305,6 +1327,8 @@ export default function (Alpine) {
       el.removeEventListener('pointermove', onPointerMove);
       el.removeEventListener('pointerup', cancelLongPress);
       el.removeEventListener('pointercancel', cancelLongPress);
+      el.removeEventListener('mousedown', onMouseDown);
+      el.removeEventListener('click', onClick, true);
       clearTimeout(nowTimer);
       if (calPopover) {
         calWidget.cleanup();

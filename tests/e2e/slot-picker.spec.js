@@ -121,3 +121,12 @@ test('a drag after scrolling sideways drops on the day under the pointer', async
   await page.mouse.up();
   await expect(page.locator('#week-log')).toHaveText('week drop 2025-06-22');
 });
+
+// The handler assigns to the configuration. A range-change dispatched inside the
+// configuration effect would never re-run it, so the new week stayed empty.
+test('slots assigned in a range-change handler render when the date changes in the configuration', async ({ page }) => {
+  const desc = page.locator('#range [data-slot="slot-picker-desc"]');
+  await expect(desc).toHaveText('Loaded 2025-06-15');
+  await page.locator('#range-go').click();
+  await expect(desc).toHaveText('Loaded 2025-06-22');
+});
