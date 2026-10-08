@@ -75,7 +75,7 @@ describe('h-badge', () => {
   it('applies outline variant classes', () => {
     el.setAttribute('data-variant', 'outline');
     mountDirective(badgePlugin, 'h-badge', el);
-    expect(el.classList.contains('bg-transparent')).toBe(true);
+    expect(el.classList.contains('bg-background')).toBe(true);
     expect(el.classList.contains('text-foreground')).toBe(true);
   });
 
