@@ -2,7 +2,7 @@
 
 ## v3.6.0
 
-A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. Charts take their colors from the new `--chart-color-1` to `--chart-color-12` theme variables, and the standard color names are deprecated as chart colors. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs and the shared calendar ignoring a `firstDay` of `0`. There are no breaking changes.
+A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. Charts take their colors from the new `--chart-color-1` to `--chart-color-12` theme variables, and the standard color names are deprecated as chart colors. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs, the shared calendar ignoring a `firstDay` of `0` and a list or notification list whose last item kept a bottom border when an Alpine template followed it. There are no breaking changes.
 
 ### Chart
 
@@ -23,6 +23,10 @@ A release that lets the slot picker manage a schedule, not only pick from one. A
 
 - **Fixed: scrolling over a focused number input changed its value instead of scrolling the page.** The value now changes only by typing, with the arrow keys or with the step controls, on every browser.
 
+### List
+
+- **Fixed: the last item kept a bottom border when an Alpine template followed it.** An `x-for` or an empty-state `x-if` template at the end of the list no longer counts as a row, so the dividers stop at the last item.
+
 ### Slot Picker
 
 - **Fixed: an empty `slots` array showed the generated schedule.** It now shows every day empty, unless `fillEmptyDays` is set.
@@ -42,6 +46,10 @@ A release that lets the slot picker manage a schedule, not only pick from one. A
 ### Menu
 
 - **New: open at a point.** `x-h-menu` accepts a variable holding `{ x, y }` coordinates, opens there without a trigger and writes `null` back when it closes.
+
+### Notifications
+
+- **Fixed: the last notification in a list kept a bottom border when an Alpine template followed it.** Same cause and fix as the list.
 
 ### New utility classes
 

@@ -16,8 +16,6 @@
     <span class="text-sm text-muted-foreground">Approving or rejecting updates the dashboard, sidebar badges, and activity feed.</span>
   </div>
 
-  <!-- The list is bound to x-if rather than left in place and emptied, so the
-       last row stays :last-child and divide-y draws no line over the border. -->
   <template x-if="list.length">
     <ul x-h-list class="overflow-hidden rounded-lg border" aria-label="Approval requests">
       <template x-for="approval in list" :key="approval.id">

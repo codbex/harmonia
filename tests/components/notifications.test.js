@@ -324,6 +324,8 @@ describe('h-notification-list', () => {
     alpine._directives['h-notification-list'](el, { original: 'x-h-notification-list', modifiers: [] }, ctx);
     expect(el.classList.contains('flex')).toBe(true);
     expect(el.classList.contains('flex-col')).toBe(true);
+    expect(el.classList.contains('divide-y')).toBe(true);
+    expect(el.classList.contains('*:last-rendered:border-b-0')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('notification-list');
     expect(el.getAttribute('role')).toBe('group');
   });
