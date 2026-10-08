@@ -34,6 +34,15 @@ export function isToday(date) {
   return sameDay(date, new Date());
 }
 
+// Midnight of the first day of the week holding `date`, for weeks starting on
+// weekday `firstDay` (0 = Sunday). Never mutates its input.
+export function startOfWeek(date, firstDay = 0) {
+  const d = new Date(date);
+  d.setDate(d.getDate() - ((((d.getDay() - firstDay) % 7) + 7) % 7));
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export function isDisabled(d, minDate, maxDate) {
   if (minDate && d < new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())) return true;
   if (maxDate && d > new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())) return true;
@@ -1005,7 +1014,7 @@ export function createCalendarWidget(directiveName, el, callbacks) {
     locale = resolveLocale(config.locale);
     if (config.delimiter !== undefined) delimiter = config.delimiter;
     if (config.order !== undefined) dateOrder = config.order;
-    if (config.firstDay) firstDay = config.firstDay;
+    if (config.firstDay !== undefined) firstDay = Number(config.firstDay) || 0;
     dateFormatter = createDateFormatter({ locale, options: config.options, delimiter, order: dateOrder, rangeSeparator });
     // Each call carries the whole config, so a bound left out is cleared.
     minDate = parseBound(config.min);

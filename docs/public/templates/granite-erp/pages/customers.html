@@ -18,11 +18,11 @@
           </div>
         </div>
       </div>
-      <div class="hbox gap-1">
-        <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'grid'" :aria-pressed="view === 'grid'" aria-label="Card view" @click="view = 'grid'">
+      <div x-h-button-group x-model="view" aria-label="View">
+        <button x-h-button data-variant="outline" data-size="icon" x-h-button-group-radio="'grid'" aria-label="Card view">
           <svg x-h-lucide role="presentation" data-lucide="layout-grid"></svg>
         </button>
-        <button x-h-button data-variant="outline" data-size="icon" :data-toggled="view === 'table'" :aria-pressed="view === 'table'" aria-label="Table view" @click="view = 'table'">
+        <button x-h-button data-variant="outline" data-size="icon" x-h-button-group-radio="'table'" aria-label="Table view">
           <svg x-h-lucide role="presentation" data-lucide="rows-3"></svg>
         </button>
       </div>

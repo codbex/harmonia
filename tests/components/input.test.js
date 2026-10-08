@@ -103,6 +103,17 @@ describe('h-input-group', () => {
     expect(el.classList.contains('has-[[data-slot=input-group-control][readonly]]:border-dashed')).toBe(true);
   });
 
+  it('defers native-constraint styling to :user-invalid with an immediate opt-in', () => {
+    mountDirective(inputPlugin, 'h-input-group', el);
+    // deferred baseline (shows after interaction/submit)
+    expect(el.classList.contains('has-[[data-slot=input-group-control]:user-invalid]:border-negative')).toBe(true);
+    expect(el.classList.contains('has-[[data-slot=input-group-control]:user-invalid]:ring-negative/20')).toBe(true);
+    // immediate opt-in, gated by a data-validate="immediate" ancestor
+    expect(el.classList.contains('[[data-validate=immediate]_&:has([data-slot=input-group-control]:invalid)]:border-negative')).toBe(true);
+    // aria-invalid (explicit) styling is unchanged
+    expect(el.classList.contains('has-[[data-slot][aria-invalid=true]]:border-negative')).toBe(true);
+  });
+
   it('sets role="group"', () => {
     mountDirective(inputPlugin, 'h-input-group', el);
     expect(el.getAttribute('role')).toBe('group');

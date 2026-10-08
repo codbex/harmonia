@@ -93,3 +93,56 @@ test('ArrowRight opens the submenu beside its item and ArrowLeft closes it back'
   await expect(page.locator('#submenu')).toBeHidden();
   expect(await activeId(page)).toBe('item-sub');
 });
+
+test('a menu bound to a point opens at the right-click point, positioned by real floating-ui', async ({ page }) => {
+  await gotoFixture(page, 'menu');
+  const region = await page.locator('#point-region').boundingBox();
+  const x = region.x + 40;
+  const y = region.y + 30;
+  await page.mouse.click(x, y, { button: 'right' });
+  const menu = page.locator('#point-menu');
+  await expect(menu).toBeVisible();
+  await settle(page);
+  const box = await menu.boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(x);
+  expect(box.x).toBeLessThan(x + 16);
+  expect(box.y).toBeGreaterThanOrEqual(y - 1);
+  expect(box.y).toBeLessThan(y + 16);
+  expect(await activeId(page)).toBe('point-menu');
+});
+
+test('a second right-click in the region moves the open point menu instead of closing it', async ({ page }) => {
+  await gotoFixture(page, 'menu');
+  const region = await page.locator('#point-region').boundingBox();
+  await page.mouse.click(region.x + 40, region.y + 30, { button: 'right' });
+  const menu = page.locator('#point-menu');
+  await expect(menu).toBeVisible();
+  await settle(page);
+  // Far to the right, clear of the open menu.
+  const x = region.x + region.width - 240;
+  const y = region.y + 60;
+  await page.mouse.click(x, y, { button: 'right' });
+  await settle(page);
+  await expect(menu).toBeVisible();
+  const box = await menu.boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(x);
+  expect(box.x).toBeLessThan(x + 16);
+  expect(box.y).toBeGreaterThanOrEqual(y - 1);
+  expect(box.y).toBeLessThan(y + 16);
+});
+
+test('a point menu closes on Escape and on an outside click', async ({ page }) => {
+  await gotoFixture(page, 'menu');
+  const region = await page.locator('#point-region').boundingBox();
+  await page.mouse.click(region.x + 40, region.y + 30, { button: 'right' });
+  const menu = page.locator('#point-menu');
+  await expect(menu).toBeVisible();
+  await settle(page);
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await page.mouse.click(region.x + 40, region.y + 30, { button: 'right' });
+  await expect(menu).toBeVisible();
+  await settle(page);
+  await page.mouse.click(region.x + region.width - 40, region.y + region.height - 10);
+  await expect(menu).toBeHidden();
+});

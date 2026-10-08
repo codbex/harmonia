@@ -141,10 +141,14 @@
 
       <div x-h-sidebar-footer data-borderless="true">
         <nav aria-label="Settings">
-          <button x-h-sidebar-menu-nav :data-active="isActive('/settings')" @click="go('/settings')">
-            <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
-            <span>Settings</span>
-          </button>
+          <ul x-h-sidebar-menu>
+            <li x-h-sidebar-menu-item>
+              <button x-h-sidebar-menu-nav :data-active="isActive('/settings')" @click="go('/settings')">
+                <svg x-h-lucide role="presentation" data-lucide="settings"></svg>
+                <span>Settings</span>
+              </button>
+            </li>
+          </ul>
         </nav>
       </div>
     </div>

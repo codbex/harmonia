@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createCalendarWidget, dateOrderMap, forwardCalendarNavAria, isDisabled, isoWeekParts, mondayOfIsoWeek, nextFocusDate, parseDateValue, sameDay, toDateString } from '../../src/common/calendar';
+import { createCalendarWidget, dateOrderMap, forwardCalendarNavAria, isDisabled, isoWeekParts, mondayOfIsoWeek, nextFocusDate, parseDateValue, sameDay, startOfWeek, toDateString } from '../../src/common/calendar';
 import { createMockAlpine } from '../test-utils.js';
 
 const noop = () => {};
@@ -1304,5 +1304,55 @@ describe('forwardCalendarNavAria', () => {
     expect(to.getAttribute('data-aria-choose-month')).toBe('c');
     expect(to.getAttribute('data-aria-choose-year')).toBe('d');
     expect(to.hasAttribute('data-aria-prev-month')).toBe(false);
+  });
+});
+
+describe('startOfWeek', () => {
+  it('returns the Sunday for firstDay 0 and the Monday for firstDay 1', () => {
+    expect(toDateString(startOfWeek(new Date(2026, 5, 24), 0))).toBe('2026-06-21');
+    expect(toDateString(startOfWeek(new Date(2026, 5, 24), 1))).toBe('2026-06-22');
+  });
+
+  it('keeps a day that already starts the week and wraps a Sunday back to the previous Monday', () => {
+    expect(toDateString(startOfWeek(new Date(2026, 5, 22), 1))).toBe('2026-06-22');
+    expect(toDateString(startOfWeek(new Date(2026, 5, 21), 1))).toBe('2026-06-15');
+  });
+
+  it('defaults to Sunday weeks', () => {
+    expect(toDateString(startOfWeek(new Date(2026, 5, 24)))).toBe('2026-06-21');
+  });
+
+  it('returns midnight without mutating its input', () => {
+    const input = new Date(2026, 5, 24, 15, 30);
+    const start = startOfWeek(input, 1);
+    expect(start.getHours()).toBe(0);
+    expect(start.getMinutes()).toBe(0);
+    expect(input.getDate()).toBe(24);
+    expect(input.getHours()).toBe(15);
+  });
+});
+
+describe('createCalendarWidget firstDay', () => {
+  function makeEl() {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    return el;
+  }
+
+  const abbrs = (el) => Array.from(el.querySelectorAll('th')).map((th) => th.getAttribute('abbr'));
+
+  it('starts the weekday header on the configured first day and goes back to Sunday for 0', () => {
+    const el = makeEl();
+    const widget = createCalendarWidget('test', el, defaultCallbacks);
+    widget.setConfig({ locale: 'en-US', firstDay: 1 });
+    expect(abbrs(el)[0]).toBe('Mon');
+    widget.setConfig({ locale: 'en-US', firstDay: 0 });
+    expect(abbrs(el)[0]).toBe('Sun');
+  });
+
+  it('reads a string first day as a number', () => {
+    const el = makeEl();
+    createCalendarWidget('test', el, defaultCallbacks).setConfig({ locale: 'en-US', firstDay: '1' });
+    expect(abbrs(el)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
   });
 });

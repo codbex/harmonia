@@ -26,6 +26,14 @@
       <li id="item-logout" x-h-menu-item data-variant="negative">Log out</li>
     </ul>
 
+    <div x-data="{ menuAt: null }" class="mt-4">
+      <div id="point-region" @contextmenu.prevent="menuAt = { x: $event.clientX, y: $event.clientY }" class="border border-dashed" style="height: 8rem"></div>
+      <ul id="point-menu" x-h-menu="menuAt" aria-label="Point menu">
+        <li id="point-first" x-h-menu-item>First</li>
+        <li id="point-second" x-h-menu-item>Second</li>
+      </ul>
+    </div>
+
     <div style="position: fixed; right: 0.5rem; bottom: 0.5rem">
       <button id="pinned-trigger" x-h-button x-h-menu-trigger.dropdown>Pinned</button>
       <ul id="pinned-menu" x-h-menu>

@@ -1,5 +1,5 @@
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, toDateString } from '../common/calendar';
+import { createCalendarWidget, isToday, nextFocusDate, parseDateValue, sameDay, startOfWeek, toDateString } from '../common/calendar';
 import { attachDayDrag, capturePointer, DRAG_THRESHOLD, releasePointer } from '../common/drag';
 import { colorClasses } from '../common/event-colors';
 import { focusTrap } from '../common/focus-trap';
@@ -272,11 +272,7 @@ export default function (Alpine) {
     const isTodayDate = isToday;
 
     function getWeekStart(d) {
-      const copy = new Date(d);
-      const diff = (copy.getDay() - firstDay + 7) % 7;
-      copy.setDate(copy.getDate() - diff);
-      copy.setHours(0, 0, 0, 0);
-      return copy;
+      return startOfWeek(d, firstDay);
     }
 
     function getLocalizedWeekdayNames(style) {

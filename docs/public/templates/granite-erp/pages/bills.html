@@ -3,7 +3,7 @@
     <div class="hbox flex-wrap gap-2">
       <template x-for="option in statuses" :key="option">
         <div x-h-chip :data-variant="status === option ? 'primary' : 'outline'">
-          <button x-h-chip-button @click="status = option" x-text="option"></button>
+          <button x-h-chip-button :aria-pressed="status === option" @click="status = option" x-text="option"></button>
         </div>
       </template>
     </div>

@@ -29,16 +29,16 @@
         <ul x-h-list>
           <template x-for="event in $store.chat.mentionEvents" :key="event.id">
             <li x-h-list-item>
-              <button x-h-list-item-button class="items-start gap-3 px-4 py-3" @click="go(event.path)">
-                <div x-h-avatar class="rounded-control text-xs" :data-color="$store.chat.userById(event.userId)?.color">
+              <button x-h-list-item-button class="items-start gap-2 px-2.5" @click="go(event.path)">
+                <div x-h-avatar class="mt-1 rounded-control text-xs" :data-color="$store.chat.userById(event.userId)?.color">
                   <img x-h-avatar-image :src="$store.chat.userById(event.userId)?.avatar" alt="" aria-hidden="true" />
                   <span x-h-avatar-fallback x-text="$store.chat.userById(event.userId)?.initials || '?'"></span>
                 </div>
                 <div class="vbox min-w-0 flex-1">
-                  <span class="text-sm font-medium" x-text="$store.chat.displayName(event.userId) + ' mentioned you in ' + event.label"></span>
-                  <span x-h-list-secondary class="truncate text-sm" x-text="event.text"></span>
+                  <span x-h-list-secondary class="truncate text-sm font-medium" x-text="$store.chat.displayName(event.userId) + ' mentioned you in ' + event.label"></span>
+                  <span class="text-sm font-medium" x-text="event.text"></span>
+                  <time x-h-list-secondary class="line-clamp-1 pt-1 text-xs" x-h-date-format="event.ts" data-options='{ "dateStyle": "medium", "timeStyle": "short" }'></time>
                 </div>
-                <time x-h-list-secondary class="text-xs text-nowrap" x-h-date-format="event.ts" data-options='{ "dateStyle": "medium", "timeStyle": "short" }'></time>
               </button>
             </li>
           </template>
@@ -62,16 +62,16 @@
         <ul x-h-list>
           <template x-for="event in $store.chat.reactionEvents" :key="event.id">
             <li x-h-list-item>
-              <button x-h-list-item-button class="items-start gap-3 px-4 py-3" @click="go(event.path)">
-                <div x-h-avatar class="rounded-control text-xs" :data-color="$store.chat.userById(event.userId)?.color">
+              <button x-h-list-item-button class="items-start gap-2 px-2.5" @click="go(event.path)">
+                <div x-h-avatar class="mt-1 rounded-control text-xs" :data-color="$store.chat.userById(event.userId)?.color">
                   <img x-h-avatar-image :src="$store.chat.userById(event.userId)?.avatar" alt="" aria-hidden="true" />
                   <span x-h-avatar-fallback x-text="$store.chat.userById(event.userId)?.initials || '?'"></span>
                 </div>
                 <div class="vbox min-w-0 flex-1">
                   <span class="text-sm font-medium" x-text="$store.chat.displayName(event.userId) + ' reacted ' + event.emoji + ' to your message in ' + event.label"></span>
                   <span x-h-list-secondary class="truncate text-sm" x-text="event.text"></span>
+                  <time x-h-list-secondary class="pt-1 text-xs text-nowrap" x-h-date-format="event.ts" data-options='{ "dateStyle": "medium", "timeStyle": "short" }'></time>
                 </div>
-                <time x-h-list-secondary class="text-xs text-nowrap" x-h-date-format="event.ts" data-options='{ "dateStyle": "medium", "timeStyle": "short" }'></time>
               </button>
             </li>
           </template>

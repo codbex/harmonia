@@ -1,5 +1,5 @@
 import { findAncestorState } from '../common/ancestor';
-import { createCalendarWidget, forwardCalendarNavAria, isToday, parseDateValue, toDateString } from '../common/calendar';
+import { createCalendarWidget, forwardCalendarNavAria, isToday, parseDateValue, startOfWeek, toDateString } from '../common/calendar';
 import { capturePointer, DRAG_THRESHOLD, releasePointer } from '../common/drag';
 import { colorClasses, EVENT_COLORS, ringClass } from '../common/event-colors';
 import { createDateTimeFormatCache } from '../common/intl';
@@ -23,6 +23,9 @@ export default function (Alpine) {
 
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
+    // The `date` last applied from the config, as YYYY-MM-DD. The config effect
+    // re-runs on any change, so only a different value may move the visible range.
+    let appliedDate = null;
     let dayCount = 3;
     let slotStart = '08:00';
     let slotEnd = '18:00';
@@ -42,6 +45,17 @@ export default function (Alpine) {
     let suppressClick = false;
     // Ends any in-flight drag gesture (its move/up listeners live on window).
     let abortDrag = null;
+    // 'reorder' drops a dragged slot at a position in a day's list, 'slot' drops
+    // it onto another slot marked `droppable`.
+    let dropMode = 'reorder';
+    let clickableHeaders = false;
+    let dayIcons = {};
+    // null: the chosen day is the first visible day.
+    // A weekday number: the date dialog starts its weeks on it and, with seven visible days, the window is the calendar week holding the chosen day.
+    let firstDay = null;
+    // Every cell, tile and tile group of the current render, by node, with the key and payload its events carry.
+    const infoByNode = new WeakMap();
+    const unavailableLabel = () => el.getAttribute('data-unavailable-label') || 'Not available';
 
     // The picker renders no toolbar of its own. Consumers compose one from an
     // x-h-toolbar wrapping the x-h-slot-picker-* control directives, which reach
@@ -63,8 +77,9 @@ export default function (Alpine) {
       render();
     };
     state.today = () => {
-      currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      currentDate = alignWeek(today);
       clampCurrentDate();
       render();
     };
@@ -100,17 +115,22 @@ export default function (Alpine) {
       return false;
     }
 
-    // Keep the visible window inside the configured bounds so the user can never
-    // page to days before the start day or after the end day.
+    // Keep the visible window inside the configured bounds so the user can never page to days before the start day or after the end day.
+    // In a week view the bounds clamp to the week holding them, so the window stays a calendar week and render marks the days outside the bounds unavailable.
     function clampCurrentDate() {
-      if (minDate && currentDate < minDate) currentDate = new Date(minDate);
-      if (maxDate) {
-        const maxStart = addDays(maxDate, -(dayCount - 1));
-        if (currentDate > maxStart) currentDate = maxStart;
-      }
+      const week = dayCount === 7 && firstDay !== null;
+      const minStart = minDate && (week ? startOfWeek(minDate, firstDay) : minDate);
+      const maxStart = maxDate && (week ? startOfWeek(maxDate, firstDay) : addDays(maxDate, -(dayCount - 1)));
+      if (minStart && currentDate < minStart) currentDate = new Date(minStart);
+      if (maxStart && currentDate > maxStart) currentDate = new Date(maxStart);
       // A range narrower than the visible window can push the start below the start
-      // day. Anchor at minDate and let render disable the overflowing days.
-      if (minDate && currentDate < minDate) currentDate = new Date(minDate);
+      // day. Anchor at the start bound and let render disable the overflowing days.
+      if (minStart && currentDate < minStart) currentDate = new Date(minStart);
+    }
+
+    // With seven visible days and a configured first day, the window is the calendar week holding `d`. Otherwise `d` is the first visible day.
+    function alignWeek(d) {
+      return dayCount === 7 && firstDay !== null ? startOfWeek(d, firstDay) : d;
     }
 
     function updateNavState() {
@@ -177,6 +197,20 @@ export default function (Alpine) {
       return badge;
     }
 
+    // A slot or tile may carry its own `data` attributes and `class`.
+    // The data goes on before the picker's own attributes so those always win.
+    // The classes go after the picker's own.
+    function applyConsumerData(node, item) {
+      if (!item.data || typeof item.data !== 'object') return;
+      Object.entries(item.data).forEach(([name, value]) => {
+        if (value !== null && value !== undefined) node.setAttribute(`data-${name}`, String(value));
+      });
+    }
+
+    function applyConsumerClass(node, item) {
+      if (typeof item.class === 'string' && item.class.trim()) node.classList.add(...item.class.trim().split(/\s+/));
+    }
+
     // A slot/tile is colored only when it names one of the known event colors.
     function resolveColor(color) {
       return color && EVENT_COLORS[color] ? color : null;
@@ -234,10 +268,11 @@ export default function (Alpine) {
     }
 
     function selectSlot(key, payload) {
-      // Without a bound model the slot is a plain action button: announce the
-      // click but never track selection or write a model. `selected` is always
-      // false here because the slot can never enter the selection set.
-      if (!hasModel()) {
+      // Without a bound model the slot is a plain action button, and an
+      // unavailable slot kept clickable is one too: announce the click but never
+      // track selection or write a model. `selected` is always false here
+      // because the slot can never enter the selection set.
+      if (!hasModel() || payload.available === false) {
         el.dispatchEvent(
           new CustomEvent('slot-click', {
             bubbles: true,
@@ -279,11 +314,19 @@ export default function (Alpine) {
     // `payload` is the data dispatched on `slot-click`.
     function buildCell({ key, ariaLabel, visibleTime, item, dataSlot, isTile, payload }) {
       const available = item.available !== false;
+      // An unavailable slot stays a button when the consumer marks it as `clickable`, so a booked or blocked entry can still open its details.
+      const interactive = available || item.clickable === true;
       const color = resolveColor(item.color);
       const icons = normalizeIcons(item);
 
-      const cell = available ? document.createElement('button') : document.createElement('div');
+      const cell = document.createElement(interactive ? 'button' : 'div');
+      applyConsumerData(cell, item);
       cell.setAttribute('data-slot', dataSlot);
+      cell.setAttribute('data-key', key);
+      cell.setAttribute('data-date', payload.date);
+      if (payload.start != null) cell.setAttribute('data-start', payload.start);
+      if (isTile) cell.setAttribute('data-tile-index', String(payload.tileIndex));
+      infoByNode.set(cell, { key, payload });
       cell.classList.add('relative', 'flex', 'flex-col', 'items-center', 'justify-center', 'gap-0.5', 'rounded-md', 'px-2', 'py-1', 'text-center', 'text-sm', 'transition-colors');
       cell.classList.add(isTile ? 'min-h-9' : 'min-h-10');
 
@@ -302,9 +345,12 @@ export default function (Alpine) {
         cell.classList.add('border');
       }
 
-      if (available) {
+      if (interactive) {
         cell.type = 'button';
-        cell.classList.add('bg-background', 'cursor-pointer', 'focus-visible:outline-none', 'focus-visible:ring-[calc(var(--spacing)*0.75)]', 'focus-visible:ring-ring/50');
+        cell.classList.add('cursor-pointer', 'focus-visible:outline-none', 'focus-visible:ring-[calc(var(--spacing)*0.75)]', 'focus-visible:ring-ring/50');
+      }
+      if (available) {
+        cell.classList.add('bg-background');
         cell.setAttribute('aria-label', ariaLabel);
         if (hasModel()) {
           setCellSelected(cell, selected.includes(key));
@@ -319,8 +365,13 @@ export default function (Alpine) {
         // Unavailable colored cells keep their status color (e.g. a booked slot);
         // uncolored ones fall back to the muted style.
         if (!color) cell.classList.add('bg-muted/50', 'text-muted-foreground');
-        cell.classList.add('cursor-not-allowed');
-        cell.setAttribute('aria-disabled', 'true');
+        if (interactive) {
+          // Operable, so no aria-disabled. The name itself says it is not free.
+          cell.setAttribute('aria-label', `${ariaLabel}, ${unavailableLabel()}`);
+        } else {
+          cell.classList.add('cursor-not-allowed');
+          cell.setAttribute('aria-disabled', 'true');
+        }
       }
 
       if (visibleTime) {
@@ -348,13 +399,14 @@ export default function (Alpine) {
       }
 
       // Keep the full text reachable for pointer users when a line-clamp truncates it.
-      const titleText = [item.description, item.note].filter(Boolean).join(' - ');
+      // A `tooltip` of the slot's own replaces it, an empty one removes it.
+      const titleText = item.tooltip != null ? String(item.tooltip) : [item.description, item.note].filter(Boolean).join(' - ');
       if (titleText) cell.title = titleText;
 
-      if (!available) {
+      if (!interactive) {
         const srUnavailable = document.createElement('span');
         srUnavailable.classList.add('sr-only');
-        srUnavailable.textContent = `, ${el.getAttribute('data-unavailable-label') || 'Not available'}`;
+        srUnavailable.textContent = `, ${unavailableLabel()}`;
         cell.appendChild(srUnavailable);
       }
 
@@ -363,7 +415,7 @@ export default function (Alpine) {
       const rightBadge = makeIconBadge(icons.right, 'right-1');
       if (rightBadge) cell.appendChild(rightBadge);
 
-      if (available) {
+      if (interactive) {
         cell.addEventListener('click', () => {
           if (suppressClick) {
             suppressClick = false;
@@ -373,6 +425,7 @@ export default function (Alpine) {
         });
       }
 
+      applyConsumerClass(cell, item);
       return cell;
     }
 
@@ -383,15 +436,19 @@ export default function (Alpine) {
     // where the drop would land. The picker's own data never changes: a
     // completed drag dispatches `slot-drop` with the proposed day, position,
     // and a ready-to-assign `slots` array, and the consumer applies it (or
-    // ignores the event to reject the move).
+    // ignores the event to reject the move). In `dropMode: 'slot'` the slot
+    // stays in place instead and is dropped onto another slot marked
+    // `droppable`, highlighted under the pointer. Tiles drag too there, and
+    // `slot-drop` names the dragged item and the target.
 
     const SLOT_SELECTOR = '[data-slot="slot-picker-cell"], [data-slot="slot-picker-slot"]';
 
     // Dragging needs an array to reorder, so only slots taken directly from the
     // consumer's `slots` config qualify (generated slots are fresh objects each
-    // render and never match).
-    function canDrag(item) {
-      return draggable && item.available !== false && item.draggable !== false && !!explicitSlots && explicitSlots.includes(item);
+    // render and never match). A tile qualifies through its slot, the `owner`.
+    // Inert unavailable slots never drag, clickable ones (bookings) do.
+    function canDrag(item, owner = item) {
+      return draggable && (item.available !== false || item.clickable === true) && item.draggable !== false && !!explicitSlots && explicitSlots.includes(owner);
     }
 
     // The slot nodes of a day list in display order: cells and tile groups only,
@@ -428,6 +485,8 @@ export default function (Alpine) {
         color: slot.color ?? null,
         status: slot.status ?? null,
         tileIndex: null,
+        item: slot,
+        parent: null,
       };
     }
 
@@ -453,6 +512,32 @@ export default function (Alpine) {
       return null;
     }
 
+    // Drop target highlight for dropMode 'slot'.
+    // `ring-ring/50` is emitted after the event-color rings in the stylesheet,
+    // so it wins over a selected colored cell's ring while on and that ring's color returns on removal.
+    // The width class is shared with the colored selection ring, so it stays while the
+    // target still shows its selection.
+    function setDropHighlight(node, on) {
+      if (on) node.setAttribute('data-drop-target', 'true');
+      else node.removeAttribute('data-drop-target');
+      node.classList.toggle('ring-ring/50', on);
+      const selectedColored = node.getAttribute('data-colored') === 'true' && node.getAttribute('aria-pressed') === 'true';
+      node.classList.toggle('ring-[calc(var(--spacing)*0.75)]', on || selectedColored);
+    }
+
+    // The droppable slot node under the pointer in a day list - a cell or a tile
+    // group (a tile is never a target itself, dropping on one means its group),
+    // never the dragged node or the group the dragged tile belongs to.
+    function resolveDropTarget(list, y, source, sourceGroup) {
+      const hit = slotChildren(list).find((k) => {
+        const r = k.getBoundingClientRect();
+        return r.height > 0 && y >= r.top && y < r.bottom;
+      });
+      if (!hit || hit === source || hit === sourceGroup) return null;
+      const info = infoByNode.get(hit);
+      return info && info.payload.item.droppable === true ? hit : null;
+    }
+
     function attachSlotDrag(node, { raw, payload, key, suppress = false, canStart }) {
       node.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
@@ -471,6 +556,17 @@ export default function (Alpine) {
         let ghost = null;
         let toRem = null;
         let pending = null;
+        const toSlot = dropMode === 'slot';
+        // A tile's own group is never its target.
+        // `node.parentNode` is the tile wrap for a tile and the day list for a cell or group (closest finds nothing there).
+        const sourceGroup = toSlot ? node.parentNode.closest('[data-slot="slot-picker-slot"]') : null;
+        let dropNode = null;
+        const setDropNode = (next) => {
+          if (next === dropNode) return;
+          if (dropNode) setDropHighlight(dropNode, false);
+          dropNode = next;
+          if (dropNode) setDropHighlight(dropNode, true);
+        };
 
         const place = (list, ref) => {
           if (node.parentNode === list && node.nextSibling === ref) return;
@@ -507,11 +603,18 @@ export default function (Alpine) {
           if (sRect.height > 0) {
             if (me.clientY < sRect.top + 40) scrollBody.scrollTop -= 15;
             else if (me.clientY > sRect.bottom - 40) scrollBody.scrollTop += 15;
+            if (me.clientX < sRect.left + 40) scrollBody.scrollLeft -= 15;
+            else if (me.clientX > sRect.right - 40) scrollBody.scrollLeft += 15;
           }
           const elRect = el.getBoundingClientRect();
           ghost.style.left = toRem(me.clientX - elRect.left - (startX - srcRect.left));
           ghost.style.top = toRem(me.clientY - elRect.top - (startY - srcRect.top));
           const target = resolveDayColumn(me.clientX, me.clientY);
+          if (toSlot) {
+            // The source stays put. Only the target under the pointer changes.
+            setDropNode(target ? resolveDropTarget(target.list, me.clientY, node, sourceGroup) : null);
+            return;
+          }
           if (!target) {
             restoreHome();
             pending = null;
@@ -535,13 +638,26 @@ export default function (Alpine) {
           releasePointer(node, e);
           if (!dragging) return;
           ghost.remove();
-          restoreHome();
+          const drop = dropNode;
+          if (toSlot) setDropNode(null);
+          else restoreHome();
           node.removeAttribute('data-dragging');
           node.classList.remove('opacity-50');
           // The drag may have parked the node past the now indicator. Re-seat it.
           if (nowIndicatorEl && todaySlotList) positionNowIndicator();
           if (!commit) return;
           if (suppress) suppressClick = true;
+          if (toSlot) {
+            if (!drop || !node.isConnected) return;
+            const info = infoByNode.get(drop);
+            el.dispatchEvent(
+              new CustomEvent('slot-drop', {
+                bubbles: true,
+                detail: { slot: { ...payload, key }, target: { ...info.payload, key: info.key } },
+              })
+            );
+            return;
+          }
           if (!pending || !node.isConnected) return;
           // Reinserting at the original position leaves the order unchanged.
           if (pending.date === payload.date && pending.index === origIdx) return;
@@ -569,12 +685,18 @@ export default function (Alpine) {
 
     // Build a group container for a slot that holds sub-slot tiles. The slot's own
     // time labels the group. Each tile is an individually selectable cell.
-    function buildGroup({ dateStr, dayLabel, slot }) {
+    function buildGroup({ dateStr, dayLabel, slot, key: groupKey, payload: groupPayload }) {
       const groupTime = slot.end ? `${slot.start} to ${slot.end}` : slot.start;
 
       const container = document.createElement('div');
+      applyConsumerData(container, slot);
       container.setAttribute('data-slot', 'slot-picker-slot');
+      container.setAttribute('data-key', groupKey);
+      container.setAttribute('data-date', dateStr);
+      if (slot.start != null) container.setAttribute('data-start', slot.start);
+      infoByNode.set(container, { key: groupKey, payload: groupPayload });
       container.classList.add('relative', 'flex', 'flex-col', 'overflow-hidden', 'rounded-md', 'border');
+      applyConsumerClass(container, slot);
       container.setAttribute('role', 'group');
       const headerId = `hspg${uuidv4()}`;
       container.setAttribute('aria-labelledby', headerId);
@@ -583,6 +705,7 @@ export default function (Alpine) {
       header.setAttribute('data-slot', 'slot-picker-slot-header');
       header.setAttribute('id', headerId);
       header.classList.add('text-center', 'px-2', 'py-1.5', 'text-sm', 'font-medium', 'border-b');
+      if (slot.tooltip) header.title = String(slot.tooltip);
 
       const headerTime = document.createElement('span');
       headerTime.textContent = slot.start;
@@ -604,6 +727,19 @@ export default function (Alpine) {
         const key = tileKey(dateStr, slot.start, i);
         const tileTime = tile.start ? (tile.end ? `${tile.start} to ${tile.end}` : tile.start) : groupTime;
         const descPart = tile.description ? `, ${tile.description}` : `, Option ${i + 1}`;
+        const payload = {
+          date: dateStr,
+          start: tile.start ?? slot.start,
+          end: tile.end ?? slot.end,
+          available: tile.available !== false,
+          description: tile.description ?? null,
+          note: tile.note ?? null,
+          color: tile.color ?? null,
+          status: tile.status ?? null,
+          tileIndex: i,
+          item: tile,
+          parent: slot,
+        };
         const cell = buildCell({
           key,
           ariaLabel: `${dayLabel}, ${tileTime}${descPart}`,
@@ -611,24 +747,133 @@ export default function (Alpine) {
           item: tile,
           dataSlot: 'slot-picker-tile',
           isTile: true,
-          payload: {
-            date: dateStr,
-            start: tile.start ?? slot.start,
-            end: tile.end ?? slot.end,
-            available: tile.available !== false,
-            description: tile.description ?? null,
-            note: tile.note ?? null,
-            color: tile.color ?? null,
-            status: tile.status ?? null,
-            tileIndex: i,
-          },
+          payload,
         });
         tileWrap.appendChild(cell);
+        // Only in slot mode - a tile (a patient in a shared slot) can be dropped onto another slot. Its click handler needs the suppression.
+        if (dropMode === 'slot' && canDrag(tile, slot)) attachSlotDrag(cell, { raw: tile, payload, key, suppress: true });
       });
 
       container.appendChild(tileWrap);
       return container;
     }
+
+    // === Context menu ===
+    // One bubbling, cancelable `slot-contextmenu` for four gestures:
+    // * a right-click (the native contextmenu event)
+    // * ContextMenu key
+    // * Shift+F10 on a focused cell
+    // * Long touch press.
+    // When the page cancels it (`@slot-contextmenu.prevent`), the native event is cancelled too so the browser's own menu does not show.
+
+    const LONG_PRESS_MS = 500;
+    let longPressTimer = null;
+    let pressX = 0;
+    let pressY = 0;
+    // Set after a keyboard or long-press dispatch. The browser may fire a native
+    // contextmenu for the same gesture (Chrome on keyup, Android after a long
+    // press). It must only mirror the page's preventDefault, not dispatch again.
+    // A real right-click always starts with a pointerdown, which clears a stale
+    // flag first, as does the next keydown.
+    let swallowNextContextmenu = null;
+    // Set by a long press. The click the release then produces is a leftover of
+    // the gesture, not a choice. It must neither select nor reach the page, where
+    // a menu the press opened would take it for an outside click and close. The
+    // mousedown before it must not pull focus out of that menu either.
+    let longPressed = false;
+
+    // The cell, tile or tile group an event target belongs to. The ghost clone carries data-key too but has no entry, so it never resolves.
+    function resolveHit(target) {
+      const node = target instanceof Element ? target.closest('[data-key]') : null;
+      const info = node && infoByNode.get(node);
+      return info ? { node, info } : null;
+    }
+
+    function dispatchContextMenu(info, x, y) {
+      const event = new CustomEvent('slot-contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        detail: { slot: { ...info.payload, key: info.key, selected: selected.includes(info.key) }, x, y },
+      });
+      el.dispatchEvent(event);
+      return event.defaultPrevented;
+    }
+
+    const cancelLongPress = () => {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    };
+
+    const onContextMenu = (event) => {
+      // Android fires one at about the long-press delay. It takes over from the timer.
+      cancelLongPress();
+      if (swallowNextContextmenu) {
+        if (swallowNextContextmenu.prevent) event.preventDefault();
+        swallowNextContextmenu = null;
+        return;
+      }
+      const hit = resolveHit(event.target);
+      if (hit && dispatchContextMenu(hit.info, event.clientX, event.clientY)) event.preventDefault();
+    };
+
+    const onKeyDown = (event) => {
+      swallowNextContextmenu = null;
+      if (event.key !== 'ContextMenu' && !(event.key === 'F10' && event.shiftKey)) return;
+      const hit = resolveHit(event.target);
+      if (!hit) return;
+      event.preventDefault();
+      // Anchored at the cell's bottom-left corner, where a browser would put it.
+      const rect = hit.node.getBoundingClientRect();
+      swallowNextContextmenu = { prevent: dispatchContextMenu(hit.info, rect.left, rect.bottom) };
+    };
+
+    const onPointerDown = (event) => {
+      // Every press starts clean. A click suppression left by a drag or a long
+      // press whose click never came, or a swallow flag left by a browser that
+      // fired no native contextmenu for the keyboard gesture, must not eat this one.
+      suppressClick = false;
+      longPressed = false;
+      swallowNextContextmenu = null;
+      cancelLongPress();
+      if (event.pointerType !== 'touch' || !event.isPrimary) return;
+      const hit = resolveHit(event.target);
+      if (!hit) return;
+      pressX = event.clientX;
+      pressY = event.clientY;
+      longPressTimer = setTimeout(() => {
+        longPressTimer = null;
+        if (!hit.node.isConnected) return;
+        // The press can no longer become a drag, and the click that follows the release is swallowed.
+        abortDrag?.();
+        longPressed = true;
+        swallowNextContextmenu = { prevent: dispatchContextMenu(hit.info, pressX, pressY) };
+      }, LONG_PRESS_MS);
+    };
+
+    const onPointerMove = (event) => {
+      if (longPressTimer === null) return;
+      if (Math.abs(event.clientX - pressX) >= DRAG_THRESHOLD || Math.abs(event.clientY - pressY) >= DRAG_THRESHOLD) cancelLongPress();
+    };
+
+    const onMouseDown = (event) => {
+      if (longPressed) event.preventDefault();
+    };
+
+    // Capture phase, so neither the cell's own handler nor the page sees the click.
+    const onClick = (event) => {
+      if (!longPressed) return;
+      longPressed = false;
+      event.stopPropagation();
+    };
+
+    el.addEventListener('contextmenu', onContextMenu);
+    el.addEventListener('keydown', onKeyDown);
+    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerup', cancelLongPress);
+    el.addEventListener('pointercancel', cancelLongPress);
+    el.addEventListener('mousedown', onMouseDown);
+    el.addEventListener('click', onClick, true);
 
     // Now indicator: a red dot + hairline row inside today's slot list, sitting
     // below every slot that has already started. A single timeout aimed at the
@@ -683,6 +928,24 @@ export default function (Alpine) {
       else scheduleNowTick(positionNowIndicator());
     }
 
+    // The visible range, reported to the page as `range-change` whenever it moves.
+    // Every report waits a microtask. The first render runs while Alpine still
+    // initializes the host, so a listener written after the directive is not
+    // attached yet. A later render may run inside the configuration effect, where
+    // a handler's assignment to the configuration (loading the slots of the new
+    // range) would be ignored, since a running effect never re-runs for its own writes.
+    let announcedFrom = null;
+    let announcedTo = null;
+
+    function announceRange(days) {
+      const from = toDateString(days[0]);
+      const to = toDateString(days[days.length - 1]);
+      if (from === announcedFrom && to === announcedTo) return;
+      announcedFrom = from;
+      announcedTo = to;
+      queueMicrotask(() => el.dispatchEvent(new CustomEvent('range-change', { bubbles: true, detail: { from, to } })));
+    }
+
     // Render
 
     const dtf = createDateTimeFormatCache();
@@ -710,8 +973,11 @@ export default function (Alpine) {
         dayGrid.classList.add('grid', 'grid-cols-1', `md:grid-cols-${dayCount}`, 'divide-y', 'md:divide-y-0', 'md:divide-x');
       } else {
         // Default: never collapse. Always dayCount columns with vertical dividers.
-        // Columns shrink to fit on a narrow container.
-        dayGrid.classList.add('grid', `grid-cols-${dayCount}`, 'divide-x');
+        // In a narrow container the columns shrink to their day header's width,
+        // then the scroll body scrolls sideways. `min-w-min` grows the grid's box
+        // with its columns, so resolveDayColumn's clamp still reaches every day.
+        dayGrid.classList.add('grid', 'divide-x', 'min-w-min');
+        dayGrid.style.gridTemplateColumns = `repeat(${dayCount},minmax(min-content,1fr))`;
       }
 
       dayGrid.innerHTML = '';
@@ -730,65 +996,93 @@ export default function (Alpine) {
         const col = document.createElement('div');
         col.classList.add('flex', 'flex-col');
 
-        // Day header: 2 rows (day name + localized date)
-        const hdr = document.createElement('div');
+        const dayDisabled = isDayDisabled(dateStr, day.getDay()) || isDayOutOfRange(day);
+        // A disabled day's header stays plain text, as inert as the rest of its column.
+        const headerButton = clickableHeaders && !dayDisabled;
+
+        // Day header: 2 rows (day name + localized date), plus `dayIcons` markers
+        // in its top corners. With `clickableHeaders` it is a button dispatching
+        // `day-click`, so its rows are spans (a button may not contain divs).
+        const hdr = document.createElement(headerButton ? 'button' : 'div');
         hdr.classList.add('sticky', 'top-0', 'border-b', 'p-2', 'text-center', 'bg-background', 'z-1');
+        // The default layout's columns are as wide as their header's unwrapped
+        // rows. The responsive layout's columns never grow, so its rows wrap.
+        if (!responsive) hdr.classList.add('whitespace-nowrap');
         hdr.setAttribute('data-slot', 'slot-picker-header');
         const headerId = `hsp${uuidv4()}`;
         hdr.setAttribute('id', headerId);
         col.setAttribute('role', 'group');
         col.setAttribute('aria-labelledby', headerId);
+        if (headerButton) {
+          hdr.type = 'button';
+          // The same hover as an uncolored slot, and an inset focus ring.
+          // The header sits flush against the scroll body, which would clip an outset one.
+          hdr.classList.add('w-full', 'cursor-pointer', 'transition-colors', ...UNSELECTED_UNCOLORED, 'focus-visible:outline-none', 'focus-visible:inset-ring-[calc(var(--spacing)*0.75)]', 'focus-visible:inset-ring-ring/50');
+          hdr.addEventListener('click', () => el.dispatchEvent(new CustomEvent('day-click', { bubbles: true, detail: { date: dateStr } })));
+        }
+        const rowTag = headerButton ? 'span' : 'div';
 
-        const nameEl = document.createElement('div');
+        const nameEl = document.createElement(rowTag);
         nameEl.classList.add('text-sm', 'font-semibold', 'leading-tight');
+        if (headerButton) nameEl.classList.add('block');
         nameEl.textContent = dayNameFmt.format(day);
 
-        const dateEl = document.createElement('div');
+        const dateEl = document.createElement(rowTag);
         dateEl.classList.add('text-xs', 'text-muted-foreground');
+        if (headerButton) dateEl.classList.add('block');
         dateEl.textContent = dateFmt.format(day);
 
-        const dayDisabled = isDayDisabled(dateStr, day.getDay()) || isDayOutOfRange(day);
-        if (today && !dayDisabled) nameEl.classList.add('text-primary');
+        if (today && !dayDisabled) hdr.classList.add('inset-shadow-[0_-.188rem_var(--primary)]');
 
         hdr.append(nameEl, dateEl);
+        // Markers sit in the header's top corners like a cell's icons, so a day with markers keeps the height of its neighbours.
+        // The sticky header is the badges' positioned ancestor.
+        const marks = normalizeIcons({ icons: dayIcons[dateStr] });
+        const leftMarks = makeIconBadge(marks.left, 'left-1');
+        if (leftMarks) hdr.appendChild(leftMarks);
+        const rightMarks = makeIconBadge(marks.right, 'right-1');
+        if (rightMarks) hdr.appendChild(rightMarks);
+        // Absolute badges take no room, so reserve it on both sides (the rows stay centered), or a column as narrow as its header puts them over the day name.
+        if (leftMarks || rightMarks) hdr.classList.add('px-5');
         col.appendChild(hdr);
 
         if (dayDisabled) {
           const placeholder = document.createElement('div');
           placeholder.classList.add('flex', 'flex-1', 'items-center', 'justify-center', 'py-4', 'text-sm', 'text-muted-foreground');
-          placeholder.textContent = el.getAttribute('data-unavailable-label') || 'Not available';
+          placeholder.textContent = unavailableLabel();
           col.appendChild(placeholder);
           dayGrid.appendChild(col);
           return;
         }
         // Slot list: a chronological vertical stack per day.
+        // Its content should never size the column, so a long description clips instead of widening the day.
         const slotList = document.createElement('div');
-        slotList.classList.add('flex', 'flex-col', 'gap-1', 'p-2');
+        slotList.classList.add('flex', 'flex-col', 'gap-1', 'p-2', 'contain-inline-size');
         dayCols.push({ el: col, date: dateStr, list: slotList });
 
         const slots = getSlotsForDay(dateStr);
         const trackNow = showNowIndicator && today;
 
         slots.forEach((slot) => {
+          const key = slotKey(dateStr, slot.start);
+          const payload = slotPayload(dateStr, slot);
           let node;
           if (Array.isArray(slot.tiles) && slot.tiles.length) {
-            node = buildGroup({ dateStr, dayLabel, slot });
+            node = buildGroup({ dateStr, dayLabel, slot, key, payload });
             if (canDrag(slot)) {
               // The group drags as a whole. A press that starts on a tile stays
               // a tile interaction, and no click suppression is needed because
               // the container has no click handler of its own.
               attachSlotDrag(node, {
                 raw: slot,
-                payload: slotPayload(dateStr, slot),
-                key: slotKey(dateStr, slot.start),
+                payload,
+                key,
                 canStart: (e) => !e.target.closest('[data-slot="slot-picker-tile"]'),
               });
             }
           } else {
-            const key = slotKey(dateStr, slot.start);
             const timeLabel = slot.end ? `${slot.start} to ${slot.end}` : slot.start;
             const descPart = slot.description ? `, ${slot.description}` : '';
-            const payload = slotPayload(dateStr, slot);
             node = buildCell({
               key,
               ariaLabel: `${dayLabel}, ${timeLabel}${descPart}`,
@@ -824,6 +1118,7 @@ export default function (Alpine) {
       }
 
       updateNavState();
+      announceRange(days);
     }
 
     // Calendar popover: jump the first day to any date via the shared calendar widget.
@@ -866,7 +1161,7 @@ export default function (Alpine) {
           if (syncingCalendar) return;
           const selectedDate = calWidget.getSelected();
           if (selectedDate) {
-            currentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            currentDate = alignWeek(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()));
             clampCurrentDate();
             render();
           }
@@ -883,8 +1178,8 @@ export default function (Alpine) {
         tableFullWidth: false,
         cycleSelectionTab: true,
       });
-      // Catch up on any locale/bounds config applied before this widget existed.
-      calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
+      // Catch up on any locale/firstDay/bounds config applied before this widget existed.
+      syncCalendarConfig();
 
       // Reflect the current first day in the calendar without firing a selection.
       syncCalendarToCurrent = () => {
@@ -938,38 +1233,65 @@ export default function (Alpine) {
 
     // Config
 
+    // Mirror the locale, first day and bounds onto the calendar popover, so it
+    // starts its weeks on the same day and out-of-range days can't be picked there either.
+    function syncCalendarConfig() {
+      if (calWidget) calWidget.setConfig({ locale, firstDay: firstDay ?? 0, min: minDate ?? undefined, max: maxDate ?? undefined });
+    }
+
     function setConfig(config) {
       if (!config) return;
-      if (config.date !== undefined) currentDate = toMidnight(config.date);
+      let weekChanged = false;
       if (config.days !== undefined) {
         const n = Math.round(Number(config.days));
         dayCount = Number.isFinite(n) ? Math.min(7, Math.max(1, n)) : 3;
+        weekChanged = true;
       }
       if (config.start !== undefined) slotStart = config.start;
       if (config.end !== undefined) slotEnd = config.end;
       if (config.step !== undefined) slotStep = Number(config.step);
-      if (config.slots !== undefined) explicitSlots = config.slots.length ? config.slots : null;
+      if (config.slots !== undefined) explicitSlots = Array.isArray(config.slots) ? config.slots : null;
       if (config.fillEmptyDays !== undefined) fillEmptyDays = !!config.fillEmptyDays;
       if (config.multiple !== undefined) multiple = !!config.multiple;
       if (config.showNowIndicator !== undefined) showNowIndicator = !!config.showNowIndicator;
       if (config.draggable !== undefined) draggable = !!config.draggable;
+      if (config.dropMode !== undefined) dropMode = config.dropMode === 'slot' ? 'slot' : 'reorder';
+      if (config.clickableHeaders !== undefined) clickableHeaders = !!config.clickableHeaders;
+      if (config.dayIcons !== undefined) dayIcons = config.dayIcons && typeof config.dayIcons === 'object' ? config.dayIcons : {};
+      let calChanged = false;
+      if (config.firstDay !== undefined) {
+        firstDay = config.firstDay === null ? null : Number(config.firstDay) || 0;
+        weekChanged = true;
+        calChanged = true;
+      }
       if (config.locale !== undefined) {
         locale = resolveLocale(config.locale);
-        if (calWidget) calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
+        calChanged = true;
       }
       if (config.disabledDates !== undefined) disabledDates = Array.isArray(config.disabledDates) ? config.disabledDates : [];
       if (config.disabledDays !== undefined) disabledDays = Array.isArray(config.disabledDays) ? config.disabledDays : [];
-      let boundsChanged = false;
       if (config.minDate !== undefined) {
         minDate = config.minDate ? toMidnight(config.minDate) : null;
-        boundsChanged = true;
+        calChanged = true;
       }
       if (config.maxDate !== undefined) {
         maxDate = config.maxDate ? toMidnight(config.maxDate) : null;
-        boundsChanged = true;
+        calChanged = true;
       }
-      // Mirror the bounds onto the calendar popover so out-of-range days can't be picked there either.
-      if (boundsChanged && calWidget) calWidget.setConfig({ locale, min: minDate ?? undefined, max: maxDate ?? undefined });
+      if (calChanged) syncCalendarConfig();
+      // Last, so a week alignment sees this call's days and first day.
+      // A picker that just became a week view aligns the window it already shows.
+      let dateChanged = false;
+      if (config.date !== undefined) {
+        const next = toMidnight(config.date);
+        const key = toDateString(next);
+        if (key !== appliedDate) {
+          appliedDate = key;
+          currentDate = next;
+          dateChanged = true;
+        }
+      }
+      if (dateChanged || weekChanged) currentDate = alignWeek(currentDate);
       clampCurrentDate();
     }
 
@@ -998,6 +1320,15 @@ export default function (Alpine) {
 
     cleanup(() => {
       abortDrag?.();
+      cancelLongPress();
+      el.removeEventListener('contextmenu', onContextMenu);
+      el.removeEventListener('keydown', onKeyDown);
+      el.removeEventListener('pointerdown', onPointerDown);
+      el.removeEventListener('pointermove', onPointerMove);
+      el.removeEventListener('pointerup', cancelLongPress);
+      el.removeEventListener('pointercancel', cancelLongPress);
+      el.removeEventListener('mousedown', onMouseDown);
+      el.removeEventListener('click', onClick, true);
       clearTimeout(nowTimer);
       if (calPopover) {
         calWidget.cleanup();

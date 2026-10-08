@@ -6,10 +6,10 @@
       <div class="vbox size-full min-w-0">
         <div x-h-toolbar data-size="md">
           <div x-h-chip :data-variant="filter === 'all' ? 'primary' : 'outline'">
-            <button x-h-chip-button @click="filter = 'all'">All</button>
+            <button x-h-chip-button :aria-pressed="filter === 'all'" @click="filter = 'all'">All</button>
           </div>
           <div x-h-chip :data-variant="filter === 'unread' ? 'primary' : 'outline'">
-            <button x-h-chip-button @click="filter = 'unread'">
+            <button x-h-chip-button :aria-pressed="filter === 'unread'" @click="filter = 'unread'">
               Unread
               <span x-show="$store.erp.unreadCount" x-text="'(' + $store.erp.unreadCount + ')'"></span>
             </button>
@@ -22,7 +22,7 @@
         <ul x-h-list class="flex-1 overflow-auto">
           <template x-for="message in list" :key="message.id">
             <li x-h-list-item>
-              <button x-h-list-item-button class="items-start gap-3 px-4 py-3" :aria-current="selectedId === message.id" @click="open(message.id)">
+              <button x-h-list-item-button class="items-start gap-3 py-3" :aria-current="selectedId === message.id" @click="open(message.id)">
                 <div x-h-avatar x-text="message.initials"></div>
                 <div class="vbox min-w-0 flex-1">
                   <div class="hbox items-baseline justify-between gap-2">
@@ -33,7 +33,7 @@
                   <span x-h-list-secondary class="truncate text-sm" x-text="message.preview"></span>
                 </div>
               </button>
-              <span x-show="message.unread" x-h-badge data-variant="primary" aria-label="Unread">New</span>
+              <span x-show="message.unread" x-h-badge data-variant="primary">New</span>
             </li>
           </template>
           <template x-if="!list.length">

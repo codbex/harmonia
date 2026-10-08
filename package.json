@@ -1,6 +1,6 @@
 {
   "name": "@codbex/harmonia",
-  "version": "3.5.1",
+  "version": "3.6.0",
   "description": "A Modern UI Component Library for Alpine.js",
   "repository": {
     "url": "git+https://github.com/codbex/harmonia.git",
@@ -62,7 +62,7 @@
     "i18next": "^26.3.4",
     "lucide": "^1.48.0",
     "culori": "^4.0.2",
-    "@fontsource/open-sans": "^5.2.7",
+    "@fontsource/open-sans": "^5.3.0",
     "pinecone-router": "^7.6.0"
   },
   "devDependencies": {
@@ -77,11 +77,13 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "happy-dom": "^20.10.4",
+    "lucide": "^1.50.0",
+    "pinecone-router": "^7.6.0",
     "prettier": "^3.8.4",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.3.3",
-    "vitepress": "^2.0.0-alpha.19",
+    "vitepress": "^2.0.0-alpha.20",
     "vitest": "^4.1.9"
   },
   "peerDependencies": {

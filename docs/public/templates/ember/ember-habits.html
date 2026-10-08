@@ -29,7 +29,7 @@
               <li x-h-notification class="hbox items-center">
                 <div x-h-notification-media class="w-10">
                   <div x-h-avatar class="rounded-lg" :data-variant="r.variant">
-                    <svg x-h-lucide role="img" :aria-label="r.variant" :data-lucide="r.icon"></svg>
+                    <svg x-h-lucide role="img" :aria-label="r.label" :data-lucide="r.icon"></svg>
                   </div>
                 </div>
                 <div class="vbox flex-1 gap-1">
@@ -67,7 +67,7 @@
         <div x-show="view === 'today'" class="mx-auto vbox w-full max-w-2xl gap-4 p-4">
           <div class="hbox items-center gap-4">
             <div class="relative shrink-0">
-              <div x-h-progress="donePercent" data-type="circle" :data-variant="donePercent === 100 ? 'positive' : undefined" style="width: 5rem"></div>
+              <div x-h-progress="donePercent" data-type="circle" :data-variant="donePercent === 100 ? 'positive' : undefined" style="width: 5rem" aria-label="Habits done today"></div>
               <span class="position-center absolute text-lg font-medium" x-text="donePercent + '%'"></span>
             </div>
             <div class="vbox gap-1">
@@ -83,14 +83,14 @@
           <div x-h-card data-type="object" class="overflow-hidden">
             <ul x-h-list>
               <template x-for="habit in habits" :key="habit.id">
-                <li x-h-list-item class="gap-3 px-4 py-3">
+                <li x-h-list-item class="gap-3 px-4">
                   <span x-h-checkbox>
                     <input type="checkbox" :id="'habit-' + habit.id" x-model="habit.doneToday" @change="onHabitToggled(habit)" />
                   </span>
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" :data-lucide="habit.icon"></svg>
                   <label class="vbox min-w-0 flex-1" :for="'habit-' + habit.id">
                     <span class="truncate text-base font-medium" :class="habit.doneToday && 'text-muted-foreground line-through'" x-text="habit.name"></span>
-                    <span x-h-text.muted x-text="habit.target"></span>
+                    <span x-h-list-secondary class="text-sm" x-text="habit.target"></span>
                   </label>
                   <span x-h-badge :data-variant="habit.streak >= 7 ? 'positive' : 'outline'" role="img" :aria-label="habit.streak + ' day streak'">
                     <svg x-h-lucide role="presentation" data-lucide="flame"></svg>
@@ -129,23 +129,25 @@
           </div>
 
           <div x-h-card>
-            <div x-h-card-header>
+            <div x-h-card-header class="border-b">
               <div x-h-card-title>Up next</div>
               <div x-h-card-description x-text="habits.length - doneCount ? 'Still open for today' : 'Nothing left today'"></div>
             </div>
-            <div x-h-card-content class="vbox gap-2">
-              <template x-for="habit in habits.filter((h) => !h.doneToday)" :key="habit.id">
-                <div class="hbox items-center gap-3">
-                  <svg x-h-lucide class="size-5 shrink-0 text-muted-foreground" role="presentation" :data-lucide="habit.icon"></svg>
-                  <div class="vbox min-w-0 flex-1">
-                    <span class="truncate text-sm font-medium" x-text="habit.name"></span>
-                    <span x-h-text.muted x-text="habit.target"></span>
-                  </div>
-                  <button x-h-button data-variant="outline" data-size="sm" @click="toggleHabit(habit)">Done</button>
-                </div>
-              </template>
+            <div x-h-card-content.flush>
+              <ul x-h-list>
+                <template x-for="habit in habits.filter((h) => !h.doneToday)" :key="habit.id">
+                  <li x-h-list-item class="gap-3 px-4">
+                    <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" :data-lucide="habit.icon"></svg>
+                    <div class="vbox min-w-0 flex-1">
+                      <span class="truncate text-sm font-medium" x-text="habit.name"></span>
+                      <span x-h-list-secondary class="text-sm" x-text="habit.target"></span>
+                    </div>
+                    <button x-h-button data-variant="outline" data-size="sm" @click="toggleHabit(habit)">Done</button>
+                  </li>
+                </template>
+              </ul>
               <template x-if="!habits.filter((h) => !h.doneToday).length">
-                <p x-h-text.muted>Every habit is checked off. Enjoy the rest of your day.</p>
+                <p x-h-text.muted class="px-4">Every habit is checked off. Enjoy the rest of your day.</p>
               </template>
             </div>
           </div>
@@ -154,7 +156,7 @@
         <!-- ==================== HISTORY ==================== -->
         <div x-show="view === 'history'" class="mx-auto w-full max-w-2xl">
           <p x-h-text.muted class="p-4">Every habit you have completed, day by day. Tap a day to see what you finished.</p>
-          <div x-h-calendar="calendar" class="border-y" style="height: 32rem" @date-click="openDay($event.detail.date)" @event-click="openDay($event.detail.event.startDate)"></div>
+          <div x-h-calendar="calendar" class="border-y" style="height: 32rem" @date-click="openDay($event.detail.date)" @event-click="openDay($event.detail.event.start)"></div>
         </div>
 
         <!-- ==================== STATS ==================== -->
@@ -229,24 +231,24 @@
             <h2 x-h-text.h6>Preferences</h2>
             <div x-h-card data-type="object" class="mt-2 w-full overflow-hidden">
               <ul x-h-list>
-                <li x-h-list-item class="gap-3 px-4 py-3">
+                <li x-h-list-item class="gap-3 pl-4">
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="bell"></svg>
-                  <label class="w-full text-base font-medium" for="sw-reminders">Daily reminders</label>
+                  <label x-h-label class="flex-1" for="sw-reminders">Daily reminders</label>
                   <span x-h-switch>
-                    <input type="checkbox" id="sw-reminders" checked />
+                    <input type="checkbox" id="sw-reminders" x-model="settings.dailyReminders" />
                   </span>
                 </li>
-                <li x-h-list-item class="gap-3 px-4 py-3">
+                <li x-h-list-item class="gap-3 pl-4">
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="clock"></svg>
-                  <label class="flex-1 text-base font-medium" for="reminder-time">Reminder time</label>
+                  <label x-h-label class="flex-1" for="reminder-time">Reminder time</label>
                   <div x-h-time-picker style="max-width: 8rem">
                     <input type="text" id="reminder-time" x-model="settings.reminderTime" x-h-time-picker-input />
                     <div x-h-time-picker-popup data-align="bottom-end"></div>
                   </div>
                 </li>
-                <li x-h-list-item class="gap-3 px-4 py-3">
+                <li x-h-list-item class="gap-3 pl-4">
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="calendar"></svg>
-                  <label class="flex-1 text-base font-medium" id="week-start-label" for="week-start">Week starts on</label>
+                  <label x-h-label class="flex-1" id="week-start-label" for="week-start">Week starts on</label>
                   <div x-h-select style="max-width: 8rem">
                     <input x-h-select-input data-id="week-start" aria-labelledby="week-start-label" x-model="settings.firstDay" placeholder="Select" />
                     <div x-h-select-content>
@@ -269,19 +271,19 @@
               <div x-h-button-group x-model="settings.theme" class="w-full" data-borderless="true" aria-labelledby="appearance-heading" @change="setTheme($event.detail.value)">
                 <button x-h-button data-variant="transparent" class="h-auto flex-1 py-3" x-h-button-group-radio="'light'">
                   <div class="vbox items-center gap-1">
-                    <svg x-h-lucide class="size-5" role="presentation" data-lucide="sun"></svg>
+                    <svg x-h-lucide class="size-5 shrink-0" role="presentation" data-lucide="sun"></svg>
                     <span class="font-normal">Light</span>
                   </div>
                 </button>
                 <button x-h-button data-variant="transparent" class="h-auto flex-1 py-3" x-h-button-group-radio="'dark'">
                   <div class="vbox items-center gap-1">
-                    <svg x-h-lucide class="size-5" role="presentation" data-lucide="moon"></svg>
+                    <svg x-h-lucide class="size-5 shrink-0" role="presentation" data-lucide="moon"></svg>
                     <span class="font-normal">Dark</span>
                   </div>
                 </button>
                 <button x-h-button data-variant="transparent" class="h-auto flex-1 py-3" x-h-button-group-radio="'auto'">
                   <div class="vbox items-center gap-1">
-                    <svg x-h-lucide class="size-5" role="presentation" data-lucide="sun-moon"></svg>
+                    <svg x-h-lucide class="size-5 shrink-0" role="presentation" data-lucide="sun-moon"></svg>
                     <span class="font-normal">Auto</span>
                   </div>
                 </button>
@@ -293,11 +295,11 @@
             <h2 x-h-text.h6>Security</h2>
             <div x-h-card data-type="object" class="mt-2 w-full overflow-hidden">
               <ul x-h-list>
-                <li x-h-list-item class="gap-3 px-4 py-3">
+                <li x-h-list-item class="gap-3 pl-4">
                   <svg x-h-lucide x-h-list-secondary class="size-5 shrink-0" role="presentation" data-lucide="smartphone"></svg>
                   <div class="vbox flex-1">
-                    <p class="text-base font-medium">This device</p>
-                    <p x-h-text.muted x-text="deviceVerified ? 'Verified' : 'Not verified yet'"></p>
+                    <p class="text-sm font-medium">This device</p>
+                    <p x-h-list-secondary class="text-sm" x-text="deviceVerified ? 'Verified' : 'Not verified yet'"></p>
                   </div>
                   <template x-if="deviceVerified">
                     <span x-h-badge data-variant="positive">
@@ -378,37 +380,37 @@
           <p x-h-dialog-description>Something small you can repeat every day.</p>
         </div>
         <form x-h-dialog-content id="add-habit-form" x-ref="addHabitForm" @submit.prevent="addHabit()" @input="newHabitValid = $el.checkValidity()">
-          <fieldset x-h-fieldset>
-            <div x-h-field-group class="gap-4!">
-              <div x-h-field>
-                <label x-h-label for="nh-name" data-indicator="end">Name</label>
-                <input x-h-input x-h-focus="showAddHabit" id="nh-name" x-model="newHabit.name" placeholder="Read before bed" required />
-                <p x-h-field-error>Give the habit a name.</p>
-              </div>
-              <div x-h-field>
-                <label x-h-label for="nh-target" data-indicator="end">Target</label>
-                <input x-h-input id="nh-target" x-model="newHabit.target" placeholder="20 minutes" required />
-                <p x-h-field-error>Describe what counts as done.</p>
-              </div>
-              <div x-h-field>
-                <label x-h-label for="nh-icon">Icon</label>
-                <div x-h-select>
-                  <input x-h-select-input data-id="nh-icon" x-model="newHabit.icon" placeholder="Select an icon" />
-                  <div x-h-select-content>
-                    <div x-h-select-list>
-                      <template x-for="option in iconOptions" :key="option.value">
-                        <div x-h-select-option="option.label" :data-value="option.value"></div>
-                      </template>
-                    </div>
+          <div x-h-field-group>
+            <div x-h-field>
+              <label x-h-label for="nh-name" data-indicator="end">Name</label>
+              <input x-h-input id="nh-name" x-model="newHabit.name" placeholder="Read before bed" required />
+              <p x-h-field-error>Give the habit a name.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nh-target" data-indicator="end">Target</label>
+              <input x-h-input id="nh-target" x-model="newHabit.target" placeholder="20 minutes" required />
+              <p x-h-field-error>Describe what counts as done.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="nh-icon">Icon</label>
+              <div x-h-select>
+                <input x-h-select-input data-id="nh-icon" x-model="newHabit.icon" placeholder="Select an icon" />
+                <div x-h-select-content>
+                  <div x-h-select-list>
+                    <template x-for="option in iconOptions" :key="option.value">
+                      <div x-h-select-option="option.label" :data-value="option.value">
+                        <svg x-h-lucide role="presentation" :data-lucide="option.value"></svg>
+                      </div>
+                    </template>
                   </div>
                 </div>
               </div>
             </div>
-          </fieldset>
+          </div>
         </form>
         <div x-h-dialog-footer>
           <button x-h-button data-variant="outline" @click="showAddHabit = false">Cancel</button>
-          <button x-h-button data-variant="primary" type="submit" form="add-habit-form" :disabled="!newHabitValid">Add habit</button>
+          <button x-h-button data-variant="primary" type="submit" form="add-habit-form" :aria-disabled="!newHabitValid">Add habit</button>
         </div>
       </div>
     </div>
@@ -422,21 +424,23 @@
             <svg x-h-icon data-icon="close" role="presentation"></svg>
           </button>
         </div>
-        <ul x-h-list x-h-dialog-content>
-          <template x-for="name in dayDetail.names" :key="name">
-            <li x-h-list-item class="gap-3">
-              <svg x-h-lucide class="size-4 shrink-0 text-positive" role="presentation" data-lucide="check"></svg>
-              <span x-text="name"></span>
-            </li>
-          </template>
-          <template x-if="!dayDetail.names.length">
-            <li x-h-info-page>
-              <div x-h-info-page-header>
-                <div x-h-info-page-title>Nothing completed that day</div>
-              </div>
-            </li>
-          </template>
-        </ul>
+        <div x-h-dialog-content.flush>
+          <ul x-h-list>
+            <template x-for="name in dayDetail.names" :key="name">
+              <li x-h-list-item class="gap-3 px-4">
+                <svg x-h-lucide class="size-4 shrink-0 text-positive" role="presentation" data-lucide="check"></svg>
+                <span x-text="name"></span>
+              </li>
+            </template>
+            <template x-if="!dayDetail.names.length">
+              <li x-h-info-page>
+                <div x-h-info-page-header>
+                  <div x-h-info-page-title>Nothing completed that day</div>
+                </div>
+              </li>
+            </template>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -469,8 +473,8 @@
 
           remindersShown: false,
           reminders: [
-            { id: 1, icon: "footprints", variant: "information", title: "Evening walk", description: "Your usual time is in 30 minutes." },
-            { id: 2, icon: "flame", variant: "warning", title: "Keep the streak", description: "Two habits left to finish today." },
+            { id: 1, icon: "footprints", variant: "information", label: "Information", title: "Evening walk", description: "Your usual time is in 30 minutes." },
+            { id: 2, icon: "flame", variant: "warning", label: "Warning", title: "Keep the streak", description: "Two habits left to finish today." },
           ],
 
           habits: [
@@ -510,11 +514,11 @@
           range: "week",
           weekChart: {
             labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            series: [{ name: "Habits done", color: "teal", data: [5, 4, 5, 3, 5, 2, 4] }],
+            series: [{ name: "Habits done", color: "color-6", data: [5, 4, 5, 3, 5, 2, 4] }],
           },
           monthChart: {
             labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-            series: [{ name: "Completion rate", color: "green", data: [68, 74, 81, 77] }],
+            series: [{ name: "Completion rate", color: "color-3", data: [68, 74, 81, 77] }],
           },
           totalCompletions: 412,
 
@@ -529,6 +533,7 @@
           deviceVerified: false,
 
           settings: {
+            dailyReminders: true,
             reminderTime: "07:30",
             firstDay: "1",
             // Seed from Harmonia's current color scheme ("auto" | "light" | "dark").
@@ -594,11 +599,13 @@
             this.deviceVerified = true;
             this.showVerify = false;
           },
+          // date-click hands over a Date, event-click the event, whose start is the
+          // YYYY-MM-DD string buildCalendar wrote.
           openDay(date) {
-            const iso = this.isoDate(new Date(date));
+            const iso = typeof date === "string" ? date : this.isoDate(date);
             const event = this.calendar.events.find((e) => e.start === iso);
             this.dayDetail = {
-              label: new Date(date).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" }),
+              label: this.$dateFormat(iso, { options: { weekday: "long", day: "numeric", month: "long" } }),
               names: event ? event.description.split(", ") : [],
               summary: event ? event.title : "0 of " + this.habits.length,
             };

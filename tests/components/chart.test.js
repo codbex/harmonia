@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { DEFAULT_PALETTE } from '../../src/common/chart.js';
 import chartPlugin from '../../src/components/chart.js';
 import { mountDirective } from '../test-utils.js';
 
@@ -65,7 +66,7 @@ describe('chart directives', () => {
       const bars = slot(el, 'chart-bar');
       expect(bars.length).toBe(2);
       expect(bars[0].tagName.toLowerCase()).toBe('rect');
-      expect(bars[0].classList.contains('fill-blue-500')).toBe(true);
+      expect(bars[0].classList.contains('fill-chart-1')).toBe(true);
       // Taller value, taller bar; both end on the shared baseline.
       expect(attr(bars[0], 'height')).toBeLessThan(attr(bars[1], 'height'));
       expect(attr(bars[0], 'y') + attr(bars[0], 'height')).toBeCloseTo(attr(bars[1], 'y') + attr(bars[1], 'height'), 1);
@@ -75,8 +76,8 @@ describe('chart directives', () => {
       mount('h-chart-bar', { labels: ['A', 'B'], series: [{ data: [10, 20] }, { data: [5, 8] }] }, el);
       const bars = slot(el, 'chart-bar');
       expect(bars.length).toBe(4);
-      expect(bars[0].classList.contains('fill-blue-500')).toBe(true);
-      expect(bars[1].classList.contains('fill-red-500')).toBe(true);
+      expect(bars[0].classList.contains('fill-chart-1')).toBe(true);
+      expect(bars[1].classList.contains('fill-chart-2')).toBe(true);
       // Grouped bars are fully rounded rects.
       expect(attr(bars[0], 'rx')).toBeGreaterThan(0);
     });
@@ -128,7 +129,7 @@ describe('chart directives', () => {
       expect(segments.length).toBe(1);
       expect(segments[0].tagName.toLowerCase()).toBe('polyline');
       expect(segments[0].getAttribute('points').split(' ').length).toBe(3);
-      expect(segments[0].classList.contains('stroke-blue-500')).toBe(true);
+      expect(segments[0].classList.contains('stroke-chart-1')).toBe(true);
       expect(segments[0].classList.contains('fill-none')).toBe(true);
     });
 
@@ -156,7 +157,7 @@ describe('chart directives', () => {
       const areas = slot(el, 'chart-area');
       expect(areas.length).toBe(1);
       expect(areas[0].tagName.toLowerCase()).toBe('polygon');
-      expect(areas[0].classList.contains('fill-blue-500')).toBe(true);
+      expect(areas[0].classList.contains('fill-chart-1')).toBe(true);
       // The three data points plus the two baseline corners that close the shape.
       expect(areas[0].getAttribute('points').split(' ').length).toBe(5);
       expect(slot(el, 'chart-segment').length).toBe(1);
@@ -215,8 +216,8 @@ describe('chart directives', () => {
       expect(wedges.length).toBe(2);
       expect(wedges[0].tagName.toLowerCase()).toBe('path');
       expect(wedges[0].getAttribute('d')).toContain('A ');
-      expect(wedges[0].classList.contains('fill-blue-500')).toBe(true);
-      expect(wedges[1].classList.contains('fill-red-500')).toBe(true);
+      expect(wedges[0].classList.contains('fill-chart-1')).toBe(true);
+      expect(wedges[1].classList.contains('fill-chart-2')).toBe(true);
       expect(slot(el, 'chart-legend-swatch').length).toBe(2);
     });
 
@@ -443,7 +444,7 @@ describe('chart directives', () => {
       const fill = slot(el, 'chart-area')[0];
       expect(fill.tagName.toLowerCase()).toBe('polygon');
       expect(fill.getAttribute('opacity')).toBe('0.2');
-      expect(fill.classList.contains('fill-blue-500')).toBe(true);
+      expect(fill.classList.contains('fill-chart-1')).toBe(true);
     });
 
     it('draws a spoke per category and a web ring per tick', () => {
@@ -473,7 +474,7 @@ describe('chart directives', () => {
       mount('h-chart-radar', { labels: ['A', 'B', 'C'], series: [{ data: [1, 2, 3] }, { data: [3, 2, 1] }] }, el);
       expect(slot(el, 'chart-point').length).toBe(6);
       expect(slot(el, 'chart-area').length).toBe(2);
-      expect(slot(el, 'chart-area')[1].classList.contains('fill-red-500')).toBe(true);
+      expect(slot(el, 'chart-area')[1].classList.contains('fill-chart-2')).toBe(true);
       expect(slot(el, 'chart-legend-swatch').length).toBe(2);
     });
 
@@ -487,13 +488,51 @@ describe('chart directives', () => {
       el.addEventListener('chart-hover', spy);
       mount('h-chart-radar', cfg, el);
       slot(el, 'chart-point')[1].dispatchEvent(new Event('pointerenter'));
-      expect(spy.mock.calls[0][0].detail).toMatchObject({ type: 'point', value: 20, label: 'Power', color: 'blue' });
+      expect(spy.mock.calls[0][0].detail).toMatchObject({ type: 'point', value: 20, label: 'Power', color: 'color-1' });
     });
 
     it('shows "No data" for empty series', () => {
       mount('h-chart-radar', { series: [] }, el);
       expect(slot(el, 'chart-empty').length).toBe(1);
       expect(slot(el, 'chart-point').length).toBe(0);
+    });
+  });
+
+  describe('colors', () => {
+    it('cycles the first nine chart colors by default', () => {
+      expect(DEFAULT_PALETTE).toEqual(['color-1', 'color-2', 'color-3', 'color-4', 'color-5', 'color-6', 'color-7', 'color-8', 'color-9']);
+    });
+
+    it('paints an explicit chart color, and its legend swatch, with the theme class', () => {
+      mount('h-chart-bar', { labels: ['A', 'B'], series: [{ color: 'color-3', data: [1, 2] }] }, el);
+      expect(slot(el, 'chart-bar')[0].classList.contains('fill-chart-3')).toBe(true);
+      expect(slot(el, 'chart-legend-swatch')[0].classList.contains('fill-chart-3')).toBe(true);
+    });
+
+    it('strokes a line and fills a wedge with the chart color', () => {
+      mount('h-chart-line', { labels: ['A', 'B'], series: [{ color: 'color-7', data: [1, 2] }] }, el);
+      expect(slot(el, 'chart-segment')[0].classList.contains('stroke-chart-7')).toBe(true);
+      const pie = makeEl();
+      mount('h-chart-pie', { slices: [{ label: 'A', value: 1, color: 'color-12' }] }, pie);
+      expect(slot(pie, 'chart-pie')[0].classList.contains('fill-chart-12')).toBe(true);
+    });
+
+    it('still paints a deprecated standard color name with the fixed standard color', () => {
+      mount('h-chart-bar', { labels: ['A'], series: [{ color: 'green', data: [1] }] }, el);
+      expect(slot(el, 'chart-bar')[0].classList.contains('fill-green-500')).toBe(true);
+    });
+
+    it('cycles a custom palette of chart colors', () => {
+      mount('h-chart-bar', { labels: ['A'], palette: ['color-4', 'color-5'], series: [{ data: [1] }, { data: [2] }, { data: [3] }] }, el);
+      const bars = slot(el, 'chart-bar');
+      expect(bars[0].classList.contains('fill-chart-4')).toBe(true);
+      expect(bars[1].classList.contains('fill-chart-5')).toBe(true);
+      expect(bars[2].classList.contains('fill-chart-4')).toBe(true);
+    });
+
+    it('falls back to the chart color of the series index for an unknown color', () => {
+      mount('h-chart-bar', { labels: ['A'], series: [{ data: [1] }, { color: 'not-a-color', data: [2] }] }, el);
+      expect(slot(el, 'chart-bar')[1].classList.contains('fill-chart-2')).toBe(true);
     });
   });
 
@@ -563,7 +602,7 @@ describe('chart directives', () => {
       const bar = slot(el, 'chart-bar')[0];
       bar.dispatchEvent(new Event('pointerenter'));
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy.mock.calls[0][0].detail).toMatchObject({ type: 'bar', value: 10, label: 'A', color: 'blue' });
+      expect(spy.mock.calls[0][0].detail).toMatchObject({ type: 'bar', value: 10, label: 'A', color: 'color-1' });
       expect(slot(el, 'chart-tooltip')[0].classList.contains('hidden')).toBe(false);
     });
 

@@ -269,7 +269,8 @@ export default function (Alpine) {
     if (el.tagName !== 'OL' && el.tagName !== 'UL') {
       throw new Error(`${original} must be a list element`);
     }
-    el.classList.add('flex', 'flex-col', 'divide-solid', 'divide-y');
+    // The last rendered item drops the divide-y border, see h-list.
+    el.classList.add('flex', 'flex-col', 'divide-solid', 'divide-y', '*:last-rendered:border-b-0');
     el.setAttribute('data-slot', 'notification-list');
     el.setAttribute('role', 'group');
   });

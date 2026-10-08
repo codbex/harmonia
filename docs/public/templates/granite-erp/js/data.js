@@ -536,46 +536,46 @@ const graniteData = {
     revenueHalfYear: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       series: [
-        { name: 'Revenue', color: 'blue', data: [182, 196, 175, 214, 228, 241] },
-        { name: 'Expenses', color: 'gray', data: [121, 128, 117, 136, 142, 151] },
+        { name: 'Revenue', color: 'color-1', data: [182, 196, 175, 214, 228, 241] },
+        { name: 'Expenses', color: 'color-10', data: [121, 128, 117, 136, 142, 151] },
       ],
     },
     revenueFullYear: {
       labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       series: [
-        { name: 'Revenue', color: 'blue', data: [148, 141, 166, 171, 189, 204, 182, 196, 175, 214, 228, 241] },
-        { name: 'Expenses', color: 'gray', data: [103, 99, 112, 118, 124, 139, 121, 128, 117, 136, 142, 151] },
+        { name: 'Revenue', color: 'color-1', data: [148, 141, 166, 171, 189, 204, 182, 196, 175, 214, 228, 241] },
+        { name: 'Expenses', color: 'color-10', data: [103, 99, 112, 118, 124, 139, 121, 128, 117, 136, 142, 151] },
       ],
     },
     cashflow: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       series: [
-        { name: 'Cash in', color: 'green', data: [164, 178, 169, 197, 210, 224] },
-        { name: 'Cash out', color: 'orange', data: [131, 138, 127, 149, 155, 161] },
+        { name: 'Cash in', color: 'color-3', data: [164, 178, 169, 197, 210, 224] },
+        { name: 'Cash out', color: 'color-4', data: [131, 138, 127, 149, 155, 161] },
       ],
     },
     // Doughnut slice values are percentage shares (they sum to 100).
     spendByCategory: {
       slices: [
-        { label: 'Raw materials', value: 48, color: 'blue' },
-        { label: 'Logistics', value: 21, color: 'teal' },
-        { label: 'Marketing', value: 9, color: 'purple' },
-        { label: 'Software', value: 9, color: 'indigo' },
-        { label: 'Utilities', value: 7, color: 'orange' },
-        { label: 'Facilities', value: 6, color: 'gray' },
+        { label: 'Raw materials', value: 48, color: 'color-1' },
+        { label: 'Logistics', value: 21, color: 'color-6' },
+        { label: 'Marketing', value: 9, color: 'color-5' },
+        { label: 'Software', value: 9, color: 'color-8' },
+        { label: 'Utilities', value: 7, color: 'color-4' },
+        { label: 'Facilities', value: 6, color: 'color-10' },
       ],
     },
     invoiceAging: {
       slices: [
-        { label: 'Current', value: 83, color: 'green' },
-        { label: '1-30 days late', value: 10, color: 'yellow' },
-        { label: '31-60 days late', value: 4, color: 'orange' },
-        { label: '60+ days late', value: 3, color: 'red' },
+        { label: 'Current', value: 83, color: 'color-3' },
+        { label: '1-30 days late', value: 10, color: 'color-9' },
+        { label: '31-60 days late', value: 4, color: 'color-4' },
+        { label: '60+ days late', value: 3, color: 'color-2' },
       ],
     },
     daysToPay: {
       labels: ['INV-1040', 'INV-1041', 'INV-1042', 'INV-1043', 'INV-1046', 'INV-1049'],
-      series: [{ name: 'Days to pay', color: 'blue', data: [20, 18, 23, 25, 20, 11] }],
+      series: [{ name: 'Days to pay', color: 'color-1', data: [20, 18, 23, 25, 20, 11] }],
     },
   },
 };

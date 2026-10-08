@@ -130,16 +130,12 @@
         ></p>
       </div>
       <div x-h-dialog-content>
-        <fieldset x-h-fieldset>
-          <div x-h-field-group>
-            <div x-h-field>
-              <label x-h-label for="restock-qty">Quantity to add</label>
-              <div x-h-input-number>
-                <input type="number" id="restock-qty" min="1" step="1" x-model.number="restockQty" />
-              </div>
-            </div>
+        <div x-h-field>
+          <label x-h-label for="restock-qty">Quantity to add</label>
+          <div x-h-input-number>
+            <input type="number" id="restock-qty" min="1" step="1" x-model.number="restockQty" />
           </div>
-        </fieldset>
+        </div>
       </div>
       <div x-h-dialog-footer>
         <button x-h-button data-variant="outline" @click="restockTarget = null">Cancel</button>

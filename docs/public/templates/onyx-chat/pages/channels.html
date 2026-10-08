@@ -4,42 +4,43 @@
       <h2 x-h-text.h5>Channels</h2>
       <p x-h-text.muted>Join the conversations that matter to you; joined channels show up in the sidebar.</p>
     </div>
-    <div class="w-3xs">
+    <!-- `relative` keeps the sr-only status below anchored here rather than to the page. -->
+    <div class="relative w-3xs">
       <div x-h-input-group>
         <input x-h-input.group placeholder="Search channels..." aria-label="Search channels" x-model="search" />
         <div x-h-input-group-addon data-align="inline-start">
           <svg x-h-lucide role="presentation" data-lucide="search"></svg>
         </div>
       </div>
+      <!-- Present from the start, so screen readers announce its changes while the user types. -->
+      <p class="sr-only" role="status" x-text="search.trim() ? (list.length ? list.length + (list.length === 1 ? ' channel matches' : ' channels match') : 'No channels match') : ''"></p>
     </div>
   </div>
 
   <div x-h-card data-type="object" class="w-full overflow-hidden">
     <ul x-h-list>
       <template x-for="channel in list" :key="channel.id">
-        <li x-h-list-item class="items-start gap-3 px-4 py-3">
-          <div x-h-avatar class="rounded-control">
-            <svg x-h-lucide role="presentation" data-lucide="hash"></svg>
-          </div>
-          <div class="vbox min-w-0 flex-1">
-            <div class="hbox items-center gap-2">
-              <span class="font-medium" x-text="channel.name"></span>
-              <span x-h-badge data-variant="outline" x-show="channel.joined">Joined</span>
+        <li x-h-list-item>
+          <a x-h-list-item-button class="items-start gap-2 px-2.5" :href="'/channels/' + channel.id">
+            <div x-h-avatar class="mt-1 rounded-control">
+              <svg x-h-lucide role="presentation" data-lucide="hash"></svg>
             </div>
-            <span x-h-list-secondary class="truncate text-sm" x-text="channel.topic"></span>
-            <span x-h-list-secondary class="text-xs" x-text="channel.memberIds.length + ' members'"></span>
-          </div>
-          <div class="hbox gap-2">
-            <template x-if="channel.joined">
-              <div class="hbox gap-2">
-                <button x-h-button data-variant="outline" data-size="sm" @click="go('/channels/' + channel.id)">Open</button>
-                <button x-h-button data-variant="transparent" data-size="sm" @click="$store.chat.leaveChannel(channel.id)">Leave</button>
+            <div class="vbox min-w-0 flex-1">
+              <div class="hbox items-center gap-2">
+                <span class="font-medium" x-text="channel.name"></span>
+                <span x-h-badge data-variant="outline" x-show="channel.joined">Joined</span>
               </div>
-            </template>
-            <template x-if="!channel.joined">
-              <button x-h-button data-variant="primary" data-size="sm" @click="$store.chat.joinChannel(channel.id)">Join channel</button>
-            </template>
-          </div>
+              <span x-h-list-secondary class="truncate text-sm" x-text="channel.topic"></span>
+              <span x-h-list-secondary class="text-xs" x-text="channel.memberIds.length + ' members'"></span>
+            </div>
+          </a>
+          <button
+            x-h-button
+            :data-variant="channel.joined ? 'outline' : 'primary'"
+            :aria-label="(channel.joined ? 'Leave ' : 'Join ') + channel.name"
+            @click="channel.joined ? $store.chat.leaveChannel(channel.id) : $store.chat.joinChannel(channel.id)"
+            x-text="channel.joined ? 'Leave' : 'Join'"
+          ></button>
         </li>
       </template>
       <template x-if="!list.length">

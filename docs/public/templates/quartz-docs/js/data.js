@@ -8,7 +8,7 @@ window.QuartzData = {
     {
       route: '/blog/quartz-1-1',
       title: 'Quartz 1.1: smarter refetching',
-      date: 'June 18, 2026',
+      date: '2026-06-18',
       author: 'Case Aylmer',
       initials: 'CA',
       tag: 'Release',
@@ -17,7 +17,7 @@ window.QuartzData = {
     {
       route: '/blog/announcing-quartz-1-0',
       title: 'Announcing Quartz 1.0',
-      date: 'April 2, 2026',
+      date: '2026-04-02',
       author: 'Iva Petrova',
       initials: 'IP',
       tag: 'Release',

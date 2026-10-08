@@ -70,3 +70,15 @@ test('a disabled row control is out of the tab order and never paints its row', 
   await page.keyboard.press('Tab');
   expect(await activeId(page)).not.toBe('disabled-control');
 });
+
+test('the dividers stop at the last rendered row, even with an empty-state template after it', async ({ page }) => {
+  await gotoFixture(page, 'list');
+  const borders = (selector) => page.locator(selector).evaluateAll((items) => items.map((item) => getComputedStyle(item).borderBottomWidth));
+  expect(await borders('#rendered > li')).toEqual(['1px', '1px', '0px']);
+
+  await page.evaluate(() => {
+    window.Alpine.$data(document.querySelector('#rendered')).items = [];
+  });
+  await settle(page);
+  expect(await borders('#rendered-empty')).toEqual(['0px']);
+});

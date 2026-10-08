@@ -5,32 +5,30 @@
 
     <div x-h-card class="mt-4 w-full">
       <div x-h-card-content>
-        <fieldset x-h-fieldset>
-          <div x-h-field-group class="gap-4!">
+        <div x-h-field-group>
+          <div x-h-field>
+            <label x-h-label for="st-name">Company name</label>
+            <input x-h-input id="st-name" x-model="$store.erp.settings.company.name" />
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div x-h-field>
-              <label x-h-label for="st-name">Company name</label>
-              <input x-h-input id="st-name" x-model="$store.erp.settings.company.name" />
-            </div>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div x-h-field>
-                <label x-h-label for="st-email">Billing email</label>
-                <input x-h-input id="st-email" type="email" x-model="$store.erp.settings.company.email" />
-              </div>
-              <div x-h-field>
-                <label x-h-label for="st-taxid">Tax ID</label>
-                <input x-h-input id="st-taxid" x-model="$store.erp.settings.company.taxId" />
-              </div>
+              <label x-h-label for="st-email">Billing email</label>
+              <input x-h-input id="st-email" type="email" x-model="$store.erp.settings.company.email" />
             </div>
             <div x-h-field>
-              <label x-h-label for="st-address">Address</label>
-              <input x-h-input id="st-address" x-model="$store.erp.settings.company.address" />
-            </div>
-            <div x-h-field>
-              <label x-h-label for="st-about">About</label>
-              <textarea x-h-textarea id="st-about" rows="3" x-model="$store.erp.settings.company.about"></textarea>
+              <label x-h-label for="st-taxid">Tax ID</label>
+              <input x-h-input id="st-taxid" x-model="$store.erp.settings.company.taxId" />
             </div>
           </div>
-        </fieldset>
+          <div x-h-field>
+            <label x-h-label for="st-address">Address</label>
+            <input x-h-input id="st-address" x-model="$store.erp.settings.company.address" />
+          </div>
+          <div x-h-field>
+            <label x-h-label for="st-about">About</label>
+            <textarea x-h-textarea id="st-about" rows="3" x-model="$store.erp.settings.company.about"></textarea>
+          </div>
+        </div>
       </div>
       <div x-h-card-footer class="hbox justify-end">
         <button x-h-button data-variant="primary" @click="save()">Save changes</button>
@@ -44,13 +42,13 @@
 
     <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <div class="vbox flex-1">
-            <p class="text-base font-medium">Currency</p>
-            <p x-h-text.muted>Changes how every amount in the workspace is displayed.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <div class="vbox flex-1 gap-0.5">
+            <label x-h-label id="st-currency-label" for="st-currency">Currency</label>
+            <p x-h-list-secondary class="text-sm">Changes how every amount in the workspace is displayed.</p>
           </div>
           <div x-h-select class="flex-1" style="max-width: 11rem">
-            <input x-h-select-input aria-label="Currency" x-model="$store.erp.settings.currency" />
+            <input x-h-select-input data-id="st-currency" aria-labelledby="st-currency-label" x-model="$store.erp.settings.currency" />
             <div x-h-select-content>
               <div x-h-select-list>
                 <div x-h-select-option="'USD - US Dollar'" data-value="usd"></div>
@@ -60,13 +58,13 @@
             </div>
           </div>
         </li>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <div class="vbox flex-1">
-            <p class="text-base font-medium">Date format</p>
-            <p x-h-text.muted>Applied to due dates, uploads, and activity entries.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <div class="vbox flex-1 gap-0.5">
+            <label x-h-label id="st-date-format-label" for="st-date-format">Date format</label>
+            <p x-h-list-secondary class="text-sm">Applied to due dates, uploads, and activity entries.</p>
           </div>
           <div x-h-select class="flex-1" style="max-width: 11rem">
-            <input x-h-select-input aria-label="Date format" x-model="$store.erp.settings.dateFormat" />
+            <input x-h-select-input data-id="st-date-format" aria-labelledby="st-date-format-label" x-model="$store.erp.settings.dateFormat" />
             <div x-h-select-content>
               <div x-h-select-list>
                 <div x-h-select-option="$store.erp.dateSample('mdy')" data-value="mdy"></div>
@@ -85,12 +83,12 @@
 
     <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <div class="vbox w-full">
-            <p class="text-base font-medium">Style</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <div class="vbox w-full gap-1">
+            <label x-h-label id="st-style-label" for="st-style">Style</label>
             <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
           </div>
-          <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+          <button x-h-button data-variant="outline" id="st-style" aria-labelledby="st-date-format-label" x-h-menu-trigger.dropdown.chevron>
             <!-- svg placeholders on purpose: x-h-lucide renders them in place,
                  so the x-show bindings keep switching the visible icon. -->
             <svg x-h-lucide x-show="$store.erp.settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
@@ -125,35 +123,35 @@
 
     <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-icon data-icon="mail" class="size-5" role="presentation"></svg>
-          <label class="w-full text-base font-medium" for="sw-invoice-emails">Invoice emails</label>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-icon x-h-list-secondary data-icon="mail" class="size-5 shrink-0" role="presentation"></svg>
+          <label x-h-label class="flex-1" for="sw-invoice-emails">Invoice emails</label>
           <span x-h-switch>
             <input type="checkbox" id="sw-invoice-emails" x-model="$store.erp.settings.notifications.invoiceEmails" />
           </span>
         </li>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-icon data-icon="bell" class="size-5" role="presentation"></svg>
-          <div class="vbox w-full">
-            <label class="text-base font-medium" for="sw-approval-alerts">Approval alerts</label>
-            <p x-h-text.muted>Get notified when a request needs your decision.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-icon x-h-list-secondary data-icon="bell" class="size-5 shrink-0" role="presentation"></svg>
+          <div class="vbox w-full gap-1">
+            <label x-h-label for="sw-approval-alerts">Approval alerts</label>
+            <p x-h-list-secondary class="text-sm">Get notified when a request needs your decision.</p>
           </div>
           <span x-h-switch>
             <input type="checkbox" id="sw-approval-alerts" x-model="$store.erp.settings.notifications.approvalAlerts" />
           </span>
         </li>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-icon data-icon="calendar" class="size-5" role="presentation"></svg>
-          <label class="w-full text-base font-medium" for="sw-weekly-digest">Weekly digest</label>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-icon x-h-list-secondary data-icon="calendar" class="size-5 shrink-0" role="presentation"></svg>
+          <label x-h-label class="flex-1" for="sw-weekly-digest">Weekly digest</label>
           <span x-h-switch>
             <input type="checkbox" id="sw-weekly-digest" x-model="$store.erp.settings.notifications.weeklyDigest" />
           </span>
         </li>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-lucide role="presentation" data-lucide="package-open" class="size-5"></svg>
-          <div class="vbox w-full">
-            <label class="text-base font-medium" for="sw-low-stock">Low stock alerts</label>
-            <p x-h-text.muted>Warn when an item drops below its reorder level.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-lucide x-h-list-secondary role="presentation" data-lucide="package-open" class="size-5 shrink-0"></svg>
+          <div class="vbox w-full gap-1">
+            <label x-h-label for="sw-low-stock">Low stock alerts</label>
+            <p x-h-list-secondary class="text-sm">Warn when an item drops below its reorder level.</p>
           </div>
           <span x-h-switch>
             <input type="checkbox" id="sw-low-stock" x-model="$store.erp.settings.notifications.lowStockAlerts" />

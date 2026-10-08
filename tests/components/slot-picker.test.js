@@ -109,6 +109,33 @@ describe('h-slot-picker', () => {
     expect(rows[1].textContent.trim().length).toBeGreaterThan(0);
   });
 
+  describe("today's header", () => {
+    const TODAY_LINE = 'inset-shadow-[0_-.188rem_var(--primary)]';
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date(2026, 5, 22, 12)); // FIXED_DATE, a Monday
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('marks today with a bottom line instead of coloring the day name', () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const headers = Array.from(el.querySelectorAll('[data-slot="slot-picker-header"]'));
+      expect(headers[0].classList.contains(TODAY_LINE)).toBe(true);
+      expect(headers[1].classList.contains(TODAY_LINE)).toBe(false);
+      expect(headers[2].classList.contains(TODAY_LINE)).toBe(false);
+      // The day name keeps the normal text color on every theme.
+      expect(el.querySelectorAll('[data-slot="slot-picker-header"] .text-primary').length).toBe(0);
+    });
+
+    it('draws no line when today is a disabled day', () => {
+      mount('config', withConfig({ date: FIXED_DATE, disabledDays: [1] }));
+      const header = el.querySelector('[data-slot="slot-picker-header"]');
+      expect(header.classList.contains(TODAY_LINE)).toBe(false);
+    });
+  });
+
   it('renders 30 available slot cells for default shorthand (08:00-18:00, 60 min, 3 days)', () => {
     mount('config', withConfig({ date: FIXED_DATE }));
     const slotBtns = el.querySelectorAll('button[data-slot="slot-picker-cell"]');
@@ -361,6 +388,33 @@ describe('h-slot-picker', () => {
       mount('config', withConfig({ date: FIXED_DATE, slots, fillEmptyDays: true }));
       // day 1 shows only its 1 explicit slot (not the 10 default), days 2 and 3: 10 each.
       expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(21);
+    });
+  });
+
+  describe('empty slots array', () => {
+    it('shows every day empty for an empty slots array', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: [] }));
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(0);
+    });
+
+    it('fills every day from the default schedule for an empty slots array with fillEmptyDays', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: [], fillEmptyDays: true }));
+      // Every day is empty, so each falls back to 08:00-18:00 / 60 min = 10 slots.
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(30);
+    });
+
+    it('empties every day when the slots array becomes empty at runtime', () => {
+      const slots = [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: true }];
+      const cfg = createMockAlpine().reactive({ value: { date: FIXED_DATE, slots } });
+      mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(1);
+      cfg.value = { slots: [] };
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(0);
+    });
+
+    it('uses the generated schedule when slots is null', () => {
+      mount('config', withConfig({ date: FIXED_DATE, slots: null }));
+      expect(el.querySelectorAll('button[data-slot="slot-picker-cell"]').length).toBe(30);
     });
   });
 
@@ -854,9 +908,14 @@ describe('h-slot-picker', () => {
     it('does not collapse the day grid by default (no responsive classes)', () => {
       mount('config', withConfig({ date: FIXED_DATE, days: 5 }));
       const grid = el.querySelector('.grid');
-      // Always dayCount columns with vertical dividers, at every width.
-      expect(grid.classList.contains('grid-cols-5')).toBe(true);
+      // Always dayCount columns with vertical dividers, at every width. A
+      // column never gets narrower than its header's unwrapped rows, the grid's
+      // box grows with its columns, and slot content never sizes a column.
+      expect(grid.style.gridTemplateColumns).toBe('repeat(5,minmax(min-content,1fr))');
+      expect(grid.classList.contains('min-w-min')).toBe(true);
       expect(grid.classList.contains('divide-x')).toBe(true);
+      expect(el.querySelector('[data-slot="slot-picker-header"]').classList.contains('whitespace-nowrap')).toBe(true);
+      expect(grid.firstElementChild.children[1].classList.contains('contain-inline-size')).toBe(true);
       // No single-column collapse, no md: breakpoint switches.
       expect(grid.classList.contains('grid-cols-1')).toBe(false);
       expect(grid.classList.contains('md:grid-cols-5')).toBe(false);
@@ -872,6 +931,10 @@ describe('h-slot-picker', () => {
       expect(grid.classList.contains('divide-y')).toBe(true);
       expect(grid.classList.contains('md:divide-y-0')).toBe(true);
       expect(grid.classList.contains('md:divide-x')).toBe(true);
+      // The default layout's content-sized columns stay out of it.
+      expect(grid.style.gridTemplateColumns).toBe('');
+      expect(grid.classList.contains('min-w-min')).toBe(false);
+      expect(el.querySelector('[data-slot="slot-picker-header"]').classList.contains('whitespace-nowrap')).toBe(false);
     });
 
     it('moves the window by the configured number of days on next', () => {
@@ -1530,6 +1593,24 @@ describe('h-slot-picker', () => {
       pointer(cell, 'pointerup', { clientX: 50, clientY: 10 });
     });
 
+    it('nudges the scroll body sideways when dragging near its left and right edges', () => {
+      mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+      stubColumns();
+      const scrollBody = el.querySelector('.overflow-auto');
+      stubRect(scrollBody, { left: 0, right: 300, top: 0, bottom: 500, width: 300, height: 500 });
+      scrollBody.scrollLeft = 100;
+      const cell = firstCell();
+      pointer(cell, 'pointerdown', { clientX: 150, clientY: 200 });
+      pointer(cell, 'pointermove', { clientX: 290, clientY: 200 });
+      expect(scrollBody.scrollLeft).toBe(115);
+      pointer(cell, 'pointermove', { clientX: 10, clientY: 200 });
+      expect(scrollBody.scrollLeft).toBe(100);
+      // Away from both edges it stays put.
+      pointer(cell, 'pointermove', { clientX: 150, clientY: 200 });
+      expect(scrollBody.scrollLeft).toBe(100);
+      pointer(cell, 'pointerup', { clientX: 150, clientY: 200 });
+    });
+
     it('keeps the now indicator safe while a drag parks a slot elsewhere', () => {
       vi.useFakeTimers();
       vi.setSystemTime(new Date(2026, 5, 22, 10, 30, 0));
@@ -1731,6 +1812,973 @@ describe('h-slot-picker', () => {
       const idx = indicatorIndex(0);
       vi.advanceTimersByTime(2 * 60 * 60 * 1000);
       expect(indicatorIndex(0)).toBe(idx); // nothing moved after teardown
+    });
+  });
+
+  describe('visible range', () => {
+    const firstHeader = () => el.querySelector('[data-slot="slot-picker-header"]').textContent;
+    const tick = () => new Promise((resolve) => queueMicrotask(resolve));
+    const detail = (handler, i = 0) => handler.mock.calls[i][0].detail;
+
+    // Pin today to June 22 so the today control is deterministic. Only Date is
+    // faked: the deferred initial range-change still runs as a real microtask.
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date(2026, 5, 22, 12));
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    // Mount with a reactive config and let the deferred initial range-change
+    // pass, so a handler added afterwards sees only the moves under test.
+    async function mountReactive(initial) {
+      const cfg = createMockAlpine().reactive({ value: initial });
+      mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+      await tick();
+      return cfg;
+    }
+
+    function listen() {
+      const handler = vi.fn();
+      el.addEventListener('range-change', handler);
+      return handler;
+    }
+
+    it('keeps the visible range when slots are replaced after paging', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE, slots: [] });
+      el._h_slot_picker.next();
+      expect(firstHeader()).toContain('June 25');
+      cfg.value = { date: FIXED_DATE, slots: [{ date: '2026-06-25', start: '09:00', end: '09:30' }] };
+      expect(firstHeader()).toContain('June 25');
+      expect(el.querySelectorAll('[data-slot="slot-picker-cell"]').length).toBe(1);
+    });
+
+    it('keeps the visible range when days changes after paging', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE });
+      el._h_slot_picker.next();
+      cfg.value = { date: FIXED_DATE, days: 5 };
+      expect(firstHeader()).toContain('June 25');
+      expect(el.querySelectorAll('[data-slot="slot-picker-header"]').length).toBe(5);
+    });
+
+    it('moves the visible range when date changes', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE });
+      el._h_slot_picker.next();
+      cfg.value = { date: '2026-07-01' };
+      expect(firstHeader()).toContain('July 1');
+    });
+
+    it('compares a Date value by day, so a new Date object for the same day keeps the range', async () => {
+      const cfg = await mountReactive({ date: new Date(2026, 5, 22) });
+      el._h_slot_picker.next();
+      cfg.value = { date: new Date(2026, 5, 22) };
+      expect(firstHeader()).toContain('June 25');
+      cfg.value = { date: new Date(2026, 6, 1) };
+      expect(firstHeader()).toContain('July 1');
+    });
+
+    it('dispatches range-change once after init, after the directive has run', async () => {
+      mount('config', withConfig({ date: FIXED_DATE }));
+      const handler = listen();
+      expect(handler).not.toHaveBeenCalled();
+      await tick();
+      expect(handler).toHaveBeenCalledOnce();
+      expect(detail(handler)).toEqual({ from: '2026-06-22', to: '2026-06-24' });
+    });
+
+    it('dispatches a bubbling range-change on next, previous and today', async () => {
+      await mountReactive({ date: '2026-06-01' });
+      const handler = listen();
+      el._h_slot_picker.next();
+      el._h_slot_picker.previous();
+      el._h_slot_picker.today();
+      await tick();
+      expect(detail(handler, 0)).toEqual({ from: '2026-06-04', to: '2026-06-06' });
+      expect(detail(handler, 1)).toEqual({ from: '2026-06-01', to: '2026-06-03' });
+      expect(detail(handler, 2)).toEqual({ from: '2026-06-22', to: '2026-06-24' });
+      expect(handler.mock.calls[2][0].bubbles).toBe(true);
+      expect(handler).toHaveBeenCalledTimes(3);
+    });
+
+    it('dispatches range-change when date or days changes in the config, not when slots change', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE });
+      const handler = listen();
+      cfg.value = { date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30' }] };
+      await tick();
+      expect(handler).not.toHaveBeenCalled();
+      cfg.value = { date: FIXED_DATE, days: 5 };
+      await tick();
+      expect(detail(handler, 0)).toEqual({ from: '2026-06-22', to: '2026-06-26' });
+      cfg.value = { date: '2026-07-01', days: 5 };
+      await tick();
+      expect(detail(handler, 1)).toEqual({ from: '2026-07-01', to: '2026-07-05' });
+      expect(handler).toHaveBeenCalledTimes(2);
+    });
+
+    // A handler loading the slots of the new range assigns to the configuration. Dispatched
+    // inside the configuration effect, that assignment would never re-run it.
+    it('dispatches range-change for a date change outside the configuration effect, a microtask later', async () => {
+      const cfg = await mountReactive({ date: FIXED_DATE, slots: [] });
+      const handler = listen();
+      cfg.value = { date: '2026-07-01', slots: [] };
+      expect(firstHeader()).toContain('July 1');
+      expect(handler).not.toHaveBeenCalled();
+      await tick();
+      expect(detail(handler)).toEqual({ from: '2026-07-01', to: '2026-07-03' });
+    });
+
+    it('dispatches nothing when today is pressed while today is already the first visible day', async () => {
+      await mountReactive({ date: FIXED_DATE });
+      const handler = listen();
+      el._h_slot_picker.today();
+      await tick();
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('dispatches range-change when a date is picked in the calendar dialog', async () => {
+      await mountReactive({ date: FIXED_DATE });
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', 'Choose date');
+      el.appendChild(btn);
+      mountDirective(slotPickerPlugin, 'h-slot-picker-calendar', btn, { original: 'h-slot-picker-calendar' });
+      const handler = listen();
+      btn.click();
+      el.querySelector('[data-slot="slot-picker-calendar"] td[data-day="10"]').click();
+      await tick();
+      expect(detail(handler)).toEqual({ from: '2026-06-10', to: '2026-06-12' });
+    });
+  });
+
+  describe('managing slots (#146)', () => {
+    const pointer = (target, type, coords = {}) => target.dispatchEvent(new MouseEvent(type, { bubbles: true, ...coords }));
+    const rightClick = (node, coords = {}) => {
+      const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, ...coords });
+      node.dispatchEvent(event);
+      return event;
+    };
+    const touchDown = (node, coords = {}) => node.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', isPrimary: true, ...coords }));
+    const tick = () => new Promise((resolve) => queueMicrotask(resolve));
+
+    function stubRect(node, rect) {
+      node.getBoundingClientRect = () => ({ left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, ...rect });
+    }
+
+    function dayColumns() {
+      return Array.from(el.querySelector('.overflow-auto').firstElementChild.children);
+    }
+
+    // Three 100px-wide side-by-side day columns: 22, 23, 24 June 2026.
+    function stubColumns() {
+      dayColumns().forEach((col, i) => stubRect(col, { left: i * 100, right: (i + 1) * 100, top: 0, bottom: 500, width: 100, height: 500 }));
+    }
+
+    function slotList(colIdx) {
+      return dayColumns()[colIdx].querySelector('[data-slot="slot-picker-header"]').nextElementSibling;
+    }
+
+    function slotNodes(colIdx) {
+      return Array.from(slotList(colIdx).children).filter((n) => n.matches('[data-slot="slot-picker-cell"], [data-slot="slot-picker-slot"]'));
+    }
+
+    // Each slot node of a column as a 40px-spaced band: 50-86, 90-126, 130-166, ...
+    function stubSlots(colIdx) {
+      slotNodes(colIdx).forEach((n, j) => stubRect(n, { left: colIdx * 100, right: colIdx * 100 + 100, top: 50 + j * 40, bottom: 86 + j * 40, width: 100, height: 36 }));
+    }
+
+    const ghost = () => el.querySelector('[data-slot="slot-picker-ghost"]');
+    const firstCell = () => el.querySelector('[data-slot="slot-picker-cell"]');
+    const listen = (name) => {
+      const handler = vi.fn();
+      el.addEventListener(name, handler);
+      return handler;
+    };
+    const detail = (handler, i = 0) => handler.mock.calls[i][0].detail;
+
+    function mountCalendar() {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', 'Choose date');
+      el.appendChild(btn);
+      mountDirective(slotPickerPlugin, 'h-slot-picker-calendar', btn, { original: 'h-slot-picker-calendar' });
+      return btn;
+    }
+
+    const baseSlots = () => [
+      { date: FIXED_DATE, start: '09:00', end: '09:30' },
+      { date: FIXED_DATE, start: '10:00', end: '10:30' },
+    ];
+
+    const tiledSlots = () => [{ date: FIXED_DATE, start: '09:00', end: '10:00', tiles: [{ description: 'Room A' }, { description: 'Room B', available: false }] }];
+
+    describe('event detail carries the original objects', () => {
+      it('passes the slot object as item and null as parent on a slot click', () => {
+        const slots = baseSlots();
+        mount('config', withConfig({ date: FIXED_DATE, slots }));
+        const handler = listen('slot-click');
+        firstCell().click();
+        expect(detail(handler).slot.item).toBe(slots[0]);
+        expect(detail(handler).slot.parent).toBeNull();
+      });
+
+      it('passes the tile object as item and its slot as parent on a tile click', () => {
+        const slots = tiledSlots();
+        mount('config', withConfig({ date: FIXED_DATE, slots }));
+        const handler = listen('slot-click');
+        el.querySelector('button[data-slot="slot-picker-tile"]').click();
+        expect(detail(handler).slot.item).toBe(slots[0].tiles[0]);
+        expect(detail(handler).slot.parent).toBe(slots[0]);
+      });
+
+      it('passes item on a reorder drop', () => {
+        const slots = baseSlots();
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+        stubColumns();
+        stubSlots(0);
+        const drops = listen('slot-drop');
+        const cell = firstCell();
+        pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(cell, 'pointermove', { clientX: 50, clientY: 140 });
+        pointer(cell, 'pointerup', { clientX: 50, clientY: 140 });
+        expect(drops).toHaveBeenCalledOnce();
+        expect(detail(drops).slot.item).toBe(slots[0]);
+        expect(detail(drops).slots).toHaveLength(2);
+      });
+    });
+
+    describe('data attributes and consumer class/data', () => {
+      it('marks cells with their date, start and key', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+        const cell = firstCell();
+        expect(cell.getAttribute('data-key')).toBe('2026-06-22T09:00');
+        expect(cell.getAttribute('data-date')).toBe(FIXED_DATE);
+        expect(cell.getAttribute('data-start')).toBe('09:00');
+        expect(cell.hasAttribute('data-tile-index')).toBe(false);
+      });
+
+      it('marks tiles with their index and the group with the slot key', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: tiledSlots() }));
+        const group = el.querySelector('[data-slot="slot-picker-slot"]');
+        expect(group.getAttribute('data-key')).toBe('2026-06-22T09:00');
+        expect(group.getAttribute('data-date')).toBe(FIXED_DATE);
+        expect(group.getAttribute('data-start')).toBe('09:00');
+        const tiles = el.querySelectorAll('[data-slot="slot-picker-tile"]');
+        expect(tiles[1].getAttribute('data-key')).toBe('2026-06-22T09:00#1');
+        expect(tiles[1].getAttribute('data-tile-index')).toBe('1');
+        expect(tiles[1].getAttribute('data-start')).toBe('09:00');
+      });
+
+      it('adds the consumer class and data attributes to a cell and a group', () => {
+        const slots = [
+          { date: FIXED_DATE, start: '09:00', end: '09:30', class: 'italic custom-slot', data: { id: 42, owner: 'anna', nothing: null, skipped: undefined } },
+          { date: FIXED_DATE, start: '10:00', end: '11:00', class: 'custom-group', data: { id: 7 }, tiles: [{ description: 'A', class: 'custom-tile', data: { seat: 1 } }] },
+        ];
+        mount('config', withConfig({ date: FIXED_DATE, slots }));
+        const cell = firstCell();
+        expect(cell.classList.contains('italic')).toBe(true);
+        expect(cell.classList.contains('custom-slot')).toBe(true);
+        expect(cell.getAttribute('data-id')).toBe('42');
+        expect(cell.getAttribute('data-owner')).toBe('anna');
+        expect(cell.hasAttribute('data-nothing')).toBe(false);
+        expect(cell.hasAttribute('data-skipped')).toBe(false);
+        const group = el.querySelector('[data-slot="slot-picker-slot"]');
+        expect(group.classList.contains('custom-group')).toBe(true);
+        expect(group.getAttribute('data-id')).toBe('7');
+        const tile = el.querySelector('[data-slot="slot-picker-tile"]');
+        expect(tile.classList.contains('custom-tile')).toBe(true);
+        expect(tile.getAttribute('data-seat')).toBe('1');
+      });
+
+      it("lets the picker's own attributes win over consumer data", () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', data: { slot: 'x', key: 'y', date: 'z' } }] }));
+        const cell = firstCell();
+        expect(cell.getAttribute('data-slot')).toBe('slot-picker-cell');
+        expect(cell.getAttribute('data-key')).toBe('2026-06-22T09:00');
+        expect(cell.getAttribute('data-date')).toBe(FIXED_DATE);
+      });
+    });
+
+    describe('clickable unavailable slots', () => {
+      const booking = (extra = {}) => ({ date: FIXED_DATE, start: '09:00', end: '09:30', available: false, clickable: true, description: 'Anna', ...extra });
+
+      it('renders as a focusable button announced as not available and never selectable', () => {
+        withModel();
+        mount('config', withConfig({ date: FIXED_DATE, slots: [booking()] }));
+        const cell = firstCell();
+        expect(cell.tagName).toBe('BUTTON');
+        expect(cell.getAttribute('type')).toBe('button');
+        expect(cell.hasAttribute('aria-disabled')).toBe(false);
+        expect(cell.getAttribute('aria-label')).toMatch(/Anna, Not available$/);
+        expect(cell.querySelector('.sr-only')).toBeNull();
+        expect(cell.classList.contains('cursor-pointer')).toBe(true);
+        expect(cell.classList.contains('cursor-not-allowed')).toBe(false);
+        expect(cell.classList.contains('bg-muted/50')).toBe(true);
+        expect(cell.classList.contains('bg-background')).toBe(false);
+        const handler = listen('slot-click');
+        cell.click();
+        expect(detail(handler).slot).toMatchObject({ available: false, selected: false, key: '2026-06-22T09:00' });
+        expect(cell.hasAttribute('aria-pressed')).toBe(false);
+        expect(cell.classList.contains('bg-primary')).toBe(false);
+        expect(el._x_model.get()).toBeNull();
+      });
+
+      it('keeps its color when colored and uses the data-unavailable-label override', () => {
+        el.setAttribute('data-unavailable-label', 'Booked');
+        mount('config', withConfig({ date: FIXED_DATE, slots: [booking({ color: 'red' })] }));
+        const cell = firstCell();
+        expect(cell.getAttribute('data-colored')).toBe('true');
+        expect(cell.getAttribute('data-color')).toBe('red');
+        expect(cell.classList.contains('bg-muted/50')).toBe(false);
+        expect(cell.getAttribute('aria-label')).toMatch(/, Booked$/);
+      });
+
+      it('applies to tiles too', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '10:00', tiles: [{ description: 'Anna', available: false, clickable: true }] }] }));
+        const tile = el.querySelector('[data-slot="slot-picker-tile"]');
+        expect(tile.tagName).toBe('BUTTON');
+        const handler = listen('slot-click');
+        tile.click();
+        expect(detail(handler).slot).toMatchObject({ available: false, selected: false, tileIndex: 0 });
+      });
+
+      it('leaves an inert unavailable slot as it was', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: false }] }));
+        const cell = firstCell();
+        expect(cell.tagName).toBe('DIV');
+        expect(cell.getAttribute('aria-disabled')).toBe('true');
+        expect(cell.classList.contains('cursor-not-allowed')).toBe(true);
+        expect(cell.querySelector('.sr-only').textContent).toBe(', Not available');
+      });
+    });
+
+    describe('tooltip', () => {
+      it('replaces the description and note as the hover text', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', description: 'Anna', note: 'Follow-up', tooltip: 'Patient note' }] }));
+        expect(firstCell().getAttribute('title')).toBe('Patient note');
+      });
+
+      it('keeps the default hover text when no tooltip is set', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', description: 'Anna', note: 'Follow-up' }] }));
+        expect(firstCell().getAttribute('title')).toBe('Anna - Follow-up');
+      });
+
+      it('shows no hover text for an empty tooltip', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', description: 'Anna', tooltip: '' }] }));
+        expect(firstCell().hasAttribute('title')).toBe(false);
+      });
+
+      it('applies to a tile and to the header of a slot with tiles', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '10:00', tooltip: 'Shared slot', tiles: [{ description: 'Anna', tooltip: 'Patient note' }] }] }));
+        expect(el.querySelector('[data-slot="slot-picker-tile"]').getAttribute('title')).toBe('Patient note');
+        expect(el.querySelector('[data-slot="slot-picker-slot-header"]').getAttribute('title')).toBe('Shared slot');
+      });
+    });
+
+    describe('context menu', () => {
+      it('dispatches slot-contextmenu with the slot and the pointer position on right-click', () => {
+        const slots = baseSlots();
+        mount('config', withConfig({ date: FIXED_DATE, slots }));
+        const handler = listen('slot-contextmenu');
+        const native = rightClick(firstCell(), { clientX: 40, clientY: 70 });
+        expect(handler).toHaveBeenCalledOnce();
+        const { slot, x, y } = detail(handler);
+        expect(slot).toMatchObject({ key: '2026-06-22T09:00', start: '09:00', selected: false, tileIndex: null });
+        expect(slot.item).toBe(slots[0]);
+        expect([x, y]).toEqual([40, 70]);
+        expect(handler.mock.calls[0][0].bubbles).toBe(true);
+        expect(handler.mock.calls[0][0].cancelable).toBe(true);
+        expect(native.defaultPrevented).toBe(false);
+      });
+
+      it('cancels the native contextmenu only when the page cancels slot-contextmenu', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+        el.addEventListener('slot-contextmenu', (e) => e.preventDefault());
+        expect(rightClick(firstCell(), { clientX: 1, clientY: 1 }).defaultPrevented).toBe(true);
+      });
+
+      it('reports the selected state of the slot', () => {
+        withModel(el, '2026-06-22T09:00');
+        mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+        const handler = listen('slot-contextmenu');
+        rightClick(firstCell(), { clientX: 1, clientY: 1 });
+        expect(detail(handler).slot.selected).toBe(true);
+      });
+
+      it('resolves a group header to the parent slot and a tile to the tile', () => {
+        const slots = tiledSlots();
+        mount('config', withConfig({ date: FIXED_DATE, slots }));
+        const handler = listen('slot-contextmenu');
+        rightClick(el.querySelector('[data-slot="slot-picker-slot-header"]'), { clientX: 1, clientY: 1 });
+        expect(detail(handler, 0).slot).toMatchObject({ tileIndex: null, key: '2026-06-22T09:00' });
+        expect(detail(handler, 0).slot.item).toBe(slots[0]);
+        rightClick(el.querySelectorAll('[data-slot="slot-picker-tile"]')[1], { clientX: 1, clientY: 1 });
+        expect(detail(handler, 1).slot).toMatchObject({ tileIndex: 1, available: false });
+        expect(detail(handler, 1).slot.item).toBe(slots[0].tiles[1]);
+        expect(detail(handler, 1).slot.parent).toBe(slots[0]);
+      });
+
+      it('works on an inert unavailable slot and ignores a right-click outside any slot', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: [{ date: FIXED_DATE, start: '09:00', end: '09:30', available: false }] }));
+        const handler = listen('slot-contextmenu');
+        rightClick(firstCell(), { clientX: 1, clientY: 1 });
+        expect(detail(handler).slot.available).toBe(false);
+        rightClick(el.querySelector('[data-slot="slot-picker-header"]'), { clientX: 1, clientY: 1 });
+        rightClick(el, { clientX: 1, clientY: 1 });
+        expect(handler).toHaveBeenCalledOnce();
+      });
+
+      it('dispatches from the ContextMenu key and Shift+F10 at the cell bottom-left and swallows the native follow-up', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+        const cell = firstCell();
+        stubRect(cell, { left: 10, right: 110, top: 50, bottom: 86, width: 100, height: 36 });
+        const handler = vi.fn((e) => e.preventDefault());
+        el.addEventListener('slot-contextmenu', handler);
+        const key = new KeyboardEvent('keydown', { key: 'ContextMenu', bubbles: true, cancelable: true });
+        cell.dispatchEvent(key);
+        expect(key.defaultPrevented).toBe(true);
+        expect(detail(handler)).toMatchObject({ x: 10, y: 86 });
+        // Chrome fires a native contextmenu on keyup for the same gesture.
+        const native = rightClick(cell, { clientX: 10, clientY: 86 });
+        expect(handler).toHaveBeenCalledOnce();
+        expect(native.defaultPrevented).toBe(true);
+        // A real right-click afterwards is not swallowed by a stale flag.
+        pointer(cell, 'pointerdown', { button: 2, clientX: 20, clientY: 60 });
+        rightClick(cell, { clientX: 20, clientY: 60 });
+        expect(handler).toHaveBeenCalledTimes(2);
+        cell.dispatchEvent(new KeyboardEvent('keydown', { key: 'F10', shiftKey: true, bubbles: true, cancelable: true }));
+        expect(handler).toHaveBeenCalledTimes(3);
+        expect(detail(handler, 2)).toMatchObject({ x: 10, y: 86 });
+      });
+
+      it('ignores other keys and F10 without Shift', () => {
+        mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+        const handler = listen('slot-contextmenu');
+        for (const init of [{ key: 'F10' }, { key: 'Enter' }, { key: 'F9', shiftKey: true }]) {
+          const key = new KeyboardEvent('keydown', { ...init, bubbles: true, cancelable: true });
+          firstCell().dispatchEvent(key);
+          expect(key.defaultPrevented).toBe(false);
+        }
+        expect(handler).not.toHaveBeenCalled();
+      });
+
+      describe('long press', () => {
+        beforeEach(() => vi.useFakeTimers());
+        afterEach(() => vi.useRealTimers());
+
+        it('fires after half a second, suppresses the following click and aborts a pending drag', () => {
+          mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: baseSlots() }));
+          stubColumns();
+          stubSlots(0);
+          const cell = firstCell();
+          const menus = listen('slot-contextmenu');
+          const clicks = listen('slot-click');
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(499);
+          expect(menus).not.toHaveBeenCalled();
+          vi.advanceTimersByTime(1);
+          expect(menus).toHaveBeenCalledOnce();
+          expect(detail(menus)).toMatchObject({ x: 50, y: 60, slot: { key: '2026-06-22T09:00' } });
+          // The press can no longer turn into a drag, and the click that follows the release is swallowed.
+          pointer(cell, 'pointermove', { clientX: 50, clientY: 140 });
+          expect(ghost()).toBeNull();
+          pointer(cell, 'pointerup', { clientX: 50, clientY: 140 });
+          cell.click();
+          expect(clicks).not.toHaveBeenCalled();
+          // A late native contextmenu does not dispatch twice.
+          rightClick(cell, { clientX: 50, clientY: 60 });
+          expect(menus).toHaveBeenCalledOnce();
+          // The next click is a normal click again.
+          cell.click();
+          expect(clicks).toHaveBeenCalledOnce();
+        });
+
+        it('is cancelled by a release, by movement past the drag threshold and by a native contextmenu', () => {
+          mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+          const cell = firstCell();
+          const menus = listen('slot-contextmenu');
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(300);
+          pointer(cell, 'pointerup', { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(500);
+          expect(menus).not.toHaveBeenCalled();
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(300);
+          pointer(cell, 'pointermove', { clientX: 60, clientY: 60 });
+          vi.advanceTimersByTime(500);
+          expect(menus).not.toHaveBeenCalled();
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(300);
+          rightClick(cell, { clientX: 50, clientY: 60 });
+          expect(menus).toHaveBeenCalledOnce();
+          vi.advanceTimersByTime(500);
+          expect(menus).toHaveBeenCalledOnce();
+        });
+
+        it('ignores a mouse press and a small movement keeps the press alive', () => {
+          mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+          const cell = firstCell();
+          const menus = listen('slot-contextmenu');
+          pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(600);
+          expect(menus).not.toHaveBeenCalled();
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          pointer(cell, 'pointermove', { clientX: 52, clientY: 61 });
+          vi.advanceTimersByTime(500);
+          expect(menus).toHaveBeenCalledOnce();
+        });
+
+        it('keeps the click and the mousedown of the release from the page, so a menu opened by the press stays open', () => {
+          mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+          const cell = firstCell();
+          const outside = vi.fn();
+          document.addEventListener('click', outside);
+          const clicks = listen('slot-click');
+          touchDown(cell, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(500);
+          pointer(cell, 'pointerup', { clientX: 50, clientY: 60 });
+          // The compatibility mouse events of the release. The mousedown would move
+          // focus to the slot, the click would be an outside click for the menu.
+          const down = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+          cell.dispatchEvent(down);
+          expect(down.defaultPrevented).toBe(true);
+          cell.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+          expect(clicks).not.toHaveBeenCalled();
+          expect(outside).not.toHaveBeenCalled();
+          // The next click is a normal click again, and reaches the page.
+          cell.click();
+          expect(clicks).toHaveBeenCalledOnce();
+          expect(outside).toHaveBeenCalledOnce();
+          document.removeEventListener('click', outside);
+        });
+
+        it('swallows the release click of a long press on a tile group too, which has no click handler of its own', () => {
+          mount('config', withConfig({ date: FIXED_DATE, slots: tiledSlots() }));
+          const header = el.querySelector('[data-slot="slot-picker-slot-header"]');
+          const outside = vi.fn();
+          document.addEventListener('click', outside);
+          const menus = listen('slot-contextmenu');
+          touchDown(header, { clientX: 50, clientY: 60 });
+          vi.advanceTimersByTime(500);
+          expect(menus).toHaveBeenCalledOnce();
+          pointer(header, 'pointerup', { clientX: 50, clientY: 60 });
+          header.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          expect(outside).not.toHaveBeenCalled();
+          header.click();
+          expect(outside).toHaveBeenCalledOnce();
+          document.removeEventListener('click', outside);
+        });
+
+        it('removes its host listeners and the timer on cleanup', () => {
+          const { ctx } = mount('config', withConfig({ date: FIXED_DATE, slots: baseSlots() }));
+          touchDown(firstCell(), { clientX: 1, clientY: 1 });
+          ctx.cleanup.mock.calls.forEach(([fn]) => fn());
+          expect(vi.getTimerCount()).toBe(0);
+          const handler = listen('slot-contextmenu');
+          rightClick(firstCell(), { clientX: 1, clientY: 1 });
+          expect(handler).not.toHaveBeenCalled();
+        });
+      });
+
+      it('clears a stuck click suppression on the next press', () => {
+        const slots = [
+          { date: FIXED_DATE, start: '09:00', end: '09:30' },
+          { date: FIXED_DATE, start: '10:00', end: '10:30', draggable: false },
+        ];
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots }));
+        stubColumns();
+        stubSlots(0);
+        const [first, second] = slotNodes(0);
+        // A reorder drag whose pointerup lands outside the dragged cell: the
+        // browser then fires no click on it and the suppression would stay.
+        pointer(first, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(first, 'pointermove', { clientX: 50, clientY: 140 });
+        pointer(el, 'pointerup', { clientX: 50, clientY: 140 });
+        const clicks = listen('slot-click');
+        pointer(second, 'pointerdown', { clientX: 50, clientY: 100 });
+        second.click();
+        expect(clicks).toHaveBeenCalledOnce();
+      });
+    });
+
+    describe('drop onto a slot (dropMode: slot)', () => {
+      const slotModeSlots = () => [
+        { date: FIXED_DATE, start: '09:00', end: '09:30', available: false, clickable: true, color: 'blue', description: 'Anna' },
+        { date: FIXED_DATE, start: '10:00', end: '10:30', droppable: true },
+        { date: FIXED_DATE, start: '11:00', end: '11:30' },
+      ];
+
+      it('highlights the droppable slot under the pointer without moving the source and reports both on drop', () => {
+        const slots = slotModeSlots();
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', slots }));
+        stubColumns();
+        stubSlots(0);
+        const drops = listen('slot-drop');
+        const [booking, free, plain] = slotNodes(0);
+        pointer(booking, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 100 });
+        expect(ghost()).toBeTruthy();
+        expect(booking.getAttribute('data-dragging')).toBe('true');
+        expect(slotNodes(0)).toEqual([booking, free, plain]);
+        expect(free.getAttribute('data-drop-target')).toBe('true');
+        expect(free.classList.contains('ring-ring/50')).toBe(true);
+        expect(free.classList.contains('ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 140 });
+        expect(free.hasAttribute('data-drop-target')).toBe(false);
+        expect(free.classList.contains('ring-ring/50')).toBe(false);
+        expect(free.classList.contains('ring-[calc(var(--spacing)*0.75)]')).toBe(false);
+        expect(plain.hasAttribute('data-drop-target')).toBe(false);
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 100 });
+        pointer(booking, 'pointerup', { clientX: 50, clientY: 100 });
+        expect(drops).toHaveBeenCalledOnce();
+        const d = detail(drops);
+        expect(d.slot).toMatchObject({ key: '2026-06-22T09:00', available: false, tileIndex: null });
+        expect(d.slot.item).toBe(slots[0]);
+        expect(d.target).toMatchObject({ key: '2026-06-22T10:00', start: '10:00', available: true });
+        expect(d.target.item).toBe(slots[1]);
+        expect(d).not.toHaveProperty('date');
+        expect(d).not.toHaveProperty('index');
+        expect(d).not.toHaveProperty('slots');
+        expect(free.hasAttribute('data-drop-target')).toBe(false);
+        expect(ghost()).toBeNull();
+        expect(booking.hasAttribute('data-dragging')).toBe(false);
+        expect(slotNodes(0)).toEqual([booking, free, plain]);
+      });
+
+      it('dispatches nothing when released over a non-target, over the source or outside the grid', () => {
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', slots: slotModeSlots() }));
+        stubColumns();
+        stubSlots(0);
+        const drops = listen('slot-drop');
+        const [booking] = slotNodes(0);
+        for (const end of [
+          { clientX: 50, clientY: 140 },
+          { clientX: 50, clientY: 70 },
+          { clientX: 50, clientY: 400 },
+        ]) {
+          pointer(booking, 'pointerdown', { clientX: 50, clientY: 60 });
+          pointer(booking, 'pointermove', { clientX: 50, clientY: 100 });
+          pointer(booking, 'pointermove', end);
+          pointer(booking, 'pointerup', end);
+        }
+        expect(drops).not.toHaveBeenCalled();
+        expect(el.querySelector('[data-drop-target]')).toBeNull();
+      });
+
+      it('keeps the width ring of a selected colored target after the highlight leaves', () => {
+        withModel(el, '2026-06-22T10:00');
+        const slots = slotModeSlots();
+        slots[1].color = 'blue';
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', slots }));
+        stubColumns();
+        stubSlots(0);
+        const [booking, free] = slotNodes(0);
+        expect(free.getAttribute('aria-pressed')).toBe('true');
+        expect(free.classList.contains('ring-blue-500/50')).toBe(true);
+        pointer(booking, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 100 });
+        expect(free.classList.contains('ring-ring/50')).toBe(true);
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 140 });
+        expect(free.classList.contains('ring-ring/50')).toBe(false);
+        expect(free.classList.contains('ring-[calc(var(--spacing)*0.75)]')).toBe(true);
+        expect(free.classList.contains('ring-blue-500/50')).toBe(true);
+        pointer(booking, 'pointerup', { clientX: 50, clientY: 140 });
+      });
+
+      it('drags a tile onto a slot but never onto its own group', () => {
+        const slots = [
+          { date: FIXED_DATE, start: '09:00', end: '10:00', droppable: true, tiles: [{ description: 'Anna', available: false, clickable: true }, { description: 'Free seat' }] },
+          { date: FIXED_DATE, start: '11:00', end: '11:30', droppable: true },
+        ];
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', slots }));
+        stubColumns();
+        stubSlots(0);
+        const [group, free] = slotNodes(0);
+        const tile = el.querySelector('[data-slot="slot-picker-tile"]');
+        const drops = listen('slot-drop');
+        pointer(tile, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(tile, 'pointermove', { clientX: 50, clientY: 70 });
+        expect(ghost()).toBeTruthy();
+        expect(tile.getAttribute('data-dragging')).toBe('true');
+        expect(group.hasAttribute('data-dragging')).toBe(false);
+        expect(group.hasAttribute('data-drop-target')).toBe(false);
+        pointer(tile, 'pointermove', { clientX: 50, clientY: 100 });
+        expect(free.getAttribute('data-drop-target')).toBe('true');
+        pointer(tile, 'pointerup', { clientX: 50, clientY: 100 });
+        expect(drops).toHaveBeenCalledOnce();
+        const d = detail(drops);
+        expect(d.slot).toMatchObject({ tileIndex: 0, key: '2026-06-22T09:00#0', available: false });
+        expect(d.slot.item).toBe(slots[0].tiles[0]);
+        expect(d.slot.parent).toBe(slots[0]);
+        expect(d.target.item).toBe(slots[1]);
+      });
+
+      it('treats a drop on a group with tiles as a drop on that group and still drags the group from its header', () => {
+        const slots = [
+          { date: FIXED_DATE, start: '09:00', end: '09:30', droppable: true },
+          { date: FIXED_DATE, start: '10:00', end: '11:00', droppable: true, tiles: [{ description: 'Anna' }] },
+        ];
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', slots }));
+        stubColumns();
+        stubSlots(0);
+        const [cell, group] = slotNodes(0);
+        const drops = listen('slot-drop');
+        pointer(cell, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(cell, 'pointermove', { clientX: 50, clientY: 100 });
+        expect(group.getAttribute('data-drop-target')).toBe('true');
+        pointer(cell, 'pointerup', { clientX: 50, clientY: 100 });
+        expect(detail(drops, 0).target.item).toBe(slots[1]);
+        const header = group.querySelector('[data-slot="slot-picker-slot-header"]');
+        pointer(header, 'pointerdown', { clientX: 50, clientY: 100 });
+        pointer(header, 'pointermove', { clientX: 50, clientY: 60 });
+        expect(cell.getAttribute('data-drop-target')).toBe('true');
+        pointer(header, 'pointerup', { clientX: 50, clientY: 60 });
+        expect(detail(drops, 1).slot.item).toBe(slots[1]);
+        expect(detail(drops, 1).slot.tileIndex).toBeNull();
+        expect(detail(drops, 1).target.item).toBe(slots[0]);
+      });
+
+      it('never drags tiles in reorder mode', () => {
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, slots: [{ date: FIXED_DATE, start: '09:00', end: '10:00', tiles: [{ description: 'Anna' }] }, ...baseSlots().slice(1)] }));
+        stubColumns();
+        const tile = el.querySelector('[data-slot="slot-picker-tile"]');
+        pointer(tile, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(tile, 'pointermove', { clientX: 50, clientY: 140 });
+        expect(ghost()).toBeNull();
+        pointer(tile, 'pointerup', { clientX: 50, clientY: 140 });
+      });
+
+      it('never drags an inert unavailable slot but drags a clickable one', () => {
+        const slots = [
+          { date: FIXED_DATE, start: '09:00', end: '09:30', available: false },
+          { date: FIXED_DATE, start: '10:00', end: '10:30', available: false, clickable: true },
+        ];
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', slots }));
+        stubColumns();
+        stubSlots(0);
+        const [inert, booking] = slotNodes(0);
+        pointer(inert, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(inert, 'pointermove', { clientX: 50, clientY: 140 });
+        expect(ghost()).toBeNull();
+        pointer(inert, 'pointerup', { clientX: 50, clientY: 140 });
+        pointer(booking, 'pointerdown', { clientX: 50, clientY: 100 });
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 140 });
+        expect(ghost()).toBeTruthy();
+        pointer(booking, 'pointerup', { clientX: 50, clientY: 140 });
+      });
+
+      it('leaves the now indicator and the order alone after a drag', () => {
+        mount('config', withConfig({ date: FIXED_DATE, draggable: true, dropMode: 'slot', showNowIndicator: true, slots: slotModeSlots() }));
+        stubColumns();
+        stubSlots(0);
+        const before = slotNodes(0);
+        const [booking] = before;
+        pointer(booking, 'pointerdown', { clientX: 50, clientY: 60 });
+        pointer(booking, 'pointermove', { clientX: 50, clientY: 100 });
+        pointer(booking, 'pointerup', { clientX: 50, clientY: 100 });
+        expect(slotNodes(0)).toEqual(before);
+        const indicator = el.querySelector('[data-slot="slot-picker-now"]');
+        if (indicator) expect(indicator.parentNode).toBe(slotList(0));
+      });
+    });
+
+    describe('clickable day headers and markers', () => {
+      it('renders plain div headers that dispatch nothing by default', () => {
+        mount('config', withConfig({ date: FIXED_DATE }));
+        const header = el.querySelector('[data-slot="slot-picker-header"]');
+        expect(header.tagName).toBe('DIV');
+        expect(Array.from(header.children).map((c) => c.tagName)).toEqual(['DIV', 'DIV']);
+        const handler = listen('day-click');
+        header.click();
+        expect(handler).not.toHaveBeenCalled();
+      });
+
+      it('renders button headers that dispatch day-click with the date when clickableHeaders is set', () => {
+        mount('config', withConfig({ date: FIXED_DATE, clickableHeaders: true }));
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        const header = headers[1];
+        expect(header.tagName).toBe('BUTTON');
+        expect(header.getAttribute('type')).toBe('button');
+        expect(header.classList.contains('w-full')).toBe(true);
+        expect(header.classList.contains('cursor-pointer')).toBe(true);
+        expect(header.classList.contains('sticky')).toBe(true);
+        // The same hover as an uncolored slot cell.
+        expect(header.classList.contains('hover:bg-secondary-hover')).toBe(true);
+        expect(header.classList.contains('hover:text-secondary-foreground')).toBe(true);
+        expect(header.classList.contains('transition-colors')).toBe(true);
+        expect(Array.from(header.children).map((c) => c.tagName)).toEqual(['SPAN', 'SPAN']);
+        expect(header.children[0].classList.contains('block')).toBe(true);
+        expect(header.textContent).toContain('June 23');
+        const col = header.parentElement;
+        expect(col.getAttribute('aria-labelledby')).toBe(header.id);
+        const handler = listen('day-click');
+        header.click();
+        expect(handler).toHaveBeenCalledOnce();
+        expect(detail(handler)).toEqual({ date: '2026-06-23' });
+        expect(handler.mock.calls[0][0].bubbles).toBe(true);
+      });
+
+      it('keeps a disabled day header plain and silent when clickableHeaders is set', () => {
+        // 22 June 2026 is a Monday. Tuesday is disabled by weekday, Wednesday is past maxDate.
+        // minDate anchors the window on Monday, which the maxDate clamp would otherwise pull back.
+        mount('config', withConfig({ date: FIXED_DATE, clickableHeaders: true, disabledDays: [2], minDate: FIXED_DATE, maxDate: '2026-06-23' }));
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[0].tagName).toBe('BUTTON');
+        expect(headers[1].tagName).toBe('DIV');
+        expect(headers[2].tagName).toBe('DIV');
+        expect(Array.from(headers[1].children).map((c) => c.tagName)).toEqual(['DIV', 'DIV']);
+        expect(headers[1].classList.contains('cursor-pointer')).toBe(false);
+        expect(headers[1].nextElementSibling.textContent.trim()).toBe('Not available');
+        const handler = listen('day-click');
+        headers[1].click();
+        headers[2].click();
+        expect(handler).not.toHaveBeenCalled();
+        headers[0].click();
+        expect(detail(handler)).toEqual({ date: FIXED_DATE });
+      });
+
+      it('renders corner markers only for days with dayIcons, like a cell', () => {
+        mount(
+          'config',
+          withConfig({ date: FIXED_DATE, dayIcons: { '2026-06-23': { left: { url: '/icons/late.svg', alt: 'Running late' }, right: [{ url: '/icons/hours.svg' }, { url: '/icons/holiday.svg', alt: 'Holiday' }] }, '2026-06-24': 'nope' } })
+        );
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[0].children.length).toBe(2);
+        expect(headers[2].children.length).toBe(2);
+        const badges = headers[1].querySelectorAll(':scope > span.absolute');
+        expect(badges.length).toBe(2);
+        expect(badges[0].classList.contains('left-1')).toBe(true);
+        expect(badges[0].classList.contains('top-1')).toBe(true);
+        expect(badges[1].classList.contains('right-1')).toBe(true);
+        const left = badges[0].querySelectorAll('img');
+        expect(left.length).toBe(1);
+        expect(left[0].getAttribute('src')).toBe('/icons/late.svg');
+        expect(left[0].getAttribute('alt')).toBe('Running late');
+        expect(left[0].classList.contains('size-3.5')).toBe(true);
+        const right = badges[1].querySelectorAll('img');
+        expect(right.length).toBe(2);
+        expect(right[0].getAttribute('alt')).toBe('');
+        expect(right[1].getAttribute('alt')).toBe('Holiday');
+        // The name and date rows stay as they are, so the header keeps its height.
+        expect(
+          Array.from(headers[1].children)
+            .slice(0, 2)
+            .map((c) => c.tagName)
+        ).toEqual(['DIV', 'DIV']);
+        // Only a header with markers reserves room for them beside its rows.
+        expect(headers[1].classList.contains('px-5')).toBe(true);
+        expect(headers[0].classList.contains('px-5')).toBe(false);
+        expect(headers[2].classList.contains('px-5')).toBe(false);
+      });
+
+      it('puts the markers inside a button header too', () => {
+        mount('config', withConfig({ date: FIXED_DATE, clickableHeaders: true, dayIcons: { [FIXED_DATE]: { right: [{ url: '/icons/late.svg', alt: 'Running late' }] } } }));
+        const header = el.querySelector('[data-slot="slot-picker-header"]');
+        const badge = header.querySelector(':scope > span.absolute');
+        expect(badge.classList.contains('right-1')).toBe(true);
+        expect(badge.querySelector('img').getAttribute('alt')).toBe('Running late');
+        expect(header.textContent).toContain('June 22');
+      });
+    });
+
+    describe('firstDay and week alignment', () => {
+      const firstHeader = () => el.querySelector('[data-slot="slot-picker-header"]').textContent;
+
+      // Pin today to Wednesday, June 24 2026.
+      beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date(2026, 5, 24, 12));
+      });
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it('starts a seven-day window on the configured first day', () => {
+        mount('config', withConfig({ date: '2026-06-24', days: 7, firstDay: 1 }));
+        expect(firstHeader()).toContain('June 22');
+        expect(el.querySelectorAll('[data-slot="slot-picker-header"]').length).toBe(7);
+      });
+
+      it('aligns to Sunday for firstDay 0 and not at all without firstDay or with fewer days', () => {
+        mount('config', withConfig({ date: '2026-06-24', days: 7, firstDay: 0 }));
+        expect(firstHeader()).toContain('June 21');
+        el.remove();
+        el = makeEl();
+        mount('config', withConfig({ date: '2026-06-24', days: 7 }));
+        expect(firstHeader()).toContain('June 24');
+        el.remove();
+        el = makeEl();
+        mount('config', withConfig({ date: '2026-06-24', days: 5, firstDay: 1 }));
+        expect(firstHeader()).toContain('June 24');
+      });
+
+      it('aligns the default window (today) and reads a string first day', () => {
+        mount('config', withConfig({ days: 7, firstDay: '1' }));
+        expect(firstHeader()).toContain('June 22');
+      });
+
+      it('moves the today control and the date dialog to the week of the chosen day', async () => {
+        mount('config', withConfig({ date: '2026-06-01', days: 7, firstDay: 1 }));
+        const btn = mountCalendar();
+        await tick();
+        const ranges = listen('range-change');
+        el._h_slot_picker.today();
+        expect(firstHeader()).toContain('June 22');
+        await tick();
+        expect(detail(ranges, 0)).toEqual({ from: '2026-06-22', to: '2026-06-28' });
+        btn.click();
+        el.querySelector('[data-slot="slot-picker-calendar"] td[data-day="10"]').click();
+        await tick();
+        expect(detail(ranges, 1)).toEqual({ from: '2026-06-08', to: '2026-06-14' });
+      });
+
+      it('keeps the last week aligned at maxDate and marks the days after it unavailable', () => {
+        // 7 November 2026 is a Saturday. The week holding it is the last one.
+        mount('config', withConfig({ date: '2026-11-02', days: 7, firstDay: 1, maxDate: '2026-11-07' }));
+        expect(firstHeader()).toContain('November 2');
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[6].textContent).toContain('November 8');
+        expect(headers[6].nextElementSibling.textContent.trim()).toBe('Not available');
+        expect(headers[5].nextElementSibling.textContent.trim()).not.toBe('Not available');
+        expect(el._h_slot_picker.canNext).toBe(false);
+        el._h_slot_picker.next();
+        expect(firstHeader()).toContain('November 2');
+      });
+
+      it('keeps the first week aligned at minDate and marks the days before it unavailable', () => {
+        // 24 June 2026 is a Wednesday. The week holding it is the first one.
+        mount('config', withConfig({ date: '2026-06-24', days: 7, firstDay: 1, minDate: '2026-06-24' }));
+        expect(firstHeader()).toContain('June 22');
+        const headers = el.querySelectorAll('[data-slot="slot-picker-header"]');
+        expect(headers[0].nextElementSibling.textContent.trim()).toBe('Not available');
+        expect(headers[1].nextElementSibling.textContent.trim()).toBe('Not available');
+        expect(headers[2].nextElementSibling.textContent.trim()).not.toBe('Not available');
+        expect(el._h_slot_picker.canPrev).toBe(false);
+        el._h_slot_picker.previous();
+        expect(firstHeader()).toContain('June 22');
+      });
+
+      it('aligns a picker that becomes a week view through the configuration', () => {
+        const cfg = createMockAlpine().reactive({ value: { date: '2026-06-24', days: 3 } });
+        mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+        expect(firstHeader()).toContain('June 24');
+        cfg.value = { date: '2026-06-24', days: 7, firstDay: 1 };
+        expect(firstHeader()).toContain('June 22');
+      });
+
+      it('starts the date dialog weeks on the first day and follows a change back to Sunday', () => {
+        const cfg = createMockAlpine().reactive({ value: { date: '2026-06-24', locale: 'en-US', firstDay: 1 } });
+        mount('config', { evaluateLater: () => (cb) => cb(cfg.value) });
+        mountCalendar();
+        const abbrs = () => Array.from(el.querySelectorAll('[data-slot="slot-picker-calendar"] th')).map((th) => th.getAttribute('abbr'));
+        expect(abbrs()[0]).toBe('Mon');
+        cfg.value = { date: '2026-06-24', locale: 'en-US', firstDay: 0 };
+        expect(abbrs()[0]).toBe('Sun');
+      });
+
+      it('keeps the dialog on Sunday weeks without firstDay', () => {
+        mount('config', withConfig({ date: '2026-06-24', locale: 'en-US' }));
+        mountCalendar();
+        expect(el.querySelector('[data-slot="slot-picker-calendar"] th').getAttribute('abbr')).toBe('Sun');
+      });
     });
   });
 });

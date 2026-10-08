@@ -1,5 +1,6 @@
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
 import { isDisabled } from '../common/disabled';
+import { activeElement } from '../common/focus-trap';
 import { rejectModelEventModifiers } from '../common/model';
 import { transitionClose } from '../common/transition-close';
 import { addDismiss, removeDismiss } from '../utils/dismiss';
@@ -26,7 +27,7 @@ export default function (Alpine) {
     }
   });
 
-  Alpine.directive('h-menu', (el, { original, modifiers }, { cleanup, Alpine }) => {
+  Alpine.directive('h-menu', (el, { original, modifiers, expression }, { cleanup, Alpine, effect, evaluate, evaluateLater }) => {
     if (el.tagName !== 'UL') {
       throw new Error(`${original} must be an ul element`);
     }
@@ -57,9 +58,12 @@ export default function (Alpine) {
     el.setAttribute('tabindex', '-1');
     el.setAttribute('data-slot', 'menu');
     const isSubmenu = modifiers.includes('sub');
+    // An expression binds a point: the menu opens at `{ x, y }` (viewport
+    // coordinates) with no trigger element and closes on a falsy value.
+    const isPointMode = !isSubmenu && Boolean(expression);
 
     const menuTrigger = (() => {
-      if (isSubmenu) return;
+      if (isSubmenu || isPointMode) return;
       let sibling = el.previousElementSibling;
       while (sibling && !Object.prototype.hasOwnProperty.call(sibling, '_h_menu_trigger')) {
         sibling = sibling.previousElementSibling;
@@ -100,6 +104,7 @@ export default function (Alpine) {
     }
 
     function listenForTrigger(listen) {
+      if (!menuTrigger) return;
       if (listen) {
         if (menuTrigger._h_menu_trigger.isDropdown) menuTrigger.addEventListener('click', openDropdown);
         else menuTrigger.addEventListener('contextmenu', onContextmenu);
@@ -136,12 +141,19 @@ export default function (Alpine) {
         if (closeParent) {
           menuSubItem._menu_sub.closeTree();
         }
-      } else {
+      } else if (menuTrigger) {
         listenForTrigger(true);
         if (focusTrigger) menuTrigger.focus();
         if (menuTrigger._h_menu_trigger.isDropdown) {
           menuTrigger._h_menu_trigger.setOpen(false);
         }
+      } else {
+        // Point mode. Focus goes back to where it came from on every close, not
+        // only on Escape, so a dialog an item opens records that element as its
+        // opener. The bound point follows the menu.
+        if (previousFocus?.isConnected && el.contains(activeElement())) previousFocus.focus();
+        previousFocus = undefined;
+        evaluate(`${expression} = null`);
       }
     }
 
@@ -208,7 +220,13 @@ export default function (Alpine) {
     }
 
     function onClick(event) {
-      if (event.type === 'contextmenu') event.preventDefault();
+      if (event.type === 'contextmenu') {
+        // In point mode, a right-click, which the page has handled, is the page moving
+        // the menu, not a dismiss. With a real event the effect has already
+        // positioned the menu at the new point before this listener runs.
+        if (isPointMode && event.defaultPrevented) return;
+        event.preventDefault();
+      }
       if (el.getAttribute('data-innerclicks') === 'true' && el.contains(event.composedPath()[0])) {
         return;
       } else close(isSubmenu);
@@ -302,6 +320,9 @@ export default function (Alpine) {
 
     let autoUpdateCleanup;
     let isOpen = false;
+    // Point mode. The element focused when the menu opened, and a way to move the open menu to another point without reopening it.
+    let previousFocus;
+    let reposition;
 
     // Guarded on the live state, not a class snapshot, so a late transitionend
     // from an abandoned close cannot hide a menu reopened mid-fade.
@@ -324,18 +345,19 @@ export default function (Alpine) {
         function getPlacement() {
           if (isSubmenu) {
             return 'right-start';
-          } else if (menuTrigger._h_menu_trigger.isDropdown) {
+          } else if (menuTrigger?._h_menu_trigger.isDropdown) {
             return el.getAttribute('data-align') || 'bottom-start';
           }
           return 'right-start';
         }
 
+        let reference = parent;
         let firstOpen = true;
 
         function updatePosition() {
           const isFirst = firstOpen;
           firstOpen = false;
-          computePosition(parent, el, {
+          computePosition(reference, el, {
             placement: getPlacement(),
             strategy: 'fixed',
             middleware: [
@@ -354,8 +376,8 @@ export default function (Alpine) {
           }).then(({ x, y }) => {
             if (isFirst) {
               if (!isSubmenu) {
-                const focusOnOpen = menuTrigger._h_menu_trigger.focusOnOpen;
-                menuTrigger._h_menu_trigger.focusOnOpen = undefined;
+                const focusOnOpen = menuTrigger?._h_menu_trigger.focusOnOpen;
+                if (menuTrigger) menuTrigger._h_menu_trigger.focusOnOpen = undefined;
                 let focusTarget = el;
                 if (focusOnOpen) {
                   // A disabled item can take the initial focus, since it is
@@ -383,8 +405,14 @@ export default function (Alpine) {
           });
         }
 
-        if (!isSubmenu && menuTrigger._h_menu_trigger.isDropdown) {
-          autoUpdateCleanup = autoUpdate(parent, el, updatePosition);
+        // Moves the open menu to a new reference. Not a first open, so the position pass adds no listeners and moves no focus.
+        reposition = (next) => {
+          reference = next;
+          updatePosition();
+        };
+
+        if (!isSubmenu && menuTrigger?._h_menu_trigger.isDropdown) {
+          autoUpdateCleanup = autoUpdate(reference, el, updatePosition);
         } else {
           updatePosition();
         }
@@ -398,34 +426,52 @@ export default function (Alpine) {
       open(menuTrigger);
     }
 
+    // A zero-size rect at a viewport point for floating-ui to position against.
+    function pointReference(x, y) {
+      return {
+        getBoundingClientRect() {
+          return { width: 0, height: 0, x, y, top: y, left: x, right: x, bottom: y };
+        },
+      };
+    }
+
     function onContextmenu(event) {
       event.preventDefault();
-      open({
-        getBoundingClientRect() {
-          return {
-            width: 0,
-            height: 0,
-            x: event.clientX,
-            y: event.clientY,
-            top: event.clientY,
-            left: event.clientX,
-            right: event.clientX,
-            bottom: event.clientY,
-          };
-        },
-      });
+      open(pointReference(event.clientX, event.clientY));
       listenForTrigger(false);
+    }
+
+    function openAt(point) {
+      // Recorded on a move too. A right-click elsewhere, focused that element before the page changed the point.
+      const active = activeElement();
+      if (!el.contains(active)) previousFocus = active;
+      if (isOpen) {
+        reposition(pointReference(point.x, point.y));
+        // The items are often swapped for the new point, which drops a focused one.
+        // Back on the menu, ArrowDown reaches the first item again.
+        el.focus();
+      } else {
+        open(pointReference(point.x, point.y));
+      }
     }
 
     if (isSubmenu) {
       menuSubItem._menu_sub.open = open;
       menuSubItem._menu_sub.close = close;
-    } else {
+    } else if (menuTrigger) {
       if (menuTrigger._h_menu_trigger.navItem) {
         menuTrigger._h_menu_trigger.openMenu = openDropdown;
         menuTrigger._h_menu_trigger.closeMenu = close;
       }
       listenForTrigger(true);
+    } else {
+      const getPoint = evaluateLater(expression);
+      effect(() =>
+        getPoint((point) => {
+          if (point && typeof point.x === 'number' && typeof point.y === 'number') openAt(point);
+          else if (isOpen) close();
+        })
+      );
     }
 
     cleanup(() => {

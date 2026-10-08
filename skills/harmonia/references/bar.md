@@ -22,24 +22,26 @@ Give the chart a container with an explicit height (charts fill their parent). P
 
 ### Configuration
 
-| Key           | Type                                  | Default          | Description                                                            |
-| ------------- | ------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
-| `series`      | `{ name?, color?, data: number[] }[]` | `[]`             | One entry per series. Multiple series render as grouped bars.          |
-| `labels`      | string[]                              | `[]`             | Category label for each data index.                                    |
-| `orientation` | `'vertical'` \| `'horizontal'`        | `'vertical'`     | `vertical` draws columns, `horizontal` draws rows.                     |
-| `stacked`     | boolean                               | `false`          | Stack series on top of one another instead of grouping them.           |
-| `legend`      | boolean                               | `true`           | Show the color/label key.                                              |
-| `axes`        | boolean                               | `true`           | Show the numeric axis ticks and category labels.                       |
-| `gridlines`   | boolean                               | `true`           | Show gridlines behind the bars.                                        |
-| `tooltip`     | boolean                               | `true`           | Show a tooltip on hover and emit interaction events.                   |
-| `dataLabels`  | boolean                               | `false`          | Draw each bar's value on the bar.                                      |
-| `tickCount`   | number                                | `5`              | Target number of numeric axis ticks.                                   |
-| `valueFormat` | `(value) => string`                   | locale number    | Formats values in tooltips and numeric axis ticks.                     |
-| `palette`     | string[]                              | theme tokens     | Color tokens cycled for series without an explicit `color`.            |
-| `seriesLabel` | string                                | `Series {index}` | Template naming a series that has no `name`. `{index}` is substituted. |
-| `tableLabels` | `{ category? }`                       | English defaults | Column headers of the hidden data table read by screen readers.        |
+| Key           | Type                                  | Default                | Description                                                                                              |
+| ------------- | ------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| `series`      | `{ name?, color?, data: number[] }[]` | `[]`                   | One entry per series. Multiple series render as grouped bars. For `color` values, see Colors. |
+| `labels`      | string[]                              | `[]`                   | Category label for each data index.                                                                      |
+| `orientation` | `'vertical'` \| `'horizontal'`        | `'vertical'`           | `vertical` draws columns, `horizontal` draws rows.                                                       |
+| `stacked`     | boolean                               | `false`                | Stack series on top of one another instead of grouping them.                                             |
+| `legend`      | boolean                               | `true`                 | Show the color/label key.                                                                                |
+| `axes`        | boolean                               | `true`                 | Show the numeric axis ticks and category labels.                                                         |
+| `gridlines`   | boolean                               | `true`                 | Show gridlines behind the bars.                                                                          |
+| `tooltip`     | boolean                               | `true`                 | Show a tooltip on hover and emit interaction events.                                                     |
+| `dataLabels`  | boolean                               | `false`                | Draw each bar's value on the bar.                                                                        |
+| `tickCount`   | number                                | `5`                    | Target number of numeric axis ticks.                                                                     |
+| `valueFormat` | `(value) => string`                   | locale number          | Formats values in tooltips and numeric axis ticks.                                                       |
+| `palette`     | string[]                              | `color-1` to `color-9` | Chart colors cycled for series without an explicit `color`. See Colors for more information.  |
+| `seriesLabel` | string                                | `Series {index}`       | Template naming a series that has no `name`. `{index}` is substituted.                                   |
+| `tableLabels` | `{ category? }`                       | English defaults       | Column headers of the hidden data table read by screen readers.                                          |
 
-A series `color` (and the `palette` entries) is one of the standard color names - `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white`, or `black`.
+#### Colors
+
+A series `color` (and the `palette` entries) is one of the chart colors `color-1` to `color-12`. They paint with the theme's `--chart-color-1` to `--chart-color-12` variables (see Theme Customization). By default, they map to blue, red, green, orange, purple, teal, pink, indigo, yellow, gray, white and black. The standard color names (`red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `gray`, `white` and `black`) are deprecated. They still work but they will be removed in the next major version.
 
 ### Accessibility
 
@@ -113,6 +115,23 @@ When `tooltip` is enabled, hovering and clicking bars emit bubbling `CustomEvent
 
 ```html
 <div style="height: 20rem" x-h-chart-bar="{ dataLabels: true, labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [{ name: 'Revenue', data: [12, 19, 7, 15] }] }"></div>
+```
+
+### Custom colors
+
+The chart colors are theme variables, so one chart (or any ancestor) can override them with an inline style. Here the first series follows the theme's primary color and the second gets a custom one.
+
+```html
+<div
+  style="height: 20rem; --chart-color-1: var(--primary); --chart-color-2: oklch(0.75 0.15 70)"
+  x-h-chart-bar="{
+    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+    series: [
+      { name: 'Revenue', data: [12, 19, 7, 15] },
+      { name: 'Cost', data: [8, 11, 5, 9] }
+    ]
+  }"
+></div>
 ```
 
 ### Handling events

@@ -10,7 +10,7 @@
       <div class="hbox flex-wrap gap-2">
         <template x-for="option in statuses" :key="option">
           <div x-h-chip :data-variant="status === option ? 'primary' : 'outline'">
-            <button x-h-chip-button @click="status = option; page = 1" x-text="option"></button>
+            <button x-h-chip-button :aria-pressed="status === option" @click="status = option; page = 1" x-text="option"></button>
           </div>
         </template>
       </div>
@@ -28,33 +28,33 @@
       </caption>
       <thead x-h-table-header>
         <tr x-h-table-row>
-          <th x-h-table-head scope="col" :aria-sort="ariaSort('id')">
-            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('id')">
+          <th x-h-table-head scope="col" class="p-0" :aria-sort="ariaSort('id')">
+            <button x-h-table-cell-button @click="sortBy('id')">
               Invoice
               <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'id' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
-          <th x-h-table-head scope="col" :aria-sort="ariaSort('customer')">
-            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('customer')">
+          <th x-h-table-head scope="col" class="p-0" :aria-sort="ariaSort('customer')">
+            <button x-h-table-cell-button @click="sortBy('customer')">
               Customer
               <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'customer' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
-          <th x-h-table-head scope="col" :aria-sort="ariaSort('issued')">
-            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('issued')">
+          <th x-h-table-head scope="col" class="p-0" :aria-sort="ariaSort('issued')">
+            <button x-h-table-cell-button @click="sortBy('issued')">
               Issued
               <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'issued' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
-          <th x-h-table-head scope="col" :aria-sort="ariaSort('due')">
-            <button class="hbox cursor-pointer items-center gap-1" @click="sortBy('due')">
+          <th x-h-table-head scope="col" class="p-0" :aria-sort="ariaSort('due')">
+            <button x-h-table-cell-button @click="sortBy('due')">
               Due
               <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'due' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
           </th>
           <th x-h-table-head scope="col">Status</th>
-          <th x-h-table-head scope="col" class="text-right" :aria-sort="ariaSort('amount')">
-            <button class="hbox w-full cursor-pointer items-center justify-end gap-1" @click="sortBy('amount')">
+          <th x-h-table-head scope="col" class="p-0 text-right" :aria-sort="ariaSort('amount')">
+            <button x-h-table-cell-button class="justify-end" @click="sortBy('amount')">
               Amount
               <svg x-h-lucide class="size-4" role="presentation" :data-lucide="sortKey === 'amount' ? (sortAsc ? 'arrow-up' : 'arrow-down') : 'chevrons-up-down'"></svg>
             </button>
@@ -131,52 +131,50 @@
           </button>
         </div>
         <form id="new-invoice-form" x-ref="newInvoiceForm" @submit.prevent="newInvoiceValid && submitNew(true)" @input="newInvoiceValid = $el.checkValidity()" @change="newInvoiceValid = $el.checkValidity()">
-          <fieldset x-h-fieldset>
-            <div x-h-field-group class="gap-4!">
-              <div x-h-field>
-                <label x-h-label for="ni-customer" data-indicator="end">Customer</label>
-                <div x-h-select>
-                  <input x-h-select-input data-id="ni-customer" x-h-focus="showNew" placeholder="Select customer" required x-model="newInvoice.customer" />
-                  <div x-h-select-content>
-                    <div x-h-select-list>
-                      <template x-for="customer in $store.erp.customers" :key="customer.id">
-                        <div x-h-select-option="customer.name" :data-value="customer.name"></div>
-                      </template>
-                    </div>
+          <div x-h-field-group>
+            <div x-h-field>
+              <label x-h-label for="ni-customer" data-indicator="end">Customer</label>
+              <div x-h-select>
+                <input x-h-select-input data-id="ni-customer" placeholder="Select customer" required x-model="newInvoice.customer" />
+                <div x-h-select-content>
+                  <div x-h-select-list>
+                    <template x-for="customer in $store.erp.customers" :key="customer.id">
+                      <div x-h-select-option="customer.name" :data-value="customer.name"></div>
+                    </template>
                   </div>
                 </div>
-                <p x-h-field-error>Choose a customer.</p>
+              </div>
+              <p x-h-field-error>Choose a customer.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="ni-due" data-indicator="end">Due date</label>
+              <div x-h-date-picker>
+                <input type="text" id="ni-due" x-h-focus="showNew" required />
+                <button x-h-date-picker-trigger aria-label="Choose due date"></button>
+                <div x-h-date-picker-popup="{ min: $store.erp.today, ...$store.erp.dateDisplay }" x-model="newInvoice.due"></div>
+              </div>
+              <p x-h-field-error>Pick a due date.</p>
+            </div>
+            <div x-h-field>
+              <label x-h-label for="ni-description" data-indicator="end">Line item</label>
+              <input x-h-input id="ni-description" placeholder="What is being invoiced?" required x-model="newInvoice.description" />
+              <p x-h-field-error>Describe the line item.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div x-h-field>
+                <label x-h-label for="ni-qty" data-indicator="end">Quantity</label>
+                <div x-h-input-number>
+                  <input type="number" id="ni-qty" min="1" step="1" required x-model.number="newInvoice.qty" />
+                </div>
               </div>
               <div x-h-field>
-                <label x-h-label for="ni-due" data-indicator="end">Due date</label>
-                <div x-h-date-picker>
-                  <input type="text" id="ni-due" required />
-                  <button x-h-date-picker-trigger aria-label="Choose due date"></button>
-                  <div x-h-date-picker-popup="{ min: $store.erp.today }" x-model="newInvoice.due"></div>
-                </div>
-                <p x-h-field-error>Pick a due date.</p>
-              </div>
-              <div x-h-field>
-                <label x-h-label for="ni-description" data-indicator="end">Line item</label>
-                <input x-h-input id="ni-description" placeholder="What is being invoiced?" required x-model="newInvoice.description" />
-                <p x-h-field-error>Describe the line item.</p>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div x-h-field>
-                  <label x-h-label for="ni-qty" data-indicator="end">Quantity</label>
-                  <div x-h-input-number>
-                    <input type="number" id="ni-qty" min="1" step="1" required x-model.number="newInvoice.qty" />
-                  </div>
-                </div>
-                <div x-h-field>
-                  <label x-h-label for="ni-price" data-indicator="end">Unit price</label>
-                  <div x-h-input-number>
-                    <input type="number" id="ni-price" min="0" step="0.01" required placeholder="0.00" x-model.number="newInvoice.unitPrice" />
-                  </div>
+                <label x-h-label for="ni-price" data-indicator="end">Unit price</label>
+                <div x-h-input-number>
+                  <input type="number" id="ni-price" min="0" step="0.01" required placeholder="0.00" x-model.number="newInvoice.unitPrice" />
                 </div>
               </div>
             </div>
-          </fieldset>
+          </div>
         </form>
         <div class="hbox items-center justify-between border-t pt-3">
           <span class="text-sm text-muted-foreground">Total including 10% tax</span>

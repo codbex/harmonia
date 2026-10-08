@@ -22,7 +22,8 @@ function findOptionContainer(Alpine, el) {
 
 export default function (Alpine) {
   Alpine.directive('h-list', (el) => {
-    el.classList.add('divide-solid', 'divide-y');
+    // Tailwind's divide-y skips only `:last-child`, and an empty-state `x-if` template after the rows kept the last row's divider, so the last rendered child drops it.
+    el.classList.add('divide-solid', 'divide-y', '*:last-rendered:border-b-0');
     el.setAttribute('data-slot', 'list');
     // A listbox only permits option and group children, so a list nested in one
     // is a group. Standalone it is a list, spelled out rather than left to the

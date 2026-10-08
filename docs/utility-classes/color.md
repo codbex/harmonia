@@ -64,6 +64,35 @@ CSS utility classes to apply colors to border, elements, svgs and text.
 | fill-warning-foreground     | Set warning foreground color as fill color.     |
 | fill-information            | Set information color as fill color.            |
 | fill-information-foreground | Set information foreground color as fill color. |
+| fill-chart-1                | Set chart color 1 as fill color.                |
+| fill-chart-2                | Set chart color 2 as fill color.                |
+| fill-chart-3                | Set chart color 3 as fill color.                |
+| fill-chart-4                | Set chart color 4 as fill color.                |
+| fill-chart-5                | Set chart color 5 as fill color.                |
+| fill-chart-6                | Set chart color 6 as fill color.                |
+| fill-chart-7                | Set chart color 7 as fill color.                |
+| fill-chart-8                | Set chart color 8 as fill color.                |
+| fill-chart-9                | Set chart color 9 as fill color.                |
+| fill-chart-10               | Set chart color 10 as fill color.               |
+| fill-chart-11               | Set chart color 11 as fill color.               |
+| fill-chart-12               | Set chart color 12 as fill color.               |
+
+### SVG/Icon stroke colors
+
+| Class           | Description                         |
+| --------------- | ----------------------------------- |
+| stroke-chart-1  | Set chart color 1 as stroke color.  |
+| stroke-chart-2  | Set chart color 2 as stroke color.  |
+| stroke-chart-3  | Set chart color 3 as stroke color.  |
+| stroke-chart-4  | Set chart color 4 as stroke color.  |
+| stroke-chart-5  | Set chart color 5 as stroke color.  |
+| stroke-chart-6  | Set chart color 6 as stroke color.  |
+| stroke-chart-7  | Set chart color 7 as stroke color.  |
+| stroke-chart-8  | Set chart color 8 as stroke color.  |
+| stroke-chart-9  | Set chart color 9 as stroke color.  |
+| stroke-chart-10 | Set chart color 10 as stroke color. |
+| stroke-chart-11 | Set chart color 11 as stroke color. |
+| stroke-chart-12 | Set chart color 12 as stroke color. |
 
 ### Border colors
 

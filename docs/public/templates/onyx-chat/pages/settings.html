@@ -5,24 +5,22 @@
 
     <div x-h-card class="mt-4 w-full">
       <div x-h-card-content>
-        <fieldset x-h-fieldset>
-          <div x-h-field-group class="gap-4!">
+        <div x-h-field-group>
+          <div x-h-field>
+            <label x-h-label for="st-name">Display name</label>
+            <input x-h-input id="st-name" x-model="$store.chat.profile.name" />
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div x-h-field>
-              <label x-h-label for="st-name">Display name</label>
-              <input x-h-input id="st-name" x-model="$store.chat.profile.name" />
+              <label x-h-label for="st-title">Title</label>
+              <input x-h-input id="st-title" x-model="$store.chat.profile.title" />
             </div>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div x-h-field>
-                <label x-h-label for="st-title">Title</label>
-                <input x-h-input id="st-title" x-model="$store.chat.profile.title" />
-              </div>
-              <div x-h-field>
-                <label x-h-label for="st-email">Email</label>
-                <input x-h-input id="st-email" type="email" x-model="$store.chat.profile.email" />
-              </div>
+            <div x-h-field>
+              <label x-h-label for="st-email">Email</label>
+              <input x-h-input id="st-email" type="email" x-model="$store.chat.profile.email" />
             </div>
           </div>
-        </fieldset>
+        </div>
       </div>
       <div x-h-card-footer class="hbox justify-end">
         <button x-h-button data-variant="primary" @click="save()">Save changes</button>
@@ -35,12 +33,12 @@
 
     <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <div class="vbox w-full">
-            <p class="text-base font-medium">Style</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <div class="vbox w-full gap-1">
+            <label x-h-label id="st-style-label" for="st-style">Style</label>
             <p x-h-text.muted>The same switcher lives in the toolbar user menu.</p>
           </div>
-          <button x-h-button data-variant="outline" x-h-menu-trigger.dropdown.chevron>
+          <button x-h-button data-variant="outline" id="st-style" aria-labelledby="st-date-format-label" x-h-menu-trigger.dropdown.chevron>
             <!-- svg placeholders on purpose: x-h-lucide renders them in place,
                  so the x-show bindings keep switching the visible icon. -->
             <svg x-h-lucide x-show="$store.chat.settings.theme === 'light'" role="presentation" data-lucide="sun"></svg>
@@ -76,31 +74,31 @@
 
     <div x-h-card data-type="object" class="mt-4 w-full overflow-hidden">
       <ul x-h-list>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-lucide role="presentation" data-lucide="bell" class="size-5"></svg>
-          <div class="vbox w-full">
-            <label class="text-base font-medium" for="sw-message-toasts">New message toasts</label>
-            <p x-h-text.muted>Show a toast when a message arrives in a conversation you are not viewing.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-lucide x-h-list-secondary role="presentation" data-lucide="bell" class="size-5 shrink-0"></svg>
+          <div class="vbox w-full gap-1">
+            <label x-h-label for="sw-message-toasts">New message toasts</label>
+            <p x-h-list-secondary class="text-sm">Show a toast when a message arrives in a conversation you are not viewing.</p>
           </div>
           <span x-h-switch>
             <input type="checkbox" id="sw-message-toasts" x-model="$store.chat.settings.notifications.messageToasts" />
           </span>
         </li>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-lucide role="presentation" data-lucide="at-sign" class="size-5"></svg>
-          <div class="vbox w-full">
-            <label class="text-base font-medium" for="sw-mention-alerts">Mention alerts</label>
-            <p x-h-text.muted>Show a toast whenever a teammate mentions you.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-lucide x-h-list-secondary role="presentation" data-lucide="at-sign" class="size-5 shrink-0"></svg>
+          <div class="vbox w-full gap-1">
+            <label x-h-label for="sw-mention-alerts">Mention alerts</label>
+            <p x-h-list-secondary class="text-sm">Show a toast whenever a teammate mentions you.</p>
           </div>
           <span x-h-switch>
             <input type="checkbox" id="sw-mention-alerts" x-model="$store.chat.settings.notifications.mentionAlerts" />
           </span>
         </li>
-        <li x-h-list-item class="gap-3 px-4 py-3">
-          <svg x-h-lucide role="presentation" data-lucide="keyboard" class="size-5"></svg>
-          <div class="vbox w-full">
-            <label class="text-base font-medium" for="sw-typing">Typing indicators</label>
-            <p x-h-text.muted>Show the "is typing" row while a reply is being written.</p>
+        <li x-h-list-item class="gap-3 py-3 pr-3 pl-4">
+          <svg x-h-lucide x-h-list-secondary role="presentation" data-lucide="keyboard" class="size-5 shrink-0"></svg>
+          <div class="vbox w-full gap-1">
+            <label x-h-label for="sw-typing">Typing indicators</label>
+            <p x-h-list-secondary class="text-sm">Show the "is typing" row while a reply is being written.</p>
           </div>
           <span x-h-switch>
             <input type="checkbox" id="sw-typing" x-model="$store.chat.settings.notifications.typingIndicators" />

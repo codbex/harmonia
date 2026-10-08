@@ -1,11 +1,12 @@
 import { computePosition, flip, offset, shift } from '@floating-ui/dom';
-import { KNOWN_COLORS, colorClass, colorVar, fillClass, strokeClass } from './colors';
+import { CHART_COLORS, KNOWN_COLORS, colorClass, colorVar, fillClass, strokeClass } from './colors';
 
 // Re-exported so chart consumers keep importing these from `common/chart`.
 export { KNOWN_COLORS, colorClass, colorVar, fillClass, strokeClass };
 
-// Curated, visually distinct order cycled for series without an explicit color.
-export const DEFAULT_PALETTE = ['blue', 'red', 'green', 'orange', 'purple', 'teal', 'pink', 'indigo', 'yellow'];
+// Series without an explicit color cycle through the first nine chart colors (blue, red, green, orange, purple, teal, pink, indigo and yellow by default).
+// Gray, white and black (10 to 12) are left out of the cycle as they do not usually read as well as the other colors.
+export const DEFAULT_PALETTE = CHART_COLORS.slice(0, 9);
 
 const numberFormatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 const percentFormatter = new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 0 });
@@ -70,7 +71,12 @@ export function fitText(text, maxWidth, font) {
 }
 
 function resolveColor(color, palette, index) {
-  return KNOWN_COLORS.includes(color) ? color : palette[index % palette.length];
+  if (CHART_COLORS.includes(color)) return color;
+  // Deprecated in 3.6.0: a standard color name (KNOWN_COLORS) as a chart color.
+  // It keeps painting with the fixed standard color, ignoring the theme.
+  // Remove this branch in the next major version (4.0.0).
+  if (KNOWN_COLORS.includes(color)) return color;
+  return palette[index % palette.length];
 }
 
 /**

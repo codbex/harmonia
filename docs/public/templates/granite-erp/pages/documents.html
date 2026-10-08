@@ -21,11 +21,11 @@
 
   <div class="hbox flex-wrap gap-2">
     <div x-h-chip :data-variant="type === 'all' ? 'primary' : 'outline'">
-      <button x-h-chip-button @click="type = 'all'">All types</button>
+      <button x-h-chip-button :aria-pressed="type === 'all'" @click="type = 'all'">All types</button>
     </div>
     <template x-for="option in types" :key="option">
       <div x-h-chip :data-variant="type === option ? 'primary' : 'outline'">
-        <button x-h-chip-button @click="type = option" x-text="option"></button>
+        <button x-h-chip-button :aria-pressed="type === option" @click="type = option" x-text="option"></button>
       </div>
     </template>
   </div>
@@ -66,7 +66,7 @@
                   <svg x-h-lucide role="presentation" :data-lucide="typeIcon(doc.type)" class="text-muted-foreground"></svg>
                   <div class="vbox min-w-0">
                     <span class="truncate font-medium" x-text="doc.name"></span>
-                    <div class="hbox gap-1">
+                    <div x-h-tag-group>
                       <template x-for="tag in doc.tags" :key="tag">
                         <div x-h-tag x-text="tag"></div>
                       </template>

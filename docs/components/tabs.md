@@ -12,6 +12,8 @@ Every tab lives in its own `x-h-tab-item` wrapper, which draws the tab's surface
 
 When the tabs outgrow their list, the list scrolls in place with no visible scrollbar, and the edge that hides more tabs fades out to show where the overflow is. The selected tab is brought into view automatically, both when it first renders and when the selection changes.
 
+A tab bar is either docked or floating. The default docked bar, runs along the edge of the content it sits on, such as the top of a card, a panel or the page. It draws a line along that edge and marks the selected tab with an underline. A floating bar touches no other element. It has its own border, rounded corners and shadow, and the selected tab is raised on its own surface. Set it to floating whenever the bar needs to stands on its own.
+
 ## Keyboard Handling
 
 The tab list is a single Tab stop that lands on the selected tab, so reaching the content does not mean tabbing past every other tab. Once a tab has focus:
@@ -63,10 +65,10 @@ x-h-tabs-content
 
 #### x-h-tab-bar
 
-| Attribute     | Type                          | Required | Description                                                                                 |
-| ------------- | ----------------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| data-floating | boolean                       | false    | Floating style tab list.                                                                    |
-| data-size     | `default`<br />`sm`<br />`lg` | false    | Height of the tab bar. Ignored when the tab bar is floating or the orientation is vertical. |
+| Attribute     | Type                          | Required | Description                                                                                                                                                            |
+| ------------- | ----------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-floating | boolean                       | false    | Detaches the bar with its own border, rounded corners and shadow. Use it for a bar that touches no other element. Without it the bar is docked to the edge it sits on. |
+| data-size     | `default`<br />`sm`<br />`lg` | false    | Height of the tab bar. Ignored when the tab bar is floating or the orientation is vertical.                                                                            |
 
 #### x-h-tab-item
 
@@ -482,7 +484,7 @@ The action buttons keep their place in the bar while the list scrolls independen
 
 ### Horizontal float tabs that fit to size
 
-You can make the tab bar fit to the size of the tab list by adding the `w-max` class.
+Add the `w-max` class to a floating tab bar to make it only as wide as its tabs. Keep `data-floating="true"` on the bar. A docked bar always spans the edge it sits on, so it does not fit to size.
 
 <LiveExample data-exclude="generator">
 

@@ -1,5 +1,60 @@
 # Changelog
 
+## v3.6.0
+
+A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. Charts take their colors from the new `--chart-color-1` to `--chart-color-12` theme variables, and the standard color names are deprecated as chart colors. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs, the shared calendar ignoring a `firstDay` of `0` and a list or notification list whose last item kept a bottom border when an Alpine template followed it. There are no breaking changes.
+
+### Chart
+
+- **New: `--chart-color-1` to `--chart-color-12` theme variables.** They default to the standard blue, red, green, orange, purple, teal, pink, indigo, yellow, gray, white and black, and the theme generator edits them. Series and slices without a `color` cycle through the first nine.
+- **New: `color-1` to `color-12` as `color` and `palette` values.** Each paints with the matching theme variable.
+- **Deprecated: the standard color names (`red`, `blue`, ...) as `color` and `palette` values.** They still work but they will be removed in the next major version.
+- **The `color` in `chart-hover`, `chart-leave` and `chart-click` events reports `color-1` to `color-9` for series without an explicit color** instead of a standard name.
+
+### Date Picker
+
+- **Fixed: `firstDay: 0` was ignored once another first day had been set, and a string value scrambled the weekday header.** The calendar is shared, so this applies to every component that shows one.
+
+### Input Group
+
+- **Fixed: an input group showed no error for a natively invalid control.** It now follows the same validation timing as the other controls.
+
+### Input Number
+
+- **Fixed: scrolling over a focused number input changed its value instead of scrolling the page.** The value now changes only by typing, with the arrow keys or with the step controls, on every browser.
+
+### List
+
+- **Fixed: the last item kept a bottom border when an Alpine template followed it.** An `x-for` or an empty-state `x-if` template at the end of the list no longer counts as a row, so the dividers stop at the last item.
+
+### Slot Picker
+
+- **Fixed: an empty `slots` array showed the generated schedule.** It now shows every day empty, unless `fillEmptyDays` is set.
+- **Fixed: the visible range jumped back to `date` whenever the configuration changed.** Now, only a new `date` moves it.
+- **Fixed: a click after a drag could be swallowed.** The next click on a slot was ignored after a drop outside the dragged slot.
+- **Fixed: day columns ran into each other in a narrow picker.** They now keep the width of their header, and the picker scrolls sideways.
+- **New: `range-change` event.** Reports the first and last visible dates whenever the range changes.
+- **New: `slot-contextmenu` event.** Dispatched by a right-click, a long press or the keyboard on a slot, tile or tile group, with the point to open a menu at. Cancel it to suppress the browser's own menu.
+- **New: `dropMode: 'slot'`.** Drops a slot or tile onto a `droppable` slot instead of reordering a list. `slot-drop` names the dragged item and the target.
+- **New: clickable day headers and markers.** `clickableHeaders` turns each header into a button dispatching `day-click`, and `dayIcons` adds markers to a header's corners.
+- **New: events carry your original objects.** `slot-click`, `slot-drop` and `slot-contextmenu` include `item` and `parent`. Cells, tiles and tile groups carry `data-date`, `data-start` and `data-key`, and a slot or tile can set its own `class` and `data` attributes.
+- **New: `clickable` on an unavailable slot or tile.** It stays a button that dispatches `slot-click` but can never be selected.
+- **New: `firstDay` option.** Sets the first weekday of the date dialog and, with seven visible days, aligns the window to calendar weeks.
+- **New: `tooltip` on a slot or tile.** Replaces the default hover text. An empty string removes it.
+- **Today's day header is underlined in the primary color instead of coloring the day name,** which could be hard to read on some themes.
+
+### Menu
+
+- **New: open at a point.** `x-h-menu` accepts a variable holding `{ x, y }` coordinates, opens there without a trigger and writes `null` back when it closes.
+
+### Notifications
+
+- **Fixed: the last notification in a list kept a bottom border when an Alpine template followed it.** Same cause and fix as the list.
+
+### New utility classes
+
+- **`min-w-fit`, `min-w-min`, `min-w-max`, `max-w-fit`, `max-w-min` and `max-w-max`** are now shipped and documented.
+
 ## v3.5.1
 
 A bugfix release for the Input Group. A read-only input or textarea inside a group no longer paints its own muted box over the group surface. The group now marks the read-only state with a dashed border instead. There are no breaking changes.

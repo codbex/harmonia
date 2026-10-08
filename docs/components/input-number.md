@@ -10,6 +10,8 @@ Use the number input when users need to enter a bounded numeric value, such as a
 
 Decimal separators follow the browser's regional settings. When a typed separator is not accepted there, the browser drops the keystroke without any signal, so the digits around it would silently merge into a different number. The component detects the dropped keystroke and marks the input as invalid until the entry is revised by deleting or otherwise changing the value, stepping, or entering a separator that is accepted. The invalid state uses native custom validity, so it shows through the invalid styling and blocks form submission. Grouping separators (for example the comma in `1,000`) are not supported by native number inputs and are treated the same way. The reported message can be changed with `data-invalid-label`.
 
+Scrolling over a focused input never changes its value. The value changes only by typing, with the arrow keys, or with the step controls.
+
 ## API Reference
 
 ### Component attribute(s)

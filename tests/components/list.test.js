@@ -8,6 +8,7 @@ describe('h-list', () => {
     mountDirective(listPlugin, 'h-list', el);
     expect(el.classList.contains('divide-solid')).toBe(true);
     expect(el.classList.contains('divide-y')).toBe(true);
+    expect(el.classList.contains('*:last-rendered:border-b-0')).toBe(true);
   });
 
   it('spells out role=list when standalone', () => {

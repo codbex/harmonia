@@ -27,5 +27,13 @@
         <button id="disabled-control" x-h-list-item-button disabled>Disabled row</button>
       </li>
     </ul>
+    <ul id="rendered" x-h-list class="w-96" x-data="{ items: ['One', 'Two', 'Three'] }">
+      <template x-for="item in items" :key="item">
+        <li x-h-list-item x-text="item"></li>
+      </template>
+      <template x-if="!items.length">
+        <li id="rendered-empty" x-h-list-item>Nothing here</li>
+      </template>
+    </ul>
   </body>
 </html>
