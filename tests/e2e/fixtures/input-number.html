@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>input-number fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+  </head>
+  <body x-data class="bg-background p-4 text-foreground">
+    <div style="max-width: 24rem">
+      <div x-h-input-number>
+        <input id="amount" type="number" min="0" max="100" value="23" />
+      </div>
+    </div>
+    <div style="height: 200vh"></div>
+  </body>
+</html>

@@ -329,8 +329,8 @@ body {
   }
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+    /* display none, not appearance none because Chrome steps a focused number input on scroll through this spin button. */
+    display: none;
   }
   input[type="number"] {
     -moz-appearance: textfield !important;

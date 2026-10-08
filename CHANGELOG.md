@@ -2,7 +2,7 @@
 
 ## v3.6.0
 
-A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, four slot picker bugs and the shared calendar ignoring a `firstDay` of `0`. There are no breaking changes.
+A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs and the shared calendar ignoring a `firstDay` of `0`. There are no breaking changes.
 
 ### Date Picker
 
@@ -11,6 +11,10 @@ A release that lets the slot picker manage a schedule, not only pick from one. A
 ### Input Group
 
 - **Fixed: an input group showed no error for a natively invalid control.** It now follows the same validation timing as the other controls.
+
+### Input Number
+
+- **Fixed: scrolling over a focused number input changed its value instead of scrolling the page.** The value now changes only by typing, with the arrow keys or with the step controls, on every browser.
 
 ### Slot Picker
 
