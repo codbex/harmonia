@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.6.1
+
+A bugfix release for the Select. A select low in a scrolling form no longer makes the whole page scroll, and a failed submit now scrolls the form's own scroller to the select. There are no breaking changes.
+
+### Select
+
+- **Fixed: a select low in a scrolling form made the whole page scroll.** Its hidden native input was placed against the page, so it stretched the document below the window, and a failed submit scrolled the window instead of the form's own scroller. The input now stays inside the select.
+
 ## v3.6.0
 
 A release that lets the slot picker manage a schedule, not only pick from one. Added a context menu event on slots, dropping a slot onto another, clickable day headers with markers, the original slot objects in every event, clickable unavailable slots, a `firstDay` option, per-slot hover text and a `range-change` event. The menu can now open at any point on the page. Charts take their colors from the new `--chart-color-1` to `--chart-color-12` theme variables, and the standard color names are deprecated as chart colors. The `min-w` and `max-w` utility classes gain the `fit`, `min` and `max` sizes. It also fixes an input group that showed no error for a natively invalid control, a number input whose value changed when scrolling over it, four slot picker bugs, the shared calendar ignoring a `firstDay` of `0` and a list or notification list whose last item kept a bottom border when an Alpine template followed it. There are no breaking changes.

@@ -84,7 +84,8 @@ describe('h-select-input', () => {
   }
 
   // display:none would stop the browser focusing the input on a failed submit,
-  // so it stays rendered and only visually hidden.
+  // so it stays rendered and only visually hidden. It stays in normal flow too,
+  // so it cannot escape a scrolling ancestor and stretch the page.
   it('hides the input without display:none and keeps it out of the a11y tree', () => {
     const { input } = createSelectInputSetup();
     mountDirective(selectPlugin, 'h-select-input', input, {
@@ -92,8 +93,15 @@ describe('h-select-input', () => {
       expression: '',
     });
     expect(input.classList.contains('hidden')).toBe(false);
-    expect(input.classList.contains('sr-only')).toBe(true);
-    expect(input.classList.contains('pointer-events-none')).toBe(true);
+    expect(input.classList.contains('sr-only')).toBe(false);
+    expect(input.classList.contains('absolute')).toBe(false);
+    for (const cls of ['block', 'p-0', 'border-0', 'opacity-0', 'pointer-events-none']) {
+      expect(input.classList.contains(cls)).toBe(true);
+    }
+    expect(input.style.width).toBe('1px');
+    expect(input.style.height).toBe('1px');
+    expect(input.style.marginBottom).toBe('-1px');
+    expect(input.style.getPropertyValue('margin-inline-end')).toBe('-1px');
     expect(input.getAttribute('tabindex')).toBe('-1');
     expect(input.getAttribute('aria-hidden')).toBe('true');
     expect(input.getAttribute('type')).toBe('text');

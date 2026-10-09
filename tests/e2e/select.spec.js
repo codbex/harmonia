@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { gotoFixture, settle } from './helpers.js';
 
-// x-h-select-input turns the real input into an sr-only model carrier and
-// generates a [data-slot=select-input] button as the interactive trigger.
+// x-h-select-input turns the real input into a visually hidden model carrier
+// and generates a [data-slot=select-input] button as the interactive trigger.
 const trigger = (page, select = '#select') => page.locator(`${select} [data-slot=select-input]`);
 
 test('picking an option updates the bound x-model value and closes the list', async ({ page }) => {
@@ -176,4 +176,46 @@ test('a required select shows its error once its list is closed empty, until the
   await expect(content).toBeHidden();
   await expect(requiredTrigger).toHaveText('Apple');
   await expect(requiredTrigger).not.toHaveAttribute('aria-invalid');
+});
+
+// The native input stays in normal flow. Positioned absolutely inside the
+// unpositioned select it was placed against the page, where it stretched the
+// document below the window and made the whole page scroll.
+test('a select low in a scrolling form does not make the page scroll', async ({ page }) => {
+  await gotoFixture(page, 'select-scroll');
+  const pageScrolls = await page.evaluate(() => document.documentElement.scrollHeight > window.innerHeight);
+  expect(pageScrolls).toBe(false);
+
+  const select = await page.locator('#low-select').boundingBox();
+  const input = await page.locator('#low-input').boundingBox();
+  expect(input.x).toBeGreaterThanOrEqual(select.x);
+  expect(input.y).toBeGreaterThanOrEqual(select.y);
+  expect(input.x + input.width).toBeLessThanOrEqual(select.x + select.width);
+  expect(input.y + input.height).toBeLessThanOrEqual(select.y + select.height);
+});
+
+// The browser focuses the first invalid control and scrolls it into view. The
+// input sits inside the select, so the form's own scroller moves to the select
+// and the window stays put.
+test('a failed submit scrolls the form scroller to the select, not the window', async ({ page }) => {
+  await gotoFixture(page, 'select-scroll');
+  await page.evaluate(() => {
+    document.getElementById('main').scrollTop = 0;
+    document.getElementById('form').requestSubmit();
+  });
+  await settle(page);
+
+  await expect(trigger(page, '#low-select')).toHaveAttribute('aria-invalid', 'true');
+  const scroll = await page.evaluate(() => ({
+    window: window.scrollY,
+    main: document.getElementById('main').scrollTop,
+    viewport: window.innerHeight,
+  }));
+  expect(scroll.window).toBe(0);
+  expect(scroll.main).toBeGreaterThan(0);
+  // The anchor is the 1px input at the select's top edge, so the top is what
+  // every engine brings into view.
+  const select = await page.locator('#low-select').boundingBox();
+  expect(select.y).toBeGreaterThanOrEqual(0);
+  expect(select.y).toBeLessThan(scroll.viewport);
 });

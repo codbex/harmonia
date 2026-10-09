@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>select scroll fixture</title>
+    <link rel="stylesheet" href="/dist/harmonia.css" />
+    <script src="/dist/harmonia.js"></script>
+    <script src="/node_modules/alpinejs/dist/cdn.min.js" defer></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        flex: none;
+        padding: 1rem;
+      }
+      main {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body x-data class="bg-background text-foreground">
+    <header id="header" class="bg-muted">Sticky form header</header>
+    <main id="main">
+      <form id="form" class="flex max-w-3xs flex-col gap-2 p-4" onsubmit="event.preventDefault()">
+        <div style="height: 1800px"></div>
+        <div id="low-select" x-h-select>
+          <input id="low-input" x-h-select-input placeholder="Select" aria-label="Fruit" required />
+          <div x-h-select-content>
+            <div x-h-select-list>
+              <div x-h-select-option="'Apple'" data-value="apple"></div>
+            </div>
+          </div>
+        </div>
+        <div style="height: 600px"></div>
+        <button id="submit" type="submit">Submit</button>
+      </form>
+    </main>
+  </body>
+</html>

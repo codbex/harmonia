@@ -131,7 +131,15 @@ export default function (Alpine) {
     // The input stays validatable but invisible. "display:none" would stop the
     // browser from focusing it on a failed submit. It is out of the tab order
     // and the accessibility tree because the trigger stands in for it.
-    el.classList.add('sr-only', 'pointer-events-none');
+    // It also stays in normal flow: an absolutely positioned box inside the
+    // unpositioned select is placed against the page, where it escapes a
+    // scrolling ancestor and stretches the document, and positioning the select
+    // itself would re-anchor the popover into that scrolling ancestor. One pixel
+    // rather than zero so the browser still anchors its validation bubble to it,
+    // and the negative bottom and end margins cancel that pixel in both the
+    // block wrapper and the flex table wrapper.
+    el.classList.add('block', 'p-0', 'border-0', 'opacity-0', 'pointer-events-none');
+    Object.assign(el.style, { width: '1px', height: '1px', marginBottom: '-1px', marginInlineEnd: '-1px' });
     el.setAttribute('data-slot', 'select-native-input');
     el.setAttribute('type', 'text');
     el.setAttribute('tabindex', '-1');
