@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.6.2
+
+A bugfix release for the Input Number. A number input bound with `x-model.number` no longer loses a zero typed after the decimal point, so `1.05` stays `1.05`. The Separator page now marks `data-orientation` as required, which the component has always needed. There are no breaking changes.
+
+### Input Number
+
+- **Fixed: a bound number input dropped a zero typed after the decimal point.** Typing `1.05` could end as `15` and `0.05` as `5`, and deleting a digit after the point could remove the point itself. The field now keeps exactly what is typed and the bound value follows it.
+
+### Documentation
+
+- The Separator page now marks `data-orientation` as required. The attribute was listed as optional, but a separator without it has no height or width and never showed. The component itself is unchanged.
+
 ## v3.6.1
 
 A bugfix release for the Select. A select low in a scrolling form no longer makes the whole page scroll, and a failed submit now scrolls the form's own scroller to the select. There are no breaking changes.

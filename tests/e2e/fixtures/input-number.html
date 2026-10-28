@@ -14,6 +14,12 @@
         <input id="amount" type="number" min="0" max="100" value="23" />
       </div>
     </div>
+    <div x-data="{ amount: null }" style="max-width: 24rem">
+      <div x-h-input-number>
+        <input id="decimal" type="number" step="any" x-model.number="amount" />
+      </div>
+      <span id="model" x-text="JSON.stringify(amount)"></span>
+    </div>
     <div style="height: 200vh"></div>
   </body>
 </html>

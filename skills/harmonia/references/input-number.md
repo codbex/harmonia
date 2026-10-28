@@ -35,7 +35,7 @@ Scrolling over a focused input never changes its value. The value changes only b
 
 ### Model
 
-Bind a number with `x-model.number` on the inner native input. While an in-progress entry is not yet a valid number (for example a partially typed decimal), the browser exposes no value, so the model is `null` until the entry becomes valid. The text typed so far stays visible in the field.
+Bind a number with `x-model.number` on the inner native input. While an in-progress entry is not yet a valid number (for example a partially typed decimal), the browser exposes no value, so the model is `null` until the entry becomes valid. The text typed so far stays visible in the field. A valid entry is not rewritten while the field has focus either, so a typed `1.0` keeps its zero on the way to `1.05` and the model updates once the number changes.
 
 ### Data Slots
 

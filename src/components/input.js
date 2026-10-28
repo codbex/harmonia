@@ -278,11 +278,14 @@ export default function (Alpine) {
       const original = input._x_forceModelUpdate;
       if (!original) return;
       const wrapped = (value) => {
-        // While the browser holds a bad-input editing buffer (e.g. a typed
-        // decimal separator the number widget rejects), any value write would
-        // destroy the user's visible text. Skip only while the user is editing
-        // so an external model change after blur still heals the display.
-        if (input.validity.badInput && input.getRootNode().activeElement === input) return;
+        // While the user is editing, a value write destroys the visible text:
+        // the browser drops a bad-input buffer (e.g. a typed decimal separator
+        // the number widget rejects) for any write, and rewrites a valid entry
+        // into its canonical form (1.0 becomes 1) when the model merely
+        // round-trips the same number. Skip only while the user is editing so
+        // an external model change still heals the display. parseFloat is the
+        // parse x-model.number applies, so equal means the same number.
+        if (input.getRootNode().activeElement === input && (input.validity.badInput || parseFloat(input.value) === value)) return;
         original(value);
       };
       input._x_forceModelUpdate = wrapped;

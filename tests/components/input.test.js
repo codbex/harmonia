@@ -397,6 +397,54 @@ describe('h-input-number', () => {
     expect(original).toHaveBeenCalledWith(42);
   });
 
+  it('skips the model writeback while focused when the model equals the typed text as a number', async () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    const input = el.querySelector('input');
+    const original = vi.fn();
+    input._x_forceModelUpdate = original;
+    await new Promise((resolve) => queueMicrotask(resolve));
+    input.value = '1.0';
+    input.focus();
+    input._x_forceModelUpdate(1);
+    expect(original).not.toHaveBeenCalled();
+  });
+
+  it('delegates the writeback while focused when the model is a different number', async () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    const input = el.querySelector('input');
+    const original = vi.fn();
+    input._x_forceModelUpdate = original;
+    await new Promise((resolve) => queueMicrotask(resolve));
+    input.value = '1.0';
+    input.focus();
+    input._x_forceModelUpdate(7);
+    expect(original).toHaveBeenCalledWith(7);
+  });
+
+  it('delegates the writeback for the same number once the input is blurred', async () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    const input = el.querySelector('input');
+    const original = vi.fn();
+    input._x_forceModelUpdate = original;
+    await new Promise((resolve) => queueMicrotask(resolve));
+    input.value = '1.0';
+    input.blur();
+    input._x_forceModelUpdate(1);
+    expect(original).toHaveBeenCalledWith(1);
+  });
+
+  it('delegates a null model over an empty focused field', async () => {
+    mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
+    const input = el.querySelector('input');
+    const original = vi.fn();
+    input._x_forceModelUpdate = original;
+    await new Promise((resolve) => queueMicrotask(resolve));
+    input.value = '';
+    input.focus();
+    input._x_forceModelUpdate(null);
+    expect(original).toHaveBeenCalledWith(null);
+  });
+
   it('installs no wrapper when the input has no x-model', async () => {
     mountDirective(inputPlugin, 'h-input-number', el, { original: 'h-input-number' });
     const input = el.querySelector('input');

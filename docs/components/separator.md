@@ -16,9 +16,9 @@ x-h-separator
 
 ### Attributes
 
-| Attribute        | Type                         | Required | Description                               |
-| ---------------- | ---------------------------- | -------- | ----------------------------------------- |
-| data-orientation | `horizontal`<br />`vertical` | false    | Changes the orientation of the separator. |
+| Attribute        | Type                         | Required | Description                                                                  |
+| ---------------- | ---------------------------- | -------- | ---------------------------------------------------------------------------- |
+| data-orientation | `horizontal`<br />`vertical` | true     | Sets the orientation of the separator. Without it the separator has no size. |
 
 ### Data Slots
 
