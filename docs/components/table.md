@@ -57,17 +57,19 @@ x-h-table-footer
 
 #### x-h-table-head
 
-| Attribute      | Type    | Required | Description                      |
-| -------------- | ------- | -------- | -------------------------------- |
-| data-hoverable | boolean | false    | Makes the header cell hoverable. |
-| data-activable | boolean | false    | Makes the header cell activable. |
+| Attribute      | Type               | Required | Description                                                                                                 |
+| -------------- | ------------------ | -------- | ----------------------------------------------------------------------------------------------------------- |
+| data-hoverable | boolean            | false    | Makes the header cell hoverable.                                                                            |
+| data-activable | boolean            | false    | Makes the header cell activable.                                                                            |
+| data-sticky    | `start`<br />`end` | false    | Pins the header cell to the start or end edge of the scrolling container. Mark the column's cells the same. |
 
 #### x-h-table-cell
 
-| Attribute      | Type    | Required | Description               |
-| -------------- | ------- | -------- | ------------------------- |
-| data-hoverable | boolean | false    | Makes the cell hoverable. |
-| data-activable | boolean | false    | Makes the cell activable. |
+| Attribute      | Type               | Required | Description                                                                                                                                                    |
+| -------------- | ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-hoverable | boolean            | false    | Makes the cell hoverable.                                                                                                                                      |
+| data-activable | boolean            | false    | Makes the cell activable.                                                                                                                                      |
+| data-sticky    | `start`<br />`end` | false    | Pins the cell to the start or end edge of the scrolling container, above the cells that scroll under it. It takes its row's hover, active and selected colors. |
 
 #### x-h-table-group
 
@@ -82,6 +84,12 @@ x-h-table-footer
 | Modifier | Description                           |
 | -------- | ------------------------------------- |
 | scroll   | Adds scroll ability to the container. |
+
+### CSS Variables
+
+| Variable        | Default             | Description                                                                                                                                                    |
+| --------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --table-surface | `var(--background)` | The background of a pinned (`data-sticky`) cell. A card and a popover set it to their own surface. Set it on the container when the table sits on another one. |
 
 ### Data Slots
 
@@ -231,6 +239,49 @@ x-h-table-footer
     invoices: generateInvoices(),
   }));
 </script>
+```
+
+</LiveExample>
+
+### Table with a pinned column
+
+A `data-sticky="end"` column stays in view while the other columns scroll, which suits a column of row actions.
+
+<LiveExample>
+
+```html
+<div x-h-table-container data-border="true" style="max-width: 28rem">
+  <table x-h-table data-borders="rows">
+    <thead x-h-table-header>
+      <tr x-h-table-row>
+        <th x-h-table-head scope="col">Order</th>
+        <th x-h-table-head scope="col">Customer</th>
+        <th x-h-table-head scope="col">Notes</th>
+        <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody x-h-table-body>
+      <tr x-h-table-row data-hoverable="true">
+        <td x-h-table-cell>SO-1001</td>
+        <td x-h-table-cell>Northwind Traders</td>
+        <td x-h-table-cell>Deliver to the side entrance before noon</td>
+        <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+      </tr>
+      <tr x-h-table-row data-hoverable="true">
+        <td x-h-table-cell>SO-1002</td>
+        <td x-h-table-cell>Contoso Pharmaceuticals</td>
+        <td x-h-table-cell>Keep refrigerated during transport</td>
+        <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+      </tr>
+      <tr x-h-table-row data-hoverable="true" data-state="selected">
+        <td x-h-table-cell>SO-1003</td>
+        <td x-h-table-cell>Fabrikam Residences</td>
+        <td x-h-table-cell>Call the site manager on arrival</td>
+        <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 ```
 
 </LiveExample>

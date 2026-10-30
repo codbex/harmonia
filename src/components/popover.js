@@ -104,6 +104,7 @@ export default function (Alpine) {
       'absolute',
       'bg-popover',
       '[--badge-ring:var(--popover)]',
+      '[--table-surface:var(--popover)]',
       'text-popover-foreground',
       'hidden',
       'top-0',

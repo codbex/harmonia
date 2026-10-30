@@ -72,6 +72,13 @@ describe('h-table-header', () => {
     expect(el.classList.contains('bg-table-header')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('table-header');
   });
+
+  it('paints its pinned cells with the header surface', () => {
+    const el = document.createElement('thead');
+    mountDirective(tablePlugin, 'h-table-header', el);
+    expect(el.classList.contains('[&_th[data-sticky]]:bg-table-header')).toBe(true);
+    expect(el.classList.contains('[&_td[data-sticky]]:bg-table-header')).toBe(true);
+  });
 });
 
 describe('h-table-head', () => {
@@ -95,6 +102,14 @@ describe('h-table-head', () => {
     expect(el.classList.contains('[[data-slot=table-header][data-bordered=horizontal]_&]:border-t')).toBe(true);
     expect(el.classList.contains('[[data-slot=table-header][data-bordered=horizontal]_&]:border-b')).toBe(true);
   });
+
+  it('pins a data-sticky header cell to its inline edge', () => {
+    const el = document.createElement('th');
+    mountDirective(tablePlugin, 'h-table-head', el);
+    expect(el.classList.contains('[&[data-sticky]]:sticky')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky=start]]:start-0')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky=end]]:end-0')).toBe(true);
+  });
 });
 
 describe('h-table-cell', () => {
@@ -111,6 +126,18 @@ describe('h-table-cell', () => {
     const el = document.createElement('td');
     mountDirective(tablePlugin, 'h-table-cell', el);
     expect(el.classList.contains('[&:has([data-slot=table-group-button])]:p-0')).toBe(true);
+  });
+
+  it('pins a data-sticky cell above the scrolled cells, on the table surface, with a border on its inner edge', () => {
+    const el = document.createElement('td');
+    mountDirective(tablePlugin, 'h-table-cell', el);
+    expect(el.classList.contains('[&[data-sticky]]:sticky')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]]:z-1')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]]:bg-(--table-surface,var(--background))')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky=start]]:start-0')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky=start]]:border-e')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky=end]]:end-0')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky=end]]:border-s')).toBe(true);
   });
 });
 
@@ -155,6 +182,14 @@ describe('h-table-row', () => {
     mountDirective(tablePlugin, 'h-table-row', el);
     expect(el.classList.contains('data-[state=selected]:bg-table-active')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('table-row');
+  });
+
+  it('paints its pinned cells with its hover, active and selected states', () => {
+    const el = document.createElement('tr');
+    mountDirective(tablePlugin, 'h-table-row', el);
+    expect(el.classList.contains('[&[data-hoverable=true]:hover>[data-sticky]]:bg-table-hover')).toBe(true);
+    expect(el.classList.contains('[&[data-activable=true]:active>[data-sticky]]:bg-table-active!')).toBe(true);
+    expect(el.classList.contains('[&[data-state=selected]>[data-sticky]]:bg-table-active')).toBe(true);
   });
 });
 
@@ -363,5 +398,12 @@ describe('h-table-footer', () => {
     expect(el.classList.contains('bg-table-header')).toBe(true);
     expect(el.classList.contains('font-medium')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('table-footer');
+  });
+
+  it('paints its pinned cells with the footer surface', () => {
+    const el = document.createElement('tfoot');
+    mountDirective(tablePlugin, 'h-table-footer', el);
+    expect(el.classList.contains('[&_th[data-sticky]]:bg-table-header')).toBe(true);
+    expect(el.classList.contains('[&_td[data-sticky]]:bg-table-header')).toBe(true);
   });
 });
