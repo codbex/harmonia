@@ -16,6 +16,9 @@ vi.mock('../../src/common/input-size.js', () => ({
 import selectPlugin from '../../src/components/select.js';
 import { createMockAlpine, mountDirective } from '../test-utils.js';
 
+// The label refresh an option schedules runs in a microtask queued behind this one.
+const flushMicrotasks = () => new Promise((resolve) => setTimeout(resolve, 0));
+
 describe('h-select', () => {
   it('initializes _h_select reactive state', () => {
     const el = document.createElement('div');
@@ -514,12 +517,68 @@ describe('h-select-input model binding', () => {
   });
 
   // Each option registers its listener before its own label effect, so the last
-  // option to mount still resolves a preselected value pointing at it.
-  it('resolves a preselected value whose option registers last at mount', () => {
+  // option to mount still resolves a preselected value pointing at it. The
+  // label refresh an option schedules runs once its microtask is reached.
+  it('resolves a preselected value whose option registers last at mount', async () => {
     const { options, state } = createModelSelect('banana');
+    await flushMicrotasks();
     expect(state.label).toEqual(['Banana']);
     expect(isSelected(options.banana)).toBe(true);
     expect(isSelected(options.apple)).toBe(false);
+  });
+});
+
+// The trigger label is refreshed once per select per microtask, not once per
+// option: a refresh walks every option, so refreshing from each option's label
+// effect made mounting n options, and every later value change, cost n * n.
+describe('h-select-option label refresh cost', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  function createCountingSelect(count, initialValue) {
+    const store = createMockAlpine().reactive({ value: initialValue });
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    mountDirective(selectPlugin, 'h-select', root, { modifiers: [] });
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input._x_model = { get: () => store.value, set: (value) => (store.value = value) };
+    root.appendChild(input);
+    mountDirective(selectPlugin, 'h-select-input', input, { original: 'x-h-select-input', expression: '' });
+
+    const state = root._h_select;
+    const refresh = state.refreshLabel;
+    const counter = { refreshes: 0 };
+    state.refreshLabel = () => {
+      counter.refreshes++;
+      refresh();
+    };
+    for (let i = 1; i <= count; i++) {
+      const option = document.createElement('div');
+      option.setAttribute('data-value', String(i));
+      root.appendChild(option);
+      mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: `'Option ${i}'` }, { evaluateLater: () => (cb) => cb(`Option ${i}`) });
+    }
+    return { store, state, counter };
+  }
+
+  it('refreshes the label once for all the options mounted in one turn', async () => {
+    const { state, counter } = createCountingSelect(200, '42');
+    await flushMicrotasks();
+    expect(counter.refreshes).toBe(1);
+    expect(state.label).toEqual(['Option 42']);
+  });
+
+  it('does not re-run the option label effects when the value changes', async () => {
+    const { store, state, counter } = createCountingSelect(200, '42');
+    await flushMicrotasks();
+    counter.refreshes = 0;
+    store.value = '7';
+    await flushMicrotasks();
+    expect(counter.refreshes).toBe(0);
+    expect(state.label).toEqual(['Option 7']);
   });
 });
 
