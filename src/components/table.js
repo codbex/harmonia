@@ -51,7 +51,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-table-header', (el) => {
-    el.classList.add('bg-table-header');
+    el.classList.add('bg-table-header', '[&_th[data-sticky]]:bg-table-header', '[&_td[data-sticky]]:bg-table-header');
     el.setAttribute('data-slot', 'table-header');
   });
 
@@ -76,7 +76,14 @@ export default function (Alpine) {
       'whitespace-nowrap',
       '[&:has([role=checkbox])]:pr-0',
       '[&>[role=checkbox]]:flex',
-      '[&>[role=checkbox]]:items-center'
+      '[&>[role=checkbox]]:items-center',
+      '[&[data-sticky]]:sticky',
+      '[&[data-sticky]]:z-1',
+      '[&[data-sticky]]:bg-(--table-surface,var(--background))',
+      '[&[data-sticky=start]]:start-0',
+      '[&[data-sticky=start]]:border-e',
+      '[&[data-sticky=end]]:end-0',
+      '[&[data-sticky=end]]:border-s'
     );
     el.setAttribute('data-slot', 'table-head');
   });
@@ -94,7 +101,14 @@ export default function (Alpine) {
       '[&[data-hoverable=true]:hover]:bg-table-hover',
       '[&[data-hoverable=true]:hover]:text-table-hover-foreground',
       '[&[data-activable=true]:active]:bg-table-active!',
-      '[&[data-activable=true]:active]:text-table-active-foreground!'
+      '[&[data-activable=true]:active]:text-table-active-foreground!',
+      '[&[data-sticky]]:sticky',
+      '[&[data-sticky]]:z-1',
+      '[&[data-sticky]]:bg-(--table-surface,var(--background))',
+      '[&[data-sticky=start]]:start-0',
+      '[&[data-sticky=start]]:border-e',
+      '[&[data-sticky=end]]:end-0',
+      '[&[data-sticky=end]]:border-s'
     );
     el.setAttribute('data-slot', 'table-cell');
   });
@@ -152,7 +166,11 @@ export default function (Alpine) {
       '[&[data-activable=true]:active]:bg-table-active!',
       '[&[data-activable=true]:active]:text-table-active-foreground!',
       'data-[state=selected]:bg-table-active',
-      'data-[state=selected]:text-table-active-foreground'
+      'data-[state=selected]:text-table-active-foreground',
+      // A pinned cell paints its own background over the scrolled cells, so it repeats the row's state.
+      '[&[data-hoverable=true]:hover>[data-sticky]]:bg-table-hover',
+      '[&[data-activable=true]:active>[data-sticky]]:bg-table-active!',
+      '[&[data-state=selected]>[data-sticky]]:bg-table-active'
     );
     el.setAttribute('data-slot', 'table-row');
   });
@@ -269,7 +287,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-table-footer', (el) => {
-    el.classList.add('bg-table-header', 'font-medium', 'last:[&>tr_td[data-slot|=table]]:border-b-0', 'last:[&>tr_th[data-slot|=table]]:border-b-0');
+    el.classList.add('bg-table-header', 'font-medium', 'last:[&>tr_td[data-slot|=table]]:border-b-0', 'last:[&>tr_th[data-slot|=table]]:border-b-0', '[&_th[data-sticky]]:bg-table-header', '[&_td[data-sticky]]:bg-table-header');
     el.setAttribute('data-slot', 'table-footer');
   });
 }

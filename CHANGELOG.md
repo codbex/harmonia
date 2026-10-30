@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.7.0
+
+A release that pins a table column. A table header cell or cell with `data-sticky="start"` or `data-sticky="end"` stays at that edge while the other columns scroll, so a column of row actions no longer scrolls out of view. There are no breaking changes.
+
+### Table
+
+- **New: `data-sticky="start" | "end"` on `x-h-table-head` and `x-h-table-cell`.** The cell is pinned to that inline edge of the scrolling container (right to left aware), sits above the cells that scroll under it, draws a border on its inner edge, and takes its row's hover, active and selected colors. It works with and without the `scroll` modifier and in a fixed-layout table.
+- **New: the `--table-surface` CSS variable,** the background of a pinned cell. It defaults to `--background`, a card and a popover set it to their own surface, and it can be set on the container for any other surface.
+
 ## v3.6.3
 
 A bugfix release for the Select. A select with many options no longer freezes the page: mounting 1,400 options took 13 seconds and every change of the bound value 9 seconds, and both now complete well under a second. There are no breaking changes.

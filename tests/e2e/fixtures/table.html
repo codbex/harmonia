@@ -61,5 +61,88 @@
         </tbody>
       </table>
     </div>
+
+    <div id="pinned" x-h-table-container.scroll data-border="true" style="max-width: 24rem">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col" style="min-width: 10rem">Number</th>
+            <th x-h-table-head scope="col" style="min-width: 10rem">Customer</th>
+            <th x-h-table-head scope="col" style="min-width: 10rem">Notes</th>
+            <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell>SH-0001</td>
+            <td x-h-table-cell>A customer</td>
+            <td x-h-table-cell>A note</td>
+            <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+          </tr>
+          <tr x-h-table-row data-state="selected">
+            <td x-h-table-cell>SH-0002</td>
+            <td x-h-table-cell>Another customer</td>
+            <td x-h-table-cell>Another note</td>
+            <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div x-h-card id="pinned-card">
+      <div id="pinned-in-card" x-h-table-container.scroll data-border="true" style="max-width: 24rem">
+        <table x-h-table data-borders="rows">
+          <thead x-h-table-header>
+            <tr x-h-table-row>
+              <th x-h-table-head scope="col" style="min-width: 10rem">Number</th>
+              <th x-h-table-head scope="col" style="min-width: 10rem">Customer</th>
+              <th x-h-table-head scope="col" style="min-width: 10rem">Notes</th>
+              <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody x-h-table-body>
+            <tr x-h-table-row data-hoverable="true">
+              <td x-h-table-cell>SH-0001</td>
+              <td x-h-table-cell>A customer</td>
+              <td x-h-table-cell>A note</td>
+              <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+            </tr>
+            <tr x-h-table-row data-state="selected">
+              <td x-h-table-cell>SH-0002</td>
+              <td x-h-table-cell>Another customer</td>
+              <td x-h-table-cell>Another note</td>
+              <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="pinned-rtl" x-h-table-container.scroll data-border="true" style="max-width: 24rem" dir="rtl">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col" style="min-width: 10rem">Number</th>
+            <th x-h-table-head scope="col" style="min-width: 10rem">Customer</th>
+            <th x-h-table-head scope="col" style="min-width: 10rem">Notes</th>
+            <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell>SH-0001</td>
+            <td x-h-table-cell>A customer</td>
+            <td x-h-table-cell>A note</td>
+            <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+          </tr>
+          <tr x-h-table-row data-state="selected">
+            <td x-h-table-cell>SH-0002</td>
+            <td x-h-table-cell>Another customer</td>
+            <td x-h-table-cell>Another note</td>
+            <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>
