@@ -15,6 +15,23 @@ const FilterType = Object.freeze({
   none: 3,
 });
 
+// refreshLabel walks every option of the select. Calling it from each
+// option's label effect made mounting n options cost n * n listener calls,
+// and, because the walk reads the model inside that effect, subscribed every
+// option to the value, so each value change re-ran all n effects and walked
+// the n listeners again from each. One refresh per select per microtask,
+// outside any effect, keeps both linear. The pending set is deliberately not
+// reactive: an effect reading a reactive flag it also writes re-runs forever.
+const refreshPending = new WeakSet();
+function scheduleLabelRefresh(select) {
+  if (refreshPending.has(select)) return;
+  refreshPending.add(select);
+  queueMicrotask(() => {
+    refreshPending.delete(select);
+    select._h_select.refreshLabel();
+  });
+}
+
 export default function (Alpine) {
   Alpine.directive('h-select', (el, { modifiers }, { Alpine, cleanup }) => {
     el._h_select = Alpine.reactive({
@@ -823,14 +840,14 @@ export default function (Alpine) {
       return setSelectedState(Array.isArray(value) ? value.includes(getValue()) : value === getValue());
     };
 
-    // Registered before the label effect below, so its refreshLabel call
-    // resolves this option's own selected state too.
+    // Registered before the label effect below, so the label refresh it
+    // schedules resolves this option's own selected state too.
     select._h_select.listeners.push(onModelChange);
 
     effect(() => {
       getLabel((label) => {
         labelEl.innerText = label;
-        select._h_select.refreshLabel();
+        scheduleLabelRefresh(select);
       });
     });
 

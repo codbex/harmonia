@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.6.3
+
+A bugfix release for the Select. A select with many options no longer freezes the page: mounting 1,400 options took 13 seconds and every change of the bound value 9 seconds, and both now complete well under a second. There are no breaking changes.
+
+### Select
+
+- **Fixed: a select with many options froze the page on mount and on every value change.** Each option refreshed the trigger label by walking every other option, so the cost grew with the square of the option count: 1,400 options took 13 s to mount and 9 s per change of the bound value. The label is now refreshed once per select per change, and both costs are linear, 133 ms and 8 ms for the same 1,400 options.
+
 ## v3.6.2
 
 A bugfix release for the Input Number. A number input bound with `x-model.number` no longer loses a zero typed after the decimal point, so `1.05` stays `1.05`. The Separator page now marks `data-orientation` as required, which the component has always needed. There are no breaking changes.
