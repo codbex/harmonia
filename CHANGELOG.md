@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.7.1
+
+A bugfix release for the Table. A menu opened from a pinned (`data-sticky`) cell is no longer covered by the pinned cells of the rows below it. There are no breaking changes.
+
+### Table
+
+- **Fixed: a menu opened from a pinned cell was painted under the pinned cells of the following rows.** Their buttons showed through the part of the menu over the pinned column, and a click there reached the other row's button instead of the menu item. A pinned cell holding an open menu, popover or select now sits above the other pinned cells and the sticky header and footer.
+
 ## v3.7.0
 
 A release that pins a table column. A table header cell or cell with `data-sticky="start"` or `data-sticky="end"` stays at that edge while the other columns scroll, so a column of row actions no longer scrolls out of view. There are no breaking changes.
