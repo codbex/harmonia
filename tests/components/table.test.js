@@ -110,6 +110,12 @@ describe('h-table-head', () => {
     expect(el.classList.contains('[&[data-sticky=start]]:start-0')).toBe(true);
     expect(el.classList.contains('[&[data-sticky=end]]:end-0')).toBe(true);
   });
+
+  it('lifts a pinned header cell holding an open menu above the other pinned cells', () => {
+    const el = document.createElement('th');
+    mountDirective(tablePlugin, 'h-table-head', el);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-expanded=true])]:z-3')).toBe(true);
+  });
 });
 
 describe('h-table-cell', () => {
@@ -138,6 +144,12 @@ describe('h-table-cell', () => {
     expect(el.classList.contains('[&[data-sticky=start]]:border-e')).toBe(true);
     expect(el.classList.contains('[&[data-sticky=end]]:end-0')).toBe(true);
     expect(el.classList.contains('[&[data-sticky=end]]:border-s')).toBe(true);
+  });
+
+  it('lifts a pinned cell holding an open menu above the other pinned cells', () => {
+    const el = document.createElement('td');
+    mountDirective(tablePlugin, 'h-table-cell', el);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-expanded=true])]:z-3')).toBe(true);
   });
 });
 

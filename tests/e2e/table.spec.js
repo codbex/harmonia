@@ -68,6 +68,8 @@ const background = (locator) => locator.evaluate((el) => getComputedStyle(el).ba
 
 test('a data-sticky=end cell stays at the end edge while the other cells scroll under it', async ({ page }) => {
   await gotoFixture(page, 'table');
+  // Measure once the buttons have their final size, or the column is still settling under load.
+  await settle(page);
   const scroller = page.locator('#pinned');
   const pinned = page.locator('#pinned tbody tr').first().locator('td[data-sticky]');
   const note = page.locator('#pinned tbody tr').first().locator('td').nth(2);
@@ -117,4 +119,22 @@ test('a pinned cell inside a card is painted with the card surface', async ({ pa
   expect(card).not.toBe(await background(page.locator('body')));
   expect(await background(page.locator('#pinned-in-card tbody tr').first().locator('td[data-sticky]'))).toBe(card);
   expect(await background(page.locator('#pinned-in-card thead th[data-sticky]'))).toBe(await background(page.locator('#pinned-in-card thead')));
+});
+
+test('a menu opened from a pinned cell is above the pinned cells of the rows below', async ({ page }) => {
+  await gotoFixture(page, 'table');
+  await page.locator('#pinned-menu-trigger-1').click();
+  const menu = page.locator('#pinned-menu-1');
+  await menu.waitFor({ state: 'visible' });
+  await settle(page);
+
+  // The menu's end overlaps the pinned column of rows 2-4: each item must be the element hit there.
+  const hits = await menu.evaluate((list) =>
+    [...list.querySelectorAll('[data-slot=menu-item]')].map((item) => {
+      const box = item.getBoundingClientRect();
+      const hit = document.elementFromPoint(box.right - 5, box.top + box.height / 2);
+      return item.contains(hit);
+    })
+  );
+  expect(hits).toEqual([true, true, true]);
 });

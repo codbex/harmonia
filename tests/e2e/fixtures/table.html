@@ -144,5 +144,67 @@
         </tbody>
       </table>
     </div>
+
+    <div id="pinned-menus" x-h-table-container data-border="true" style="max-width: 32rem">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Order</th>
+            <th x-h-table-head scope="col">Customer</th>
+            <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell style="min-width: 16rem">SO-1001</td>
+            <td x-h-table-cell style="min-width: 16rem">Northwind Traders</td>
+            <td x-h-table-cell data-sticky="end">
+              <button id="pinned-menu-trigger-1" x-h-menu-trigger.dropdown x-h-table-cell-button aria-label="Row actions">...</button>
+              <ul id="pinned-menu-1" x-h-menu data-align="bottom-end">
+                <li x-h-menu-item>Preview</li>
+                <li x-h-menu-item>Edit</li>
+                <li x-h-menu-item>Delete</li>
+              </ul>
+            </td>
+          </tr>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell style="min-width: 16rem">SO-1002</td>
+            <td x-h-table-cell style="min-width: 16rem">Northwind Traders</td>
+            <td x-h-table-cell data-sticky="end">
+              <button id="pinned-menu-trigger-2" x-h-menu-trigger.dropdown x-h-table-cell-button aria-label="Row actions">...</button>
+              <ul id="pinned-menu-2" x-h-menu data-align="bottom-end">
+                <li x-h-menu-item>Preview</li>
+                <li x-h-menu-item>Edit</li>
+                <li x-h-menu-item>Delete</li>
+              </ul>
+            </td>
+          </tr>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell style="min-width: 16rem">SO-1003</td>
+            <td x-h-table-cell style="min-width: 16rem">Northwind Traders</td>
+            <td x-h-table-cell data-sticky="end">
+              <button id="pinned-menu-trigger-3" x-h-menu-trigger.dropdown x-h-table-cell-button aria-label="Row actions">...</button>
+              <ul id="pinned-menu-3" x-h-menu data-align="bottom-end">
+                <li x-h-menu-item>Preview</li>
+                <li x-h-menu-item>Edit</li>
+                <li x-h-menu-item>Delete</li>
+              </ul>
+            </td>
+          </tr>
+          <tr x-h-table-row data-hoverable="true">
+            <td x-h-table-cell style="min-width: 16rem">SO-1004</td>
+            <td x-h-table-cell style="min-width: 16rem">Northwind Traders</td>
+            <td x-h-table-cell data-sticky="end">
+              <button id="pinned-menu-trigger-4" x-h-menu-trigger.dropdown x-h-table-cell-button aria-label="Row actions">...</button>
+              <ul id="pinned-menu-4" x-h-menu data-align="bottom-end">
+                <li x-h-menu-item>Preview</li>
+                <li x-h-menu-item>Edit</li>
+                <li x-h-menu-item>Delete</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>
