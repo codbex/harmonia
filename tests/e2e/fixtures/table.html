@@ -206,5 +206,174 @@
         </tbody>
       </table>
     </div>
+
+    <div id="pinned-expanders" x-h-table-container.scroll data-border="true" style="max-width: 24rem; max-height: 8rem">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col" data-sticky="start">Pinned</th>
+            <th x-h-table-head scope="col" style="min-width: 12rem">Customer</th>
+            <th x-h-table-head scope="col" style="min-width: 12rem">Notes</th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <template x-for="i in [1, 2, 3, 4, 5, 6, 7, 8]">
+            <tr x-h-table-row>
+              <td x-h-table-cell data-sticky="start"><button x-h-button data-size="sm" aria-expanded="true" :aria-label="'Collapse row ' + i" x-text="'Row ' + i"></button></td>
+              <td x-h-table-cell>Customer</td>
+              <td x-h-table-cell>Note</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="pinned-borders" x-h-table-container data-border="true" style="max-width: 24rem">
+      <table x-h-table data-borders="both">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col" data-sticky="start">Pinned</th>
+            <th x-h-table-head scope="col" style="min-width: 12rem">Customer</th>
+            <th x-h-table-head scope="col" style="min-width: 12rem">Notes</th>
+            <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <tr x-h-table-row>
+            <td x-h-table-cell data-sticky="start">SH-0001</td>
+            <td x-h-table-cell>A customer</td>
+            <td x-h-table-cell>A note</td>
+            <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+          </tr>
+          <tr x-h-table-row>
+            <td x-h-table-cell data-sticky="start">SH-0002</td>
+            <td x-h-table-cell>Another customer</td>
+            <td x-h-table-cell>Another note</td>
+            <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div x-data="{ showDialog: false }">
+      <button id="pinned-dialog-open" x-h-button @click="showDialog = true">Show the dialog</button>
+      <div x-h-dialog-overlay :data-open="showDialog">
+        <div x-h-dialog style="max-height: 26rem">
+          <div x-h-dialog-header>
+            <h2 x-h-dialog-title>Orders</h2>
+            <p x-h-dialog-description>Tables with pinned columns inside a dialog.</p>
+          </div>
+          <div x-h-dialog-content class="grid gap-4">
+            <div id="pinned-dialog-expanders" x-h-table-container.scroll data-border="true" style="max-width: 24rem; max-height: 8rem">
+              <table x-h-table data-borders="rows">
+                <thead x-h-table-header>
+                  <tr x-h-table-row>
+                    <th x-h-table-head scope="col" data-sticky="start">Pinned</th>
+                    <th x-h-table-head scope="col" style="min-width: 12rem">Customer</th>
+                    <th x-h-table-head scope="col" style="min-width: 12rem">Notes</th>
+                  </tr>
+                </thead>
+                <tbody x-h-table-body>
+                  <template x-for="i in [1, 2, 3, 4, 5, 6, 7, 8]">
+                    <tr x-h-table-row>
+                      <td x-h-table-cell data-sticky="start"><button x-h-button data-size="sm" aria-expanded="true" :aria-label="'Collapse row ' + i" x-text="'Row ' + i"></button></td>
+                      <td x-h-table-cell>Customer</td>
+                      <td x-h-table-cell>Note</td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+            <div id="pinned-dialog-menus" x-h-table-container data-border="true" style="max-width: 32rem">
+              <table x-h-table data-borders="rows">
+                <thead x-h-table-header>
+                  <tr x-h-table-row>
+                    <th x-h-table-head scope="col">Order</th>
+                    <th x-h-table-head scope="col">Customer</th>
+                    <th x-h-table-head scope="col" data-sticky="end"><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody x-h-table-body>
+                  <template x-for="i in [1, 2, 3, 4]">
+                    <tr x-h-table-row data-hoverable="true">
+                      <td x-h-table-cell style="min-width: 16rem" x-text="'SO-100' + i"></td>
+                      <td x-h-table-cell style="min-width: 16rem">Northwind Traders</td>
+                      <td x-h-table-cell data-sticky="end">
+                        <button :id="'pinned-dialog-trigger-' + i" x-h-menu-trigger.dropdown x-h-table-cell-button aria-label="Row actions">...</button>
+                        <ul :id="'pinned-dialog-menu-' + i" x-h-menu data-align="bottom-end">
+                          <li x-h-menu-item>Preview</li>
+                          <li x-h-menu-item>Edit</li>
+                          <li x-h-menu-item>Delete</li>
+                        </ul>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div x-h-dialog-footer>
+            <button id="pinned-dialog-close" x-h-button data-variant="outline" @click="showDialog = false">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="scroller-rtl" dir="rtl" x-h-table-container.scroll data-border="true" style="max-height: 16rem; max-width: 24rem">
+      <table x-h-table>
+        <thead id="head-rtl" x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Row</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Alpha</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Beta</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Gamma</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Delta</th>
+            <th x-h-table-head scope="col" style="min-width: 8rem">Epsilon</th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <template x-for="i in 20">
+            <tr x-h-table-row data-hoverable="true" :id="`row-rtl-${i}`">
+              <th x-h-table-head scope="row" x-text="`Row ${i}`"></th>
+              <td x-h-table-cell x-text="`Alpha ${i}`"></td>
+              <td x-h-table-cell x-text="`Beta ${i}`"></td>
+              <td x-h-table-cell x-text="`Gamma ${i}`"></td>
+              <td x-h-table-cell x-text="`Delta ${i}`"></td>
+              <td x-h-table-cell x-text="`Epsilon ${i}`"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="plain-select" x-h-table-container data-border="true" style="max-width: 36rem">
+      <table x-h-table data-borders="rows">
+        <thead x-h-table-header>
+          <tr x-h-table-row>
+            <th x-h-table-head scope="col">Order</th>
+            <th x-h-table-head scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody x-h-table-body>
+          <tr x-h-table-row>
+            <td x-h-table-cell>SO-1001</td>
+            <td x-h-table-cell style="width: 12rem">
+              <div x-h-select.table x-data="{ status: '1' }">
+                <input x-h-select-input x-model="status" aria-label="Status" />
+                <div x-h-select-content>
+                  <div x-h-select-list>
+                    <template x-for="n in 10"><div x-h-select-option="'Status ' + n" :data-value="String(n)"></div></template>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr x-h-table-row>
+            <td x-h-table-cell>SO-1002</td>
+            <td x-h-table-cell>Done</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

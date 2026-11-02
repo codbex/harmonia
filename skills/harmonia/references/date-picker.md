@@ -51,9 +51,9 @@ The month and the year in the calendar header are buttons. Pressing the month sh
 
 ### Modifiers
 
-| Modifier | Description                          |
-| -------- | ------------------------------------ |
-| table    | Use when the input is inside a table |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| table    | Required when the control is inside a table cell. See Table. |
 
 ### Configuration
 

@@ -219,3 +219,59 @@ test('a failed submit scrolls the form scroller to the select, not the window', 
   expect(select.y).toBeGreaterThanOrEqual(0);
   expect(select.y).toBeLessThan(scroll.viewport);
 });
+
+// A select with many options used to refresh its trigger label once per
+// option, from inside each option's effect, so mounting n options and every
+// change of the bound value walked the n options n times. A refresh writes
+// aria-selected on every option, and the fixture counts those writes, so the
+// number of refreshes is that count divided by the 1,400 options. Only real
+// Alpine shows the cost: its scheduler is what re-ran the effects.
+const MANY_OPTIONS = 1400;
+const refreshes = (page) => page.evaluate((count) => window.ariaSelectedWrites / count, MANY_OPTIONS);
+
+test('mounting 1,400 options resolves the preselected label with a bounded number of refreshes', async ({ page }) => {
+  await gotoFixture(page, 'select-many');
+  await expect(trigger(page, '#many-select')).toHaveText('Customer 42');
+  await expect(page.locator('#many-select [role=option][aria-selected=true]')).toHaveCount(1);
+  expect(await refreshes(page)).toBeLessThan(10);
+});
+
+test('changing the bound value of a 1,400 option select refreshes the label once, not once per option', async ({ page }) => {
+  await gotoFixture(page, 'select-many');
+  await expect(trigger(page, '#many-select')).toHaveText('Customer 42');
+  const before = await refreshes(page);
+
+  await page.evaluate(() => (window.Alpine.$data(document.getElementById('many')).value = '7'));
+  await expect(trigger(page, '#many-select')).toHaveText('Customer 7');
+  await expect(page.locator('#many-select [role=option][aria-selected=true]')).toHaveAttribute('data-value', '7');
+  expect((await refreshes(page)) - before).toBeLessThan(10);
+
+  // The option's label is reactive too, and renaming the selected one has to
+  // reach the trigger through the refresh the option schedules.
+  await page.evaluate(() => (window.Alpine.$data(document.getElementById('many')).options[6].text = 'Renamed 7'));
+  await expect(trigger(page, '#many-select')).toHaveText('Renamed 7');
+});
+
+// The hidden input keeps the bound value even when no option carries it, so
+// the label of an option that is gone, or that the value no longer points at,
+// must not stay on the trigger.
+test('the trigger falls back to the placeholder when the selected option is removed or the value matches no option', async ({ page }) => {
+  await gotoFixture(page, 'select-many');
+  const many = trigger(page, '#many-select');
+  const selectedOptions = page.locator('#many-select [role=option][aria-selected=true]');
+
+  await page.evaluate(() => (window.Alpine.$data(document.getElementById('many')).value = '7'));
+  await expect(many).toHaveText('Customer 7');
+
+  await page.evaluate(() => window.Alpine.$data(document.getElementById('many')).options.splice(6, 1));
+  await expect(many).toHaveText('Select');
+  await expect(page.locator('#many-select [data-slot=select-input] > span')).toHaveClass(/text-muted-foreground/);
+  await expect(selectedOptions).toHaveCount(0);
+
+  await page.evaluate(() => (window.Alpine.$data(document.getElementById('many')).value = '42'));
+  await expect(many).toHaveText('Customer 42');
+
+  await page.evaluate(() => (window.Alpine.$data(document.getElementById('many')).value = 'nope'));
+  await expect(many).toHaveText('Select');
+  await expect(selectedOptions).toHaveCount(0);
+});

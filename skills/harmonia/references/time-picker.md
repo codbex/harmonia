@@ -42,9 +42,9 @@ Use the Time Picker when users need to input or select a time value, such as set
 
 #### x-h-time-picker
 
-| Modifier | Description                          |
-| -------- | ------------------------------------ |
-| table    | Use when the input is inside a table |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| table    | Required when the control is inside a table cell. See Table. |
 
 ### Model
 

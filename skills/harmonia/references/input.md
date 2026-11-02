@@ -22,10 +22,10 @@ Use input fields for capturing user data, such as names, emails, or color. If yo
 
 ### Modifiers
 
-| Modifier | Description                                  |
-| -------- | -------------------------------------------- |
-| group    | Used when the input is inside an input group |
-| table    | Used when the input is inside a table        |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| group    | Used when the input is inside an input group                                                        |
+| table    | Required when the control is inside a table cell. See Table. |
 
 ### Validation timing
 

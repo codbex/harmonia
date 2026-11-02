@@ -91,9 +91,9 @@ To show a leading icon or image, place an `<svg>` or `<img>` element directly in
 
 #### x-h-select
 
-| Modifier | Description                                 |
-| -------- | ------------------------------------------- |
-| table    | Use when the select input is inside a table |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| table    | Required when the control is inside a table cell. See [Table](/components/table#table-with-inputs). |
 
 ### Validation timing
 

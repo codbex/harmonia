@@ -1,5 +1,26 @@
 # Changelog
 
+## v3.7.2
+
+A bugfix release for the Select and the Table. The select trigger no longer keeps showing an option that was removed from the list or that the bound value no longer points at. A menu opened from a pinned table cell is no longer covered by the pinned cells of the rows below, the sticky header or the page's own bars, a right-to-left table pins its row headers to the start edge, and a select list or picker popup inside a table container opens in full. The documentation now states the browser support policy. There are no breaking changes.
+
+### Select
+
+- **Fixed: the trigger kept the label of an option that no longer matched the value.** Removing the selected option from the list, or binding a value that no option carries, left the previous label on the trigger. The trigger now shows the placeholder until an option matches again, and a select without `x-model` also refreshes its label when an option is removed.
+
+### Table
+
+- **Fixed: a pinned cell holding an expanded control that is not a popup stayed above the sticky header of a scrolling table.** A row expander, a tree item or an accordion trigger with `aria-expanded="true"` in a `data-sticky` cell lifted the cell for as long as it stayed expanded, so the cell was painted over the header and footer when the table scrolled. The cell is now lifted only while it holds an open menu, popover, select or combobox (`aria-haspopup` or `role="combobox"` with `aria-expanded="true"`).
+- **Fixed: a `data-sticky="end"` cell in a table with column borders drew a 2px line on its inner edge.** The divider of the cell before it met the pinned cell's own border. The cell before a pinned end cell no longer draws its divider, so the line is 1px like the others.
+- **Fixed: a menu opened from a pinned cell was covered by a sticky app bar or toolbar.** The cell was lifted only just above its neighbours, so page elements with a higher z-index were painted over the menu. A pinned cell with an open menu, popover, select or combobox is now lifted to the level of the popup itself, so the menu layers like one opened from a plain cell.
+- **Fixed: a right-to-left scrolling table pinned its row header column to the end edge.** The `scroll` container now pins body row headers to the start edge, like `data-sticky="start"`.
+- **Fixed: a select list or picker popup inside a table container was cut at the container's edge.** The container without the `scroll` modifier was positioned, which anchored the popups into its overflow. It no longer is, so they open in full, as they do in a scrolling container. Content a page positioned absolutely against the container itself now anchors to the next positioned ancestor.
+
+### Documentation
+
+- **Browser support is now stated.** Harmonia's baseline is MDN's Baseline Widely available: web platform features supported in each of the Baseline browsers for at least two and a half years. See Versioning and Support.
+- **Inputs inside a table require their `table` modifier.** The table page and every input page say so, where the wording used to read as optional.
+
 ## v3.7.1
 
 A bugfix release for the Table. A menu opened from a pinned (`data-sticky`) cell is no longer covered by the pinned cells of the rows below it. There are no breaking changes.

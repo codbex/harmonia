@@ -74,6 +74,19 @@ Only the current major is fully supported. The major before it receives guarante
 
 Bug fixes land in the current major first, and moving to it is the expected route to a fix. The full policy, including how to report a vulnerability, is in [SECURITY.md](SECURITY.md) and on the [Versioning and Support](https://codbex.github.io/harmonia/versioning-and-support) page.
 
+## Browser support
+
+Harmonia's baseline is MDN's [Baseline Widely available](https://developer.mozilla.org/en-US/docs/Glossary/Baseline/Compatibility). A web platform feature may be used only once it has a consistent history of support in each of the Baseline browsers for at least 2.5 years. The Baseline browsers are Chrome (desktop and mobile), Edge, Firefox (desktop and mobile) and Safari (macOS and iOS). In practice Harmonia works in every release of those browsers from the last two and a half years. The window moves forward with time, so there is no fixed minimum version to maintain.
+
+Check it on every change, not once. Before a change relies on a platform feature (a CSS selector or property, a DOM API, an HTML attribute), read the Baseline banner on its MDN page or on [Can I use](https://caniuse.com/). "Widely available" means it can be used. "Newly available" and "Limited availability" mean it waits, however many engines happen to ship it. Two examples, as of November 2026:
+
+- `:has()` is widely available (across browsers since December 2023), and the library relies on it.
+- The Popover API (`popover`, `showPopover()`) is newly available (across browsers since January 2025) and becomes widely available in mid 2027, so it is not used.
+
+Tailwind CSS v4, which the stylesheet is built with, names Chrome 111, Safari 16.4 and Firefox 128 as the versions its core depends on.
+
+Other browsers built on the same engines, and other engines that implement the same standards, are expected to work, so use only what the standard guarantees and never a vendor's own extension.
+
 ## Writing components
 
 Every component in Harmonia is an Alpine plugin. One file in `src/components/` default-exports a function that receives `Alpine` and registers one or more directives:
@@ -135,6 +148,14 @@ There are two things that are not immediately obvious:
 Use `rem` rather than `px` everywhere, including inline styles set from JavaScript, unless `rem` isn't an option or pixels are a better fit. When you measure something with `getBoundingClientRect`, convert the result before applying it.
 
 If you add, rename, or remove a CSS variable in `globals.css`, mirror the change in the `colorVars`, `shadowVars`, `fontVars`, or `othersVars` arrays in [docs/public/theming/generator.html](docs/public/theming/generator.html). A variable missing from those arrays falls through to a generic text input in the theme generator, so a colour would lose its colour picker.
+
+### Floating panels
+
+A menu, popover, select list, picker popup or tooltip is positioned next to its trigger with [floating-ui](https://floating-ui.com/) and kept in place with `autoUpdate`. Panels use floating-ui's default `absolute` strategy. Menus are the exception and use `fixed`, because they also open at pointer coordinates as context menus. Three things to keep in mind:
+
+- **Do not move a panel that moves focus into itself to `fixed`.** `focus()` and `scrollIntoView()` scroll every scrollable ancestor to reveal the element, and a fixed panel does not follow, so the page scrolled away from under the input while the popup stayed put. That is why the date and time picker popups went from `fixed` to `absolute` in version 0.9.1 (commit `8736297`), and the calendar overflow popover showed the same symptom when it went back to `fixed` (issue #132).
+- **Keep the ancestors of a panel unpositioned.** An `absolute` panel anchors to the nearest positioned ancestor and is clipped by any `overflow` container between the two. The select root is deliberately not positioned for this reason.
+- **A transform counts as positioning.** Any `transform`, `translate` or `filter` on an ancestor creates a containing block and a stacking context for the panel. The `transform-gpu` class on form fields once trapped every dropdown inside its own field (v2.3.1).
 
 ### Data slots
 

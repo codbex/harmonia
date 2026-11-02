@@ -47,9 +47,9 @@ x-h-week-picker-popup
 
 ### Modifiers
 
-| Modifier | Description                          |
-| -------- | ------------------------------------ |
-| table    | Use when the input is inside a table |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| table    | Required when the control is inside a table cell. See [Table](/components/table#table-with-inputs). |
 
 ### Configuration
 

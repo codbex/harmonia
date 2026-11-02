@@ -465,33 +465,49 @@ describe('h-select-input model binding', () => {
     document.body.innerHTML = '';
   });
 
-  function createModelSelect(initialValue) {
+  function createModelSelect(initialValue, { labels = { apple: 'Apple', banana: 'Banana' }, model = true } = {}) {
     const store = createMockAlpine().reactive({ value: initialValue });
     const root = document.createElement('div');
     document.body.appendChild(root);
     mountDirective(selectPlugin, 'h-select', root, { modifiers: [] });
 
+    // Real Alpine makes the label array reactive. The mock is shallow, so the
+    // trigger text only follows the label once it is made reactive here.
+    root._h_select.label = createMockAlpine().reactive([]);
+
     const input = document.createElement('input');
     input.type = 'text';
-    input._x_model = { get: () => store.value, set: (value) => (store.value = value) };
+    input.setAttribute('placeholder', 'Select');
+    // x-model writes the value to the input as well.
+    if (model) {
+      input._x_model = { get: () => store.value, set: (value) => (store.value = value) };
+      input.value = initialValue ?? '';
+    } else input.value = initialValue;
     root.appendChild(input);
     mountDirective(selectPlugin, 'h-select-input', input, { original: 'x-h-select-input', expression: '' });
 
     const options = {};
-    for (const [label, value] of [
-      ['Apple', 'apple'],
-      ['Banana', 'banana'],
-    ]) {
+    const contexts = {};
+    for (const value of Object.keys(labels)) {
       const option = document.createElement('div');
       option.setAttribute('data-value', value);
       root.appendChild(option);
-      mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: `'${label}'` }, { evaluateLater: () => (cb) => cb(label) });
+      const { ctx } = mountDirective(selectPlugin, 'h-select-option', option, { original: 'x-h-select-option', expression: `labels.${value}` }, { evaluateLater: () => (cb) => cb(labels[value]) });
       options[value] = option;
+      contexts[value] = ctx;
     }
-    return { root, input, store, options, state: root._h_select };
+    return { root, input, store, options, contexts, state: root._h_select };
   }
 
   const isSelected = (option) => option.getAttribute('aria-selected') === 'true' && !option.querySelector('span[aria-hidden]').classList.contains('invisible');
+
+  const display = (root) => root.querySelector('[data-slot=select-input] > span');
+
+  // Alpine runs the directive's cleanup when it removes the element.
+  function removeOption({ options, contexts }, value) {
+    options[value].remove();
+    contexts[value].cleanup.mock.calls[0][0]();
+  }
 
   it('reflects a programmatic model replacement without any change event', () => {
     const { store, options, state } = createModelSelect([]);
@@ -525,6 +541,68 @@ describe('h-select-input model binding', () => {
     expect(state.label).toEqual(['Banana']);
     expect(isSelected(options.banana)).toBe(true);
     expect(isSelected(options.apple)).toBe(false);
+  });
+
+  // An option's label can be reactive. Renaming the selected one reaches the
+  // trigger through the refresh the option's label effect schedules.
+  it('updates the trigger label when the selected option is renamed', async () => {
+    const labels = createMockAlpine().reactive({ apple: 'Apple', banana: 'Banana' });
+    const { state } = createModelSelect('banana', { labels });
+    await flushMicrotasks();
+    expect(state.label).toEqual(['Banana']);
+    labels.banana = 'Yellow banana';
+    await flushMicrotasks();
+    expect(state.label).toEqual(['Yellow banana']);
+  });
+
+  // Without x-model there is no model effect, so the scheduled refresh is the
+  // only thing that resolves a value the input already holds.
+  it('resolves a preselected value on an input without x-model once the scheduled refresh runs', async () => {
+    const { options, state } = createModelSelect('banana', { model: false });
+    await flushMicrotasks();
+    expect(state.label).toEqual(['Banana']);
+    expect(isSelected(options.banana)).toBe(true);
+    expect(isSelected(options.apple)).toBe(false);
+  });
+
+  // The input keeps the model value even when no option carries it, so the
+  // old label must not survive on the trigger. Without x-model there is no
+  // model effect, and the option leaving is what refreshes the label.
+  it.each([
+    ['with x-model', true],
+    ['without x-model', false],
+  ])('shows the placeholder when the selected option is removed, %s', async (_, model) => {
+    const mounted = createModelSelect('banana', { model });
+    const { root, state } = mounted;
+    await flushMicrotasks();
+    expect(display(root).innerText).toBe('Banana');
+    removeOption(mounted, 'banana');
+    await flushMicrotasks();
+    expect(state.label).toEqual([]);
+    expect(display(root).innerText).toBe('Select');
+    expect(display(root).classList.contains('text-muted-foreground')).toBe(true);
+  });
+
+  it('shows the placeholder when the value matches no option', async () => {
+    const { root, input, store, state } = createModelSelect('banana');
+    await flushMicrotasks();
+    input.value = 'nope';
+    store.value = 'nope';
+    expect(state.label).toEqual([]);
+    expect(display(root).innerText).toBe('Select');
+    expect(display(root).classList.contains('text-muted-foreground')).toBe(true);
+    input.value = 'apple';
+    store.value = 'apple';
+    expect(display(root).innerText).toBe('Apple');
+    expect(display(root).classList.contains('text-muted-foreground')).toBe(false);
+  });
+
+  it('keeps the selected label when the placeholder attribute changes', async () => {
+    const { root, input } = createModelSelect('banana');
+    await flushMicrotasks();
+    input.setAttribute('placeholder', 'Pick');
+    await flushMicrotasks();
+    expect(display(root).innerText).toBe('Banana');
   });
 });
 

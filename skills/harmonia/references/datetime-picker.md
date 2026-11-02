@@ -30,9 +30,9 @@ The date is selected in the calendar. The time is set by focusing a segment (hou
 
 #### Modifiers
 
-| Modifier | Description                          |
-| -------- | ------------------------------------ |
-| table    | Use when the input is inside a table |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| table    | Required when the control is inside a table cell. See Table. |
 
 #### x-h-datetime-picker-popup
 

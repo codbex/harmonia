@@ -11,6 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    outputs:
+      prerelease: ${{ steps.publish.outputs.prerelease }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,12 +45,15 @@ jobs:
         run: npm run build:prod
 
       - name: Publish to npm
+        id: publish
         run: |
           VERSION=$(node -p "require('./package.json').version")
           if echo "$VERSION" | grep -qE '(alpha|beta|rc)'; then
             npm publish --provenance --access public --tag next
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
           else
             npm publish --provenance --access public
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
       # Tag the published commit so a release has an anchor to branch from later.
@@ -72,3 +78,14 @@ jobs:
           # Release notes are the matching CHANGELOG.md section, or empty if absent.
           awk -v v="## v$VERSION" '$0 == v {f=1; next} /^## v/ {f=0} f' CHANGELOG.md > /tmp/notes.md
           gh release create "v$VERSION" --title "v$VERSION" --notes-file /tmp/notes.md
+
+  # The docs site documents the current release, so prereleases and releases from
+  # other branches leave it alone. The github-pages environment only accepts main.
+  pages:
+    needs: build
+    if: needs.build.outputs.prerelease == 'false' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/build-github-pages.yaml

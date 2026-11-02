@@ -137,4 +137,124 @@ test('a menu opened from a pinned cell is above the pinned cells of the rows bel
     })
   );
   expect(hits).toEqual([true, true, true]);
+
+  // Page chrome above the pinned cell's own level, such as a sticky app bar at z-10, must not cover the menu either.
+  const underBar = await menu.evaluate((list) => {
+    const box = list.getBoundingClientRect();
+    const bar = document.createElement('div');
+    Object.assign(bar.style, { position: 'fixed', zIndex: '10', left: box.left + 'px', top: box.top + 'px', width: box.width / 2 + 'px', height: box.height + 'px' });
+    document.body.appendChild(bar);
+    const item = list.querySelector('[data-slot=menu-item]').getBoundingClientRect();
+    const hit = document.elementFromPoint(item.left + 5, item.top + item.height / 2);
+    bar.remove();
+    return list.contains(hit);
+  });
+  expect(underBar).toBe(true);
+});
+
+// What is painted at the centre of a pinned header cell once the body has scrolled under it,
+// and the z-index of the first pinned body cell.
+const pinnedHeaderHit = (container) =>
+  container.evaluate((el) => {
+    // elementFromPoint sees only the viewport, and the table may sit below the fold.
+    el.scrollIntoView({ block: 'center' });
+    const th = el.querySelector('thead th[data-sticky]');
+    const box = th.getBoundingClientRect();
+    const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    return { headerHit: th.contains(hit), bodyCellZ: getComputedStyle(el.querySelector('tbody td[data-sticky]')).zIndex };
+  });
+
+test('a pinned cell holding an expanded control that is not a popup stays under the sticky header', async ({ page }) => {
+  await gotoFixture(page, 'table');
+  const scroller = page.locator('#pinned-expanders');
+  await scroller.evaluate((el) => (el.scrollTop = 60));
+  await settle(page);
+  expect(await pinnedHeaderHit(scroller)).toEqual({ headerHit: true, bodyCellZ: '1' });
+});
+
+test('a pinned end cell in a table with column borders draws a single line', async ({ page }) => {
+  await gotoFixture(page, 'table');
+  const widths = await page
+    .locator('#pinned-borders tbody tr')
+    .first()
+    .evaluate((row) => {
+      const cells = [...row.children];
+      return {
+        before: getComputedStyle(cells[cells.length - 2]).borderInlineEndWidth,
+        pinned: getComputedStyle(cells[cells.length - 1]).borderInlineStartWidth,
+      };
+    });
+  expect(widths).toEqual({ before: '0px', pinned: '1px' });
+});
+
+test('a pinned column works inside a dialog', async ({ page }) => {
+  await gotoFixture(page, 'table');
+  await page.locator('#pinned-dialog-open').click();
+  await page.locator('[data-slot=dialog]').waitFor({ state: 'visible' });
+  await settle(page, 400);
+
+  const scroller = page.locator('#pinned-dialog-expanders');
+  await scroller.evaluate((el) => (el.scrollTop = 60));
+  await settle(page);
+  expect(await pinnedHeaderHit(scroller)).toEqual({ headerHit: true, bodyCellZ: '1' });
+
+  // The trigger row at the bottom of the dialog body, so the menu opens over the dialog footer.
+  const trigger = page.locator('#pinned-dialog-trigger-1');
+  await trigger.evaluate((el) => el.scrollIntoView({ block: 'end' }));
+  await trigger.click();
+  const menu = page.locator('#pinned-dialog-menu-1');
+  await menu.waitFor({ state: 'visible' });
+  await settle(page);
+  const hits = await menu.evaluate((list) => {
+    const inMenu = (x, y) => list.contains(document.elementFromPoint(x, y));
+    const items = [...list.querySelectorAll('[data-slot=menu-item]')].map((item) => item.getBoundingClientRect());
+    const menuBox = list.getBoundingClientRect();
+    const footerBox = document.getElementById('pinned-dialog-close').getBoundingClientRect();
+    const left = Math.max(menuBox.left, footerBox.left);
+    const right = Math.min(menuBox.right, footerBox.right);
+    const top = Math.max(menuBox.top, footerBox.top);
+    const bottom = Math.min(menuBox.bottom, footerBox.bottom);
+    return {
+      // Above the pinned cells of the rows below.
+      centres: items.map((box) => inMenu(box.left + box.width / 2, box.top + box.height / 2)),
+      ends: items.map((box) => inMenu(box.right - 5, box.top + box.height / 2)),
+      // Above the dialog footer it overlaps.
+      overlapsFooter: right > left && bottom > top,
+      aboveFooter: right > left && bottom > top && inMenu((left + right) / 2, (top + bottom) / 2),
+    };
+  });
+  expect(hits).toEqual({ centres: [true, true, true], ends: [true, true, true], overlapsFooter: true, aboveFooter: true });
+});
+
+test('the row header column stays at the start edge of a right-to-left table during horizontal scroll', async ({ page }) => {
+  await gotoFixture(page, 'table');
+  const scroller = page.locator('#scroller-rtl');
+  const header = page.locator('#row-rtl-1 th');
+  const container = await scroller.boundingBox();
+  const before = await header.boundingBox();
+
+  // A right-to-left scroller counts leftwards from zero.
+  await scroller.evaluate((el) => (el.scrollLeft = -200));
+  await settle(page);
+
+  const after = await header.boundingBox();
+  expect(Math.abs(after.x + after.width - (before.x + before.width))).toBeLessThan(2);
+  expect(Math.abs(after.x + after.width - (container.x + container.width))).toBeLessThan(2);
+});
+
+test('a select list inside a table container opens in full', async ({ page }) => {
+  await gotoFixture(page, 'table');
+  await page.locator('#plain-select [data-slot=select-input]').click();
+  const content = page.locator('#plain-select [data-slot=select-content]');
+  await content.waitFor({ state: 'visible' });
+  await settle(page);
+
+  const result = await content.evaluate((el) => {
+    const container = el.closest('[data-slot=table-container]');
+    container.scrollIntoView({ block: 'center' });
+    const box = el.getBoundingClientRect();
+    const hit = document.elementFromPoint(box.left + box.width / 2, box.bottom - 12);
+    return { tallerThanContainer: box.height > container.getBoundingClientRect().height, bottomPainted: el.contains(hit) };
+  });
+  expect(result).toEqual({ tallerThanContainer: true, bottomPainted: true });
 });

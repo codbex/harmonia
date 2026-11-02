@@ -268,7 +268,7 @@ export default function (Alpine) {
     applyState();
 
     function getPlaceholder() {
-      if (!el.value) {
+      if (!select._h_select.label.length) {
         const value = el.getAttribute('placeholder');
         if (value) {
           displayValue.innerText = value;
@@ -914,6 +914,7 @@ export default function (Alpine) {
       descriptionObserver.disconnect();
       const lIndex = select._h_select.listeners.indexOf(onModelChange);
       select._h_select.listeners.splice(lIndex, 1);
+      scheduleLabelRefresh(select);
     });
   });
 

@@ -83,9 +83,9 @@ Use tables to present datasets, lists, or records where a clear relationship bet
 
 #### x-h-table-container
 
-| Modifier | Description                           |
-| -------- | ------------------------------------- |
-| scroll   | Adds scroll ability to the container. |
+| Modifier | Description                                                                                                                                                                              |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| scroll   | Adds scroll ability to the container. The header and footer stay in view while the body scrolls, and a row header (a `th` in the body) stays at the start edge while the columns scroll. |
 
 ### CSS Variables
 
@@ -191,12 +191,7 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
     return `${day} ${month} ${year}`;
   }
 
-  const names = ['Ivan Strashimechkarov', 'Anna Petrova', 'John Doe', 'Maria Gonzalez', 'Liam Smith', 'Emma Johnson', 'Noah Brown', 'Olivia Davis', 'William Wilson', 'Sophia Moore'];
-
-  const categories = ['Consulting', 'Software', 'Design', 'Training', 'Marketing'];
-  const statuses = ['paid', 'unpaid', 'overdue', 'partial'];
-
-  function generateInvoices() {
+  function generateInvoices(names, categories, statuses) {
     const baseDate = new Date();
     const invoices = [];
     for (let i = 0; i < 50; i++) {
@@ -240,7 +235,13 @@ Binds through Alpine `x-model`. See the Examples for the expected value shape.
     return invoices;
   }
   Alpine.data('tableData', () => ({
-    invoices: generateInvoices(),
+    statuses: ['paid', 'unpaid', 'overdue', 'partial'],
+    categories: ['Consulting', 'Software', 'Design', 'Training', 'Marketing'],
+    names: ['Ivan Strashimechkarov', 'Anna Petrova', 'John Doe', 'Maria Gonzalez', 'Liam Smith', 'Emma Johnson', 'Noah Brown', 'Olivia Davis', 'William Wilson', 'Sophia Moore'],
+    invoices: undefined,
+    init() {
+      this.invoices = generateInvoices(this.names, this.categories, this.statuses);
+    },
   }));
 </script>
 ```
@@ -251,7 +252,7 @@ A `data-sticky="end"` column stays in view while the other columns scroll, which
 
 ```html
 <div x-h-table-container data-border="true" style="max-width: 28rem">
-  <table x-h-table data-borders="rows">
+  <table x-h-table data-borders="both">
     <thead x-h-table-header>
       <tr x-h-table-row>
         <th x-h-table-head scope="col">Order</th>
@@ -265,19 +266,31 @@ A `data-sticky="end"` column stays in view while the other columns scroll, which
         <td x-h-table-cell>SO-1001</td>
         <td x-h-table-cell>Northwind Traders</td>
         <td x-h-table-cell>Deliver to the side entrance before noon</td>
-        <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+        <td x-h-table-cell data-sticky="end">
+          <button x-h-table-cell-button class="justify-center" aria-label="row actions">
+            <svg x-h-lucide role="presentation" data-lucide="ellipsis-vertical"></svg>
+          </button>
+        </td>
       </tr>
       <tr x-h-table-row data-hoverable="true">
         <td x-h-table-cell>SO-1002</td>
         <td x-h-table-cell>Contoso Pharmaceuticals</td>
         <td x-h-table-cell>Keep refrigerated during transport</td>
-        <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+        <td x-h-table-cell data-sticky="end">
+          <button x-h-table-cell-button class="justify-center" aria-label="row actions">
+            <svg x-h-lucide role="presentation" data-lucide="ellipsis-vertical"></svg>
+          </button>
+        </td>
       </tr>
-      <tr x-h-table-row data-hoverable="true" data-state="selected">
+      <tr x-h-table-row data-hoverable="true">
         <td x-h-table-cell>SO-1003</td>
         <td x-h-table-cell>Fabrikam Residences</td>
         <td x-h-table-cell>Call the site manager on arrival</td>
-        <td x-h-table-cell data-sticky="end"><button x-h-button data-size="sm">Open</button></td>
+        <td x-h-table-cell data-sticky="end">
+          <button x-h-table-cell-button class="justify-center" aria-label="row actions">
+            <svg x-h-lucide role="presentation" data-lucide="ellipsis-vertical"></svg>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -536,7 +549,7 @@ The cell button can be used to trigger some action.
 
 ### Table with inputs
 
-You can use input, dropdown, select, date and time pickers inside a table by using the `table` modifier.
+An input inside a table cell always uses its `table` modifier. The modifier drops the control's own border and focus ring and lets it fill the cell. The plain variants are not meant for table cells.
 
 ```html
 <div x-h-table-container.scroll data-border="true">

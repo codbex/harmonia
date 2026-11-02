@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import tablePlugin from '../../src/components/table.js';
 import { createMockAlpine, mountDirective } from '../test-utils.js';
 
@@ -11,7 +11,7 @@ describe('h-table-container', () => {
   it('applies base classes (non-scroll)', () => {
     const el = document.createElement('div');
     mountDirective(tablePlugin, 'h-table-container', el, { modifiers: [] });
-    expect(el.classList.contains('relative')).toBe(true);
+    expect(el.classList.contains('relative')).toBe(false);
     expect(el.classList.contains('w-full')).toBe(true);
     expect(el.classList.contains('overflow-x-auto')).toBe(true);
     expect(el.getAttribute('data-slot')).toBe('table-container');
@@ -21,6 +21,10 @@ describe('h-table-container', () => {
     const el = document.createElement('div');
     mountDirective(tablePlugin, 'h-table-container', el, { modifiers: ['scroll'] });
     expect(el.classList.contains('overflow-scroll')).toBe(true);
+    expect(el.classList.contains('[&_tbody_tr_th[data-slot|=table]]:sticky')).toBe(true);
+    expect(el.classList.contains('[&_tbody_tr_th[data-slot|=table]]:start-0')).toBe(true);
+    expect(el.classList.contains('[&_tbody_tr_th[data-slot|=table]]:z-1')).toBe(true);
+    expect(el.classList.contains('[&_tbody_tr_th[data-slot|=table]]:left-0')).toBe(false);
   });
 
   it('adds border classes when data-border=true', () => {
@@ -63,6 +67,19 @@ describe('h-table', () => {
     mountDirective(tablePlugin, 'h-table', el);
     expect(el.classList.contains('[&_tr[data-slot|=table]]:divide-x')).toBe(true);
   });
+
+  it('drops the divider of the cell before a pinned end cell when it has column borders', () => {
+    for (const borders of ['columns', 'both']) {
+      const el = document.createElement('table');
+      el.setAttribute('data-borders', borders);
+      mountDirective(tablePlugin, 'h-table', el);
+      expect(el.classList.contains('[&_tr>:has(+[data-sticky=end])]:border-e-0')).toBe(true);
+    }
+    const rows = document.createElement('table');
+    rows.setAttribute('data-borders', 'rows');
+    mountDirective(tablePlugin, 'h-table', rows);
+    expect(rows.classList.contains('[&_tr>:has(+[data-sticky=end])]:border-e-0')).toBe(false);
+  });
 });
 
 describe('h-table-header', () => {
@@ -82,8 +99,17 @@ describe('h-table-header', () => {
 });
 
 describe('h-table-head', () => {
+  let parentEl;
+
+  beforeEach(() => {
+    parentEl = document.createElement('div');
+    parentEl._h_table = { borders: 'columns' };
+    document.body.appendChild(parentEl);
+  });
+
   it('applies base classes and data-slot', () => {
     const el = document.createElement('th');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-head', el);
     expect(el.classList.contains('h-10')).toBe(true);
     expect(el.classList.contains('px-2')).toBe(true);
@@ -94,6 +120,7 @@ describe('h-table-head', () => {
 
   it('applies the header data-bordered variant classes', () => {
     const el = document.createElement('th');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-head', el);
     expect(el.classList.contains('[[data-slot=table-header][data-bordered=true]_&]:border-t')).toBe(true);
     expect(el.classList.contains('[[data-slot=table-header][data-bordered=true]_&]:border-b')).toBe(true);
@@ -105,22 +132,36 @@ describe('h-table-head', () => {
 
   it('pins a data-sticky header cell to its inline edge', () => {
     const el = document.createElement('th');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-head', el);
     expect(el.classList.contains('[&[data-sticky]]:sticky')).toBe(true);
     expect(el.classList.contains('[&[data-sticky=start]]:start-0')).toBe(true);
     expect(el.classList.contains('[&[data-sticky=end]]:end-0')).toBe(true);
   });
 
-  it('lifts a pinned header cell holding an open menu above the other pinned cells', () => {
+  it('lifts a pinned header cell holding an open popup, not one holding any expanded control', () => {
     const el = document.createElement('th');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-head', el);
-    expect(el.classList.contains('[&[data-sticky]:has([aria-expanded=true])]:z-3')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-haspopup][aria-expanded=true])]:z-50')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]:has([role=combobox][aria-expanded=true])]:z-50')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-haspopup][aria-expanded=true])]:z-3')).toBe(false);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-expanded=true])]:z-3')).toBe(false);
   });
 });
 
 describe('h-table-cell', () => {
+  let parentEl;
+
+  beforeEach(() => {
+    parentEl = document.createElement('div');
+    parentEl._h_table = { borders: 'columns' };
+    document.body.appendChild(parentEl);
+  });
+
   it('applies base classes and data-slot', () => {
     const el = document.createElement('td');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-cell', el);
     expect(el.classList.contains('p-2')).toBe(true);
     expect(el.classList.contains('align-middle')).toBe(true);
@@ -130,12 +171,14 @@ describe('h-table-cell', () => {
 
   it('drops the padding around a group button', () => {
     const el = document.createElement('td');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-cell', el);
     expect(el.classList.contains('[&:has([data-slot=table-group-button])]:p-0')).toBe(true);
   });
 
   it('pins a data-sticky cell above the scrolled cells, on the table surface, with a border on its inner edge', () => {
     const el = document.createElement('td');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-cell', el);
     expect(el.classList.contains('[&[data-sticky]]:sticky')).toBe(true);
     expect(el.classList.contains('[&[data-sticky]]:z-1')).toBe(true);
@@ -146,10 +189,14 @@ describe('h-table-cell', () => {
     expect(el.classList.contains('[&[data-sticky=end]]:border-s')).toBe(true);
   });
 
-  it('lifts a pinned cell holding an open menu above the other pinned cells', () => {
+  it('lifts a pinned cell holding an open popup, not one holding any expanded control', () => {
     const el = document.createElement('td');
+    parentEl.appendChild(el);
     mountDirective(tablePlugin, 'h-table-cell', el);
-    expect(el.classList.contains('[&[data-sticky]:has([aria-expanded=true])]:z-3')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-haspopup][aria-expanded=true])]:z-50')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]:has([role=combobox][aria-expanded=true])]:z-50')).toBe(true);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-haspopup][aria-expanded=true])]:z-3')).toBe(false);
+    expect(el.classList.contains('[&[data-sticky]:has([aria-expanded=true])]:z-3')).toBe(false);
   });
 });
 

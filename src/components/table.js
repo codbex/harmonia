@@ -13,11 +13,11 @@ export default function (Alpine) {
         '[&_tfoot[data-slot|=table]]:bottom-0',
         '[&_tfoot[data-slot|=table]]:z-2',
         '[&_tbody_tr_th[data-slot|=table]]:sticky',
-        '[&_tbody_tr_th[data-slot|=table]]:left-0',
+        '[&_tbody_tr_th[data-slot|=table]]:start-0',
         '[&_tbody_tr_th[data-slot|=table]]:z-1'
       );
     } else {
-      el.classList.add('relative', 'w-full', 'overflow-x-auto');
+      el.classList.add('w-full', 'overflow-x-auto');
     }
     el.setAttribute('data-slot', 'table-container');
 
@@ -31,12 +31,17 @@ export default function (Alpine) {
     if (el.getAttribute('data-fixed') === 'true') el.classList.add('table-fixed');
     el.setAttribute('data-slot', 'table');
 
-    switch (el.getAttribute('data-borders')) {
+    el._h_table = {
+      borders: el.getAttribute('data-borders'),
+    };
+
+    switch (el._h_table.borders) {
       case 'rows':
         el.classList.add('[&_tr_td[data-slot|=table]]:border-b', '[&_tr_th[data-slot|=table]]:border-b', 'first:[&_tfoot_tr_td[data-slot|=table]]:border-t', 'first:[&_tfoot_tr_th[data-slot|=table]]:border-t');
         break;
       case 'columns':
-        el.classList.add('[&_tr[data-slot|=table]]:divide-x');
+        // The pinned end cell draws the seam, so the cell before it drops its divider.
+        el.classList.add('[&_tr[data-slot|=table]]:divide-x', '[&_tr>:has(+[data-sticky=end])]:border-e-0');
         break;
       case 'both':
         el.classList.add(
@@ -44,7 +49,8 @@ export default function (Alpine) {
           '[&_tr_th[data-slot|=table]]:border-b',
           'first:[&_tfoot_tr_td[data-slot|=table]]:border-t',
           'first:[&_tfoot_tr_th[data-slot|=table]]:border-t',
-          '[&_tr[data-slot|=table]]:divide-x'
+          '[&_tr[data-slot|=table]]:divide-x',
+          '[&_tr>:has(+[data-sticky=end])]:border-e-0'
         );
         break;
     }
@@ -56,6 +62,7 @@ export default function (Alpine) {
   });
 
   Alpine.directive('h-table-head', (el) => {
+    const table = findAncestorState(Alpine, el, '_h_table');
     el.classList.add(
       'text-foreground',
       '[&[data-hoverable=true]:hover]:bg-table-hover',
@@ -79,17 +86,20 @@ export default function (Alpine) {
       '[&>[role=checkbox]]:items-center',
       '[&[data-sticky]]:sticky',
       '[&[data-sticky]]:z-1',
-      '[&[data-sticky]:has([aria-expanded=true])]:z-3',
+      '[&[data-sticky]:has([aria-haspopup][aria-expanded=true])]:z-50',
+      '[&[data-sticky]:has([role=combobox][aria-expanded=true])]:z-50',
       '[&[data-sticky]]:bg-(--table-surface,var(--background))',
       '[&[data-sticky=start]]:start-0',
-      '[&[data-sticky=start]]:border-e',
-      '[&[data-sticky=end]]:end-0',
-      '[&[data-sticky=end]]:border-s'
+      '[&[data-sticky=end]]:end-0'
     );
+    if (table._h_table.borders === 'columns' || table._h_table.borders === 'both') {
+      el.classList.add('[&[data-sticky=start]]:border-e', '[&[data-sticky=end]]:border-s');
+    }
     el.setAttribute('data-slot', 'table-head');
   });
 
-  Alpine.directive('h-table-cell', (el) => {
+  Alpine.directive('h-table-cell', (el, _, { Alpine }) => {
+    const table = findAncestorState(Alpine, el, '_h_table');
     el.classList.add(
       'p-2',
       '[&:has([data-slot|=cell-input])]:p-0',
@@ -105,13 +115,17 @@ export default function (Alpine) {
       '[&[data-activable=true]:active]:text-table-active-foreground!',
       '[&[data-sticky]]:sticky',
       '[&[data-sticky]]:z-1',
-      '[&[data-sticky]:has([aria-expanded=true])]:z-3',
+      // Lifted to the popup's own level only while a popup is open from it, so the menu layers like one from a plain cell.
+      // An expanded row toggle would otherwise keep the cell above the sticky header.
+      '[&[data-sticky]:has([aria-haspopup][aria-expanded=true])]:z-50',
+      '[&[data-sticky]:has([role=combobox][aria-expanded=true])]:z-50',
       '[&[data-sticky]]:bg-(--table-surface,var(--background))',
       '[&[data-sticky=start]]:start-0',
-      '[&[data-sticky=start]]:border-e',
-      '[&[data-sticky=end]]:end-0',
-      '[&[data-sticky=end]]:border-s'
+      '[&[data-sticky=end]]:end-0'
     );
+    if (table._h_table.borders === 'columns' || table._h_table.borders === 'both') {
+      el.classList.add('[&[data-sticky=start]]:border-e', '[&[data-sticky=end]]:border-s');
+    }
     el.setAttribute('data-slot', 'table-cell');
   });
 

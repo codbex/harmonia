@@ -1,6 +1,6 @@
 # Versioning and Support
 
-Harmonia follows [semantic versioning](https://semver.org/) strictly and supports the current major version alongside the one before it. This page explains which versions receive fixes, how long they keep receiving them, and what to expect when a new major arrives.
+Harmonia follows [semantic versioning](https://semver.org/) strictly and supports the current major version alongside the one before it. This page explains which versions receive fixes, how long they keep receiving them, which browsers are supported, and what to expect when a new major arrives.
 
 ## Semantic versioning
 
@@ -56,6 +56,12 @@ If majors arrive more quickly, a superseded major is still supported for **at le
 Nothing happens to your application. A release past end of life keeps working exactly as it did, because every distribution channel is version-pinned. The npm package, the [unpkg](https://unpkg.com/) snippets and the WebJar coordinates all name an exact version, so a release you depend on never changes underneath you.
 
 What stops is the flow of fixes. No further patches are published for that line.
+
+## Browser support
+
+Harmonia's baseline is [Baseline Widely available](https://developer.mozilla.org/en-US/docs/Glossary/Baseline/Compatibility). The library uses only web platform features that have had consistent support in each of the Baseline browsers (Chrome on desktop and mobile, Edge, Firefox on desktop and mobile, Safari on macOS and iOS) for at least two and a half years. The window moves forward with time, there is no fixed minimum version, and every change to the library is checked against the baseline before it ships.
+
+Other browsers built on the same engines, and other engines that implement the same web standards, are expected to work. If one does not, [open an issue](https://github.com/codbex/harmonia/issues).
 
 ## Upgrading between majors
 

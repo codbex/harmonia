@@ -22,10 +22,10 @@ x-h-input
 
 ### Modifiers
 
-| Modifier | Description                                  |
-| -------- | -------------------------------------------- |
-| group    | Used when the input is inside an input group |
-| table    | Used when the input is inside a table        |
+| Modifier | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| group    | Used when the input is inside an input group                                                        |
+| table    | Required when the control is inside a table cell. See [Table](/components/table#table-with-inputs). |
 
 ### Validation timing
 
